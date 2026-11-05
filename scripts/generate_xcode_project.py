@@ -51,8 +51,10 @@ def make_project():
     product_files = []
     source_groups = []
     targets = []
-    target_names = [("MeetSpace", "App", "application", "app", ["MeetSpaceFeatures", "MeetSpaceCore", "MeetSpaceAPI", "MeetSpaceRealtime", "MeetSpaceMediaRuntime"]),
-                    ("MeetSpaceTests", "Tests/MeetSpaceTests", "bundle.unit-test", "xctest", ["MeetSpaceCore", "MeetSpaceStorage", "MeetSpaceMediaRuntime"]),
+    # Media is linked once, transitively through Features in the app. Hosted tests import that
+    # compiled module and resolve its symbols through BUNDLE_LOADER, not a second package product.
+    target_names = [("MeetSpace", "App", "application", "app", ["MeetSpaceFeatures", "MeetSpaceCore", "MeetSpaceAPI", "MeetSpaceRealtime"]),
+                    ("MeetSpaceTests", "Tests/MeetSpaceTests", "bundle.unit-test", "xctest", ["MeetSpaceCore", "MeetSpaceStorage"]),
                     ("MeetSpaceUITests", "Tests/MeetSpaceUITests", "bundle.ui-testing", "xctest", [])]
     for name, directory, kind, extension, modules in target_names:
         file_ids, sources, resources, frameworks, dependencies, packages = [], [], [], [], [], []
