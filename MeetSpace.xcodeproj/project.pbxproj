@@ -83,6 +83,24 @@
 			"isa" = "PBXBuildFile";
 			"productRef" = "F6D705857BBDBB286836BF45";
 		};
+		"18532F5AB49ABCB9089A83CD" = {
+			"isa" = "XCSwiftPackageProductDependency";
+			"package" = "BC4A71180870F7945155FBB0";
+			"productName" = "MeetSpaceRealtime";
+		};
+		"4C684AC2281D14B98772BA62" = {
+			"isa" = "PBXBuildFile";
+			"productRef" = "18532F5AB49ABCB9089A83CD";
+		};
+		"4F4005F4F34925B965EFEB0A" = {
+			"isa" = "XCSwiftPackageProductDependency";
+			"package" = "BC4A71180870F7945155FBB0";
+			"productName" = "MeetSpaceMedia";
+		};
+		"84326DE90BCBE01C252694DC" = {
+			"isa" = "PBXBuildFile";
+			"productRef" = "4F4005F4F34925B965EFEB0A";
+		};
 		"2AC38145899132AF4026E327" = {
 			"isa" = "PBXFileReference";
 			"explicitFileType" = "wrapper.application";
@@ -106,6 +124,8 @@
 				"A848B51A46DC3FD07FBA70C6",
 				"E71394122558EB1A4F9457DB",
 				"8C8752B3BD330D7411E29E22",
+				"4C684AC2281D14B98772BA62",
+				"84326DE90BCBE01C252694DC",
 			);
 			"runOnlyForDeploymentPostprocessing" = 0;
 		};
@@ -193,6 +213,8 @@
 				"FE8858BE78442D45F9DC86CE",
 				"C5BC6E53A67B004C1DCDA726",
 				"F6D705857BBDBB286836BF45",
+				"18532F5AB49ABCB9089A83CD",
+				"4F4005F4F34925B965EFEB0A",
 			);
 			"productName" = "MeetSpace";
 			"productReference" = "2AC38145899132AF4026E327";
@@ -208,10 +230,21 @@
 			"isa" = "PBXBuildFile";
 			"fileRef" = "36FCCF46D3EF87ED4CD4B23C";
 		};
+		"DAF62D0CD0BAA30377DD305F" = {
+			"isa" = "PBXFileReference";
+			"lastKnownFileType" = "sourcecode.swift";
+			"path" = "MediaIntegrationTests.swift";
+			"sourceTree" = "<group>";
+		};
+		"F54DBF57B2E7C10431F60853" = {
+			"isa" = "PBXBuildFile";
+			"fileRef" = "DAF62D0CD0BAA30377DD305F";
+		};
 		"4D5FC6C0D9725D09B197E0BD" = {
 			"isa" = "PBXGroup";
 			"children" = (
 				"36FCCF46D3EF87ED4CD4B23C",
+				"DAF62D0CD0BAA30377DD305F",
 			);
 			"path" = "Tests/MeetSpaceTests";
 			"sourceTree" = "<group>";
@@ -233,6 +266,15 @@
 		"9811B6EBACA8DDA7DC22BAD2" = {
 			"isa" = "PBXBuildFile";
 			"productRef" = "D629CF8AC1210769AE77C8C5";
+		};
+		"0712540AF708B49E4AD9AC3B" = {
+			"isa" = "XCSwiftPackageProductDependency";
+			"package" = "BC4A71180870F7945155FBB0";
+			"productName" = "MeetSpaceMedia";
+		};
+		"E4E7B7A2C5B82470EF0BF051" = {
+			"isa" = "PBXBuildFile";
+			"productRef" = "0712540AF708B49E4AD9AC3B";
 		};
 		"34BA0357AA05E9D9118FFA00" = {
 			"isa" = "PBXContainerItemProxy";
@@ -258,6 +300,7 @@
 			"buildActionMask" = 2147483647;
 			"files" = (
 				"28B9685934AAE2583901699A",
+				"F54DBF57B2E7C10431F60853",
 			);
 			"runOnlyForDeploymentPostprocessing" = 0;
 		};
@@ -267,6 +310,7 @@
 			"files" = (
 				"60757C76FCDA18459D837F42",
 				"9811B6EBACA8DDA7DC22BAD2",
+				"E4E7B7A2C5B82470EF0BF051",
 			);
 			"runOnlyForDeploymentPostprocessing" = 0;
 		};
@@ -353,6 +397,7 @@
 			"packageProductDependencies" = (
 				"BAC18CA081E1540005AB2C66",
 				"D629CF8AC1210769AE77C8C5",
+				"0712540AF708B49E4AD9AC3B",
 			);
 			"productName" = "MeetSpaceTests";
 			"productReference" = "C4E291A6BAC79D7761857C57";

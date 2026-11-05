@@ -51,8 +51,8 @@ def make_project():
     product_files = []
     source_groups = []
     targets = []
-    target_names = [("MeetSpace", "App", "application", "app", ["MeetSpaceFeatures", "MeetSpaceCore", "MeetSpaceAPI"]),
-                    ("MeetSpaceTests", "Tests/MeetSpaceTests", "bundle.unit-test", "xctest", ["MeetSpaceCore", "MeetSpaceStorage"]),
+    target_names = [("MeetSpace", "App", "application", "app", ["MeetSpaceFeatures", "MeetSpaceCore", "MeetSpaceAPI", "MeetSpaceRealtime", "MeetSpaceMedia"]),
+                    ("MeetSpaceTests", "Tests/MeetSpaceTests", "bundle.unit-test", "xctest", ["MeetSpaceCore", "MeetSpaceStorage", "MeetSpaceMedia"]),
                     ("MeetSpaceUITests", "Tests/MeetSpaceUITests", "bundle.ui-testing", "xctest", [])]
     for name, directory, kind, extension, modules in target_names:
         file_ids, sources, resources, frameworks, dependencies, packages = [], [], [], [], [], []

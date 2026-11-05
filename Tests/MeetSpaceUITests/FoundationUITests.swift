@@ -142,6 +142,94 @@ import XCTest
         capture(app, name: "stage03-group-members")
     }
 
+    private func createConference(_ app: XCUIApplication, title: String) {
+        login(app)
+        let meetings = app.buttons["tab.meetings"]
+        XCTAssertTrue(meetings.waitForExistence(timeout: 10)); meetings.tap()
+        let create = app.buttons["createConference"]
+        XCTAssertTrue(create.waitForExistence(timeout: 10)); create.tap()
+        let name = app.textFields["conferenceTitle"]
+        XCTAssertTrue(name.waitForExistence(timeout: 5)); name.tap(); name.typeText(title)
+        let submit = app.buttons["conferenceCreateSubmit"]
+        for _ in 0..<3 where !submit.isHittable { app.swipeUp() }
+        XCTAssertTrue(submit.isEnabled); submit.tap()
+        XCTAssertTrue(app.buttons["conferenceJoin"].waitForExistence(timeout: 10))
+    }
+
+    private func waitForValue(_ value: String, of element: XCUIElement, file: StaticString = #filePath, line: UInt = #line) {
+        let expectation = XCTNSPredicateExpectation(predicate: NSPredicate(format: "value == %@", value), object: element)
+        XCTAssertEqual(XCTWaiter.wait(for: [expectation], timeout: 10), .completed, file: file, line: line)
+    }
+
+    private func joinConference(_ app: XCUIApplication) {
+        app.buttons["conferenceJoin"].tap()
+        let microphone = app.buttons["conferenceMic"]
+        XCTAssertTrue(microphone.waitForExistence(timeout: 10))
+        let enabled = XCTNSPredicateExpectation(predicate: NSPredicate(format: "enabled == true"), object: microphone)
+        XCTAssertEqual(XCTWaiter.wait(for: [enabled], timeout: 10), .completed)
+        waitForValue("Выключен", of: microphone)
+        waitForValue("Выключен", of: app.buttons["conferenceCamera"])
+    }
+
+    private func leaveConference(_ app: XCUIApplication) {
+        let leave = app.buttons["conferenceLeave"]
+        XCTAssertTrue(leave.waitForExistence(timeout: 5)); leave.tap()
+        XCTAssertTrue(app.buttons["createConference"].waitForExistence(timeout: 10))
+        XCTAssertFalse(app.buttons["conferenceMic"].exists)
+        XCTAssertFalse(app.buttons["conferenceCamera"].exists)
+    }
+
+    /// Exercises the real SwiftUI/session flow through DEBUG REST/signaling/media doubles.
+    /// Camera frames and permissions here are deterministic fixtures, not physical-device validation.
+    func testConferenceCreateMediaControlsChatAndLeave() {
+        let app = launch()
+        createConference(app, title: "Встреча команды")
+        capture(app, name: "stage04-prejoin")
+        joinConference(app)
+
+        let microphone = app.buttons["conferenceMic"]
+        microphone.tap(); waitForValue("Включён", of: microphone)
+        microphone.tap(); waitForValue("Выключен", of: microphone)
+        let camera = app.buttons["conferenceCamera"]
+        camera.tap(); waitForValue("Включён", of: camera)
+        XCTAssertTrue(app.staticTexts["Тестовое видео"].waitForExistence(timeout: 5))
+        capture(app, name: "stage04-connected")
+
+        app.buttons["conferenceParticipants"].tap()
+        XCTAssertTrue(app.staticTexts["Тестовый участник"].firstMatch.waitForExistence(timeout: 5))
+        capture(app, name: "stage04-participants")
+        let closeParticipants = app.buttons["conferencePanelClose"]
+        XCTAssertTrue(closeParticipants.waitForExistence(timeout: 5)); closeParticipants.tap()
+
+        app.buttons["conferenceChat"].tap()
+        // A vertical-axis SwiftUI TextField can bridge to UITextView on iOS.
+        let input = app.descendants(matching: .any).matching(identifier: "conferenceChatInput").firstMatch
+        XCTAssertTrue(input.waitForExistence(timeout: 5))
+        let textView = app.textViews["conferenceChatInput"]
+        let composer = textView.exists ? textView : app.textFields["conferenceChatInput"]
+        XCTAssertTrue(composer.waitForExistence(timeout: 5)); composer.tap(); composer.typeText("Сообщение встречи")
+        app.buttons["conferenceChatSend"].tap()
+        XCTAssertTrue(app.staticTexts["Сообщение встречи"].waitForExistence(timeout: 5))
+        capture(app, name: "stage04-meeting-chat")
+        app.buttons["conferencePanelClose"].tap()
+        camera.tap(); waitForValue("Выключен", of: camera)
+        leaveConference(app)
+    }
+
+    func testConferenceDeniedCameraPermissionKeepsCaptureOffAndCanLeave() {
+        let app = launch(["-media-permission-denied"])
+        createConference(app, title: "Проверка разрешений")
+        joinConference(app)
+        let camera = app.buttons["conferenceCamera"]
+        camera.tap()
+        XCTAssertTrue(app.staticTexts["conferenceError"].waitForExistence(timeout: 5))
+        waitForValue("Выключен", of: camera)
+        waitForValue("Выключен", of: app.buttons["conferenceMic"])
+        XCTAssertFalse(app.staticTexts["Тестовое видео"].exists)
+        capture(app, name: "stage04-camera-permission-denied")
+        leaveConference(app)
+    }
+
     func testOfflineStateCanRetryInExplicitDemo() {
         let app = launch(["-demo", "-offline"])
         XCTAssertTrue(app.staticTexts["Нет подключения"].waitForExistence(timeout: 5))

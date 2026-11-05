@@ -1,0 +1,237 @@
+Building for debugging...
+[Computing dependencies]
+[Pre-planning 1 / 648]
+[Finalizing plan]
+[5 / 53] MeetSpaceCore
+[12 / 61] MeetSpaceDesignSystem
+[16 / 64] MeetSpaceDesignSystem
+[25 / 75] MeetSpaceDesignSystem
+[32 / 86] MeetSpaceStorage
+[34 / 92] MeetSpaceStorage
+[42 / 94] MeetSpaceAPI
+/Users/aleksandranickij/htdocs/meetspace_ios_mobile/Packages/MeetSpaceKit/Package.swift: MeetSpaceDesignSystem: ld: warning: search path '/Library/Developer/CommandLineTools/Developer/Library/Frameworks' not found
+[55 / 96] MeetSpaceDesignSystem
+/Users/aleksandranickij/htdocs/meetspace_ios_mobile/Packages/MeetSpaceKit/Package.swift: MeetSpaceCore: ld: warning: search path '/Library/Developer/CommandLineTools/Developer/Library/Frameworks' not found
+/Users/aleksandranickij/htdocs/meetspace_ios_mobile/Packages/MeetSpaceKit/Package.swift: MeetSpaceStorage: ld: warning: search path '/Library/Developer/CommandLineTools/Developer/Library/Frameworks' not found
+[60 / 100] MeetSpaceStorage
+/Users/aleksandranickij/htdocs/meetspace_ios_mobile/Packages/MeetSpaceKit/Package.swift: MeetSpaceAPI: ld: warning: search path '/Library/Developer/CommandLineTools/Developer/Library/Frameworks' not found
+[70 / 105] MeetSpaceAPI
+/Users/aleksandranickij/htdocs/meetspace_ios_mobile/Packages/MeetSpaceKit/Package.swift: MeetSpaceMedia: ld: warning: search path '/Library/Developer/CommandLineTools/Developer/Library/Frameworks' not found
+[76 / 108] APITests-product
+[86 / 118] APITests-product
+[91 / 119] MeetSpaceRealtime
+[100 / 130] MeetSpaceFeatures
+/Users/aleksandranickij/htdocs/meetspace_ios_mobile/Packages/MeetSpaceKit/Package.swift: StorageTests-product: ld: warning: search path '/Library/Developer/CommandLineTools/Developer/usr/lib' not found
+/Users/aleksandranickij/htdocs/meetspace_ios_mobile/Packages/MeetSpaceKit/Package.swift: StorageTests-product: ld: warning: search path '/Library/Developer/CommandLineTools/Developer/Library/Frameworks' not found
+[100 / 130] StorageTests-product
+[102 / 130] MeetSpaceRealtime
+[104 / 130] MeetSpaceRealtime
+/Users/aleksandranickij/htdocs/meetspace_ios_mobile/Packages/MeetSpaceKit/Package.swift: MeetSpaceRealtime: ld: warning: search path '/Library/Developer/CommandLineTools/Developer/Library/Frameworks' not found
+[111 / 136] MeetSpaceFeatures
+[117 / 140] FoundationPreviewRenderer-product
+/Users/aleksandranickij/htdocs/meetspace_ios_mobile/Packages/MeetSpaceKit/Package.swift: APITests-product: ld: warning: search path '/Library/Developer/CommandLineTools/Developer/usr/lib' not found
+/Users/aleksandranickij/htdocs/meetspace_ios_mobile/Packages/MeetSpaceKit/Package.swift: APITests-product: ld: warning: search path '/Library/Developer/CommandLineTools/Developer/Library/Frameworks' not found
+[120 / 144] MeetSpaceRealtime-product
+[127 / 146] CoreTests-product
+[129 / 149] MeetSpaceFeatures
+/Users/aleksandranickij/htdocs/meetspace_ios_mobile/Packages/MeetSpaceKit/Package.swift: CoreTests-product: ld: warning: search path '/Library/Developer/CommandLineTools/Developer/usr/lib' not found
+/Users/aleksandranickij/htdocs/meetspace_ios_mobile/Packages/MeetSpaceKit/Package.swift: CoreTests-product: ld: warning: search path '/Library/Developer/CommandLineTools/Developer/Library/Frameworks' not found
+[131 / 149] CoreTests-product
+[134 / 151] MeetSpaceFeatures
+/Users/aleksandranickij/htdocs/meetspace_ios_mobile/Packages/MeetSpaceKit/Package.swift: MeetSpaceFeatures: ld: warning: search path '/Library/Developer/CommandLineTools/Developer/Library/Frameworks' not found
+[144 / 153] IntegrationTests-product
+[154 / 167] FeaturesTests-product
+/Users/aleksandranickij/htdocs/meetspace_ios_mobile/Packages/MeetSpaceKit/Package.swift: FoundationPreviewRenderer-product: ld: warning: search path '/Library/Developer/CommandLineTools/Developer/usr/lib' not found
+/Users/aleksandranickij/htdocs/meetspace_ios_mobile/Packages/MeetSpaceKit/Package.swift: FoundationPreviewRenderer-product: ld: warning: search path '/Library/Developer/CommandLineTools/Developer/Library/Frameworks' not found
+[155 / 167] IntegrationTests-product
+[156 / 167] FeaturesTests-product
+[158 / 167] FoundationPreviewRenderer-product
+[160 / 168] FeaturesTests-product
+[164 / 170] IntegrationTests-product
+[166 / 175] IntegrationTests-product
+[166 / 175] FeaturesTests-product
+[168 / 175] IntegrationTests-product
+[168 / 175] FeaturesTests-product/Users/aleksandranickij/htdocs/meetspace_ios_mobile/Packages/MeetSpaceKit/Package.swift: FeaturesTests-product: ld: warning: search path '/Library/Developer/CommandLineTools/Developer/usr/lib' not found
+/Users/aleksandranickij/htdocs/meetspace_ios_mobile/Packages/MeetSpaceKit/Package.swift: FeaturesTests-product: ld: warning: search path '/Library/Developer/CommandLineTools/Developer/Library/Frameworks' not found
+
+[170 / 176] IntegrationTests-product
+[172 / 176] IntegrationTests-product/Users/aleksandranickij/htdocs/meetspace_ios_mobile/Packages/MeetSpaceKit/Package.swift: IntegrationTests-product: ld: warning: search path '/Library/Developer/CommandLineTools/Developer/usr/lib' not found
+/Users/aleksandranickij/htdocs/meetspace_ios_mobile/Packages/MeetSpaceKit/Package.swift: IntegrationTests-product: ld: warning: search path '/Library/Developer/CommandLineTools/Developer/Library/Frameworks' not found
+
+Build complete! (7,63 с)
+◇ Test run started.
+↳ Testing Library Version: 2084
+↳ Target Platform: arm64e-apple-macos14.0
+◇ Test preferencesRoundTripOnlyPublicConfiguration() started.
+◇ Test corruptedConfigurationIsReported() started.
+✔ Test preferencesRoundTripOnlyPublicConfiguration() passed after 0.003 seconds.
+✔ Test corruptedConfigurationIsReported() passed after 0.003 seconds.
+✔ Test run with 2 tests in 0 suites passed after 0.003 seconds.
+◇ Test run started.
+↳ Testing Library Version: 2084
+↳ Target Platform: arm64e-apple-macos14.0
+◇ Test conferenceWorkspaceClosedInviteCannotStartMeetingAfterLateRead() started.
+◇ Test conferenceRejectsScopeMismatchAndInvalidICEBeforeReturningState() started.
+◇ Test conferenceSessionWaitsForReadyAcknowledgementAndRTCConnection() started.
+◇ Test restoredAccountsSwitchWithoutSharingStateAndLogoutOnlyRemovesSelected() started.
+◇ Test accountTemporaryFilesAreIsolatedAndBounded() started.
+◇ Test conferenceSessionMapsNativeTrackThroughSDPMidAndCatalog() started.
+◇ Test authenticatedFileURLCannotEscapeAccountOriginOrConversation() started.
+◇ Test concurrentUnauthorizedRequestsRefreshOnceAndRetryOnce() started.
+◇ Test conferenceSessionLobbyStopsOnTerminalAuthorizationFailure() started.
+◇ Test reconnectUsesFreshTicketsDeduplicatesAndStopsOnCancellation() started.
+◇ Test downloadProgressUsesReceivedBytesAndFinishesAtOne() started.
+◇ Test fiveAccountsPerOriginAndMetadataContainNoSessionSecrets() started.
+◇ Test conferenceSocketRequestAndFramingEnforceTrustBoundaries() started.
+◇ Test conferenceWorkspaceCannotReplaceAnExistingCallByCreatingAnother() started.
+◇ Test tinyDownloadPreservesLargerUnauthorizedResponse() started.
+◇ Test lateHistoryCannotReplaceAnotherSelectedConversation() started.
+◇ Test conferenceSessionUsesAssignedWorkerICEAndKeepsRESTPolicy() started.
+◇ Test conferenceSessionUnresponsiveDepartureStaysUnsafeAfterLateCompletion() started.
+◇ Test conferenceWorkspaceUncertainDepartureEndsBusyStateAndBlocksReuse() started.
+◇ Test refreshRejectsChangedAccountAndMalformedCookie() started.
+◇ Test conferenceSessionLeaveReleasesCaptureBeforeUnresponsiveServer() started.
+◇ Test cancellingUploadStopsBeforeFinalizeAndRemovesStagedFile() started.
+◇ Test conferenceSessionBackgroundInvalidatesPendingPermissionAndUsesFreshEngine() started.
+◇ Test conferenceWorkspaceRepeatedDismissPreservesLateLeaveBarrier() started.
+◇ Test conferenceGuestResumeUsesBearerOnlyForMatchingInviteAndNeverRefreshes() started.
+◇ Test conferenceCommandsUseLowercaseScopeAndExplicitICEEndMarker() started.
+◇ Test conferenceRESTUsesAuditedTicketMediaAndMessageContracts() started.
+◇ Test conferenceICERequiresCandidateFieldAndBoundsNativeInput() started.
+◇ Test websocketUsesPublishedNamesAndIgnoresUnknownPayloads() started.
+◇ Test conferenceSessionReadyWithoutICEConnectionTimesOutAndCleansMedia() started.
+◇ Test logoutDrainsRefreshWriteBeforeKeychainDeletion() started.
+◇ Test conferenceWorkspaceCloseCompensatesLateJoinWithoutInstallingCall() started.
+➜ Test actualBackendTwoClientsAndFiles() skipped.
+◇ Test versionsAndIntegerSequencesPreventDuplicateOrResurrectedMessages() started.
+◇ Test conferenceGuestLateJoinCannotReplaceRestoredAccount() started.
+◇ Test uncertainSendRetriesSameRequestAndProducesOneMessage() started.
+◇ Test conferenceStateAndTrackCatalogRejectCrossScopeAndMisboundSources() started.
+◇ Test conferenceInviteParsingRejectsCrossOriginAndAmbiguousLinks() started.
+◇ Test conferenceWorkspaceOwnerInvitationStartsScheduledMeeting() started.
+◇ Test conferenceRoleMatrixKeepsLobbyAndGuestPrivilegesSeparate() started.
+◇ Test cancelledDownloadDoesNotRemainInFlight() started.
+◇ Test conferenceSessionWorkerMediaErrorIsPeerScopedAndTerminal() started.
+◇ Test conferenceSessionScheduledMembershipRejoinsAfterRoomStarts() started.
+◇ Test forbiddenAndOfflineDoNotDestroySessions() started.
+◇ Test conferenceSessionDepartureWaitsForRESTCompletion() started.
+◇ Test conferenceGuestSessionCannotSendCredentialsOutsideItsOriginOrRoom() started.
+◇ Test successfulDownloadIsBoundedBeforeAccumulation() started.
+◇ Test conferenceNegotiationCoalescesRevisionsAndIgnoresUnrelatedAcknowledgements() started.
+◇ Test productionTransportsRejectUnencryptedEndpointsBeforeNetworking() started.
+➜ Test actualBackendConferenceRESTAndGuestScope() skipped.
+◇ Test conferenceSessionKickClosesPendingCaptureWithoutAnotherRESTRead() started.
+◇ Test conferenceSessionRetriesAreBoundedAndAuthorizationFailureIsTerminal() started.
+◇ Test conferenceSocketHandshakeRequiresNegotiatedSubprotocol() started.
+◇ Test conferenceSessionProcessesModerationDuringPendingPermission() started.
+◇ Test conferenceEnvelopeChecksScopeAndPreservesUnknownEvents() started.
+◇ Test conferenceSessionDoesNotRetryHTTPValidationFailure() started.
+◇ Test signedDownloadNeverReceivesBearerAndRejectsCorruptBytes() started.
+◇ Test serverCharacterAndFileLimitsAreEnforced() started.
+◇ Test repeated401ExpiresWithoutInfiniteRefresh() started.
+✔ Test conferenceCommandsUseLowercaseScopeAndExplicitICEEndMarker() passed after 0.027 seconds.
+✔ Test conferenceICERequiresCandidateFieldAndBoundsNativeInput() passed after 0.027 seconds.
+✔ Test conferenceSocketRequestAndFramingEnforceTrustBoundaries() passed after 0.027 seconds.
+✔ Test authenticatedFileURLCannotEscapeAccountOriginOrConversation() passed after 0.027 seconds.
+✔ Test conferenceInviteParsingRejectsCrossOriginAndAmbiguousLinks() passed after 0.027 seconds.
+✔ Test conferenceRoleMatrixKeepsLobbyAndGuestPrivilegesSeparate() passed after 0.027 seconds.
+✔ Test conferenceGuestResumeUsesBearerOnlyForMatchingInviteAndNeverRefreshes() passed after 0.027 seconds.
+✔ Test conferenceNegotiationCoalescesRevisionsAndIgnoresUnrelatedAcknowledgements() passed after 0.027 seconds.
+✔ Test productionTransportsRejectUnencryptedEndpointsBeforeNetworking() passed after 0.027 seconds.
+✔ Test accountTemporaryFilesAreIsolatedAndBounded() passed after 0.027 seconds.
+✔ Test conferenceSocketHandshakeRequiresNegotiatedSubprotocol() passed after 0.027 seconds.
+✔ Test serverCharacterAndFileLimitsAreEnforced() passed after 0.026 seconds.
+✔ Test conferenceRejectsScopeMismatchAndInvalidICEBeforeReturningState() passed after 0.027 seconds.
+✔ Test conferenceEnvelopeChecksScopeAndPreservesUnknownEvents() passed after 0.028 seconds.
+✔ Test successfulDownloadIsBoundedBeforeAccumulation() passed after 0.029 seconds.
+✔ Test conferenceGuestSessionCannotSendCredentialsOutsideItsOriginOrRoom() passed after 0.029 seconds.
+✔ Test conferenceStateAndTrackCatalogRejectCrossScopeAndMisboundSources() passed after 0.030 seconds.
+✔ Test forbiddenAndOfflineDoNotDestroySessions() passed after 0.030 seconds.
+✔ Test tinyDownloadPreservesLargerUnauthorizedResponse() passed after 0.030 seconds.
+✔ Test refreshRejectsChangedAccountAndMalformedCookie() passed after 0.030 seconds.
+✔ Test websocketUsesPublishedNamesAndIgnoresUnknownPayloads() passed after 0.030 seconds.
+✔ Test signedDownloadNeverReceivesBearerAndRejectsCorruptBytes() passed after 0.031 seconds.
+✔ Test repeated401ExpiresWithoutInfiniteRefresh() passed after 0.032 seconds.
+✔ Test conferenceRESTUsesAuditedTicketMediaAndMessageContracts() passed after 0.035 seconds.
+✔ Test versionsAndIntegerSequencesPreventDuplicateOrResurrectedMessages() passed after 0.035 seconds.
+✔ Test fiveAccountsPerOriginAndMetadataContainNoSessionSecrets() passed after 0.036 seconds.
+✔ Test downloadProgressUsesReceivedBytesAndFinishesAtOne() passed after 0.037 seconds.
+✔ Test cancelledDownloadDoesNotRemainInFlight() passed after 0.037 seconds.
+✔ Test logoutDrainsRefreshWriteBeforeKeychainDeletion() passed after 0.056 seconds.
+✔ Test conferenceWorkspaceCannotReplaceAnExistingCallByCreatingAnother() passed after 0.072 seconds.
+✔ Test conferenceWorkspaceOwnerInvitationStartsScheduledMeeting() passed after 0.072 seconds.
+✔ Test conferenceWorkspaceUncertainDepartureEndsBusyStateAndBlocksReuse() passed after 0.073 seconds.
+✔ Test conferenceSessionLobbyStopsOnTerminalAuthorizationFailure() passed after 0.087 seconds.
+✔ Test conferenceWorkspaceCloseCompensatesLateJoinWithoutInstallingCall() passed after 0.087 seconds.
+✔ Test concurrentUnauthorizedRequestsRefreshOnceAndRetryOnce() passed after 0.087 seconds.
+✔ Test conferenceWorkspaceClosedInviteCannotStartMeetingAfterLateRead() passed after 0.090 seconds.
+✔ Test reconnectUsesFreshTicketsDeduplicatesAndStopsOnCancellation() passed after 0.093 seconds.
+✔ Test lateHistoryCannotReplaceAnotherSelectedConversation() passed after 0.097 seconds.
+✔ Test cancellingUploadStopsBeforeFinalizeAndRemovesStagedFile() passed after 0.097 seconds.
+✔ Test uncertainSendRetriesSameRequestAndProducesOneMessage() passed after 0.097 seconds.
+✔ Test conferenceSessionDoesNotRetryHTTPValidationFailure() passed after 0.096 seconds.
+✔ Test conferenceSessionDepartureWaitsForRESTCompletion() passed after 0.103 seconds.
+✔ Test conferenceGuestLateJoinCannotReplaceRestoredAccount() passed after 0.110 seconds.
+✔ Test conferenceSessionScheduledMembershipRejoinsAfterRoomStarts() passed after 0.112 seconds.
+✔ Test restoredAccountsSwitchWithoutSharingStateAndLogoutOnlyRemovesSelected() passed after 0.114 seconds.
+✔ Test conferenceSessionUsesAssignedWorkerICEAndKeepsRESTPolicy() passed after 0.114 seconds.
+✔ Test conferenceSessionLeaveReleasesCaptureBeforeUnresponsiveServer() passed after 0.117 seconds.
+✔ Test conferenceSessionMapsNativeTrackThroughSDPMidAndCatalog() passed after 0.117 seconds.
+✔ Test conferenceWorkspaceRepeatedDismissPreservesLateLeaveBarrier() passed after 0.117 seconds.
+✔ Test conferenceSessionUnresponsiveDepartureStaysUnsafeAfterLateCompletion() passed after 0.126 seconds.
+✔ Test conferenceSessionRetriesAreBoundedAndAuthorizationFailureIsTerminal() passed after 0.125 seconds.
+✔ Test conferenceSessionWorkerMediaErrorIsPeerScopedAndTerminal() passed after 0.126 seconds.
+✔ Test conferenceSessionKickClosesPendingCaptureWithoutAnotherRESTRead() passed after 0.128 seconds.
+✔ Test conferenceSessionProcessesModerationDuringPendingPermission() passed after 0.130 seconds.
+✔ Test conferenceSessionWaitsForReadyAcknowledgementAndRTCConnection() passed after 0.131 seconds.
+✔ Test conferenceSessionBackgroundInvalidatesPendingPermissionAndUsesFreshEngine() passed after 0.135 seconds.
+✔ Test conferenceSessionReadyWithoutICEConnectionTimesOutAndCleansMedia() passed after 0.150 seconds.
+✔ Test run with 59 tests in 0 suites passed after 0.150 seconds.
+◇ Test run started.
+↳ Testing Library Version: 2084
+↳ Target Platform: arm64e-apple-macos14.0
+◇ Test leavingConnectionCancelsPendingCheck() started.
+◇ Test staleResponseCannotReplaceNewServer() started.
+◇ Test tabsPreserveIndependentPathsAndDemoExitClearsThem() started.
+◇ Test offlineIsDistinctAndRetryCanSucceed() started.
+◇ Test leavingWhileSavingCannotNavigateBackToLogin() started.
+◇ Test reopeningServerFormRequiresANewCheck() started.
+◇ Test successfulCheckPersistsOriginBeforeLogin() started.
+◇ Test invalidAddressNeverStartsRequestOrAdvances() started.
+✔ Test tabsPreserveIndependentPathsAndDemoExitClearsThem() passed after 0.001 seconds.
+✔ Test invalidAddressNeverStartsRequestOrAdvances() passed after 0.001 seconds.
+✔ Test successfulCheckPersistsOriginBeforeLogin() passed after 0.001 seconds.
+✔ Test leavingConnectionCancelsPendingCheck() passed after 0.007 seconds.
+✔ Test reopeningServerFormRequiresANewCheck() passed after 0.007 seconds.
+✔ Test staleResponseCannotReplaceNewServer() passed after 0.007 seconds.
+✔ Test leavingWhileSavingCannotNavigateBackToLogin() passed after 0.007 seconds.
+✔ Test offlineIsDistinctAndRetryCanSucceed() passed after 0.014 seconds.
+✔ Test run with 8 tests in 0 suites passed after 0.014 seconds.
+◇ Test run started.
+↳ Testing Library Version: 2084
+↳ Target Platform: arm64e-apple-macos14.0
+◇ Test credentialsAreScopedByServerAndAccount() started.
+◇ Test realtimeUsesAuditedPathsAndEncodesTicket() started.
+◇ Test rejectsUnsafeOrigins(_:) started.
+◇ Test decodeCannotBypassValidation() started.
+◇ Test normalizesOriginAndPreservesCustomPort() started.
+✔ Test credentialsAreScopedByServerAndAccount() passed after 0.001 seconds.
+✔ Test realtimeUsesAuditedPathsAndEncodesTicket() passed after 0.001 seconds.
+✔ Test decodeCannotBypassValidation() passed after 0.001 seconds.
+✔ Test rejectsUnsafeOrigins(_:) with 14 test cases passed after 0.001 seconds.
+✔ Test normalizesOriginAndPreservesCustomPort() passed after 0.001 seconds.
+✔ Test run with 5 tests in 0 suites passed after 0.001 seconds.
+◇ Test run started.
+↳ Testing Library Version: 2084
+↳ Target Platform: arm64e-apple-macos14.0
+◇ Test preservesHTTPStatus(_:) started.
+◇ Test rejectsMalformedVersion(_:) started.
+◇ Test redirectsAreNotAccepted(_:) started.
+◇ Test probesOnlyPublicVersionEndpoint() started.
+◇ Test rejectsHTMLContentTypeAndLargeResponse() started.
+✔ Test probesOnlyPublicVersionEndpoint() passed after 0.001 seconds.
+✔ Test rejectsMalformedVersion(_:) with 3 test cases passed after 0.001 seconds.
+✔ Test redirectsAreNotAccepted(_:) with 4 test cases passed after 0.001 seconds.
+✔ Test preservesHTTPStatus(_:) with 5 test cases passed after 0.001 seconds.
+✔ Test rejectsHTMLContentTypeAndLargeResponse() passed after 0.002 seconds.
+✔ Test run with 5 tests in 0 suites passed after 0.002 seconds.

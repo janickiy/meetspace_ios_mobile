@@ -1,0 +1,27 @@
+Building for debugging...
+[Computing dependencies]
+[Pre-planning 1 / 648]
+[Finalizing plan]
+[5 / 39] MeetSpaceCore
+[10 / 44] MeetSpaceDesignSystem
+[18 / 52] MeetSpaceDesignSystem
+[26 / 58] MeetSpaceStorage
+[37 / 65] MeetSpaceAPI
+[45 / 74] MeetSpaceRealtime
+[57 / 81] APITests-product
+[64 / 84] MeetSpaceRealtime
+[66 / 85] MeetSpaceRealtime
+[71 / 87] CoreTests-product
+[76 / 89] MeetSpaceFeatures
+[83 / 93] FoundationPreviewRenderer-product
+[97 / 108] FoundationPreviewRenderer-product
+[100 / 107] FeaturesTests-product
+[103 / 106] IntegrationTests-product
+Build complete! (3,14 с)
+◇ Test run started.
+↳ Testing Library Version: 2084
+↳ Target Platform: arm64e-apple-macos14.0
+◇ Test actualBackendConferenceRESTAndGuestScope() started.
+PASS real conference REST: create/start/join, actual guest admission, scoped credentials, roles/moderation, chat/reactions, leave/rejoin/finish
+✔ Test actualBackendConferenceRESTAndGuestScope() passed after 0.294 seconds.
+✔ Test run with 1 test in 0 suites passed after 0.294 seconds.

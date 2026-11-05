@@ -4,6 +4,7 @@ import MeetSpaceCore
 import MeetSpaceAPI
 import MeetSpaceStorage
 import MeetSpaceRealtime
+import MeetSpaceMedia
 
 public struct AppDependencies: Sendable {
     public let serverProbe: any ServerProbing
@@ -12,12 +13,17 @@ public struct AppDependencies: Sendable {
     public let accounts: any AccountIndexStore
     public let transport: @Sendable () -> any RequestTransport
     public let sockets: any RealtimeSocketFactory
+    public let conferenceSockets: any ConferenceSocketFactory
+    public let media: @MainActor @Sendable () -> any ConferenceMediaEngine
     public init(serverProbe: any ServerProbing, configuration: any ConfigurationStore, credentials: any SecureStore,
                 accounts: any AccountIndexStore = MemoryAccountIndexStore(),
                 transport: @escaping @Sendable () -> any RequestTransport = { URLSessionRequestTransport() },
-                sockets: any RealtimeSocketFactory = URLSessionSocketFactory()) {
+                sockets: any RealtimeSocketFactory = URLSessionSocketFactory(),
+                conferenceSockets: any ConferenceSocketFactory = URLSessionConferenceSocketFactory(),
+                media: @escaping @MainActor @Sendable () -> any ConferenceMediaEngine = { ConferenceMediaFactory.make() }) {
         self.serverProbe = serverProbe; self.configuration = configuration; self.credentials = credentials
         self.accounts = accounts; self.transport = transport; self.sockets = sockets
+        self.conferenceSockets = conferenceSockets; self.media = media
     }
     public static func live() -> AppDependencies {
         AppDependencies(serverProbe: ServerProbe(), configuration: PreferencesStore(),
@@ -41,10 +47,16 @@ public struct AppDependencies: Sendable {
     public private(set) var connectionError: ConnectionError?
     public var notice: String?
     public let identity: IdentityModel
+    public private(set) var guestConference: ConferenceSession?
+    public private(set) var guestBusy = false
+    public var guestError: String?
+    public var activeConference: ConferenceSession? { guestConference ?? identity.conferences?.call }
     @ObservationIgnored private let dependencies: AppDependencies
     @ObservationIgnored private var probeTask: Task<Void, Never>?
     @ObservationIgnored private var probeGeneration = UUID()
     @ObservationIgnored private var preferenceTask: Task<Void, Never>?
+    @ObservationIgnored private var guestGeneration = UUID()
+    @ObservationIgnored private var departingGuest: ConferenceSession?
 
     public enum ConnectionError: Equatable { case invalidURL, offline, timeout, tls, redirect, incompatible, storage }
 
@@ -68,6 +80,47 @@ public struct AppDependencies: Sendable {
         onboarding = screen
     }
     public func sessionEnded() { cancelProbe(); onboarding = .login }
+
+    public func joinGuest(server: String, invitation: String, name: String) async -> Bool {
+        guard !guestBusy, !identity.busy, identity.messaging == nil, guestConference == nil else { return false }
+        let epoch = UUID(); guestGeneration = epoch
+        guestBusy = true; guestError = nil; defer { guestBusy = false }
+        do {
+            if let departingGuest {
+                guard await departingGuest.awaitDeparture() else {
+                    guestError = "Сервер не подтвердил предыдущий выход. Повторный вход пока недоступен."
+                    return false
+                }
+                self.departingGuest = nil
+            }
+            let origin = try ServerOrigin(server)
+            let code = try ConferenceInviteGateway.inviteCode(from: invitation, origin: origin)
+            let gateway = ConferenceInviteGateway(origin: origin, transport: dependencies.transport())
+            let invite = try await gateway.lookup(code: code)
+            guard guestGeneration == epoch, identity.messaging == nil, !identity.busy else { return false }
+            let guest = try await gateway.guestJoin(code: code, displayName: name)
+            let repository = ConferenceRepository(origin: origin, guest: guest, transport: dependencies.transport())
+            guard guestGeneration == epoch, identity.messaging == nil, !identity.busy else {
+                _ = try? await repository.leave(guest.conferenceID); return false
+            }
+            guestConference = ConferenceSession(repository: repository, title: invite.title, participant: guest.participant,
+                sockets: dependencies.conferenceSockets, makeMedia: dependencies.media)
+            guestConference?.observeLobby()
+            return true
+        } catch { guestError = userMessage(error); return false }
+    }
+    public func dismissConference() async {
+        if let guestConference {
+            await guestConference.leave(); departingGuest = guestConference; self.guestConference = nil
+        } else { await identity.conferences?.dismissCall() }
+    }
+    public func identityChanged() {
+        guestGeneration = UUID()
+        if identity.messaging != nil, let guestConference {
+            Task { await guestConference.leave() }
+            self.guestConference = nil
+        }
+    }
 
     public func addressChanged() {
         cancelProbe()

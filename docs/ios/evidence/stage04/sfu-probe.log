@@ -1,0 +1,4 @@
+PASS synthetic SFU policy: publishing a moderator-blocked camera was rejected
+PASS synthetic SFU cycle 1: both peers received Opus and VP8 RTP; negotiations=2/2; local workers released
+PASS synthetic SFU cycle 2: both peers received Opus and VP8 RTP; negotiations=2/2; local workers released
+PASS synthetic SFU cycle 3: both peers received Opus and VP8 RTP; negotiations=2/2; local workers released

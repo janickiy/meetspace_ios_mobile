@@ -22,14 +22,19 @@ public struct MeetSpaceRootView: View {
             restored = true; await model.restore()
         }
         .onChange(of: scenePhase) { _, phase in
-            Task { await model.identity.messaging?.setForeground(phase == .active) }
+            Task {
+                await model.identity.messaging?.setForeground(phase == .active)
+                await model.activeConference?.setForeground(phase != .background)
+            }
         }
         .onChange(of: model.identity.messaging?.account.id) { _, _ in
+            model.identityChanged()
             model.meetingsPath = []; model.messagesPath = []; model.profilePath = []
             if let account = model.identity.messaging?.account {
                 model.configuration.server = account.server; model.tab = .messages
             } else { model.sessionEnded() }
         }
+        .conferencePresentation(model: model)
         .alert(tr("MeetSpace"), isPresented: Binding(get: { model.notice != nil }, set: { if !$0 { model.notice = nil } })) {
             Button(tr("Понятно"), role: .cancel) { model.notice = nil }
         } message: { Text(tr(model.notice ?? "")) }
@@ -80,6 +85,7 @@ private struct WelcomeView: View {
     @Bindable var model: AppModel
     let showArtwork: Bool
     @Environment(\.dynamicTypeSize) private var typeSize
+    @State private var guestForm = false
     var body: some View {
         VStack(alignment: .leading, spacing: 20) {
             Text(tr("ЕДИНОЕ ПРОСТРАНСТВО")).font(MSTheme.font(10, weight: .semibold, relativeTo: .caption)).tracking(2).foregroundStyle(MSTheme.accent)
@@ -98,6 +104,9 @@ private struct WelcomeView: View {
                 .font(MSTheme.font(13, weight: .semibold)).frame(maxWidth: .infinity, minHeight: 44)
                 .contentShape(Rectangle())
                 .accessibilityIdentifier("openDemo")
+            Button(tr("Войти как гость")) { guestForm = true }
+                .frame(maxWidth: .infinity, minHeight: 44).accessibilityIdentifier("guestConference")
+                .sheet(isPresented: $guestForm) { GuestConferenceForm(app: model, completed: { guestForm = false }) }
         }
     }
     private func connectionChoice(_ title: String, subtitle: String, icon: String, primary: Bool, action: @escaping () -> Void) -> some View {

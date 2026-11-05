@@ -1,10 +1,12 @@
 import SwiftUI
 import MeetSpaceCore
 import MeetSpaceDesignSystem
+import MeetSpaceMedia
 
 struct LiveProfileView: View {
     @Bindable var app: AppModel
     @State private var removing: AccountRecord?
+    @State private var licenses = false
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 24) {
@@ -50,8 +52,16 @@ struct LiveProfileView: View {
                 if app.identity.busy { ProgressView() }
                 if let error = app.identity.error { Text(tr(error)).foregroundStyle(MSTheme.danger) }
                 if let information = app.identity.information { Text(tr(information)).foregroundStyle(MSTheme.muted) }
+                Button(tr("Лицензии компонентов")) { licenses = true }
             }.padding(24).frame(maxWidth: 720).frame(maxWidth: .infinity)
         }.background(MSTheme.background).disabled(app.identity.busy)
+            .sheet(isPresented: $licenses) {
+                NavigationStack {
+                    ScrollView { Text(WebRTCLibrary.licenseText).font(.system(size: 11, design: .monospaced)).textSelection(.enabled).padding() }
+                        .navigationTitle(tr("Лицензии компонентов"))
+                        .toolbar { ToolbarItem(placement: .confirmationAction) { Button(tr("Готово")) { licenses = false } } }
+                }
+            }
             .confirmationDialog(tr("Выйти из аккаунта на этом устройстве?"), isPresented: Binding(get: { removing != nil }, set: { if !$0 { removing = nil } })) {
                 Button(tr("Выйти"), role: .destructive) {
                     if let account = removing { Task { await app.identity.logout(account) } }; removing = nil

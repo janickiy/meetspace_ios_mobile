@@ -1,0 +1,2 @@
+# Preserve upstream legal notices byte-for-byte, including their original whitespace.
+Packages/MeetSpaceKit/Sources/Media/Resources/* -whitespace

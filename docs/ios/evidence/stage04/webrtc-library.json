@@ -1,0 +1,39 @@
+{
+  "verifiedAt": "2026-11-05",
+  "package": "https://github.com/stasel/WebRTC.git",
+  "version": "156.0.0",
+  "release": "https://github.com/stasel/WebRTC/releases/tag/156.0.0",
+  "upstreamCommit": "2a990ce0ccd00a3ad449f2201a8e5c2dad53177d",
+  "upstreamBranch": "branch-heads/8078",
+  "artifactURL": "https://github.com/stasel/WebRTC/releases/download/156.0.0/WebRTC-M156.xcframework.zip",
+  "artifactSHA256": "43c2a6f7a650185bbc911d7605a979589671886e8fc0ac283f54fdf3f511dc46",
+  "downloadedArtifactHashVerified": true,
+  "distributorSignatures": {
+    "iosDeviceFramework": "unsigned",
+    "iosSimulatorFramework": "ad-hoc; no TeamIdentifier",
+    "appStoreArchiveValidation": "not performed; validate signing and SDK requirements before distribution"
+  },
+  "license": "BSD-3-Clause",
+  "licenseSHA256": "ab00a482b6a3902e40211b43c5d0441962ea99b6cc7c25c0f243fa270b78d482",
+  "licenseSource": "https://webrtc.org/support/license",
+  "thirdPartyNoticeLimit": "Bundled supplemental notices include 34 pinned native dependency license texts plus five referenced notices (IJG/patents/authors). Exact binary GN dependency graph is not published by the distributor; verify completeness against the build before App Store distribution.",
+  "privacyManifest": {
+    "NSPrivacyAccessedAPICategorySystemBootTime": [
+      "35F9.1",
+      "8FFB.1"
+    ],
+    "NSPrivacyAccessedAPICategoryFileTimestamp": [
+      "C617.1"
+    ],
+    "tracking": false
+  },
+  "iosSlices": [
+    "arm64 device",
+    "arm64+x86_64 simulator"
+  ],
+  "swift6HostProbe": "PASS: actual M156 macOS binary; 10 NativePeer create/offer/close cycles, 16 transceivers for maxPeers=4, two explicitly enabled publications with exact SDP msid trackId/mediaPeerID, Opus+VP8 only; closed peers reject offer. No physical capture or deployment TLS was exercised.",
+  "swift6NativeAdapterTypecheck": "PASS: complete Media module typechecked against the actual M156 Mac Catalyst slice and Apple's UIKit/AVFoundation headers. Runtime iOS and device checks are separate.",
+  "loggingVerification": "PASS: default SDK stderr remained empty across 10 native peer cycles. The M156 legacy RTCSetMinDebugLogLevel wrapper enables stderr even for .none, so production does not call it or install file/callback log sinks.",
+  "iosDeviceMedia": "BLOCKED: no physical device/signing deployment in this session",
+  "peerSourceSHA256": "6c544791c08c5480cd16ec273043dff828473120d597da7933a9f6afbef9d2fb"
+}

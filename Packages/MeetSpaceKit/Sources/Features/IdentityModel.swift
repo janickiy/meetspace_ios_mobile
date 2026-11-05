@@ -8,6 +8,7 @@ import MeetSpaceStorage
 @MainActor @Observable public final class IdentityModel {
     public private(set) var index = AccountIndex()
     public private(set) var messaging: MessagingModel?
+    public private(set) var conferences: ConferenceWorkspace?
     public private(set) var busy = false
     public var addingAccount = false
     public var error: String?
@@ -83,6 +84,7 @@ import MeetSpaceStorage
             if active {
                 epoch = UUID(); sessionEvents?.cancel(); sessionEvents = nil
                 target = messaging?.client
+                await conferences?.close(); conferences = nil
                 await messaging?.close(); messaging = nil
             } else if let data = try await dependencies.credentials.read(account.key) {
                 target = client(account, credentials: try WireJSON.decoder().decode(SessionCredentials.self, from: data).validated())
@@ -128,11 +130,14 @@ import MeetSpaceStorage
         epoch = UUID(); let current = epoch
         sessionEvents?.cancel()
         if let previous = messaging {
+            await conferences?.close(); conferences = nil
             await previous.close()
             _ = try? await previous.client.close()
         }
         let workspace = MessagingModel(client: client, downloads: dependencies.transport(), sockets: dependencies.sockets)
         messaging = workspace; addingAccount = false
+        conferences = ConferenceWorkspace(repository: ConferenceRepository(client: client),
+            sockets: dependencies.conferenceSockets, makeMedia: dependencies.media)
         sessionEvents = Task { [weak self] in
             for await _ in client.events {
                 guard let self else { return }
@@ -142,6 +147,7 @@ import MeetSpaceStorage
                 }
                 guard !Task.isCancelled, self.epoch == current else { return }
                 self.busy = true
+                await self.conferences?.close(); self.conferences = nil
                 await workspace.close(); _ = try? await client.close()
                 self.messaging = nil; self.addingAccount = false
                 do {

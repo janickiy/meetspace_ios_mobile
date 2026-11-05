@@ -1,0 +1,245 @@
+{
+  "upstreamCommit": "2a990ce0ccd00a3ad449f2201a8e5c2dad53177d",
+  "selection": "Native (non-Android/non-Java) entries of the pinned tools_webrtc/libs/generate_licenses.py mapping; conservative superset, not an exact GN target dependency report.",
+  "omittedStaleMapping": {
+    "base64": "rtc_base/third_party/base64/LICENSE and rtc_base/third_party directory do not exist in the pinned revision."
+  },
+  "graphVerification": "The distributor publishes no GN dependency graph or generated license report; exact binary-to-source dependency completeness remains a release verification item.",
+  "bundleSHA256": "00c3ff0f731837f3c9a2868d1244c2a639b6512fad05294911d2d9a49b635b6e",
+  "entries": [
+    {
+      "name": "abseil-cpp",
+      "path": "third_party/abseil-cpp/LICENSE",
+      "url": "https://chromium.googlesource.com/chromium/src/third_party/+/6eabe54fa10922ba0d3f9a8e5a01055d371ebaf7/abseil-cpp/LICENSE?format=TEXT",
+      "sha256": "c79a7fea0e3cac04cd43f20e7b648e5a0ff8fa5344e644b0ee09ca1162b62747"
+    },
+    {
+      "name": "boringssl",
+      "path": "third_party/boringssl/src/LICENSE",
+      "url": "https://boringssl.googlesource.com/boringssl.git/+/5fbad2285b096858fc9afa3e4c949fde39452070/LICENSE?format=TEXT",
+      "sha256": "827c8d8fc207c2392794eef9e00fe246f9f61fdcc132556c275be3dd8c3cd97f"
+    },
+    {
+      "name": "crc32c",
+      "path": "third_party/crc32c/src/LICENSE",
+      "url": "https://chromium.googlesource.com/external/github.com/google/crc32c.git/+/2bbb3be42e20a0e6c0f7b39dc07dc863d9ffbc07/LICENSE?format=TEXT",
+      "sha256": "a1f30b77c01e0995fa32a00119e00749e8731ee8a3c4c3549bce74083c72b0b6"
+    },
+    {
+      "name": "compiler-rt",
+      "path": "third_party/compiler-rt/src/LICENSE.TXT",
+      "url": "https://chromium.googlesource.com/external/github.com/llvm/llvm-project/compiler-rt.git/+/5296d7a681a50c1ada10faf4b88b5613edb40d4d/LICENSE.TXT?format=TEXT",
+      "sha256": "1a8f1058753f1ba890de984e48f0242a3a5c29a6a8f2ed9fd813f36985387e8d"
+    },
+    {
+      "name": "cpu_features",
+      "path": "third_party/cpu_features/src/LICENSE",
+      "url": "https://chromium.googlesource.com/external/github.com/google/cpu_features.git/+/81d13c49649f0714dd41fb56bb246398b6584085/LICENSE?format=TEXT",
+      "sha256": "af272c1b4dd08dd61d43e001d3134119d03ca7a2b057a64f7355fdf27fbea3dd"
+    },
+    {
+      "name": "dav1d",
+      "path": "third_party/dav1d/LICENSE",
+      "url": "https://chromium.googlesource.com/chromium/src/third_party/+/6eabe54fa10922ba0d3f9a8e5a01055d371ebaf7/dav1d/LICENSE?format=TEXT",
+      "sha256": "2da4494d2a8b5c742afbb905b10621e40129284c977ac138e3081ed0d9d83aed"
+    },
+    {
+      "name": "fiat",
+      "path": "third_party/boringssl/src/third_party/fiat/LICENSE",
+      "url": "https://boringssl.googlesource.com/boringssl.git/+/5fbad2285b096858fc9afa3e4c949fde39452070/third_party/fiat/LICENSE?format=TEXT",
+      "sha256": "9eacbcb81be660840c714a560a9d65ba07913db98dd4baf969f78dd499fdd60f"
+    },
+    {
+      "name": "jsoncpp",
+      "path": "third_party/jsoncpp/LICENSE",
+      "url": "https://chromium.googlesource.com/chromium/src/third_party/+/6eabe54fa10922ba0d3f9a8e5a01055d371ebaf7/jsoncpp/LICENSE?format=TEXT",
+      "sha256": "76c45ece83a26117f86f4e349e7df118708e061e87225328fb478ce1e8b3eb86"
+    },
+    {
+      "name": "libaom",
+      "path": "third_party/libaom/source/libaom/LICENSE",
+      "url": "https://aomedia.googlesource.com/aom.git/+/7b6197cb8fdc1ce555a03d23a9d25242c61d38e6/LICENSE?format=TEXT",
+      "sha256": "4764a286d8b2faeaf42f4418e7d7a28d58fc8fd4d00a3d0a7f44b0a4099de7f2"
+    },
+    {
+      "name": "libc++",
+      "path": "third_party/libc++/src/LICENSE.TXT",
+      "url": "https://chromium.googlesource.com/external/github.com/llvm/llvm-project/libcxx.git/+/97b436da4c33663581d394f4ee0a5977fc38c2f4/LICENSE.TXT?format=TEXT",
+      "sha256": "539dd7aed86e8a4f12cbdd0e6c50c189c7d74847e4fecc64ce2c6ee3a01da38b"
+    },
+    {
+      "name": "libc++abi",
+      "path": "third_party/libc++abi/src/LICENSE.TXT",
+      "url": "https://chromium.googlesource.com/external/github.com/llvm/llvm-project/libcxxabi.git/+/136b7ca4a0a837995584e728758a07a502dd4a08/LICENSE.TXT?format=TEXT",
+      "sha256": "e2b35be49f7284a45b7baca8fc7b3ab7440e7902392b2528a457816b5bb2a15c"
+    },
+    {
+      "name": "libjpeg_turbo",
+      "path": "third_party/libjpeg_turbo/LICENSE.md",
+      "url": "https://chromium.googlesource.com/chromium/deps/libjpeg_turbo.git/+/640f254ad0fa03f6b1f29f89b7dd9366f2f6e533/LICENSE.md?format=TEXT",
+      "sha256": "96f5b328adbb78eeaaec6980d73fd558cb1e4d62560ed615646bc3cf5e532430"
+    },
+    {
+      "name": "libsrtp",
+      "path": "third_party/libsrtp/LICENSE",
+      "url": "https://chromium.googlesource.com/chromium/deps/libsrtp.git/+/cd5d177bf1fde755ddb4c7f0d9ff7693f8b49e5e/LICENSE?format=TEXT",
+      "sha256": "8e19d42a1eec9561f3f347253ddf2e385c55f392f025bb0fd41b88dbf38db5ae"
+    },
+    {
+      "name": "libunwind",
+      "path": "third_party/libunwind/src/LICENSE.TXT",
+      "url": "https://chromium.googlesource.com/external/github.com/llvm/llvm-project/libunwind.git/+/ac5dcbe905e60d730bff7c5a11667571f3d0bca5/LICENSE.TXT?format=TEXT",
+      "sha256": "b5efebcaca80879234098e52d1725e6d9eb8fb96a19fce625d39184b705f7b6d"
+    },
+    {
+      "name": "libvpx",
+      "path": "third_party/libvpx/source/libvpx/LICENSE",
+      "url": "https://chromium.googlesource.com/webm/libvpx.git/+/5e680f30801d03c21078f8c4b772464752516211/LICENSE?format=TEXT",
+      "sha256": "8267348d5af1262c11d1a08de2f5afc77457755f1ac658627dd9acf71011d615"
+    },
+    {
+      "name": "libyuv",
+      "path": "third_party/libyuv/LICENSE",
+      "url": "https://chromium.googlesource.com/libyuv/libyuv.git/+/41a6e684a68950f07912b7e6f57ba3fa2e10fb65/LICENSE?format=TEXT",
+      "sha256": "2b2cc1180c7e6988328ad2033b04b80117419db9c4c584918bbb3cfec7e9364f"
+    },
+    {
+      "name": "llvm-libc",
+      "path": "third_party/llvm-libc/src/LICENSE.TXT",
+      "url": "https://chromium.googlesource.com/external/github.com/llvm/llvm-project/libc.git/+/ffb2c561c35da92f5f7b11c1b6934de43ba2baac/LICENSE.TXT?format=TEXT",
+      "sha256": "ebcd9bbf783a73d05c53ba4d586b8d5813dcdf3bbec50265860ccc885e606f47"
+    },
+    {
+      "name": "opus",
+      "path": "third_party/opus/src/COPYING",
+      "url": "https://chromium.googlesource.com/chromium/src/third_party/+/6eabe54fa10922ba0d3f9a8e5a01055d371ebaf7/opus/src/COPYING?format=TEXT",
+      "sha256": "01e1167d54a096d123cf6dfbbeb19587278845c6481d2d66d545669846079551"
+    },
+    {
+      "name": "pffft",
+      "path": "third_party/pffft/LICENSE",
+      "url": "https://chromium.googlesource.com/chromium/src/third_party/+/6eabe54fa10922ba0d3f9a8e5a01055d371ebaf7/pffft/LICENSE?format=TEXT",
+      "sha256": "a46200592eb193853527250da098e6bb0c75424e7a2c7db8da526c4f301c3d88"
+    },
+    {
+      "name": "protobuf",
+      "path": "third_party/protobuf/LICENSE",
+      "url": "https://chromium.googlesource.com/chromium/src/third_party/+/6eabe54fa10922ba0d3f9a8e5a01055d371ebaf7/protobuf/LICENSE?format=TEXT",
+      "sha256": "6e5e117324afd944dcf67f36cf329843bc1a92229a8cd9bb573d7a83130fea7d"
+    },
+    {
+      "name": "rnnoise",
+      "path": "third_party/rnnoise/COPYING",
+      "url": "https://chromium.googlesource.com/chromium/src/third_party/+/6eabe54fa10922ba0d3f9a8e5a01055d371ebaf7/rnnoise/COPYING?format=TEXT",
+      "sha256": "e2f59ff41d9d03adc3dcf3deff170f8c8cf4a6eb4a9b174762a7656d23200ffa"
+    },
+    {
+      "name": "sframe",
+      "path": "third_party/sframe/src/LICENSE",
+      "url": "https://chromium.googlesource.com/external/github.com/cisco/sframe/+/db604c8f1960dc2047f1d708d521b28dba058dc9/LICENSE?format=TEXT",
+      "sha256": "55942e3b6ebf4df940d32e2fc8ce7ba59cdd4b32babcf479c1a9b5bb45bbad40"
+    },
+    {
+      "name": "webrtc",
+      "path": "LICENSE",
+      "url": "https://webrtc.googlesource.com/src/+/2a990ce0ccd00a3ad449f2201a8e5c2dad53177d/LICENSE?format=TEXT",
+      "sha256": "ab00a482b6a3902e40211b43c5d0441962ea99b6cc7c25c0f243fa270b78d482"
+    },
+    {
+      "name": "zlib",
+      "path": "third_party/zlib/LICENSE",
+      "url": "https://chromium.googlesource.com/chromium/src/third_party/+/6eabe54fa10922ba0d3f9a8e5a01055d371ebaf7/zlib/LICENSE?format=TEXT",
+      "sha256": "e32ff4e00d9d94930537635291da39e7e612703334bf6fde8c7f1686fe8a45a2"
+    },
+    {
+      "name": "fft",
+      "path": "modules/third_party/fft/LICENSE",
+      "url": "https://webrtc.googlesource.com/src/+/2a990ce0ccd00a3ad449f2201a8e5c2dad53177d/modules/third_party/fft/LICENSE?format=TEXT",
+      "sha256": "6fdbabd2c95c5efc6f1e46175278239afb9343120a3022ed0e0cb04267a6aeb3"
+    },
+    {
+      "name": "g711",
+      "path": "modules/third_party/g711/LICENSE",
+      "url": "https://webrtc.googlesource.com/src/+/2a990ce0ccd00a3ad449f2201a8e5c2dad53177d/modules/third_party/g711/LICENSE?format=TEXT",
+      "sha256": "b29c8f13f91feb2dab7d6655444369fa9f29c0d7121a52dab90ff97e40343a85"
+    },
+    {
+      "name": "g722",
+      "path": "modules/third_party/g722/LICENSE",
+      "url": "https://webrtc.googlesource.com/src/+/2a990ce0ccd00a3ad449f2201a8e5c2dad53177d/modules/third_party/g722/LICENSE?format=TEXT",
+      "sha256": "61862327fd00d6a4deb2c1276577782c2500f4fe103e072018fc369d8e37e876"
+    },
+    {
+      "name": "ooura",
+      "path": "common_audio/third_party/ooura/LICENSE",
+      "url": "https://webrtc.googlesource.com/src/+/2a990ce0ccd00a3ad449f2201a8e5c2dad53177d/common_audio/third_party/ooura/LICENSE?format=TEXT",
+      "sha256": "25b7731b70c77ecd5f3bb19303fbaa99be18860f81d44f71da670fdcd04829db"
+    },
+    {
+      "name": "spl_sqrt_floor",
+      "path": "common_audio/third_party/spl_sqrt_floor/LICENSE",
+      "url": "https://webrtc.googlesource.com/src/+/2a990ce0ccd00a3ad449f2201a8e5c2dad53177d/common_audio/third_party/spl_sqrt_floor/LICENSE?format=TEXT",
+      "sha256": "41d791701e3e1c1073470403de7e342442d1e6a2af72681023b13a2f45f2125c"
+    },
+    {
+      "name": "perfetto",
+      "path": "third_party/perfetto/LICENSE",
+      "url": "https://chromium.googlesource.com/external/github.com/google/perfetto.git/+/f6966cacc016c3dfddfbc74b74c77867e03f8d7a/LICENSE?format=TEXT",
+      "sha256": "9b569417be9f195f8ffa709a23836c4e0f880b2752b09653baa8a98d3b02db3a"
+    },
+    {
+      "name": "rust/cxx/v1",
+      "path": "third_party/rust/chromium_crates_io/vendor/cxx-v1/LICENSE-APACHE",
+      "url": "https://chromium.googlesource.com/chromium/src/third_party/+/6eabe54fa10922ba0d3f9a8e5a01055d371ebaf7/rust/chromium_crates_io/vendor/cxx-v1/LICENSE-APACHE?format=TEXT",
+      "sha256": "62c7a1e35f56406896d7aa7ca52d0cc0d272ac022b5d2796e7d6905db8a3636a"
+    },
+    {
+      "name": "rust/foldhash/v0_2",
+      "path": "third_party/rust/chromium_crates_io/vendor/foldhash-v0_2/LICENSE",
+      "url": "https://chromium.googlesource.com/chromium/src/third_party/+/6eabe54fa10922ba0d3f9a8e5a01055d371ebaf7/rust/chromium_crates_io/vendor/foldhash-v0_2/LICENSE?format=TEXT",
+      "sha256": "b1181a40b2a7b25cf66fd01481713bc1005df082c53ef73e851e55071b102744"
+    },
+    {
+      "name": "rust_stdlib",
+      "path": "rust-toolchain/Apache-2.0.txt",
+      "url": "https://raw.githubusercontent.com/rust-lang/rust/1edd55dcfcd573872c727fa3e086369a71661ee0/LICENSE-APACHE",
+      "sha256": "62c7a1e35f56406896d7aa7ca52d0cc0d272ac022b5d2796e7d6905db8a3636a"
+    },
+    {
+      "name": "rust_stdlib",
+      "path": "rust-toolchain/MIT.txt",
+      "url": "https://raw.githubusercontent.com/rust-lang/rust/1edd55dcfcd573872c727fa3e086369a71661ee0/LICENSE-MIT",
+      "sha256": "b71bd43a069ca0641a9ecfe585ca7b3c53b5cc1608f8b68321168698e28b5ea1"
+    },
+    {
+      "name": "fiat",
+      "path": "AUTHORS",
+      "url": "https://boringssl.googlesource.com/boringssl.git/+/5fbad2285b096858fc9afa3e4c949fde39452070/third_party/fiat/AUTHORS?format=TEXT",
+      "sha256": "ad74c036a6afaedc418fed65f171c877c2f74a4c70938a03930aa11c98a20508"
+    },
+    {
+      "name": "libaom",
+      "path": "PATENTS",
+      "url": "https://aomedia.googlesource.com/aom.git/+/7b6197cb8fdc1ce555a03d23a9d25242c61d38e6/PATENTS?format=TEXT",
+      "sha256": "661fb8e504744e95587b556b94a58343448300606a41bea8c7a9b97125696e61"
+    },
+    {
+      "name": "libjpeg_turbo",
+      "path": "README.ijg",
+      "url": "https://chromium.googlesource.com/chromium/deps/libjpeg_turbo.git/+/640f254ad0fa03f6b1f29f89b7dd9366f2f6e533/README.ijg?format=TEXT",
+      "sha256": "75815e3bf6484201a3c3d17a1bbf10f2e8e3237f84df10a2357ea896db2a81d6"
+    },
+    {
+      "name": "libvpx",
+      "path": "PATENTS",
+      "url": "https://chromium.googlesource.com/webm/libvpx.git/+/5e680f30801d03c21078f8c4b772464752516211/PATENTS?format=TEXT",
+      "sha256": "cc3273e0694ea5896145e0677699b53471b03ea43021ddc50e7923fbb9f5023c"
+    },
+    {
+      "name": "libyuv",
+      "path": "PATENTS",
+      "url": "https://chromium.googlesource.com/libyuv/libyuv.git/+/41a6e684a68950f07912b7e6f57ba3fa2e10fb65/PATENTS?format=TEXT",
+      "sha256": "4da84211f947c6f9f7dd8fbce513e1522e01833407ae732b8c9a2bbb75fed495"
+    }
+  ]
+}

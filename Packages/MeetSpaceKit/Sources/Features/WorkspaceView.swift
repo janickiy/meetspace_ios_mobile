@@ -19,7 +19,7 @@ struct WorkspaceView: View {
             TabView(selection: $model.tab) {
                 stack(tab: .meetings, path: $model.meetingsPath) {
                     if model.isDemo { MeetingsView(model: model) }
-                    else { ContentUnavailableView(tr("Встречи"), systemImage: "video", description: Text(tr("Встречи будут подключены на следующем этапе."))) }
+                    else if let meetings = model.identity.conferences { LiveMeetingsView(model: meetings) }
                 }
                 stack(tab: .messages, path: $model.messagesPath) {
                     if let messaging = model.identity.messaging, !model.isDemo { LiveMessagesView(app: model, model: messaging) }

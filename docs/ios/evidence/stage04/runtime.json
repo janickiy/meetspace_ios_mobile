@@ -1,0 +1,14 @@
+{
+  "backendCommit": "0bd1248a2411842515af4e02f1e95821616748fb",
+  "images": {
+    "postgres": "sha256:742f40ea20b9ff2ff31db5458d127452988a2164df9e17441e191f3b72252193",
+    "redis": "sha256:e7723ff73d963f5cc6d9c4643ea3d989527a402a319239054e9472a7fb9219a2",
+    "minio": "sha256:b77a54e06b9c7e8f05cfd3873675644f094302bacd3aa7588a92ca30f44a2ee1",
+    "rabbitmq": "sha256:bda54cf7b1dc13aff98091ef8c99d59ca37c396b38eef1b21232f533136ba0ec",
+    "mediaworker": "sha256:5291449c3df73caf6ed85e649dec1b9e818b39a5d8c871e97afc13e9cd5e8fa8",
+    "api": "sha256:5291449c3df73caf6ed85e649dec1b9e818b39a5d8c871e97afc13e9cd5e8fa8"
+  },
+  "result": 0,
+  "swiftContractExecuted": true,
+  "transport": "test-only loopback HTTP/WS adapter; production requires HTTPS/WSS"
+}
