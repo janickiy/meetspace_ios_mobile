@@ -1,4 +1,7 @@
 .DS_Store
+artifacts/
+*.xcresult
+__pycache__/
 .build/
 DerivedData/
 *.xcuserstate
@@ -6,5 +9,4 @@ xcuserdata/
 .env
 .env.*
 !.env.example
-__pycache__/
 *.pyc

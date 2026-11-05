@@ -1,0 +1,98 @@
+Building for debugging...
+[Using on-disk description]
+[6 / 46]
+[8 / 48] MeetSpaceCore
+[11 / 50] MeetSpaceCore
+[18 / 68] MeetSpaceAPI
+[32 / 51] MeetSpaceDesignSystem
+[44 / 60] MeetSpaceFeatures
+[49 / 58] MeetSpaceFeatures
+[51 / 59] MeetSpaceFeatures
+<repository>/Packages/MeetSpaceKit/Package.swift: MeetSpaceFeatures: ld: warning: search path '/Library/Developer/CommandLineTools/Developer/Library/Frameworks' not found
+[54 / 62] MeetSpaceFeatures
+[57 / 63] FeaturesTests-product
+[60 / 62] FoundationPreviewRenderer-product<repository>/Packages/MeetSpaceKit/Package.swift: FoundationPreviewRenderer-product: ld: warning: search path '/Library/Developer/CommandLineTools/Developer/usr/lib' not found
+<repository>/Packages/MeetSpaceKit/Package.swift: FoundationPreviewRenderer-product: ld: warning: search path '/Library/Developer/CommandLineTools/Developer/Library/Frameworks' not found
+
+<repository>/Packages/MeetSpaceKit/Package.swift: FeaturesTests-product: ld: warning: search path '/Library/Developer/CommandLineTools/Developer/usr/lib' not found
+<repository>/Packages/MeetSpaceKit/Package.swift: FeaturesTests-product: ld: warning: search path '/Library/Developer/CommandLineTools/Developer/Library/Frameworks' not found
+[62 / 63] FeaturesTests-product
+Build complete! (2,08 с)
+◇ Test run started.
+↳ Testing Library Version: 2084
+↳ Target Platform: arm64e-apple-macos14.0
+◇ Test corruptedConfigurationIsReported() started.
+◇ Test preferencesRoundTripOnlyPublicConfiguration() started.
+✔ Test preferencesRoundTripOnlyPublicConfiguration() passed after 0.002 seconds.
+✔ Test corruptedConfigurationIsReported() passed after 0.003 seconds.
+✔ Test run with 2 tests in 0 suites passed after 0.003 seconds.
+◇ Test run started.
+↳ Testing Library Version: 2084
+↳ Target Platform: arm64e-apple-macos14.0
+◇ Test staleResponseCannotReplaceNewServer() started.
+◇ Test successfulCheckPersistsOriginBeforeLogin() started.
+◇ Test offlineIsDistinctAndRetryCanSucceed() started.
+◇ Test invalidAddressNeverStartsRequestOrAdvances() started.
+◇ Test leavingConnectionCancelsPendingCheck() started.
+◇ Test tabsPreserveIndependentPathsAndDemoExitClearsThem() started.
+✔ Test tabsPreserveIndependentPathsAndDemoExitClearsThem() passed after 0.001 seconds.
+✔ Test invalidAddressNeverStartsRequestOrAdvances() passed after 0.001 seconds.
+✔ Test leavingConnectionCancelsPendingCheck() passed after 0.006 seconds.
+✔ Test successfulCheckPersistsOriginBeforeLogin() passed after 0.007 seconds.
+✔ Test offlineIsDistinctAndRetryCanSucceed() passed after 0.013 seconds.
+✔ Test staleResponseCannotReplaceNewServer() passed after 0.013 seconds.
+✔ Test run with 6 tests in 0 suites passed after 0.013 seconds.
+◇ Test run started.
+↳ Testing Library Version: 2084
+↳ Target Platform: arm64e-apple-macos14.0
+◇ Test rejectsUnsafeOrigins(_:) started.
+◇ Test decodeCannotBypassValidation() started.
+◇ Test credentialsAreScopedByServerAndAccount() started.
+◇ Test realtimeUsesAuditedPathsAndEncodesTicket() started.
+◇ Test normalizesOriginAndPreservesCustomPort() started.
+◇ Test case passing 1 argument input → "meet.example" to rejectsUnsafeOrigins(_:) started.
+◇ Test case passing 1 argument input → "https://user:pass@meet.example" to rejectsUnsafeOrigins(_:) started.
+◇ Test case passing 1 argument input → "http://meet.example" to rejectsUnsafeOrigins(_:) started.
+◇ Test case passing 1 argument input → "https://meet.example?ticket=secret" to rejectsUnsafeOrigins(_:) started.
+◇ Test case passing 1 argument input → "https://meet.example/api" to rejectsUnsafeOrigins(_:) started.
+◇ Test case passing 1 argument input → "https://meet.example/#secret" to rejectsUnsafeOrigins(_:) started.
+◇ Test case passing 1 argument input → "https://meet.example:0" to rejectsUnsafeOrigins(_:) started.
+◇ Test case passing 1 argument input → "https://meet.example:65536" to rejectsUnsafeOrigins(_:) started.
+◇ Test case passing 1 argument input → "https://meet.example\evil" to rejectsUnsafeOrigins(_:) started.
+◇ Test case passing 1 argument input → "https://meet.example/a/.." to rejectsUnsafeOrigins(_:) started.
+◇ Test case passing 1 argument input → "https://meet.%65xample" to rejectsUnsafeOrigins(_:) started.
+◇ Test case passing 1 argument input → "https://meet. example" to rejectsUnsafeOrigins(_:) started.
+◇ Test case passing 1 argument input → "https://" to rejectsUnsafeOrigins(_:) started.
+✔ Test credentialsAreScopedByServerAndAccount() passed after 0.001 seconds.
+✔ Test realtimeUsesAuditedPathsAndEncodesTicket() passed after 0.001 seconds.
+◇ Test case passing 1 argument input → "" to rejectsUnsafeOrigins(_:) started.
+✔ Test normalizesOriginAndPreservesCustomPort() passed after 0.001 seconds.
+✔ Test decodeCannotBypassValidation() passed after 0.001 seconds.
+✔ Test rejectsUnsafeOrigins(_:) with 14 test cases passed after 0.001 seconds.
+✔ Test run with 5 tests in 0 suites passed after 0.001 seconds.
+◇ Test run started.
+↳ Testing Library Version: 2084
+↳ Target Platform: arm64e-apple-macos14.0
+◇ Test preservesHTTPStatus(_:) started.
+◇ Test probesOnlyPublicVersionEndpoint() started.
+◇ Test rejectsHTMLContentTypeAndLargeResponse() started.
+◇ Test redirectsAreNotAccepted(_:) started.
+◇ Test rejectsMalformedVersion(_:) started.
+◇ Test case passing 1 argument status → 401 to preservesHTTPStatus(_:) started.
+◇ Test case passing 1 argument status → 403 to preservesHTTPStatus(_:) started.
+◇ Test case passing 1 argument status → 404 to preservesHTTPStatus(_:) started.
+◇ Test case passing 1 argument status → 301 to redirectsAreNotAccepted(_:) started.
+◇ Test case passing 1 argument status → 307 to redirectsAreNotAccepted(_:) started.
+◇ Test case passing 1 argument status → 429 to preservesHTTPStatus(_:) started.
+◇ Test case passing 1 argument status → 500 to preservesHTTPStatus(_:) started.
+◇ Test case passing 1 argument status → 302 to redirectsAreNotAccepted(_:) started.
+◇ Test case passing 1 argument status → 308 to redirectsAreNotAccepted(_:) started.
+◇ Test case passing 1 argument body → "<html>proxy login</html>" to rejectsMalformedVersion(_:) started.
+◇ Test case passing 1 argument body → "{}" to rejectsMalformedVersion(_:) started.
+◇ Test case passing 1 argument body → "{"version":"","commit":"a","buildTime":"b"}" to rejectsMalformedVersion(_:) started.
+✔ Test redirectsAreNotAccepted(_:) with 4 test cases passed after 0.001 seconds.
+✔ Test probesOnlyPublicVersionEndpoint() passed after 0.001 seconds.
+✔ Test preservesHTTPStatus(_:) with 5 test cases passed after 0.001 seconds.
+✔ Test rejectsMalformedVersion(_:) with 3 test cases passed after 0.001 seconds.
+✔ Test rejectsHTMLContentTypeAndLargeResponse() passed after 0.002 seconds.
+✔ Test run with 5 tests in 0 suites passed after 0.002 seconds.

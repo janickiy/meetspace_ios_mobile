@@ -1,0 +1,50 @@
+name: iOS foundation
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ios-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  package:
+    runs-on: macos-15
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify generated project and audit
+        run: |
+          python3 scripts/generate_xcode_project.py --check
+          python3 scripts/verify_audit.py
+          python3 scripts/verify_foundation.py
+      - name: Unit tests on host
+        run: swift test --package-path Packages/MeetSpaceKit
+      - name: Release iOS build
+        run: xcodebuild -project MeetSpace.xcodeproj -scheme MeetSpace-Release -configuration Release -destination 'generic/platform=iOS Simulator' CODE_SIGNING_ALLOWED=NO build
+  simulators:
+    runs-on: macos-15
+    timeout-minutes: 40
+    strategy:
+      fail-fast: false
+      matrix:
+        family: [iPhone, iPad]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Device inventory
+        run: |
+          xcodebuild -version
+          xcrun simctl list devices available
+      - name: App, Keychain and UI tests
+        run: python3 scripts/ci_simulators.py --family '${{ matrix.family }}'
+      - name: Upload simulator test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: results-${{ matrix.family }}
+          path: artifacts/*.xcresult
+          if-no-files-found: warn

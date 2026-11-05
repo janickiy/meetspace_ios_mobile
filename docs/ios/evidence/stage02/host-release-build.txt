@@ -1,0 +1,17 @@
+Building for production...
+[3 / 26]
+[5 / 28] MeetSpaceCore
+[8 / 30] MeetSpaceCore
+[16 / 47] MeetSpaceStorage
+[22 / 47] MeetSpaceRealtime
+[29 / 38] MeetSpaceAPI
+[33 / 41] MeetSpaceFeatures
+[35 / 42] MeetSpaceFeatures
+<repository>/Packages/MeetSpaceKit/Package.swift: MeetSpaceFeatures: ld: warning: search path '/Library/Developer/CommandLineTools/Developer/Library/Frameworks' not found
+[41 / 44] FoundationPreviewRenderer-product
+[42 / 45] FoundationPreviewRenderer-product
+<repository>/Packages/MeetSpaceKit/Package.swift: FoundationPreviewRenderer-product: ld: warning: search path '/Library/Developer/CommandLineTools/Developer/usr/lib' not found
+<repository>/Packages/MeetSpaceKit/Package.swift: FoundationPreviewRenderer-product: ld: warning: search path '/Library/Developer/CommandLineTools/Developer/Library/Frameworks' not found
+[44 / 45] FoundationPreviewRenderer-product
+[47 / 47] FoundationPreviewRenderer-product
+Build complete! (4,00 с)
