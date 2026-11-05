@@ -1,0 +1,364 @@
+{
+  "date": "2026-11-05",
+  "command": "node --check <each tracked .js file>",
+  "javascript": [
+    {
+      "path": "meetspace-refresh-20261016/account-settings.js",
+      "exit_code": 0,
+      "output": ""
+    },
+    {
+      "path": "meetspace-refresh-20261016/accounts.js",
+      "exit_code": 0,
+      "output": ""
+    },
+    {
+      "path": "meetspace-refresh-20261016/assets/icons.js",
+      "exit_code": 0,
+      "output": ""
+    },
+    {
+      "path": "meetspace-refresh-20261016/avatars.js",
+      "exit_code": 0,
+      "output": ""
+    },
+    {
+      "path": "meetspace-refresh-20261016/call-meeting.js",
+      "exit_code": 0,
+      "output": ""
+    },
+    {
+      "path": "meetspace-refresh-20261016/chat-refresh.js",
+      "exit_code": 0,
+      "output": ""
+    },
+    {
+      "path": "meetspace-refresh-20261016/folders-refresh.js",
+      "exit_code": 0,
+      "output": ""
+    },
+    {
+      "path": "meetspace-refresh-20261016/gallery.js",
+      "exit_code": 0,
+      "output": ""
+    },
+    {
+      "path": "meetspace-refresh-20261016/groups.js",
+      "exit_code": 0,
+      "output": ""
+    },
+    {
+      "path": "meetspace-refresh-20261016/meetings.js",
+      "exit_code": 0,
+      "output": ""
+    },
+    {
+      "path": "meetspace-refresh-20261016/notifications.js",
+      "exit_code": 0,
+      "output": ""
+    },
+    {
+      "path": "meetspace-refresh-20261016/onboarding.js",
+      "exit_code": 0,
+      "output": ""
+    },
+    {
+      "path": "meetspace-refresh-20261016/personal-call.js",
+      "exit_code": 0,
+      "output": ""
+    },
+    {
+      "path": "meetspace-refresh-20261016/recordings-refresh.js",
+      "exit_code": 0,
+      "output": ""
+    },
+    {
+      "path": "meetspace-refresh-20261016/runtime.js",
+      "exit_code": 0,
+      "output": ""
+    },
+    {
+      "path": "meetspace-refresh-20261016/screens.js",
+      "exit_code": 0,
+      "output": ""
+    },
+    {
+      "path": "meetspace-refresh-20261016/workspace-refresh.js",
+      "exit_code": 0,
+      "output": ""
+    }
+  ],
+  "local_html_css_resources": [
+    {
+      "from": "meetspace-refresh-20261016/index.html",
+      "target": "assets/brand-mark.svg",
+      "exists": true
+    },
+    {
+      "from": "meetspace-refresh-20261016/index.html",
+      "target": "gallery.css?v=20261016-refresh",
+      "exists": true
+    },
+    {
+      "from": "meetspace-refresh-20261016/index.html",
+      "target": "index.html",
+      "exists": true
+    },
+    {
+      "from": "meetspace-refresh-20261016/index.html",
+      "target": "assets/brand-mark.svg",
+      "exists": true
+    },
+    {
+      "from": "meetspace-refresh-20261016/index.html",
+      "target": "preview.html?rev=20261031-video-web-final&screen=meetings",
+      "exists": true
+    },
+    {
+      "from": "meetspace-refresh-20261016/index.html",
+      "target": "preview.html?rev=20261031-video-web-final&screen=meetings&theme=light",
+      "exists": true
+    },
+    {
+      "from": "meetspace-refresh-20261016/index.html",
+      "target": "preview.html?rev=20261031-video-web-final&screen=meetings&theme=light",
+      "exists": true
+    },
+    {
+      "from": "meetspace-refresh-20261016/index.html",
+      "target": "handoff.html",
+      "exists": true
+    },
+    {
+      "from": "meetspace-refresh-20261016/index.html",
+      "target": "assets/icons.js",
+      "exists": true
+    },
+    {
+      "from": "meetspace-refresh-20261016/index.html",
+      "target": "gallery.js?v=20261031-video-web-final",
+      "exists": true
+    },
+    {
+      "from": "meetspace-refresh-20261016/preview.html",
+      "target": "assets/brand-mark.svg",
+      "exists": true
+    },
+    {
+      "from": "meetspace-refresh-20261016/preview.html",
+      "target": "app.css",
+      "exists": true
+    },
+    {
+      "from": "meetspace-refresh-20261016/preview.html",
+      "target": "onboarding.css?v=20261012-registration",
+      "exists": true
+    },
+    {
+      "from": "meetspace-refresh-20261016/preview.html",
+      "target": "home.css",
+      "exists": true
+    },
+    {
+      "from": "meetspace-refresh-20261016/preview.html",
+      "target": "telemost.css?v=20261012-connection",
+      "exists": true
+    },
+    {
+      "from": "meetspace-refresh-20261016/preview.html",
+      "target": "meetings.css?v=20261012-meeting-title",
+      "exists": true
+    },
+    {
+      "from": "meetspace-refresh-20261016/preview.html",
+      "target": "account-settings.css?v=20261031-video-web-final",
+      "exists": true
+    },
+    {
+      "from": "meetspace-refresh-20261016/preview.html",
+      "target": "call-meeting.css?v=20261012-call-redesign-2",
+      "exists": true
+    },
+    {
+      "from": "meetspace-refresh-20261016/preview.html",
+      "target": "personal-call.css?v=20261012-personal-controls",
+      "exists": true
+    },
+    {
+      "from": "meetspace-refresh-20261016/preview.html",
+      "target": "workspace-refresh.css?v=20261016",
+      "exists": true
+    },
+    {
+      "from": "meetspace-refresh-20261016/preview.html",
+      "target": "recordings-refresh.css?v=20261016",
+      "exists": true
+    },
+    {
+      "from": "meetspace-refresh-20261016/preview.html",
+      "target": "chat-refresh.css?v=20261016-messageactions",
+      "exists": true
+    },
+    {
+      "from": "meetspace-refresh-20261016/preview.html",
+      "target": "folders-refresh.css?v=20261016",
+      "exists": true
+    },
+    {
+      "from": "meetspace-refresh-20261016/preview.html",
+      "target": "notifications.css?v=20261027",
+      "exists": true
+    },
+    {
+      "from": "meetspace-refresh-20261016/preview.html",
+      "target": "avatars.css?v=20261030-tablet-controls",
+      "exists": true
+    },
+    {
+      "from": "meetspace-refresh-20261016/preview.html",
+      "target": "groups.css?v=20261030-mobile-save",
+      "exists": true
+    },
+    {
+      "from": "meetspace-refresh-20261016/preview.html",
+      "target": "assets/icons.js",
+      "exists": true
+    },
+    {
+      "from": "meetspace-refresh-20261016/preview.html",
+      "target": "runtime.js?v=20261030-group-edit",
+      "exists": true
+    },
+    {
+      "from": "meetspace-refresh-20261016/preview.html",
+      "target": "screens.js?v=20261030-group-edit",
+      "exists": true
+    },
+    {
+      "from": "meetspace-refresh-20261016/preview.html",
+      "target": "onboarding.js?v=20261013-accounts",
+      "exists": true
+    },
+    {
+      "from": "meetspace-refresh-20261016/preview.html",
+      "target": "meetings.js?v=20261016-refresh",
+      "exists": true
+    },
+    {
+      "from": "meetspace-refresh-20261016/preview.html",
+      "target": "account-settings.js?v=20261031-video-web-final",
+      "exists": true
+    },
+    {
+      "from": "meetspace-refresh-20261016/preview.html",
+      "target": "call-meeting.js?v=20261012-call-redesign-2",
+      "exists": true
+    },
+    {
+      "from": "meetspace-refresh-20261016/preview.html",
+      "target": "personal-call.js?v=20261030-avatars",
+      "exists": true
+    },
+    {
+      "from": "meetspace-refresh-20261016/preview.html",
+      "target": "accounts.js?v=20261031-video-web-final",
+      "exists": true
+    },
+    {
+      "from": "meetspace-refresh-20261016/preview.html",
+      "target": "workspace-refresh.js?v=20261030-avatars",
+      "exists": true
+    },
+    {
+      "from": "meetspace-refresh-20261016/preview.html",
+      "target": "recordings-refresh.js?v=20261016",
+      "exists": true
+    },
+    {
+      "from": "meetspace-refresh-20261016/preview.html",
+      "target": "chat-refresh.js?v=20261030-group-edit",
+      "exists": true
+    },
+    {
+      "from": "meetspace-refresh-20261016/preview.html",
+      "target": "folders-refresh.js?v=20261030-group-edit",
+      "exists": true
+    },
+    {
+      "from": "meetspace-refresh-20261016/preview.html",
+      "target": "notifications.js?v=20261027",
+      "exists": true
+    },
+    {
+      "from": "meetspace-refresh-20261016/preview.html",
+      "target": "avatars.js?v=20261030-group-edit",
+      "exists": true
+    },
+    {
+      "from": "meetspace-refresh-20261016/preview.html",
+      "target": "groups.js?v=20261030",
+      "exists": true
+    },
+    {
+      "from": "meetspace-refresh-20261016/app.css",
+      "target": "assets/inter-latin-400-normal.woff2",
+      "exists": true
+    },
+    {
+      "from": "meetspace-refresh-20261016/app.css",
+      "target": "assets/inter-cyrillic-400-normal.woff2",
+      "exists": true
+    },
+    {
+      "from": "meetspace-refresh-20261016/app.css",
+      "target": "assets/inter-latin-600-normal.woff2",
+      "exists": true
+    },
+    {
+      "from": "meetspace-refresh-20261016/app.css",
+      "target": "assets/inter-cyrillic-600-normal.woff2",
+      "exists": true
+    },
+    {
+      "from": "meetspace-refresh-20261016/gallery.css",
+      "target": "assets/inter-latin-400-normal.woff2",
+      "exists": true
+    },
+    {
+      "from": "meetspace-refresh-20261016/gallery.css",
+      "target": "assets/inter-cyrillic-400-normal.woff2",
+      "exists": true
+    },
+    {
+      "from": "meetspace-refresh-20261016/gallery.css",
+      "target": "assets/inter-latin-600-normal.woff2",
+      "exists": true
+    },
+    {
+      "from": "meetspace-refresh-20261016/gallery.css",
+      "target": "assets/inter-cyrillic-600-normal.woff2",
+      "exists": true
+    },
+    {
+      "from": "meetspace-refresh-20261016/handoff.css",
+      "target": "assets/inter-cyrillic-400-normal.woff2",
+      "exists": true
+    },
+    {
+      "from": "meetspace-refresh-20261016/handoff.css",
+      "target": "assets/inter-latin-400-normal.woff2",
+      "exists": true
+    },
+    {
+      "from": "meetspace-refresh-20261016/handoff.css",
+      "target": "assets/inter-cyrillic-600-normal.woff2",
+      "exists": true
+    },
+    {
+      "from": "meetspace-refresh-20261016/handoff.css",
+      "target": "assets/inter-latin-600-normal.woff2",
+      "exists": true
+    }
+  ],
+  "scope": "Syntax and local references only; not browser interaction regression tests"
+}

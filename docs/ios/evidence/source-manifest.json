@@ -1,0 +1,2187 @@
+{
+  "audit_date": "2026-11-05",
+  "timezone": "Europe/Moscow",
+  "scope": "Stage 01; source audit, not live server certification",
+  "repositories": {
+    "backend": {
+      "repository": "https://github.com/janickiy/meet-space",
+      "commit": "56a0b0721806f7db5ad4e658c856ddfe8ebd6acd",
+      "refs": [
+        "56a0b0721806f7db5ad4e658c856ddfe8ebd6acd\trefs/heads/main",
+        "4b37dcc50c6de9b278292ba0dc0d7311c00e884c\trefs/tags/0.1.0",
+        "1d627dd899eb736a21381889f93d0f0aabd2a4fc\trefs/tags/0.1.1",
+        "1d627dd899eb736a21381889f93d0f0aabd2a4fc\trefs/tags/0.2.0",
+        "b5dc4d6d431063269f944e31b9e0300a20e73ca3\trefs/tags/0.3.0",
+        "b5dc4d6d431063269f944e31b9e0300a20e73ca3\trefs/tags/0.3.1",
+        "6bfb55bb6af4e6179f59c306f1632a5b590c1d32\trefs/tags/0.3.2",
+        "6b7015813a5b60b38f7ea9c5e0dce50a3558d633\trefs/tags/0.3.3",
+        "ea23d96c200939d39e45b90d5e48c330ae1d5517\trefs/tags/0.3.4",
+        "4e6b85fcfe56da207345bf9b8aeb0bff87487657\trefs/tags/0.3.5",
+        "b98d7684e0c6c04f800a2f5ff8d35fb9d99df0fb\trefs/tags/0.3.6",
+        "577ec4f256bcb70c2b1bc83e7f6d1e3622dc3fad\trefs/tags/0.3.8",
+        "e7ce483486ad5dbd4129f6cda02bed1f9a6cdc6b\trefs/tags/0.3.9",
+        "93e9653ffeeb733f62f3791ad9084a10f9d8c829\trefs/tags/0.4.2",
+        "eb18a390134d3bb88c0086fe00010228f0ffcc32\trefs/tags/0.4.3",
+        "715e8b658bf14920ea3d5f92b69f9b812357e592\trefs/tags/0.5.0",
+        "4ce272bc18d96d11514ed6e4d6f994f2ef450a91\trefs/tags/0.5.1",
+        "54d6be75dedd00924f87d55b1f20d3389d711145\trefs/tags/v0.4.0-betab",
+        "5398cb14e9e92587c6ff549999ed5ddecb6b0517\trefs/tags/v0.4.0-betab^{}",
+        "11dd2ab322d3cf6d3bd4d19f1d656767b31b685e\trefs/tags/v0.4.0-prebuilt.20261022.1",
+        "577ec4f256bcb70c2b1bc83e7f6d1e3622dc3fad\trefs/tags/v0.4.0-prebuilt.20261023.2",
+        "450fcec8c41b730d6122dd3955d148220a124eac\trefs/tags/v0.4.1-beta",
+        "b28d8d849cb6662929e481d868d3aba384264032\trefs/tags/v0.4.1-beta^{}"
+      ]
+    },
+    "android": {
+      "repository": "https://github.com/janickiy/meet-space-android",
+      "commit": "b8f289983e60671d415a128734c2e5bb6e93a29d",
+      "refs": [
+        "b8f289983e60671d415a128734c2e5bb6e93a29d\trefs/heads/main",
+        "a8eb5869b52a2143b2b480e0aa1ff258ad1f240e\trefs/tags/0.3.10",
+        "bb806e0b75ec720a695347b27d5d22d98a15b9a8\trefs/tags/0.3.11",
+        "e3424b0083987bf1f9f0513ec5aa5825ee2d39d2\trefs/tags/0.3.5",
+        "e3424b0083987bf1f9f0513ec5aa5825ee2d39d2\trefs/tags/0.3.6",
+        "86915851ca4ea7d0717ce4e98fdc9d11b2b0fda5\trefs/tags/0.3.8-beta"
+      ]
+    },
+    "design": {
+      "repository": "https://github.com/janickiy/mobile_maket",
+      "commit": "04d6a8ecdac75ae568459bbed0f3f6647bf8cbb3",
+      "refs": [
+        "04d6a8ecdac75ae568459bbed0f3f6647bf8cbb3\trefs/heads/main"
+      ]
+    }
+  },
+  "references": {
+    "B-platform": {
+      "repository": "backend",
+      "path": "internal/transport/http/platform_routes.go",
+      "sha256": "043c716f31279e0048ac94f4f537cc395c41388f2b38922ccd4f112c6e3047cb",
+      "url": "https://github.com/janickiy/meet-space/blob/56a0b0721806f7db5ad4e658c856ddfe8ebd6acd/internal/transport/http/platform_routes.go"
+    },
+    "B-chat": {
+      "repository": "backend",
+      "path": "internal/transport/http/chat_routes.go",
+      "sha256": "95b9fc0af640b46d25b912d944bbab5ff769ddf5313cb57ef38a530678309963",
+      "url": "https://github.com/janickiy/meet-space/blob/56a0b0721806f7db5ad4e658c856ddfe8ebd6acd/internal/transport/http/chat_routes.go"
+    },
+    "B-chat-actions": {
+      "repository": "backend",
+      "path": "internal/transport/http/chat_actions_routes.go",
+      "sha256": "590c0557eba7a313d94b871cd9d499b2b6624d66952ea921941c7989163e697c",
+      "url": "https://github.com/janickiy/meet-space/blob/56a0b0721806f7db5ad4e658c856ddfe8ebd6acd/internal/transport/http/chat_actions_routes.go"
+    },
+    "B-personal": {
+      "repository": "backend",
+      "path": "internal/transport/http/personal_routes.go",
+      "sha256": "20e17457ca42e3180bafd1c9d48ea4084ff01b8735cbe6e983d768df801d4118",
+      "url": "https://github.com/janickiy/meet-space/blob/56a0b0721806f7db5ad4e658c856ddfe8ebd6acd/internal/transport/http/personal_routes.go"
+    },
+    "B-personal-search": {
+      "repository": "backend",
+      "path": "internal/transport/http/personal_search_routes.go",
+      "sha256": "8ce6d5ca06ee662bf4d5fab94581a9852763563dd34b4d88e8fe895308479643",
+      "url": "https://github.com/janickiy/meet-space/blob/56a0b0721806f7db5ad4e658c856ddfe8ebd6acd/internal/transport/http/personal_search_routes.go"
+    },
+    "B-personal-assets": {
+      "repository": "backend",
+      "path": "internal/transport/http/personal_asset_routes.go",
+      "sha256": "a68f69e3b515ca3c69df9aeb8a2271f327fd455af86d424bb5f078b49b30a9be",
+      "url": "https://github.com/janickiy/meet-space/blob/56a0b0721806f7db5ad4e658c856ddfe8ebd6acd/internal/transport/http/personal_asset_routes.go"
+    },
+    "B-folders": {
+      "repository": "backend",
+      "path": "internal/transport/http/folder_routes.go",
+      "sha256": "b3da0d76000042f527d2acd7c2c90837388ce46bdc3ce3ea3239fb1ca77f06f3",
+      "url": "https://github.com/janickiy/meet-space/blob/56a0b0721806f7db5ad4e658c856ddfe8ebd6acd/internal/transport/http/folder_routes.go"
+    },
+    "B-calls": {
+      "repository": "backend",
+      "path": "internal/transport/http/call_routes.go",
+      "sha256": "677454ce81f8fb03465181f6cbe1faaf1a012da03ebfbf01c58ae99a255ba620",
+      "url": "https://github.com/janickiy/meet-space/blob/56a0b0721806f7db5ad4e658c856ddfe8ebd6acd/internal/transport/http/call_routes.go"
+    },
+    "B-records": {
+      "repository": "backend",
+      "path": "internal/transport/http/conference_recording_routes.go",
+      "sha256": "770bcce72a5356b8b86fcdc6d8ab7a1e165614cf27815f784151e16c52c766bd",
+      "url": "https://github.com/janickiy/meet-space/blob/56a0b0721806f7db5ad4e658c856ddfe8ebd6acd/internal/transport/http/conference_recording_routes.go"
+    },
+    "B-integration-routes": {
+      "repository": "backend",
+      "path": "internal/transport/http/integration_routes.go",
+      "sha256": "ce93a180eee50bb6b9b95b1c76f1cd6a37bfc1c5948ad0d4f094e08597da2fe5",
+      "url": "https://github.com/janickiy/meet-space/blob/56a0b0721806f7db5ad4e658c856ddfe8ebd6acd/internal/transport/http/integration_routes.go"
+    },
+    "B-notifications": {
+      "repository": "backend",
+      "path": "internal/transport/http/notification_routes.go",
+      "sha256": "16846aeb39f19a8b270b4c062a9b9db8eeff9b158c81e78b61f6ad1e9b53ca12",
+      "url": "https://github.com/janickiy/meet-space/blob/56a0b0721806f7db5ad4e658c856ddfe8ebd6acd/internal/transport/http/notification_routes.go"
+    },
+    "B-avatar-routes": {
+      "repository": "backend",
+      "path": "internal/transport/http/profile_avatar_routes.go",
+      "sha256": "536321e745f26d817c508580419e497e4a2153a34a195ceeeadb21680237a360",
+      "url": "https://github.com/janickiy/meet-space/blob/56a0b0721806f7db5ad4e658c856ddfe8ebd6acd/internal/transport/http/profile_avatar_routes.go"
+    },
+    "B-invitations": {
+      "repository": "backend",
+      "path": "internal/transport/http/invitation_routes.go",
+      "sha256": "f083325649a8fa8ca84f24a3ab1a5bb8799481314500ca72139d30002b389ae4",
+      "url": "https://github.com/janickiy/meet-space/blob/56a0b0721806f7db5ad4e658c856ddfe8ebd6acd/internal/transport/http/invitation_routes.go"
+    },
+    "B-cap-routes": {
+      "repository": "backend",
+      "path": "internal/transport/http/platform_status_routes.go",
+      "sha256": "bc49dd5936dbcc5c849af35c8a086c9c344a196b25b6f4b46be7729913420a77",
+      "url": "https://github.com/janickiy/meet-space/blob/56a0b0721806f7db5ad4e658c856ddfe8ebd6acd/internal/transport/http/platform_status_routes.go"
+    },
+    "B-guest-route": {
+      "repository": "backend",
+      "path": "internal/transport/http/guest_routes.go",
+      "sha256": "05f115950868da0f5414cfeea2f662c363516c066e3370321635e90d684981bb",
+      "url": "https://github.com/janickiy/meet-space/blob/56a0b0721806f7db5ad4e658c856ddfe8ebd6acd/internal/transport/http/guest_routes.go"
+    },
+    "B-search-route": {
+      "repository": "backend",
+      "path": "internal/transport/http/search_routes.go",
+      "sha256": "778d5301871c5e5d700cfca13b7b28d10a0763f74642459da50d6320fa7c3bc1",
+      "url": "https://github.com/janickiy/meet-space/blob/56a0b0721806f7db5ad4e658c856ddfe8ebd6acd/internal/transport/http/search_routes.go"
+    },
+    "B-reaction-route": {
+      "repository": "backend",
+      "path": "internal/transport/http/engagement_routes.go",
+      "sha256": "89fd27c1173713661ad312d069a6de75516e751c22366513679a2030c5e78854",
+      "url": "https://github.com/janickiy/meet-space/blob/56a0b0721806f7db5ad4e658c856ddfe8ebd6acd/internal/transport/http/engagement_routes.go"
+    },
+    "B-telemetry": {
+      "repository": "backend",
+      "path": "internal/transport/http/telemetry_routes.go",
+      "sha256": "b29a81a129913e5c77d36ea20b33588e9c013cfbc0ec28f7d34556a92ada31d4",
+      "url": "https://github.com/janickiy/meet-space/blob/56a0b0721806f7db5ad4e658c856ddfe8ebd6acd/internal/transport/http/telemetry_routes.go"
+    },
+    "B-auth": {
+      "repository": "backend",
+      "path": "internal/app/auth/handler.go",
+      "sha256": "81afb87444a6327d311ea80d1140b60667b7653bd8a9f8340df9ad1a0aa4b89e",
+      "url": "https://github.com/janickiy/meet-space/blob/56a0b0721806f7db5ad4e658c856ddfe8ebd6acd/internal/app/auth/handler.go"
+    },
+    "B-sessions": {
+      "repository": "backend",
+      "path": "internal/app/auth/sessions.go",
+      "sha256": "bb7908b2b8e4dc70f39ac8f8d3711aeb062d122299b1b3abc43469e22fef2912",
+      "url": "https://github.com/janickiy/meet-space/blob/56a0b0721806f7db5ad4e658c856ddfe8ebd6acd/internal/app/auth/sessions.go"
+    },
+    "B-accounts": {
+      "repository": "backend",
+      "path": "internal/app/auth/accounts.go",
+      "sha256": "0fb326c138f126a65b06edbbbf326f7c37442024d255aa69f6b8ef1dc387eeed",
+      "url": "https://github.com/janickiy/meet-space/blob/56a0b0721806f7db5ad4e658c856ddfe8ebd6acd/internal/app/auth/accounts.go"
+    },
+    "B-auth-service": {
+      "repository": "backend",
+      "path": "internal/usecase/auth/sessions.go",
+      "sha256": "6c85a8802cbb2e93c488b30d1c2ba41912cb559d2ec58ecf211fa9fe354cdf97",
+      "url": "https://github.com/janickiy/meet-space/blob/56a0b0721806f7db5ad4e658c856ddfe8ebd6acd/internal/usecase/auth/sessions.go"
+    },
+    "B-users": {
+      "repository": "backend",
+      "path": "internal/domain/users/user.go",
+      "sha256": "9993da21a090661afd24c413074f07b445abd88ef620c5335fce90e3538790cc",
+      "url": "https://github.com/janickiy/meet-space/blob/56a0b0721806f7db5ad4e658c856ddfe8ebd6acd/internal/domain/users/user.go"
+    },
+    "B-guest": {
+      "repository": "backend",
+      "path": "internal/usecase/conferences/guests.go",
+      "sha256": "f5bc23f86c724ac43e625d32885460a804a5a71ade8d75f58c775d09256f5039",
+      "url": "https://github.com/janickiy/meet-space/blob/56a0b0721806f7db5ad4e658c856ddfe8ebd6acd/internal/usecase/conferences/guests.go"
+    },
+    "B-errors": {
+      "repository": "backend",
+      "path": "internal/app/httpresponse/response.go",
+      "sha256": "3aea6a571a48db8c41d74715bb1fec8918a6fd0a56586afd1320af7d52aac5cd",
+      "url": "https://github.com/janickiy/meet-space/blob/56a0b0721806f7db5ad4e658c856ddfe8ebd6acd/internal/app/httpresponse/response.go"
+    },
+    "B-conference": {
+      "repository": "backend",
+      "path": "internal/domain/conferences/conference.go",
+      "sha256": "d3b6baafb97c85a0d3909b7c1ed1e9a49057473898c00e09525c06e4bc8b4bab",
+      "url": "https://github.com/janickiy/meet-space/blob/56a0b0721806f7db5ad4e658c856ddfe8ebd6acd/internal/domain/conferences/conference.go"
+    },
+    "B-timeline": {
+      "repository": "backend",
+      "path": "internal/domain/conferences/product.go",
+      "sha256": "d19c739626364f59243487ff5041d420aef7a9ca1549fd3268a0ad8de4c0957d",
+      "url": "https://github.com/janickiy/meet-space/blob/56a0b0721806f7db5ad4e658c856ddfe8ebd6acd/internal/domain/conferences/product.go"
+    },
+    "B-moderation": {
+      "repository": "backend",
+      "path": "internal/domain/conferences/moderation.go",
+      "sha256": "8fd613590054350f6e0f0fe11562515c3eaf0fbc20ed0ca81bf0e6b409c4c4f0",
+      "url": "https://github.com/janickiy/meet-space/blob/56a0b0721806f7db5ad4e658c856ddfe8ebd6acd/internal/domain/conferences/moderation.go"
+    },
+    "B-record-policy": {
+      "repository": "backend",
+      "path": "internal/infrastructure/postgres/conference_recording_repository.go",
+      "sha256": "3bbad24bce50d69dd2c18414bfd2bba924d6c3629f8ca07e574d1eb6de13b8d8",
+      "url": "https://github.com/janickiy/meet-space/blob/56a0b0721806f7db5ad4e658c856ddfe8ebd6acd/internal/infrastructure/postgres/conference_recording_repository.go"
+    },
+    "B-record-model": {
+      "repository": "backend",
+      "path": "internal/domain/records/models.go",
+      "sha256": "45b42202e880768d2af7e4676d5433d77f32a4e88dde7ed0ffdc7af0b666fdee",
+      "url": "https://github.com/janickiy/meet-space/blob/56a0b0721806f7db5ad4e658c856ddfe8ebd6acd/internal/domain/records/models.go"
+    },
+    "B-record-card": {
+      "repository": "backend",
+      "path": "internal/domain/records/dto.go",
+      "sha256": "cec411fd83fba24768d86d11087d499dcbf71171b69a1a87bc731c9f75a15612",
+      "url": "https://github.com/janickiy/meet-space/blob/56a0b0721806f7db5ad4e658c856ddfe8ebd6acd/internal/domain/records/dto.go"
+    },
+    "B-record-library": {
+      "repository": "backend",
+      "path": "internal/app/recordings/library.go",
+      "sha256": "9671a5a2d5a486ee039879412ad2cbdf143aa802474e82c6ec50e8b85bb07484",
+      "url": "https://github.com/janickiy/meet-space/blob/56a0b0721806f7db5ad4e658c856ddfe8ebd6acd/internal/app/recordings/library.go"
+    },
+    "B-record-service": {
+      "repository": "backend",
+      "path": "internal/usecase/recordings/service.go",
+      "sha256": "bdfa59b24daedb6d503e6d86b98702f63168e9586570b677bba2f0e90ea46c3d",
+      "url": "https://github.com/janickiy/meet-space/blob/56a0b0721806f7db5ad4e658c856ddfe8ebd6acd/internal/usecase/recordings/service.go"
+    },
+    "B-record-request": {
+      "repository": "backend",
+      "path": "internal/domain/records/conference.go",
+      "sha256": "33c78e1ba9ddd2eed1eeb6a1ce3931e883f0df529ee2917099aa0e056388c5e1",
+      "url": "https://github.com/janickiy/meet-space/blob/56a0b0721806f7db5ad4e658c856ddfe8ebd6acd/internal/domain/records/conference.go"
+    },
+    "B-chat-model": {
+      "repository": "backend",
+      "path": "internal/domain/chat/chat.go",
+      "sha256": "cd91966697647ae7645272a2c0c84f721661fcddad03eec3cd9cfb854b3988b7",
+      "url": "https://github.com/janickiy/meet-space/blob/56a0b0721806f7db5ad4e658c856ddfe8ebd6acd/internal/domain/chat/chat.go"
+    },
+    "B-chat-handler": {
+      "repository": "backend",
+      "path": "internal/app/chat/handler.go",
+      "sha256": "7bbd1293e30dc5db33f68a1e3a98fa04b192a0255db0e68338e45fa7b32376a6",
+      "url": "https://github.com/janickiy/meet-space/blob/56a0b0721806f7db5ad4e658c856ddfe8ebd6acd/internal/app/chat/handler.go"
+    },
+    "B-group": {
+      "repository": "backend",
+      "path": "internal/domain/personal/groups.go",
+      "sha256": "95f900b7e9317d6fca3c715932f4fca5d614f2a4e319d13d3af966a9836a2157",
+      "url": "https://github.com/janickiy/meet-space/blob/56a0b0721806f7db5ad4e658c856ddfe8ebd6acd/internal/domain/personal/groups.go"
+    },
+    "B-ws": {
+      "repository": "backend",
+      "path": "internal/transport/websocket/handler.go",
+      "sha256": "98ac62e66801d9eb795f8b0fe32c004be5e5433daaa5eb86110dea1e9e155bb6",
+      "url": "https://github.com/janickiy/meet-space/blob/56a0b0721806f7db5ad4e658c856ddfe8ebd6acd/internal/transport/websocket/handler.go"
+    },
+    "B-user-ws": {
+      "repository": "backend",
+      "path": "internal/transport/websocket/user_handler.go",
+      "sha256": "f5533a5f3c8a7d7c0091e7189cd384447953caeaa8a022843e40916fc3ee73d7",
+      "url": "https://github.com/janickiy/meet-space/blob/56a0b0721806f7db5ad4e658c856ddfe8ebd6acd/internal/transport/websocket/user_handler.go"
+    },
+    "B-ws-messages": {
+      "repository": "backend",
+      "path": "internal/transport/websocket/messages.go",
+      "sha256": "afc8b7e876dd2fccbc9380e32d4e27783cb16ca9ddcd9de315f877b013d9596d",
+      "url": "https://github.com/janickiy/meet-space/blob/56a0b0721806f7db5ad4e658c856ddfe8ebd6acd/internal/transport/websocket/messages.go"
+    },
+    "B-envelope": {
+      "repository": "backend",
+      "path": "internal/domain/realtime/realtime.go",
+      "sha256": "cceca444d1a4c0e01adc83dc4dd68104c888d3e970def8316d5eebeb1580e4e6",
+      "url": "https://github.com/janickiy/meet-space/blob/56a0b0721806f7db5ad4e658c856ddfe8ebd6acd/internal/domain/realtime/realtime.go"
+    },
+    "B-ws-config": {
+      "repository": "backend",
+      "path": "internal/config/realtime.go",
+      "sha256": "8d5badefa5b7fac5423b4a620fee4f9f9aab5b0cdc2ca73cdcaf215e8b365ba2",
+      "url": "https://github.com/janickiy/meet-space/blob/56a0b0721806f7db5ad4e658c856ddfe8ebd6acd/internal/config/realtime.go"
+    },
+    "B-media": {
+      "repository": "backend",
+      "path": "internal/usecase/media/controller.go",
+      "sha256": "c60a921f4267e8272b95cdc9550b5de6b5de003c38e95e9633e3cc5f7a1c6da6",
+      "url": "https://github.com/janickiy/meet-space/blob/56a0b0721806f7db5ad4e658c856ddfe8ebd6acd/internal/usecase/media/controller.go"
+    },
+    "B-media-model": {
+      "repository": "backend",
+      "path": "internal/domain/media/media.go",
+      "sha256": "49880fbd6daeec2707ae0b306f3656f9c1a7433fde9aaac4f2c0384b0d58fed0",
+      "url": "https://github.com/janickiy/meet-space/blob/56a0b0721806f7db5ad4e658c856ddfe8ebd6acd/internal/domain/media/media.go"
+    },
+    "B-sfu-peer": {
+      "repository": "backend",
+      "path": "internal/infrastructure/sfu/peer.go",
+      "sha256": "06a8d8701c923ae3c428b7525e8da0c93f850ec75030975f8f5f8aef96b420dc",
+      "url": "https://github.com/janickiy/meet-space/blob/56a0b0721806f7db5ad4e658c856ddfe8ebd6acd/internal/infrastructure/sfu/peer.go"
+    },
+    "B-sfu-tracks": {
+      "repository": "backend",
+      "path": "internal/infrastructure/sfu/tracks.go",
+      "sha256": "58328c52bdd4eb2357728ab0fe9897332438a4cb9d91ac481a2324b191de859d",
+      "url": "https://github.com/janickiy/meet-space/blob/56a0b0721806f7db5ad4e658c856ddfe8ebd6acd/internal/infrastructure/sfu/tracks.go"
+    },
+    "B-sfu-policy": {
+      "repository": "backend",
+      "path": "internal/infrastructure/sfu/policy.go",
+      "sha256": "081ac5455bec1a17bdc0778537cb7d0854485cd8ee130bd7aa805a6d6ca300c7",
+      "url": "https://github.com/janickiy/meet-space/blob/56a0b0721806f7db5ad4e658c856ddfe8ebd6acd/internal/infrastructure/sfu/policy.go"
+    },
+    "B-hub": {
+      "repository": "backend",
+      "path": "internal/usecase/realtime/hub.go",
+      "sha256": "f571e67d186751964bea66e838f377df4c0426b69bd78dfe38e6d4d4f369f136",
+      "url": "https://github.com/janickiy/meet-space/blob/56a0b0721806f7db5ad4e658c856ddfe8ebd6acd/internal/usecase/realtime/hub.go"
+    },
+    "B-sse": {
+      "repository": "backend",
+      "path": "internal/app/notifications/events.go",
+      "sha256": "d5d00aeaad5acb8887c4d70d5af610d72a76d9b1bfd2337d8b2d3e1eb245f369",
+      "url": "https://github.com/janickiy/meet-space/blob/56a0b0721806f7db5ad4e658c856ddfe8ebd6acd/internal/app/notifications/events.go"
+    },
+    "B-calls-model": {
+      "repository": "backend",
+      "path": "internal/domain/calls/call.go",
+      "sha256": "805796bf8cf066b28c75a039c3dcf3e5bcdfb304829c3bb33fa5e4111571729b",
+      "url": "https://github.com/janickiy/meet-space/blob/56a0b0721806f7db5ad4e658c856ddfe8ebd6acd/internal/domain/calls/call.go"
+    },
+    "B-calls-service": {
+      "repository": "backend",
+      "path": "internal/usecase/calls/service.go",
+      "sha256": "55b35d18536a438c7ab2fccc6d6b409b819127aab212390ff27e071d592e0a73",
+      "url": "https://github.com/janickiy/meet-space/blob/56a0b0721806f7db5ad4e658c856ddfe8ebd6acd/internal/usecase/calls/service.go"
+    },
+    "B-integration-model": {
+      "repository": "backend",
+      "path": "internal/domain/integrations/integration.go",
+      "sha256": "b76b6ff2e2ae65ca859aef5186a07d569ac2c38686c9c92f9a24c87b95cd318c",
+      "url": "https://github.com/janickiy/meet-space/blob/56a0b0721806f7db5ad4e658c856ddfe8ebd6acd/internal/domain/integrations/integration.go"
+    },
+    "B-integration-handler": {
+      "repository": "backend",
+      "path": "internal/app/integrations/handler.go",
+      "sha256": "77560eb0fee92f8d5fc0c44aa9e16e477df491d1b9364fe109ea83e0fb97cda2",
+      "url": "https://github.com/janickiy/meet-space/blob/56a0b0721806f7db5ad4e658c856ddfe8ebd6acd/internal/app/integrations/handler.go"
+    },
+    "B-integration-service": {
+      "repository": "backend",
+      "path": "internal/usecase/integrations/service.go",
+      "sha256": "ee0293ec1d325e5ffb216f0e71a88bba0622cee2a3d32e48da034370597cb96f",
+      "url": "https://github.com/janickiy/meet-space/blob/56a0b0721806f7db5ad4e658c856ddfe8ebd6acd/internal/usecase/integrations/service.go"
+    },
+    "B-providers": {
+      "repository": "backend",
+      "path": "internal/infrastructure/providers/integrations.go",
+      "sha256": "b45115ecfe57ed95c59898890d40623e2c808885d8dbacf3901fe13148d409bd",
+      "url": "https://github.com/janickiy/meet-space/blob/56a0b0721806f7db5ad4e658c856ddfe8ebd6acd/internal/infrastructure/providers/integrations.go"
+    },
+    "B-capabilities": {
+      "repository": "backend",
+      "path": "internal/domain/platform/platform.go",
+      "sha256": "e6cffcd4f0b1db755733b65040daa1855323d88b8115f36e4189e70488d3064c",
+      "url": "https://github.com/janickiy/meet-space/blob/56a0b0721806f7db5ad4e658c856ddfe8ebd6acd/internal/domain/platform/platform.go"
+    },
+    "B-speech-removal": {
+      "repository": "backend",
+      "path": "docs/operations/speech-removal-upgrade.md",
+      "sha256": "6abe3c8d4d003e8ec02d5e7d6346006b52b39f7a38ef6894e8b28dc2c6bf3bdc",
+      "url": "https://github.com/janickiy/meet-space/blob/56a0b0721806f7db5ad4e658c856ddfe8ebd6acd/docs/operations/speech-removal-upgrade.md"
+    },
+    "B-operations": {
+      "repository": "backend",
+      "path": "internal/operations/runtime.go",
+      "sha256": "7e1a5a2c729f40e032b0f8ff364478878fee39422f5be7b54d5777f558dad6dc",
+      "url": "https://github.com/janickiy/meet-space/blob/56a0b0721806f7db5ad4e658c856ddfe8ebd6acd/internal/operations/runtime.go"
+    },
+    "B-api-wiring": {
+      "repository": "backend",
+      "path": "internal/app/api.go",
+      "sha256": "04a1037c82db002b6cce03732abc73c275e6e6c8b2264761a293182b33c70b43",
+      "url": "https://github.com/janickiy/meet-space/blob/56a0b0721806f7db5ad4e658c856ddfe8ebd6acd/internal/app/api.go"
+    },
+    "B-product-wiring": {
+      "repository": "backend",
+      "path": "internal/app/product.go",
+      "sha256": "cc33ba9d4cee0d8c11b80d3ab6ddf77be4c3fa0c27304e7c40f1f2880615de6d",
+      "url": "https://github.com/janickiy/meet-space/blob/56a0b0721806f7db5ad4e658c856ddfe8ebd6acd/internal/app/product.go"
+    },
+    "B-persistent-doc": {
+      "repository": "backend",
+      "path": "docs/PERSISTENT_AUTH.md",
+      "sha256": "71907e914036f688f2ba369b70111788099a9ffab7a7ac81e1659347a7e0a3b3",
+      "url": "https://github.com/janickiy/meet-space/blob/56a0b0721806f7db5ad4e658c856ddfe8ebd6acd/docs/PERSISTENT_AUTH.md"
+    },
+    "B-record-doc": {
+      "repository": "backend",
+      "path": "docs/conference-recording.md",
+      "sha256": "2a859de931ccb34146df47416937978ace623f373e54dec5b51a8fc8ffa78373",
+      "url": "https://github.com/janickiy/meet-space/blob/56a0b0721806f7db5ad4e658c856ddfe8ebd6acd/docs/conference-recording.md"
+    },
+    "A-api": {
+      "repository": "android",
+      "path": "core/data/src/main/kotlin/com/meetspace/core/data/MeetSpaceApi.kt",
+      "sha256": "9382c1f92d7eb6157e1ced0c491f2bcb53dacf7e6742b0b8603283e297a0097d",
+      "url": "https://github.com/janickiy/meet-space-android/blob/b8f289983e60671d415a128734c2e5bb6e93a29d/core/data/src/main/kotlin/com/meetspace/core/data/MeetSpaceApi.kt"
+    },
+    "A-origin": {
+      "repository": "android",
+      "path": "core/data/src/main/kotlin/com/meetspace/core/data/ServerOrigin.kt",
+      "sha256": "9e04cf59bf61ff0e059f64b7fd9abaafc49de5a72e6b91f0394aa668831c66c3",
+      "url": "https://github.com/janickiy/meet-space-android/blob/b8f289983e60671d415a128734c2e5bb6e93a29d/core/data/src/main/kotlin/com/meetspace/core/data/ServerOrigin.kt"
+    },
+    "A-cookies": {
+      "repository": "android",
+      "path": "core/data/src/main/kotlin/com/meetspace/core/data/SessionCookieJar.kt",
+      "sha256": "bc9a77132129204a1a8115b1c4a33d001d3e85b7cf055433800f8d4501ededaa",
+      "url": "https://github.com/janickiy/meet-space-android/blob/b8f289983e60671d415a128734c2e5bb6e93a29d/core/data/src/main/kotlin/com/meetspace/core/data/SessionCookieJar.kt"
+    },
+    "A-repository": {
+      "repository": "android",
+      "path": "core/data/src/main/kotlin/com/meetspace/core/data/DefaultFoundationRepository.kt",
+      "sha256": "29cdf494adc42c4542450ca9b4a2d54ffd96d48164c35116a8aebbde1dfe1862",
+      "url": "https://github.com/janickiy/meet-space-android/blob/b8f289983e60671d415a128734c2e5bb6e93a29d/core/data/src/main/kotlin/com/meetspace/core/data/DefaultFoundationRepository.kt"
+    },
+    "A-meetings": {
+      "repository": "android",
+      "path": "core/data/src/main/kotlin/com/meetspace/core/data/MeetingsApi.kt",
+      "sha256": "90beacada0b5d72b0abf5615356972850dd54e5eee6c09d77f6b297f978af5e6",
+      "url": "https://github.com/janickiy/meet-space-android/blob/b8f289983e60671d415a128734c2e5bb6e93a29d/core/data/src/main/kotlin/com/meetspace/core/data/MeetingsApi.kt"
+    },
+    "A-messaging": {
+      "repository": "android",
+      "path": "core/data/src/main/kotlin/com/meetspace/core/data/MessagingApi.kt",
+      "sha256": "cfaeefdea4a9260c5406a8e9c317d5eee3ab279961bd3184b071f79549146bb4",
+      "url": "https://github.com/janickiy/meet-space-android/blob/b8f289983e60671d415a128734c2e5bb6e93a29d/core/data/src/main/kotlin/com/meetspace/core/data/MessagingApi.kt"
+    },
+    "A-records": {
+      "repository": "android",
+      "path": "core/data/src/main/kotlin/com/meetspace/core/data/RecordingsApi.kt",
+      "sha256": "bca8d0ddd0c63f881cacbec9eeb14a424892b4a5790fae22e58740bbc1942d9a",
+      "url": "https://github.com/janickiy/meet-space-android/blob/b8f289983e60671d415a128734c2e5bb6e93a29d/core/data/src/main/kotlin/com/meetspace/core/data/RecordingsApi.kt"
+    },
+    "A-signaling": {
+      "repository": "android",
+      "path": "core/data/src/main/kotlin/com/meetspace/core/data/ScopedCallSignaling.kt",
+      "sha256": "0530f3aadbbda00d1ec619936ce4db0523f0df7686f85bbb20b5cb243a960256",
+      "url": "https://github.com/janickiy/meet-space-android/blob/b8f289983e60671d415a128734c2e5bb6e93a29d/core/data/src/main/kotlin/com/meetspace/core/data/ScopedCallSignaling.kt"
+    },
+    "A-events": {
+      "repository": "android",
+      "path": "core/data/src/main/kotlin/com/meetspace/core/data/ScopedUserEvents.kt",
+      "sha256": "09a6a14af9f55c0421b3788aedb7231cc3d6925297da30e4bd2c90d58a777620",
+      "url": "https://github.com/janickiy/meet-space-android/blob/b8f289983e60671d415a128734c2e5bb6e93a29d/core/data/src/main/kotlin/com/meetspace/core/data/ScopedUserEvents.kt"
+    },
+    "A-calls": {
+      "repository": "android",
+      "path": "core/data/src/main/kotlin/com/meetspace/core/data/DirectCallsApi.kt",
+      "sha256": "106497dff2ec04406594a852d49b89d0e78bbaaf31a8b2435bd51f1267fa91a3",
+      "url": "https://github.com/janickiy/meet-space-android/blob/b8f289983e60671d415a128734c2e5bb6e93a29d/core/data/src/main/kotlin/com/meetspace/core/data/DirectCallsApi.kt"
+    },
+    "A-record-access": {
+      "repository": "android",
+      "path": "core/data/src/main/kotlin/com/meetspace/core/data/ScopedRecordingAccess.kt",
+      "sha256": "afa12661c29ce307c11caa7090a4b6739f4708a3dcbd637bbbdfc58e7e7ddcc4",
+      "url": "https://github.com/janickiy/meet-space-android/blob/b8f289983e60671d415a128734c2e5bb6e93a29d/core/data/src/main/kotlin/com/meetspace/core/data/ScopedRecordingAccess.kt"
+    },
+    "A-stores": {
+      "repository": "android",
+      "path": "core/data/src/main/kotlin/com/meetspace/core/data/FoundationStores.kt",
+      "sha256": "ddf28899b71407326f47308d5ee354139152390453e6ca509b9f880cdcc229fa",
+      "url": "https://github.com/janickiy/meet-space-android/blob/b8f289983e60671d415a128734c2e5bb6e93a29d/core/data/src/main/kotlin/com/meetspace/core/data/FoundationStores.kt"
+    },
+    "A-modules": {
+      "repository": "android",
+      "path": "settings.gradle.kts",
+      "sha256": "0c95f6a1d40a1ea32a8544188ebb3645aac69d43bc4a3c890449d5aead704297",
+      "url": "https://github.com/janickiy/meet-space-android/blob/b8f289983e60671d415a128734c2e5bb6e93a29d/settings.gradle.kts"
+    },
+    "A-engine": {
+      "repository": "android",
+      "path": "core/media/src/main/kotlin/com/meetspace/core/media/CallEngine.kt",
+      "sha256": "6f05a6fd0ec9b79588ffe538deb2dfdfa2b6a07339ad0967937af95e5ab52d74",
+      "url": "https://github.com/janickiy/meet-space-android/blob/b8f289983e60671d415a128734c2e5bb6e93a29d/core/media/src/main/kotlin/com/meetspace/core/media/CallEngine.kt"
+    },
+    "A-protocol": {
+      "repository": "android",
+      "path": "core/media/src/main/kotlin/com/meetspace/core/media/CallProtocol.kt",
+      "sha256": "d754cc08a9eb3fc2b519e1e757b8762a10050ed4deb0246290e09231f2ff0dd8",
+      "url": "https://github.com/janickiy/meet-space-android/blob/b8f289983e60671d415a128734c2e5bb6e93a29d/core/media/src/main/kotlin/com/meetspace/core/media/CallProtocol.kt"
+    },
+    "A-audio": {
+      "repository": "android",
+      "path": "core/media/src/main/kotlin/com/meetspace/core/media/CallAudio.kt",
+      "sha256": "4969dd9dbc511603342f81ff07e75fdb8ec7f19720440c79366b0e8a9904b655",
+      "url": "https://github.com/janickiy/meet-space-android/blob/b8f289983e60671d415a128734c2e5bb6e93a29d/core/media/src/main/kotlin/com/meetspace/core/media/CallAudio.kt"
+    },
+    "A-ssh": {
+      "repository": "android",
+      "path": "core/ssh/src/main/kotlin/com/meetspace/core/ssh/JschSshTransport.kt",
+      "sha256": "92bc05eba59b61bbf998b0389e8cfff3411eb546b761045239d33b011cbf22a8",
+      "url": "https://github.com/janickiy/meet-space-android/blob/b8f289983e60671d415a128734c2e5bb6e93a29d/core/ssh/src/main/kotlin/com/meetspace/core/ssh/JschSshTransport.kt"
+    },
+    "A-installer": {
+      "repository": "android",
+      "path": "core/ssh/src/main/kotlin/com/meetspace/core/ssh/InstallerProtocol.kt",
+      "sha256": "4feb24b64efc5d0fb1e737ff43b0fb993bcc037069efb6c806f5e26a4718f062",
+      "url": "https://github.com/janickiy/meet-space-android/blob/b8f289983e60671d415a128734c2e5bb6e93a29d/core/ssh/src/main/kotlin/com/meetspace/core/ssh/InstallerProtocol.kt"
+    },
+    "A-ssh-repo": {
+      "repository": "android",
+      "path": "core/ssh/src/main/kotlin/com/meetspace/core/ssh/SshInstallerRepository.kt",
+      "sha256": "55e872d743924ac8310f09bb8a5da7ec150ab449adc5ac7456e205db9aa375ac",
+      "url": "https://github.com/janickiy/meet-space-android/blob/b8f289983e60671d415a128734c2e5bb6e93a29d/core/ssh/src/main/kotlin/com/meetspace/core/ssh/SshInstallerRepository.kt"
+    },
+    "A-preflight": {
+      "repository": "android",
+      "path": "core/ssh/src/main/kotlin/com/meetspace/core/ssh/DefaultSshPreflightRepository.kt",
+      "sha256": "c296c95d571a12a95027f8c627641be092565c9148fe44a6aef9653501aa1db3",
+      "url": "https://github.com/janickiy/meet-space-android/blob/b8f289983e60671d415a128734c2e5bb6e93a29d/core/ssh/src/main/kotlin/com/meetspace/core/ssh/DefaultSshPreflightRepository.kt"
+    },
+    "A-app": {
+      "repository": "android",
+      "path": "app/src/main/java/com/meetspace/app/MeetSpaceApplication.kt",
+      "sha256": "b6f7556efaea65274160327ac2e7d69eb388cb8948b5dcebe50b2a40d9c9fb23",
+      "url": "https://github.com/janickiy/meet-space-android/blob/b8f289983e60671d415a128734c2e5bb6e93a29d/app/src/main/java/com/meetspace/app/MeetSpaceApplication.kt"
+    },
+    "A-push": {
+      "repository": "android",
+      "path": "app/src/main/java/com/meetspace/app/PushController.kt",
+      "sha256": "2db218cc67eb8c2fd41e3376e0da75d35e43e0b29a22d1f722aaf382cf3c038f",
+      "url": "https://github.com/janickiy/meet-space-android/blob/b8f289983e60671d415a128734c2e5bb6e93a29d/app/src/main/java/com/meetspace/app/PushController.kt"
+    },
+    "A-screen-share": {
+      "repository": "android",
+      "path": "app/src/main/java/com/meetspace/app/ScreenShareService.kt",
+      "sha256": "3c9347fb2289c71751cc715171e2e6502e6b2f455d030541e0d675a53c6bfaa9",
+      "url": "https://github.com/janickiy/meet-space-android/blob/b8f289983e60671d415a128734c2e5bb6e93a29d/app/src/main/java/com/meetspace/app/ScreenShareService.kt"
+    },
+    "A-record-vm": {
+      "repository": "android",
+      "path": "app/src/main/java/com/meetspace/app/RecordingsViewModel.kt",
+      "sha256": "dcf66d2b9707c3023e9338b909f1ff241df0fe935ecf7c90af0d8b5b9195d4bb",
+      "url": "https://github.com/janickiy/meet-space-android/blob/b8f289983e60671d415a128734c2e5bb6e93a29d/app/src/main/java/com/meetspace/app/RecordingsViewModel.kt"
+    },
+    "D-readme": {
+      "repository": "design",
+      "path": "README.md",
+      "sha256": "3dca700313eb40fc7eb00b5cd65c8c16a91c4952ec1bcb46361b141129fc2461",
+      "url": "https://github.com/janickiy/mobile_maket/blob/04d6a8ecdac75ae568459bbed0f3f6647bf8cbb3/README.md"
+    },
+    "D-gallery": {
+      "repository": "design",
+      "path": "meetspace-refresh-20261016/gallery.js",
+      "sha256": "63f041785f7f449cc5fa961befdd955fe4fa93ec6f73538eb14c9d281500af69",
+      "url": "https://github.com/janickiy/mobile_maket/blob/04d6a8ecdac75ae568459bbed0f3f6647bf8cbb3/meetspace-refresh-20261016/gallery.js"
+    },
+    "D-preview": {
+      "repository": "design",
+      "path": "meetspace-refresh-20261016/preview.html",
+      "sha256": "c0524960cc588d8aa021f67d700e6f9c1296311f7a09e69d0f60417cf78b173c",
+      "url": "https://github.com/janickiy/mobile_maket/blob/04d6a8ecdac75ae568459bbed0f3f6647bf8cbb3/meetspace-refresh-20261016/preview.html"
+    },
+    "D-handoff": {
+      "repository": "design",
+      "path": "meetspace-refresh-20261016/handoff.html",
+      "sha256": "2105d717ab62b53a6f532a94c33459912da04d56a3a17b9bc3f2c91b9a155436",
+      "url": "https://github.com/janickiy/mobile_maket/blob/04d6a8ecdac75ae568459bbed0f3f6647bf8cbb3/meetspace-refresh-20261016/handoff.html"
+    },
+    "D-tokens": {
+      "repository": "design",
+      "path": "meetspace-refresh-20261016/workspace-refresh.css",
+      "sha256": "bec109f4e72c148dfcfd680b73422b353f7f5a0f57558079d6c187340c599ae1",
+      "url": "https://github.com/janickiy/mobile_maket/blob/04d6a8ecdac75ae568459bbed0f3f6647bf8cbb3/meetspace-refresh-20261016/workspace-refresh.css"
+    },
+    "D-base-css": {
+      "repository": "design",
+      "path": "meetspace-refresh-20261016/app.css",
+      "sha256": "335d246598d74ab72229917f87ab2385ed2bc3d2b0c416ca7c7c7df4fa948008",
+      "url": "https://github.com/janickiy/mobile_maket/blob/04d6a8ecdac75ae568459bbed0f3f6647bf8cbb3/meetspace-refresh-20261016/app.css"
+    },
+    "D-screens": {
+      "repository": "design",
+      "path": "meetspace-refresh-20261016/screens.js",
+      "sha256": "8bf185bd36ca2f90d49baa93d0a991570d3af1cb2c984b23d3535673d89e077b",
+      "url": "https://github.com/janickiy/mobile_maket/blob/04d6a8ecdac75ae568459bbed0f3f6647bf8cbb3/meetspace-refresh-20261016/screens.js"
+    },
+    "D-runtime": {
+      "repository": "design",
+      "path": "meetspace-refresh-20261016/runtime.js",
+      "sha256": "93f014a689d61079d18a218d77ed84d08b56027e2b6b458fe5725c3983bf595c",
+      "url": "https://github.com/janickiy/mobile_maket/blob/04d6a8ecdac75ae568459bbed0f3f6647bf8cbb3/meetspace-refresh-20261016/runtime.js"
+    },
+    "D-onboarding": {
+      "repository": "design",
+      "path": "meetspace-refresh-20261016/onboarding.js",
+      "sha256": "ba8570c55ebcf8fc7c7b64ea5c9a9fde7a9ec28f39ccde526074b90364e79f79",
+      "url": "https://github.com/janickiy/mobile_maket/blob/04d6a8ecdac75ae568459bbed0f3f6647bf8cbb3/meetspace-refresh-20261016/onboarding.js"
+    },
+    "D-meetings": {
+      "repository": "design",
+      "path": "meetspace-refresh-20261016/meetings.js",
+      "sha256": "fa2a0612a13301dcc15f410d3a2ed55cad318f93845a02b15b2e79cd211bceda",
+      "url": "https://github.com/janickiy/mobile_maket/blob/04d6a8ecdac75ae568459bbed0f3f6647bf8cbb3/meetspace-refresh-20261016/meetings.js"
+    },
+    "D-calls": {
+      "repository": "design",
+      "path": "meetspace-refresh-20261016/call-meeting.js",
+      "sha256": "e9f796c5bf961b8d6ffbc2af3001d108ea0dc452e988ef573c5d3380f646cbc6",
+      "url": "https://github.com/janickiy/mobile_maket/blob/04d6a8ecdac75ae568459bbed0f3f6647bf8cbb3/meetspace-refresh-20261016/call-meeting.js"
+    },
+    "D-personal": {
+      "repository": "design",
+      "path": "meetspace-refresh-20261016/personal-call.js",
+      "sha256": "b12b81262573cb7ee015e9d46a494f401209a360f3c69c46a3c3a61cab99d1c3",
+      "url": "https://github.com/janickiy/mobile_maket/blob/04d6a8ecdac75ae568459bbed0f3f6647bf8cbb3/meetspace-refresh-20261016/personal-call.js"
+    },
+    "D-recordings": {
+      "repository": "design",
+      "path": "meetspace-refresh-20261016/recordings-refresh.js",
+      "sha256": "fe542438667b8f1b911a1267974a6e52a8726700c30b31563ffaa2fd7e2fbdf2",
+      "url": "https://github.com/janickiy/mobile_maket/blob/04d6a8ecdac75ae568459bbed0f3f6647bf8cbb3/meetspace-refresh-20261016/recordings-refresh.js"
+    },
+    "D-chat": {
+      "repository": "design",
+      "path": "meetspace-refresh-20261016/chat-refresh.js",
+      "sha256": "72570306851b3f97b45cb25bd0aaa9293c1c992e0fb508c0d80b6521ea37f86e",
+      "url": "https://github.com/janickiy/mobile_maket/blob/04d6a8ecdac75ae568459bbed0f3f6647bf8cbb3/meetspace-refresh-20261016/chat-refresh.js"
+    },
+    "D-folders": {
+      "repository": "design",
+      "path": "meetspace-refresh-20261016/folders-refresh.js",
+      "sha256": "5c39203be5c78a0a0309f4dc94980bfb59eac99d86853766adad9c32f7330748",
+      "url": "https://github.com/janickiy/mobile_maket/blob/04d6a8ecdac75ae568459bbed0f3f6647bf8cbb3/meetspace-refresh-20261016/folders-refresh.js"
+    },
+    "D-settings": {
+      "repository": "design",
+      "path": "meetspace-refresh-20261016/account-settings.js",
+      "sha256": "107f61a3474dd5688f96b6ed9ff7666f814dd9f87b6cd85f2dbd376aecc55342",
+      "url": "https://github.com/janickiy/mobile_maket/blob/04d6a8ecdac75ae568459bbed0f3f6647bf8cbb3/meetspace-refresh-20261016/account-settings.js"
+    },
+    "D-notifications": {
+      "repository": "design",
+      "path": "meetspace-refresh-20261016/notifications.js",
+      "sha256": "12b5a4a2d18f561cbba17205361d59bb8158aa9eecaf8a602f9bf5fa4f153489",
+      "url": "https://github.com/janickiy/mobile_maket/blob/04d6a8ecdac75ae568459bbed0f3f6647bf8cbb3/meetspace-refresh-20261016/notifications.js"
+    },
+    "D-groups": {
+      "repository": "design",
+      "path": "meetspace-refresh-20261016/groups.js",
+      "sha256": "8de197805e978d6fb231020c8b1f4c391210edf989350ae985012f471a749461",
+      "url": "https://github.com/janickiy/mobile_maket/blob/04d6a8ecdac75ae568459bbed0f3f6647bf8cbb3/meetspace-refresh-20261016/groups.js"
+    },
+    "D-avatars": {
+      "repository": "design",
+      "path": "meetspace-refresh-20261016/avatars.js",
+      "sha256": "bf45fda8e999d0b91764ce71928a8e58bd38137ef62ee70796cd2fb221005bfc",
+      "url": "https://github.com/janickiy/mobile_maket/blob/04d6a8ecdac75ae568459bbed0f3f6647bf8cbb3/meetspace-refresh-20261016/avatars.js"
+    },
+    "D-verify": {
+      "repository": "design",
+      "path": "meetspace-refresh-20261016/verify.mjs",
+      "sha256": "4891f7a719f200082e5ee6301d0817887662da76cbe0362c2115c7b68637cc40",
+      "url": "https://github.com/janickiy/mobile_maket/blob/04d6a8ecdac75ae568459bbed0f3f6647bf8cbb3/meetspace-refresh-20261016/verify.mjs"
+    },
+    "B-sfu-manager": {
+      "repository": "backend",
+      "path": "internal/infrastructure/sfu/manager.go",
+      "sha256": "33986120823cfc297d50efd8a91cc0e941dc5b6077a6dbf1e4a30b16166a39ff",
+      "url": "https://github.com/janickiy/meet-space/blob/56a0b0721806f7db5ad4e658c856ddfe8ebd6acd/internal/infrastructure/sfu/manager.go"
+    },
+    "B-admission-events": {
+      "repository": "backend",
+      "path": "internal/usecase/conferences/product.go",
+      "sha256": "c8b58b7e4c4018943040ddd77a0b867f98ddd7a5c26e8efcacbcbe008b503428",
+      "url": "https://github.com/janickiy/meet-space/blob/56a0b0721806f7db5ad4e658c856ddfe8ebd6acd/internal/usecase/conferences/product.go"
+    },
+    "B-control-events": {
+      "repository": "backend",
+      "path": "internal/usecase/conferences/control.go",
+      "sha256": "63daf38e0f036b1a5444cf5c0eaaa42c29ebbdafe22e216ba361f810b4ceba6d",
+      "url": "https://github.com/janickiy/meet-space/blob/56a0b0721806f7db5ad4e658c856ddfe8ebd6acd/internal/usecase/conferences/control.go"
+    },
+    "B-chat-service": {
+      "repository": "backend",
+      "path": "internal/usecase/chat/service.go",
+      "sha256": "9fac70a83f0e40bc6cafbe3ab64672c7208cdbee1222ed1b0b68f847586ef2ba",
+      "url": "https://github.com/janickiy/meet-space/blob/56a0b0721806f7db5ad4e658c856ddfe8ebd6acd/internal/usecase/chat/service.go"
+    },
+    "B-personal-events": {
+      "repository": "backend",
+      "path": "internal/usecase/personal/events.go",
+      "sha256": "fe63b43cb5d9d68f0511cc3141d4da6247021403d0a0b703af6408b16f5f8445",
+      "url": "https://github.com/janickiy/meet-space/blob/56a0b0721806f7db5ad4e658c856ddfe8ebd6acd/internal/usecase/personal/events.go"
+    },
+    "B-folder-events": {
+      "repository": "backend",
+      "path": "internal/usecase/folders/events.go",
+      "sha256": "ca85b26eeab665ecfc093c1e0369d5e92af9da49f8a2f8ad41ff8394eb75e10e",
+      "url": "https://github.com/janickiy/meet-space/blob/56a0b0721806f7db5ad4e658c856ddfe8ebd6acd/internal/usecase/folders/events.go"
+    },
+    "B-recorder": {
+      "repository": "backend",
+      "path": "internal/usecase/recorder/composite.go",
+      "sha256": "27e0d0cbaef6c90372cad24412e59968edca2aaed4c799b4c83661260d8105c3",
+      "url": "https://github.com/janickiy/meet-space/blob/56a0b0721806f7db5ad4e658c856ddfe8ebd6acd/internal/usecase/recorder/composite.go"
+    },
+    "B-record-delete": {
+      "repository": "backend",
+      "path": "internal/infrastructure/postgres/record_deletion.go",
+      "sha256": "0c6ec5ff22467dc8c75b360c37c52a52bbc555b4e26eb7b1d4a1a8aaa33421f5",
+      "url": "https://github.com/janickiy/meet-space/blob/56a0b0721806f7db5ad4e658c856ddfe8ebd6acd/internal/infrastructure/postgres/record_deletion.go"
+    },
+    "B-invitation-model": {
+      "repository": "backend",
+      "path": "internal/domain/conferences/invitations.go",
+      "sha256": "0357a7371e7dbabfb8264221a2928b767d00556f45cb09241bae2d4da707f82d",
+      "url": "https://github.com/janickiy/meet-space/blob/56a0b0721806f7db5ad4e658c856ddfe8ebd6acd/internal/domain/conferences/invitations.go"
+    },
+    "B-avatar": {
+      "repository": "backend",
+      "path": "internal/usecase/profile/avatar.go",
+      "sha256": "24ecb47234f6274e6946c595a2fea6198d70509555ec171a5b1dfac60113fc61",
+      "url": "https://github.com/janickiy/meet-space/blob/56a0b0721806f7db5ad4e658c856ddfe8ebd6acd/internal/usecase/profile/avatar.go"
+    },
+    "B-group-handler": {
+      "repository": "backend",
+      "path": "internal/app/personal/group_handler.go",
+      "sha256": "373facb00736474aa393a6dc22d81089045aa53f56b97aed622b0ca526801672",
+      "url": "https://github.com/janickiy/meet-space/blob/56a0b0721806f7db5ad4e658c856ddfe8ebd6acd/internal/app/personal/group_handler.go"
+    },
+    "B-group-policy": {
+      "repository": "backend",
+      "path": "internal/infrastructure/postgres/group_repository.go",
+      "sha256": "5bea77980b050dfde157bd97da310ddd5b7c530673e616938b708816ed47fa95",
+      "url": "https://github.com/janickiy/meet-space/blob/56a0b0721806f7db5ad4e658c856ddfe8ebd6acd/internal/infrastructure/postgres/group_repository.go"
+    },
+    "B-personal-handler": {
+      "repository": "backend",
+      "path": "internal/app/personal/handler.go",
+      "sha256": "23eb2065ef632c4ced85fb170a2617d4dea18af57d7b7ea45f97a1da02c2dee8",
+      "url": "https://github.com/janickiy/meet-space/blob/56a0b0721806f7db5ad4e658c856ddfe8ebd6acd/internal/app/personal/handler.go"
+    },
+    "B-folder-handler": {
+      "repository": "backend",
+      "path": "internal/app/folders/handler.go",
+      "sha256": "8f23504811b91ab04311febce93652a8c38b1e3e53d4a4251902480aa199efb1",
+      "url": "https://github.com/janickiy/meet-space/blob/56a0b0721806f7db5ad4e658c856ddfe8ebd6acd/internal/app/folders/handler.go"
+    }
+  },
+  "design_files": [
+    {
+      "path": ".gitignore",
+      "bytes": 80,
+      "sha256": "3fc661003381222464e61d1a969127e0da7f261346009c0ae56524c534c3b98a"
+    },
+    {
+      "path": "README.md",
+      "bytes": 3246,
+      "sha256": "3dca700313eb40fc7eb00b5cd65c8c16a91c4952ec1bcb46361b141129fc2461"
+    },
+    {
+      "path": "accounts-settings-preview.png",
+      "bytes": 106025,
+      "sha256": "47c139472738452114f45fc2c7c4da3a4aa57d528b8ccdf661f8ea694671d9b9"
+    },
+    {
+      "path": "audio-settings-preview.png",
+      "bytes": 99187,
+      "sha256": "1089bd45b36d0b4c713493ca333e8016422cc22a2153bc888ca7b2ef13911ef7"
+    },
+    {
+      "path": "avatar-no-rotation-preview.png",
+      "bytes": 95011,
+      "sha256": "c936ece9b7a64ad6cf5e8b030e60e1f058a3bf49d4657fa7c13709b598aaf7ef"
+    },
+    {
+      "path": "avatars-preview.png",
+      "bytes": 65184,
+      "sha256": "639f3d85fdd7a4bd330a64814860b82d02f112cf88ecef4fa29b588dd5582ed9"
+    },
+    {
+      "path": "chat-actions-preview.png",
+      "bytes": 62754,
+      "sha256": "45411593c979697bd1ea3dc141a5e028ce335c32566260bfb75d96b4deab0bc8"
+    },
+    {
+      "path": "group-actions-final.png",
+      "bytes": 62441,
+      "sha256": "08bb019a303fe3e422ea5efb5ae755a10eaad2f879e7932ac402fbcae40e45e9"
+    },
+    {
+      "path": "group-avatar-preview.png",
+      "bytes": 54985,
+      "sha256": "a94679ada971cedd072da31b2fc21c46f544dbe3b5e7c734ed7dc820fb430fca"
+    },
+    {
+      "path": "group-edit-preview.png",
+      "bytes": 60204,
+      "sha256": "85953025cbed556379f06f348db90ad527e569354311e59debb8928c83cec654"
+    },
+    {
+      "path": "leave-group-preview.png",
+      "bytes": 63405,
+      "sha256": "8fa4d2a4e6fe5f84a2f99b3433a1a668ed535b4a0e19bf29bc5b6274f1f20c18"
+    },
+    {
+      "path": "meetspace-refresh-20261016/account-settings.css",
+      "bytes": 25686,
+      "sha256": "fa07324215bdcff20fe791263521b6cc5f21e9e00af999952b17964295902244"
+    },
+    {
+      "path": "meetspace-refresh-20261016/account-settings.js",
+      "bytes": 28786,
+      "sha256": "107f61a3474dd5688f96b6ed9ff7666f814dd9f87b6cd85f2dbd376aecc55342"
+    },
+    {
+      "path": "meetspace-refresh-20261016/accounts.js",
+      "bytes": 18516,
+      "sha256": "6a6037420223e2f7506926de2806b3a3f54f2ba0be202e1184f8b2ccc545cd82"
+    },
+    {
+      "path": "meetspace-refresh-20261016/app.css",
+      "bytes": 46721,
+      "sha256": "335d246598d74ab72229917f87ab2385ed2bc3d2b0c416ca7c7c7df4fa948008"
+    },
+    {
+      "path": "meetspace-refresh-20261016/assets/brand-mark.svg",
+      "bytes": 7371,
+      "sha256": "01e88844cb638cf853e5b9c0af8166f847d6a1029e16602af59a08616c19f539"
+    },
+    {
+      "path": "meetspace-refresh-20261016/assets/icons.js",
+      "bytes": 71963,
+      "sha256": "6078c94b3fd1e8bed0928bfadd71f41886ed731822621ab43881998d2a267f68"
+    },
+    {
+      "path": "meetspace-refresh-20261016/assets/inter-cyrillic-400-normal.woff2",
+      "bytes": 7712,
+      "sha256": "f0bb586459ce8f09b238285040f17e3e9e9538b2c5a7aae0775194e33c36c3c3"
+    },
+    {
+      "path": "meetspace-refresh-20261016/assets/inter-cyrillic-600-normal.woff2",
+      "bytes": 7972,
+      "sha256": "6c2a37f82a676bcd441b735e4e2cda4edb8873a059ab9c362a84f0711f257041"
+    },
+    {
+      "path": "meetspace-refresh-20261016/assets/inter-latin-400-normal.woff2",
+      "bytes": 23664,
+      "sha256": "8909904ab6c872eb994093482a88a28eca2cd95912d7b6fecd72103b0dc07edc"
+    },
+    {
+      "path": "meetspace-refresh-20261016/assets/inter-latin-600-normal.woff2",
+      "bytes": 24452,
+      "sha256": "f9a06e79cd3a2a20951c0f0e28f66dd0e6d3fda73911d640a2125c8fcb78f21a"
+    },
+    {
+      "path": "meetspace-refresh-20261016/assets/meeting-agenda.txt",
+      "bytes": 452,
+      "sha256": "29166fc18fc499c18fc3a59bdd8a955f80083c02905f3b070b55acc3ac9a50bb"
+    },
+    {
+      "path": "meetspace-refresh-20261016/avatars.css",
+      "bytes": 14308,
+      "sha256": "a6191ec8b7a615120d9473fafbf2f44c082ce7e9c845bfa6e339661e57ccf509"
+    },
+    {
+      "path": "meetspace-refresh-20261016/avatars.js",
+      "bytes": 15009,
+      "sha256": "bf45fda8e999d0b91764ce71928a8e58bd38137ef62ee70796cd2fb221005bfc"
+    },
+    {
+      "path": "meetspace-refresh-20261016/call-meeting.css",
+      "bytes": 8371,
+      "sha256": "9fe98f3930e7ae004b641ae15a73b6af8975e6c092c9a30328bce7110e88d401"
+    },
+    {
+      "path": "meetspace-refresh-20261016/call-meeting.js",
+      "bytes": 9847,
+      "sha256": "e9f796c5bf961b8d6ffbc2af3001d108ea0dc452e988ef573c5d3380f646cbc6"
+    },
+    {
+      "path": "meetspace-refresh-20261016/chat-refresh.css",
+      "bytes": 21529,
+      "sha256": "06b5a243b90b6b76eb8854accc60c4dc19173b329908e05542d1bbaaa119be56"
+    },
+    {
+      "path": "meetspace-refresh-20261016/chat-refresh.js",
+      "bytes": 37173,
+      "sha256": "72570306851b3f97b45cb25bd0aaa9293c1c992e0fb508c0d80b6521ea37f86e"
+    },
+    {
+      "path": "meetspace-refresh-20261016/folders-refresh.css",
+      "bytes": 4674,
+      "sha256": "57aaa311ed6184de09433ced32a7ca339a1c85517e0eb15b0e5d9da16abf0ce8"
+    },
+    {
+      "path": "meetspace-refresh-20261016/folders-refresh.js",
+      "bytes": 14202,
+      "sha256": "5c39203be5c78a0a0309f4dc94980bfb59eac99d86853766adad9c32f7330748"
+    },
+    {
+      "path": "meetspace-refresh-20261016/four-tabs.html",
+      "bytes": 334,
+      "sha256": "2fc90da79fc03a4d97a882a42ebba7e1b9f1cc95f91a1fe21974e7a3babe2a80"
+    },
+    {
+      "path": "meetspace-refresh-20261016/gallery.css",
+      "bytes": 12033,
+      "sha256": "b3defd4c82ca4b2262dcb6bca55ce67ea44b8ff59e9c9aa600ac6cbfa3a44b77"
+    },
+    {
+      "path": "meetspace-refresh-20261016/gallery.js",
+      "bytes": 16651,
+      "sha256": "63f041785f7f449cc5fa961befdd955fe4fa93ec6f73538eb14c9d281500af69"
+    },
+    {
+      "path": "meetspace-refresh-20261016/groups.css",
+      "bytes": 9543,
+      "sha256": "c3ef15f043490b6613ead36aaebd94a356eaa3d4879ff8e23bd3cc814ca8a7ca"
+    },
+    {
+      "path": "meetspace-refresh-20261016/groups.js",
+      "bytes": 8433,
+      "sha256": "8de197805e978d6fb231020c8b1f4c391210edf989350ae985012f471a749461"
+    },
+    {
+      "path": "meetspace-refresh-20261016/handoff.css",
+      "bytes": 6380,
+      "sha256": "83bd07fd24fae740b38f113f7e2edb4527602b623233d28b67b93bf475652b54"
+    },
+    {
+      "path": "meetspace-refresh-20261016/handoff.html",
+      "bytes": 39090,
+      "sha256": "2105d717ab62b53a6f532a94c33459912da04d56a3a17b9bc3f2c91b9a155436"
+    },
+    {
+      "path": "meetspace-refresh-20261016/home.css",
+      "bytes": 13724,
+      "sha256": "eaf1ed2e927a5f5d4189f891b5cbf0377405c629f191faa6283042856cda516b"
+    },
+    {
+      "path": "meetspace-refresh-20261016/index.html",
+      "bytes": 6804,
+      "sha256": "5f15571acb26bee228c3293097fe6272ff1be89bdaedc688c140226126ddcfef"
+    },
+    {
+      "path": "meetspace-refresh-20261016/meetings.css",
+      "bytes": 13169,
+      "sha256": "37dc22393ef1b779a54ebaf678db946a9f75b132be9c78645237368f48952e01"
+    },
+    {
+      "path": "meetspace-refresh-20261016/meetings.js",
+      "bytes": 21445,
+      "sha256": "fa2a0612a13301dcc15f410d3a2ed55cad318f93845a02b15b2e79cd211bceda"
+    },
+    {
+      "path": "meetspace-refresh-20261016/notifications.css",
+      "bytes": 9352,
+      "sha256": "b3dc3fdafcd212b7503fac262934e11c067d340a4266e25e5a139f75cee7c4ae"
+    },
+    {
+      "path": "meetspace-refresh-20261016/notifications.js",
+      "bytes": 8500,
+      "sha256": "12b5a4a2d18f561cbba17205361d59bb8158aa9eecaf8a602f9bf5fa4f153489"
+    },
+    {
+      "path": "meetspace-refresh-20261016/onboarding.css",
+      "bytes": 36842,
+      "sha256": "18d1eacffa162df7cc5777faafc14bdf0860a48edef54c29df2268b6c764d800"
+    },
+    {
+      "path": "meetspace-refresh-20261016/onboarding.js",
+      "bytes": 30658,
+      "sha256": "ba8570c55ebcf8fc7c7b64ea5c9a9fde7a9ec28f39ccde526074b90364e79f79"
+    },
+    {
+      "path": "meetspace-refresh-20261016/personal-call.css",
+      "bytes": 8624,
+      "sha256": "c4854bfc35ab0fd36d0ec4f6397b7fbcdec3f57f7efaf588f937aa1427f3502c"
+    },
+    {
+      "path": "meetspace-refresh-20261016/personal-call.js",
+      "bytes": 8418,
+      "sha256": "b12b81262573cb7ee015e9d46a494f401209a360f3c69c46a3c3a61cab99d1c3"
+    },
+    {
+      "path": "meetspace-refresh-20261016/preview.html",
+      "bytes": 2637,
+      "sha256": "c0524960cc588d8aa021f67d700e6f9c1296311f7a09e69d0f60417cf78b173c"
+    },
+    {
+      "path": "meetspace-refresh-20261016/previews/account-audio-tablet.jpg",
+      "bytes": 55860,
+      "sha256": "c846c100cc353def5778c090219b5228307f93be8190315264d5e9a81f9f710b"
+    },
+    {
+      "path": "meetspace-refresh-20261016/previews/account-phone.jpg",
+      "bytes": 28149,
+      "sha256": "9ea3df275dc80869ce31e7a112e0dc84ce70e3bf1dcff0d4b2d1eb51fffc52c4"
+    },
+    {
+      "path": "meetspace-refresh-20261016/previews/account-profile-phone.jpg",
+      "bytes": 25892,
+      "sha256": "9a5402dbaa5a2ccbebfda0109cae4c583c7d96b8d5c73c49453c1f1de77368ac"
+    },
+    {
+      "path": "meetspace-refresh-20261016/previews/account-profile-tablet-dark.jpg",
+      "bytes": 47515,
+      "sha256": "f8918bea4060ad013d9c4d1cd112afae70e74e7fe416013e84da5e29b88d8ce6"
+    },
+    {
+      "path": "meetspace-refresh-20261016/previews/account-profile-tablet.jpg",
+      "bytes": 47358,
+      "sha256": "b0707deefc1d3163a6ba4894cbc03d5a2e71d41c2e1bd80c06679215ac54f1a6"
+    },
+    {
+      "path": "meetspace-refresh-20261016/previews/call-comments-gallery.jpg",
+      "bytes": 69588,
+      "sha256": "f2e3470d1322d221e7422cab51787c1ddfd4c75c1199d44069f3a05444e2dd93"
+    },
+    {
+      "path": "meetspace-refresh-20261016/previews/call-comments-phone.jpg",
+      "bytes": 41948,
+      "sha256": "10e794954ae71703116a32baac305aeb2179950d3882f8e46c81edb3701468a2"
+    },
+    {
+      "path": "meetspace-refresh-20261016/previews/call-comments-tablet.jpg",
+      "bytes": 78382,
+      "sha256": "41e8a82b7b4f815a9ef3dcb04d66583a167415a9777b89a4121bee3ab192f8f9"
+    },
+    {
+      "path": "meetspace-refresh-20261016/previews/call-recording-phone.jpg",
+      "bytes": 21723,
+      "sha256": "8a7dbf8c2b92134bb6f0376a02688de54fe2af390ab41667cc9eee54bc6c5086"
+    },
+    {
+      "path": "meetspace-refresh-20261016/previews/call-redesign-phone.jpg",
+      "bytes": 33284,
+      "sha256": "4c2d095c7cf102de8fda901aaa46acfd71621b526d90345fb713c3791e64c939"
+    },
+    {
+      "path": "meetspace-refresh-20261016/previews/call-redesign-tablet.jpg",
+      "bytes": 68594,
+      "sha256": "9b17f84f682fc5ffdace335b9f49feb380b90b821e49470b646163019a5afdc5"
+    },
+    {
+      "path": "meetspace-refresh-20261016/previews/call-tablet.png",
+      "bytes": 147121,
+      "sha256": "4045d46d0eb5b369d14e60fd19186b56689464d1082eab6ef2d86b169643032c"
+    },
+    {
+      "path": "meetspace-refresh-20261016/previews/calls-phone-dark.png",
+      "bytes": 91665,
+      "sha256": "b4069859639b9352f811908c9c27966c13d4ab81de345f81c8d14e3ccacc84ca"
+    },
+    {
+      "path": "meetspace-refresh-20261016/previews/calls-phone.png",
+      "bytes": 91727,
+      "sha256": "4bfbcd7a91274501c67fa187fc3501eed33a3e2bb3a7c9fff5e30fd86c76d824"
+    },
+    {
+      "path": "meetspace-refresh-20261016/previews/calls-tablet.png",
+      "bytes": 175570,
+      "sha256": "0fb1dfe548d8268a9cc246810662bd7cf4c79ea7f49a32cf1c9e75a014d93203"
+    },
+    {
+      "path": "meetspace-refresh-20261016/previews/chats-header-no-call.jpg",
+      "bytes": 146041,
+      "sha256": "145a49ee43e9db352ebdd3a7b4e0b6ca0e17f90bdbff9cfe8c3e4043894375ce"
+    },
+    {
+      "path": "meetspace-refresh-20261016/previews/chats-new-button-tablet.jpg",
+      "bytes": 64131,
+      "sha256": "7a3c889796a3790027278ea1c71d4e5fdcb94d90a014dd82662fb42fedf76b92"
+    },
+    {
+      "path": "meetspace-refresh-20261016/previews/connection-phone.jpg",
+      "bytes": 47576,
+      "sha256": "31a10d428f6227bed4bc14828f013ce4f119ec1bcfeea5a99747977e38ec8829"
+    },
+    {
+      "path": "meetspace-refresh-20261016/previews/contact-no-call-tablet.jpg",
+      "bytes": 25790,
+      "sha256": "0b78cf2af6b330868ecd2bd6b9448e76ca24d85e0de1c09663323497835eefa0"
+    },
+    {
+      "path": "meetspace-refresh-20261016/previews/four-tabs.png",
+      "bytes": 523383,
+      "sha256": "93823e2e273114859ccc119688dbfc040343ff6c37eed83a9c3827951ec6134b"
+    },
+    {
+      "path": "meetspace-refresh-20261016/previews/gallery-account.jpg",
+      "bytes": 126361,
+      "sha256": "99533479e4e24ec0176d7a4912b9669ec5cf6cb045d21f33e8f7d4318d1814fc"
+    },
+    {
+      "path": "meetspace-refresh-20261016/previews/gallery-connection.jpg",
+      "bytes": 115334,
+      "sha256": "ea1eedcc046bd48ab8dc09a30ef401ee19dfef22abe2a0e85701d8f80f32a85c"
+    },
+    {
+      "path": "meetspace-refresh-20261016/previews/gallery-meetings.jpg",
+      "bytes": 97695,
+      "sha256": "9c8a6c4d88581de295d497fe0a6218c7dee6dd4e7511c1d129e00e8ae2c9e113"
+    },
+    {
+      "path": "meetspace-refresh-20261016/previews/gallery.png",
+      "bytes": 600004,
+      "sha256": "d6ef07a8d4879c8fcd1c9fbb03f5c498a9ba4c3584488a7331ca51b61ddcfb8e"
+    },
+    {
+      "path": "meetspace-refresh-20261016/previews/home-phone-dark.png",
+      "bytes": 121557,
+      "sha256": "f4473aba228e8d89de718eff26dc9538870ea4e3e8886248b39cc70a0495f328"
+    },
+    {
+      "path": "meetspace-refresh-20261016/previews/home-phone.png",
+      "bytes": 149446,
+      "sha256": "50754839f168dc5e45e96121f55faeffd0e69064addf2076f439cb4c87d835ad"
+    },
+    {
+      "path": "meetspace-refresh-20261016/previews/home-portrait.png",
+      "bytes": 322840,
+      "sha256": "8e39b7c28bd72f945d910e295d6a39b0a425e4b3118e9797013015ab6e07a01d"
+    },
+    {
+      "path": "meetspace-refresh-20261016/previews/home-tablet.png",
+      "bytes": 326684,
+      "sha256": "ab4fa16e8c7e611b0babb564cffb2862dfe43712103e525e28970b76216a8b06"
+    },
+    {
+      "path": "meetspace-refresh-20261016/previews/meetings-phone-dark.jpg",
+      "bytes": 30296,
+      "sha256": "90bb1a84e12b72a7effe5f5b3fa5f92c20bc85cf8734272c98047c443d408315"
+    },
+    {
+      "path": "meetspace-refresh-20261016/previews/meetings-phone.jpg",
+      "bytes": 30913,
+      "sha256": "e23b7c1f63e99c2c0103b642ddf865831b0bba29a3d3a7747bc1c4f4bf90958a"
+    },
+    {
+      "path": "meetspace-refresh-20261016/previews/meetings-tablet-dark.jpg",
+      "bytes": 54049,
+      "sha256": "0a6896308950660f213c1eece9afc37af72eed6ac0e9cbb05b0f5ea5859db152"
+    },
+    {
+      "path": "meetspace-refresh-20261016/previews/meetings-tablet-portrait-dark.jpg",
+      "bytes": 62323,
+      "sha256": "acb941d79b6f106f0ac5dd3aaecb6869df8b8bd68f8f72a8bbca7c73111e5745"
+    },
+    {
+      "path": "meetspace-refresh-20261016/previews/meetings-tablet-portrait.jpg",
+      "bytes": 62445,
+      "sha256": "b50b8b46726605847c5573a97236f9f86c6e6eba46403a5d18181c3f5392ae10"
+    },
+    {
+      "path": "meetspace-refresh-20261016/previews/meetings-tablet.jpg",
+      "bytes": 54040,
+      "sha256": "b122842912dd514334a8ef0d17ee2d2fe74478846c9c0c6863063c676f08e7c9"
+    },
+    {
+      "path": "meetspace-refresh-20261016/previews/messages-phone-dark.png",
+      "bytes": 136547,
+      "sha256": "176066f726b60be70e745cc6a3d2bd6c64efcfe2140f6740d687ef93e4070209"
+    },
+    {
+      "path": "meetspace-refresh-20261016/previews/messages-tablet.png",
+      "bytes": 254830,
+      "sha256": "a65b55f95bc51de0ce8ddf48f3190a5b0e2784edbf6daa3efa9ec893a64447cf"
+    },
+    {
+      "path": "meetspace-refresh-20261016/previews/personal-call-chat-phone.jpg",
+      "bytes": 27854,
+      "sha256": "5f79cc696b578d8e7489289d7b0d9041e4c30b619f74f16f3aeba2d57c1e422e"
+    },
+    {
+      "path": "meetspace-refresh-20261016/previews/personal-call-connected-phone.jpg",
+      "bytes": 22675,
+      "sha256": "d8c3012ac1423420d9154ddb169a1ae3ce7a9449e8255ea4ceffc84bdb80944e"
+    },
+    {
+      "path": "meetspace-refresh-20261016/previews/personal-call-outgoing-phone.jpg",
+      "bytes": 20517,
+      "sha256": "e7059e55224bd599c6a3f4128aa3f126a5f180c75c92b7468e3c86eb0a174d79"
+    },
+    {
+      "path": "meetspace-refresh-20261016/previews/personal-call-tablet.jpg",
+      "bytes": 32751,
+      "sha256": "aa098e7b231a0ac1a9b4ed8b80acd5dce684ca5ec5d4a4eba386839060aa8dfe"
+    },
+    {
+      "path": "meetspace-refresh-20261016/previews/profile-phone-dark.png",
+      "bytes": 103587,
+      "sha256": "e94aa8d2f85f7d172fc76580f9db8a801eaf24689e8f9aeb246adc0b2e717409"
+    },
+    {
+      "path": "meetspace-refresh-20261016/previews/profile-tablet.png",
+      "bytes": 132924,
+      "sha256": "0a20b4a38e15beabe9c8f440d10ccbe44ab72589f7d1983d1617312051e2cb42"
+    },
+    {
+      "path": "meetspace-refresh-20261016/previews/three-tabs.jpg",
+      "bytes": 133696,
+      "sha256": "a06133980394684a05f0d4e2e4efc6c24e6171345c57dba5a16b9187cabdd289"
+    },
+    {
+      "path": "meetspace-refresh-20261016/previews/welcome-phone.png",
+      "bytes": 195301,
+      "sha256": "3b67bf87844ada3b8563b67bcdba4d225b0632a4b075526487387a2a49245f89"
+    },
+    {
+      "path": "meetspace-refresh-20261016/qa-call-comments-report.json",
+      "bytes": 1266,
+      "sha256": "e49e66404ecaf7536cb19801e2e661a66bf2a7306b6edfd517c9db9375810643"
+    },
+    {
+      "path": "meetspace-refresh-20261016/qa-call-redesign-report.json",
+      "bytes": 1406,
+      "sha256": "8662c2faee87c05cf4f19cf2c1bf8afba0748e0ca9bc31398d9275f48362b8ce"
+    },
+    {
+      "path": "meetspace-refresh-20261016/qa-chat-connection-report.json",
+      "bytes": 5841,
+      "sha256": "80b5f840255dceb91c705da876e4d735e80f4df831077bbed76a731b17b9555f"
+    },
+    {
+      "path": "meetspace-refresh-20261016/qa-meetings-report.json",
+      "bytes": 15064,
+      "sha256": "ea4ef50ba576a93fa0a653cb277fe6d0bed7645c0136efef6a9a67253a03c079"
+    },
+    {
+      "path": "meetspace-refresh-20261016/qa-personal-call-report.json",
+      "bytes": 1456,
+      "sha256": "8f7a86ca7934e8ed1fc58b0dcadc504c290e5b016bb9caeabbd4b9442e7aa202"
+    },
+    {
+      "path": "meetspace-refresh-20261016/qa-profile-report.json",
+      "bytes": 23929,
+      "sha256": "cee67b27a8fa1fcc2f29c0e0fadd32fb607964368d9370e0d20356356a4a292b"
+    },
+    {
+      "path": "meetspace-refresh-20261016/qa-refresh-report.json",
+      "bytes": 1618,
+      "sha256": "6a463b89af0f0d5086693f21919b374facda71df93d25aa6c480dab55b0dede4"
+    },
+    {
+      "path": "meetspace-refresh-20261016/qa-report.json",
+      "bytes": 90945,
+      "sha256": "4b4f3e477639ca9ba00f375f2952b9f9acc3a6dfd14896eeb44a5e373e8c9a71"
+    },
+    {
+      "path": "meetspace-refresh-20261016/recordings-refresh.css",
+      "bytes": 16802,
+      "sha256": "8ffe4eb20b023b64e5e9c4baeb957f692e45aaad475520f3ffcb53ae171e5221"
+    },
+    {
+      "path": "meetspace-refresh-20261016/recordings-refresh.js",
+      "bytes": 28218,
+      "sha256": "fe542438667b8f1b911a1267974a6e52a8726700c30b31563ffaa2fd7e2fbdf2"
+    },
+    {
+      "path": "meetspace-refresh-20261016/regression-report.json",
+      "bytes": 682,
+      "sha256": "e48cbc4b5b18292978a060d6a99d58d60a12d88ec9974110300debfe11a5f361"
+    },
+    {
+      "path": "meetspace-refresh-20261016/runtime.js",
+      "bytes": 7776,
+      "sha256": "93f014a689d61079d18a218d77ed84d08b56027e2b6b458fe5725c3983bf595c"
+    },
+    {
+      "path": "meetspace-refresh-20261016/screens.js",
+      "bytes": 49638,
+      "sha256": "8bf185bd36ca2f90d49baa93d0a991570d3af1cb2c984b23d3535673d89e077b"
+    },
+    {
+      "path": "meetspace-refresh-20261016/serve.py",
+      "bytes": 871,
+      "sha256": "f96dee5a1a2141f87c04f370683e6aae60c7df8955ef8013b505ae5e8e53c6b4"
+    },
+    {
+      "path": "meetspace-refresh-20261016/telemost.css",
+      "bytes": 21943,
+      "sha256": "2bcb36767c605b39f1c83b297a84db8533b07ed0214d53f1835b73f4ff0f0c1e"
+    },
+    {
+      "path": "meetspace-refresh-20261016/three-tabs.html",
+      "bytes": 8781,
+      "sha256": "ff9728975ec2097e80b1c29a9fb4cccdd23935094506bfadc1c686a55ef8286d"
+    },
+    {
+      "path": "meetspace-refresh-20261016/verify.mjs",
+      "bytes": 31687,
+      "sha256": "4891f7a719f200082e5ee6301d0817887662da76cbe0362c2115c7b68637cc40"
+    },
+    {
+      "path": "meetspace-refresh-20261016/workspace-refresh.css",
+      "bytes": 5281,
+      "sha256": "bec109f4e72c148dfcfd680b73422b353f7f5a0f57558079d6c187340c599ae1"
+    },
+    {
+      "path": "meetspace-refresh-20261016/workspace-refresh.js",
+      "bytes": 16851,
+      "sha256": "26a02ed1cc6f37e71698069e9a1c6100da2b35f75b89d92511867968cbc2ed4e"
+    },
+    {
+      "path": "meetspace-refresh-preview.png",
+      "bytes": 106960,
+      "sha256": "d617d6eb95483ca8ad25102950d7184debf8ef40b143001d5b1fb1e1f0a8ff9e"
+    },
+    {
+      "path": "message-actions-preview.png",
+      "bytes": 55452,
+      "sha256": "27b647e320e7d35f47245d46c0c0af4d70e0b7008aa2b9049d87e289d6247c6c"
+    },
+    {
+      "path": "mobile-save-layout-preview.png",
+      "bytes": 96835,
+      "sha256": "8f4e88bd1a25ceca09dfb15f529f12af2e1e6ae91591f9b24f9ce3a880a6efcb"
+    },
+    {
+      "path": "notification-settings-switches-preview.png",
+      "bytes": 62746,
+      "sha256": "9ed00ffba5de0ba1b2257678dd92e6ce4a9c916ce57bbc51bcc6d3b764477cee"
+    },
+    {
+      "path": "notification-settings-web-preview.png",
+      "bytes": 135753,
+      "sha256": "5490a37dc2da067fde93d21689699ee56a4dac3a03fbcc889c96793601fedce9"
+    },
+    {
+      "path": "notifications-preview.png",
+      "bytes": 70953,
+      "sha256": "5b1219564ddca9065517dc081203284f5be9c2a31a2841f7859a634cec41c288"
+    },
+    {
+      "path": "personal-call-controls-preview.png",
+      "bytes": 56468,
+      "sha256": "2a286118331003f3b36aa040a0bcd22b906dd9e404645f9eba5e4f2be7f43b74"
+    },
+    {
+      "path": "refresh-recording-light.png",
+      "bytes": 97739,
+      "sha256": "6986377313211ad017315d532ee8557361b0ed8b6fdded5d6f394afcf0290d8c"
+    },
+    {
+      "path": "registration-preview.png",
+      "bytes": 107047,
+      "sha256": "0f35c00900b6877bc17da73ed963e64c62ccc7cd873064221f6c925674dfaf5a"
+    },
+    {
+      "path": "tablet-avatar-compact-preview.png",
+      "bytes": 88377,
+      "sha256": "05f3c7b79f69bb5a97e619079a86cd5a31bbef408c116e3b971cbe2634c755be"
+    },
+    {
+      "path": "tablet-avatar-controls-right-preview.png",
+      "bytes": 96059,
+      "sha256": "02785c88c5ead1848d354113629c454233859667a53ccfdbaa7c4f2a61993155"
+    },
+    {
+      "path": "tablet-avatar-crop-420-preview.png",
+      "bytes": 93732,
+      "sha256": "4bd4d2b785a83f42cc1f35e827426e569aed9df5ddea62fcb7d874c986bfe040"
+    },
+    {
+      "path": "video-settings-preview.png",
+      "bytes": 97609,
+      "sha256": "cb555b9632dc05e95327501a4afcb28df471e0ca3e04224899e9cb3ba2448105"
+    }
+  ],
+  "route_declarations": [
+    {
+      "path": "internal/transport/http/call_routes.go",
+      "line": 42,
+      "declaration": "g := router.Group(APIV1Prefix+\"/calls\", private, auth, accountOnly, middleware.RateLimit(limiter, middleware.RateLimitConfig{Enabled: limiter != nil, Rules: rules}))"
+    },
+    {
+      "path": "internal/transport/http/call_routes.go",
+      "line": 43,
+      "declaration": "g.POST(\"\", h.Create)"
+    },
+    {
+      "path": "internal/transport/http/call_routes.go",
+      "line": 44,
+      "declaration": "g.GET(\"/active\", h.Active)"
+    },
+    {
+      "path": "internal/transport/http/call_routes.go",
+      "line": 45,
+      "declaration": "g.GET(\"/:id\", h.Get)"
+    },
+    {
+      "path": "internal/transport/http/call_routes.go",
+      "line": 47,
+      "declaration": "g.POST(\"/:id/\"+action, h.Change(action))"
+    },
+    {
+      "path": "internal/transport/http/chat_actions_routes.go",
+      "line": 56,
+      "declaration": "routes := router.Group(base, private, auth, httpmiddleware.RateLimit(limiter, httpmiddleware.RateLimitConfig{Enabled: limiter != nil, Rules: rules}))"
+    },
+    {
+      "path": "internal/transport/http/chat_actions_routes.go",
+      "line": 57,
+      "declaration": "routes.GET(\"/info\", handler.Info)"
+    },
+    {
+      "path": "internal/transport/http/chat_actions_routes.go",
+      "line": 58,
+      "declaration": "routes.GET(\"/members\", handler.Members)"
+    },
+    {
+      "path": "internal/transport/http/chat_actions_routes.go",
+      "line": 59,
+      "declaration": "routes.PATCH(\"/info\", handler.UpdateInfo)"
+    },
+    {
+      "path": "internal/transport/http/chat_actions_routes.go",
+      "line": 60,
+      "declaration": "routes.GET(\"/preferences\", handler.Preferences)"
+    },
+    {
+      "path": "internal/transport/http/chat_actions_routes.go",
+      "line": 61,
+      "declaration": "routes.PUT(\"/preferences\", handler.SetPreferences)"
+    },
+    {
+      "path": "internal/transport/http/chat_actions_routes.go",
+      "line": 62,
+      "declaration": "routes.DELETE(\"/membership\", handler.Leave)"
+    },
+    {
+      "path": "internal/transport/http/chat_actions_routes.go",
+      "line": 63,
+      "declaration": "routes.GET(\"/messages/search\", handler.Search)"
+    },
+    {
+      "path": "internal/transport/http/chat_actions_routes.go",
+      "line": 64,
+      "declaration": "routes.GET(\"/messages/:messageId/context\", handler.Context)"
+    },
+    {
+      "path": "internal/transport/http/chat_actions_routes.go",
+      "line": 65,
+      "declaration": "routes.GET(\"/materials\", handler.Materials)"
+    },
+    {
+      "path": "internal/transport/http/chat_actions_routes.go",
+      "line": 66,
+      "declaration": "routes.GET(\"/pins\", handler.Pins)"
+    },
+    {
+      "path": "internal/transport/http/chat_actions_routes.go",
+      "line": 67,
+      "declaration": "routes.PUT(\"/pins/:messageId\", handler.SetPin(true))"
+    },
+    {
+      "path": "internal/transport/http/chat_actions_routes.go",
+      "line": 68,
+      "declaration": "routes.DELETE(\"/pins/:messageId\", handler.SetPin(false))"
+    },
+    {
+      "path": "internal/transport/http/chat_routes.go",
+      "line": 76,
+      "declaration": "routes := router.Group(APIV1Prefix+\"/\"+namespace, handlers...)"
+    },
+    {
+      "path": "internal/transport/http/chat_routes.go",
+      "line": 77,
+      "declaration": "routes.GET(\"/:id/messages\", handler.List)"
+    },
+    {
+      "path": "internal/transport/http/chat_routes.go",
+      "line": 78,
+      "declaration": "routes.POST(\"/:id/messages\", handler.Send)"
+    },
+    {
+      "path": "internal/transport/http/chat_routes.go",
+      "line": 79,
+      "declaration": "routes.PATCH(\"/:id/messages/:messageId\", handler.Edit)"
+    },
+    {
+      "path": "internal/transport/http/chat_routes.go",
+      "line": 80,
+      "declaration": "routes.DELETE(\"/:id/messages/:messageId\", handler.Delete)"
+    },
+    {
+      "path": "internal/transport/http/chat_routes.go",
+      "line": 81,
+      "declaration": "routes.GET(\"/:id/chat/read\", handler.ReadState)"
+    },
+    {
+      "path": "internal/transport/http/chat_routes.go",
+      "line": 82,
+      "declaration": "routes.PUT(\"/:id/chat/read\", handler.MarkRead)"
+    },
+    {
+      "path": "internal/transport/http/chat_routes.go",
+      "line": 83,
+      "declaration": "routes.POST(\"/:id/attachments/init\", handler.InitAttachment)"
+    },
+    {
+      "path": "internal/transport/http/chat_routes.go",
+      "line": 84,
+      "declaration": "routes.PUT(\"/:id/attachments/:attachmentId/content\", handler.Upload)"
+    },
+    {
+      "path": "internal/transport/http/chat_routes.go",
+      "line": 85,
+      "declaration": "routes.POST(\"/:id/attachments/:attachmentId/finalize\", handler.FinalizeAttachment)"
+    },
+    {
+      "path": "internal/transport/http/chat_routes.go",
+      "line": 86,
+      "declaration": "routes.GET(\"/:id/attachments/:attachmentId/download\", handler.Download)"
+    },
+    {
+      "path": "internal/transport/http/conference_recording_routes.go",
+      "line": 26,
+      "declaration": "router.GET(APIV1Prefix+\"/recordings\", authentication, handler.Library)"
+    },
+    {
+      "path": "internal/transport/http/conference_recording_routes.go",
+      "line": 27,
+      "declaration": "routes := router.Group(APIV1Prefix+\"/conferences\", authentication)"
+    },
+    {
+      "path": "internal/transport/http/conference_recording_routes.go",
+      "line": 28,
+      "declaration": "routes.POST(\"/:id/recordings\", handler.Start)"
+    },
+    {
+      "path": "internal/transport/http/conference_recording_routes.go",
+      "line": 29,
+      "declaration": "routes.GET(\"/:id/recordings\", handler.List)"
+    },
+    {
+      "path": "internal/transport/http/conference_recording_routes.go",
+      "line": 30,
+      "declaration": "routes.GET(\"/:id/recordings/:recordingId\", handler.Read)"
+    },
+    {
+      "path": "internal/transport/http/conference_recording_routes.go",
+      "line": 31,
+      "declaration": "routes.DELETE(\"/:id/recordings/:recordingId\", handler.Delete)"
+    },
+    {
+      "path": "internal/transport/http/conference_recording_routes.go",
+      "line": 32,
+      "declaration": "routes.POST(\"/:id/recordings/:recordingId/stop\", handler.Stop)"
+    },
+    {
+      "path": "internal/transport/http/engagement_routes.go",
+      "line": 25,
+      "declaration": "group := router.Group(APIV1Prefix+\"/conferences/:id\", auth,"
+    },
+    {
+      "path": "internal/transport/http/engagement_routes.go",
+      "line": 32,
+      "declaration": "group.POST(\"/reactions\", handler.Reaction)"
+    },
+    {
+      "path": "internal/transport/http/folder_routes.go",
+      "line": 45,
+      "declaration": "g := router.Group(APIV1Prefix, private, auth, h.AccountOnly, httpmiddleware.RateLimit(limiter, httpmiddleware.RateLimitConfig{Enabled: limiter != nil, Rules: rules}))"
+    },
+    {
+      "path": "internal/transport/http/folder_routes.go",
+      "line": 46,
+      "declaration": "g.GET(\"/folders\", h.List)"
+    },
+    {
+      "path": "internal/transport/http/folder_routes.go",
+      "line": 47,
+      "declaration": "g.POST(\"/folders\", h.Create)"
+    },
+    {
+      "path": "internal/transport/http/folder_routes.go",
+      "line": 48,
+      "declaration": "g.PUT(\"/folders/order\", h.Order)"
+    },
+    {
+      "path": "internal/transport/http/folder_routes.go",
+      "line": 49,
+      "declaration": "g.GET(\"/folders/:id\", h.Get)"
+    },
+    {
+      "path": "internal/transport/http/folder_routes.go",
+      "line": 50,
+      "declaration": "g.PATCH(\"/folders/:id\", h.Rename)"
+    },
+    {
+      "path": "internal/transport/http/folder_routes.go",
+      "line": 51,
+      "declaration": "g.DELETE(\"/folders/:id\", h.Delete)"
+    },
+    {
+      "path": "internal/transport/http/folder_routes.go",
+      "line": 52,
+      "declaration": "g.GET(\"/folders/:id/items\", h.Items)"
+    },
+    {
+      "path": "internal/transport/http/folder_routes.go",
+      "line": 53,
+      "declaration": "g.GET(\"/folder-items\", h.Candidates)"
+    },
+    {
+      "path": "internal/transport/http/folder_routes.go",
+      "line": 54,
+      "declaration": "g.PUT(\"/folders/:id/items/:kind/:itemId\", h.AddItem)"
+    },
+    {
+      "path": "internal/transport/http/folder_routes.go",
+      "line": 55,
+      "declaration": "g.DELETE(\"/folders/:id/items/:kind/:itemId\", h.RemoveItem)"
+    },
+    {
+      "path": "internal/transport/http/guest_routes.go",
+      "line": 31,
+      "declaration": "router.POST(path, limit, handler.Join)"
+    },
+    {
+      "path": "internal/transport/http/integration_routes.go",
+      "line": 59,
+      "declaration": "notifications := router.Group(APIV1Prefix+\"/notifications\", private, auth, limited)"
+    },
+    {
+      "path": "internal/transport/http/integration_routes.go",
+      "line": 60,
+      "declaration": "notifications.GET(\"/preferences\", handler.Preferences)"
+    },
+    {
+      "path": "internal/transport/http/integration_routes.go",
+      "line": 61,
+      "declaration": "notifications.PUT(\"/preferences\", handler.SavePreferences)"
+    },
+    {
+      "path": "internal/transport/http/integration_routes.go",
+      "line": 62,
+      "declaration": "notifications.GET(\"/devices\", handler.Devices)"
+    },
+    {
+      "path": "internal/transport/http/integration_routes.go",
+      "line": 63,
+      "declaration": "notifications.POST(\"/devices\", handler.RegisterDevice)"
+    },
+    {
+      "path": "internal/transport/http/integration_routes.go",
+      "line": 64,
+      "declaration": "notifications.DELETE(\"/devices/:deviceId\", handler.RevokeDevice)"
+    },
+    {
+      "path": "internal/transport/http/integration_routes.go",
+      "line": 65,
+      "declaration": "integration := router.Group(APIV1Prefix+\"/integrations\", private, auth, limited)"
+    },
+    {
+      "path": "internal/transport/http/integration_routes.go",
+      "line": 66,
+      "declaration": "integration.GET(\"/capabilities\", handler.Capabilities)"
+    },
+    {
+      "path": "internal/transport/http/integration_routes.go",
+      "line": 67,
+      "declaration": "integration.GET(\"/calendars\", handler.Calendars)"
+    },
+    {
+      "path": "internal/transport/http/integration_routes.go",
+      "line": 68,
+      "declaration": "integration.POST(\"/calendars/mock\", handler.MockConnect)"
+    },
+    {
+      "path": "internal/transport/http/integration_routes.go",
+      "line": 69,
+      "declaration": "integration.GET(\"/calendars/:provider/connect\", handler.Connect)"
+    },
+    {
+      "path": "internal/transport/http/integration_routes.go",
+      "line": 70,
+      "declaration": "integration.POST(\"/calendars/:provider/callback\", handler.Callback)"
+    },
+    {
+      "path": "internal/transport/http/integration_routes.go",
+      "line": 71,
+      "declaration": "integration.DELETE(\"/calendars/:provider\", handler.Disconnect)"
+    },
+    {
+      "path": "internal/transport/http/integration_routes.go",
+      "line": 74,
+      "declaration": "router.GET(APIV1Prefix+\"/conferences/:id/calendar\", private, auth, handler.CalendarMappings)"
+    },
+    {
+      "path": "internal/transport/http/invitation_routes.go",
+      "line": 39,
+      "declaration": "group := router.Group(APIV1Prefix+\"/conferences\", private, auth, limited)"
+    },
+    {
+      "path": "internal/transport/http/invitation_routes.go",
+      "line": 40,
+      "declaration": "group.GET(\"/:id/invitation-users\", handler.Search)"
+    },
+    {
+      "path": "internal/transport/http/invitation_routes.go",
+      "line": 41,
+      "declaration": "group.POST(\"/:id/invitations\", handler.Invite)"
+    },
+    {
+      "path": "internal/transport/http/notification_routes.go",
+      "line": 25,
+      "declaration": "group := router.Group(APIV1Prefix+\"/notifications\", auth)"
+    },
+    {
+      "path": "internal/transport/http/notification_routes.go",
+      "line": 26,
+      "declaration": "group.GET(\"\", handler.List)"
+    },
+    {
+      "path": "internal/transport/http/notification_routes.go",
+      "line": 27,
+      "declaration": "group.GET(\"/events\", handler.Events)"
+    },
+    {
+      "path": "internal/transport/http/notification_routes.go",
+      "line": 28,
+      "declaration": "group.POST(\"/:notificationId/read\", handler.Read)"
+    },
+    {
+      "path": "internal/transport/http/personal_asset_routes.go",
+      "line": 48,
+      "declaration": "g := router.Group(APIV1Prefix, private, auth, accountOnly, middleware.RateLimit(limiter, middleware.RateLimitConfig{Enabled: limiter != nil, Rules: rules}))"
+    },
+    {
+      "path": "internal/transport/http/personal_asset_routes.go",
+      "line": 49,
+      "declaration": "g.PUT(\"/conversations/:id/avatar\", h.PutAvatar)"
+    },
+    {
+      "path": "internal/transport/http/personal_asset_routes.go",
+      "line": 50,
+      "declaration": "g.DELETE(\"/conversations/:id/avatar\", h.DeleteAvatar)"
+    },
+    {
+      "path": "internal/transport/http/personal_asset_routes.go",
+      "line": 51,
+      "declaration": "g.GET(\"/conversations/:id/avatar/content\", h.AvatarContent)"
+    },
+    {
+      "path": "internal/transport/http/personal_asset_routes.go",
+      "line": 52,
+      "declaration": "g.GET(\"/conversations/:id/attachments/:attachmentId/content\", h.AttachmentContent)"
+    },
+    {
+      "path": "internal/transport/http/personal_routes.go",
+      "line": 48,
+      "declaration": "g := router.Group(APIV1Prefix, private, auth, h.AccountOnly, httpmiddleware.RateLimit(limiter, httpmiddleware.RateLimitConfig{Enabled: limiter != nil, Rules: rules}))"
+    },
+    {
+      "path": "internal/transport/http/personal_routes.go",
+      "line": 49,
+      "declaration": "g.GET(\"/users\", h.Search)"
+    },
+    {
+      "path": "internal/transport/http/personal_routes.go",
+      "line": 50,
+      "declaration": "g.GET(\"/conversations\", h.List)"
+    },
+    {
+      "path": "internal/transport/http/personal_routes.go",
+      "line": 51,
+      "declaration": "g.POST(\"/conversations/direct\", h.Create)"
+    },
+    {
+      "path": "internal/transport/http/personal_routes.go",
+      "line": 52,
+      "declaration": "g.POST(\"/conversations/group\", h.CreateGroup)"
+    },
+    {
+      "path": "internal/transport/http/personal_routes.go",
+      "line": 53,
+      "declaration": "g.GET(\"/conversations/:id\", h.Get)"
+    },
+    {
+      "path": "internal/transport/http/personal_routes.go",
+      "line": 54,
+      "declaration": "g.GET(\"/conversations/:id/peer-presence\", h.PeerPresence)"
+    },
+    {
+      "path": "internal/transport/http/personal_routes.go",
+      "line": 55,
+      "declaration": "g.PATCH(\"/conversations/:id/preferences\", h.SetConversationPreferences)"
+    },
+    {
+      "path": "internal/transport/http/personal_routes.go",
+      "line": 56,
+      "declaration": "g.POST(\"/conversations/:id/clear-history\", h.ClearDirectHistory)"
+    },
+    {
+      "path": "internal/transport/http/personal_routes.go",
+      "line": 57,
+      "declaration": "g.POST(\"/conversations/:id/hide\", h.HideDirectConversation)"
+    },
+    {
+      "path": "internal/transport/http/personal_routes.go",
+      "line": 58,
+      "declaration": "g.GET(\"/conversations/:id/pins\", h.Pins)"
+    },
+    {
+      "path": "internal/transport/http/personal_routes.go",
+      "line": 59,
+      "declaration": "g.PUT(\"/conversations/:id/pins/:messageId\", h.SetPin(true))"
+    },
+    {
+      "path": "internal/transport/http/personal_routes.go",
+      "line": 60,
+      "declaration": "g.DELETE(\"/conversations/:id/pins/:messageId\", h.SetPin(false))"
+    },
+    {
+      "path": "internal/transport/http/personal_routes.go",
+      "line": 61,
+      "declaration": "g.PATCH(\"/conversations/:id\", h.UpdateGroup)"
+    },
+    {
+      "path": "internal/transport/http/personal_routes.go",
+      "line": 62,
+      "declaration": "g.DELETE(\"/conversations/:id\", h.DeleteGroup)"
+    },
+    {
+      "path": "internal/transport/http/personal_routes.go",
+      "line": 63,
+      "declaration": "g.GET(\"/conversations/:id/members\", h.GroupMembers)"
+    },
+    {
+      "path": "internal/transport/http/personal_routes.go",
+      "line": 64,
+      "declaration": "g.POST(\"/conversations/:id/members\", h.AddGroupMembers)"
+    },
+    {
+      "path": "internal/transport/http/personal_routes.go",
+      "line": 65,
+      "declaration": "g.DELETE(\"/conversations/:id/members/:userId\", h.RemoveGroupMember)"
+    },
+    {
+      "path": "internal/transport/http/personal_routes.go",
+      "line": 66,
+      "declaration": "g.PATCH(\"/conversations/:id/members/:userId\", h.ChangeGroupRole)"
+    },
+    {
+      "path": "internal/transport/http/personal_routes.go",
+      "line": 67,
+      "declaration": "g.POST(\"/conversations/:id/leave\", h.LeaveGroup)"
+    },
+    {
+      "path": "internal/transport/http/personal_routes.go",
+      "line": 68,
+      "declaration": "g.POST(\"/conversations/:id/ownership\", h.TransferGroupOwnership)"
+    },
+    {
+      "path": "internal/transport/http/personal_routes.go",
+      "line": 69,
+      "declaration": "g.POST(\"/conversations/:id/read\", chat.MarkRead)"
+    },
+    {
+      "path": "internal/transport/http/personal_search_routes.go",
+      "line": 43,
+      "declaration": "routes := router.Group(base, private, auth, accountOnly, httpmiddleware.RateLimit(limiter, httpmiddleware.RateLimitConfig{Enabled: limiter != nil, Rules: rules}))"
+    },
+    {
+      "path": "internal/transport/http/personal_search_routes.go",
+      "line": 44,
+      "declaration": "routes.GET(\"/search\", handler.Search)"
+    },
+    {
+      "path": "internal/transport/http/personal_search_routes.go",
+      "line": 45,
+      "declaration": "routes.GET(\"/:messageId/context\", handler.Context)"
+    },
+    {
+      "path": "internal/transport/http/platform_routes.go",
+      "line": 29,
+      "declaration": "public := router.Group(APIV1Prefix + \"/auth\")"
+    },
+    {
+      "path": "internal/transport/http/platform_routes.go",
+      "line": 30,
+      "declaration": "public.POST(\"/register\", auth.Register)"
+    },
+    {
+      "path": "internal/transport/http/platform_routes.go",
+      "line": 31,
+      "declaration": "public.POST(\"/login\", auth.Login)"
+    },
+    {
+      "path": "internal/transport/http/platform_routes.go",
+      "line": 32,
+      "declaration": "public.POST(\"/refresh\", auth.Refresh)"
+    },
+    {
+      "path": "internal/transport/http/platform_routes.go",
+      "line": 33,
+      "declaration": "public.POST(\"/accounts/list\", auth.Accounts)"
+    },
+    {
+      "path": "internal/transport/http/platform_routes.go",
+      "line": 34,
+      "declaration": "public.POST(\"/accounts/switch\", auth.SwitchAccount)"
+    },
+    {
+      "path": "internal/transport/http/platform_routes.go",
+      "line": 36,
+      "declaration": "public.POST(\"/logout\", auth.Logout)"
+    },
+    {
+      "path": "internal/transport/http/platform_routes.go",
+      "line": 38,
+      "declaration": "protected := public.Group(\"\", authentication)"
+    },
+    {
+      "path": "internal/transport/http/platform_routes.go",
+      "line": 39,
+      "declaration": "protected.GET(\"/me\", auth.Me)"
+    },
+    {
+      "path": "internal/transport/http/platform_routes.go",
+      "line": 40,
+      "declaration": "protected.PATCH(\"/me\", auth.UpdateProfile)"
+    },
+    {
+      "path": "internal/transport/http/platform_routes.go",
+      "line": 41,
+      "declaration": "protected.DELETE(\"/me\", auth.DeleteAccount)"
+    },
+    {
+      "path": "internal/transport/http/platform_routes.go",
+      "line": 42,
+      "declaration": "protected.POST(\"/session\", auth.Bootstrap)"
+    },
+    {
+      "path": "internal/transport/http/platform_routes.go",
+      "line": 44,
+      "declaration": "protected.POST(\"/logout\", auth.Logout)"
+    },
+    {
+      "path": "internal/transport/http/platform_routes.go",
+      "line": 47,
+      "declaration": "conferenceRoutes := router.Group(APIV1Prefix+\"/conferences\", authentication)"
+    },
+    {
+      "path": "internal/transport/http/platform_routes.go",
+      "line": 48,
+      "declaration": "conferenceRoutes.POST(\"\", conference.Create)"
+    },
+    {
+      "path": "internal/transport/http/platform_routes.go",
+      "line": 49,
+      "declaration": "conferenceRoutes.GET(\"\", conference.List)"
+    },
+    {
+      "path": "internal/transport/http/platform_routes.go",
+      "line": 50,
+      "declaration": "conferenceRoutes.GET(\"/:id\", conference.Read)"
+    },
+    {
+      "path": "internal/transport/http/platform_routes.go",
+      "line": 51,
+      "declaration": "conferenceRoutes.POST(\"/:id/start\", conference.Transition(conferences.Active))"
+    },
+    {
+      "path": "internal/transport/http/platform_routes.go",
+      "line": 52,
+      "declaration": "conferenceRoutes.POST(\"/:id/finish\", conference.Transition(conferences.Finished))"
+    },
+    {
+      "path": "internal/transport/http/platform_routes.go",
+      "line": 53,
+      "declaration": "conferenceRoutes.POST(\"/:id/cancel\", conference.Transition(conferences.Cancelled))"
+    },
+    {
+      "path": "internal/transport/http/platform_routes.go",
+      "line": 54,
+      "declaration": "conferenceRoutes.POST(\"/:id/join\", conference.Join)"
+    },
+    {
+      "path": "internal/transport/http/platform_routes.go",
+      "line": 55,
+      "declaration": "conferenceRoutes.POST(\"/:id/leave\", conference.Leave)"
+    },
+    {
+      "path": "internal/transport/http/platform_routes.go",
+      "line": 56,
+      "declaration": "conferenceRoutes.GET(\"/:id/participants\", conference.Participants)"
+    },
+    {
+      "path": "internal/transport/http/platform_routes.go",
+      "line": 57,
+      "declaration": "conferenceRoutes.GET(\"/:id/participants/me\", conference.Self)"
+    },
+    {
+      "path": "internal/transport/http/platform_routes.go",
+      "line": 58,
+      "declaration": "conferenceRoutes.POST(\"/:id/participants/:participantId/admission\", conference.Admission)"
+    },
+    {
+      "path": "internal/transport/http/platform_routes.go",
+      "line": 59,
+      "declaration": "conferenceRoutes.PUT(\"/:id/schedule\", conference.Schedule)"
+    },
+    {
+      "path": "internal/transport/http/platform_routes.go",
+      "line": 60,
+      "declaration": "conferenceRoutes.GET(\"/:id/history\", conference.History)"
+    },
+    {
+      "path": "internal/transport/http/platform_routes.go",
+      "line": 61,
+      "declaration": "router.GET(APIV1Prefix+\"/me/conferences\", authentication, conference.Timeline)"
+    },
+    {
+      "path": "internal/transport/http/platform_routes.go",
+      "line": 65,
+      "declaration": "invites := router.Group(APIV1Prefix + \"/conference-invites\")"
+    },
+    {
+      "path": "internal/transport/http/platform_routes.go",
+      "line": 66,
+      "declaration": "invites.GET(\"/:code\", conference.LookupInvite)"
+    },
+    {
+      "path": "internal/transport/http/platform_routes.go",
+      "line": 67,
+      "declaration": "invites.POST(\"/:code/join\", authentication, conference.JoinInvite)"
+    },
+    {
+      "path": "internal/transport/http/platform_routes.go",
+      "line": 81,
+      "declaration": "routes := router.Group(APIV1Prefix+\"/conferences\", authentication)"
+    },
+    {
+      "path": "internal/transport/http/platform_routes.go",
+      "line": 82,
+      "declaration": "routes.PUT(\"/:id/participants/me/media\", handler.Media)"
+    },
+    {
+      "path": "internal/transport/http/platform_routes.go",
+      "line": 83,
+      "declaration": "routes.POST(\"/:id/participants/:participantId/moderation\", handler.Moderate)"
+    },
+    {
+      "path": "internal/transport/http/platform_status_routes.go",
+      "line": 33,
+      "declaration": "router.GET(APIV1Prefix+\"/capabilities\", private, auth, handler.Capabilities)"
+    },
+    {
+      "path": "internal/transport/http/platform_status_routes.go",
+      "line": 34,
+      "declaration": "admin := router.Group(APIV1Prefix+\"/admin\", private, auth, middleware.RequireAdmin(checker))"
+    },
+    {
+      "path": "internal/transport/http/platform_status_routes.go",
+      "line": 35,
+      "declaration": "admin.GET(\"/summary\", handler.Summary)"
+    },
+    {
+      "path": "internal/transport/http/profile_avatar_routes.go",
+      "line": 24,
+      "declaration": "g := router.Group(APIV1Prefix, private, auth, accountOnly, middleware.RateLimit(limiter, middleware.RateLimitConfig{Enabled: limiter != nil, Rules: rules}))"
+    },
+    {
+      "path": "internal/transport/http/profile_avatar_routes.go",
+      "line": 25,
+      "declaration": "g.PUT(\"/auth/me/avatar\", h.Put)"
+    },
+    {
+      "path": "internal/transport/http/profile_avatar_routes.go",
+      "line": 26,
+      "declaration": "g.DELETE(\"/auth/me/avatar\", h.Delete)"
+    },
+    {
+      "path": "internal/transport/http/profile_avatar_routes.go",
+      "line": 27,
+      "declaration": "g.GET(\"/users/:id/avatar/content\", h.Content)"
+    },
+    {
+      "path": "internal/transport/http/router.go",
+      "line": 55,
+      "declaration": "router.GET(\"/health\","
+    },
+    {
+      "path": "internal/transport/http/search_routes.go",
+      "line": 31,
+      "declaration": "router.Group(APIV1Prefix, private, authentication).GET(\"/search\", searchLimit, handler.Search)"
+    },
+    {
+      "path": "internal/transport/http/telemetry_routes.go",
+      "line": 29,
+      "declaration": "router.POST(path, middleware.RateLimit(limiter, middleware.RateLimitConfig{"
+    },
+    {
+      "path": "internal/transport/websocket/handler.go",
+      "line": 211,
+      "declaration": "router.GET(\"/api/v1/conferences/:id/ws\", h.Connect)"
+    },
+    {
+      "path": "internal/transport/websocket/handler.go",
+      "line": 212,
+      "declaration": "router.POST(\"/api/v1/conferences/:id/ws-ticket\", h.Ticket)"
+    },
+    {
+      "path": "internal/transport/websocket/handler.go",
+      "line": 213,
+      "declaration": "router.GET(\"/api/v1/webrtc/config\", h.ICE)"
+    },
+    {
+      "path": "internal/transport/websocket/user_handler.go",
+      "line": 147,
+      "declaration": "r.POST(\"/api/v1/ws-ticket\", h.Ticket)"
+    },
+    {
+      "path": "internal/transport/websocket/user_handler.go",
+      "line": 148,
+      "declaration": "r.GET(\"/api/v1/ws\", h.Connect)"
+    },
+    {
+      "path": "internal/operations/runtime.go",
+      "line": 281,
+      "declaration": "router.GET(\"/version\", gin.WrapF(buildinfo.Handler))"
+    },
+    {
+      "path": "internal/operations/runtime.go",
+      "line": 282,
+      "declaration": "router.GET(\"/operations/drain\", gin.WrapF(r.DrainStatus))"
+    },
+    {
+      "path": "internal/operations/runtime.go",
+      "line": 283,
+      "declaration": "router.POST(\"/operations/drain\", gin.WrapF(r.DrainStatus))"
+    },
+    {
+      "path": "internal/operations/runtime.go",
+      "line": 284,
+      "declaration": "router.GET(\"/health/live\", gin.WrapF(r.Live))"
+    },
+    {
+      "path": "internal/operations/runtime.go",
+      "line": 285,
+      "declaration": "router.GET(\"/health/ready\", gin.WrapF(r.Readiness))"
+    },
+    {
+      "path": "internal/operations/runtime.go",
+      "line": 286,
+      "declaration": "router.GET(\"/metrics\", gin.WrapF(r.Metrics))"
+    }
+  ],
+  "android_modules": {
+    "app/src/main": 75,
+    "core/data/src/main": 20,
+    "core/media/src/main": 10,
+    "core/ssh/src/main": 11
+  }
+}

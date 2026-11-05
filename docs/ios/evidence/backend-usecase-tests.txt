@@ -1,0 +1,12 @@
+$ go test ./internal/usecase/auth ./internal/usecase/calls ./internal/usecase/conferences ./internal/usecase/chat ./internal/usecase/personal ./internal/usecase/realtime ./internal/usecase/media ./internal/usecase/recordings ./internal/usecase/integrations
+ok  	github.com/janickiy/meet-space/internal/usecase/auth	0.775s
+?   	github.com/janickiy/meet-space/internal/usecase/calls	[no test files]
+?   	github.com/janickiy/meet-space/internal/usecase/conferences	[no test files]
+ok  	github.com/janickiy/meet-space/internal/usecase/chat	0.796s
+ok  	github.com/janickiy/meet-space/internal/usecase/personal	0.967s
+?   	github.com/janickiy/meet-space/internal/usecase/realtime	[no test files]
+?   	github.com/janickiy/meet-space/internal/usecase/media	[no test files]
+ok  	github.com/janickiy/meet-space/internal/usecase/recordings	0.764s
+?   	github.com/janickiy/meet-space/internal/usecase/integrations	[no test files]
+
+exit_code=0
