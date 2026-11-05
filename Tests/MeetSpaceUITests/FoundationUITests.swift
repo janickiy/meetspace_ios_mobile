@@ -25,7 +25,7 @@ import XCTest
         let app = launch()
         XCTAssertTrue(app.buttons["connectServer"].waitForExistence(timeout: 10))
         capture(app, name: "welcome-light")
-        XCTAssertFalse(app.otherElements["demoBanner"].exists)
+        XCTAssertFalse(app.staticTexts["demoBanner"].exists)
         let demo = revealDemoLink(app)
         XCTAssertTrue(demo.isHittable); demo.tap()
         XCTAssertTrue(app.buttons["exitDemo"].waitForExistence(timeout: 5))

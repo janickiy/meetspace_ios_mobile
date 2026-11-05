@@ -13,7 +13,7 @@ public struct MeetSpaceRootView: View {
             else { OnboardingView(model: model) }
         }
         .font(MSTheme.font()).foregroundStyle(MSTheme.ink).tint(MSTheme.accent)
-        .buttonStyle(.plain)
+        .buttonStyle(MSTextButtonStyle())
         .preferredColorScheme(colorScheme)
         .background(MSTheme.background)
         .task {
@@ -83,6 +83,7 @@ private struct WelcomeView: View {
             }.padding(.top, 6)
             Button(tr("Посмотреть интерфейс")) { model.enterDemo() }
                 .font(MSTheme.font(13, weight: .semibold)).frame(maxWidth: .infinity, minHeight: 44)
+                .contentShape(Rectangle())
                 .accessibilityIdentifier("openDemo")
         }
     }

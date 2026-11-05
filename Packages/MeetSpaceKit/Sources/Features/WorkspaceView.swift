@@ -7,12 +7,12 @@ struct WorkspaceView: View {
     var body: some View {
         VStack(spacing: 0) {
             HStack(spacing: 8) {
-                Image(systemName: "eye")
+                Image(systemName: "eye").accessibilityHidden(true)
                 Text(tr("Демо · данные из макетов")).font(MSTheme.font(11, weight: .semibold))
+                    .accessibilityIdentifier("demoBanner")
                 Spacer(minLength: 0)
                 Button(tr("Выйти")) { model.leaveDemo() }.frame(minHeight: 44).accessibilityIdentifier("exitDemo")
             }.padding(.horizontal, 20).background(MSTheme.accentSoft).foregroundStyle(MSTheme.accent)
-                .accessibilityIdentifier("demoBanner")
             TabView(selection: $model.tab) {
                 stack(tab: .meetings, path: $model.meetingsPath) { MeetingsView(model: model) }
                 stack(tab: .messages, path: $model.messagesPath) { MessagesView(model: model) }
@@ -39,7 +39,7 @@ struct WorkspaceView: View {
                 Image(systemName: icon).font(.system(size: 21))
                 Text(tr(title)).font(MSTheme.font(10, weight: .semibold, relativeTo: .caption))
             }.frame(maxWidth: .infinity, minHeight: 54).padding(.bottom, 3)
-                .foregroundStyle(model.tab == tab ? MSTheme.accent : MSTheme.muted)
+                .foregroundStyle(model.tab == tab ? MSTheme.accent : MSTheme.muted).contentShape(Rectangle())
         }.buttonStyle(.plain).accessibilityIdentifier("tab.\(tab.rawValue)")
             .accessibilityAddTraits(model.tab == tab ? .isSelected : [])
     }

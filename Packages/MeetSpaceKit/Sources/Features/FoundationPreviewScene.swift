@@ -20,7 +20,7 @@ public struct FoundationPreviewScene: View {
             case "profile": ProfileView(model: model)
             default: OnboardingView(model: model)
             }
-        }.font(MSTheme.font()).foregroundStyle(MSTheme.ink).tint(MSTheme.accent).buttonStyle(.plain).background(MSTheme.background)
+        }.font(MSTheme.font()).foregroundStyle(MSTheme.ink).tint(MSTheme.accent).buttonStyle(MSTextButtonStyle()).background(MSTheme.background)
     }
 }
 #endif

@@ -95,6 +95,16 @@ public struct MSButtonStyle: ButtonStyle {
     }
 }
 
+public struct MSTextButtonStyle: ButtonStyle {
+    @Environment(\.isEnabled) private var isEnabled
+    public init() {}
+    public func makeBody(configuration: Configuration) -> some View {
+        configuration.label.frame(minWidth: 44, minHeight: 44).contentShape(Rectangle())
+            .foregroundStyle(MSTheme.accent)
+            .opacity(isEnabled ? (configuration.isPressed ? 0.65 : 1) : 0.45)
+    }
+}
+
 public struct IconButton: View {
     private let symbol: String
     private let label: String
@@ -103,7 +113,7 @@ public struct IconButton: View {
         self.symbol = symbol; self.label = label; self.action = action
     }
     public var body: some View {
-        Button(action: action) { Image(systemName: symbol).font(.system(size: 19)).frame(width: 44, height: 44) }
+        Button(action: action) { Image(systemName: symbol).font(.system(size: 19)).frame(width: 44, height: 44).contentShape(Rectangle()) }
             .buttonStyle(.plain).foregroundStyle(MSTheme.muted).accessibilityLabel(tr(label))
     }
 }

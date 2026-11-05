@@ -49,7 +49,7 @@ struct ProfileView: View {
             HStack(spacing: 14) {
                 Image(systemName: icon).foregroundStyle(MSTheme.accent).frame(width: 24)
                 Text(tr(title)); Spacer(); Image(systemName: "chevron.right").font(.system(size: 11)).foregroundStyle(MSTheme.muted)
-            }.padding(14).frame(minHeight: 48)
+            }.padding(14).frame(minHeight: 48).contentShape(Rectangle())
         }.buttonStyle(.plain)
     }
 }
