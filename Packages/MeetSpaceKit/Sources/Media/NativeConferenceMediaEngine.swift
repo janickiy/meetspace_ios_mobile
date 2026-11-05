@@ -240,7 +240,9 @@ import Network
 
     func videoView(trackID: String, mirrored: Bool) -> AnyView {
         let track = trackID == localVideoTrackID ? peer?.videoTrack : remoteTracks[trackID]
-        return AnyView(ConferenceVideoRenderer(track: track, mirrored: mirrored, registry: renderers))
+        // A new engine must also get a new UIView/coordinator, whose registry owns the attachment.
+        return AnyView(ConferenceVideoRenderer(track: track, mirrored: mirrored, registry: renderers)
+            .id(ObjectIdentifier(renderers)))
     }
 
     private func emit(_ event: ConferenceMediaEvent) {

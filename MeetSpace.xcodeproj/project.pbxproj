@@ -92,14 +92,14 @@
 			"isa" = "PBXBuildFile";
 			"productRef" = "18532F5AB49ABCB9089A83CD";
 		};
-		"4F4005F4F34925B965EFEB0A" = {
+		"75E669688C307739F4C4B659" = {
 			"isa" = "XCSwiftPackageProductDependency";
 			"package" = "BC4A71180870F7945155FBB0";
-			"productName" = "MeetSpaceMedia";
+			"productName" = "MeetSpaceMediaRuntime";
 		};
-		"84326DE90BCBE01C252694DC" = {
+		"5F297397EB352A58D783F6F7" = {
 			"isa" = "PBXBuildFile";
-			"productRef" = "4F4005F4F34925B965EFEB0A";
+			"productRef" = "75E669688C307739F4C4B659";
 		};
 		"2AC38145899132AF4026E327" = {
 			"isa" = "PBXFileReference";
@@ -125,7 +125,7 @@
 				"E71394122558EB1A4F9457DB",
 				"8C8752B3BD330D7411E29E22",
 				"4C684AC2281D14B98772BA62",
-				"84326DE90BCBE01C252694DC",
+				"5F297397EB352A58D783F6F7",
 			);
 			"runOnlyForDeploymentPostprocessing" = 0;
 		};
@@ -214,7 +214,7 @@
 				"C5BC6E53A67B004C1DCDA726",
 				"F6D705857BBDBB286836BF45",
 				"18532F5AB49ABCB9089A83CD",
-				"4F4005F4F34925B965EFEB0A",
+				"75E669688C307739F4C4B659",
 			);
 			"productName" = "MeetSpace";
 			"productReference" = "2AC38145899132AF4026E327";
@@ -267,14 +267,14 @@
 			"isa" = "PBXBuildFile";
 			"productRef" = "D629CF8AC1210769AE77C8C5";
 		};
-		"0712540AF708B49E4AD9AC3B" = {
+		"478C3F15DEB0399EE6C3C96A" = {
 			"isa" = "XCSwiftPackageProductDependency";
 			"package" = "BC4A71180870F7945155FBB0";
-			"productName" = "MeetSpaceMedia";
+			"productName" = "MeetSpaceMediaRuntime";
 		};
-		"E4E7B7A2C5B82470EF0BF051" = {
+		"9B3C43A442A286ECA67B72A1" = {
 			"isa" = "PBXBuildFile";
-			"productRef" = "0712540AF708B49E4AD9AC3B";
+			"productRef" = "478C3F15DEB0399EE6C3C96A";
 		};
 		"34BA0357AA05E9D9118FFA00" = {
 			"isa" = "PBXContainerItemProxy";
@@ -310,7 +310,7 @@
 			"files" = (
 				"60757C76FCDA18459D837F42",
 				"9811B6EBACA8DDA7DC22BAD2",
-				"E4E7B7A2C5B82470EF0BF051",
+				"9B3C43A442A286ECA67B72A1",
 			);
 			"runOnlyForDeploymentPostprocessing" = 0;
 		};
@@ -397,7 +397,7 @@
 			"packageProductDependencies" = (
 				"BAC18CA081E1540005AB2C66",
 				"D629CF8AC1210769AE77C8C5",
-				"0712540AF708B49E4AD9AC3B",
+				"478C3F15DEB0399EE6C3C96A",
 			);
 			"productName" = "MeetSpaceTests";
 			"productReference" = "C4E291A6BAC79D7761857C57";

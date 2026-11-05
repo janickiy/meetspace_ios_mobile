@@ -11,7 +11,9 @@ let package = Package(
         .library(name: "MeetSpaceAPI", targets: ["MeetSpaceAPI"]),
         .library(name: "MeetSpaceStorage", targets: ["MeetSpaceStorage"]),
         .library(name: "MeetSpaceRealtime", targets: ["MeetSpaceRealtime"]),
-        .library(name: "MeetSpaceMedia", type: .dynamic, targets: ["MeetSpaceMedia"]),
+        // Xcode must distinguish the dynamic product from its shared app/hosted-test target.
+        // Swift imports continue to use the MeetSpaceMedia module.
+        .library(name: "MeetSpaceMediaRuntime", type: .dynamic, targets: ["MeetSpaceMedia"]),
         .library(name: "MeetSpaceDesignSystem", targets: ["MeetSpaceDesignSystem"]),
         .executable(name: "FoundationPreviewRenderer", targets: ["FoundationPreviewRenderer"])
     ],
