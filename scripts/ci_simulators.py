@@ -27,10 +27,16 @@ def main():
     print(f"Testing {name}: {udid}", flush=True)
     result = Path("artifacts") / f"{args.family}.xcresult"
     result.parent.mkdir(exist_ok=True)
-    subprocess.run(["xcodebuild", "-project", "MeetSpace.xcodeproj", "-scheme", "MeetSpace-Debug",
-                    "-destination", f"platform=iOS Simulator,id={udid}", "-destination-timeout", "120",
-                    "-resultBundlePath", str(result), "-parallel-testing-enabled", "NO",
-                    "CODE_SIGNING_ALLOWED=NO", "test"], check=True)
+    try:
+        subprocess.run(["xcodebuild", "-project", "MeetSpace.xcodeproj", "-scheme", "MeetSpace-Debug",
+                        "-destination", f"platform=iOS Simulator,id={udid}", "-destination-timeout", "120",
+                        "-resultBundlePath", str(result), "-parallel-testing-enabled", "NO",
+                        "CODE_SIGNING_ALLOWED=NO", "test"], check=True)
+    finally:
+        if result.exists():
+            # Diagnostic export must not replace the actual xcodebuild test result.
+            subprocess.run(["xcrun", "xcresulttool", "export", "attachments", "--path", str(result),
+                            "--output-path", f"artifacts/{args.family}-screenshots"], check=False)
 
 
 if __name__ == "__main__":

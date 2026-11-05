@@ -10,16 +10,25 @@ import XCTest
         return app
     }
 
+    private func capture(_ app: XCUIApplication, name: String) {
+        let attachment = XCTAttachment(screenshot: app.screenshot())
+        attachment.name = name; attachment.lifetime = .keepAlways; add(attachment)
+    }
+
     func testFirstLaunchDoesNotImplyAuthentication() {
         let app = launch()
         XCTAssertTrue(app.buttons["openDemo"].waitForExistence(timeout: 10))
+        capture(app, name: "welcome-light")
         XCTAssertFalse(app.otherElements["demoBanner"].exists)
         app.buttons["openDemo"].tap()
         XCTAssertTrue(app.buttons["exitDemo"].waitForExistence(timeout: 5))
+        capture(app, name: "meetings-light")
         app.buttons["tab.messages"].tap()
         XCTAssertTrue(app.buttons["chat.0"].waitForExistence(timeout: 5))
+        capture(app, name: "messages-light")
         app.buttons["tab.profile"].tap()
         XCTAssertTrue(app.staticTexts["Демо-профиль"].exists)
+        capture(app, name: "profile-light")
         app.buttons["exitDemo"].tap()
         XCTAssertTrue(app.buttons["openDemo"].waitForExistence(timeout: 5))
     }
