@@ -57,18 +57,29 @@ struct ProfileView: View {
 struct SettingsDetailView: View {
     @Bindable var model: AppModel
     let route: AppRoute
+    @Environment(\.dynamicTypeSize) private var typeSize
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 24) {
                 switch route {
                 case .appearance:
                     VStack(alignment: .leading, spacing: 18) {
-                        Text(tr("Тема приложения")).font(MSTheme.font(19, weight: .semibold))
-                        Picker(tr("Тема приложения"), selection: Binding(get: { model.configuration.appearance }, set: { value in model.setAppearance(value) })) {
-                            Text(tr("Системная")).tag(Appearance.system)
-                            Text(tr("Светлая")).tag(Appearance.light)
-                            Text(tr("Тёмная")).tag(Appearance.dark)
-                        }.pickerStyle(.segmented).accessibilityIdentifier("appearancePicker")
+                        Text(tr("Тема приложения")).font(MSTheme.font(19, weight: .semibold, relativeTo: .title2))
+                            .accessibilityAddTraits(.isHeader)
+                        if typeSize.isAccessibilitySize {
+                            // Segmented controls do not grow with accessibility text sizes.
+                            VStack(spacing: 12) {
+                                appearanceOption(.system, title: "Системная")
+                                appearanceOption(.light, title: "Светлая")
+                                appearanceOption(.dark, title: "Тёмная")
+                            }
+                        } else {
+                            Picker(tr("Тема приложения"), selection: Binding(get: { model.configuration.appearance }, set: { value in model.setAppearance(value) })) {
+                                Text(tr("Системная")).tag(Appearance.system)
+                                Text(tr("Светлая")).tag(Appearance.light)
+                                Text(tr("Тёмная")).tag(Appearance.dark)
+                            }.pickerStyle(.segmented).accessibilityIdentifier("appearancePicker")
+                        }
                         Text(tr("Размер текста определяется настройками устройства.")).foregroundStyle(MSTheme.muted)
                     }.msCard()
                 case .connection:
@@ -95,5 +106,17 @@ struct SettingsDetailView: View {
     }
     private func settingPreview(_ title: String, _ icon: String, _ value: String) -> some View {
         HStack { Label(tr(title), systemImage: icon); Spacer(); Text(tr(value)).font(MSTheme.font(12)).foregroundStyle(MSTheme.muted) }.msCard()
+    }
+    private func appearanceOption(_ value: Appearance, title: String) -> some View {
+        Button { model.setAppearance(value) } label: {
+            HStack(spacing: 12) {
+                Text(tr(title)).fixedSize(horizontal: false, vertical: true)
+                Spacer(minLength: 0)
+                Image(systemName: model.configuration.appearance == value ? "checkmark.circle.fill" : "circle")
+                    .accessibilityHidden(true)
+            }.padding(.vertical, 10).frame(minHeight: 44).contentShape(Rectangle())
+        }.buttonStyle(.plain).foregroundStyle(MSTheme.accent)
+            .accessibilityIdentifier("appearance.\(value.rawValue)")
+            .accessibilityAddTraits(model.configuration.appearance == value ? .isSelected : [])
     }
 }

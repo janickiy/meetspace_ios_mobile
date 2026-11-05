@@ -13,6 +13,8 @@ struct WorkspaceView: View {
                 Spacer(minLength: 0)
                 Button(tr("Выйти")) { model.leaveDemo() }.frame(minHeight: 44).accessibilityIdentifier("exitDemo")
             }.padding(.horizontal, 20).background(MSTheme.accentSoft).foregroundStyle(MSTheme.accent)
+                // Persistent navigation must leave room for fully scaled, scrollable content.
+                .dynamicTypeSize(...DynamicTypeSize.xxxLarge)
             TabView(selection: $model.tab) {
                 stack(tab: .meetings, path: $model.meetingsPath) { MeetingsView(model: model) }
                 stack(tab: .messages, path: $model.messagesPath) { MessagesView(model: model) }
@@ -24,6 +26,7 @@ struct WorkspaceView: View {
                 tabButton(.profile, title: "Профиль", icon: "person.crop.circle")
             }.padding(.top, 5).background(MSTheme.surface)
                 .overlay(alignment: .top) { Rectangle().fill(MSTheme.line).frame(height: 1) }
+                .dynamicTypeSize(...DynamicTypeSize.xxxLarge)
         }.background(MSTheme.background)
     }
 

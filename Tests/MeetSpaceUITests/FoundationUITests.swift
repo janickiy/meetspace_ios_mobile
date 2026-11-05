@@ -80,12 +80,18 @@ import XCTest
 
     func testLargeTextNavigationAndAppearance() {
         let app = launch(["-demo", "-UIPreferredContentSizeCategoryName", "UICTContentSizeCategoryAccessibilityXXXL"])
+        XCTAssertTrue(app.buttons["exitDemo"].waitForExistence(timeout: 5))
+        XCTAssertLessThan(app.buttons["tab.profile"].frame.height + app.buttons["exitDemo"].frame.height,
+                          app.frame.height / 4, "Persistent controls must leave space for large-text content")
         app.buttons["tab.profile"].tap()
         let appearance = app.buttons["Оформление"]
         for _ in 0..<4 where !appearance.isHittable { app.swipeUp() }
         XCTAssertTrue(appearance.isHittable); appearance.tap()
-        XCTAssertTrue(app.segmentedControls["appearancePicker"].waitForExistence(timeout: 5))
-        app.buttons["Тёмная"].tap()
+        let dark = app.buttons["appearance.dark"]
+        XCTAssertTrue(dark.waitForExistence(timeout: 5))
+        for _ in 0..<4 where !dark.isHittable { app.swipeUp() }
+        XCTAssertTrue(dark.isHittable); dark.tap()
+        XCTAssertTrue(dark.isSelected)
         let screenshot = XCTAttachment(screenshot: app.screenshot())
         screenshot.name = "appearance-dark-large-text"; screenshot.lifetime = .keepAlways; add(screenshot)
     }
