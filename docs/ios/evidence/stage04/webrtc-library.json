@@ -31,9 +31,9 @@
     "arm64 device",
     "arm64+x86_64 simulator"
   ],
-  "swift6HostProbe": "PASS: actual M156 macOS binary; 10 NativePeer create/offer/close cycles, 16 transceivers for maxPeers=4, two explicitly enabled publications with exact SDP msid trackId/mediaPeerID, Opus+VP8 only; closed peers reject offer. No physical capture or deployment TLS was exercised.",
+  "swift6HostProbe": "PASS: actual M156 macOS binary with actor data race checks enabled and macOS 15 deployment target; 10 NativePeer create/offer/close cycles, 16 transceivers for maxPeers=4, two explicitly enabled publications with exact SDP msid trackId/mediaPeerID, Opus+VP8 only; closed peers reject offer. No physical capture or deployment TLS was exercised.",
   "swift6NativeAdapterTypecheck": "PASS: complete Media module typechecked against the actual M156 Mac Catalyst slice and Apple's UIKit/AVFoundation headers. Runtime iOS and device checks are separate.",
   "loggingVerification": "PASS: default SDK stderr remained empty across 10 native peer cycles. The M156 legacy RTCSetMinDebugLogLevel wrapper enables stderr even for .none, so production does not call it or install file/callback log sinks.",
   "iosDeviceMedia": "BLOCKED: no physical device/signing deployment in this session",
-  "peerSourceSHA256": "6c544791c08c5480cd16ec273043dff828473120d597da7933a9f6afbef9d2fb"
+  "peerSourceSHA256": "edf01ceec1056abe860a088fb5a0cc90506aa9bf84d52f823f154e32c1988614"
 }

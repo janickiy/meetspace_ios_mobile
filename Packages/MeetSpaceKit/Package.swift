@@ -11,7 +11,7 @@ let package = Package(
         .library(name: "MeetSpaceAPI", targets: ["MeetSpaceAPI"]),
         .library(name: "MeetSpaceStorage", targets: ["MeetSpaceStorage"]),
         .library(name: "MeetSpaceRealtime", targets: ["MeetSpaceRealtime"]),
-        .library(name: "MeetSpaceMedia", targets: ["MeetSpaceMedia"]),
+        .library(name: "MeetSpaceMedia", type: .dynamic, targets: ["MeetSpaceMedia"]),
         .library(name: "MeetSpaceDesignSystem", targets: ["MeetSpaceDesignSystem"]),
         .executable(name: "FoundationPreviewRenderer", targets: ["FoundationPreviewRenderer"])
     ],

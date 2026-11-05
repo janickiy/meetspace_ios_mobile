@@ -1,0 +1,24 @@
+{
+  "runID": 42054890348,
+  "platform": "iPad simulator",
+  "tests": [
+    "MediaIntegrationTests.testBlockedSourcesNeverRequestPermissionsOrAppearInOffer",
+    "MediaIntegrationTests.testNativePeerOfferAndCloseCyclesWithCaptureOff"
+  ],
+  "evidence": "Both process crash reports extracted from iPad.xcresult contain the same faulting stack.",
+  "exception": "EXC_BREAKPOINT / SIGTRAP",
+  "faultingThread": "WebRTC signaling_thread",
+  "stack": [
+    "_dispatch_assert_queue_fail",
+    "dispatch_assert_queue",
+    "_swift_task_checkIsolatedSwift",
+    "swift_task_isCurrentExecutorWithFlagsImpl",
+    "closure #1 in closure #1 in NativePeer.makeOffer(iceRestart:)",
+    "ObjC RTCSessionDescription completion thunk",
+    "WebRTC"
+  ],
+  "cause": "ObjC completion inherited MainActor isolation but WebRTC invoked it on its signaling thread.",
+  "fix": "Explicit @Sendable closures for all peer and camera completions; only Sendable continuation results cross back into actor-isolated methods.",
+  "additionalFix": "Camera capturer creation deferred until explicit enable passes permission and lifecycle checks.",
+  "verificationLimit": "The corrected native peer passes the macOS probe with actor checks enabled. The old callback does not reproduce the iPad trap on the local macOS toolchain; the iOS hosted rerun is the regression authority."
+}

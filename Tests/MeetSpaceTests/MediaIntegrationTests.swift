@@ -11,6 +11,11 @@ import MeetSpaceMedia
             let media = ConferenceMediaFactory.make()
             do {
                 try await media.configure(ConferenceMediaConfiguration(iceServers: [], maxPeers: 4, mediaPeerID: UUID()))
+                // These operations must also work before a camera capturer/permission exists.
+                try await media.setCameraEnabled(false)
+                try await media.setMicrophoneEnabled(false)
+                try await media.switchCamera()
+                try await media.switchCamera()
                 let offer = try await media.makeOffer(iceRestart: false)
                 XCTAssertEqual(offer.publications.count, 0, "No publication exists before explicit capture enable")
                 XCTAssertEqual(offer.sdp.components(separatedBy: "\r\nm=").count - 1, 16)

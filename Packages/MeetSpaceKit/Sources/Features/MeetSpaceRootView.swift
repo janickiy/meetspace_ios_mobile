@@ -22,10 +22,9 @@ public struct MeetSpaceRootView: View {
             restored = true; await model.restore()
         }
         .onChange(of: scenePhase) { _, phase in
-            Task {
-                await model.identity.messaging?.setForeground(phase == .active)
-                await model.activeConference?.setForeground(phase != .background)
-            }
+            // Capture shutdown must never wait for a chat reconnect or HTTP cancellation.
+            Task { await model.activeConference?.setForeground(phase != .background) }
+            Task { await model.identity.messaging?.setForeground(phase == .active) }
         }
         .onChange(of: model.identity.messaging?.account.id) { _, _ in
             model.identityChanged()

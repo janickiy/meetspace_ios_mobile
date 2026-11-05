@@ -59,7 +59,6 @@ import Network
                 receivedVideo: { [weak self] track, reference in self?.receive(track, reference: reference) },
                 removedVideo: { [weak self] id in self?.removeVideo(id) })
             self.peer = peer
-            capturer = RTCCameraVideoCapturer(delegate: peer.videoSource)
             peer.videoSource.adaptOutputFormat(toWidth: Int32(configuration.maxWidth),
                                                height: Int32(configuration.maxHeight), fps: Int32(configuration.maxFrameRate))
             audio.isAudioEnabled = true
@@ -135,12 +134,12 @@ import Network
 
     func setCameraEnabled(_ enabled: Bool) async throws {
         cameraGeneration = UUID(); let operation = cameraGeneration, current = generation
-        guard !closed, let peer, let capturer else { throw ConferenceMediaError.notConfigured }
+        guard !closed, let peer else { throw ConferenceMediaError.notConfigured }
         if enabled && cameraEnabled { return }
         if !enabled {
             peer.videoTrack.isEnabled = false; cameraEnabled = false; captureChanged()
             let removal = Result { try peer.setCameraEnabled(false) }
-            await stopCapture(capturer)
+            if let capturer { await stopCapture(capturer) }
             try removal.get()
             return
         }
@@ -152,6 +151,10 @@ import Network
         guard allowed else { throw ConferenceMediaError.cameraPermissionDenied }
         guard configuration?.cameraAllowed == true else { throw ConferenceMediaError.publicationBlocked }
         guard !interrupted else { throw ConferenceMediaError.interrupted }
+        // Constructing RTCCameraVideoCapturer creates an AVCaptureSession. Keep it entirely absent
+        // until explicit enable passes permission and lifecycle checks, including on the simulator.
+        let capturer = self.capturer ?? RTCCameraVideoCapturer(delegate: peer.videoSource)
+        self.capturer = capturer
         do {
             try await startCapture(capturer)
             try Task.checkCancellation()
@@ -173,16 +176,16 @@ import Network
     }
 
     func switchCamera() async throws {
-        guard !closed, let capturer, let peer else { throw ConferenceMediaError.notConfigured }
+        guard !closed, let peer else { throw ConferenceMediaError.notConfigured }
         let desired: AVCaptureDevice.Position = frontCamera ? .back : .front
-        guard RTCCameraVideoCapturer.captureDevices().contains(where: { $0.position == desired }) else {
+        if cameraEnabled && !RTCCameraVideoCapturer.captureDevices().contains(where: { $0.position == desired }) {
             throw ConferenceMediaError.cameraUnavailable
         }
         cameraGeneration = UUID(); let operation = cameraGeneration, current = generation
         let wasEnabled = cameraEnabled
         frontCamera.toggle(); peer.videoTrack.isEnabled = false; cameraEnabled = false; captureChanged()
         let removal = Result { try peer.setCameraEnabled(false) }
-        await stopCapture(capturer)
+        if let capturer { await stopCapture(capturer) }
         try removal.get()
         guard !closed, generation == current, cameraGeneration == operation else { throw CancellationError() }
         if wasEnabled { try await setCameraEnabled(true) }
@@ -280,7 +283,7 @@ import Network
         }
         let fps = max(Int(frameRange.minFrameRate.rounded(.up)), min(configuration.maxFrameRate, Int(frameRange.maxFrameRate)))
         try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, any Error>) in
-            capturer.startCapture(with: device, format: format, fps: fps) { error in
+            capturer.startCapture(with: device, format: format, fps: fps) { @Sendable error in
                 if error == nil { continuation.resume() }
                 else { continuation.resume(throwing: ConferenceMediaError.capture) }
             }
@@ -289,7 +292,7 @@ import Network
 
     private func stopCapture(_ capturer: RTCCameraVideoCapturer) async {
         await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) in
-            capturer.stopCapture { continuation.resume() }
+            capturer.stopCapture { @Sendable in continuation.resume() }
         }
     }
 

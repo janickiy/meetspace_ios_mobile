@@ -17,6 +17,7 @@ struct LiveConferenceView: View {
                 HStack {
                     VStack(alignment: .leading, spacing: 5) {
                         Text(session.title).font(MSTheme.font(17, weight: .semibold)).lineLimit(2)
+                            .accessibilityAddTraits(.isHeader).accessibilityIdentifier("screen.conference")
                         Text(tr(status)).font(MSTheme.font(12)).foregroundStyle(.white.opacity(0.7))
                             .accessibilityIdentifier("conferenceStatus")
                     }
@@ -48,7 +49,6 @@ struct LiveConferenceView: View {
                 .frame(maxWidth: .infinity, maxHeight: .infinity).background(background.ignoresSafeArea())
         }.foregroundStyle(.white).tint(Color(red: 0.67, green: 0.73, blue: 1))
             .preferredColorScheme(.dark).interactiveDismissDisabled()
-            .accessibilityIdentifier("screen.conference")
             .sheet(isPresented: $showParticipants) { participantsPanel }
     }
 

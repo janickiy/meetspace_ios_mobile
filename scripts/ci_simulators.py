@@ -37,6 +37,11 @@ def main():
             # Diagnostic export must not replace the actual xcodebuild test result.
             subprocess.run(["xcrun", "xcresulttool", "export", "attachments", "--path", str(result),
                             "--output-path", f"artifacts/{args.family}-screenshots"], check=False)
+            subprocess.run(["xcrun", "xcresulttool", "export", "diagnostics", "--path", str(result),
+                            "--output-path", f"artifacts/{args.family}-diagnostics"], check=False)
+            with (result.parent / f"{args.family}-summary.json").open("w") as summary:
+                subprocess.run(["xcrun", "xcresulttool", "get", "test-results", "summary",
+                                "--path", str(result)], stdout=summary, check=False)
 
 
 if __name__ == "__main__":

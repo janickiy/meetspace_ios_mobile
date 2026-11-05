@@ -95,7 +95,9 @@ private final class RTCReference<Value>: @unchecked Sendable {
         let constraints = RTCMediaConstraints(mandatoryConstraints: iceRestart ? ["IceRestart": "true"] : nil,
                                                optionalConstraints: nil)
         let sdp: String = try await withCheckedThrowingContinuation { continuation in
-            connection.offer(for: constraints) { description, error in
+            // ObjC completions run on WebRTC's signaling thread. Explicit @Sendable prevents
+            // inheriting MainActor isolation and trapping in Swift 6's runtime executor check.
+            connection.offer(for: constraints) { @Sendable description, error in
                 if error == nil, let description { continuation.resume(returning: description.sdp) }
                 else { continuation.resume(throwing: ConferenceMediaError.negotiation) }
             }
@@ -104,7 +106,7 @@ private final class RTCReference<Value>: @unchecked Sendable {
         guard self.connection === connection else { throw CancellationError() }
         guard self.publicationRevision == publicationRevision else { throw ConferenceMediaError.negotiation }
         try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, any Error>) in
-            connection.setLocalDescription(RTCSessionDescription(type: .offer, sdp: sdp)) { error in
+            connection.setLocalDescription(RTCSessionDescription(type: .offer, sdp: sdp)) { @Sendable error in
                 if error == nil { continuation.resume() }
                 else { continuation.resume(throwing: ConferenceMediaError.negotiation) }
             }
@@ -174,7 +176,7 @@ private final class RTCReference<Value>: @unchecked Sendable {
         guard let connection, connection.signalingState == .haveLocalOffer,
               !sdp.isEmpty, sdp.utf8.count <= 1_048_576 else { throw ConferenceMediaError.negotiation }
         try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, any Error>) in
-            connection.setRemoteDescription(RTCSessionDescription(type: .answer, sdp: sdp)) { error in
+            connection.setRemoteDescription(RTCSessionDescription(type: .answer, sdp: sdp)) { @Sendable error in
                 if error == nil { continuation.resume() }
                 else { continuation.resume(throwing: ConferenceMediaError.negotiation) }
             }
@@ -203,7 +205,7 @@ private final class RTCReference<Value>: @unchecked Sendable {
         }
         let value = RTCIceCandidate(sdp: candidate.candidate, sdpMLineIndex: candidate.sdpMLineIndex, sdpMid: candidate.sdpMid)
         try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, any Error>) in
-            connection.add(value) { error in
+            connection.add(value) { @Sendable error in
                 if error == nil { continuation.resume() }
                 else { continuation.resume(throwing: ConferenceMediaError.invalidCandidate) }
             }
