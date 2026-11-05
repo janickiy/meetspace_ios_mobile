@@ -211,6 +211,17 @@ import XCTest
         app.buttons["conferenceChatSend"].tap()
         XCTAssertTrue(app.staticTexts["Сообщение встречи"].waitForExistence(timeout: 5))
         capture(app, name: "stage04-meeting-chat")
+        XCTAssertTrue(app.keyboards.firstMatch.exists, "Validate the compact chat while the keyboard is open")
+        let heading = app.staticTexts["conferenceChatHeading"]
+        let sender = app.staticTexts.matching(NSPredicate(format: "identifier BEGINSWITH %@", "conferenceMessageSender.")).firstMatch
+        XCTAssertTrue(heading.exists && sender.exists)
+        for text in [sender, app.staticTexts["Сообщение встречи"]] {
+            XCTAssertGreaterThanOrEqual(text.frame.minY, heading.frame.maxY, "Chat header must not cover message text")
+            XCTAssertLessThanOrEqual(text.frame.maxY, composer.frame.minY, "Composer must not cover message text")
+        }
+        for identifier in ["conferenceMic", "conferenceCamera", "conferenceParticipants", "conferenceChat", "conferenceLeave"] {
+            XCTAssertGreaterThanOrEqual(app.buttons[identifier].frame.height, 44, "Primary controls keep their touch target while typing")
+        }
         app.buttons["conferencePanelClose"].tap()
         camera.tap(); waitForValue("Выключен", of: camera)
         leaveConference(app)

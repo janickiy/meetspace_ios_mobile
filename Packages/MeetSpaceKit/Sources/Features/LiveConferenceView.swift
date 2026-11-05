@@ -43,7 +43,7 @@ struct LiveConferenceView: View {
                         if wide || !session.chatVisible { videoGrid }
                         if session.chatVisible { chatPanel.frame(maxWidth: wide ? 350 : .infinity) }
                     }.padding(.horizontal, 12)
-                    controls
+                    controls(compact: session.chatVisible && proxy.size.height < 550)
                 }
             }.padding(.top, 16).padding(.bottom, 12)
                 .frame(maxWidth: .infinity, maxHeight: .infinity).background(background.ignoresSafeArea())
@@ -131,36 +131,38 @@ struct LiveConferenceView: View {
             }.font(MSTheme.font(12)).padding(12).background(.black.opacity(0.35))
         }.frame(height: 200).clipShape(RoundedRectangle(cornerRadius: 18))
     }
-    private var controls: some View {
+    private func controls(compact: Bool) -> some View {
         VStack(spacing: 6) {
             HStack(spacing: 12) {
-                control(session.microphone ? "mic.fill" : "mic.slash", "Микрофон", id: "conferenceMic",
+                control(session.microphone ? "mic.fill" : "mic.slash", "Микрофон", id: "conferenceMic", compact: compact,
                         active: session.microphone, disabled: session.microphoneBlocked || session.busy || session.phase != .connected) {
                     Task { await session.toggleMicrophone() }
                 }
-                control(session.camera ? "video.fill" : "video.slash", "Камера", id: "conferenceCamera",
+                control(session.camera ? "video.fill" : "video.slash", "Камера", id: "conferenceCamera", compact: compact,
                         active: session.camera, disabled: session.cameraBlocked || session.busy || session.phase != .connected) {
                     Task { await session.toggleCamera() }
                 }
-                control("person.2", "Участники", id: "conferenceParticipants") {
+                control("person.2", "Участники", id: "conferenceParticipants", compact: compact) {
                     showParticipants = true; Task { await session.refreshParticipants() }
                 }
-                control("bubble.left", "Чат", id: "conferenceChat", active: session.chatVisible) {
+                control("bubble.left", "Чат", id: "conferenceChat", compact: compact, active: session.chatVisible) {
                     session.chatVisible.toggle(); if session.chatVisible { Task { await session.refreshChat() } }
                 }
-                control("phone.down.fill", "Выйти", id: "conferenceLeave", destructive: true) { Task { await close() } }
+                control("phone.down.fill", "Выйти", id: "conferenceLeave", compact: compact, destructive: true) { Task { await close() } }
             }.padding(.horizontal, 12)
-            HStack(spacing: 24) {
-                Button { Task { await session.switchCamera() } } label: { Label(tr("Сменить камеру"), systemImage: "arrow.triangle.2.circlepath.camera") }
-                    .disabled(!session.camera || session.busy)
-                Button { session.toggleSpeaker() } label: {
-                    Label(tr(session.speaker ? "Динамик" : "Аудиовыход"), systemImage: "speaker.wave.2")
-                }
-            }.font(MSTheme.font(11)).frame(minHeight: 44)
-            if !session.audioRoute.isEmpty { Text(session.audioRoute).font(MSTheme.font(10)).foregroundStyle(.white.opacity(0.6)) }
+            if !compact {
+                HStack(spacing: 24) {
+                    Button { Task { await session.switchCamera() } } label: { Label(tr("Сменить камеру"), systemImage: "arrow.triangle.2.circlepath.camera") }
+                        .disabled(!session.camera || session.busy)
+                    Button { session.toggleSpeaker() } label: {
+                        Label(tr(session.speaker ? "Динамик" : "Аудиовыход"), systemImage: "speaker.wave.2")
+                    }
+                }.font(MSTheme.font(11)).frame(minHeight: 44)
+                if !session.audioRoute.isEmpty { Text(session.audioRoute).font(MSTheme.font(10)).foregroundStyle(.white.opacity(0.6)) }
+            }
         }
     }
-    private func control(_ icon: String, _ label: String, id: String, active: Bool = false,
+    private func control(_ icon: String, _ label: String, id: String, compact: Bool = false, active: Bool = false,
                          disabled: Bool = false, destructive: Bool = false, action: @escaping () -> Void) -> some View {
         Button(action: action) {
             VStack(spacing: 6) {
@@ -168,7 +170,7 @@ struct LiveConferenceView: View {
                     .frame(maxWidth: .infinity, minHeight: 44)
                     .background(destructive ? Color(red: 0.8, green: 0.31, blue: 0.38) : active ? Color(red: 0.28, green: 0.38, blue: 0.64) : panel,
                                 in: RoundedRectangle(cornerRadius: 14))
-                Text(tr(label)).font(MSTheme.font(10)).lineLimit(1).minimumScaleFactor(0.8)
+                if !compact { Text(tr(label)).font(MSTheme.font(10)).lineLimit(1).minimumScaleFactor(0.8) }
             }.frame(maxWidth: .infinity)
         }.buttonStyle(.plain).disabled(disabled).opacity(disabled ? 0.45 : 1)
             .accessibilityLabel(tr(label)).accessibilityValue(tr(active ? "Включён" : "Выключен"))
@@ -178,6 +180,7 @@ struct LiveConferenceView: View {
         VStack(spacing: 0) {
             HStack {
                 Text(tr("Чат встречи")).font(MSTheme.font(17, weight: .semibold))
+                    .accessibilityIdentifier("conferenceChatHeading")
                 Spacer()
                 Button { session.chatVisible = false } label: { Image(systemName: "xmark").frame(width: 44, height: 44) }
                     .accessibilityLabel(tr("Закрыть")).accessibilityIdentifier("conferencePanelClose")
@@ -189,6 +192,7 @@ struct LiveConferenceView: View {
                         ForEach(session.messages) { message in
                             VStack(alignment: .leading, spacing: 8) {
                                 Text(message.senderName).font(MSTheme.font(11, weight: .semibold)).foregroundStyle(Color(red: 0.7, green: 0.76, blue: 1))
+                                    .accessibilityIdentifier("conferenceMessageSender.\(message.id.uuidString.lowercased())")
                                 Text(message.isDeleted ? tr("Сообщение удалено") : message.text).font(MSTheme.font(14))
                                 ForEach(message.attachments) { attachment in
                                     Label(attachment.filename, systemImage: "doc").font(MSTheme.font(12))
