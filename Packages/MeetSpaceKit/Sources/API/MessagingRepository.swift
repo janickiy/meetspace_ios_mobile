@@ -75,10 +75,11 @@ public struct MessagingRepository: Sendable {
             body: WireJSON.encoder().encode(draft))).item
     }
     public func edit(_ conversation: UUID, message: UUID, text: String) async throws -> ChatMessage {
-        let validated = try MessageDraft(text: text)
+        let normalized = text.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard normalized.unicodeScalars.count <= 4000, !normalized.contains("\0") else { throw ClientError.invalidInput }
         struct Body: Encodable { let text: String }
         return try decodeJSON(ItemResponse<ChatMessage>.self, from: await client.request("PATCH",
-            path: scope(conversation) + ["messages", sid(message)], body: WireJSON.encoder().encode(Body(text: validated.text)))).item
+            path: scope(conversation) + ["messages", sid(message)], body: WireJSON.encoder().encode(Body(text: normalized)))).item
     }
     public func delete(_ conversation: UUID, message: UUID) async throws -> ChatMessage {
         try decodeJSON(ItemResponse<ChatMessage>.self, from: await client.request("DELETE",

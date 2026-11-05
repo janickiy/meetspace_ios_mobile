@@ -88,7 +88,7 @@ import XCTest
     }
 
     func testAuthenticationErrorIsVisibleAndDoesNotOpenWorkspace() {
-        let app = launch()
+        let app = launch(["-auth-error"])
         login(app, password: "wrong-password")
         XCTAssertTrue(app.staticTexts["authenticationError"].waitForExistence(timeout: 5))
         XCTAssertFalse(app.buttons["tab.messages"].exists)
@@ -123,7 +123,11 @@ import XCTest
         let newChat = app.buttons["newChat"]
         XCTAssertTrue(newChat.waitForExistence(timeout: 10)); newChat.tap()
         let toggle = app.switches["Групповой чат"]
-        XCTAssertTrue(toggle.waitForExistence(timeout: 5)); toggle.tap()
+        XCTAssertTrue(toggle.waitForExistence(timeout: 5))
+        // SwiftUI Form exposes both the row and the actual UISwitch. Tap the thumb control.
+        let control = toggle.switches.firstMatch
+        if control.exists { control.tap() }
+        else { toggle.coordinate(withNormalizedOffset: CGVector(dx: 0.9, dy: 0.5)).tap() }
         let name = app.textFields["Название группы"]
         XCTAssertTrue(name.waitForExistence(timeout: 5)); name.tap(); name.typeText("Команда iOS")
         app.buttons["Выбрать участников"].tap()

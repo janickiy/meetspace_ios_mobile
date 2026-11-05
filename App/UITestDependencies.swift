@@ -65,7 +65,7 @@ enum UITestDependencies {
             let selected = request.value(forHTTPHeaderField: "Authorization")?.hasSuffix(second) == true ? second : first
             if path.hasSuffix("/auth/register") { return try response(["status": "ok", "user": user(first)], status: 201) }
             if path.hasSuffix("/auth/login") || path.hasSuffix("/auth/refresh") {
-                if body?["password"] as? String == "wrong-password" { return NetworkResponse(status: 401) }
+                if ProcessInfo.processInfo.arguments.contains("-auth-error") { return NetworkResponse(status: 401) }
                 let id = (body?["email"] as? String)?.hasPrefix("second") == true ? second : first
                 return try response(["accessToken": "ui-fixture-\(id)", "tokenType": "Bearer", "expiresIn": 3600, "user": user(id)],
                     headers: ["set-cookie": "meetrix_session=ui-fixture-cookie; Path=/api/v1/auth; HttpOnly; Secure"])

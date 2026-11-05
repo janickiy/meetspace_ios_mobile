@@ -55,6 +55,7 @@ public struct DownloadState: Identifiable {
     public var onlyUnread = false
     public var groupFilter = false
     public private(set) var active = true
+    public private(set) var savingEdit = false
     @ObservationIgnored private let realtime: UserRealtime
     @ObservationIgnored private let files: AccountFileStore
     @ObservationIgnored private var realtimeTask: Task<Void, Never>?
@@ -65,6 +66,7 @@ public struct DownloadState: Identifiable {
     @ObservationIgnored private var historyEpoch = UUID()
     @ObservationIgnored private var selectionEpoch = UUID()
     @ObservationIgnored private var searchEpoch = UUID()
+    @ObservationIgnored private var editEpoch = UUID()
     @ObservationIgnored private var foreground = true
     @ObservationIgnored private var visible = false
 
@@ -219,17 +221,19 @@ public struct DownloadState: Identifiable {
     }
 
     public var canSend: Bool {
-        active && conversation != nil && historyState != .loading &&
+        active && !savingEdit && conversation != nil && historyState != .loading &&
         text.unicodeScalars.count <= 4000 &&
         uploads.allSatisfy { $0.attachment != nil } &&
-        (!text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || !uploads.isEmpty)
+        (!text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || !uploads.isEmpty || editing?.attachments.isEmpty == false)
     }
     public func send() {
         guard canSend, let id = conversation?.id else { return }
         do {
             if let editing {
                 let value = text; let message = editing
+                editEpoch = UUID(); let epoch = editEpoch; savingEdit = true
                 run(UUID()) { model in
+                    defer { if model.editEpoch == epoch { model.savingEdit = false } }
                     do {
                         let updated = try await model.repository.edit(id, message: message.id, text: value)
                         guard model.active, model.conversation?.id == id else { return }
@@ -394,6 +398,7 @@ public struct DownloadState: Identifiable {
     private func clearComposer() async {
         let previous = uploads
         text = ""; reply = nil; editing = nil; uploads = []
+        editEpoch = UUID(); savingEdit = false
         for upload in previous {
             tasks[upload.id]?.cancel(); await tasks[upload.id]?.value; tasks[upload.id] = nil
             await files.remove(upload.file.url)

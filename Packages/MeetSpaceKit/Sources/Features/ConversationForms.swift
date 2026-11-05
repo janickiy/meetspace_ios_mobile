@@ -47,6 +47,7 @@ struct NewConversationView: View {
                 .onChange(of: selection.map(\.id)) { _, _ in requestID = UUID() }
                 .onChange(of: group) { _, value in requestID = UUID(); if !value { selection = Array(selection.prefix(1)) } }
                 .onDisappear { operation?.cancel() }
+                .interactiveDismissDisabled(busy)
         }.tint(MSTheme.accent).font(MSTheme.font())
     }
     private func create() {
@@ -188,6 +189,7 @@ struct GroupDetailsView: View {
                 .toolbar { ToolbarItem(placement: .confirmationAction) { Button(tr("Готово")) { dismiss() }.disabled(busy) } }
                 .task { await reload() }
                 .onDisappear { operation?.cancel() }
+                .interactiveDismissDisabled(busy)
                 .sheet(isPresented: $choosing) {
                     UserChooser(model: model, multiple: true, excluding: Set(members.map(\.id))) { peers in
                         perform { try await model.repository.addMembers(id, users: peers.map(\.id)) }

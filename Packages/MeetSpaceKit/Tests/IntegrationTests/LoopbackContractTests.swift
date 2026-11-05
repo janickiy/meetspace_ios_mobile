@@ -118,6 +118,10 @@ func actualBackendTwoClientsAndFiles() async throws {
     let emailA = "ios-a-\(suffix)@example.test", emailB = "ios-b-\(suffix)@example.test"
     let userA = try await auth.register(email: emailA, password: password, name: "iOS A")
     let userB = try await auth.register(email: emailB, password: password, name: "iOS B")
+    do {
+        _ = try await auth.login(email: emailA, password: UUID().uuidString)
+        Issue.record("Incorrect password was accepted")
+    } catch APIError.httpStatus(let status) { #expect(status == 401) }
     let loginA = try await auth.login(email: emailA, password: password)
     let loginB = try await auth.login(email: emailB, password: password)
     #expect(loginA.account.user.id == userA.id && loginB.account.user.id == userB.id)
@@ -200,6 +204,8 @@ func actualBackendTwoClientsAndFiles() async throws {
         #expect(try await ra.upload(conversation.id, input: input, file: file).id == attachment.id)
         let fileMessage = try await ra.send(conversation.id, draft: MessageDraft(text: "", attachmentIds: [attachment.id]))
         let attached = try #require(fileMessage.attachments.first)
+        _ = try await ra.edit(conversation.id, message: fileMessage.id, text: "caption")
+        #expect(try await ra.edit(conversation.id, message: fileMessage.id, text: "").text.isEmpty)
         let downloaded = try await rb.download(conversation.id, attachment: attached)
         #expect(downloaded == bytes)
     }

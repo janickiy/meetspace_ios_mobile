@@ -85,7 +85,8 @@ public struct AuthenticationGateway: Sendable {
               !value.accessToken.unicodeScalars.contains(where: { CharacterSet.whitespacesAndNewlines.union(.controlCharacters).contains($0) }),
               value.user.guestConferenceId == nil else { throw APIError.invalidResponse }
         guard expectedID == nil || value.user.id == expectedID else { throw ClientError.accountMismatch }
-        let cookie = try SessionCookie.extract(headers: response.headers, origin: origin, userID: value.user.id, fallback: previousCookie)
+        guard let cookie = try SessionCookie.extract(headers: response.headers, origin: origin, userID: value.user.id, fallback: previousCookie)
+        else { throw APIError.invalidResponse }
         return SignedInAccount(account: AccountRecord(server: origin, user: value.user),
             credentials: SessionCredentials(accessToken: value.accessToken, sessionCookie: cookie,
                 expiresAt: Date().addingTimeInterval(TimeInterval(value.expiresIn))))

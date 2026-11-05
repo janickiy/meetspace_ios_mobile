@@ -1,20 +1,23 @@
 # MeetSpace для iOS / iPadOS
 
 Целевая платформа — iPhone и iPad, iOS/iPadOS 18+, Swift и SwiftUI.
-Репозиторий содержит аудит и **этап 02: iOS-проект, архитектуру и основу SwiftUI-интерфейса**.
+Репозиторий содержит аудит, основу iOS-проекта и **этап 03: авторизацию, личные/групповые чаты и файлы**.
 Backend используется существующий; его исходники, конфигурация и данные не изменялись.
 
 Откройте `MeetSpace.xcodeproj` в Xcode, выберите `MeetSpace-Debug` и симулятор iPhone/iPad.
 На первом экране можно проверить HTTPS-адрес сервера или открыть явный демо-просмотр.
-Реальный вход, чаты, звонки и SSH пока не подключены.
+Подключены реальный вход, регистрация, до 5 аккаунтов на сервере, чаты и вложения.
+Звонки, push и SSH относятся к следующим этапам.
+
+- [Результат этапа 03, команды, проверки и ограничения](docs/ios/AUTH_CHATS_FILES_REPORT.md)
 
 - [Результат этапа 02, тесты и ограничения](docs/ios/FOUNDATION_REPORT.md)
 - [Архитектура, DI, TLS и хранение](docs/ios/FOUNDATION_ARCHITECTURE.md)
 - [Матрица SwiftUI → макеты и недостающие состояния](docs/ios/FOUNDATION_UI_MATRIX.md)
 
-В GitHub Actions проверены 20 unit-тестов, Release-сборка iOS Simulator и по 7 тестов
-на iPhone SE и iPad mini: Keychain и основные UI-сценарии. Нативные скриншоты и точный
-проверенный коммит указаны в [отчёте](docs/ios/FOUNDATION_REPORT.md).
+Проверки разделены на unit-тесты, контракт с двумя клиентами настоящего backend
+и нативные UI/Keychain-тесты iPhone/iPad в GitHub Actions. Точные коммиты,
+результаты и границы проверки указаны в отчётах соответствующих этапов.
 Локально установлен только Command Line Tools; запуск iOS здесь требует полного Xcode.
 
 Аудит выполнен 5 ноября 2026 года по зафиксированным коммитам backend, Android и макетов.
@@ -45,4 +48,4 @@ python3 scripts/verify_audit.py
 python3 scripts/verify_audit.py --source-root /tmp/meetspace-ios-audit-20261105
 ```
 
-Этап 03 не выполнялся. Готовность приложения к production и точная visual parity всех экранов не заявляются.
+Готовность приложения к production и точная visual parity всех экранов не заявляются.

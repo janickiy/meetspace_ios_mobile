@@ -36,8 +36,9 @@ private final class TransferDelegate: NSObject, URLSessionTaskDelegate, Sendable
 /// Separate ephemeral sessions per client. Cookies and credentials are never managed by URLSession.
 public final class URLSessionRequestTransport: RequestTransport, Sendable {
     private let session: URLSession
-    public init() {
-        let configuration = URLSessionConfiguration.ephemeral
+    public convenience init() { self.init(configuration: .ephemeral) }
+    // Internal injection for deterministic URLProtocol tests; shipped composition uses ephemeral sessions.
+    init(configuration: URLSessionConfiguration) {
         configuration.urlCache = nil; configuration.urlCredentialStorage = nil
         configuration.httpCookieStorage = nil; configuration.httpShouldSetCookies = false
         configuration.requestCachePolicy = .reloadIgnoringLocalCacheData
@@ -65,11 +66,15 @@ public final class URLSessionRequestTransport: RequestTransport, Sendable {
                 let (bytes, incoming) = try await session.bytes(for: request)
                 defer { bytes.task.cancel() }
                 response = incoming
-                guard incoming.expectedContentLength <= Int64(limit) else { throw APIError.responseTooLarge }
+                // A tiny attachment can still have a larger JSON 401/403 response. Preserve its
+                // HTTP status so refresh and permission handling are not hidden by the file limit.
+                let success = (incoming as? HTTPURLResponse).map { (200...299).contains($0.statusCode) } ?? false
+                let responseLimit = success ? limit : 65_536
+                guard incoming.expectedContentLength <= Int64(responseLimit) else { throw APIError.responseTooLarge }
                 var buffer = Data()
                 for try await byte in bytes {
                     try Task.checkCancellation()
-                    guard buffer.count < limit else { throw APIError.responseTooLarge }
+                    guard buffer.count < responseLimit else { throw APIError.responseTooLarge }
                     buffer.append(byte)
                     if buffer.count % 65_536 == 0, incoming.expectedContentLength > 0 {
                         progress?(min(1, Double(buffer.count) / Double(incoming.expectedContentLength)))
