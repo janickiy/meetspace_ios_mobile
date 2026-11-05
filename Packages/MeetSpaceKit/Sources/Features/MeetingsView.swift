@@ -44,7 +44,7 @@ struct MeetingsView: View {
                         }
                         HStack(spacing: 10) {
                             shortcut("Записи встреч", "play.rectangle", .recordings)
-                            shortcut("Общие папки", "folder", .folders)
+                            shortcut("Папки", "folder", .folders)
                         }
                         HStack {
                             Text(tr("Мои встречи")).font(MSTheme.font(19, weight: .semibold, relativeTo: .title2))

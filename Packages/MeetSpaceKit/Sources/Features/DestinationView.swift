@@ -30,7 +30,7 @@ extension AppRoute {
         case .calendar: "Календарь"
         case .recordings: "Записи встреч"
         case .recording: "Запись встречи"
-        case .folders: "Общие папки"
+        case .folders: "Папки"
         case .prejoin: "Перед встречей"
         case .call: "Встреча"
         case .personalCall: "Личный звонок"
