@@ -1,3 +1,4 @@
+Swift Testing log. Individual parameter values omitted; all results retained.
 Building for debugging...
 [Using on-disk description]
 [6 / 46]
@@ -50,22 +51,8 @@ Build complete! (2,08 с)
 ◇ Test credentialsAreScopedByServerAndAccount() started.
 ◇ Test realtimeUsesAuditedPathsAndEncodesTicket() started.
 ◇ Test normalizesOriginAndPreservesCustomPort() started.
-◇ Test case passing 1 argument input → "meet.example" to rejectsUnsafeOrigins(_:) started.
-◇ Test case passing 1 argument input → "https://user:pass@meet.example" to rejectsUnsafeOrigins(_:) started.
-◇ Test case passing 1 argument input → "http://meet.example" to rejectsUnsafeOrigins(_:) started.
-◇ Test case passing 1 argument input → "https://meet.example?ticket=secret" to rejectsUnsafeOrigins(_:) started.
-◇ Test case passing 1 argument input → "https://meet.example/api" to rejectsUnsafeOrigins(_:) started.
-◇ Test case passing 1 argument input → "https://meet.example/#secret" to rejectsUnsafeOrigins(_:) started.
-◇ Test case passing 1 argument input → "https://meet.example:0" to rejectsUnsafeOrigins(_:) started.
-◇ Test case passing 1 argument input → "https://meet.example:65536" to rejectsUnsafeOrigins(_:) started.
-◇ Test case passing 1 argument input → "https://meet.example\evil" to rejectsUnsafeOrigins(_:) started.
-◇ Test case passing 1 argument input → "https://meet.example/a/.." to rejectsUnsafeOrigins(_:) started.
-◇ Test case passing 1 argument input → "https://meet.%65xample" to rejectsUnsafeOrigins(_:) started.
-◇ Test case passing 1 argument input → "https://meet. example" to rejectsUnsafeOrigins(_:) started.
-◇ Test case passing 1 argument input → "https://" to rejectsUnsafeOrigins(_:) started.
 ✔ Test credentialsAreScopedByServerAndAccount() passed after 0.001 seconds.
 ✔ Test realtimeUsesAuditedPathsAndEncodesTicket() passed after 0.001 seconds.
-◇ Test case passing 1 argument input → "" to rejectsUnsafeOrigins(_:) started.
 ✔ Test normalizesOriginAndPreservesCustomPort() passed after 0.001 seconds.
 ✔ Test decodeCannotBypassValidation() passed after 0.001 seconds.
 ✔ Test rejectsUnsafeOrigins(_:) with 14 test cases passed after 0.001 seconds.
@@ -78,18 +65,6 @@ Build complete! (2,08 с)
 ◇ Test rejectsHTMLContentTypeAndLargeResponse() started.
 ◇ Test redirectsAreNotAccepted(_:) started.
 ◇ Test rejectsMalformedVersion(_:) started.
-◇ Test case passing 1 argument status → 401 to preservesHTTPStatus(_:) started.
-◇ Test case passing 1 argument status → 403 to preservesHTTPStatus(_:) started.
-◇ Test case passing 1 argument status → 404 to preservesHTTPStatus(_:) started.
-◇ Test case passing 1 argument status → 301 to redirectsAreNotAccepted(_:) started.
-◇ Test case passing 1 argument status → 307 to redirectsAreNotAccepted(_:) started.
-◇ Test case passing 1 argument status → 429 to preservesHTTPStatus(_:) started.
-◇ Test case passing 1 argument status → 500 to preservesHTTPStatus(_:) started.
-◇ Test case passing 1 argument status → 302 to redirectsAreNotAccepted(_:) started.
-◇ Test case passing 1 argument status → 308 to redirectsAreNotAccepted(_:) started.
-◇ Test case passing 1 argument body → "<html>proxy login</html>" to rejectsMalformedVersion(_:) started.
-◇ Test case passing 1 argument body → "{}" to rejectsMalformedVersion(_:) started.
-◇ Test case passing 1 argument body → "{"version":"","commit":"a","buildTime":"b"}" to rejectsMalformedVersion(_:) started.
 ✔ Test redirectsAreNotAccepted(_:) with 4 test cases passed after 0.001 seconds.
 ✔ Test probesOnlyPublicVersionEndpoint() passed after 0.001 seconds.
 ✔ Test preservesHTTPStatus(_:) with 5 test cases passed after 0.001 seconds.

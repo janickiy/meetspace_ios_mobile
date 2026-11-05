@@ -64,7 +64,7 @@ struct SettingsDetailView: View {
                 case .appearance:
                     VStack(alignment: .leading, spacing: 18) {
                         Text(tr("Тема приложения")).font(MSTheme.font(19, weight: .semibold))
-                        Picker(tr("Тема приложения"), selection: Binding(get: { model.configuration.appearance }, set: model.setAppearance)) {
+                        Picker(tr("Тема приложения"), selection: Binding(get: { model.configuration.appearance }, set: { value in model.setAppearance(value) })) {
                             Text(tr("Системная")).tag(Appearance.system)
                             Text(tr("Светлая")).tag(Appearance.light)
                             Text(tr("Тёмная")).tag(Appearance.dark)
