@@ -1,74 +1,93 @@
-Swift Testing log. Individual parameter values omitted; all results retained.
 Building for debugging...
-[Using on-disk description]
-[2 / 10] MeetSpaceFeatures
-[5 / 13] MeetSpaceFeatures
-[10 / 19] FoundationPreviewRenderer-product
-[21 / 29] FoundationPreviewRenderer-product
-[22 / 32] MeetSpaceFeatures
-<repository>/Packages/MeetSpaceKit/Package.swift: MeetSpaceFeatures: ld: warning: search path '/Library/Developer/CommandLineTools/Developer/Library/Frameworks' not found
-[27 / 33] FeaturesTests-product
-[29 / 35] FeaturesTests-product
-<repository>/Packages/MeetSpaceKit/Package.swift: FoundationPreviewRenderer-product: ld: warning: search path '/Library/Developer/CommandLineTools/Developer/usr/lib' not found
-<repository>/Packages/MeetSpaceKit/Package.swift: FoundationPreviewRenderer-product: ld: warning: search path '/Library/Developer/CommandLineTools/Developer/Library/Frameworks' not found
-[33 / 36] FeaturesTests-product
-[35 / 36] FeaturesTests-product<repository>/Packages/MeetSpaceKit/Package.swift: FeaturesTests-product: ld: warning: search path '/Library/Developer/CommandLineTools/Developer/usr/lib' not found
-<repository>/Packages/MeetSpaceKit/Package.swift: FeaturesTests-product: ld: warning: search path '/Library/Developer/CommandLineTools/Developer/Library/Frameworks' not found
+[Pre-planning 1 / 530]
+[Finalizing plan]
+[10 / 69] MeetSpaceCore
+[17 / 76] MeetSpaceCore
+[25 / 88] MeetSpaceCore
+/Users/aleksandranickij/htdocs/meetspace_ios_mobile/Packages/MeetSpaceKit/Package.swift: MeetSpaceCore: ld: warning: search path '/Library/Developer/CommandLineTools/Developer/Library/Frameworks' not found
+[37 / 93] MeetSpaceRealtime
+/Users/aleksandranickij/htdocs/meetspace_ios_mobile/Packages/MeetSpaceKit/Package.swift: MeetSpaceDesignSystem: ld: warning: search path '/Library/Developer/CommandLineTools/Developer/Library/Frameworks' not found
+/Users/aleksandranickij/htdocs/meetspace_ios_mobile/Packages/MeetSpaceKit/Package.swift: MeetSpaceRealtime: ld: warning: search path '/Library/Developer/CommandLineTools/Developer/Library/Frameworks' not found
+/Users/aleksandranickij/htdocs/meetspace_ios_mobile/Packages/MeetSpaceKit/Package.swift: MeetSpaceStorage: ld: warning: search path '/Library/Developer/CommandLineTools/Developer/Library/Frameworks' not found
+[58 / 91] MeetSpaceAPI
+/Users/aleksandranickij/htdocs/meetspace_ios_mobile/Packages/MeetSpaceKit/Package.swift: MeetSpaceAPI: ld: warning: search path '/Library/Developer/CommandLineTools/Developer/Library/Frameworks' not found
+[72 / 108] MeetSpaceFeatures
+[79 / 112] StorageTests-product
+[86 / 110] MeetSpaceFeatures
+[89 / 110] MeetSpaceFeatures
+/Users/aleksandranickij/htdocs/meetspace_ios_mobile/Packages/MeetSpaceKit/Package.swift: StorageTests-product: ld: warning: search path '/Library/Developer/CommandLineTools/Developer/usr/lib' not found
+/Users/aleksandranickij/htdocs/meetspace_ios_mobile/Packages/MeetSpaceKit/Package.swift: StorageTests-product: ld: warning: search path '/Library/Developer/CommandLineTools/Developer/Library/Frameworks' not found
+[94 / 112] CoreTests-product
+[103 / 119] APITests-product
+/Users/aleksandranickij/htdocs/meetspace_ios_mobile/Packages/MeetSpaceKit/Package.swift: CoreTests-product: ld: warning: search path '/Library/Developer/CommandLineTools/Developer/usr/lib' not found
+/Users/aleksandranickij/htdocs/meetspace_ios_mobile/Packages/MeetSpaceKit/Package.swift: CoreTests-product: ld: warning: search path '/Library/Developer/CommandLineTools/Developer/Library/Frameworks' not found
+[110 / 123] MeetSpaceFeatures
+/Users/aleksandranickij/htdocs/meetspace_ios_mobile/Packages/MeetSpaceKit/Package.swift: APITests-product: ld: warning: search path '/Library/Developer/CommandLineTools/Developer/usr/lib' not found
+/Users/aleksandranickij/htdocs/meetspace_ios_mobile/Packages/MeetSpaceKit/Package.swift: APITests-product: ld: warning: search path '/Library/Developer/CommandLineTools/Developer/Library/Frameworks' not found
+[114 / 127] FoundationPreviewRenderer-product
+/Users/aleksandranickij/htdocs/meetspace_ios_mobile/Packages/MeetSpaceKit/Package.swift: MeetSpaceFeatures: ld: warning: search path '/Library/Developer/CommandLineTools/Developer/Library/Frameworks' not found
+[122 / 128] FeaturesTests-product
+[125 / 131] FoundationPreviewRenderer-product/Users/aleksandranickij/htdocs/meetspace_ios_mobile/Packages/MeetSpaceKit/Package.swift: FoundationPreviewRenderer-product: ld: warning: search path '/Library/Developer/CommandLineTools/Developer/usr/lib' not found
+/Users/aleksandranickij/htdocs/meetspace_ios_mobile/Packages/MeetSpaceKit/Package.swift: FoundationPreviewRenderer-product: ld: warning: search path '/Library/Developer/CommandLineTools/Developer/Library/Frameworks' not found
 
-Build complete! (2,30 с)
+[130 / 133] FeaturesTests-product
+[132 / 133] FeaturesTests-product/Users/aleksandranickij/htdocs/meetspace_ios_mobile/Packages/MeetSpaceKit/Package.swift: FeaturesTests-product: ld: warning: search path '/Library/Developer/CommandLineTools/Developer/usr/lib' not found
+/Users/aleksandranickij/htdocs/meetspace_ios_mobile/Packages/MeetSpaceKit/Package.swift: FeaturesTests-product: ld: warning: search path '/Library/Developer/CommandLineTools/Developer/Library/Frameworks' not found
+
+Build complete! (3,05 с)
 ◇ Test run started.
 ↳ Testing Library Version: 2084
 ↳ Target Platform: arm64e-apple-macos14.0
-◇ Test preferencesRoundTripOnlyPublicConfiguration() started.
 ◇ Test corruptedConfigurationIsReported() started.
-✔ Test corruptedConfigurationIsReported() passed after 0.002 seconds.
+◇ Test preferencesRoundTripOnlyPublicConfiguration() started.
+✔ Test corruptedConfigurationIsReported() passed after 0.003 seconds.
 ✔ Test preferencesRoundTripOnlyPublicConfiguration() passed after 0.003 seconds.
 ✔ Test run with 2 tests in 0 suites passed after 0.003 seconds.
 ◇ Test run started.
 ↳ Testing Library Version: 2084
 ↳ Target Platform: arm64e-apple-macos14.0
-◇ Test successfulCheckPersistsOriginBeforeLogin() started.
-◇ Test invalidAddressNeverStartsRequestOrAdvances() started.
-◇ Test offlineIsDistinctAndRetryCanSucceed() started.
-◇ Test leavingWhileSavingCannotNavigateBackToLogin() started.
-◇ Test staleResponseCannotReplaceNewServer() started.
-◇ Test reopeningServerFormRequiresANewCheck() started.
-◇ Test tabsPreserveIndependentPathsAndDemoExitClearsThem() started.
 ◇ Test leavingConnectionCancelsPendingCheck() started.
-✔ Test invalidAddressNeverStartsRequestOrAdvances() passed after 0.001 seconds.
+◇ Test reopeningServerFormRequiresANewCheck() started.
+◇ Test invalidAddressNeverStartsRequestOrAdvances() started.
+◇ Test staleResponseCannotReplaceNewServer() started.
+◇ Test tabsPreserveIndependentPathsAndDemoExitClearsThem() started.
+◇ Test offlineIsDistinctAndRetryCanSucceed() started.
+◇ Test successfulCheckPersistsOriginBeforeLogin() started.
+◇ Test leavingWhileSavingCannotNavigateBackToLogin() started.
 ✔ Test tabsPreserveIndependentPathsAndDemoExitClearsThem() passed after 0.001 seconds.
+✔ Test invalidAddressNeverStartsRequestOrAdvances() passed after 0.001 seconds.
 ✔ Test leavingConnectionCancelsPendingCheck() passed after 0.006 seconds.
-✔ Test reopeningServerFormRequiresANewCheck() passed after 0.006 seconds.
-✔ Test successfulCheckPersistsOriginBeforeLogin() passed after 0.007 seconds.
-✔ Test leavingWhileSavingCannotNavigateBackToLogin() passed after 0.007 seconds.
+✔ Test leavingWhileSavingCannotNavigateBackToLogin() passed after 0.006 seconds.
+✔ Test reopeningServerFormRequiresANewCheck() passed after 0.007 seconds.
+✔ Test successfulCheckPersistsOriginBeforeLogin() passed after 0.006 seconds.
 ✔ Test offlineIsDistinctAndRetryCanSucceed() passed after 0.013 seconds.
 ✔ Test staleResponseCannotReplaceNewServer() passed after 0.013 seconds.
 ✔ Test run with 8 tests in 0 suites passed after 0.013 seconds.
 ◇ Test run started.
 ↳ Testing Library Version: 2084
 ↳ Target Platform: arm64e-apple-macos14.0
-◇ Test realtimeUsesAuditedPathsAndEncodesTicket() started.
-◇ Test rejectsUnsafeOrigins(_:) started.
-◇ Test normalizesOriginAndPreservesCustomPort() started.
 ◇ Test decodeCannotBypassValidation() started.
+◇ Test normalizesOriginAndPreservesCustomPort() started.
+◇ Test rejectsUnsafeOrigins(_:) started.
 ◇ Test credentialsAreScopedByServerAndAccount() started.
-✔ Test credentialsAreScopedByServerAndAccount() passed after 0.001 seconds.
+◇ Test realtimeUsesAuditedPathsAndEncodesTicket() started.
 ✔ Test realtimeUsesAuditedPathsAndEncodesTicket() passed after 0.001 seconds.
-✔ Test normalizesOriginAndPreservesCustomPort() passed after 0.001 seconds.
+✔ Test credentialsAreScopedByServerAndAccount() passed after 0.001 seconds.
 ✔ Test decodeCannotBypassValidation() passed after 0.001 seconds.
 ✔ Test rejectsUnsafeOrigins(_:) with 14 test cases passed after 0.001 seconds.
+✔ Test normalizesOriginAndPreservesCustomPort() passed after 0.001 seconds.
 ✔ Test run with 5 tests in 0 suites passed after 0.001 seconds.
 ◇ Test run started.
 ↳ Testing Library Version: 2084
 ↳ Target Platform: arm64e-apple-macos14.0
-◇ Test redirectsAreNotAccepted(_:) started.
-◇ Test rejectsHTMLContentTypeAndLargeResponse() started.
-◇ Test probesOnlyPublicVersionEndpoint() started.
-◇ Test rejectsMalformedVersion(_:) started.
 ◇ Test preservesHTTPStatus(_:) started.
+◇ Test probesOnlyPublicVersionEndpoint() started.
+◇ Test redirectsAreNotAccepted(_:) started.
+◇ Test rejectsMalformedVersion(_:) started.
+◇ Test rejectsHTMLContentTypeAndLargeResponse() started.
 ✔ Test probesOnlyPublicVersionEndpoint() passed after 0.001 seconds.
 ✔ Test redirectsAreNotAccepted(_:) with 4 test cases passed after 0.001 seconds.
-✔ Test preservesHTTPStatus(_:) with 5 test cases passed after 0.001 seconds.
 ✔ Test rejectsMalformedVersion(_:) with 3 test cases passed after 0.001 seconds.
-✔ Test rejectsHTMLContentTypeAndLargeResponse() passed after 0.001 seconds.
-✔ Test run with 5 tests in 0 suites passed after 0.001 seconds.
+✔ Test preservesHTTPStatus(_:) with 5 test cases passed after 0.001 seconds.
+✔ Test rejectsHTMLContentTypeAndLargeResponse() passed after 0.002 seconds.
+✔ Test run with 5 tests in 0 suites passed after 0.002 seconds.

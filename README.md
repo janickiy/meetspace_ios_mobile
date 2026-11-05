@@ -12,8 +12,10 @@ Backend используется существующий; его исходни
 - [Архитектура, DI, TLS и хранение](docs/ios/FOUNDATION_ARCHITECTURE.md)
 - [Матрица SwiftUI → макеты и недостающие состояния](docs/ios/FOUNDATION_UI_MATRIX.md)
 
-Shared Swift-код и unit-тесты проверены на macOS. Локальные iOS build/UI-тесты
-заблокированы отсутствием полного Xcode; CI для iPhone/iPad добавлен.
+В GitHub Actions проверены 20 unit-тестов, Release-сборка iOS Simulator и по 7 тестов
+на iPhone SE и iPad mini: Keychain и основные UI-сценарии. Нативные скриншоты и точный
+проверенный коммит указаны в [отчёте](docs/ios/FOUNDATION_REPORT.md).
+Локально установлен только Command Line Tools; запуск iOS здесь требует полного Xcode.
 
 Аудит выполнен 5 ноября 2026 года по зафиксированным коммитам backend, Android и макетов.
 `mobile_maket` уже содержит материалы: 21 экран интерактивного прототипа, светлую и тёмную темы, телефон и планшет.

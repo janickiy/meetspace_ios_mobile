@@ -1,0 +1,159 @@
+{
+  "run_id": 42015416090,
+  "url": "https://github.com/janickiy/meetspace_ios_mobile/actions/runs/42015416090",
+  "tested_commit": "1415f83abea14c4ad1b17b39a8bebe661087579f",
+  "conclusion": "success",
+  "updated_at": "2026-11-05T11:13:54Z",
+  "environment": {
+    "xcode": "16.4",
+    "ios_simulator_sdk": "18.5",
+    "runner": "macos-15"
+  },
+  "jobs": [
+    {
+      "id": 127206763030,
+      "name": "package",
+      "html_url": "https://github.com/janickiy/meetspace_ios_mobile/actions/runs/42015416090/job/127206763030",
+      "conclusion": "success",
+      "started_at": "2026-11-05T11:05:24Z",
+      "completed_at": "2026-11-05T11:06:48Z",
+      "unit_tests": 20,
+      "release_ios_simulator_build": "success"
+    },
+    {
+      "id": 127206763189,
+      "name": "simulators (iPad)",
+      "html_url": "https://github.com/janickiy/meetspace_ios_mobile/actions/runs/42015416090/job/127206763189",
+      "conclusion": "success",
+      "started_at": "2026-11-05T11:05:27Z",
+      "completed_at": "2026-11-05T11:13:49Z",
+      "keychain_tests": 1,
+      "ui_tests": 6,
+      "failures": 0,
+      "device": "iPad mini (A17 Pro)",
+      "passed_tests": [
+        "-[MeetSpaceTests.KeychainIntegrationTests testKeychainRoundTripUpdateAndScopedDeletion]",
+        "-[MeetSpaceUITests.FoundationUITests testFirstLaunchDoesNotImplyAuthentication]",
+        "-[MeetSpaceUITests.FoundationUITests testInvalidHTTPAddressIsRejected]",
+        "-[MeetSpaceUITests.FoundationUITests testLargeTextNavigationAndAppearance]",
+        "-[MeetSpaceUITests.FoundationUITests testOfflineStateCanRetryInExplicitDemo]",
+        "-[MeetSpaceUITests.FoundationUITests testStateScreensAreReachable]",
+        "-[MeetSpaceUITests.FoundationUITests testValidServerAdvancesToUnavailableAuthentication]"
+      ]
+    },
+    {
+      "id": 127206763450,
+      "name": "simulators (iPhone)",
+      "html_url": "https://github.com/janickiy/meetspace_ios_mobile/actions/runs/42015416090/job/127206763450",
+      "conclusion": "success",
+      "started_at": "2026-11-05T11:05:25Z",
+      "completed_at": "2026-11-05T11:13:53Z",
+      "keychain_tests": 1,
+      "ui_tests": 6,
+      "failures": 0,
+      "device": "iPhone SE (3rd generation)",
+      "passed_tests": [
+        "-[MeetSpaceTests.KeychainIntegrationTests testKeychainRoundTripUpdateAndScopedDeletion]",
+        "-[MeetSpaceUITests.FoundationUITests testFirstLaunchDoesNotImplyAuthentication]",
+        "-[MeetSpaceUITests.FoundationUITests testInvalidHTTPAddressIsRejected]",
+        "-[MeetSpaceUITests.FoundationUITests testLargeTextNavigationAndAppearance]",
+        "-[MeetSpaceUITests.FoundationUITests testOfflineStateCanRetryInExplicitDemo]",
+        "-[MeetSpaceUITests.FoundationUITests testStateScreensAreReachable]",
+        "-[MeetSpaceUITests.FoundationUITests testValidServerAdvancesToUnavailableAuthentication]"
+      ]
+    }
+  ],
+  "screenshots": [
+    {
+      "file": "native-previews/iphone-profile-light.png",
+      "sha256": "75d324d52495559d7fe5285ce1c69835df131b8cdaa862f65d9c6297216da2ed",
+      "width_pixels": 750,
+      "height_pixels": 1334,
+      "device": "iPhone SE (3rd generation)",
+      "test": "FoundationUITests/testFirstLaunchDoesNotImplyAuthentication()",
+      "artifact_id": 13409108389
+    },
+    {
+      "file": "native-previews/iphone-messages-light.png",
+      "sha256": "a843528748a969d99db115acd032b81abe1e14bb460c7da3b86121d14eda900f",
+      "width_pixels": 750,
+      "height_pixels": 1334,
+      "device": "iPhone SE (3rd generation)",
+      "test": "FoundationUITests/testFirstLaunchDoesNotImplyAuthentication()",
+      "artifact_id": 13409108389
+    },
+    {
+      "file": "native-previews/iphone-meetings-light.png",
+      "sha256": "5ae89bfb2210875c799737b6fccec9fed58869e65c7486b159f18147a2d04871",
+      "width_pixels": 750,
+      "height_pixels": 1334,
+      "device": "iPhone SE (3rd generation)",
+      "test": "FoundationUITests/testFirstLaunchDoesNotImplyAuthentication()",
+      "artifact_id": 13409108389
+    },
+    {
+      "file": "native-previews/iphone-welcome-light.png",
+      "sha256": "5bf560db37d62484da6b9cfb5fd2e06fa25e84923b0b56c363c433b395d44d03",
+      "width_pixels": 750,
+      "height_pixels": 1334,
+      "device": "iPhone SE (3rd generation)",
+      "test": "FoundationUITests/testFirstLaunchDoesNotImplyAuthentication()",
+      "artifact_id": 13409108389
+    },
+    {
+      "file": "native-previews/iphone-appearance-dark-large-text.png",
+      "sha256": "655cae73c4cb867143d93ec210b5938c4dd6d8d3ce31d6e2c31978d3b5674d33",
+      "width_pixels": 750,
+      "height_pixels": 1334,
+      "device": "iPhone SE (3rd generation)",
+      "test": "FoundationUITests/testLargeTextNavigationAndAppearance()",
+      "artifact_id": 13409108389
+    },
+    {
+      "file": "native-previews/ipad-profile-light.png",
+      "sha256": "e3dd14052ea31cca25856680764c975534508927532e114e1759628a21b604ff",
+      "width_pixels": 1488,
+      "height_pixels": 2266,
+      "device": "iPad mini (A17 Pro)",
+      "test": "FoundationUITests/testFirstLaunchDoesNotImplyAuthentication()",
+      "artifact_id": 13409821907
+    },
+    {
+      "file": "native-previews/ipad-messages-light.png",
+      "sha256": "ddcbb7e0b1d32b4ad7c2d570693ede0d4f404d85cdc27bb846bc656d757b4632",
+      "width_pixels": 1488,
+      "height_pixels": 2266,
+      "device": "iPad mini (A17 Pro)",
+      "test": "FoundationUITests/testFirstLaunchDoesNotImplyAuthentication()",
+      "artifact_id": 13409821907
+    },
+    {
+      "file": "native-previews/ipad-meetings-light.png",
+      "sha256": "9e5338766cfa96c3e97ecd23c3ea725149a8e3e3a62f6bff79b42fb123e1734d",
+      "width_pixels": 1488,
+      "height_pixels": 2266,
+      "device": "iPad mini (A17 Pro)",
+      "test": "FoundationUITests/testFirstLaunchDoesNotImplyAuthentication()",
+      "artifact_id": 13409821907
+    },
+    {
+      "file": "native-previews/ipad-welcome-light.png",
+      "sha256": "164bef674e4bebf7731c0c4efeabbbd30e762e120590f26bc524b81f80f71f8d",
+      "width_pixels": 1488,
+      "height_pixels": 2266,
+      "device": "iPad mini (A17 Pro)",
+      "test": "FoundationUITests/testFirstLaunchDoesNotImplyAuthentication()",
+      "artifact_id": 13409821907
+    },
+    {
+      "file": "native-previews/ipad-appearance-dark-large-text.png",
+      "sha256": "a78ebbf6bac59e03b8d31463c2eaba8d017cca65ad964eeceddddf2af9c98e20",
+      "width_pixels": 1488,
+      "height_pixels": 2266,
+      "device": "iPad mini (A17 Pro)",
+      "test": "FoundationUITests/testLargeTextNavigationAndAppearance()",
+      "artifact_id": 13409821907
+    }
+  ],
+  "scope": "DEBUG UI doubles; real simulator Keychain; no live authenticated server or physical device tests"
+}

@@ -89,7 +89,8 @@ account key = нормализованный origin + account UUID, `WhenUnlocke
 `Synchronizable=false`. Delete ограничен конкретным ключом. Нет общего wipe,
 plaintext fallback и логирования. Токены ещё не создаются: интеграция auth — следующий этап.
 Симуляторный hosted test проверяет read/update/delete и изоляцию двух серверов.
-Локально этот тест не запускался: отсутствует Xcode.
+Он прошёл в GitHub Actions на iPhone SE (3rd generation) и iPad mini (A17 Pro),
+iOS 18.5 / Xcode 16.4. Локально полный Xcode отсутствует.
 
 Privacy manifest декларирует собственные UserDefaults (`CA92.1`), отсутствие tracking
 и SDK-сбора данных на текущем этапе. Перед добавлением аналитики/медиа/новых SDK
@@ -109,6 +110,10 @@ Onboarding от 800 pt показывает боковую панель. Accessi
 
 Inter подключается через CoreText с `relativeTo` для Dynamic Type. Иконки-кнопки имеют
 текстовые accessibility labels и цель 44 pt; аватары/декор исключены из VoiceOver.
+Баннер демо и нижние вкладки растут до XXXL: ограничение относится только к постоянной
+навигации, чтобы она не занимала весь экран при accessibility-размерах. Прокручиваемое
+содержимое сохраняет системный размер текста. В accessibility-режиме выбор темы
+переходит от компактного segmented control к вертикальным кнопкам с признаком выбора.
 Проверка настоящим VoiceOver, keyboard navigation и accessibility inspector ещё нужна.
 
 Loading/empty/error/offline/content общие для списков. В демо их можно переключать

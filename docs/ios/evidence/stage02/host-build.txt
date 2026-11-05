@@ -1,17 +1,16 @@
 Building for debugging...
-[Pre-planning 1 / 385]
-[Creating build graph]
-[5 / 23] MeetSpaceDesignSystem
-[6 / 30]
-[7 / 30]
-[8 / 30]
-[12 / 30] MeetSpaceDesignSystem
-[19 / 31] MeetSpaceFeatures
-[28 / 41] MeetSpaceFeatures
-[29 / 41] MeetSpaceFeatures
-[31 / 41] MeetSpaceFeatures
-[37 / 41] MeetSpaceDesignSystem
-<repository>/Packages/MeetSpaceKit/Package.swift: MeetSpaceDesignSystem: ld: warning: search path '/Library/Developer/CommandLineTools/Developer/Library/Frameworks' not found
-[38 / 41] MeetSpaceFeatures
-<repository>/Packages/MeetSpaceKit/Package.swift: MeetSpaceFeatures: ld: warning: search path '/Library/Developer/CommandLineTools/Developer/Library/Frameworks' not found
-Build complete! (5,47 с)
+[Using on-disk description]
+[3 / 22] MeetSpaceCore
+[10 / 29] MeetSpaceCore
+[14 / 26] MeetSpaceDesignSystem
+[24 / 32] MeetSpaceStorage
+[25 / 30] MeetSpaceFeatures
+[28 / 33] MeetSpaceFeatures
+[33 / 39] FoundationPreviewRenderer-product
+[36 / 41] MeetSpaceFeatures
+[38 / 42] MeetSpaceFeatures
+/Users/aleksandranickij/htdocs/meetspace_ios_mobile/Packages/MeetSpaceKit/Package.swift: MeetSpaceFeatures: ld: warning: search path '/Library/Developer/CommandLineTools/Developer/Library/Frameworks' not found
+/Users/aleksandranickij/htdocs/meetspace_ios_mobile/Packages/MeetSpaceKit/Package.swift: FoundationPreviewRenderer-product: ld: warning: search path '/Library/Developer/CommandLineTools/Developer/usr/lib' not found
+/Users/aleksandranickij/htdocs/meetspace_ios_mobile/Packages/MeetSpaceKit/Package.swift: FoundationPreviewRenderer-product: ld: warning: search path '/Library/Developer/CommandLineTools/Developer/Library/Frameworks' not found
+[42 / 43] FoundationPreviewRenderer-product
+Build complete! (1,93 с)

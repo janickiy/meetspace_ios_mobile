@@ -1,0 +1,42 @@
+Selected unmodified log lines from https://github.com/janickiy/meetspace_ios_mobile/actions/runs/42015416090/job/127206763450
+Source commit: 1415f83abea14c4ad1b17b39a8bebe661087579f
+
+2026-11-05T11:05:29.4545710Z Xcode 16.4
+2026-11-05T11:05:29.4547600Z Build version 16F6
+2026-11-05T11:06:04.6018240Z Testing iPhone SE (3rd generation): B220EC43-535F-472F-935A-5B2D0E9F2975
+2026-11-05T11:06:42.0998750Z 2026-11-05 11:06:39.718 appintentsmetadataprocessor[2656:12142] warning: Metadata extraction skipped. No AppIntents.framework dependency found.
+2026-11-05T11:06:44.5490050Z 2026-11-05 11:06:43.740 appintentsmetadataprocessor[2704:12283] warning: Metadata extraction skipped. No AppIntents.framework dependency found.
+2026-11-05T11:06:59.2470800Z warning: not stripping binary because it is signed: /Applications/Xcode_16.4.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/lib/libXCTestSwiftSupport.dylib (in target 'MeetSpace' from project 'MeetSpace')
+2026-11-05T11:06:59.2478840Z warning: not stripping binary because it is signed: /Applications/Xcode_16.4.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/lib/libXCTestBundleInject.dylib (in target 'MeetSpace' from project 'MeetSpace')
+2026-11-05T11:06:59.2486710Z warning: not stripping binary because it is signed: /Applications/Xcode_16.4.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/Library/PrivateFrameworks/XCUnit.framework/XCUnit (in target 'MeetSpace' from project 'MeetSpace')
+2026-11-05T11:06:59.2494650Z warning: not stripping binary because it is signed: /Applications/Xcode_16.4.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/Library/Frameworks/XCUIAutomation.framework/XCUIAutomation (in target 'MeetSpace' from project 'MeetSpace')
+2026-11-05T11:06:59.2502780Z warning: not stripping binary because it is signed: /Applications/Xcode_16.4.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/Library/PrivateFrameworks/XCTestSupport.framework/XCTestSupport (in target 'MeetSpace' from project 'MeetSpace')
+2026-11-05T11:06:59.2511130Z warning: not stripping binary because it is signed: /Applications/Xcode_16.4.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/Library/PrivateFrameworks/XCTestCore.framework/XCTestCore (in target 'MeetSpace' from project 'MeetSpace')
+2026-11-05T11:06:59.2519610Z warning: not stripping binary because it is signed: /Applications/Xcode_16.4.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/Library/Frameworks/XCTest.framework/XCTest (in target 'MeetSpace' from project 'MeetSpace')
+2026-11-05T11:06:59.2528120Z warning: not stripping binary because it is signed: /Applications/Xcode_16.4.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/Library/PrivateFrameworks/XCTAutomationSupport.framework/XCTAutomationSupport (in target 'MeetSpace' from project 'MeetSpace')
+2026-11-05T11:06:59.2536050Z warning: not stripping binary because it is signed: /Applications/Xcode_16.4.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/Library/Frameworks/Testing.framework/Testing (in target 'MeetSpace' from project 'MeetSpace')
+2026-11-05T11:06:59.2595860Z 2026-11-05 11:06:58.796 appintentsmetadataprocessor[3775:15066] warning: Metadata extraction skipped. No AppIntents.framework dependency found.
+2026-11-05T11:06:59.4674030Z 2026-11-05 11:06:59.460 appintentsmetadataprocessor[3799:15138] warning: Metadata extraction skipped. No AppIntents.framework dependency found.
+2026-11-05T11:07:00.1186650Z 2026-11-05 11:07:00.113 appintentsmetadataprocessor[3817:15203] warning: Metadata extraction skipped. No AppIntents.framework dependency found.
+2026-11-05T11:07:00.4204340Z warning: not stripping binary because it is signed: /Applications/Xcode_16.4.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/lib/libXCTestSwiftSupport.dylib (in target 'MeetSpaceUITests' from project 'MeetSpace')
+2026-11-05T11:07:00.4504380Z warning: not stripping binary because it is signed: /Applications/Xcode_16.4.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/Library/PrivateFrameworks/XCUnit.framework/XCUnit (in target 'MeetSpaceUITests' from project 'MeetSpace')
+2026-11-05T11:07:00.5046920Z warning: not stripping binary because it is signed: /Applications/Xcode_16.4.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/Library/Frameworks/XCUIAutomation.framework/XCUIAutomation (in target 'MeetSpaceUITests' from project 'MeetSpace')
+2026-11-05T11:07:00.5211180Z warning: not stripping binary because it is signed: /Applications/Xcode_16.4.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/Library/PrivateFrameworks/XCTestSupport.framework/XCTestSupport (in target 'MeetSpaceUITests' from project 'MeetSpace')
+2026-11-05T11:07:00.5219680Z warning: not stripping binary because it is signed: /Applications/Xcode_16.4.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/Library/PrivateFrameworks/XCTestCore.framework/XCTestCore (in target 'MeetSpaceUITests' from project 'MeetSpace')
+2026-11-05T11:07:00.5231160Z warning: not stripping binary because it is signed: /Applications/Xcode_16.4.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/Library/Frameworks/XCTest.framework/XCTest (in target 'MeetSpaceUITests' from project 'MeetSpace')
+2026-11-05T11:07:00.5255760Z warning: not stripping binary because it is signed: /Applications/Xcode_16.4.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/Library/PrivateFrameworks/XCTAutomationSupport.framework/XCTAutomationSupport (in target 'MeetSpaceUITests' from project 'MeetSpace')
+2026-11-05T11:07:00.5265390Z warning: not stripping binary because it is signed: /Applications/Xcode_16.4.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/Library/Frameworks/Testing.framework/Testing (in target 'MeetSpaceUITests' from project 'MeetSpace')
+2026-11-05T11:10:15.1486340Z Test Case '-[MeetSpaceTests.KeychainIntegrationTests testKeychainRoundTripUpdateAndScopedDeletion]' passed (0.039 seconds).
+2026-11-05T11:10:15.1488530Z 	 Executed 1 test, with 0 failures (0 unexpected) in 0.039 (0.039) seconds
+2026-11-05T11:10:15.5215410Z 	 Executed 1 test, with 0 failures (0 unexpected) in 0.039 (0.040) seconds
+2026-11-05T11:10:16.5042870Z 	 Executed 1 test, with 0 failures (0 unexpected) in 0.039 (0.041) seconds
+2026-11-05T11:11:40.5896550Z Test Case '-[MeetSpaceUITests.FoundationUITests testFirstLaunchDoesNotImplyAuthentication]' passed (61.254 seconds).
+2026-11-05T11:12:30.5144140Z Test Case '-[MeetSpaceUITests.FoundationUITests testInvalidHTTPAddressIsRejected]' passed (49.885 seconds).
+2026-11-05T11:12:49.9480640Z Test Case '-[MeetSpaceUITests.FoundationUITests testLargeTextNavigationAndAppearance]' passed (19.531 seconds).
+2026-11-05T11:12:58.2639920Z Test Case '-[MeetSpaceUITests.FoundationUITests testOfflineStateCanRetryInExplicitDemo]' passed (8.312 seconds).
+2026-11-05T11:13:18.2150780Z Test Case '-[MeetSpaceUITests.FoundationUITests testStateScreensAreReachable]' passed (19.947 seconds).
+2026-11-05T11:13:29.7224140Z Test Case '-[MeetSpaceUITests.FoundationUITests testValidServerAdvancesToUnavailableAuthentication]' passed (11.477 seconds).
+2026-11-05T11:13:29.7436640Z 	 Executed 6 tests, with 0 failures (0 unexpected) in 170.404 (170.415) seconds
+2026-11-05T11:13:29.7706290Z 	 Executed 6 tests, with 0 failures (0 unexpected) in 170.404 (170.416) seconds
+2026-11-05T11:13:29.8345380Z 	 Executed 6 tests, with 0 failures (0 unexpected) in 170.404 (170.418) seconds
+2026-11-05T11:13:32.4379890Z ** TEST SUCCEEDED **
