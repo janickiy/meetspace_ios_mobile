@@ -11,6 +11,8 @@ import XCTest
     }
 
     private func capture(_ app: XCUIApplication, name: String) {
+        // TabView's crossfade can outlive element existence on CI; do not record a transition frame.
+        Thread.sleep(forTimeInterval: 0.5)
         let attachment = XCTAttachment(screenshot: app.screenshot())
         attachment.name = name; attachment.lifetime = .keepAlways; add(attachment)
     }
@@ -92,7 +94,6 @@ import XCTest
         for _ in 0..<4 where !dark.isHittable { app.swipeUp() }
         XCTAssertTrue(dark.isHittable); dark.tap()
         XCTAssertTrue(dark.isSelected)
-        let screenshot = XCTAttachment(screenshot: app.screenshot())
-        screenshot.name = "appearance-dark-large-text"; screenshot.lifetime = .keepAlways; add(screenshot)
+        capture(app, name: "appearance-dark-large-text")
     }
 }
