@@ -74,6 +74,7 @@ private struct WelcomeView: View {
             Text(tr("MeetSpace — единое пространство для встреч и общения.")).foregroundStyle(MSTheme.muted)
             if showArtwork && !typeSize.isAccessibilitySize { WelcomeArtwork().frame(height: 155).padding(.vertical, 4) }
             connectionChoice("Подключиться к серверу", subtitle: "У меня уже есть адрес MeetSpace", icon: "network", primary: true) { model.show(.connect) }
+                .accessibilityIdentifier("connectServer")
             connectionChoice("Развернуть свой сервер", subtitle: "Создать пространство на своём VPS", icon: "server.rack", primary: false) {
                 model.enterDemo(); model.navigate(.deploy)
             }

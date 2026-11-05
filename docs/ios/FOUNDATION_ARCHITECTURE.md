@@ -9,7 +9,9 @@ Backend, Android и прототип используются как источ�
 `MeetSpace.xcodeproj` содержит приложение, hosted unit-тест Keychain и UI-тесты.
 Общие схемы `MeetSpace-Debug` и `MeetSpace-Release`: соответствующая конфигурация запуска;
 Test всегда Debug, Archive всегда Release. Deployment target 18.0, device family `1,2`.
-Signing team выбирается локально для устройства; для CI simulator signing отключён.
+Signing team выбирается локально для устройства. Simulator tests используют стандартную
+ad-hoc подпись Xcode: она необходима hosted-приложению для доступа к Keychain.
+Отдельная Release-проверка выполняет сборку без подписи.
 
 Локальный Swift package не требует сторонних зависимостей. macOS 15 в package platforms
 нужен только для проверки исходников на хосте; macOS-приложение не поставляется.

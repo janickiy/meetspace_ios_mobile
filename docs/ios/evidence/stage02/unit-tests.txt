@@ -1,93 +1,74 @@
 Swift Testing log. Individual parameter values omitted; all results retained.
 Building for debugging...
-[Pre-planning 1 / 530]
-[Finalizing plan]
-[4 / 45] MeetSpaceCore
-[11 / 52] MeetSpaceCore
-[20 / 62] MeetSpaceDesignSystem
-<repository>/Packages/MeetSpaceKit/Package.swift: MeetSpaceCore: ld: warning: search path '/Library/Developer/CommandLineTools/Developer/Library/Frameworks' not found
-[30 / 70] MeetSpaceRealtime
-<repository>/Packages/MeetSpaceKit/Package.swift: MeetSpaceDesignSystem: ld: warning: search path '/Library/Developer/CommandLineTools/Developer/Library/Frameworks' not found
-<repository>/Packages/MeetSpaceKit/Package.swift: MeetSpaceRealtime: ld: warning: search path '/Library/Developer/CommandLineTools/Developer/Library/Frameworks' not found
-<repository>/Packages/MeetSpaceKit/Package.swift: MeetSpaceStorage: ld: warning: search path '/Library/Developer/CommandLineTools/Developer/Library/Frameworks' not found
-[51 / 78] CoreTests-product
-<repository>/Packages/MeetSpaceKit/Package.swift: MeetSpaceAPI: ld: warning: search path '/Library/Developer/CommandLineTools/Developer/Library/Frameworks' not found
-[65 / 95] MeetSpaceFeatures
-[72 / 99] MeetSpaceFeatures
-[79 / 101] MeetSpaceFeatures
-<repository>/Packages/MeetSpaceKit/Package.swift: StorageTests-product: ld: warning: search path '/Library/Developer/CommandLineTools/Developer/usr/lib' not found
-<repository>/Packages/MeetSpaceKit/Package.swift: StorageTests-product: ld: warning: search path '/Library/Developer/CommandLineTools/Developer/Library/Frameworks' not found
-[85 / 108] FoundationPreviewRenderer-product
-[88 / 106] CoreTests-product
-<repository>/Packages/MeetSpaceKit/Package.swift: CoreTests-product: ld: warning: search path '/Library/Developer/CommandLineTools/Developer/usr/lib' not found
-<repository>/Packages/MeetSpaceKit/Package.swift: CoreTests-product: ld: warning: search path '/Library/Developer/CommandLineTools/Developer/Library/Frameworks' not found
-[99 / 116] FeaturesTests-product
-[104 / 118] MeetSpaceFeatures
-<repository>/Packages/MeetSpaceKit/Package.swift: APITests-product: ld: warning: search path '/Library/Developer/CommandLineTools/Developer/usr/lib' not found
-<repository>/Packages/MeetSpaceKit/Package.swift: APITests-product: ld: warning: search path '/Library/Developer/CommandLineTools/Developer/Library/Frameworks' not found
+[Using on-disk description]
+[2 / 10] MeetSpaceFeatures
+[5 / 13] MeetSpaceFeatures
+[10 / 19] FoundationPreviewRenderer-product
+[21 / 29] FoundationPreviewRenderer-product
+[22 / 32] MeetSpaceFeatures
 <repository>/Packages/MeetSpaceKit/Package.swift: MeetSpaceFeatures: ld: warning: search path '/Library/Developer/CommandLineTools/Developer/Library/Frameworks' not found
-[114 / 120] FeaturesTests-product
-[117 / 123] FeaturesTests-product
+[27 / 33] FeaturesTests-product
+[29 / 35] FeaturesTests-product
 <repository>/Packages/MeetSpaceKit/Package.swift: FoundationPreviewRenderer-product: ld: warning: search path '/Library/Developer/CommandLineTools/Developer/usr/lib' not found
 <repository>/Packages/MeetSpaceKit/Package.swift: FoundationPreviewRenderer-product: ld: warning: search path '/Library/Developer/CommandLineTools/Developer/Library/Frameworks' not found
-[123 / 126] FeaturesTests-product
-[125 / 126] FeaturesTests-product<repository>/Packages/MeetSpaceKit/Package.swift: FeaturesTests-product: ld: warning: search path '/Library/Developer/CommandLineTools/Developer/usr/lib' not found
+[33 / 36] FeaturesTests-product
+[35 / 36] FeaturesTests-product<repository>/Packages/MeetSpaceKit/Package.swift: FeaturesTests-product: ld: warning: search path '/Library/Developer/CommandLineTools/Developer/usr/lib' not found
 <repository>/Packages/MeetSpaceKit/Package.swift: FeaturesTests-product: ld: warning: search path '/Library/Developer/CommandLineTools/Developer/Library/Frameworks' not found
 
-Build complete! (3,01 с)
+Build complete! (2,30 с)
 ◇ Test run started.
 ↳ Testing Library Version: 2084
 ↳ Target Platform: arm64e-apple-macos14.0
-◇ Test corruptedConfigurationIsReported() started.
 ◇ Test preferencesRoundTripOnlyPublicConfiguration() started.
-✔ Test corruptedConfigurationIsReported() passed after 0.003 seconds.
+◇ Test corruptedConfigurationIsReported() started.
+✔ Test corruptedConfigurationIsReported() passed after 0.002 seconds.
 ✔ Test preferencesRoundTripOnlyPublicConfiguration() passed after 0.003 seconds.
 ✔ Test run with 2 tests in 0 suites passed after 0.003 seconds.
 ◇ Test run started.
 ↳ Testing Library Version: 2084
 ↳ Target Platform: arm64e-apple-macos14.0
-◇ Test leavingConnectionCancelsPendingCheck() started.
+◇ Test successfulCheckPersistsOriginBeforeLogin() started.
+◇ Test invalidAddressNeverStartsRequestOrAdvances() started.
 ◇ Test offlineIsDistinctAndRetryCanSucceed() started.
 ◇ Test leavingWhileSavingCannotNavigateBackToLogin() started.
-◇ Test reopeningServerFormRequiresANewCheck() started.
 ◇ Test staleResponseCannotReplaceNewServer() started.
-◇ Test invalidAddressNeverStartsRequestOrAdvances() started.
+◇ Test reopeningServerFormRequiresANewCheck() started.
 ◇ Test tabsPreserveIndependentPathsAndDemoExitClearsThem() started.
-◇ Test successfulCheckPersistsOriginBeforeLogin() started.
+◇ Test leavingConnectionCancelsPendingCheck() started.
 ✔ Test invalidAddressNeverStartsRequestOrAdvances() passed after 0.001 seconds.
 ✔ Test tabsPreserveIndependentPathsAndDemoExitClearsThem() passed after 0.001 seconds.
-✔ Test leavingConnectionCancelsPendingCheck() passed after 0.007 seconds.
-✔ Test reopeningServerFormRequiresANewCheck() passed after 0.007 seconds.
+✔ Test leavingConnectionCancelsPendingCheck() passed after 0.006 seconds.
+✔ Test reopeningServerFormRequiresANewCheck() passed after 0.006 seconds.
 ✔ Test successfulCheckPersistsOriginBeforeLogin() passed after 0.007 seconds.
-✔ Test offlineIsDistinctAndRetryCanSucceed() passed after 0.007 seconds.
-✔ Test leavingWhileSavingCannotNavigateBackToLogin() passed after 0.014 seconds.
-✔ Test staleResponseCannotReplaceNewServer() passed after 0.014 seconds.
-✔ Test run with 8 tests in 0 suites passed after 0.015 seconds.
+✔ Test leavingWhileSavingCannotNavigateBackToLogin() passed after 0.007 seconds.
+✔ Test offlineIsDistinctAndRetryCanSucceed() passed after 0.013 seconds.
+✔ Test staleResponseCannotReplaceNewServer() passed after 0.013 seconds.
+✔ Test run with 8 tests in 0 suites passed after 0.013 seconds.
 ◇ Test run started.
 ↳ Testing Library Version: 2084
 ↳ Target Platform: arm64e-apple-macos14.0
-◇ Test rejectsUnsafeOrigins(_:) started.
-◇ Test decodeCannotBypassValidation() started.
-◇ Test normalizesOriginAndPreservesCustomPort() started.
-◇ Test credentialsAreScopedByServerAndAccount() started.
 ◇ Test realtimeUsesAuditedPathsAndEncodesTicket() started.
-✔ Test realtimeUsesAuditedPathsAndEncodesTicket() passed after 0.001 seconds.
+◇ Test rejectsUnsafeOrigins(_:) started.
+◇ Test normalizesOriginAndPreservesCustomPort() started.
+◇ Test decodeCannotBypassValidation() started.
+◇ Test credentialsAreScopedByServerAndAccount() started.
 ✔ Test credentialsAreScopedByServerAndAccount() passed after 0.001 seconds.
-✔ Test decodeCannotBypassValidation() passed after 0.001 seconds.
+✔ Test realtimeUsesAuditedPathsAndEncodesTicket() passed after 0.001 seconds.
 ✔ Test normalizesOriginAndPreservesCustomPort() passed after 0.001 seconds.
+✔ Test decodeCannotBypassValidation() passed after 0.001 seconds.
 ✔ Test rejectsUnsafeOrigins(_:) with 14 test cases passed after 0.001 seconds.
 ✔ Test run with 5 tests in 0 suites passed after 0.001 seconds.
 ◇ Test run started.
 ↳ Testing Library Version: 2084
 ↳ Target Platform: arm64e-apple-macos14.0
 ◇ Test redirectsAreNotAccepted(_:) started.
-◇ Test probesOnlyPublicVersionEndpoint() started.
 ◇ Test rejectsHTMLContentTypeAndLargeResponse() started.
-◇ Test preservesHTTPStatus(_:) started.
+◇ Test probesOnlyPublicVersionEndpoint() started.
 ◇ Test rejectsMalformedVersion(_:) started.
+◇ Test preservesHTTPStatus(_:) started.
 ✔ Test probesOnlyPublicVersionEndpoint() passed after 0.001 seconds.
-✔ Test preservesHTTPStatus(_:) with 5 test cases passed after 0.001 seconds.
 ✔ Test redirectsAreNotAccepted(_:) with 4 test cases passed after 0.001 seconds.
+✔ Test preservesHTTPStatus(_:) with 5 test cases passed after 0.001 seconds.
 ✔ Test rejectsMalformedVersion(_:) with 3 test cases passed after 0.001 seconds.
 ✔ Test rejectsHTMLContentTypeAndLargeResponse() passed after 0.001 seconds.
-✔ Test run with 5 tests in 0 suites passed after 0.002 seconds.
+✔ Test run with 5 tests in 0 suites passed after 0.001 seconds.

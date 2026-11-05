@@ -31,7 +31,7 @@ def main():
         subprocess.run(["xcodebuild", "-project", "MeetSpace.xcodeproj", "-scheme", "MeetSpace-Debug",
                         "-destination", f"platform=iOS Simulator,id={udid}", "-destination-timeout", "120",
                         "-resultBundlePath", str(result), "-parallel-testing-enabled", "NO",
-                        "CODE_SIGNING_ALLOWED=NO", "test"], check=True)
+                        "test"], check=True)
     finally:
         if result.exists():
             # Diagnostic export must not replace the actual xcodebuild test result.

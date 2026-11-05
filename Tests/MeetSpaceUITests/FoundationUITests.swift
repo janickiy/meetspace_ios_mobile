@@ -15,12 +15,19 @@ import XCTest
         attachment.name = name; attachment.lifetime = .keepAlways; add(attachment)
     }
 
+    private func revealDemoLink(_ app: XCUIApplication) -> XCUIElement {
+        let link = app.buttons["openDemo"]
+        for _ in 0..<4 where !link.isHittable { app.swipeUp() }
+        return link
+    }
+
     func testFirstLaunchDoesNotImplyAuthentication() {
         let app = launch()
-        XCTAssertTrue(app.buttons["openDemo"].waitForExistence(timeout: 10))
+        XCTAssertTrue(app.buttons["connectServer"].waitForExistence(timeout: 10))
         capture(app, name: "welcome-light")
         XCTAssertFalse(app.otherElements["demoBanner"].exists)
-        app.buttons["openDemo"].tap()
+        let demo = revealDemoLink(app)
+        XCTAssertTrue(demo.isHittable); demo.tap()
         XCTAssertTrue(app.buttons["exitDemo"].waitForExistence(timeout: 5))
         capture(app, name: "meetings-light")
         app.buttons["tab.messages"].tap()
@@ -30,12 +37,12 @@ import XCTest
         XCTAssertTrue(app.staticTexts["Демо-профиль"].exists)
         capture(app, name: "profile-light")
         app.buttons["exitDemo"].tap()
-        XCTAssertTrue(app.buttons["openDemo"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.buttons["connectServer"].waitForExistence(timeout: 5))
     }
 
     func testInvalidHTTPAddressIsRejected() {
         let app = launch()
-        app.buttons.containing(.staticText, identifier: "Подключиться к серверу").firstMatch.tap()
+        app.buttons["connectServer"].tap()
         let address = app.textFields["serverURL"]
         XCTAssertTrue(address.waitForExistence(timeout: 5))
         address.tap(); address.typeText("http://fixture.example")
@@ -45,7 +52,7 @@ import XCTest
 
     func testValidServerAdvancesToUnavailableAuthentication() {
         let app = launch()
-        app.buttons.containing(.staticText, identifier: "Подключиться к серверу").firstMatch.tap()
+        app.buttons["connectServer"].tap()
         let address = app.textFields["serverURL"]
         XCTAssertTrue(address.waitForExistence(timeout: 5))
         address.tap(); address.typeText("https://fixture.example")

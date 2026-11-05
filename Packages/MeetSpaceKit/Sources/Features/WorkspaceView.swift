@@ -13,7 +13,7 @@ struct WorkspaceView: View {
                 Button(tr("Выйти")) { model.leaveDemo() }.frame(minHeight: 44).accessibilityIdentifier("exitDemo")
             }.padding(.horizontal, 20).background(MSTheme.accentSoft).foregroundStyle(MSTheme.accent)
                 .accessibilityIdentifier("demoBanner")
-            ZStack {
+            TabView(selection: $model.tab) {
                 stack(tab: .meetings, path: $model.meetingsPath) { MeetingsView(model: model) }
                 stack(tab: .messages, path: $model.messagesPath) { MessagesView(model: model) }
                 stack(tab: .profile, path: $model.profilePath) { ProfileView(model: model) }
@@ -30,7 +30,7 @@ struct WorkspaceView: View {
     private func stack<Content: View>(tab: AppTab, path: Binding<[AppRoute]>, @ViewBuilder content: () -> Content) -> some View {
         NavigationStack(path: path) {
             content().navigationDestination(for: AppRoute.self) { route in DestinationView(model: model, route: route) }
-        }.opacity(model.tab == tab ? 1 : 0).allowsHitTesting(model.tab == tab).accessibilityHidden(model.tab != tab)
+        }.tag(tab).msHideSystemTabBar()
     }
 
     private func tabButton(_ tab: AppTab, title: String, icon: String) -> some View {
@@ -42,6 +42,16 @@ struct WorkspaceView: View {
                 .foregroundStyle(model.tab == tab ? MSTheme.accent : MSTheme.muted)
         }.buttonStyle(.plain).accessibilityIdentifier("tab.\(tab.rawValue)")
             .accessibilityAddTraits(model.tab == tab ? .isSelected : [])
+    }
+}
+
+private extension View {
+    @ViewBuilder func msHideSystemTabBar() -> some View {
+        #if os(iOS)
+        self.toolbar(.hidden, for: .tabBar)
+        #else
+        self
+        #endif
     }
 }
 
