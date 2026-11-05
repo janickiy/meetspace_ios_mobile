@@ -52,7 +52,7 @@ import XCTest
         XCTAssertTrue(app.otherElements["serverError"].exists || app.staticTexts["serverError"].exists)
     }
 
-    func testValidServerAdvancesToUnavailableAuthentication() {
+    func testValidServerAdvancesToAuthenticationWithEmptySubmitDisabled() {
         let app = launch()
         app.buttons["connectServer"].tap()
         let address = app.textFields["serverURL"]
@@ -63,6 +63,79 @@ import XCTest
         XCTAssertTrue(next.waitForExistence(timeout: 5)); next.tap()
         XCTAssertTrue(app.secureTextFields["Пароль"].waitForExistence(timeout: 5))
         XCTAssertFalse(app.buttons["Войти"].isEnabled)
+    }
+
+    private func authentication(_ app: XCUIApplication) {
+        XCTAssertTrue(app.buttons["connectServer"].waitForExistence(timeout: 10))
+        app.buttons["connectServer"].tap()
+        let address = app.textFields["serverURL"]
+        XCTAssertTrue(address.waitForExistence(timeout: 5))
+        address.tap(); address.typeText("https://fixture.example")
+        app.buttons["checkServer"].tap()
+        let next = app.buttons["Перейти ко входу"]
+        XCTAssertTrue(next.waitForExistence(timeout: 5)); next.tap()
+    }
+
+    private func login(_ app: XCUIApplication, password: String = "fixture-password") {
+        authentication(app)
+        let email = app.textFields["Электронная почта"]
+        XCTAssertTrue(email.waitForExistence(timeout: 5)); email.tap(); email.typeText("first@fixture.example")
+        let secret = app.secureTextFields["Пароль"]
+        secret.tap(); secret.typeText(password)
+        let submit = app.buttons["authenticationSubmit"]
+        for _ in 0..<3 where !submit.isHittable { app.swipeUp() }
+        XCTAssertTrue(submit.isEnabled); submit.tap()
+    }
+
+    func testAuthenticationErrorIsVisibleAndDoesNotOpenWorkspace() {
+        let app = launch()
+        login(app, password: "wrong-password")
+        XCTAssertTrue(app.staticTexts["authenticationError"].waitForExistence(timeout: 5))
+        XCTAssertFalse(app.buttons["tab.messages"].exists)
+        capture(app, name: "stage03-authentication-error")
+    }
+
+    func testAuthenticatedChatSendAndLogout() {
+        let app = launch(); login(app)
+        let chat = app.buttons["conversation.22222222-2222-4222-8222-222222222222"]
+        XCTAssertTrue(chat.waitForExistence(timeout: 10))
+        XCTAssertFalse(app.staticTexts["demoBanner"].exists)
+        capture(app, name: "stage03-live-chats")
+        chat.tap()
+        let composer = app.textFields["messageComposer"]
+        XCTAssertTrue(composer.waitForExistence(timeout: 10))
+        composer.tap(); composer.typeText("Проверка сообщения")
+        app.buttons["sendMessage"].tap()
+        XCTAssertTrue(app.staticTexts["Проверка сообщения"].waitForExistence(timeout: 5))
+        capture(app, name: "stage03-live-thread")
+        app.buttons["tab.profile"].tap()
+        XCTAssertTrue(app.buttons["addAccount"].waitForExistence(timeout: 5))
+        capture(app, name: "stage03-live-profile")
+        app.buttons["Выйти из аккаунта"].firstMatch.tap()
+        let logout = app.buttons["Выйти"]
+        XCTAssertTrue(logout.waitForExistence(timeout: 5)); logout.tap()
+        XCTAssertTrue(app.secureTextFields["Пароль"].waitForExistence(timeout: 5))
+        XCTAssertFalse(app.buttons["tab.messages"].exists)
+    }
+
+    func testCreateGroupWithSelectedMember() {
+        let app = launch(); login(app)
+        let newChat = app.buttons["newChat"]
+        XCTAssertTrue(newChat.waitForExistence(timeout: 10)); newChat.tap()
+        let toggle = app.switches["Групповой чат"]
+        XCTAssertTrue(toggle.waitForExistence(timeout: 5)); toggle.tap()
+        let name = app.textFields["Название группы"]
+        XCTAssertTrue(name.waitForExistence(timeout: 5)); name.tap(); name.typeText("Команда iOS")
+        app.buttons["Выбрать участников"].tap()
+        let peer = app.buttons["peer.11111111-1111-4111-8111-111111111113"]
+        XCTAssertTrue(peer.waitForExistence(timeout: 5)); peer.tap()
+        app.buttons["Готово"].tap()
+        app.buttons["createConversation"].tap()
+        XCTAssertTrue(app.staticTexts["Команда iOS"].firstMatch.waitForExistence(timeout: 10))
+        XCTAssertTrue(app.textFields["messageComposer"].waitForExistence(timeout: 10))
+        app.buttons["О группе"].tap()
+        XCTAssertTrue(app.staticTexts["Тестовый собеседник"].waitForExistence(timeout: 5))
+        capture(app, name: "stage03-group-members")
     }
 
     func testOfflineStateCanRetryInExplicitDemo() {

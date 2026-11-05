@@ -5,11 +5,12 @@ import MeetSpaceDesignSystem
 public struct MeetSpaceRootView: View {
     @Bindable private var model: AppModel
     @State private var restored: Bool = false
+    @Environment(\.scenePhase) private var scenePhase
     public init(model: AppModel) { self.model = model }
 
     public var body: some View {
         Group {
-            if model.isDemo { WorkspaceView(model: model) }
+            if model.isDemo || (model.identity.messaging != nil && !model.identity.addingAccount) { WorkspaceView(model: model) }
             else { OnboardingView(model: model) }
         }
         .font(MSTheme.font()).foregroundStyle(MSTheme.ink).tint(MSTheme.accent)
@@ -19,6 +20,15 @@ public struct MeetSpaceRootView: View {
         .task {
             guard !restored else { return }
             restored = true; await model.restore()
+        }
+        .onChange(of: scenePhase) { _, phase in
+            Task { await model.identity.messaging?.setForeground(phase == .active) }
+        }
+        .onChange(of: model.identity.messaging?.account.id) { _, _ in
+            model.meetingsPath = []; model.messagesPath = []; model.profilePath = []
+            if let account = model.identity.messaging?.account {
+                model.configuration.server = account.server; model.tab = .messages
+            } else { model.sessionEnded() }
         }
         .alert(tr("MeetSpace"), isPresented: Binding(get: { model.notice != nil }, set: { if !$0 { model.notice = nil } })) {
             Button(tr("Понятно"), role: .cancel) { model.notice = nil }
@@ -45,15 +55,18 @@ struct OnboardingView: View {
                             Text("MeetSpace").font(MSTheme.font(21, weight: .semibold))
                             Spacer()
                             if model.onboarding != .welcome {
-                                IconButton("xmark", label: "На главную") { model.show(.welcome) }
+                                IconButton("xmark", label: "На главную") {
+                                    if model.identity.addingAccount { model.identity.addingAccount = false }
+                                    else { model.show(.welcome) }
+                                }.disabled(model.identity.busy)
                             }
                         }
                         .padding(.bottom, wide ? 30 : 12)
                         switch model.onboarding {
                         case .welcome: WelcomeView(model: model, showArtwork: !wide)
                         case .connect: ConnectView(model: model)
-                        case .login: AuthenticationView(model: model, registration: false)
-                        case .register: AuthenticationView(model: model, registration: true)
+                        case .login: AuthenticationView(model: model, registration: false).id("login")
+                        case .register: AuthenticationView(model: model, registration: true).id("register")
                         }
                     }.padding(wide ? 44 : 24).frame(maxWidth: 510)
                         .frame(maxWidth: .infinity, alignment: .center)
@@ -200,7 +213,7 @@ private extension AppModel.ConnectionError {
 private struct AuthenticationView: View {
     @Bindable var model: AppModel
     let registration: Bool
-    // Ephemeral view state only. No authentication operation is wired in stage 02.
+    // Passwords live only in the form and the in-flight request.
     @State private var name: String = ""
     @State private var email: String = ""
     @State private var password: String = ""
@@ -216,11 +229,35 @@ private struct AuthenticationView: View {
             field("Электронная почта") { TextField("name@example.com", text: $email).msEmailInput().textContentType(.emailAddress) }
             field("Пароль") { SecureField(tr("Пароль"), text: $password) }
             if registration { field("Повторите пароль") { SecureField(tr("Повторите пароль"), text: $confirmation) } }
-            Label(tr("Вход и регистрация появятся на следующем этапе. Данные формы не отправляются."), systemImage: "info.circle")
-                .font(MSTheme.font(12)).foregroundStyle(MSTheme.muted)
-            Button(tr(registration ? "Зарегистрироваться" : "Войти")) {}.buttonStyle(MSButtonStyle()).disabled(true)
+            if registration { Text(tr("Пароль: от 8 до 128 символов. Имя: до 100 символов.")).font(MSTheme.font(12)).foregroundStyle(MSTheme.muted) }
+            if let error = model.identity.error { Text(tr(error)).foregroundStyle(MSTheme.danger).accessibilityIdentifier("authenticationError") }
+            if let information = model.identity.information { Text(tr(information)).foregroundStyle(MSTheme.success) }
+            if model.identity.busy { ProgressView().accessibilityLabel(tr("Выполняем вход…")) }
+            Button(tr(registration ? "Зарегистрироваться" : "Войти")) {
+                Task {
+                    if registration {
+                        if await model.identity.register(server: model.configuration.server, email: email, password: password, confirmation: confirmation, name: name) {
+                            password = ""; confirmation = ""; model.show(.login)
+                        }
+                    } else {
+                        await model.identity.login(server: model.configuration.server, email: email, password: password)
+                        password = ""
+                    }
+                }
+            }.buttonStyle(MSButtonStyle()).disabled(email.isEmpty || password.isEmpty || (registration && (confirmation != password || password.unicodeScalars.count < 8)))
+                .accessibilityIdentifier("authenticationSubmit")
             Button(tr(registration ? "У меня уже есть аккаунт" : "Создать аккаунт")) { model.show(registration ? .login : .register) }.frame(minHeight: 44)
-        }.onDisappear { password = ""; confirmation = "" }
+            if !registration, !model.identity.index.accounts.isEmpty {
+                Menu(tr("Сохранённые аккаунты")) {
+                    ForEach(model.identity.index.accounts) { account in
+                        Button("\(account.user.name) · \(account.server.displayName)") {
+                            Task { await model.identity.switchAccount(account) }
+                        }
+                    }
+                }.frame(minHeight: 44)
+            }
+        }.disabled(model.identity.busy)
+            .onDisappear { password = ""; confirmation = "" }
     }
     private func field<Content: View>(_ label: String, @ViewBuilder content: () -> Content) -> some View {
         VStack(alignment: .leading, spacing: 8) {

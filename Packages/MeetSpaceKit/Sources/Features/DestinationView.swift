@@ -9,6 +9,8 @@ struct DestinationView: View {
         Group {
             switch route {
             case .thread(let index): ThreadView(model: model, personIndex: index)
+            case .conversation(let id):
+                if let messaging = model.identity.messaging { LiveThreadView(model: messaging, id: id) }
             case .interfaceCatalog: ScreenCatalog(model: model)
             case .calendar: CalendarScreen(model: model)
             case .recordings, .recording, .folders: LibraryView(model: model, route: route)
@@ -38,7 +40,7 @@ extension AppRoute {
         case .newMeeting: "Новая встреча"
         case .scheduleMeeting: "Запланировать встречу"
         case .joinMeeting: "Войти по ссылке"
-        case .thread: "Чат"
+        case .thread, .conversation: "Чат"
         case .audioSettings: "Аудио"
         case .videoSettings: "Видео"
         case .notificationSettings: "Уведомления"

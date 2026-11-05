@@ -3,17 +3,25 @@ import Observation
 import MeetSpaceCore
 import MeetSpaceAPI
 import MeetSpaceStorage
+import MeetSpaceRealtime
 
 public struct AppDependencies: Sendable {
     public let serverProbe: any ServerProbing
     public let configuration: any ConfigurationStore
     public let credentials: any SecureStore
-    public init(serverProbe: any ServerProbing, configuration: any ConfigurationStore, credentials: any SecureStore) {
+    public let accounts: any AccountIndexStore
+    public let transport: @Sendable () -> any RequestTransport
+    public let sockets: any RealtimeSocketFactory
+    public init(serverProbe: any ServerProbing, configuration: any ConfigurationStore, credentials: any SecureStore,
+                accounts: any AccountIndexStore = MemoryAccountIndexStore(),
+                transport: @escaping @Sendable () -> any RequestTransport = { URLSessionRequestTransport() },
+                sockets: any RealtimeSocketFactory = URLSessionSocketFactory()) {
         self.serverProbe = serverProbe; self.configuration = configuration; self.credentials = credentials
+        self.accounts = accounts; self.transport = transport; self.sockets = sockets
     }
     public static func live() -> AppDependencies {
         AppDependencies(serverProbe: ServerProbe(), configuration: PreferencesStore(),
-                        credentials: KeychainStore(service: "com.meetspace.ios.credentials"))
+                        credentials: KeychainStore(service: "com.meetspace.ios.credentials"), accounts: AccountPreferencesStore())
     }
 }
 
@@ -32,6 +40,7 @@ public struct AppDependencies: Sendable {
     public private(set) var serverVersion: ServerVersion?
     public private(set) var connectionError: ConnectionError?
     public var notice: String?
+    public let identity: IdentityModel
     @ObservationIgnored private let dependencies: AppDependencies
     @ObservationIgnored private var probeTask: Task<Void, Never>?
     @ObservationIgnored private var probeGeneration = UUID()
@@ -39,17 +48,26 @@ public struct AppDependencies: Sendable {
 
     public enum ConnectionError: Equatable { case invalidURL, offline, timeout, tls, redirect, incompatible, storage }
 
-    public init(dependencies: AppDependencies = .live()) { self.dependencies = dependencies }
+    public init(dependencies: AppDependencies = .live()) {
+        self.dependencies = dependencies; identity = IdentityModel(dependencies: dependencies)
+    }
 
     public func restore() async {
         do { configuration = try await dependencies.configuration.load() }
         catch { notice = "Не удалось прочитать настройки. Введите адрес сервера заново." }
+        await identity.restore()
+        if let account = identity.messaging?.account { configuration.server = account.server; tab = .messages }
+        else if let account = identity.index.accounts.first(where: { $0.id == identity.index.activeID }) {
+            configuration.server = account.server; onboarding = .login
+        }
     }
 
     public func show(_ screen: Onboarding) {
+        guard !identity.busy else { return }
         if screen == .connect { addressChanged() } else { cancelProbe() }
         onboarding = screen
     }
+    public func sessionEnded() { cancelProbe(); onboarding = .login }
 
     public func addressChanged() {
         cancelProbe()
@@ -115,6 +133,7 @@ public struct AppDependencies: Sendable {
     }
 
     public func enterDemo() {
+        guard identity.messaging == nil, !identity.busy else { return }
         cancelProbe(); isDemo = true; tab = .meetings
         meetingsPath = []; messagesPath = []; profilePath = []; contentState = .content
     }

@@ -6,7 +6,7 @@ struct WorkspaceView: View {
     @Bindable var model: AppModel
     var body: some View {
         VStack(spacing: 0) {
-            HStack(spacing: 8) {
+            if model.isDemo { HStack(spacing: 8) {
                 Image(systemName: "eye").accessibilityHidden(true)
                 Text(tr("Демо · данные из макетов")).font(MSTheme.font(11, weight: .semibold))
                     .accessibilityIdentifier("demoBanner")
@@ -15,10 +15,20 @@ struct WorkspaceView: View {
             }.padding(.horizontal, 20).background(MSTheme.accentSoft).foregroundStyle(MSTheme.accent)
                 // Persistent navigation must leave room for fully scaled, scrollable content.
                 .dynamicTypeSize(...DynamicTypeSize.xxxLarge)
+            }
             TabView(selection: $model.tab) {
-                stack(tab: .meetings, path: $model.meetingsPath) { MeetingsView(model: model) }
-                stack(tab: .messages, path: $model.messagesPath) { MessagesView(model: model) }
-                stack(tab: .profile, path: $model.profilePath) { ProfileView(model: model) }
+                stack(tab: .meetings, path: $model.meetingsPath) {
+                    if model.isDemo { MeetingsView(model: model) }
+                    else { ContentUnavailableView(tr("Встречи"), systemImage: "video", description: Text(tr("Встречи будут подключены на следующем этапе."))) }
+                }
+                stack(tab: .messages, path: $model.messagesPath) {
+                    if let messaging = model.identity.messaging, !model.isDemo { LiveMessagesView(app: model, model: messaging) }
+                    else { MessagesView(model: model) }
+                }
+                stack(tab: .profile, path: $model.profilePath) {
+                    if model.isDemo { ProfileView(model: model) }
+                    else { LiveProfileView(app: model) }
+                }
             }
             HStack(spacing: 0) {
                 tabButton(.meetings, title: "Встречи", icon: "video")

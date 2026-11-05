@@ -1,7 +1,7 @@
 import Foundation
 import MeetSpaceCore
 
-/// Endpoint construction only. Ticket acquisition, event handling and reconnect belong to later stages.
+/// Audited WSS endpoint construction; tickets are never logged.
 public enum RealtimeEndpoint {
     public enum Scope: Sendable { case user, conference(UUID) }
     public enum EndpointError: Error { case emptyTicket }
@@ -19,7 +19,7 @@ public enum RealtimeEndpoint {
     }
 }
 
-public enum RealtimeState: Sendable { case disconnected, connecting, connected, reconnecting }
+public enum RealtimeState: Equatable, Sendable { case disconnected, connecting, connected, reconnecting }
 
 public protocol RealtimeConnection: Sendable {
     func disconnect() async

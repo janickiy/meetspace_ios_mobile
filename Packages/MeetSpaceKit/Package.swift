@@ -18,13 +18,14 @@ let package = Package(
         .target(name: "MeetSpaceCore", path: "Sources/Core"),
         .target(name: "MeetSpaceAPI", dependencies: ["MeetSpaceCore"], path: "Sources/API"),
         .target(name: "MeetSpaceStorage", dependencies: ["MeetSpaceCore"], path: "Sources/Storage"),
-        .target(name: "MeetSpaceRealtime", dependencies: ["MeetSpaceCore"], path: "Sources/Realtime"),
+        .target(name: "MeetSpaceRealtime", dependencies: ["MeetSpaceCore", "MeetSpaceAPI"], path: "Sources/Realtime"),
         .target(name: "MeetSpaceDesignSystem", path: "Sources/DesignSystem", resources: [.process("Resources")]),
         .target(name: "MeetSpaceFeatures", dependencies: ["MeetSpaceCore", "MeetSpaceAPI", "MeetSpaceStorage", "MeetSpaceRealtime", "MeetSpaceDesignSystem"], path: "Sources/Features"),
         .executableTarget(name: "FoundationPreviewRenderer", dependencies: ["MeetSpaceFeatures", "MeetSpaceDesignSystem", "MeetSpaceCore"], path: "Tools/PreviewRenderer"),
         .testTarget(name: "CoreTests", dependencies: ["MeetSpaceCore", "MeetSpaceRealtime"]),
         .testTarget(name: "APITests", dependencies: ["MeetSpaceAPI", "MeetSpaceCore"]),
         .testTarget(name: "StorageTests", dependencies: ["MeetSpaceStorage", "MeetSpaceCore"]),
-        .testTarget(name: "FeaturesTests", dependencies: ["MeetSpaceFeatures", "MeetSpaceCore", "MeetSpaceAPI"])
+        .testTarget(name: "FeaturesTests", dependencies: ["MeetSpaceFeatures", "MeetSpaceCore", "MeetSpaceAPI"]),
+        .testTarget(name: "IntegrationTests", dependencies: ["MeetSpaceCore", "MeetSpaceAPI", "MeetSpaceStorage", "MeetSpaceRealtime", "MeetSpaceFeatures"])
     ]
 )
