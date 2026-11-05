@@ -115,3 +115,39 @@ private struct Timeout: Error {}
     #expect(!model.isDemo && model.onboarding == .welcome)
     #expect(model.meetingsPath.isEmpty && model.messagesPath.isEmpty && model.profilePath.isEmpty)
 }
+
+@Test @MainActor func reopeningServerFormRequiresANewCheck() async throws {
+    let (model, probe, _) = fixture()
+    model.show(.connect); model.checkServer("https://meet.example")
+    try await until { await probe.pending("meet.example") }
+    await probe.finish("meet.example", result: .success(version))
+    try await until { await model.probeState == .content }
+    model.show(.welcome); model.show(.connect)
+    await model.continueToLogin()
+    #expect(model.onboarding == .connect)
+    #expect(model.checkedServer == nil && model.probeState == .empty)
+}
+
+private actor DelayedConfiguration: ConfigurationStore {
+    private var continuation: CheckedContinuation<Void, Never>?
+    var pending: Bool { continuation != nil }
+    func load() -> AppConfiguration { AppConfiguration() }
+    func save(_ configuration: AppConfiguration) async {
+        await withCheckedContinuation { continuation = $0 }
+    }
+    func finish() { continuation?.resume(); continuation = nil }
+}
+
+@Test @MainActor func leavingWhileSavingCannotNavigateBackToLogin() async throws {
+    let probe = ControlledProbe(); let store = DelayedConfiguration()
+    let model = AppModel(dependencies: AppDependencies(serverProbe: probe, configuration: store, credentials: MemorySecrets()))
+    model.show(.connect); model.checkServer("https://meet.example")
+    try await until { await probe.pending("meet.example") }
+    await probe.finish("meet.example", result: .success(version))
+    try await until { await model.probeState == .content }
+    let saving = Task { await model.continueToLogin() }
+    try await until { await store.pending }
+    model.show(.welcome)
+    await store.finish(); await saving.value
+    #expect(model.onboarding == .welcome)
+}

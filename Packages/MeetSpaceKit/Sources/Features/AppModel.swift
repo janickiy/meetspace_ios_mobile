@@ -47,7 +47,7 @@ public struct AppDependencies: Sendable {
     }
 
     public func show(_ screen: Onboarding) {
-        cancelProbe()
+        if screen == .connect { addressChanged() } else { cancelProbe() }
         onboarding = screen
     }
 
@@ -91,11 +91,16 @@ public struct AppDependencies: Sendable {
 
     public func continueToLogin() async {
         guard probeState == .content, let server = checkedServer else { return }
+        let generation = probeGeneration
         var next = configuration; next.server = server
         do {
             try await dependencies.configuration.save(next)
+            guard probeGeneration == generation else { return }
             configuration = next; show(.login)
-        } catch { connectionError = .storage; probeState = .failed }
+        } catch {
+            guard probeGeneration == generation else { return }
+            connectionError = .storage; probeState = .failed
+        }
     }
 
     public func setAppearance(_ appearance: Appearance) {

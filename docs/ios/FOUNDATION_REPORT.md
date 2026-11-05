@@ -13,7 +13,7 @@
 | HTTPS origin без TLS bypass | PASS (код/unit) | Запрет userinfo/path/query/HTTP; системная TLS-проверка; redirects запрещены; нет ATS overrides |
 | Keychain abstraction / безопасная конфигурация | PASS (реализация) | Actor, scoped keys, device-only, no sync; UserDefaults только origin/theme |
 | Navigation, loading/empty/error/offline | PASS (модель/код) | 3 независимых paths, cancellation/stale-response tests, state previews |
-| Unit tests на хосте | PASS | 18 тестов; параметризованные URL/HTTP наборы внутри тестов, лог приложен |
+| Unit tests на хосте | PASS | 20 тестов; параметризованные URL/HTTP наборы внутри тестов, лог приложен |
 | iPhone/iPad simulator build и UI/Keychain integration tests | BLOCKED локально | Полного Xcode и iOS simulator SDK нет; xcode-select указывает CLT |
 | CI | Настроен | Workflow отдельно проверяет host tests, Release build, iPhone и iPad; удалённый результат фиксируется после push |
 | Light/dark, адаптация, Inter | PASS (основа) | Семантические цвета, responsive layout, реальные TTF+OFL, macOS host renders |
@@ -81,7 +81,7 @@ swift run --package-path Packages/MeetSpaceKit \
   FoundationPreviewRenderer /tmp/meetspace-stage02-previews
 ```
 
-Результат: Debug/Release host build PASS, 18 unit tests PASS, 6 host render PNG созданы и просмотрены.
+Результат: Debug/Release host build PASS, 20 unit tests PASS, 6 host render PNG созданы и просмотрены.
 CLT выдаёт linker warnings о несуществующих Developer/Library/Frameworks путях;
 это не замалчивается и не относится к iOS simulator verification.
 Логи: [unit tests](evidence/stage02/unit-tests.txt), [host build](evidence/stage02/host-build.txt),
