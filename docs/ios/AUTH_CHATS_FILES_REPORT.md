@@ -101,12 +101,35 @@ Download ограничен во время чтения; небольшой ф�
 | Realtime lifecycle | PASS | Новые tickets, backoff, event-ID dedup между соединениями, отсутствие reconnect после finish |
 | Файлы | PASS для проверенных сценариев | Реальные direct/group upload/download; повтор ready upload; SHA mismatch, scope escape, cancel до finalize, download limit/progress/cancel |
 | Host tests | PASS | 42 прошедших теста; 1 opt-in backend test пропущен обычным запуском и выполнен отдельно |
-| Release iOS build | PASS первого CI-коммита | Финальная привязка будет обновлена после проверки |
-| iPhone/iPad UI tests | Проверка продолжается | Первые прогоны выявили проблемы двух новых UI-сценариев; до исправления PASS не заявляется |
-| UI по макетам | Частичная проверка | Palette/Inter/компоненты и сценарии; полная pixel parity и ручной VoiceOver не заявляются |
+| Release iOS build | PASS | Generic iOS Simulator, Xcode 16.4, workflow `42029748386` |
+| iPhone/iPad UI tests | PASS | На каждой платформе 1 Keychain + 9 UI tests, 0 failures |
+| UI по макетам | PASS для основы; BLOCKED для полной приёмки | Palette/Inter/компоненты и сценарии, нативные скриншоты просмотрены; полная pixel parity и ручной VoiceOver не заявляются |
 | Устройство / deployment TLS / iCloud | BLOCKED для device acceptance | Нет signing team/устройства и тестового HTTPS deployment |
 
 PASS относится к указанному сценарию, а не ко всем серверам, сетям и устройствам.
+
+### Зафиксированный результат
+
+Проверенный iOS source commit: `3f82abeb438432990eb516d6315b448064c4384d`.
+[GitHub Actions: все три jobs успешны](https://github.com/janickiy/meetspace_ios_mobile/actions/runs/42029748386).
+В последующем evidence-коммите изменены только документация, журналы, скриншоты
+и воспроизводимый backend harness; Swift/app/UI test sources совпадают с проверенным коммитом.
+
+- [Манифест исходников и MIME map](evidence/stage03/source-manifest.json).
+- [Локальные unit-тесты](evidence/stage03/host-tests.txt).
+- [Реальный backend contract](evidence/stage03/backend-contract.txt) и
+  [образы контейнеров](evidence/stage03/backend-runtime.json).
+- [CI manifest](evidence/stage03/ci-run.json), [package/Release](evidence/stage03/ci-package.txt),
+  [iPhone](evidence/stage03/ci-iphone.txt), [iPad](evidence/stage03/ci-ipad.txt).
+- [Нативные скриншоты](evidence/stage03/native-previews/): по 5 на каждое семейство —
+  ошибка входа, список чатов, переписка, профиль, участники группы.
+
+Устройства CI: iPhone SE (3rd generation) и iPad mini (A17 Pro), iOS/iPadOS 18.5.
+Логи Swift Testing считают 43 теста, включая один opt-in пропуск; фактически
+прошли 42. Пропущенный в CI тест настоящего backend отдельно прошёл локально.
+UI-тесты используют только DEBUG doubles; 401 вводится отдельным launch argument.
+Неверный пароль дополнительно проверен на настоящем backend. Скриншоты doubles
+не выдаются за подключение симулятора к реальному серверу.
 
 ### Фактические команды
 
@@ -124,7 +147,7 @@ python3 scripts/verify_audit.py --source-root /tmp/meetspace-ios-audit-20261105
 git diff --check
 python3 scripts/run_backend_contract.py \
   --backend /tmp/meetspace-ios-stage03/backend \
-  --output /tmp/meetspace-ios-stage03/container-contract-final
+  --output /tmp/meetspace-ios-stage03/accepted-contract
 ```
 
 Последняя команда собирает неизменённый Go backend для Linux и запускает свои

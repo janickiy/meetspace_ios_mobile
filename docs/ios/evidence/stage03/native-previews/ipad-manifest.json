@@ -1,0 +1,41 @@
+{
+  "runID": 42029748386,
+  "artifactID": 13416247828,
+  "screenshots": [
+    {
+      "file": "ipad-stage03-live-profile.png",
+      "source": "4A79123E-5891-49C8-BB14-ADF0434E1816.png",
+      "test": "FoundationUITests/testAuthenticatedChatSendAndLogout()",
+      "deviceName": "iPad mini (A17 Pro)",
+      "timestamp": 1793883324.162
+    },
+    {
+      "file": "ipad-stage03-live-thread.png",
+      "source": "A365C293-280B-40EF-A872-7A2DA2D86D4B.png",
+      "test": "FoundationUITests/testAuthenticatedChatSendAndLogout()",
+      "deviceName": "iPad mini (A17 Pro)",
+      "timestamp": 1793883320.537
+    },
+    {
+      "file": "ipad-stage03-live-chats.png",
+      "source": "15EEB39F-7199-420E-8F00-B8631DB6EA63.png",
+      "test": "FoundationUITests/testAuthenticatedChatSendAndLogout()",
+      "deviceName": "iPad mini (A17 Pro)",
+      "timestamp": 1793883313.736
+    },
+    {
+      "file": "ipad-stage03-authentication-error.png",
+      "source": "B2D8F466-81AA-41BE-BB51-39CD5F53902B.png",
+      "test": "FoundationUITests/testAuthenticationErrorIsVisibleAndDoesNotOpenWorkspace()",
+      "deviceName": "iPad mini (A17 Pro)",
+      "timestamp": 1793883353.048
+    },
+    {
+      "file": "ipad-stage03-group-members.png",
+      "source": "B3A98158-CFC4-4675-BB40-573AE0CE182D.png",
+      "test": "FoundationUITests/testCreateGroupWithSelectedMember()",
+      "deviceName": "iPad mini (A17 Pro)",
+      "timestamp": 1793883389.488
+    }
+  ]
+}

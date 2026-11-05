@@ -1,0 +1,136 @@
+Building for debugging...
+[Computing dependencies]
+[1 / 26] StorageTests-product
+[2 / 24] MeetSpaceAPI
+[4 / 26] MeetSpaceAPI
+[8 / 32] MeetSpaceFeatures
+/Users/aleksandranickij/htdocs/meetspace_ios_mobile/Packages/MeetSpaceKit/Package.swift: MeetSpaceAPI: ld: warning: search path '/Library/Developer/CommandLineTools/Developer/Library/Frameworks' not found
+[11 / 36] MeetSpaceRealtime
+[17 / 35] APITests-product
+/Users/aleksandranickij/htdocs/meetspace_ios_mobile/Packages/MeetSpaceKit/Package.swift: APITests-product: ld: warning: search path '/Library/Developer/CommandLineTools/Developer/usr/lib' not found
+/Users/aleksandranickij/htdocs/meetspace_ios_mobile/Packages/MeetSpaceKit/Package.swift: APITests-product: ld: warning: search path '/Library/Developer/CommandLineTools/Developer/Library/Frameworks' not found
+/Users/aleksandranickij/htdocs/meetspace_ios_mobile/Packages/MeetSpaceKit/Package.swift: CoreTests-product: ld: warning: search path '/Library/Developer/CommandLineTools/Developer/usr/lib' not found
+/Users/aleksandranickij/htdocs/meetspace_ios_mobile/Packages/MeetSpaceKit/Package.swift: CoreTests-product: ld: warning: search path '/Library/Developer/CommandLineTools/Developer/Library/Frameworks' not found
+[21 / 37] MeetSpaceFeatures
+[26 / 43] FoundationPreviewRenderer-product
+[27 / 43] MeetSpaceFeatures
+[34 / 50] MeetSpaceFeatures
+/Users/aleksandranickij/htdocs/meetspace_ios_mobile/Packages/MeetSpaceKit/Package.swift: MeetSpaceFeatures: ld: warning: search path '/Library/Developer/CommandLineTools/Developer/Library/Frameworks' not found
+[40 / 48] FeaturesTests-product
+[46 / 54] FoundationPreviewRenderer-product
+/Users/aleksandranickij/htdocs/meetspace_ios_mobile/Packages/MeetSpaceKit/Package.swift: FoundationPreviewRenderer-product: ld: warning: search path '/Library/Developer/CommandLineTools/Developer/usr/lib' not found
+/Users/aleksandranickij/htdocs/meetspace_ios_mobile/Packages/MeetSpaceKit/Package.swift: FoundationPreviewRenderer-product: ld: warning: search path '/Library/Developer/CommandLineTools/Developer/Library/Frameworks' not found
+[50 / 56] IntegrationTests-product
+[53 / 57] FeaturesTests-product
+/Users/aleksandranickij/htdocs/meetspace_ios_mobile/Packages/MeetSpaceKit/Package.swift: FeaturesTests-product: ld: warning: search path '/Library/Developer/CommandLineTools/Developer/usr/lib' not found
+/Users/aleksandranickij/htdocs/meetspace_ios_mobile/Packages/MeetSpaceKit/Package.swift: FeaturesTests-product: ld: warning: search path '/Library/Developer/CommandLineTools/Developer/Library/Frameworks' not found
+[55 / 58] IntegrationTests-product
+[57 / 61] IntegrationTests-product/Users/aleksandranickij/htdocs/meetspace_ios_mobile/Packages/MeetSpaceKit/Package.swift: IntegrationTests-product: ld: warning: search path '/Library/Developer/CommandLineTools/Developer/usr/lib' not found
+/Users/aleksandranickij/htdocs/meetspace_ios_mobile/Packages/MeetSpaceKit/Package.swift: IntegrationTests-product: ld: warning: search path '/Library/Developer/CommandLineTools/Developer/Library/Frameworks' not found
+
+Build complete! (7,13 с)
+◇ Test run started.
+↳ Testing Library Version: 2084
+↳ Target Platform: arm64e-apple-macos14.0
+◇ Test preferencesRoundTripOnlyPublicConfiguration() started.
+◇ Test corruptedConfigurationIsReported() started.
+✔ Test corruptedConfigurationIsReported() passed after 0.004 seconds.
+✔ Test preferencesRoundTripOnlyPublicConfiguration() passed after 0.005 seconds.
+✔ Test run with 2 tests in 0 suites passed after 0.005 seconds.
+◇ Test run started.
+↳ Testing Library Version: 2084
+↳ Target Platform: arm64e-apple-macos14.0
+◇ Test restoredAccountsSwitchWithoutSharingStateAndLogoutOnlyRemovesSelected() started.
+◇ Test concurrentUnauthorizedRequestsRefreshOnceAndRetryOnce() started.
+◇ Test productionTransportsRejectUnencryptedEndpointsBeforeNetworking() started.
+◇ Test logoutDrainsRefreshWriteBeforeKeychainDeletion() started.
+◇ Test authenticatedFileURLCannotEscapeAccountOriginOrConversation() started.
+◇ Test cancelledDownloadDoesNotRemainInFlight() started.
+➜ Test actualBackendTwoClientsAndFiles() skipped.
+◇ Test fiveAccountsPerOriginAndMetadataContainNoSessionSecrets() started.
+◇ Test refreshRejectsChangedAccountAndMalformedCookie() started.
+◇ Test repeated401ExpiresWithoutInfiniteRefresh() started.
+◇ Test websocketUsesPublishedNamesAndIgnoresUnknownPayloads() started.
+◇ Test lateHistoryCannotReplaceAnotherSelectedConversation() started.
+◇ Test reconnectUsesFreshTicketsDeduplicatesAndStopsOnCancellation() started.
+◇ Test successfulDownloadIsBoundedBeforeAccumulation() started.
+◇ Test signedDownloadNeverReceivesBearerAndRejectsCorruptBytes() started.
+◇ Test downloadProgressUsesReceivedBytesAndFinishesAtOne() started.
+◇ Test tinyDownloadPreservesLargerUnauthorizedResponse() started.
+◇ Test serverCharacterAndFileLimitsAreEnforced() started.
+◇ Test cancellingUploadStopsBeforeFinalizeAndRemovesStagedFile() started.
+◇ Test accountTemporaryFilesAreIsolatedAndBounded() started.
+◇ Test forbiddenAndOfflineDoNotDestroySessions() started.
+◇ Test versionsAndIntegerSequencesPreventDuplicateOrResurrectedMessages() started.
+◇ Test uncertainSendRetriesSameRequestAndProducesOneMessage() started.
+✔ Test productionTransportsRejectUnencryptedEndpointsBeforeNetworking() passed after 0.007 seconds.
+✔ Test serverCharacterAndFileLimitsAreEnforced() passed after 0.007 seconds.
+✔ Test successfulDownloadIsBoundedBeforeAccumulation() passed after 0.008 seconds.
+✔ Test tinyDownloadPreservesLargerUnauthorizedResponse() passed after 0.017 seconds.
+✔ Test forbiddenAndOfflineDoNotDestroySessions() passed after 0.017 seconds.
+✔ Test downloadProgressUsesReceivedBytesAndFinishesAtOne() passed after 0.017 seconds.
+✔ Test repeated401ExpiresWithoutInfiniteRefresh() passed after 0.020 seconds.
+✔ Test authenticatedFileURLCannotEscapeAccountOriginOrConversation() passed after 0.020 seconds.
+✔ Test signedDownloadNeverReceivesBearerAndRejectsCorruptBytes() passed after 0.020 seconds.
+✔ Test refreshRejectsChangedAccountAndMalformedCookie() passed after 0.022 seconds.
+✔ Test websocketUsesPublishedNamesAndIgnoresUnknownPayloads() passed after 0.024 seconds.
+✔ Test accountTemporaryFilesAreIsolatedAndBounded() passed after 0.025 seconds.
+✔ Test cancelledDownloadDoesNotRemainInFlight() passed after 0.026 seconds.
+✔ Test versionsAndIntegerSequencesPreventDuplicateOrResurrectedMessages() passed after 0.030 seconds.
+✔ Test fiveAccountsPerOriginAndMetadataContainNoSessionSecrets() passed after 0.031 seconds.
+✔ Test logoutDrainsRefreshWriteBeforeKeychainDeletion() passed after 0.038 seconds.
+✔ Test restoredAccountsSwitchWithoutSharingStateAndLogoutOnlyRemovesSelected() passed after 0.042 seconds.
+✔ Test cancellingUploadStopsBeforeFinalizeAndRemovesStagedFile() passed after 0.043 seconds.
+✔ Test lateHistoryCannotReplaceAnotherSelectedConversation() passed after 0.049 seconds.
+✔ Test uncertainSendRetriesSameRequestAndProducesOneMessage() passed after 0.053 seconds.
+✔ Test concurrentUnauthorizedRequestsRefreshOnceAndRetryOnce() passed after 0.056 seconds.
+✔ Test reconnectUsesFreshTicketsDeduplicatesAndStopsOnCancellation() passed after 0.083 seconds.
+✔ Test run with 23 tests in 0 suites passed after 0.083 seconds.
+◇ Test run started.
+↳ Testing Library Version: 2084
+↳ Target Platform: arm64e-apple-macos14.0
+◇ Test tabsPreserveIndependentPathsAndDemoExitClearsThem() started.
+◇ Test leavingWhileSavingCannotNavigateBackToLogin() started.
+◇ Test invalidAddressNeverStartsRequestOrAdvances() started.
+◇ Test leavingConnectionCancelsPendingCheck() started.
+◇ Test successfulCheckPersistsOriginBeforeLogin() started.
+◇ Test reopeningServerFormRequiresANewCheck() started.
+◇ Test staleResponseCannotReplaceNewServer() started.
+◇ Test offlineIsDistinctAndRetryCanSucceed() started.
+✔ Test tabsPreserveIndependentPathsAndDemoExitClearsThem() passed after 0.001 seconds.
+✔ Test invalidAddressNeverStartsRequestOrAdvances() passed after 0.001 seconds.
+✔ Test staleResponseCannotReplaceNewServer() passed after 0.001 seconds.
+✔ Test leavingConnectionCancelsPendingCheck() passed after 0.006 seconds.
+✔ Test reopeningServerFormRequiresANewCheck() passed after 0.006 seconds.
+✔ Test successfulCheckPersistsOriginBeforeLogin() passed after 0.013 seconds.
+✔ Test leavingWhileSavingCannotNavigateBackToLogin() passed after 0.013 seconds.
+✔ Test offlineIsDistinctAndRetryCanSucceed() passed after 0.013 seconds.
+✔ Test run with 8 tests in 0 suites passed after 0.013 seconds.
+◇ Test run started.
+↳ Testing Library Version: 2084
+↳ Target Platform: arm64e-apple-macos14.0
+◇ Test rejectsUnsafeOrigins(_:) started.
+◇ Test credentialsAreScopedByServerAndAccount() started.
+◇ Test normalizesOriginAndPreservesCustomPort() started.
+◇ Test realtimeUsesAuditedPathsAndEncodesTicket() started.
+◇ Test decodeCannotBypassValidation() started.
+✔ Test credentialsAreScopedByServerAndAccount() passed after 0.001 seconds.
+✔ Test realtimeUsesAuditedPathsAndEncodesTicket() passed after 0.001 seconds.
+✔ Test decodeCannotBypassValidation() passed after 0.001 seconds.
+✔ Test normalizesOriginAndPreservesCustomPort() passed after 0.001 seconds.
+✔ Test rejectsUnsafeOrigins(_:) with 14 test cases passed after 0.001 seconds.
+✔ Test run with 5 tests in 0 suites passed after 0.001 seconds.
+◇ Test run started.
+↳ Testing Library Version: 2084
+↳ Target Platform: arm64e-apple-macos14.0
+◇ Test preservesHTTPStatus(_:) started.
+◇ Test rejectsMalformedVersion(_:) started.
+◇ Test redirectsAreNotAccepted(_:) started.
+◇ Test rejectsHTMLContentTypeAndLargeResponse() started.
+◇ Test probesOnlyPublicVersionEndpoint() started.
+✔ Test preservesHTTPStatus(_:) with 5 test cases passed after 0.001 seconds.
+✔ Test probesOnlyPublicVersionEndpoint() passed after 0.001 seconds.
+✔ Test rejectsMalformedVersion(_:) with 3 test cases passed after 0.001 seconds.
+✔ Test redirectsAreNotAccepted(_:) with 4 test cases passed after 0.001 seconds.
+✔ Test rejectsHTMLContentTypeAndLargeResponse() passed after 0.001 seconds.
+✔ Test run with 5 tests in 0 suites passed after 0.001 seconds.

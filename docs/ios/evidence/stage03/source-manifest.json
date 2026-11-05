@@ -1,0 +1,56 @@
+{
+  "date": "2026-11-05",
+  "iosSourceCommit": "3f82abeb438432990eb516d6315b448064c4384d",
+  "backendCommit": "0bd1248a2411842515af4e02f1e95821616748fb",
+  "androidCommit": "b8f289983e60671d415a128734c2e5bb6e93a29d",
+  "designCommit": "04d6a8ecdac75ae568459bbed0f3f6647bf8cbb3",
+  "mimeMapEntries": 124,
+  "mimeMapSHA256": "43a56d748bdcba451f378a50b5082e19e8038bb7ac97aaa6cdef04a43750ee3f",
+  "backendSources": [
+    {
+      "path": "internal/app/auth/handler.go",
+      "sha256": "81afb87444a6327d311ea80d1140b60667b7653bd8a9f8340df9ad1a0aa4b89e"
+    },
+    {
+      "path": "internal/app/auth/sessions.go",
+      "sha256": "bb7908b2b8e4dc70f39ac8f8d3711aeb062d122299b1b3abc43469e22fef2912"
+    },
+    {
+      "path": "internal/app/auth/accounts.go",
+      "sha256": "0fb326c138f126a65b06edbbbf326f7c37442024d255aa69f6b8ef1dc387eeed"
+    },
+    {
+      "path": "internal/domain/chat/chat.go",
+      "sha256": "cd91966697647ae7645272a2c0c84f721661fcddad03eec3cd9cfb854b3988b7"
+    },
+    {
+      "path": "internal/domain/chat/attachment_types.go",
+      "sha256": "3a8da6fdd133684fb803e9e669fefbdfa4bff47aa546a3a31a1ff16e5cfbe313"
+    },
+    {
+      "path": "internal/usecase/chat/service.go",
+      "sha256": "9fac70a83f0e40bc6cafbe3ab64672c7208cdbee1222ed1b0b68f847586ef2ba"
+    },
+    {
+      "path": "internal/usecase/personal/events.go",
+      "sha256": "fe63b43cb5d9d68f0511cc3141d4da6247021403d0a0b703af6408b16f5f8445"
+    },
+    {
+      "path": "internal/transport/websocket/user_handler.go",
+      "sha256": "f5533a5f3c8a7d7c0091e7189cd384447953caeaa8a022843e40916fc3ee73d7"
+    },
+    {
+      "path": "internal/transport/websocket/user_delivery.go",
+      "sha256": "64004672b5528558bcee7a48dfc61acfde40ff77438e6efb451b79957abce3a7"
+    },
+    {
+      "path": "internal/infrastructure/postgres/chat_attachment_repository.go",
+      "sha256": "1b59f9bf2e20fb1da288e0f5a13df4f3bcf56cc8224721e5795fd9a76b7ce294"
+    },
+    {
+      "path": "internal/infrastructure/postgres/chat_repository.go",
+      "sha256": "622ae085e4358dc2c29d06a6f45ce1a1753cfd7b9cc6c2aa8607883c678c160c"
+    }
+  ],
+  "harnessSHA256": "42c1a51e26e714ceb1b629c7f6594bd16e62e8ee71ed615e85554618cff1ce9d"
+}

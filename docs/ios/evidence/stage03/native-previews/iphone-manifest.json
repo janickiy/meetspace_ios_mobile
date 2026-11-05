@@ -1,0 +1,41 @@
+{
+  "runID": 42029748386,
+  "artifactID": 13416606187,
+  "screenshots": [
+    {
+      "file": "iphone-stage03-live-profile.png",
+      "source": "F4259FF2-6AE7-4862-B1BF-D1D9D6C70866.png",
+      "test": "FoundationUITests/testAuthenticatedChatSendAndLogout()",
+      "deviceName": "iPhone SE (3rd generation)",
+      "timestamp": 1793883052.141
+    },
+    {
+      "file": "iphone-stage03-live-thread.png",
+      "source": "55DF73A0-A00D-42FA-89F6-CE5462736C60.png",
+      "test": "FoundationUITests/testAuthenticatedChatSendAndLogout()",
+      "deviceName": "iPhone SE (3rd generation)",
+      "timestamp": 1793883049.848
+    },
+    {
+      "file": "iphone-stage03-live-chats.png",
+      "source": "BE26D134-3D6A-459F-BF14-F426FE56478A.png",
+      "test": "FoundationUITests/testAuthenticatedChatSendAndLogout()",
+      "deviceName": "iPhone SE (3rd generation)",
+      "timestamp": 1793883043.117
+    },
+    {
+      "file": "iphone-stage03-authentication-error.png",
+      "source": "1256CD8D-1BF4-414B-88C5-57D81EC3A09C.png",
+      "test": "FoundationUITests/testAuthenticationErrorIsVisibleAndDoesNotOpenWorkspace()",
+      "deviceName": "iPhone SE (3rd generation)",
+      "timestamp": 1793883075.418
+    },
+    {
+      "file": "iphone-stage03-group-members.png",
+      "source": "36915993-0F14-49C9-B289-F79ED2EA18FA.png",
+      "test": "FoundationUITests/testCreateGroupWithSelectedMember()",
+      "deviceName": "iPhone SE (3rd generation)",
+      "timestamp": 1793883108.844
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "runID": 42029748386,
+  "url": "https://github.com/janickiy/meetspace_ios_mobile/actions/runs/42029748386",
+  "headSHA": "3f82abeb438432990eb516d6315b448064c4384d",
+  "conclusion": "success",
+  "jobs": [
+    {
+      "id": 127252865225,
+      "name": "package",
+      "conclusion": "success",
+      "started_at": "2026-11-05T12:44:52Z",
+      "completed_at": "2026-11-05T12:46:37Z"
+    },
+    {
+      "id": 127252865459,
+      "name": "simulators (iPad)",
+      "conclusion": "success",
+      "started_at": "2026-11-05T12:44:54Z",
+      "completed_at": "2026-11-05T12:58:12Z"
+    },
+    {
+      "id": 127252865833,
+      "name": "simulators (iPhone)",
+      "conclusion": "success",
+      "started_at": "2026-11-05T12:44:52Z",
+      "completed_at": "2026-11-05T12:53:50Z"
+    }
+  ],
+  "unitPassed": 42,
+  "optInBackendSkippedInCI": 1,
+  "backendPassedLocally": 1,
+  "nativePerFamily": {
+    "keychain": 1,
+    "ui": 9
+  }
+}

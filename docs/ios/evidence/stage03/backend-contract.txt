@@ -1,0 +1,59 @@
+Building for debugging...
+[Provisioning 10 / 20]
+[4 / 49] MeetSpaceCore
+[14 / 59] MeetSpaceCore
+[22 / 67] MeetSpaceAPI
+[31 / 77] MeetSpaceStorage
+/Users/aleksandranickij/htdocs/meetspace_ios_mobile/Packages/MeetSpaceKit/Package.swift: MeetSpaceDesignSystem: ld: warning: search path '/Library/Developer/CommandLineTools/Developer/Library/Frameworks' not found
+[37 / 80] StorageTests-product
+/Users/aleksandranickij/htdocs/meetspace_ios_mobile/Packages/MeetSpaceKit/Package.swift: MeetSpaceCore: ld: warning: search path '/Library/Developer/CommandLineTools/Developer/Library/Frameworks' not found
+/Users/aleksandranickij/htdocs/meetspace_ios_mobile/Packages/MeetSpaceKit/Package.swift: MeetSpaceStorage: ld: warning: search path '/Library/Developer/CommandLineTools/Developer/Library/Frameworks' not found
+[49 / 83] MeetSpaceRealtime
+[55 / 89] MeetSpaceRealtime
+/Users/aleksandranickij/htdocs/meetspace_ios_mobile/Packages/MeetSpaceKit/Package.swift: MeetSpaceAPI: ld: warning: search path '/Library/Developer/CommandLineTools/Developer/Library/Frameworks' not found
+[63 / 93] StorageTests-product
+[77 / 110] APITests-product
+/Users/aleksandranickij/htdocs/meetspace_ios_mobile/Packages/MeetSpaceKit/Package.swift: StorageTests-product: ld: warning: search path '/Library/Developer/CommandLineTools/Developer/usr/lib' not found
+/Users/aleksandranickij/htdocs/meetspace_ios_mobile/Packages/MeetSpaceKit/Package.swift: StorageTests-product: ld: warning: search path '/Library/Developer/CommandLineTools/Developer/Library/Frameworks' not found
+[79 / 110] APITests-product
+/Users/aleksandranickij/htdocs/meetspace_ios_mobile/Packages/MeetSpaceKit/Package.swift: MeetSpaceRealtime: ld: warning: search path '/Library/Developer/CommandLineTools/Developer/Library/Frameworks' not found
+[81 / 110] MeetSpaceFeatures
+[87 / 111] MeetSpaceFeatures
+[92 / 118] StorageTests-product
+[95 / 118] APITests-product
+[101 / 124] FoundationPreviewRenderer-product
+/Users/aleksandranickij/htdocs/meetspace_ios_mobile/Packages/MeetSpaceKit/Package.swift: APITests-product: ld: warning: search path '/Library/Developer/CommandLineTools/Developer/usr/lib' not found
+/Users/aleksandranickij/htdocs/meetspace_ios_mobile/Packages/MeetSpaceKit/Package.swift: APITests-product: ld: warning: search path '/Library/Developer/CommandLineTools/Developer/Library/Frameworks' not found
+[103 / 126] APITests-product
+[106 / 128] FoundationPreviewRenderer-product
+[112 / 131] CoreTests-product
+/Users/aleksandranickij/htdocs/meetspace_ios_mobile/Packages/MeetSpaceKit/Package.swift: CoreTests-product: ld: warning: search path '/Library/Developer/CommandLineTools/Developer/usr/lib' not found
+/Users/aleksandranickij/htdocs/meetspace_ios_mobile/Packages/MeetSpaceKit/Package.swift: CoreTests-product: ld: warning: search path '/Library/Developer/CommandLineTools/Developer/Library/Frameworks' not found
+[115 / 133] MeetSpaceFeatures
+/Users/aleksandranickij/htdocs/meetspace_ios_mobile/Packages/MeetSpaceKit/Package.swift: MeetSpaceFeatures: ld: warning: search path '/Library/Developer/CommandLineTools/Developer/Library/Frameworks' not found
+[123 / 131] FeaturesTests-product
+[133 / 141] IntegrationTests-product
+/Users/aleksandranickij/htdocs/meetspace_ios_mobile/Packages/MeetSpaceKit/Package.swift: FoundationPreviewRenderer-product: ld: warning: search path '/Library/Developer/CommandLineTools/Developer/usr/lib' not found
+/Users/aleksandranickij/htdocs/meetspace_ios_mobile/Packages/MeetSpaceKit/Package.swift: FoundationPreviewRenderer-product: ld: warning: search path '/Library/Developer/CommandLineTools/Developer/Library/Frameworks' not found
+[134 / 142] IntegrationTests-product
+[140 / 146] IntegrationTests-product
+[142 / 146] IntegrationTests-product
+[142 / 146] FeaturesTests-product/Users/aleksandranickij/htdocs/meetspace_ios_mobile/Packages/MeetSpaceKit/Package.swift: FeaturesTests-product: ld: warning: search path '/Library/Developer/CommandLineTools/Developer/usr/lib' not found
+/Users/aleksandranickij/htdocs/meetspace_ios_mobile/Packages/MeetSpaceKit/Package.swift: FeaturesTests-product: ld: warning: search path '/Library/Developer/CommandLineTools/Developer/Library/Frameworks' not found
+
+[144 / 147] IntegrationTests-product
+[146 / 150] IntegrationTests-product/Users/aleksandranickij/htdocs/meetspace_ios_mobile/Packages/MeetSpaceKit/Package.swift: IntegrationTests-product: ld: warning: search path '/Library/Developer/CommandLineTools/Developer/usr/lib' not found
+/Users/aleksandranickij/htdocs/meetspace_ios_mobile/Packages/MeetSpaceKit/Package.swift: IntegrationTests-product: ld: warning: search path '/Library/Developer/CommandLineTools/Developer/Library/Frameworks' not found
+
+Build complete! (6,37 с)
+◇ Test run started.
+↳ Testing Library Version: 2084
+↳ Target Platform: arm64e-apple-macos14.0
+◇ Test actualBackendTwoClientsAndFiles() started.
+PASS real backend: register, login, isolated cookies, refresh, credential restore
+PASS real backend: bidirectional WS after ping deadline, idempotent send, reply/edit/search/read/delete and 403
+PASS real backend: disconnected peer catches up through REST pagination; WS/REST merge has no duplicates
+PASS real backend: direct signed download and group authenticated download match uploaded bytes
+PASS real backend: group ownership/leave/delete, logout revokes only selected account
+✔ Test actualBackendTwoClientsAndFiles() passed after 7.129 seconds.
+✔ Test run with 1 test in 0 suites passed after 7.129 seconds.

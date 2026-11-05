@@ -1,0 +1,28 @@
+2026-11-05T12:44:57.1042930Z Xcode 16.4
+2026-11-05T12:54:14.6722470Z Test Case '-[MeetSpaceTests.KeychainIntegrationTests testKeychainRoundTripUpdateAndScopedDeletion]' started.
+2026-11-05T12:54:14.7605890Z Test Case '-[MeetSpaceTests.KeychainIntegrationTests testKeychainRoundTripUpdateAndScopedDeletion]' passed (0.041 seconds).
+2026-11-05T12:54:15.0237340Z 	 Executed 1 test, with 0 failures (0 unexpected) in 0.041 (0.042) seconds
+2026-11-05T12:54:15.6057830Z 	 Executed 1 test, with 0 failures (0 unexpected) in 0.041 (0.042) seconds
+2026-11-05T12:54:17.9364000Z 	 Executed 1 test, with 0 failures (0 unexpected) in 0.041 (0.044) seconds
+2026-11-05T12:54:40.9066270Z Test Case '-[MeetSpaceUITests.FoundationUITests testAuthenticatedChatSendAndLogout]' started.
+2026-11-05T12:55:30.2096140Z Test Case '-[MeetSpaceUITests.FoundationUITests testAuthenticatedChatSendAndLogout]' passed (49.383 seconds).
+2026-11-05T12:55:30.2147300Z Test Case '-[MeetSpaceUITests.FoundationUITests testAuthenticationErrorIsVisibleAndDoesNotOpenWorkspace]' started.
+2026-11-05T12:55:53.2982230Z Test Case '-[MeetSpaceUITests.FoundationUITests testAuthenticationErrorIsVisibleAndDoesNotOpenWorkspace]' passed (23.094 seconds).
+2026-11-05T12:55:53.3034640Z Test Case '-[MeetSpaceUITests.FoundationUITests testCreateGroupWithSelectedMember]' started.
+2026-11-05T12:56:29.7484620Z Test Case '-[MeetSpaceUITests.FoundationUITests testCreateGroupWithSelectedMember]' passed (36.434 seconds).
+2026-11-05T12:56:29.7564980Z Test Case '-[MeetSpaceUITests.FoundationUITests testFirstLaunchDoesNotImplyAuthentication]' started.
+2026-11-05T12:56:48.5954540Z Test Case '-[MeetSpaceUITests.FoundationUITests testFirstLaunchDoesNotImplyAuthentication]' passed (18.854 seconds).
+2026-11-05T12:56:48.5968440Z Test Case '-[MeetSpaceUITests.FoundationUITests testInvalidHTTPAddressIsRejected]' started.
+2026-11-05T12:56:58.6241820Z Test Case '-[MeetSpaceUITests.FoundationUITests testInvalidHTTPAddressIsRejected]' passed (10.018 seconds).
+2026-11-05T12:56:58.6346910Z Test Case '-[MeetSpaceUITests.FoundationUITests testLargeTextNavigationAndAppearance]' started.
+2026-11-05T12:57:13.6769830Z Test Case '-[MeetSpaceUITests.FoundationUITests testLargeTextNavigationAndAppearance]' passed (15.059 seconds).
+2026-11-05T12:57:13.6788780Z Test Case '-[MeetSpaceUITests.FoundationUITests testOfflineStateCanRetryInExplicitDemo]' started.
+2026-11-05T12:57:22.3153470Z Test Case '-[MeetSpaceUITests.FoundationUITests testOfflineStateCanRetryInExplicitDemo]' passed (8.639 seconds).
+2026-11-05T12:57:22.3158420Z Test Case '-[MeetSpaceUITests.FoundationUITests testStateScreensAreReachable]' started.
+2026-11-05T12:57:41.5490900Z Test Case '-[MeetSpaceUITests.FoundationUITests testStateScreensAreReachable]' passed (19.183 seconds).
+2026-11-05T12:57:41.5510220Z Test Case '-[MeetSpaceUITests.FoundationUITests testValidServerAdvancesToAuthenticationWithEmptySubmitDisabled]' started.
+2026-11-05T12:57:52.3209910Z Test Case '-[MeetSpaceUITests.FoundationUITests testValidServerAdvancesToAuthenticationWithEmptySubmitDisabled]' passed (10.818 seconds).
+2026-11-05T12:57:52.3561850Z 	 Executed 9 tests, with 0 failures (0 unexpected) in 191.481 (191.492) seconds
+2026-11-05T12:57:52.6617100Z 	 Executed 9 tests, with 0 failures (0 unexpected) in 191.481 (191.494) seconds
+2026-11-05T12:57:52.8282860Z 	 Executed 9 tests, with 0 failures (0 unexpected) in 191.481 (191.497) seconds
+2026-11-05T12:57:54.0998190Z ** TEST SUCCEEDED **

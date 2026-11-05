@@ -81,7 +81,19 @@ def main():
                 for port in ports.values():
                     with socket.create_connection(("127.0.0.1", port), timeout=1):
                         pass
-                time.sleep(2)
+                # An open mapped TCP port does not mean RabbitMQ completed application startup.
+                checks = [
+                    ["docker", "exec", postgres, "pg_isready", "-U", "ios_test", "-d", "ios_contract"],
+                    ["docker", "exec", "--user", "rabbitmq", rabbitmq, "rabbitmq-diagnostics", "-q", "check_running", "--timeout", "3"],
+                ]
+                with (output / "health-private.log").open("a") as health:
+                    ready = all(subprocess.run(check, stdout=health, stderr=subprocess.STDOUT).returncode == 0 for check in checks)
+                if not ready:
+                    time.sleep(1)
+                    continue
+                with urllib.request.urlopen(f"http://127.0.0.1:{ports['minio']}/minio/health/ready", timeout=1) as response:
+                    if response.status != 200:
+                        continue
                 break
             except OSError:
                 time.sleep(1)
@@ -137,6 +149,9 @@ def main():
         if api_name is not None:
             with (output / "api-private.log").open("w") as log:
                 subprocess.run(["docker", "logs", api_name], stdout=log, stderr=subprocess.STDOUT)
+        for name in names:
+            with (output / (name.rsplit("-", 1)[-1] + "-private.log")).open("w") as log:
+                subprocess.run(["docker", "logs", name], stdout=log, stderr=subprocess.STDOUT)
         for name in reversed(names):
             # Every name was created in this invocation. No compose volumes, checkout data or user services are touched.
             subprocess.run(["docker", "rm", "-f", "-v", name], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
