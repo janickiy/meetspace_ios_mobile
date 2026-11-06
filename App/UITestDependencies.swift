@@ -5,15 +5,68 @@ import MeetSpaceAPI
 import MeetSpaceFeatures
 import MeetSpaceRealtime
 import MeetSpaceMedia
+import MeetSpaceCalling
 import SwiftUI
 
 /// Only explicit DEBUG UI-test launches use doubles. No network or persistent test credentials.
 enum UITestDependencies {
-    static func make() -> AppDependencies {
+    @MainActor static func make() -> AppDependencies {
         let server = Server()
+        let calling = Calling(), notifications = Notifications()
         return AppDependencies(serverProbe: Probe(), configuration: Preferences(), credentials: Secrets(),
                                transport: { server }, sockets: QuietSockets(),
-                               conferenceSockets: ConferenceSockets(server: server), media: { Media() })
+                               conferenceSockets: ConferenceSockets(server: server), media: { Media() },
+                               calling: { calling }, notifications: { notifications })
+    }
+    /// Broadcast subscriptions model the process-wide native provider across account replacement.
+    @MainActor private final class Calling: SystemCalling {
+        private var listeners: [UUID: AsyncStream<SystemCallEvent>.Continuation] = [:]
+        private var pending: [UUID: SystemCallAction] = [:]
+        private var audioActive = false
+        let isAvailable = true
+        var events: AsyncStream<SystemCallEvent> {
+            let id = UUID(), pair = AsyncStream<SystemCallEvent>.makeStream()
+            listeners[id] = pair.continuation; pair.continuation.yield(.audioActivationChanged(audioActive))
+            pair.continuation.onTermination = { [weak self] _ in Task { @MainActor in self?.listeners[id] = nil } }
+            return pair.stream
+        }
+        func reportIncoming(_ descriptor: SystemCallDescriptor, completion: @escaping @Sendable (Result<Void, SystemCallingError>) -> Void) { completion(.success(())) }
+        func requestStart(_ descriptor: SystemCallDescriptor) { action(.start, callID: descriptor.id) }
+        func requestAnswer(callID: UUID) { action(.answer, callID: callID) }
+        func requestEnd(callID: UUID) { action(.end, callID: callID) }
+        func requestMuted(_ muted: Bool, callID: UUID) { action(.setMuted(muted), callID: callID) }
+        func completeAction(id: UUID, succeeded: Bool) {
+            guard let action = pending.removeValue(forKey: id), succeeded else { return }
+            if action.kind == .start || action.kind == .answer { audioActive = true; emit(.audioActivationChanged(true)) }
+            if action.kind == .end { audioActive = false; emit(.audioActivationChanged(false)) }
+        }
+        func reportConnecting(callID: UUID, at date: Date?) {}
+        func reportConnected(callID: UUID, at date: Date?) {}
+        func reportEnded(callID: UUID, reason: SystemCallEndReason, at date: Date?) { audioActive = false; emit(.audioActivationChanged(false)) }
+        func updateCall(_ descriptor: SystemCallDescriptor) {}
+        func invalidate() { for listener in listeners.values { listener.finish() }; listeners.removeAll() }
+        private func action(_ kind: SystemCallAction.Kind, callID: UUID) {
+            let action = SystemCallAction(id: UUID(), callID: callID, kind: kind, deadline: Date().addingTimeInterval(30))
+            pending[action.id] = action; emit(.action(action))
+        }
+        private func emit(_ event: SystemCallEvent) { for listener in listeners.values { listener.yield(event) } }
+    }
+    @MainActor private final class Notifications: NormalPushNotifications {
+        private var listeners: [UUID: AsyncStream<NormalPushNotificationEvent>.Continuation] = [:]
+        private(set) var authorization = NormalPushAuthorization.notDetermined
+        var events: AsyncStream<NormalPushNotificationEvent> {
+            let id = UUID(), pair = AsyncStream<NormalPushNotificationEvent>.makeStream()
+            listeners[id] = pair.continuation
+            pair.continuation.onTermination = { [weak self] _ in Task { @MainActor in self?.listeners[id] = nil } }
+            return pair.stream
+        }
+        func requestAuthorization() -> NormalPushAuthorization { authorization = .authorized; emit(.authorization(authorization)); return authorization }
+        func refreshAuthorization() { emit(.authorization(authorization)) }
+        func register() { emit(.token(Data(repeating: 0x45, count: 32))) }
+        func unregister() {}
+        func didRegister(deviceToken: Data) { emit(.token(deviceToken)) }
+        func didFailRegistration() { emit(.failure(.registrationFailed)) }
+        private func emit(_ event: NormalPushNotificationEvent) { for listener in listeners.values { listener.yield(event) } }
     }
     private struct Probe: ServerProbing {
         func check(_ origin: ServerOrigin) async throws -> ServerVersion {
@@ -142,6 +195,12 @@ enum UITestDependencies {
         private let conferenceID = "33333333-3333-4333-8333-333333333333"
         private let participantID = "44444444-4444-4444-8444-444444444444"
         private let remoteParticipantID = "44444444-4444-4444-8444-444444444445"
+        private let callID = "55555555-5555-4555-8555-555555555555"
+        private let callRoomID = "33333333-3333-4333-8333-333333333334"
+        private var call: [String: Any]?
+        private var incomingCreated = false
+        private var pushPreferences: [String: Any] = ["invitation": true, "reminder": true, "recording": true, "email": false, "push": false]
+        private var pushDevice: [String: Any]?
         private var conference: [String: Any]?
         private var conferenceJoined = false
         private var conferenceMicrophone = false, conferenceCamera = false
@@ -172,7 +231,27 @@ enum UITestDependencies {
              "screenSharing": false, "microphoneBlocked": false, "cameraBlocked": false, "screenBlocked": false,
              "mediaPolicyVersion": 1, "admissionState": "admitted", "admissionVersion": 1]
         }
+        private func callMember(remote: Bool = false) -> [String: Any] {
+            var result = member(remote: remote)
+            result["conferenceId"] = callRoomID; result["status"] = "joined"; result["role"] = "participant"
+            return result
+        }
+        private func newCall(incoming: Bool, clientID: String) -> [String: Any] {
+            ["id": callID, "conversationId": direct, "callerUserId": incoming ? peer : first,
+             "calleeUserId": incoming ? first : peer, "callerClientId": clientID,
+             "caller": ["id": incoming ? peer : first, "displayName": incoming ? "Тестовый собеседник" : "Первый аккаунт"],
+             "callee": ["id": incoming ? first : peer, "displayName": incoming ? "Первый аккаунт" : "Тестовый собеседник"],
+             "status": "ringing", "version": 1, "createdAt": ISO8601DateFormatter().string(from: Date()),
+             "expiresAt": ISO8601DateFormatter().string(from: Date().addingTimeInterval(90)), "durationSec": 0]
+        }
         func conferenceState(_ id: UUID) throws -> Data {
+            if id.uuidString.lowercased() == callRoomID, call?["status"] as? String == "accepted" {
+                var own = callMember(), remote = callMember(remote: true); own["online"] = true; remote["online"] = true
+                return try JSONSerialization.data(withJSONObject: ["version": 1, "id": UUID().uuidString.lowercased(),
+                    "type": "conference.state", "conferenceId": callRoomID, "timestamp": "2026-11-06T10:00:00Z",
+                    "data": ["connectionId": UUID().uuidString.lowercased(), "participantId": participantID,
+                             "status": "active", "participants": [own, remote]]])
+            }
             guard id.uuidString.lowercased() == conferenceID, conferenceJoined else { throw APIError.httpStatus(403) }
             var own = member(), remote = member(remote: true)
             own["online"] = true; remote["online"] = true
@@ -201,6 +280,51 @@ enum UITestDependencies {
             }
             if path.hasSuffix("/users") {
                 return try response(["status": "ok", "items": [["id": peer, "displayName": "Тестовый собеседник"]]])
+            }
+            if path == "/api/v1/integrations/capabilities" {
+                return try response(["push": "http", "email": "noop", "calendar": "noop", "calendarOAuthConfigured": false, "mockConnectAllowed": false])
+            }
+            if path == "/api/v1/notifications/preferences" {
+                if request.httpMethod == "PUT", let body { pushPreferences = body }
+                return try response(pushPreferences)
+            }
+            if path == "/api/v1/notifications/devices", request.httpMethod == "POST" {
+                pushDevice = ["id": "66666666-6666-4666-8666-666666666666", "platform": "ios", "provider": "http",
+                    "createdAt": "2026-11-06T10:00:00Z", "updatedAt": "2026-11-06T10:00:00Z"]
+                return try response(["item": pushDevice!], status: 201)
+            }
+            if path == "/api/v1/notifications/devices" { return try response(["items": pushDevice.map { [$0] } ?? []]) }
+            if path.hasPrefix("/api/v1/notifications/devices/"), request.httpMethod == "DELETE" {
+                pushDevice = nil; return NetworkResponse(status: 204)
+            }
+            if path == "/api/v1/calls", request.httpMethod == "POST" {
+                call = newCall(incoming: false, clientID: body?["clientId"] as? String ?? UUID().uuidString.lowercased())
+                return try response(["item": call!], status: 201)
+            }
+            if path == "/api/v1/calls/active" {
+                if !incomingCreated, ProcessInfo.processInfo.arguments.contains("-call-incoming") {
+                    incomingCreated = true; call = newCall(incoming: true, clientID: "77777777-7777-4777-8777-777777777777")
+                }
+                let active = ["ringing", "accepted"].contains(call?["status"] as? String ?? "")
+                return try response(["item": active ? call! : NSNull()])
+            }
+            if parts.count >= 4, parts[2] == "calls", parts[3] == callID, call != nil {
+                if path.hasSuffix("/accept") {
+                    call?["status"] = "accepted"; call?["version"] = 2; call?["conferenceId"] = callRoomID
+                    call?["acceptedAt"] = ISO8601DateFormatter().string(from: Date())
+                    call?["acceptedByClientId"] = ProcessInfo.processInfo.arguments.contains("-call-other-device")
+                        ? "88888888-8888-4888-8888-888888888888" : body?["clientId"]
+                } else if ["decline", "cancel", "end"].contains(parts.last ?? "") {
+                    call?["status"] = parts.last == "decline" ? "declined" : parts.last == "cancel" ? "cancelled" : "ended"
+                    call?["version"] = 3; call?["endedAt"] = ISO8601DateFormatter().string(from: Date())
+                }
+                return try response(["item": call!])
+            }
+            if parts.count >= 4, parts[2] == "conferences", parts[3] == callRoomID {
+                if path.hasSuffix("/participants/me") || path.hasSuffix("/participants/me/media") {
+                    return try response(["item": callMember()])
+                }
+                return NetworkResponse(status: 404)
             }
             if path == "/api/v1/webrtc/config" { return try response(["iceServers": [], "iceTransportPolicy": "all"]) }
             if path == "/api/v1/conferences" {

@@ -38,6 +38,8 @@ def configs(name, settings):
         values.update(SWIFT_OPTIMIZATION_LEVEL="-Onone" if mode == "Debug" else "-O",
                       DEBUG_INFORMATION_FORMAT="dwarf" if mode == "Debug" else "dwarf-with-dsym",
                       ONLY_ACTIVE_ARCH="YES" if mode == "Debug" else "NO")
+        if "CODE_SIGN_ENTITLEMENTS" in values:
+            values["APS_ENVIRONMENT"] = "development" if mode == "Debug" else "production"
         if mode == "Debug":
             values.update(ENABLE_TESTABILITY="YES", SWIFT_ACTIVE_COMPILATION_CONDITIONS="$(inherited) DEBUG")
         ids.append(add(name + mode, "XCBuildConfiguration", name=mode, buildSettings=values))
@@ -62,10 +64,10 @@ def make_project():
             if not path.is_file():
                 continue
             relative = path.relative_to(ROOT).as_posix()
-            file_type = {".swift": "sourcecode.swift", ".plist": "text.plist.xml", ".xcprivacy": "text.xml"}[path.suffix]
+            file_type = {".swift": "sourcecode.swift", ".plist": "text.plist.xml", ".xcprivacy": "text.xml", ".entitlements": "text.plist.entitlements"}[path.suffix]
             reference = add(relative, "PBXFileReference", lastKnownFileType=file_type, path=path.name, sourceTree="<group>")
             file_ids.append(reference)
-            if path.suffix != ".plist":
+            if path.suffix not in (".plist", ".entitlements"):
                 build = add(relative + "Build", "PBXBuildFile", fileRef=reference)
                 (sources if path.suffix == ".swift" else resources).append(build)
         source_groups.append(add(name + "Group", "PBXGroup", children=file_ids, path=directory, sourceTree="<group>"))
@@ -84,7 +86,7 @@ def make_project():
                         CODE_SIGN_STYLE="Automatic", GENERATE_INFOPLIST_FILE="YES", TARGETED_DEVICE_FAMILY="1,2",
                         SUPPORTED_PLATFORMS="iphoneos iphonesimulator", SUPPORTS_MACCATALYST="NO", SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD="NO")
         if name == "MeetSpace":
-            settings.update(INFOPLIST_FILE="App/Info.plist", GENERATE_INFOPLIST_FILE="NO", MARKETING_VERSION="0.2.0",
+            settings.update(CODE_SIGN_ENTITLEMENTS="App/MeetSpace.entitlements", INFOPLIST_FILE="App/Info.plist", GENERATE_INFOPLIST_FILE="NO", MARKETING_VERSION="0.2.0",
                             CURRENT_PROJECT_VERSION="1", LD_RUNPATH_SEARCH_PATHS=["$(inherited)", "@executable_path/Frameworks"])
         elif name == "MeetSpaceTests":
             settings.update(TEST_HOST="$(BUILT_PRODUCTS_DIR)/MeetSpace.app/MeetSpace",

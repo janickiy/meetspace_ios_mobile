@@ -44,7 +44,7 @@ struct LiveMessagesView: View {
                 }.frame(width: wide ? 340 : nil).frame(maxWidth: wide ? 340 : .infinity)
                 if wide {
                     Divider()
-                    if let selected { LiveThreadView(model: model, id: selected).id(selected) }
+                    if let selected { LiveThreadView(model: model, id: selected, calls: app.identity.calls).id(selected) }
                     else { ContentUnavailableView(tr("Выберите чат"), systemImage: "bubble.left.and.bubble.right") }
                 }
             }.background(MSTheme.background)
@@ -90,6 +90,7 @@ struct LiveMessagesView: View {
 struct LiveThreadView: View {
     @Bindable var model: MessagingModel
     let id: UUID
+    var calls: DirectCallCoordinator?
     @State private var importing = false
     @State private var groupDetails = false
     @State private var query = ""
@@ -104,11 +105,25 @@ struct LiveThreadView: View {
                     if let count = model.conversation?.memberCount { Text("\(tr("Участники")): \(count)").font(MSTheme.font(11)).foregroundStyle(MSTheme.muted) }
                 }
                 Spacer()
+                if model.conversation?.type == "direct", let peer = model.conversation?.peer, let calls {
+                    Menu {
+                        Button(tr("Аудиозвонок"), systemImage: "phone") {
+                            Task { await calls.startOutgoing(peer: DirectCallPeer(id: peer.id, displayName: peer.displayName)) }
+                        }.accessibilityIdentifier("startAudioCall")
+                        Button(tr("Видеозвонок"), systemImage: "video") {
+                            Task { await calls.startOutgoing(peer: DirectCallPeer(id: peer.id, displayName: peer.displayName), isVideo: true) }
+                        }.accessibilityIdentifier("startVideoCall")
+                    } label: { Image(systemName: "phone").frame(width: 44, height: 44) }
+                        .accessibilityLabel(tr("Позвонить")).accessibilityIdentifier("directCallMenu")
+                }
                 IconButton("magnifyingglass", label: "Поиск сообщений") { showsSearch.toggle(); query = "" }
                 if model.conversation?.isGroup == true {
                     IconButton("info.circle", label: "О группе") { groupDetails = true }
                 }
             }.padding(16).background(MSTheme.surface)
+            if let error = calls?.error, calls?.isActive != true {
+                Text(tr(error)).font(MSTheme.font(12)).foregroundStyle(MSTheme.danger).padding(.horizontal, 16)
+            }
             if showsSearch {
                 SearchBox(text: $query, placeholder: "Поиск сообщений").padding(12)
                 Text(tr("Введите минимум 2 символа.")).font(MSTheme.font(11)).foregroundStyle(MSTheme.muted)

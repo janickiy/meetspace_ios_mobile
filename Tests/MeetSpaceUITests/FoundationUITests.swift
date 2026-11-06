@@ -241,6 +241,92 @@ import XCTest
         leaveConference(app)
     }
 
+    private func callControl(_ app: XCUIApplication, _ id: String, towardTop: Bool = false) -> XCUIElement {
+        let control = app.buttons[id]
+        XCTAssertTrue(control.waitForExistence(timeout: 10))
+        for _ in 0..<4 where !control.isHittable {
+            if towardTop { app.swipeDown() } else { app.swipeUp() }
+        }
+        XCTAssertTrue(control.isHittable)
+        return control
+    }
+
+    /// DEBUG CallKit, REST and SFU doubles exercise application state; this is not a device VoIP test.
+    func testDirectIncomingAnswerControlsMinimizeAndEnd() {
+        let app = launch(["-call-incoming"]); login(app)
+        XCTAssertTrue(app.buttons["directCallAnswer"].waitForExistence(timeout: 10))
+        capture(app, name: "stage05-incoming")
+        callControl(app, "directCallAnswer").tap()
+        let microphone = callControl(app, "directCallMic")
+        let enabled = XCTNSPredicateExpectation(predicate: NSPredicate(format: "enabled == true"), object: microphone)
+        XCTAssertEqual(XCTWaiter.wait(for: [enabled], timeout: 10), .completed)
+        waitForValue("Включён", of: microphone)
+        microphone.tap(); waitForValue("Выключен", of: microphone)
+        microphone.tap(); waitForValue("Включён", of: microphone)
+        let camera = callControl(app, "directCallCamera")
+        camera.tap(); waitForValue("Включена", of: camera)
+        XCTAssertTrue(app.staticTexts["Тестовое видео"].waitForExistence(timeout: 5))
+        capture(app, name: "stage05-connected")
+        camera.tap(); waitForValue("Выключена", of: camera)
+        callControl(app, "directCallMinimize", towardTop: true).tap()
+        XCTAssertTrue(app.buttons["directCallBanner"].waitForExistence(timeout: 10))
+        capture(app, name: "stage05-minimized")
+        app.buttons["directCallBanner"].tap()
+        callControl(app, "directCallEnd").tap()
+        XCTAssertTrue(app.buttons["directCallDone"].waitForExistence(timeout: 10))
+        capture(app, name: "stage05-ended")
+        callControl(app, "directCallDone").tap()
+        XCTAssertFalse(app.buttons["directCallBanner"].exists)
+    }
+
+    func testDirectOutgoingCancelFromConversation() {
+        let app = launch(); login(app)
+        let chat = app.buttons["conversation.22222222-2222-4222-8222-222222222222"]
+        XCTAssertTrue(chat.waitForExistence(timeout: 10)); chat.tap()
+        XCTAssertTrue(app.buttons["directCallMenu"].waitForExistence(timeout: 10)); app.buttons["directCallMenu"].tap()
+        XCTAssertTrue(app.buttons["startAudioCall"].waitForExistence(timeout: 5)); app.buttons["startAudioCall"].tap()
+        XCTAssertTrue(app.staticTexts["screen.directCall"].waitForExistence(timeout: 10))
+        capture(app, name: "stage05-outgoing")
+        XCTAssertFalse(app.buttons["directCallAnswer"].exists)
+        callControl(app, "directCallEnd").tap()
+        XCTAssertTrue(app.buttons["directCallDone"].waitForExistence(timeout: 10))
+        XCTAssertEqual(app.staticTexts["directCallStatus"].label, "Вызов отменён")
+        callControl(app, "directCallDone").tap()
+        XCTAssertTrue(app.textFields["messageComposer"].waitForExistence(timeout: 10))
+    }
+
+    func testDirectCallAcceptedOnOtherDeviceHasNoCaptureControls() {
+        let app = launch(["-call-incoming", "-call-other-device"]); login(app)
+        callControl(app, "directCallAnswer").tap()
+        XCTAssertTrue(app.staticTexts["Звонок продолжается на другом устройстве."].waitForExistence(timeout: 10))
+        XCTAssertFalse(app.buttons["directCallMic"].exists)
+        XCTAssertFalse(app.buttons["directCallCamera"].exists)
+        XCTAssertFalse(app.buttons["directCallEnd"].exists)
+        capture(app, name: "stage05-other-device")
+    }
+
+    func testOrdinaryPushOptInAndDisableWithFixtureToken() {
+        let app = launch(); login(app)
+        XCTAssertTrue(app.buttons["tab.profile"].waitForExistence(timeout: 10)); app.buttons["tab.profile"].tap()
+        let toggle = app.switches["pushNotificationsToggle"]
+        XCTAssertTrue(toggle.waitForExistence(timeout: 10))
+        for _ in 0..<4 where !toggle.isHittable { app.swipeUp() }
+        XCTAssertTrue(toggle.isHittable)
+        func tapToggle() {
+            if toggle.switches.firstMatch.exists { toggle.switches.firstMatch.tap() }
+            else { toggle.coordinate(withNormalizedOffset: CGVector(dx: 0.9, dy: 0.5)).tap() }
+        }
+        tapToggle()
+        let registered = XCTNSPredicateExpectation(predicate: NSPredicate(format: "label CONTAINS %@", "Токен сохранён сервером"),
+            object: app.staticTexts["pushNotificationsStatus"])
+        XCTAssertEqual(XCTWaiter.wait(for: [registered], timeout: 10), .completed)
+        capture(app, name: "stage05-push-enabled")
+        tapToggle()
+        let disabled = XCTNSPredicateExpectation(predicate: NSPredicate(format: "label CONTAINS %@", "выключены"),
+            object: app.staticTexts["pushNotificationsStatus"])
+        XCTAssertEqual(XCTWaiter.wait(for: [disabled], timeout: 10), .completed)
+    }
+
     func testOfflineStateCanRetryInExplicitDemo() {
         let app = launch(["-demo", "-offline"])
         XCTAssertTrue(app.staticTexts["Нет подключения"].waitForExistence(timeout: 5))

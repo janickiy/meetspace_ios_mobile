@@ -4,6 +4,7 @@ import MeetSpaceFeatures
 
 @main
 struct MeetSpaceApp: App {
+    @UIApplicationDelegateAdaptor(MeetSpaceAppDelegate.self) private var appDelegate
     @State private var model: AppModel
 
     init() {
@@ -19,7 +20,8 @@ struct MeetSpaceApp: App {
             return
         }
         #endif
-        _model = State(initialValue: AppModel(dependencies: .live()))
+        let runtime = AppPlatformRuntime.shared
+        _model = State(initialValue: AppModel(dependencies: .live(calling: runtime.calling, notifications: runtime.notifications)))
     }
 
     var body: some Scene {

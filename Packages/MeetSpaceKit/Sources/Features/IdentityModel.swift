@@ -3,21 +3,29 @@ import Observation
 import MeetSpaceCore
 import MeetSpaceAPI
 import MeetSpaceStorage
+import MeetSpaceCalling
 
 /// Serializes identity mutations. Every active workspace is a fresh, immutable account scope.
 @MainActor @Observable public final class IdentityModel {
     public private(set) var index = AccountIndex()
     public private(set) var messaging: MessagingModel?
     public private(set) var conferences: ConferenceWorkspace?
+    public private(set) var calls: DirectCallCoordinator?
+    public let notifications: PushRegistrationModel
     public private(set) var busy = false
     public var addingAccount = false
     public var error: String?
     public var information: String?
     @ObservationIgnored private let dependencies: AppDependencies
+    @ObservationIgnored private let systemCalling: any SystemCalling
     @ObservationIgnored private var sessionEvents: Task<Void, Never>?
     @ObservationIgnored private var epoch = UUID()
 
-    init(dependencies: AppDependencies) { self.dependencies = dependencies }
+    init(dependencies: AppDependencies) {
+        self.dependencies = dependencies
+        systemCalling = dependencies.calling()
+        notifications = PushRegistrationModel(platform: dependencies.notifications(), store: dependencies.pushStore)
+    }
 
     public func restore() async {
         guard !busy else { return }
@@ -81,20 +89,27 @@ import MeetSpaceStorage
         do {
             let active = messaging?.account.id == account.id
             let target: AuthenticatedClient?
+            var pushRemoved = true
             if active {
                 epoch = UUID(); sessionEvents?.cancel(); sessionEvents = nil
                 target = messaging?.client
+                await calls?.close(); calls = nil
                 await conferences?.close(); conferences = nil
+                pushRemoved = await notifications.detach()
                 await messaging?.close(); messaging = nil
             } else if let data = try await dependencies.credentials.read(account.key) {
                 target = client(account, credentials: try WireJSON.decoder().decode(SessionCredentials.self, from: data).validated())
             } else { target = nil }
+            if !active, let target { pushRemoved = await notifications.cleanup(repository: NotificationDeviceRepository(client: target)) }
             let revoked = try await target?.close(logout: true) ?? false
             try await dependencies.credentials.delete(account.key)
             try await AccountFileStore(account: account).clear()
             var next = index; next.remove(account.id)
             try await dependencies.accounts.save(next); index = next
             if !revoked { information = "Аккаунт удалён с устройства. Завершение сессии на сервере не подтверждено." }
+            if !pushRemoved {
+                information = "Аккаунт удалён с устройства. Удаление push-привязки на сервере не подтверждено; новые регистрации заблокированы до повторного входа и очистки."
+            }
         } catch { self.error = userMessage(error) }
     }
 
@@ -130,14 +145,25 @@ import MeetSpaceStorage
         epoch = UUID(); let current = epoch
         sessionEvents?.cancel()
         if let previous = messaging {
+            await calls?.close(); calls = nil
             await conferences?.close(); conferences = nil
+            _ = await notifications.detach()
             await previous.close()
             _ = try? await previous.client.close()
         }
         let workspace = MessagingModel(client: client, downloads: dependencies.transport(), sockets: dependencies.sockets)
         messaging = workspace; addingAccount = false
         conferences = ConferenceWorkspace(repository: ConferenceRepository(client: client),
-            sockets: dependencies.conferenceSockets, makeMedia: dependencies.media)
+            sockets: dependencies.conferenceSockets, makeMedia: dependencies.media,
+            canUseMedia: { [weak self] in self?.calls?.isActive != true && self?.calls?.busy != true })
+        let calls = DirectCallCoordinator(repository: DirectCallsRepository(client: client),
+            conferenceRepository: ConferenceRepository(client: client), system: systemCalling,
+            sockets: dependencies.conferenceSockets, makeMedia: dependencies.media,
+            canUseMedia: { [weak self] in self?.conferences?.call == nil && self?.conferences?.busy != true })
+        self.calls = calls
+        workspace.onCallUpdate = { [weak calls] call in Task { await calls?.receive(call) } }
+        workspace.onRealtimeConnected = { [weak calls] in Task { await calls?.reconcile() } }
+        _ = await notifications.attach(repository: NotificationDeviceRepository(client: client))
         sessionEvents = Task { [weak self] in
             for await _ in client.events {
                 guard let self else { return }
@@ -147,7 +173,9 @@ import MeetSpaceStorage
                 }
                 guard !Task.isCancelled, self.epoch == current else { return }
                 self.busy = true
+                await self.calls?.close(); self.calls = nil
                 await self.conferences?.close(); self.conferences = nil
+                _ = await self.notifications.detach()
                 await workspace.close(); _ = try? await client.close()
                 self.messaging = nil; self.addingAccount = false
                 do {

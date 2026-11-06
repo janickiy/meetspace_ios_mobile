@@ -10,6 +10,7 @@ public struct UserEvent: Sendable {
     public let userID: UUID?
     public let message: ChatMessage?
     public let readState: ReadState?
+    public let call: DirectCall?
     private struct Envelope: Decodable {
         let version: Int
         let id: UUID
@@ -21,6 +22,7 @@ public struct UserEvent: Sendable {
         let userId: UUID?
         let message: ChatMessage?
         let state: ReadState?
+        let call: DirectCall?
     }
     public static func decode(_ bytes: Data) throws -> UserEvent? {
         guard bytes.count <= 1_048_576 else { throw RealtimeError.invalidEvent }
@@ -31,15 +33,22 @@ public struct UserEvent: Sendable {
         let supported = ["message.created", "message.updated", "message.deleted",
             "conversation.updated", "conversation.member.added", "conversation.member.removed",
             "conversation.member.updated", "conversation.read.updated", "conversation.preferences.updated",
-            "conversation.history.cleared", "conversation.hidden", "conversation.pin.updated"]
+            "conversation.history.cleared", "conversation.hidden", "conversation.pin.updated", "call.updated"]
         guard supported.contains(header.type) else { return nil }
         let envelope = try WireJSON.decoder().decode(Envelope.self, from: bytes)
+        // Call events are account-wide and have no conversationId in their envelope.
+        // Validate the account and reconcile the authoritative REST state in the coordinator.
+        if envelope.type == "call.updated" {
+            guard let call = envelope.data.call else { throw RealtimeError.invalidEvent }
+            return UserEvent(id: envelope.id, type: envelope.type, conversationID: nil, userID: nil,
+                             message: nil, readState: nil, call: call)
+        }
         guard let scope = envelope.data.conversationId else { throw RealtimeError.invalidEvent }
         if envelope.type.hasPrefix("message.") {
             guard let message = envelope.data.message, message.conversationId == scope else { throw RealtimeError.invalidEvent }
         }
         return UserEvent(id: envelope.id, type: envelope.type, conversationID: scope, userID: envelope.data.userId,
-                         message: envelope.data.message, readState: envelope.data.state)
+                         message: envelope.data.message, readState: envelope.data.state, call: nil)
     }
 }
 

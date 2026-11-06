@@ -44,6 +44,7 @@ struct LiveProfileView: View {
                     app.identity.addingAccount = true; app.show(.connect)
                 }.buttonStyle(MSButtonStyle(primary: false)).accessibilityIdentifier("addAccount")
                 Text(tr("До 5 аккаунтов на каждом сервере.")).font(MSTheme.font(12)).foregroundStyle(MSTheme.muted)
+                notificationSettings
                 Picker(tr("Оформление"), selection: Binding(get: { app.configuration.appearance }, set: { app.setAppearance($0) })) {
                     Text(tr("Как в системе")).tag(Appearance.system)
                     Text(tr("Светлая")).tag(Appearance.light)
@@ -67,5 +68,26 @@ struct LiveProfileView: View {
                     if let account = removing { Task { await app.identity.logout(account) } }; removing = nil
                 }
             }
+    }
+    private var notificationSettings: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Text(tr("Уведомления на этом устройстве")).font(MSTheme.font(18, weight: .semibold))
+            Toggle(tr("Уведомления о встречах"), isOn: Binding(
+                get: { app.identity.notifications.enabled },
+                set: { enabled in Task {
+                    if enabled { await app.identity.notifications.enable() }
+                    else { await app.identity.notifications.disable() }
+                } }))
+                .disabled(app.identity.notifications.busy).accessibilityIdentifier("pushNotificationsToggle")
+            Text(tr(app.identity.notifications.status)).font(MSTheme.font(12)).foregroundStyle(MSTheme.muted)
+                .accessibilityIdentifier("pushNotificationsStatus")
+            if let error = app.identity.notifications.error {
+                Text(tr(error)).font(MSTheme.font(12)).foregroundStyle(MSTheme.danger)
+                Button(tr("Повторить проверку")) { Task { await app.identity.notifications.retryCleanup() } }
+                    .frame(minHeight: 44).disabled(app.identity.notifications.busy)
+            }
+            Text(tr("Входящие звонки доступны, пока приложение открыто. Вызовы при закрытом приложении ещё не настроены на сервере."))
+                .font(MSTheme.font(12)).foregroundStyle(MSTheme.muted)
+        }.msCard()
     }
 }

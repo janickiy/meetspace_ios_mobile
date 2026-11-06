@@ -9,13 +9,29 @@ public enum ConferencePhase: String, Sendable {
     case prejoin, waiting, connecting, connected, reconnecting, suspended, ended, failed
 }
 
+/// A direct call owns its hidden SFU room through the call endpoint, never meeting membership mutations.
+public struct DirectConferenceContext: Sendable {
+    public let callID: UUID
+    public let clientID: UUID
+    public let usesSystemAudio: Bool
+    public let authorize: @Sendable () async throws -> Void
+    public init(callID: UUID, clientID: UUID, usesSystemAudio: Bool,
+                authorize: @escaping @Sendable () async throws -> Void) {
+        self.callID = callID; self.clientID = clientID; self.usesSystemAudio = usesSystemAudio
+        self.authorize = authorize
+    }
+}
+
 /// One session is permanently scoped to one identity and room; each connection has its own generation.
 @MainActor @Observable public final class ConferenceSession: Identifiable {
     public let id = UUID()
     public let conferenceID: UUID
     public let title: String
     public let repository: ConferenceRepository
-    public private(set) var phase: ConferencePhase
+    public private(set) var phase: ConferencePhase { didSet { if oldValue != phase { onPhaseChanged?(phase) } } }
+    @ObservationIgnored public var onPhaseChanged: (@MainActor (ConferencePhase) -> Void)?
+    public let directContext: DirectConferenceContext?
+    public var isDirectCall: Bool { directContext != nil }
     public private(set) var participant: ConferenceParticipant
     public private(set) var participants: [ConferenceParticipant] = []
     public private(set) var messages: [ConferenceMessage] = []
@@ -93,10 +109,12 @@ public enum ConferencePhase: String, Sendable {
     @ObservationIgnored private var messageEpoch = UUID()
 
     public init(repository: ConferenceRepository, title: String, participant: ConferenceParticipant,
+                directContext: DirectConferenceContext? = nil,
                 sockets: any ConferenceSocketFactory = URLSessionConferenceSocketFactory(),
                 makeMedia: @escaping @MainActor @Sendable () -> any ConferenceMediaEngine = { ConferenceMediaFactory.make() },
                 sleep: @escaping @Sendable (Double) async throws -> Void = { try await Task.sleep(for: .seconds($0)) }) {
         self.repository = repository; self.title = title; self.participant = participant
+        self.directContext = directContext
         conferenceID = participant.conferenceId; self.sockets = sockets; self.makeMedia = makeMedia; self.sleep = sleep
         phase = participant.isWaiting ? .waiting : .prejoin
         microphoneBlocked = participant.microphoneBlocked; cameraBlocked = participant.cameraBlocked
@@ -134,7 +152,7 @@ public enum ConferencePhase: String, Sendable {
     }
 
     public func start() {
-        guard !closed, foreground, recoveryTask == nil, [.prejoin, .suspended, .failed].contains(phase) else { return }
+        guard !closed, (foreground || isDirectCall), recoveryTask == nil, [.prejoin, .suspended, .failed].contains(phase) else { return }
         reconnectCount = 0; error = nil; phase = .connecting
         launchAttempt()
     }
@@ -145,6 +163,14 @@ public enum ConferencePhase: String, Sendable {
             guard let self else { return }
             do {
                 await cleanup?.value; try ensure(epoch)
+                if let directContext {
+                    try await directContext.authorize(); try ensure(epoch)
+                    let membership = try await repository.selfParticipant(conferenceID); try ensure(epoch)
+                    guard membership.canParticipate else { throw ClientError.scopeMismatch }
+                    participant = membership
+                    microphoneBlocked = membership.microphoneBlocked; cameraBlocked = membership.cameraBlocked
+                    policyVersion = membership.mediaPolicyVersion
+                } else {
                 let conference = try await repository.read(conferenceID); try ensure(epoch)
                 guard conference.status == "active" else { phase = conference.isClosed ? .ended : .prejoin; return }
                 var membership = try await repository.selfParticipant(conferenceID)
@@ -161,13 +187,14 @@ public enum ConferencePhase: String, Sendable {
                 }
                 microphoneBlocked = membership.microphoneBlocked; cameraBlocked = membership.cameraBlocked
                 policyVersion = membership.mediaPolicyVersion
+                }
                 let config = try await repository.ice()
                 try ensure(epoch)
                 if let expiry = config.expiresAt, expiry > 0, expiry <= Date().timeIntervalSince1970 + 30 {
                     throw ConferenceMediaError.invalidConfiguration
                 }
                 iceConfiguration = config
-                let ticket = try await repository.ticket(conferenceID, clientID: id)
+                let ticket = try await repository.ticket(conferenceID, clientID: directContext?.clientID ?? id)
                 try ensure(epoch)
                 let opened = try await sockets.connect(origin: repository.origin, conferenceID: conferenceID, ticket: ticket.ticket)
                 guard isCurrent(epoch) else { await opened.close(); return }
@@ -204,7 +231,7 @@ public enum ConferencePhase: String, Sendable {
                         self.recover(RealtimeError.disconnected)
                     }
                 }
-                await refreshChat()
+                if !isDirectCall { await refreshChat() }
             } catch {
                 if isCurrent(epoch) { recover(error) }
             }
@@ -230,7 +257,12 @@ public enum ConferencePhase: String, Sendable {
         case "conference.state", "participant.connected", "participant.disconnected":
             _ = try event.payload(ConferenceSignalState.self)
             let state = try event.payload(Roster.self)
-            guard state.participantId == participant.id else { throw ClientError.accountMismatch }
+            if isDirectCall, connectionID == nil {
+                guard let own = state.participants.first(where: { $0.id == state.participantId }),
+                      own.userId == repository.userID, own.conferenceId == conferenceID, own.canParticipate
+                else { throw ClientError.accountMismatch }
+                participant = own
+            } else { guard state.participantId == participant.id else { throw ClientError.accountMismatch } }
             guard state.status == "active" else {
                 if ["finished", "cancelled"].contains(state.status) { await leave() }
                 else {
@@ -274,7 +306,8 @@ public enum ConferencePhase: String, Sendable {
                 iceServers: workerConfig.iceServers, iceTransportPolicy: workerConfig.iceTransportPolicy,
                 maxPeers: joined.maxPeers, mediaPeerID: joined.mediaPeerId,
                 maxWidth: capture.maxWidth, maxHeight: capture.maxHeight, maxFrameRate: capture.maxFrameRate,
-                microphoneAllowed: !microphoneBlocked, cameraAllowed: !cameraBlocked))
+                microphoneAllowed: !microphoneBlocked, cameraAllowed: !cameraBlocked,
+                audioActivation: directContext?.usesSystemAudio == true ? .callKit : .application))
             try ensure(epoch)
             needsOffer = true
             try await negotiate(epoch)
@@ -509,6 +542,21 @@ public enum ConferencePhase: String, Sendable {
         do { try await media.setMicrophoneEnabled(!microphone) }
         catch { if isCurrent(epoch) { self.error = mediaMessage(error) } }
     }
+    /// CallKit mute actions are explicit values and may arrive while the app is backgrounded.
+    public func setDirectMicrophone(_ enabled: Bool) async throws {
+        guard isDirectCall, !closed, !microphoneBlocked else { throw ConferenceMediaError.publicationBlocked }
+        wantsMicrophone = enabled
+        guard let media else { return }
+        let epoch = generation
+        try await media.setMicrophoneEnabled(enabled); try ensure(epoch)
+    }
+    public func setDirectCamera(_ enabled: Bool) async throws {
+        guard isDirectCall, !closed, !cameraBlocked, (!enabled || foreground) else { throw ConferenceMediaError.publicationBlocked }
+        wantsCamera = enabled
+        guard let media else { return }
+        let epoch = generation
+        try await media.setCameraEnabled(enabled); try ensure(epoch)
+    }
     public func toggleCamera() async {
         guard !busy, foreground, !cameraBlocked, phase == .connected, let media else { return }
         busy = true; let epoch = generation; defer { if isCurrent(epoch) { busy = false } }
@@ -525,11 +573,12 @@ public enum ConferencePhase: String, Sendable {
         do { try media?.setSpeakerEnabled(!speaker); speaker.toggle() } catch { self.error = mediaMessage(error) }
     }
     public func react(_ emoji: String) async {
-        guard !closed, foreground, phase == .connected else { return }
+        guard !isDirectCall, !closed, foreground, phase == .connected else { return }
         let epoch = generation
         do { try await repository.reaction(conferenceID, emoji: emoji) } catch { if isCurrent(epoch) { self.error = userMessage(error) } }
     }
     public func refreshParticipants() async {
+        guard !isDirectCall else { return }
         let epoch = generation
         do {
             let list = try await repository.participants(conferenceID)
@@ -542,13 +591,13 @@ public enum ConferencePhase: String, Sendable {
         } catch { if isCurrent(epoch) { self.error = userMessage(error) } }
     }
     public func admit(_ target: ConferenceParticipant, decision: String) async {
-        guard !closed, !busy, participant.canAdmit, target.conferenceId == conferenceID else { return }
+        guard !isDirectCall, !closed, !busy, participant.canAdmit, target.conferenceId == conferenceID else { return }
         busy = true; let epoch = generation; defer { if isCurrent(epoch) { busy = false } }
         do { _ = try await repository.admission(conferenceID, participant: target.id, decision: decision); try ensure(epoch); await refreshParticipants() }
         catch { if isCurrent(epoch) { self.error = userMessage(error) } }
     }
     public func moderate(_ target: ConferenceParticipant, action: String, blocked: Bool? = nil, role: String? = nil) async {
-        guard !closed, !busy, participant.canModerate(target, action: action) else { return }
+        guard !isDirectCall, !closed, !busy, participant.canModerate(target, action: action) else { return }
         busy = true; let epoch = generation; defer { if isCurrent(epoch) { busy = false } }
         do {
             let request = try ConferenceModeration(action: action, blocked: blocked, role: role)
@@ -558,7 +607,7 @@ public enum ConferencePhase: String, Sendable {
         } catch { if isCurrent(epoch) { self.error = userMessage(error) } }
     }
     public func refreshChat() async {
-        guard !closed else { return }
+        guard !closed, !isDirectCall else { return }
         if messageLoading { messageRefreshPending = true; return }
         messageLoading = true; let epoch = messageEpoch
         defer { if messageEpoch == epoch { messageLoading = false } }
@@ -578,7 +627,7 @@ public enum ConferencePhase: String, Sendable {
         } while messageRefreshPending && !closed && messageEpoch == epoch && !Task.isCancelled
     }
     public func sendMessage() async {
-        guard !busy, !closed else { return }
+        guard !busy, !closed, !isDirectCall else { return }
         busy = true; let epoch = generation; defer { if isCurrent(epoch) { busy = false } }
         do {
             if pendingMessage == nil { pendingMessage = try MessageDraft(text: chatText) }
@@ -593,6 +642,13 @@ public enum ConferencePhase: String, Sendable {
         guard foreground != active else { return }
         foreground = active
         guard !closed else { return }
+        if isDirectCall {
+            if !active {
+                wantsCamera = false
+                do { try await media?.setCameraEnabled(false) } catch { self.error = mediaMessage(error) }
+            }
+            return
+        }
         if !active {
             lobbyTask?.cancel(); lobbyTask = nil
             if [.connecting, .connected, .reconnecting].contains(phase) {
@@ -617,9 +673,10 @@ public enum ConferencePhase: String, Sendable {
         }
     }
     private func recover(_ failure: any Error) {
-        guard !closed, foreground, recoveryTask == nil, !(failure is CancellationError) else { return }
+        guard !closed, (foreground || isDirectCall), recoveryTask == nil, !(failure is CancellationError) else { return }
         if let connectedAt, Date().timeIntervalSince(connectedAt) > 30 { reconnectCount = 0 }
-        wantsMicrophone = false; wantsCamera = false
+        if !isDirectCall { wantsMicrophone = false }
+        wantsCamera = false
         let retryable = Self.isRetryable(failure)
         phase = retryable ? .reconnecting : .failed
         error = retryable ? "Соединение прервано. Камера и микрофон выключены." : userMessage(failure)
@@ -627,12 +684,12 @@ public enum ConferencePhase: String, Sendable {
         recoveryTask = Task { [weak self] in
             guard let self else { return }
             await cleanup.value
-            guard isCurrent(epoch), foreground else { return }
+            guard isCurrent(epoch), (foreground || isDirectCall) else { return }
             if !retryable { recoveryTask = nil; return }
             reconnectCount += 1
             guard reconnectCount <= 3 else { phase = .failed; recoveryTask = nil; return }
             do { try await sleep(Double(reconnectCount * 2)) } catch { return }
-            guard isCurrent(epoch), foreground else { return }
+            guard isCurrent(epoch), (foreground || isDirectCall) else { return }
             recoveryTask = nil
             launchAttempt()
         }
@@ -739,6 +796,7 @@ public enum ConferencePhase: String, Sendable {
         messageEpoch = UUID(); pendingMessage = nil; chatText = ""; messages = []
         participants = []; messageLoading = false; messageRefreshPending = false
         await detachAttempt().value
+        if isDirectCall { completeDeparture(true); return }
         // Capture closes immediately; the workspace keeps this session until awaitDeparture resolves.
         leaveTask = Task { [weak self] in
             guard let self else { return }

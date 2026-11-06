@@ -10,7 +10,7 @@ struct DestinationView: View {
             switch route {
             case .thread(let index): ThreadView(model: model, personIndex: index)
             case .conversation(let id):
-                if let messaging = model.identity.messaging { LiveThreadView(model: messaging, id: id) }
+                if let messaging = model.identity.messaging { LiveThreadView(model: messaging, id: id, calls: model.identity.calls) }
             case .interfaceCatalog: ScreenCatalog(model: model)
             case .calendar: CalendarScreen(model: model)
             case .recordings, .recording, .folders: LibraryView(model: model, route: route)

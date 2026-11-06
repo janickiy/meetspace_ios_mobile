@@ -56,6 +56,8 @@ public struct DownloadState: Identifiable {
     public var groupFilter = false
     public private(set) var active = true
     public private(set) var savingEdit = false
+    @ObservationIgnored public var onCallUpdate: (@MainActor (DirectCall) -> Void)?
+    @ObservationIgnored public var onRealtimeConnected: (@MainActor () -> Void)?
     @ObservationIgnored private let realtime: UserRealtime
     @ObservationIgnored private let files: AccountFileStore
     @ObservationIgnored private var realtimeTask: Task<Void, Never>?
@@ -68,6 +70,7 @@ public struct DownloadState: Identifiable {
     @ObservationIgnored private var searchEpoch = UUID()
     @ObservationIgnored private var editEpoch = UUID()
     @ObservationIgnored private var foreground = true
+    @ObservationIgnored private var callActive = false
     @ObservationIgnored private var visible = false
 
     public init(client: AuthenticatedClient, downloads: any RequestTransport = URLSessionRequestTransport(),
@@ -89,11 +92,14 @@ public struct DownloadState: Identifiable {
                 case .state(let state):
                     self.realtimeState = state
                     if state == .connected {
+                        self.onRealtimeConnected?()
                         // Subscription first, then a new REST head: the protocol has no replay.
                         self.scheduleListRefresh()
                         if let id = self.conversation?.id { await self.reloadHistory(id) }
                     }
-                case .event(let event): self.receive(event)
+                case .event(let event):
+                    if let call = event.call { self.onCallUpdate?(call) }
+                    else { self.receive(event) }
                 case .authenticationRequired: self.error = "Сессия завершена. Войдите снова."
                 }
             }
@@ -105,7 +111,13 @@ public struct DownloadState: Identifiable {
         foreground = value
         guard active else { return }
         if value { await realtime.start(); scheduleListRefresh(); markVisibleRead() }
-        else { readTask?.cancel(); await realtime.stop() }
+        else { readTask?.cancel(); if !callActive { await realtime.stop() } }
+    }
+    public func setCallActive(_ value: Bool) async {
+        callActive = value
+        guard active else { return }
+        if value || foreground { await realtime.start() }
+        else { await realtime.stop() }
     }
     public func close() async {
         guard active else { return }

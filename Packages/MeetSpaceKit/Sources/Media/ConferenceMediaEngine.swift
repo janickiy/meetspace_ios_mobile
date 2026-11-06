@@ -2,6 +2,8 @@ import Foundation
 import SwiftUI
 import MeetSpaceCore
 
+public enum ConferenceAudioActivation: Equatable, Sendable { case application, callKit }
+
 public struct ConferenceMediaConfiguration: Sendable {
     public var iceServers: [ICEServer]
     public var iceTransportPolicy: String
@@ -12,13 +14,16 @@ public struct ConferenceMediaConfiguration: Sendable {
     public var maxFrameRate: Int
     public var microphoneAllowed: Bool
     public var cameraAllowed: Bool
+    public var audioActivation: ConferenceAudioActivation
     public init(iceServers: [ICEServer], iceTransportPolicy: String = "all", maxPeers: Int = 8,
                 mediaPeerID: UUID, maxWidth: Int = 1280, maxHeight: Int = 720, maxFrameRate: Int = 30,
-                microphoneAllowed: Bool = true, cameraAllowed: Bool = true) {
+                microphoneAllowed: Bool = true, cameraAllowed: Bool = true,
+                audioActivation: ConferenceAudioActivation = .application) {
         self.iceServers = iceServers; self.iceTransportPolicy = iceTransportPolicy
         self.maxPeers = maxPeers; self.mediaPeerID = mediaPeerID
         self.maxWidth = maxWidth; self.maxHeight = maxHeight; self.maxFrameRate = maxFrameRate
         self.microphoneAllowed = microphoneAllowed; self.cameraAllowed = cameraAllowed
+        self.audioActivation = audioActivation
     }
 }
 

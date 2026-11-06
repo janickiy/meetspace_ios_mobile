@@ -14,12 +14,15 @@ import MeetSpaceMedia
     public var error: String?
     @ObservationIgnored private let sockets: any ConferenceSocketFactory
     @ObservationIgnored private let makeMedia: @MainActor @Sendable () -> any ConferenceMediaEngine
+    @ObservationIgnored private let canUseMedia: @MainActor () -> Bool
     @ObservationIgnored private var epoch = UUID()
     @ObservationIgnored private var closed = false
     @ObservationIgnored private var departing: ConferenceSession?
     public init(repository: ConferenceRepository, sockets: any ConferenceSocketFactory,
-                makeMedia: @escaping @MainActor @Sendable () -> any ConferenceMediaEngine) {
+                makeMedia: @escaping @MainActor @Sendable () -> any ConferenceMediaEngine,
+                canUseMedia: @escaping @MainActor () -> Bool = { true }) {
         self.repository = repository; self.sockets = sockets; self.makeMedia = makeMedia
+        self.canUseMedia = canUseMedia
     }
     public func load() async {
         guard !closed else { return }
@@ -34,7 +37,7 @@ import MeetSpaceMedia
         }
     }
     public func create(title: String, waitingRoom: Bool) async -> Bool {
-        guard !busy, !closed, call == nil else { return false }
+        guard !busy, !closed, call == nil, mediaAvailable() else { return false }
         busy = true; error = nil; defer { busy = false }
         guard await completeDeparture() else { return false }
         do {
@@ -48,7 +51,7 @@ import MeetSpaceMedia
         } catch { if !closed { self.error = userMessage(error) }; return false }
     }
     public func join(_ conference: Conference) async {
-        guard !busy, !closed, call == nil else { return }
+        guard !busy, !closed, call == nil, mediaAvailable() else { return }
         busy = true; error = nil; defer { busy = false }
         guard await completeDeparture() else { return }
         do {
@@ -64,7 +67,7 @@ import MeetSpaceMedia
         } catch { if !closed { self.error = userMessage(error) } }
     }
     public func joinInvitation(_ input: String) async -> Bool {
-        guard !busy, !closed, call == nil else { return false }
+        guard !busy, !closed, call == nil, mediaAvailable() else { return false }
         busy = true; error = nil; defer { busy = false }
         guard await completeDeparture() else { return false }
         do {
@@ -93,6 +96,13 @@ import MeetSpaceMedia
         call = ConferenceSession(repository: repository, title: conference.title, participant: membership,
                                  sockets: sockets, makeMedia: makeMedia)
         call?.observeLobby()
+    }
+    private func mediaAvailable() -> Bool {
+        guard canUseMedia() else {
+            error = "Сначала завершите текущий звонок."
+            return false
+        }
+        return true
     }
     public func dismissCall() async {
         guard let previous = call else { return }

@@ -11,8 +11,9 @@
     <key>CFBundleShortVersionString</key><string>$(MARKETING_VERSION)</string>
     <key>CFBundleVersion</key><string>$(CURRENT_PROJECT_VERSION)</string>
     <key>LSRequiresIPhoneOS</key><true/>
-    <key>NSCameraUsageDescription</key><string>Камера передаёт ваше видео участникам встречи, когда вы её включаете.</string>
-    <key>NSMicrophoneUsageDescription</key><string>Микрофон передаёт ваш голос участникам встречи, когда вы его включаете.</string>
+    <key>NSCameraUsageDescription</key><string>Камера передаёт ваше видео участникам встречи или личного звонка, когда вы её включаете.</string>
+    <key>NSMicrophoneUsageDescription</key><string>Микрофон передаёт ваш голос участникам встречи или личного звонка, когда вы его включаете.</string>
+    <key>UIBackgroundModes</key><array><string>audio</string><string>voip</string></array>
     <key>UIApplicationSceneManifest</key><dict><key>UIApplicationSupportsMultipleScenes</key><false/></dict>
     <key>UILaunchScreen</key><dict/>
     <key>UISupportedInterfaceOrientations</key><array>

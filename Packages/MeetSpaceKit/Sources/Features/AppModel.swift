@@ -5,6 +5,7 @@ import MeetSpaceAPI
 import MeetSpaceStorage
 import MeetSpaceRealtime
 import MeetSpaceMedia
+import MeetSpaceCalling
 
 public struct AppDependencies: Sendable {
     public let serverProbe: any ServerProbing
@@ -15,19 +16,31 @@ public struct AppDependencies: Sendable {
     public let sockets: any RealtimeSocketFactory
     public let conferenceSockets: any ConferenceSocketFactory
     public let media: @MainActor @Sendable () -> any ConferenceMediaEngine
+    public let calling: @MainActor @Sendable () -> any SystemCalling
+    public let notifications: @MainActor @Sendable () -> any NormalPushNotifications
+    public let pushStore: any PushRegistrationStore
     public init(serverProbe: any ServerProbing, configuration: any ConfigurationStore, credentials: any SecureStore,
                 accounts: any AccountIndexStore = MemoryAccountIndexStore(),
                 transport: @escaping @Sendable () -> any RequestTransport = { URLSessionRequestTransport() },
                 sockets: any RealtimeSocketFactory = URLSessionSocketFactory(),
                 conferenceSockets: any ConferenceSocketFactory = URLSessionConferenceSocketFactory(),
-                media: @escaping @MainActor @Sendable () -> any ConferenceMediaEngine = { ConferenceMediaFactory.make() }) {
+                media: @escaping @MainActor @Sendable () -> any ConferenceMediaEngine = { ConferenceMediaFactory.make() },
+                calling: @escaping @MainActor @Sendable () -> any SystemCalling = { SystemCallingFactory.make() },
+                notifications: @escaping @MainActor @Sendable () -> any NormalPushNotifications = { NormalPushNotificationsFactory.make() },
+                pushStore: any PushRegistrationStore = MemoryPushRegistrationStore()) {
         self.serverProbe = serverProbe; self.configuration = configuration; self.credentials = credentials
         self.accounts = accounts; self.transport = transport; self.sockets = sockets
         self.conferenceSockets = conferenceSockets; self.media = media
+        self.calling = calling; self.notifications = notifications; self.pushStore = pushStore
     }
-    public static func live() -> AppDependencies {
-        AppDependencies(serverProbe: ServerProbe(), configuration: PreferencesStore(),
-                        credentials: KeychainStore(service: "com.meetspace.ios.credentials"), accounts: AccountPreferencesStore())
+    @MainActor public static func live(calling: (any SystemCalling)? = nil,
+                                       notifications: (any NormalPushNotifications)? = nil) -> AppDependencies {
+        let system = calling ?? SystemCallingFactory.make()
+        let push = notifications ?? NormalPushNotificationsFactory.make()
+        return AppDependencies(serverProbe: ServerProbe(), configuration: PreferencesStore(),
+                        credentials: KeychainStore(service: "com.meetspace.ios.credentials"), accounts: AccountPreferencesStore(),
+                        calling: { system }, notifications: { push },
+                        pushStore: KeychainPushRegistrationStore(service: "com.meetspace.ios.push-bindings"))
     }
 }
 

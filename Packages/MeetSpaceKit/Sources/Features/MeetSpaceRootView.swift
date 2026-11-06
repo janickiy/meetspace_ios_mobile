@@ -24,7 +24,11 @@ public struct MeetSpaceRootView: View {
         .onChange(of: scenePhase) { _, phase in
             // Capture shutdown must never wait for a chat reconnect or HTTP cancellation.
             Task { await model.activeConference?.setForeground(phase != .background) }
+            Task { await model.identity.calls?.setForeground(phase != .background) }
             Task { await model.identity.messaging?.setForeground(phase == .active) }
+        }
+        .onChange(of: model.identity.calls?.isActive, initial: true) { _, active in
+            Task { await model.identity.messaging?.setCallActive(active == true) }
         }
         .onChange(of: model.identity.messaging?.account.id) { _, _ in
             model.identityChanged()
@@ -34,6 +38,7 @@ public struct MeetSpaceRootView: View {
             } else { model.sessionEnded() }
         }
         .conferencePresentation(model: model)
+        .directCallPresentation(model: model)
         .alert(tr("MeetSpace"), isPresented: Binding(get: { model.notice != nil }, set: { if !$0 { model.notice = nil } })) {
             Button(tr("Понятно"), role: .cancel) { model.notice = nil }
         } message: { Text(tr(model.notice ?? "")) }

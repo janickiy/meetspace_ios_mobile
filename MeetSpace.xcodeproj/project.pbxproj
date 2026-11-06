@@ -15,6 +15,12 @@
 			"path" = "Info.plist";
 			"sourceTree" = "<group>";
 		};
+		"61A4F0E591C7F41905FA5F24" = {
+			"isa" = "PBXFileReference";
+			"lastKnownFileType" = "text.plist.entitlements";
+			"path" = "MeetSpace.entitlements";
+			"sourceTree" = "<group>";
+		};
 		"8EDA80BE35AF196A9D7E9D5A" = {
 			"isa" = "PBXFileReference";
 			"lastKnownFileType" = "sourcecode.swift";
@@ -24,6 +30,16 @@
 		"A306030A7AB94F414E4A9444" = {
 			"isa" = "PBXBuildFile";
 			"fileRef" = "8EDA80BE35AF196A9D7E9D5A";
+		};
+		"E9504C8392DBC88EDD178F7B" = {
+			"isa" = "PBXFileReference";
+			"lastKnownFileType" = "sourcecode.swift";
+			"path" = "MeetSpaceAppDelegate.swift";
+			"sourceTree" = "<group>";
+		};
+		"CCD05243500362E42770ECCE" = {
+			"isa" = "PBXBuildFile";
+			"fileRef" = "E9504C8392DBC88EDD178F7B";
 		};
 		"F048BFA7B57836F484F1B9C1" = {
 			"isa" = "PBXFileReference";
@@ -49,7 +65,9 @@
 			"isa" = "PBXGroup";
 			"children" = (
 				"E22F3D16C14E3CEA667F4ECC",
+				"61A4F0E591C7F41905FA5F24",
 				"8EDA80BE35AF196A9D7E9D5A",
+				"E9504C8392DBC88EDD178F7B",
 				"F048BFA7B57836F484F1B9C1",
 				"F3FD2B0CE8668EDC939D990A",
 			);
@@ -104,6 +122,7 @@
 			"buildActionMask" = 2147483647;
 			"files" = (
 				"A306030A7AB94F414E4A9444",
+				"CCD05243500362E42770ECCE",
 				"A5F7DC6A760D9A6C60E6DBA0",
 			);
 			"runOnlyForDeploymentPostprocessing" = 0;
@@ -139,6 +158,7 @@
 				"SUPPORTED_PLATFORMS" = "iphoneos iphonesimulator";
 				"SUPPORTS_MACCATALYST" = "NO";
 				"SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD" = "NO";
+				"CODE_SIGN_ENTITLEMENTS" = "App/MeetSpace.entitlements";
 				"INFOPLIST_FILE" = "App/Info.plist";
 				"MARKETING_VERSION" = "0.2.0";
 				"CURRENT_PROJECT_VERSION" = "1";
@@ -149,6 +169,7 @@
 				"SWIFT_OPTIMIZATION_LEVEL" = "-Onone";
 				"DEBUG_INFORMATION_FORMAT" = "dwarf";
 				"ONLY_ACTIVE_ARCH" = "YES";
+				"APS_ENVIRONMENT" = "development";
 				"ENABLE_TESTABILITY" = "YES";
 				"SWIFT_ACTIVE_COMPILATION_CONDITIONS" = "$(inherited) DEBUG";
 			};
@@ -165,6 +186,7 @@
 				"SUPPORTED_PLATFORMS" = "iphoneos iphonesimulator";
 				"SUPPORTS_MACCATALYST" = "NO";
 				"SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD" = "NO";
+				"CODE_SIGN_ENTITLEMENTS" = "App/MeetSpace.entitlements";
 				"INFOPLIST_FILE" = "App/Info.plist";
 				"MARKETING_VERSION" = "0.2.0";
 				"CURRENT_PROJECT_VERSION" = "1";
@@ -175,6 +197,7 @@
 				"SWIFT_OPTIMIZATION_LEVEL" = "-O";
 				"DEBUG_INFORMATION_FORMAT" = "dwarf-with-dsym";
 				"ONLY_ACTIVE_ARCH" = "NO";
+				"APS_ENVIRONMENT" = "production";
 			};
 		};
 		"2B84B5D5BB9FD6AEF8176516" = {
@@ -209,6 +232,16 @@
 			"productReference" = "2AC38145899132AF4026E327";
 			"productType" = "com.apple.product-type.application";
 		};
+		"2CD1C32A08333E0D76608275" = {
+			"isa" = "PBXFileReference";
+			"lastKnownFileType" = "sourcecode.swift";
+			"path" = "CallAudioIntegrationTests.swift";
+			"sourceTree" = "<group>";
+		};
+		"A6BD7A929701BA27052489CB" = {
+			"isa" = "PBXBuildFile";
+			"fileRef" = "2CD1C32A08333E0D76608275";
+		};
 		"36FCCF46D3EF87ED4CD4B23C" = {
 			"isa" = "PBXFileReference";
 			"lastKnownFileType" = "sourcecode.swift";
@@ -232,6 +265,7 @@
 		"4D5FC6C0D9725D09B197E0BD" = {
 			"isa" = "PBXGroup";
 			"children" = (
+				"2CD1C32A08333E0D76608275",
 				"36FCCF46D3EF87ED4CD4B23C",
 				"DAF62D0CD0BAA30377DD305F",
 			);
@@ -279,6 +313,7 @@
 			"isa" = "PBXSourcesBuildPhase";
 			"buildActionMask" = 2147483647;
 			"files" = (
+				"A6BD7A929701BA27052489CB",
 				"28B9685934AAE2583901699A",
 				"F54DBF57B2E7C10431F60853",
 			);

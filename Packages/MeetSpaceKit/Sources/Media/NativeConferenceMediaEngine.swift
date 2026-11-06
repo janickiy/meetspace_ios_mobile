@@ -23,8 +23,11 @@ import Network
     private var closed = false
     private var closing: Task<Void, Never>?
     private var audioActivated = false
+    private let callAudioOwner = UUID()
+    private var ownsCallAudio = false
     private var microphoneEnabled = false
     private var cameraEnabled = false
+    private var speakerEnabled = true
     private var frontCamera = true
     private var interrupted = false
     private var pathMonitor: NWPathMonitor?
@@ -52,6 +55,9 @@ import Network
         let audio = RTCAudioSession.sharedInstance()
         audio.useManualAudio = true; audio.isAudioEnabled = false
         audio.add(self)
+        if configuration.audioActivation == .callKit {
+            CallAudioSessionBridge.acquire(callAudioOwner); ownsCallAudio = true
+        }
         do {
             try activateAudio()
             let peer = try NativePeer(configuration: configuration, videoTrackID: localVideoTrackID,
@@ -61,7 +67,7 @@ import Network
             self.peer = peer
             peer.videoSource.adaptOutputFormat(toWidth: Int32(configuration.maxWidth),
                                                height: Int32(configuration.maxHeight), fps: Int32(configuration.maxFrameRate))
-            audio.isAudioEnabled = true
+            enableAudioIfAllowed()
             emit(.videoTrackAdded(ConferenceVideoTrack(id: localVideoTrackID, mid: nil,
                 streamID: configuration.mediaPeerID.uuidString.lowercased(), isLocal: true)))
             captureChanged(); emitRoute(); observeNetwork()
@@ -122,7 +128,7 @@ import Network
         guard configuration?.microphoneAllowed == true else { throw ConferenceMediaError.publicationBlocked }
         guard !interrupted else { throw ConferenceMediaError.interrupted }
         try activateAudio()
-        RTCAudioSession.sharedInstance().isAudioEnabled = true
+        enableAudioIfAllowed()
         do {
             try peer.setMicrophoneEnabled(true); microphoneEnabled = true; captureChanged()
         } catch {
@@ -195,8 +201,16 @@ import Network
         guard !closed, peer != nil else { throw ConferenceMediaError.notConfigured }
         let audio = RTCAudioSession.sharedInstance()
         audio.lockForConfiguration(); defer { audio.unlockForConfiguration() }
-        do { try audio.overrideOutputAudioPort(enabled ? .speaker : .none) }
-        catch { throw ConferenceMediaError.audioSession }
+        let previous = speakerEnabled; speakerEnabled = enabled
+        do {
+            // `.none` restores the category default. Remove defaultToSpeaker as well when the
+            // user requests the receiver/system route; otherwise the toggle stays on speaker.
+            try configureAudioCategory(audio)
+            try audio.overrideOutputAudioPort(enabled ? .speaker : .none)
+        } catch {
+            speakerEnabled = previous; try? configureAudioCategory(audio)
+            throw ConferenceMediaError.audioSession
+        }
         emitRoute()
     }
 
@@ -226,6 +240,7 @@ import Network
         peer?.close(); peer = nil
         let audio = RTCAudioSession.sharedInstance()
         audio.isAudioEnabled = false; audio.remove(self)
+        if ownsCallAudio { CallAudioSessionBridge.release(callAudioOwner); ownsCallAudio = false }
         if let capturer { await stopCapture(capturer) }
         self.capturer = nil
         audio.lockForConfiguration()
@@ -261,11 +276,22 @@ import Network
         let audio = RTCAudioSession.sharedInstance()
         audio.lockForConfiguration(); defer { audio.unlockForConfiguration() }
         do {
-            try audio.setCategory(AVAudioSession.Category.playAndRecord,
-                                  mode: AVAudioSession.Mode.voiceChat,
-                                  options: [.allowBluetooth, .defaultToSpeaker])
-            if !audioActivated { try audio.setActive(true); audioActivated = true }
+            try configureAudioCategory(audio)
+            if configuration?.audioActivation != .callKit, !audioActivated {
+                try audio.setActive(true); audioActivated = true
+            }
         } catch { throw ConferenceMediaError.audioSession }
+    }
+
+    private func configureAudioCategory(_ audio: RTCAudioSession) throws {
+        var options: AVAudioSession.CategoryOptions = [.allowBluetooth]
+        if speakerEnabled { options.insert(.defaultToSpeaker) }
+        try audio.setCategory(AVAudioSession.Category.playAndRecord, mode: AVAudioSession.Mode.voiceChat, options: options)
+    }
+
+    private func enableAudioIfAllowed() {
+        RTCAudioSession.sharedInstance().isAudioEnabled =
+            configuration?.audioActivation == .callKit ? CallAudioSessionBridge.isActive : true
     }
 
     private func startCapture(_ capturer: RTCCameraVideoCapturer) async throws {
@@ -348,7 +374,7 @@ extension NativeConferenceMediaEngine: RTCAudioSessionDelegate {
             guard let self, !self.closed else { return }
             self.interrupted = false
             if shouldResumeSession {
-                do { try self.activateAudio(); RTCAudioSession.sharedInstance().isAudioEnabled = true }
+                do { try self.activateAudio(); self.enableAudioIfAllowed() }
                 catch { self.emit(.failure(.audioSession)) }
             }
             self.emit(.interrupted(false))
