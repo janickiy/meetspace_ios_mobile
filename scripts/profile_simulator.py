@@ -26,11 +26,15 @@ SCOPE = ("Debug iOS Simulator app, early post-launch/idle welcome UI, -uitesting
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--simulator", required=True, help="Exact already-booted test simulator UUID")
+    parser.add_argument("--simulator", required=True, help="Exact test simulator UUID; no device/name fallback")
+    parser.add_argument("--test-summary", type=Path, help="xcresulttool test-results summary confirming this simulator UUID")
+    parser.add_argument("--boot-if-needed", action="store_true", help="Boot the exact tested simulator if Shutdown; requires --test-summary")
     parser.add_argument("--output", required=True, type=Path, help="New, empty evidence directory")
     parser.add_argument("--seconds", type=int, default=15, choices=range(5, 16))
     parser.add_argument("--wall-budget", type=int, default=180, choices=range(90, 241))
     args = parser.parse_args()
+    if args.boot_if_needed and not args.test_summary:
+        parser.error("--boot-if-needed requires --test-summary; never guess the test destination")
     try:
         simulator = str(uuid.UUID(args.simulator)).upper()
     except ValueError:
@@ -51,13 +55,14 @@ def main():
               "notCovered": ["launch latency", "30 call cycles", "Leaks", "screen sharing",
                              "reconnect", "transfers", "physical devices", "energy", "Release performance"]}
     launched = False
+    booted_here = False
 
     def save():
         report["elapsedSeconds"] = round(time.monotonic() - started, 3)
         (out / "receipt.json").write_text(json.dumps(report, indent=2) + "\n")
 
     def run(name, command, timeout=12):
-        remaining = 5 if name == "fixture-cleanup" else deadline - time.monotonic()
+        remaining = 5 if name in {"fixture-cleanup", "simulator-cleanup"} else deadline - time.monotonic()
         result = {"name": name, "argv": command, "log": name + ".log"}
         report["commands"].append(result)
         begin = time.monotonic()
@@ -105,6 +110,17 @@ def main():
     try:
         if sys.platform != "darwin":
             return blocked("Requires macOS/full Xcode; no host substitute")
+        if args.test_summary:
+            summary_bytes = args.test_summary.read_bytes()
+            summary = json.loads(summary_bytes)
+            destinations = [item.get("device", {}) for item in summary.get("devicesAndConfigurations", [])]
+            destination_ids = {item.get("deviceId", "").upper() for item in destinations}
+            if destination_ids != {simulator} or any(item.get("platform") != "iOS Simulator" for item in destinations):
+                return blocked("Test summary does not confirm one exact requested iOS simulator; no destination fallback")
+            report["testDestinationEvidence"] = {
+                "summary": str(args.test_summary), "sha256": hashlib.sha256(summary_bytes).hexdigest(),
+                "deviceIDs": sorted(destination_ids), "testResult": summary.get("result"),
+            }
         run("developer-directory", ["xcode-select", "-p"])
         run("xcode-version", ["xcodebuild", "-version"])
         available, _ = run("find-xctrace", ["xcrun", "--find", "xctrace"])
@@ -134,10 +150,33 @@ def main():
         devices = json.loads(inventory["simctl-devices"][1]).get("devices", {})
         match = [(runtime, device) for runtime, group in devices.items() for device in group
                  if device.get("udid", "").upper() == simulator]
-        if len(match) != 1 or match[0][1].get("state") != "Booted" or ".iOS-" not in match[0][0]:
-            return blocked("Exact requested iOS simulator is not available and already Booted")
+        if len(match) != 1 or not match[0][1].get("isAvailable") or ".iOS-" not in match[0][0]:
+            return blocked("Exact requested iOS simulator is not available")
         report["runtime"] = match[0][0]
         report["deviceName"] = match[0][1].get("name")
+        report["initialSimulatorState"] = match[0][1].get("state")
+        if match[0][1].get("state") == "Shutdown" and args.boot_if_needed:
+            boot, _ = run("simulator-boot", ["xcrun", "simctl", "boot", simulator], timeout=15)
+            if not success(boot):
+                return blocked("Exact tested simulator could not boot; see simulator-boot.log", failure=True)
+            booted_here = True
+            report["bootedByProfiler"] = True
+            boot_status, _ = run("simulator-bootstatus", ["xcrun", "simctl", "bootstatus", simulator, "-b"], timeout=45)
+            if not success(boot_status):
+                return blocked("Exact tested simulator boot did not finish within its bounded wait", failure=True)
+            refreshed, devices_text = run("simctl-devices-after-boot", ["xcrun", "simctl", "list", "devices", "available", "--json"])
+            if not success(refreshed):
+                return blocked("Cannot verify simulator state after boot", failure=True)
+            devices = json.loads(devices_text).get("devices", {})
+            match = [(runtime, device) for runtime, group in devices.items() for device in group
+                     if device.get("udid", "").upper() == simulator]
+            if len(match) != 1 or match[0][0] != report["runtime"]:
+                return blocked("Simulator identity changed after boot", failure=True)
+            inventory["xctrace-devices"] = run("xctrace-devices-after-boot", ["xcrun", "xctrace", "list", "devices"])
+            if not success(inventory["xctrace-devices"][0]):
+                return blocked("Cannot verify Instruments simulator inventory after boot", failure=True)
+        if match[0][1].get("state") != "Booted":
+            return blocked("Exact requested simulator is not Booted; explicit --boot-if-needed requires test summary evidence")
         if simulator.lower() not in inventory["xctrace-devices"][1].lower():
             return blocked("xctrace does not list requested simulator; host/device fallback forbidden")
         container_result, container_text = run("app-container", ["xcrun", "simctl", "get_app_container", simulator, BUNDLE, "app"])
@@ -281,6 +320,8 @@ def main():
     finally:
         if launched:
             run("fixture-cleanup", ["xcrun", "simctl", "terminate", simulator, BUNDLE], timeout=5)
+        if booted_here:
+            run("simulator-cleanup", ["xcrun", "simctl", "shutdown", simulator], timeout=5)
         report["evidenceFiles"] = []
         for path in sorted(out.iterdir()):
             if path.is_file() and path.name != "receipt.json":

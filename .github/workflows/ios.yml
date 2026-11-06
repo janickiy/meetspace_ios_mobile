@@ -76,7 +76,7 @@ jobs:
         continue-on-error: true
         run: |
           meetspace_profile_udid=$(python3 -c 'import json; print(json.load(open("artifacts/iPhone18-environment.json"))["udid"])')
-          python3 scripts/profile_simulator.py --simulator "$meetspace_profile_udid" --output artifacts/iPhone18-profiling
+          python3 scripts/profile_simulator.py --simulator "$meetspace_profile_udid" --test-summary artifacts/iPhone18-summary.json --boot-if-needed --output artifacts/iPhone18-profiling
       - name: Upload simulator test results
         if: always()
         uses: actions/upload-artifact@v4

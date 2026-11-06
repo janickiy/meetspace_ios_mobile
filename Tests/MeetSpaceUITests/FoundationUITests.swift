@@ -48,6 +48,10 @@ import UIKit
     }
 
     private func contentViewport(for element: XCUIElement, in app: XCUIApplication) -> CGRect {
+        contentViewport(identifier: element.identifier, label: element.label, in: app)
+    }
+
+    private func contentViewport(identifier id: String, label: String, in app: XCUIApplication) -> CGRect {
         var frame = app.frame
         if app.navigationBars.firstMatch.exists {
             let top = app.navigationBars.firstMatch.frame.maxY
@@ -56,7 +60,6 @@ import UIKit
         if app.buttons["tab.profile"].exists {
             frame.size.height = max(0, min(frame.maxY, app.buttons["tab.profile"].frame.minY) - frame.minY)
         }
-        let id = element.identifier, label = element.label
         for scroll in app.scrollViews.allElementsBoundByIndex where scroll.frame.width > 0 && scroll.frame.height > 0 {
             let child = id.isEmpty
                 ? scroll.descendants(matching: .any).matching(NSPredicate(format: "label == %@", label)).firstMatch
@@ -91,37 +94,45 @@ import UIKit
         XCTAssertTrue(self.contentViewport(for: element, in: app).contains(element.frame), "Target must be fully visible")
     }
 
+    private struct AuditFinding {
+        let auditType: XCUIAccessibilityAuditType
+        let summary: String
+        let detail: String
+        let identifier: String
+        let label: String
+        let frame: CGRect?
+    }
+
     func testAccessibilityStage08CoreScreens() throws {
         let app = launch()
         var issues: [[String: String]] = []
-        func reviewedCase(_ issue: XCUIAccessibilityAuditIssue, screen: String) -> String? {
-            let id = issue.element?.identifier ?? ""
-            let label = issue.element?.label ?? ""
+        func reviewedCase(_ issue: AuditFinding, screen: String, viewport: CGRect?) -> String? {
+            let id = issue.identifier
+            let label = issue.label
             if screen == "settings", issue.auditType == .contrast, id == "saveProfile",
                app.buttons["saveProfile"].exists, !app.buttons["saveProfile"].isEnabled {
                 return "reviewed: unchanged profile; disabled save action (inactive-control contrast exemption)"
             }
             if screen == "calendar", issue.auditType == .contrast,
                ["calendar.weekday.0", "calendar.weekday.4"].contains(id),
-               let element = issue.element, self.contentViewport(for: element, in: app).contains(element.frame) {
+               let frame = issue.frame, viewport?.contains(frame) == true {
                 return "reviewed: actual opaque glyph/background pixels; ACCESSIBILITY_CONTRAST_REVIEW.md"
             }
-            if issue.auditType == .contrast, let element = issue.element,
-               self.contentViewport(for: element, in: app).contains(element.frame) {
+            if issue.auditType == .contrast, let frame = issue.frame, viewport?.contains(frame) == true {
                 let statusIDs = Set((1...4).map { "recording.status.77777777-7777-4777-8777-77777777777\($0)" })
                 if (screen == "welcome" && (id == "welcome.deploySubtitle" ||
-                    (label == "Создать пространство на своём VPS" && app.buttons["deployServer"].frame.contains(element.frame)))) ||
+                    (label == "Создать пространство на своём VPS" && app.buttons["deployServer"].frame.contains(frame)))) ||
                     (screen == "calendar" && id == "calendar.weekSummaryHeading") ||
                     (screen == "folders" && id == "folders.subtitle") ||
                     (screen == "recordings" && statusIDs.contains(id)) {
                     return "reviewed: opaque glyph cores exceed 4.5:1 in actual PNG; ACCESSIBILITY_IPAD_CONTRAST.md"
                 }
                 if screen == "messages", label == "Выберите чат", app.frame.width >= 800,
-                   element.frame.minX > 340, element.frame.height > 50 {
+                   frame.minX > 340, frame.height > 50 {
                     return "reviewed: native empty-state node groups decorative icon with high-contrast title"
                 }
-                if screen == "settings", label == "ПЕ", abs(element.frame.width - 40) < 1,
-                   abs(element.frame.height - 40) < 1, element.frame.maxX < 300,
+                if screen == "settings", label == "ПЕ", abs(frame.width - 40) < 1,
+                   abs(frame.height - 40) < 1, frame.maxX < 300,
                    app.staticTexts["Первый аккаунт"].exists {
                     return "reviewed: decorative initials duplicate full account name; actual PNG ratio 4.62:1"
                 }
@@ -133,7 +144,7 @@ import UIKit
                label == "Команда ближе.\nИдей больше." {
                 return "reviewed: welcome heading; complete AX5 text in ACCESSIBILITY_REVIEW.md"
             }
-            if screen == "messages", label == "ТЕ", let frame = issue.element?.frame,
+            if screen == "messages", label == "ТЕ", let frame = issue.frame,
                abs(frame.width - 44) < 1, abs(frame.height - 44) < 1,
                issue.auditType == .contrast || issue.auditType == .dynamicType {
                 let row = app.buttons["conversation.22222222-2222-4222-8222-222222222222"]
@@ -142,11 +153,11 @@ import UIKit
                 }
             }
             guard issue.auditType == .dynamicType,
-                  issue.compactDescription == "Dynamic Type font sizes are partially unsupported" else { return nil }
+                  issue.summary == "Dynamic Type font sizes are partially unsupported" else { return nil }
             let menus: [String: [String: String]] = [
                 "calendar": ["Все встречи": "calendar.scope", "GMT": "calendar.timeZone"],
                 "recordings": ["Все форматы": "recordingModeFilter", "Все статусы": "recordingStatusFilter"]]
-            if let controlID = menus[screen]?[label], let frame = issue.element?.frame,
+            if let controlID = menus[screen]?[label], let frame = issue.frame,
                app.buttons[controlID].exists, app.buttons[controlID].frame.contains(frame) {
                 return "reviewed: menu title inside exact control; measured font scaling and AX5 multiline layout"
             }
@@ -166,18 +177,44 @@ import UIKit
                 return "reviewed: measured custom-font scaling; separate AX5 layout coverage"
             }
             let tabs = ["Чаты": "tab.messages", "Встречи": "tab.meetings", "Профиль": "tab.profile"]
-            if let tabID = tabs[label], let frame = issue.element?.frame,
+            if let tabID = tabs[label], let frame = issue.frame,
                app.buttons[tabID].frame.contains(frame) {
                 return "reviewed: measured custom-font scaling; uncapped multiline tab label"
             }
             return nil
         }
-        func record(_ issue: XCUIAccessibilityAuditIssue, screen: String, resolution: String?) {
+        func record(_ issue: AuditFinding, screen: String, resolution: String?) {
             issues.append(["screen": screen, "type": String(issue.auditType.rawValue),
-                           "summary": issue.compactDescription, "detail": issue.detailedDescription,
-                           "element": issue.element?.identifier ?? "", "label": issue.element?.label ?? "",
-                           "frame": issue.element.map { String(describing: $0.frame) } ?? "",
+                           "summary": issue.summary, "detail": issue.detail,
+                           "element": issue.identifier, "label": issue.label,
+                           "frame": issue.frame.map { String(describing: $0) } ?? "",
                            "resolution": resolution ?? "unresolved"])
+        }
+        func collect(_ category: XCUIAccessibilityAuditType, screen: String) throws -> [AuditFinding] {
+            var findings: [AuditFinding] = []
+            do {
+                try app.performAccessibilityAudit(for: category) { issue in
+                    // The audit engine is waiting for this callback. Obtain one immutable
+                    // element snapshot; never traverse the app or evaluate predicates here.
+                    let snapshot = try? issue.element?.snapshot()
+                    findings.append(AuditFinding(auditType: issue.auditType,
+                        summary: issue.compactDescription, detail: issue.detailedDescription,
+                        identifier: snapshot?.identifier ?? "", label: snapshot?.label ?? "",
+                        frame: snapshot?.frame))
+                    return true
+                }
+            } catch {
+                // Preserve findings received before an interrupted audit; the error still
+                // fails the test and none of these records receives a reviewed resolution.
+                for finding in findings { record(finding, screen: screen, resolution: nil) }
+                attachIssues()
+                throw error
+            }
+            return findings
+        }
+        func contrastViewport(_ issue: AuditFinding) -> CGRect? {
+            guard issue.auditType == .contrast, issue.frame != nil else { return nil }
+            return self.contentViewport(identifier: issue.identifier, label: issue.label, in: app)
         }
         func audit(_ screen: String) throws {
             var deferred: [(Int, String)] = []
@@ -187,17 +224,20 @@ import UIKit
             let categories: [XCUIAccessibilityAuditType] = [.contrast, .elementDetection, .hitRegion,
                 .sufficientElementDescription, .trait, .dynamicType, .textClipped]
             for category in categories {
-                try app.performAccessibilityAudit(for: category) { issue in
-                    var resolution = reviewedCase(issue, screen: screen)
-                    if issue.auditType == .contrast, let element = issue.element,
-                       !element.identifier.isEmpty, !self.contentViewport(for: element, in: app).contains(element.frame) {
+                let findings = try collect(category, screen: screen)
+                Thread.sleep(forTimeInterval: 0.5)
+                // Resolve frozen fields only after Apple's audit has returned. Hierarchy
+                // lookups here cannot hold the audit callback open and trigger Code -56.
+                for issue in findings {
+                    let viewport = contrastViewport(issue)
+                    var resolution = reviewedCase(issue, screen: screen, viewport: viewport)
+                    if issue.auditType == .contrast, let frame = issue.frame,
+                       !issue.identifier.isEmpty, viewport?.contains(frame) != true {
                         resolution = "deferred: outside scroll viewport; requires fully visible retest"
-                        deferred.append((issues.count, element.identifier))
+                        deferred.append((issues.count, issue.identifier))
                     }
                     record(issue, screen: screen, resolution: resolution)
-                    return true
                 }
-                Thread.sleep(forTimeInterval: 0.5)
             }
             // Contrast cannot be measured from pixels clipped by a scroll container or
             // covered by persistent chrome. Revisit each identified initial finding in view.
@@ -206,17 +246,18 @@ import UIKit
                 revealEntireText(target, in: app)
                 capture(app, name: "stage08-accessibility-\(screen)-visible-\(identifier)")
                 var targetFailed = false, targetSeen = false
-                try app.performAccessibilityAudit(for: .contrast) { issue in
-                    let isTarget = issue.element?.identifier == identifier
+                let findings = try collect(.contrast, screen: screen + "-visible-retest")
+                Thread.sleep(forTimeInterval: 0.5)
+                for issue in findings {
+                    let isTarget = issue.identifier == identifier
                     if isTarget { targetSeen = true }
-                    var resolution = reviewedCase(issue, screen: screen)
+                    let viewport = contrastViewport(issue)
+                    var resolution = reviewedCase(issue, screen: screen, viewport: viewport)
                     if isTarget && resolution == nil { targetFailed = true }
-                    if !isTarget, let element = issue.element,
-                       !self.contentViewport(for: element, in: app).contains(element.frame) {
+                    if !isTarget, let frame = issue.frame, viewport?.contains(frame) != true {
                         resolution = "outside retest viewport: no contrast measurement"
                     }
                     record(issue, screen: screen + "-visible-retest", resolution: resolution)
-                    return true
                 }
                 issues[index]["resolution"] = targetFailed ? "retest failed; see unresolved finding" :
                     targetSeen ? "reviewed: fully visible retest produced a reviewed finding" :
@@ -792,6 +833,12 @@ import UIKit
             XCTAssertGreaterThanOrEqual(app.buttons[identifier].frame.height, 44, "Primary controls keep their touch target while typing")
         }
         app.buttons["conferencePanelClose"].tap()
+        // Closing the chat moves the media controls as the keyboard disappears.
+        // Wait for that transition before resolving the camera's tap position.
+        let chatClosed = XCTNSPredicateExpectation(predicate: NSPredicate(format: "exists == false"), object: heading)
+        let keyboardClosed = XCTNSPredicateExpectation(predicate: NSPredicate(format: "exists == false"), object: app.keyboards.firstMatch)
+        XCTAssertEqual(XCTWaiter.wait(for: [chatClosed, keyboardClosed], timeout: 10), .completed)
+        XCTAssertTrue(camera.isEnabled && camera.isHittable)
         camera.tap(); waitForValue("Выключен", of: camera)
         leaveConference(app)
     }
