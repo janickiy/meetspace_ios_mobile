@@ -103,7 +103,8 @@ struct DirectCallView: View {
         if session.camera, let media = session.media, let local = session.videoTracks.first(where: \.isLocal) {
             media.videoView(trackID: local.id, mirrored: session.frontCamera)
                 .frame(width: 90, height: 120).clipShape(RoundedRectangle(cornerRadius: 12))
-                .accessibilityLabel(tr("Ваше видео"))
+                .accessibilityElement(children: .ignore)
+                .accessibilityLabel(tr("Ваше видео")).accessibilityIdentifier("directCallLocalVideo")
         }
     }
     private var mediaControls: some View {

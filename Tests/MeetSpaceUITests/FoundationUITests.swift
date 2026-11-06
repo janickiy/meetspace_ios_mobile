@@ -1,7 +1,18 @@
 import XCTest
 
 @MainActor final class FoundationUITests: XCTestCase {
-    override func setUpWithError() throws { continueAfterFailure = false }
+    override func setUpWithError() throws {
+        continueAfterFailure = false
+        addUIInterruptionMonitor(withDescription: "Fixture password saving prompt") { @Sendable alert in
+            guard alert.label == "Save Password?" || alert.label == "Сохранить пароль?" ||
+                    alert.staticTexts["Save Password?"].exists || alert.staticTexts["Сохранить пароль?"].exists else { return false }
+            for label in ["Not Now", "Не сейчас"] {
+                let decline = alert.buttons[label]
+                if decline.exists && decline.isHittable { decline.tap(); return true }
+            }
+            return false
+        }
+    }
 
     private func launch(_ arguments: [String] = []) -> XCUIApplication {
         let app = XCUIApplication()
@@ -85,6 +96,40 @@ import XCTest
         let submit = app.buttons["authenticationSubmit"]
         for _ in 0..<3 where !submit.isHittable { app.swipeUp() }
         XCTAssertTrue(submit.isEnabled); submit.tap()
+        guard !app.launchArguments.contains("-auth-error") else { return }
+        finishSuccessfulLogin(app)
+    }
+
+    private func finishSuccessfulLogin(_ app: XCUIApplication) {
+        let deadline = Date().addingTimeInterval(10)
+        let messages = app.buttons["tab.messages"], incoming = app.buttons["directCallAnswer"]
+        while Date() < deadline, !messages.exists && !incoming.exists && !app.staticTexts["authenticationError"].exists {
+            Thread.sleep(forTimeInterval: 0.1)
+        }
+        XCTAssertTrue(messages.exists || incoming.exists, "Login must reach the workspace or an incoming call")
+        // The simulator's Passwords remote view may arrive after the workspace is already in AX.
+        // Handle only the observed save-password prompt before screenshots or button assertions.
+        let springboard = XCUIApplication(bundleIdentifier: "com.apple.springboard")
+        let passwordService = XCUIApplication(bundleIdentifier: "com.apple.SafariViewService")
+        let promptDeadline = Date().addingTimeInterval(4)
+        while Date() < promptDeadline {
+            var surfaces: [XCUIElement] = [app, springboard]
+            if passwordService.state != .notRunning { surfaces.append(passwordService) }
+            for surface in surfaces {
+                guard surface.alerts["Save Password?"].exists || surface.alerts["Сохранить пароль?"].exists ||
+                        surface.staticTexts["Save Password?"].exists || surface.staticTexts["Сохранить пароль?"].exists else { continue }
+                for label in ["Not Now", "Не сейчас"] {
+                    let decline = surface.buttons[label].firstMatch
+                    if decline.exists && decline.isHittable {
+                        decline.tap()
+                        let removed = XCTNSPredicateExpectation(predicate: NSPredicate(format: "exists == false"), object: decline)
+                        XCTAssertEqual(XCTWaiter.wait(for: [removed], timeout: 5), .completed)
+                        return
+                    }
+                }
+            }
+            Thread.sleep(forTimeInterval: 0.1)
+        }
     }
 
     func testAuthenticationErrorIsVisibleAndDoesNotOpenWorkspace() {
@@ -265,7 +310,10 @@ import XCTest
         microphone.tap(); waitForValue("Включён", of: microphone)
         let camera = callControl(app, "directCallCamera")
         camera.tap(); waitForValue("Включена", of: camera)
-        XCTAssertTrue(app.staticTexts["Тестовое видео"].waitForExistence(timeout: 5))
+        let preview = app.descendants(matching: .any).matching(identifier: "directCallLocalVideo").firstMatch
+        XCTAssertTrue(preview.waitForExistence(timeout: 5))
+        XCTAssertGreaterThan(preview.frame.width, 0)
+        XCTAssertGreaterThan(preview.frame.height, 0)
         capture(app, name: "stage05-connected")
         camera.tap(); waitForValue("Выключена", of: camera)
         callControl(app, "directCallMinimize", towardTop: true).tap()

@@ -37,7 +37,9 @@ origin/userID/deviceID и SHA256 отпечаток, без delivery token. Ре
 OS-регистрацию и удаляет известные deviceID перед закрытием авторизованного клиента.
 Неизвестный POST или неподтверждённый отзыв блокирует новые регистрации для всех
 аккаунтов до очистки. Journal сохраняется после удаления аккаунта; повторный вход
-на тот же сервер позволяет повторить отзыв. Приложение не удаляет другие устройства.
+на тот же сервер позволяет повторить отзыв. Приложение не удаляет другие устройства. При возвращении из Settings разрешение
+перепроверяется без нового запроса; отзыв разрешения отключает локальную регистрацию
+и запускает удаление своей привязки. Повторное разрешение не включает её автоматически.
 
 PushKit реализован отдельным нативным adapter. Он не регистрируется в production,
 пока нет проверенного серверного VoIP контракта. Resolver и отдельный registrar
@@ -74,3 +76,57 @@ PushKit реализован отдельным нативным adapter. Он �
 [Настройка и отдельное предложение серверных изменений](CALLKIT_APNS_SETUP.md)
 содержит условия снятия блокеров и полную матрицу физических проверок. Следующий
 этап не запускался. Нельзя отмечать весь этап production PASS по simulator-тестам.
+
+## Команды воспроизведения
+
+Статическая проверка и привязка аудита к checkout исходников:
+
+```sh
+python3 scripts/generate_xcode_project.py --check
+python3 scripts/verify_foundation.py
+python3 scripts/verify_audit.py --source-root /tmp/meetspace-ios-audit-20261105
+git diff --check
+```
+
+Локально, с установленными Command Line Tools и SDK 26.4:
+
+```sh
+SDKROOT=/Library/Developer/CommandLineTools/SDKs/MacOSX26.4.sdk \
+swift test --package-path Packages/MeetSpaceKit \
+  --sdk /Library/Developer/CommandLineTools/SDKs/MacOSX26.4.sdk \
+  -Xswiftc -load-plugin-library \
+  -Xswiftc /Library/Developer/CommandLineTools/usr/lib/swift/host/plugins/testing/libTestingMacros.dylib
+```
+
+Изолированный реальный backend/SFU, четыре тестовых аккаунта, без production-данных:
+
+```sh
+python3 scripts/run_calls_contract.py \
+  --backend /tmp/meetspace-ios-stage03/backend \
+  --output /tmp/meetspace-stage05-contract-03
+```
+
+Нужны Docker, Go, Swift и образы, указанные в runner. Каталог output должен быть
+пустым. Одноразовые контейнеры/сеть удаляются в `finally`; локальные приватные логи
+и бинарники остаются в output с ограниченными правами. В evidence включены только
+безопасные результаты и хеши проверявшихся файлов. Generic HTTP gateway — fixture,
+который не обращается к APNs/FCM. Stage 5 проверяет SFU allocation и закрытие
+membership, а не RTP: [метрики](evidence/sfu-cleanup.json) показывают 2 созданных
+PeerConnection, 0 активных комнат/пиров/tracks/subscriptions и 0 переданных пакетов.
+RTP smoke этапа 4 остаётся отдельным результатом.
+
+CI с полным Xcode выполняет:
+
+```sh
+swift test --package-path Packages/MeetSpaceKit
+xcodebuild -project MeetSpace.xcodeproj -scheme MeetSpace-Release \
+  -configuration Release -destination 'generic/platform=iOS Simulator' \
+  CODE_SIGNING_ALLOWED=NO build
+python3 scripts/ci_simulators.py --family iPhone
+python3 scripts/ci_simulators.py --family iPad
+```
+
+UI-тесты используют DEBUG doubles REST, CallKit, APNs и media. Hosted тесты загружают
+настоящий WebRTC binary и проверяют SDP/жизненный цикл с выключенным capture. Ни один
+из этих результатов не подтверждает доставку настоящего VoIP push, аппаратный звук
+или способность проснуться из terminated на физическом устройстве.

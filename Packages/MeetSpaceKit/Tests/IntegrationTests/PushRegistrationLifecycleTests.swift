@@ -202,6 +202,30 @@ private actor PushServiceFixture: NotificationDevicesServing {
     #expect(try await store.load().entries.isEmpty)
 }
 
+@Test @MainActor func pushForegroundPermissionRevocationStopsDeliveryAndCleansOwnBinding() async throws {
+    let store = MemoryPushRegistrationStore(), platform = PushPlatformFixture()
+    let service = PushServiceFixture(store: store)
+    let model = PushRegistrationModel(platform: platform, store: store)
+    _ = await model.attach(repository: service); await model.enable()
+    platform.didRegister(deviceToken: Data(repeating: 0xEA, count: 32))
+    try await waitForPush { await service.registerCount == 1 && !model.busy }
+    let stops = platform.unregistrations
+    platform.authorization = .denied // User revoked permission outside the running process.
+    await model.refreshAuthorization()
+    #expect(!model.enabled && platform.unregistrations > stops)
+    #expect(platform.authorizationRequests == 1 && platform.registrations == 1)
+    try await waitForPush { await service.revoked.count == 1 && !model.busy }
+    #expect(try await store.load().entries.first?.hasBinding == false)
+    #expect(await service.savedPreferences.push) // Account-wide preferences affect other devices.
+    platform.didRegister(deviceToken: Data(repeating: 0xEB, count: 32))
+    platform.authorization = .authorized
+    await model.refreshAuthorization() // Returning permission does not replace explicit enable.
+    try await Task.sleep(for: .milliseconds(20))
+    #expect(!model.enabled && platform.registrations == 1)
+    #expect(await service.registerCount == 1)
+    #expect(await model.detach())
+}
+
 private actor FailingPushStore: PushRegistrationStore {
     var value = PushRegistrationJournal()
     var writes = 0

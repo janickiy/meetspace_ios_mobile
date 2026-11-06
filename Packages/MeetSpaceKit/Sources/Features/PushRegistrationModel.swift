@@ -40,6 +40,17 @@ import MeetSpaceCalling
     /// not confirm server revocation: the owner must still await detach before closing credentials.
     public func suspendDelivery() { invalidate(); enabled = false }
 
+    /// Call on foreground entry to notice permission changes made in iOS Settings. This never
+    /// prompts or registers: revocation uses the same immediate stop and scoped cleanup path.
+    public func refreshAuthorization() async {
+        let generation = epoch
+        await platform.refreshAuthorization()
+        guard generation == epoch else { return }
+        // Read the result directly as well as consuming native events, so UI state is updated
+        // before returning even if the AsyncStream consumer has not resumed yet.
+        receive(.authorization(platform.authorization))
+    }
+
     /// Attach only after calling detach on the previous account while its client is still open.
     /// The defensive cleanup here also handles callers that replace a scope directly.
     @discardableResult public func attach(repository next: any NotificationDevicesServing) async -> Bool {

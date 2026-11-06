@@ -1,0 +1,10 @@
+Local CLT SDK 26.4; aggregate host results only.
+Build complete! (10,17 с)
+✔ Test run with 2 tests in 0 suites passed after 0.003 seconds.
+➜ Test actualBackendDirectCallsDevicesAndPrivateSFU() skipped.
+➜ Test actualBackendConferenceRESTAndGuestScope() skipped.
+➜ Test actualBackendTwoClientsAndFiles() skipped.
+✔ Test run with 100 tests in 1 suite passed after 0.207 seconds.
+✔ Test run with 8 tests in 0 suites passed after 0.012 seconds.
+✔ Test run with 5 tests in 0 suites passed after 0.001 seconds.
+✔ Test run with 5 tests in 0 suites passed after 0.001 seconds.

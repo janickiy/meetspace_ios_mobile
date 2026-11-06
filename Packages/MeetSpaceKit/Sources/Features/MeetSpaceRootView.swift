@@ -28,6 +28,7 @@ public struct MeetSpaceRootView: View {
             Task { await model.activeConference?.setForeground(phase != .background) }
             Task { await model.identity.calls?.setForeground(phase != .background) }
             Task { await model.identity.messaging?.setForeground(phase == .active) }
+            if phase == .active { Task { await model.identity.notifications.refreshAuthorization() } }
         }
         .onChange(of: model.identity.calls?.isActive, initial: true) { _, active in
             Task { await model.identity.messaging?.setCallActive(active == true) }
