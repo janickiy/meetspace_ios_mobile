@@ -28,15 +28,13 @@ struct LiveCalendarView: View {
                         Text(tr("Месяц")).tag(CalendarDisplayMode.month)
                         Text(tr("Список")).tag(CalendarDisplayMode.list)
                     }.pickerStyle(.segmented).accessibilityIdentifier("calendar.mode")
-                    HStack {
-                        Picker(tr("Встречи"), selection: Binding(get: { model.scope }, set: { value in Task { await model.selectScope(value) } })) {
-                            Text(tr("Все встречи")).tag(ConferenceTimelineScope.all)
-                            Text(tr("Я организатор")).tag(ConferenceTimelineScope.owned)
-                            Text(tr("Я участник")).tag(ConferenceTimelineScope.participating)
-                        }.pickerStyle(.menu)
-                        Spacer()
-                        Button { choosingZone = true } label: { Label(model.zone.identifier, systemImage: "clock") }
-                            .font(MSTheme.font(12)).accessibilityIdentifier("calendar.timeZone")
+                    ViewThatFits(in: .horizontal) {
+                        HStack {
+                            scopeMenu.fixedSize(horizontal: true, vertical: false)
+                            Spacer()
+                            timeZoneButton.fixedSize(horizontal: true, vertical: false)
+                        }
+                        VStack(alignment: .leading, spacing: 12) { scopeMenu; timeZoneButton }
                     }
                     if let error = model.error { Text(tr(error)).foregroundStyle(MSTheme.danger) }
                     if model.creationUncertain {
@@ -84,6 +82,34 @@ struct LiveCalendarView: View {
             IconButton("plus", label: "Запланировать встречу") { creating = true }.accessibilityIdentifier("calendar.schedule")
         }
     }
+    private var scopeTitle: String {
+        switch model.scope {
+        case .all: "Все встречи"
+        case .owned: "Я организатор"
+        case .participating: "Я участник"
+        }
+    }
+    private var scopeMenu: some View {
+        Menu {
+            Picker(tr("Встречи"), selection: Binding(get: { model.scope }, set: { value in Task { await model.selectScope(value) } })) {
+                Text(tr("Все встречи")).tag(ConferenceTimelineScope.all)
+                Text(tr("Я организатор")).tag(ConferenceTimelineScope.owned)
+                Text(tr("Я участник")).tag(ConferenceTimelineScope.participating)
+            }
+        } label: {
+            HStack(alignment: .firstTextBaseline, spacing: 8) {
+                Text(tr(scopeTitle)).fixedSize(horizontal: false, vertical: true).multilineTextAlignment(.leading)
+                Image(systemName: "chevron.up.chevron.down").font(MSTheme.font(10)).accessibilityHidden(true)
+            }.frame(minHeight: 44).contentShape(Rectangle())
+        }.buttonStyle(.plain).foregroundStyle(MSTheme.accent)
+            .accessibilityLabel(tr("Встречи")).accessibilityValue(tr(scopeTitle)).accessibilityIdentifier("calendar.scope")
+    }
+    private var timeZoneButton: some View {
+        Button { choosingZone = true } label: {
+            Label(model.zone.identifier, systemImage: "clock")
+                .fixedSize(horizontal: false, vertical: true).multilineTextAlignment(.leading).frame(minHeight: 44)
+        }.font(MSTheme.font(12)).accessibilityIdentifier("calendar.timeZone")
+    }
     private var periodControls: some View {
         ViewThatFits(in: .horizontal) {
             HStack { periodTitle; Spacer(); navigationButtons }
@@ -93,10 +119,12 @@ struct LiveCalendarView: View {
     private var periodTitle: some View {
         Text(calendarText(model.selectedDay, format: "LLLL yyyy", zone: model.zone).capitalized)
             .font(MSTheme.font(20, weight: .semibold, relativeTo: .title2)).accessibilityAddTraits(.isHeader)
+            .fixedSize(horizontal: false, vertical: true).accessibilityIdentifier("calendar.periodTitle")
     }
     private var navigationButtons: some View {
         HStack(spacing: 0) {
             Button(tr("Сегодня")) { Task { await model.selectDay(Date()) } }.buttonStyle(MSTextButtonStyle())
+                .accessibilityIdentifier("calendar.today")
             IconButton("chevron.left", label: "Предыдущий период") { Task { await model.movePeriod(-1) } }.accessibilityIdentifier("calendar.previous")
             IconButton("chevron.right", label: "Следующий период") { Task { await model.movePeriod(1) } }.accessibilityIdentifier("calendar.next")
         }
@@ -137,8 +165,12 @@ struct LiveCalendarView: View {
     private var monthGridContent: some View {
         let days = MeetingCalendar.days(in: model.interval, zone: model.zone)
         let leading = (model.calendar.component(.weekday, from: model.interval.start) + 5) % 7
+        let weekdays = ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"]
         return LazyVGrid(columns: Array(repeating: GridItem(.flexible(minimum: dayMinimumWidth), spacing: 3), count: 7), spacing: 5) {
-            ForEach(["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"], id: \.self) { Text(tr($0)).font(MSTheme.font(10)).foregroundStyle(MSTheme.muted) }
+            ForEach(0..<weekdays.count, id: \.self) { index in
+                Text(tr(weekdays[index])).font(MSTheme.font(10)).foregroundStyle(MSTheme.muted)
+                    .accessibilityIdentifier("calendar.weekday.\(index)")
+            }
             ForEach(0..<leading, id: \.self) { _ in Color.clear.frame(height: 44) }
             ForEach(days, id: \.self) { day in dayButton(day, compact: true) }
         }.frame(minWidth: dayMinimumWidth * 7 + 18).padding(10)
@@ -149,7 +181,10 @@ struct LiveCalendarView: View {
         let hasEvent = model.meetings.contains { model.calendar.isDate(MeetingCalendar.timelineDate($0), inSameDayAs: day) }
         return Button { Task { await model.selectDay(day) } } label: {
             VStack(spacing: compact ? 4 : 8) {
-                if !compact { Text(calendarText(day, format: "EE", zone: model.zone)).font(MSTheme.font(10)) }
+                if !compact {
+                    Text(calendarText(day, format: "EE", zone: model.zone)).font(MSTheme.font(10))
+                        .accessibilityIdentifier("calendar.weekday.\((model.calendar.component(.weekday, from: day) + 5) % 7)")
+                }
                 Text(calendarText(day, format: "d", zone: model.zone)).font(MSTheme.font(17, weight: .semibold))
                 Circle().fill(hasEvent ? (selected ? MSTheme.surface : MSTheme.accent) : .clear).frame(width: 4, height: 4)
             }.frame(minWidth: dayMinimumWidth, maxWidth: compact ? .infinity : nil, minHeight: compact ? 44 : 70)

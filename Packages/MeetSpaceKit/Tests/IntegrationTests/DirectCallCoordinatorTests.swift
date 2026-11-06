@@ -25,12 +25,16 @@ import MeetSpaceCalling
         try await callEventually { await sockets.created.first?.ready != nil }
         let socket = try #require(await sockets.created.first)
         try await socket.acknowledge()
-        try await callEventually { calls.mediaSession?.phase == .connected }
         let action = try #require(system.lastAnswer)
-        #expect(system.completed.filter { $0.0 == action.id && $0.1 }.count == 1)
+        // Session.phase changes before its coordinator callback Task runs. Wait for the
+        // actual CallKit action result, not merely the preceding media state transition.
+        try await callEventually { system.completed.contains { $0.0 == action.id } }
+        #expect(calls.mediaSession?.phase == .connected)
+        #expect(system.completed.filter { $0.0 == action.id }.map(\.1) == [true])
         await calls.end()
         try await callEventually { let ends = await service.ends; return calls.mediaSession == nil && engine.closed && ends == 1 }
         await calls.close()
+        #expect(system.completed.filter { $0.0 == action.id }.map(\.1) == [true])
         #expect(!engine.microphone && !engine.camera && !system.invalidated)
         #expect(await socket.closes == 1)
         return references

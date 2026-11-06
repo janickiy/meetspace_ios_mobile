@@ -15,6 +15,7 @@ struct LiveFoldersView: View {
         ScrollView {
             VStack(alignment: .leading, spacing: 20) {
                 Text(tr("Личное пространство")).font(MSTheme.font(11, weight: .semibold)).foregroundStyle(MSTheme.accent)
+                    .accessibilityIdentifier("folders.subtitle")
                 Text(tr("Соберите встречи и чаты в удобные папки.")).foregroundStyle(MSTheme.muted)
                 HStack {
                     Button { renaming = nil; name = ""; editing = true } label: { Label(tr("Создать папку"), systemImage: "folder.badge.plus") }

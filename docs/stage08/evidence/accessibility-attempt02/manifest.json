@@ -1,0 +1,147 @@
+{
+  "run": 42233879641,
+  "source": "acc193a47e9f94016ff2345f76f6294f53fcb13c",
+  "note": "Unchanged XCTest attachment copies. Screenshots at normal size and AX5, no crops or retouching.",
+  "screenshots": [
+    {
+      "file": "screenshots/iPhone26-stage08-accessibility-settings.png",
+      "exportedFileName": "2278C159-C931-422C-85CD-83E0545A80BB.png",
+      "sha256": "a36563e61fba06ff10c2f5c524a64857b8cb06c955c1209bf744dd6ea7c7f876",
+      "device": "iPhone 17 Pro Max",
+      "pixels": [
+        1320,
+        2868
+      ]
+    },
+    {
+      "file": "screenshots/iPhone26-stage08-accessibility-folders.png",
+      "exportedFileName": "4DDB4433-A683-47E2-8045-B0742C25B97C.png",
+      "sha256": "88de3bd6489f915aecc42a3de8f6fa0423f265c0708383a484f57f754afae3e7",
+      "device": "iPhone 17 Pro Max",
+      "pixels": [
+        1320,
+        2868
+      ]
+    },
+    {
+      "file": "screenshots/iPhone26-stage08-accessibility-recordings.png",
+      "exportedFileName": "FA6AAAA8-ED82-4A92-AD79-D0357F2FAD12.png",
+      "sha256": "4192a4a00f484df056ea70efa1ec9db3391e0fa3371f510d20adbd3138499779",
+      "device": "iPhone 17 Pro Max",
+      "pixels": [
+        1320,
+        2868
+      ]
+    },
+    {
+      "file": "screenshots/iPhone26-stage08-accessibility-calendar.png",
+      "exportedFileName": "5CFC3094-FB88-4D97-AD98-2A71A1B1E77F.png",
+      "sha256": "3ec54bd7318a0cf312a9129dc4760aa1e3452031746b59d35d4237e04aee0714",
+      "device": "iPhone 17 Pro Max",
+      "pixels": [
+        1320,
+        2868
+      ]
+    },
+    {
+      "file": "screenshots/iPhone26-stage08-accessibility-profile.png",
+      "exportedFileName": "AFA758A4-A15E-4A4C-B32C-6AA6EEF13414.png",
+      "sha256": "a84d83341127365b1c3408c3601e5a06fbf56d7be669c03ad225e04e6700bdcb",
+      "device": "iPhone 17 Pro Max",
+      "pixels": [
+        1320,
+        2868
+      ]
+    },
+    {
+      "file": "screenshots/iPhone26-stage08-accessibility-messages.png",
+      "exportedFileName": "01701AD1-F7E3-4E1F-997F-44FEA4156034.png",
+      "sha256": "94e75a848421dbacbe01e33340b6a12bb33367e9a6dd233b4e12bad5c366f7ad",
+      "device": "iPhone 17 Pro Max",
+      "pixels": [
+        1320,
+        2868
+      ]
+    },
+    {
+      "file": "screenshots/iPhone26-stage08-accessibility-welcome.png",
+      "exportedFileName": "42E40D7C-C8AB-4F44-902D-E864ECE234F1.png",
+      "sha256": "f084e8c1da8b2fedf812f84249789a9e8834637c2bfac679fdbeba23a80d9ec5",
+      "device": "iPhone 17 Pro Max",
+      "pixels": [
+        1320,
+        2868
+      ]
+    },
+    {
+      "file": "screenshots/iPhone26-stage08-large-text-settings.png",
+      "exportedFileName": "A5D090D7-1AE5-4255-AAED-96CBF6AE30CB.png",
+      "sha256": "4fcaed271b467a7962eb5fbedbbb441d4e4ef7790aba6e01f03e5a7696a4a235",
+      "device": "iPhone 17 Pro Max",
+      "pixels": [
+        1320,
+        2868
+      ]
+    },
+    {
+      "file": "screenshots/iPhone26-stage08-large-text-folders.png",
+      "exportedFileName": "D18D0969-D65C-4179-A01E-CC77E6091754.png",
+      "sha256": "935f8f43554504d7fd5d9c629ee5b71af54b00d8548cc5e773a6612092f3a5ec",
+      "device": "iPhone 17 Pro Max",
+      "pixels": [
+        1320,
+        2868
+      ]
+    },
+    {
+      "file": "screenshots/iPhone26-stage08-large-text-recordings.png",
+      "exportedFileName": "176B9814-FC98-48E5-A3D2-BC315A80E541.png",
+      "sha256": "b41c831d43ee9355654987194ec411c15d7b76f91c5fa9390ddb0e8a8d1291c1",
+      "device": "iPhone 17 Pro Max",
+      "pixels": [
+        1320,
+        2868
+      ]
+    },
+    {
+      "file": "screenshots/iPhone26-stage08-large-text-calendar.png",
+      "exportedFileName": "79197EFF-0BBE-4A11-922C-6F8231BAF8BC.png",
+      "sha256": "a1284638226b29009337cda0ad0970e71139817a6cf1799b9d15c3c0a891279e",
+      "device": "iPhone 17 Pro Max",
+      "pixels": [
+        1320,
+        2868
+      ]
+    },
+    {
+      "file": "screenshots/iPhone26-stage08-large-text-profile.png",
+      "exportedFileName": "504C2134-AD84-4934-9F3B-0F49DC0FA52A.png",
+      "sha256": "ca51d49a53c3503015363f06694d43744fa6743c9b8f88144b94d8ec4054c8b9",
+      "device": "iPhone 17 Pro Max",
+      "pixels": [
+        1320,
+        2868
+      ]
+    },
+    {
+      "file": "screenshots/iPhone26-stage08-large-text-messages.png",
+      "exportedFileName": "20BC990A-10DF-4215-8E5F-92E98D4144FF.png",
+      "sha256": "dd8a2403721bd45c1b0205af842f1c11f82b37ae1d1dc10db94cf2f7f6b863a1",
+      "device": "iPhone 17 Pro Max",
+      "pixels": [
+        1320,
+        2868
+      ]
+    },
+    {
+      "file": "screenshots/iPhone26-stage08-large-text-welcome.png",
+      "exportedFileName": "19292F10-76AF-4D5C-A420-D47762DCCE5F.png",
+      "sha256": "7f3de0b551ff2dc9a1afd5f25aa6edf9a1ff747260ecce6d30dfcf2e9e0b2b98",
+      "device": "iPhone 17 Pro Max",
+      "pixels": [
+        1320,
+        2868
+      ]
+    }
+  ]
+}

@@ -45,8 +45,12 @@ struct LiveRecordingsView: View {
         VStack(alignment: .leading, spacing: 16) {
             Text(tr("Записи встреч")).font(MSTheme.font(26, weight: .semibold))
             SearchBox(text: $model.query, placeholder: "Поиск записей")
-            ViewThatFits(in: .horizontal) { HStack { filters }; VStack(alignment: .leading) { filters } }
+            ViewThatFits(in: .horizontal) {
+                HStack(spacing: 16) { filters }.fixedSize(horizontal: true, vertical: false)
+                VStack(alignment: .leading, spacing: 12) { filters }
+            }
             Text(tr("Поиск и фильтры применяются к загруженным записям.")).font(MSTheme.font(11)).foregroundStyle(MSTheme.muted)
+                .fixedSize(horizontal: false, vertical: true).accessibilityIdentifier("recordings.filterHint")
             if model.visibleItems.isEmpty && !model.loading {
                 ContentUnavailableView(tr("Записей пока нет"), systemImage: "play.rectangle", description: Text(tr("Здесь появятся доступные вам записи встреч.")))
             }
@@ -59,7 +63,9 @@ struct LiveRecordingsView: View {
                         VStack(alignment: .leading, spacing: 6) {
                             Text(row.conference.title).font(MSTheme.font(14, weight: .semibold)).foregroundStyle(MSTheme.ink)
                             Text(row.recording.createdAt, format: .dateTime.day().month().year()).font(MSTheme.font(11)).foregroundStyle(MSTheme.muted)
+                                .accessibilityIdentifier("recording.date.\(row.id.uuidString.lowercased())")
                             Text(tr(row.recording.statusTitle)).font(MSTheme.font(11)).foregroundStyle(row.recording.ready ? MSTheme.accent : MSTheme.muted)
+                                .accessibilityIdentifier("recording.status.\(row.id.uuidString.lowercased())")
                         }
                         Spacer(minLength: 0); Image(systemName: "chevron.right").foregroundStyle(MSTheme.muted).accessibilityHidden(true)
                     }.msCard().contentShape(Rectangle()).accessibilityElement(children: .combine)
@@ -70,18 +76,43 @@ struct LiveRecordingsView: View {
             }
             Button(tr("Обновить записи")) { Task { await model.load() } }.disabled(model.loading).frame(minHeight: 44)
             FeatureNotice("Срок хранения записей задаётся сервером. Доступ проверяется перед воспроизведением и скачиванием.")
+                .accessibilityIdentifier("recordings.retentionNotice")
         }
     }
     @ViewBuilder private var filters: some View {
-        Picker(tr("Формат записи"), selection: $model.modeFilter) {
-            Text(tr("Все форматы")).tag("all")
-            ForEach(RecordingMode.allCases) { Text(tr($0.title)).tag($0.rawValue) }
-        }.pickerStyle(.menu).accessibilityIdentifier("recordingModeFilter")
-        Picker(tr("Статус записи"), selection: $model.statusFilter) {
-            Text(tr("Все статусы")).tag("all")
-            Text(tr("Готовые")).tag("ready")
-            Text(tr("В обработке")).tag("processing")
-        }.pickerStyle(.menu)
+        Menu {
+            Picker(tr("Формат записи"), selection: $model.modeFilter) {
+                Text(tr("Все форматы")).tag("all")
+                ForEach(RecordingMode.allCases) { Text(tr($0.title)).tag($0.rawValue) }
+            }
+        } label: { filterLabel(modeFilterTitle) }
+            .buttonStyle(.plain).foregroundStyle(MSTheme.accent)
+            .accessibilityLabel(tr("Формат записи")).accessibilityValue(tr(modeFilterTitle))
+            .accessibilityIdentifier("recordingModeFilter")
+        Menu {
+            Picker(tr("Статус записи"), selection: $model.statusFilter) {
+                Text(tr("Все статусы")).tag("all")
+                Text(tr("Готовые")).tag("ready")
+                Text(tr("В обработке")).tag("processing")
+            }
+        } label: { filterLabel(statusFilterTitle) }
+            .buttonStyle(.plain).foregroundStyle(MSTheme.accent)
+            .accessibilityLabel(tr("Статус записи")).accessibilityValue(tr(statusFilterTitle))
+            .accessibilityIdentifier("recordingStatusFilter")
+    }
+    private var modeFilterTitle: String { RecordingMode(rawValue: model.modeFilter)?.title ?? "Все форматы" }
+    private var statusFilterTitle: String {
+        switch model.statusFilter {
+        case "ready": "Готовые"
+        case "processing": "В обработке"
+        default: "Все статусы"
+        }
+    }
+    private func filterLabel(_ title: String) -> some View {
+        HStack(alignment: .firstTextBaseline, spacing: 8) {
+            Text(tr(title)).fixedSize(horizontal: false, vertical: true).multilineTextAlignment(.leading)
+            Image(systemName: "chevron.up.chevron.down").font(MSTheme.font(10)).accessibilityHidden(true)
+        }.frame(minHeight: 44).contentShape(Rectangle())
     }
     @ViewBuilder private func detail(_ row: RecordingLibraryItem) -> some View {
         Button { Task { await model.back() } } label: { Label(tr("Все записи"), systemImage: "arrow.left") }.frame(minHeight: 44)

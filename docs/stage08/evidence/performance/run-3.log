@@ -1,20 +1,20 @@
 ◇ Test run started.
 ↳ Testing Library Version: 2084
 ↳ Target Platform: arm64e-apple-macos14.0
+◇ Test stage08ThirtyReconnectsUseFreshTicketsWithoutSocketOverlap() started.
+◇ Test stage08ThirtyMaximumSizeUploadStagingCyclesCleanAccountFiles() started.
+◇ Test stage08ThirtyDirectCallAnswerEndCyclesReleaseResources() started.
 ◇ Test stage08ThirtyConferenceScreenCyclesReleaseResources() started.
 ◇ Test stage08ThirtyRecordingDownloadAndCancelCyclesCleanFiles() started.
-◇ Test stage08ThirtyMaximumSizeUploadStagingCyclesCleanAccountFiles() started.
-◇ Test stage08ThirtyReconnectsUseFreshTicketsWithoutSocketOverlap() started.
-◇ Test stage08ThirtyDirectCallAnswerEndCyclesReleaseResources() started.
-✔ Test stage08ThirtyReconnectsUseFreshTicketsWithoutSocketOverlap() passed after 0.145 seconds.
-✔ Test stage08ThirtyMaximumSizeUploadStagingCyclesCleanAccountFiles() passed after 0.417 seconds.
-✔ Test stage08ThirtyDirectCallAnswerEndCyclesReleaseResources() passed after 0.636 seconds.
-✔ Test stage08ThirtyRecordingDownloadAndCancelCyclesCleanFiles() passed after 0.698 seconds.
-✔ Test stage08ThirtyConferenceScreenCyclesReleaseResources() passed after 2.260 seconds.
-✔ Test run with 5 tests in 0 suites passed after 2.260 seconds.
+✔ Test stage08ThirtyReconnectsUseFreshTicketsWithoutSocketOverlap() passed after 0.084 seconds.
+✔ Test stage08ThirtyMaximumSizeUploadStagingCyclesCleanAccountFiles() passed after 0.329 seconds.
+✔ Test stage08ThirtyDirectCallAnswerEndCyclesReleaseResources() passed after 0.554 seconds.
+✔ Test stage08ThirtyRecordingDownloadAndCancelCyclesCleanFiles() passed after 0.601 seconds.
+✔ Test stage08ThirtyConferenceScreenCyclesReleaseResources() passed after 2.455 seconds.
+✔ Test run with 5 tests in 0 suites passed after 2.455 seconds.
 ◇ Test run started.
 ↳ Testing Library Version: 2084
 ↳ Target Platform: arm64e-apple-macos14.0
 ◇ Test stage08ThirtyBroadcastSocketLeasesReleaseDescriptorsAndFenceOldFrames() started.
 ✔ Test stage08ThirtyBroadcastSocketLeasesReleaseDescriptorsAndFenceOldFrames() passed after 0.015 seconds.
-✔ Test run with 1 test in 0 suites passed after 0.016 seconds.
+✔ Test run with 1 test in 0 suites passed after 0.015 seconds.

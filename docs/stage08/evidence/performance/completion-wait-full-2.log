@@ -1,0 +1,413 @@
+◇ Test run started.
+↳ Testing Library Version: 2084
+↳ Target Platform: arm64e-apple-macos14.0
+◇ Test preferencesRoundTripOnlyPublicConfiguration() started.
+◇ Test corruptedConfigurationIsReported() started.
+◇ Test calendarPreferencesPersistAndRemainScopedToServerAndAccount() started.
+✔ Test preferencesRoundTripOnlyPublicConfiguration() passed after 0.003 seconds.
+✔ Test corruptedConfigurationIsReported() passed after 0.003 seconds.
+✔ Test calendarPreferencesPersistAndRemainScopedToServerAndAccount() passed after 0.003 seconds.
+✔ Test run with 3 tests in 0 suites passed after 0.003 seconds.
+◇ Test run started.
+↳ Testing Library Version: 2084
+↳ Target Platform: arm64e-apple-macos14.0
+◇ Test repeated401ExpiresWithoutInfiniteRefresh() started.
+◇ Test versionsAndIntegerSequencesPreventDuplicateOrResurrectedMessages() started.
+◇ Test directCallEndAfterUnknownCreateResolvesAcceptedCallWithOriginalKeyWithoutCapture() started.
+◇ Test settingsCapabilitiesOnlyUseAdvertisedModesAndSSHStaysDisabled() started.
+◇ Test folderValidationNormalizesUnicodeAndRejectsHiddenControls() started.
+◇ Test directCallHeartbeatWatchdogClosesCaptureWhileRenewalIsHung() started.
+◇ Test conferenceSessionDepartureWaitsForRESTCompletion() started.
+◇ Test directCallRejectsMeetingConflictBeforeCreatingOrAccepting() started.
+◇ Test directCallAnswerWaitsForSFUReadyWithoutWaitingForSystemAudioActivation() started.
+◇ Test screenConflictRollsBackOnlyScreenAndKeepsConversation() started.
+◇ Test foldersDiscardResponsesAfterAccountClosed() started.
+◇ Test settingsCloseRejectsLateProfileSaveAndLocalIndexCallback() started.
+◇ Test conferenceWorkspaceCloseCompensatesLateJoinWithoutInstallingCall() started.
+◇ Test conferenceInviteParsingRejectsCrossOriginAndAmbiguousLinks() started.
+◇ Test recordingRechecksAuthorizationAfterDownloadAndDoesNotLeakRevokedFile() started.
+◇ Test pushForegroundPermissionRevocationStopsDeliveryAndCleansOwnBinding() started.
+◇ Test pushUnknownResponseCanRecoverOnlyWithMatchingFreshOSToken() started.
+◇ Test conferenceSessionRetriesAreBoundedAndAuthorizationFailureIsTerminal() started.
+◇ Test recordingsModelCancellationCannotRestorePlaybackAfterAccountClose() started.
+◇ Test directCallsRejectMismatchedAndMalformedServerState() started.
+◇ Test stage08ThirtyRecordingDownloadAndCancelCyclesCleanFiles() started.
+◇ Test reconnectUsesFreshTicketsDeduplicatesAndStopsOnCancellation() started.
+◇ Test conferenceSocketHandshakeRequiresNegotiatedSubprotocol() started.
+◇ Test conferenceRejectsScopeMismatchAndInvalidICEBeforeReturningState() started.
+◇ Test directCallCameraRetryUsesActualCaptureAfterInitialPermissionDenial() started.
+◇ Test concurrentUnauthorizedRequestsRefreshOnceAndRetryOnce() started.
+◇ Test stage08AccountDeletionRemovesOnlyConfirmedScopeAndFencesIdentityChanges() started.
+◇ Test successfulDownloadIsBoundedBeforeAccumulation() started.
+◇ Test directCallRetriesUnknownCreateWithSameIdempotencyKey() started.
+◇ Test conferenceSessionScheduledMembershipRejoinsAfterRoomStarts() started.
+◇ Test pushTokenRotationRevokesOldReceiptBeforeNewRegistration() started.
+◇ Test notificationDevicesRejectInvalidInputAndServerMetadataWithoutLeakingTokens() started.
+◇ Test stage08AccountDeletionKeepsAffirmativeResultWhenConcurrentReadSeesRevocation() started.
+◇ Suite "Native calling boundaries" started.
+◇ Test stage08AccountDeletionDrainsLatePushWriteBeforeForgettingConfirmedScope() started.
+◇ Test websocketUsesPublishedNamesAndIgnoresUnknownPayloads() started.
+◇ Test conferenceSessionUsesAssignedWorkerICEAndKeepsRESTPolicy() started.
+◇ Test directCallsPreserveHTTPFailuresAndRejectInvalidIDsBeforeTransport() started.
+◇ Test conferenceSessionReadyWithoutICEConnectionTimesOutAndCleansMedia() started.
+◇ Test conferenceWorkspaceClosedInviteCannotStartMeetingAfterLateRead() started.
+◇ Test restoredAccountsSwitchWithoutSharingStateAndLogoutOnlyRemovesSelected() started.
+➜ Test actualBackendConferenceRESTAndGuestScope() skipped.
+◇ Test conferenceGuestSessionCannotSendCredentialsOutsideItsOriginOrRoom() started.
+◇ Test conferenceSessionBackgroundInvalidatesPendingPermissionAndUsesFreshEngine() started.
+➜ Test actualBackendCalendarFoldersSettingsAndRecordings() skipped.
+◇ Test notificationPreferencesPreserveCategoriesAndDoNotPretendVoIPSupport() started.
+◇ Test conferenceEnvelopeChecksScopeAndPreservesUnknownEvents() started.
+◇ Test directCallDoesNotTrustSocketDTOAndRejectsOlderRESTVersion() started.
+◇ Test conferenceSessionWorkerMediaErrorIsPeerScopedAndTerminal() started.
+◇ Test conferenceWorkspaceCannotReplaceAnExistingCallByCreatingAnother() started.
+◇ Test stage08AccountDeletionRejectionsNeverReplayOrExpireValidSession() started.
+◇ Test directCallDuplicateSystemActionCompletesExactlyOnce() started.
+◇ Test recordingsActualRoutesCapabilitiesScopeAndCursor() started.
+◇ Test conferenceWorkspaceRepeatedDismissPreservesLateLeaveBarrier() started.
+◇ Test signedDownloadNeverReceivesBearerAndRejectsCorruptBytes() started.
+◇ Test cancelledDownloadDoesNotRemainInFlight() started.
+◇ Test directCallInitialInactiveAudioSnapshotPreservesOutgoingVideoIntent() started.
+◇ Test recordingMetadataRejectsCrossConferenceAndUnsafeSignedURLs() started.
+◇ Test pushDetachDrainsLateRegistrationAndRevokesItsReceipt() started.
+◇ Test conferenceSessionKickClosesPendingCaptureWithoutAnotherRESTRead() started.
+◇ Test authenticatedFileURLCannotEscapeAccountOriginOrConversation() started.
+◇ Test foldersUseOpaquePaginationAndCompleteOrderAndRejectScopeMismatch() started.
+◇ Test conferenceWorkspaceUncertainDepartureEndsBusyStateAndBlocksReuse() started.
+◇ Test productionTransportsRejectUnencryptedEndpointsBeforeNetworking() started.
+◇ Test screenStopDuringPendingStartWaitsForRemovalAcknowledgement() started.
+◇ Test logoutDrainsRefreshWriteBeforeKeychainDeletion() started.
+◇ Test stage08UploadPreservesBoundedSuccessAndHTTPError() started.
+◇ Test refreshRejectsChangedAccountAndMalformedCookie() started.
+◇ Test conferenceSocketRequestAndFramingEnforceTrustBoundaries() started.
+◇ Test stage08ThirtyConferenceScreenCyclesReleaseResources() started.
+◇ Test directCallOwnershipSeparatesOtherDevicesAndAccountScope() started.
+➜ Test actualBackendTwoClientsAndFiles() skipped.
+◇ Test directCallStartRejectionCancelsOwnedRing() started.
+➜ Test stage08ActualBackendAccountDeletion() skipped.
+◇ Test recordingDownloadStreamsChecksHashAndCleansAccountFiles() started.
+◇ Test directCallEndDuringCreateCancelsLateCallWithoutStartingSystemOrMedia() started.
+◇ Test directCallRepeatedEndRetriesUnknownCancellationAtSameServerVersion() started.
+◇ Test conferenceSessionUnresponsiveDepartureStaysUnsafeAfterLateCompletion() started.
+◇ Test stage08AccountDeletionFailurePreservesWorkspaceCredentialsAndCachedFiles() started.
+◇ Test fiveAccountsPerOriginAndMetadataContainNoSessionSecrets() started.
+◇ Test conferenceSessionWaitsForReadyAcknowledgementAndRTCConnection() started.
+◇ Test screenConsentFrameAndServerAckAreAllRequiredAndStopFencesFrames() started.
+◇ Test foldersRejectMalformedListsPagesAndGuestScopes() started.
+◇ Test conferenceSessionMapsNativeTrackThroughSDPMidAndCatalog() started.
+◇ Test stage07SettingsInitialProfileRejectsAnotherUser() started.
+◇ Test conferenceGuestResumeUsesBearerOnlyForMatchingInviteAndNeverRefreshes() started.
+◇ Test pushNoopGatewayOrDeniedPermissionNeverRegisters() started.
+◇ Test cancellingUploadStopsBeforeFinalizeAndRemovesStagedFile() started.
+◇ Test pushJournalFailurePreventsPOSTOrRevokesUnpersistedReceipt() started.
+◇ Test callAndPushRepositoriesRejectGuestCredentialsBeforeAnyRequest() started.
+◇ Test directCallLateAcceptAfterAccountCloseNeverCreatesMediaAndCompensates() started.
+◇ Test stage08AccountDeletionUnknownOutcomeIsNeverReportedAsSuccessOrRetried() started.
+◇ Test conferenceRoleMatrixKeepsLobbyAndGuestPrivilegesSeparate() started.
+◇ Test pushRegistrationRequiresExplicitConsentAndPersistsBeforeSendingToken() started.
+◇ Test stage08ThirtyMaximumSizeUploadStagingCyclesCleanAccountFiles() started.
+◇ Test conferenceNegotiationCoalescesRevisionsAndIgnoresUnrelatedAcknowledgements() started.
+◇ Test recordingDownloadRejectsRedirectDenialWrongMIMEChecksumAndSize() started.
+◇ Test conferenceSessionDoesNotRetryHTTPValidationFailure() started.
+◇ Test lateHistoryCannotReplaceAnotherSelectedConversation() started.
+◇ Test conferenceRESTUsesAuditedTicketMediaAndMessageContracts() started.
+◇ Test accountTemporaryFilesAreIsolatedAndBounded() started.
+➜ Test actualBackendDirectCallsDevicesAndPrivateSFU() skipped.
+◇ Test stage08AccountDeletionSendsOneScopedPasswordMutationAfterPreflightRefresh() started.
+◇ Test folderDeletionAndRemovalNeverDeleteUnderlyingContent() started.
+◇ Test settingsSavePersistsAllFiveNotificationFieldsAndSurvivesFreshModel() started.
+◇ Test conferenceSessionLobbyStopsOnTerminalAuthorizationFailure() started.
+◇ Test conferenceWorkspaceOwnerInvitationStartsScheduledMeeting() started.
+◇ Test calendarRESTSerializesUTCAndUsesAuditedScheduleCancelTimeline() started.
+◇ Test pushOfflineCleanupSurvivesRestartAndBlocksEveryOtherAccountAndServer() started.
+◇ Test conferenceGuestLateJoinCannotReplaceRestoredAccount() started.
+◇ Test recordingPermissionsFollowActualParticipantAndRequesterPolicy() started.
+◇ Test calendarCloseFencesInflightLoadsAndAmbiguousCreateRequiresReview() started.
+◇ Test notificationDeviceContractUsesOnlyOrdinaryTokenFieldsAndScopedRevoke() started.
+◇ Test directCallPOSTAndReconciliationAwaitTheSameRejectedSystemStart() started.
+◇ Test directCallEventHasAccountScopeWithoutConversationEnvelope() started.
+◇ Test conferenceStateAndTrackCatalogRejectCrossScopeAndMisboundSources() started.
+◇ Test recordingDownloadCloseCancelsAnActualPendingURLSessionRequest() started.
+◇ Test calendarPartialFeedsAndPaginationDoNotHideFailuresOrDuplicateMeetings() started.
+◇ Test settingsProfileContractNormalizesOnlyNameAndChecksAccount() started.
+◇ Test forbiddenAndOfflineDoNotDestroySessions() started.
+◇ Test stage08ThirtyReconnectsUseFreshTicketsWithoutSocketOverlap() started.
+◇ Test directCallStartRejectionPreservesUnknownServerCancellation() started.
+◇ Test stage08UploadRejectsOversizeBeforeResponseFinishes() started.
+◇ Test conferenceICERequiresCandidateFieldAndBoundsNativeInput() started.
+◇ Test stage08ThirtyDirectCallAnswerEndCyclesReleaseResources() started.
+◇ Test tinyDownloadPreservesLargerUnauthorizedResponse() started.
+◇ Test malformedCallEventsCannotBecomeChatEvents() started.
+◇ Test recordingsBackCannotDeleteNewPlaybackWhileOldCancellationDrains() started.
+◇ Test foldersRefreshRevokesRemovedSelectionAndPendingPage() started.
+◇ Test serverCharacterAndFileLimitsAreEnforced() started.
+◇ Test directCallsEmitCanonicalUUIDsExactActionBodiesAndAcceptExpiredActionResult() started.
+◇ Test directCallAnswerTimeoutStopsCaptureAndDoesNotLaterFulfill() started.
+◇ Test directCallCancelledCreationStaysCaptureOffAcrossUnknownCancelAndAcceptance() started.
+◇ Test downloadProgressUsesReceivedBytesAndFinishesAtOne() started.
+◇ Test directCallReconcilesLostCreateResponseIntoOneSystemStartBeforeMedia() started.
+◇ Test stage08AccountDeletionInvalidPasswordNeverSendsRequest() started.
+◇ Test stage07RestoredAndSwitchedProfilesUseFreshAccountMetadataWithoutReplacingCredentials() started.
+◇ Test directCallIncomingMultiDeviceAcceptanceClosesOnlyLocalCallKit() started.
+◇ Test uncertainSendRetriesSameRequestAndProducesOneMessage() started.
+◇ Test conferenceCommandsUseLowercaseScopeAndExplicitICEEndMarker() started.
+◇ Test screenPolicyAndOldLeaseCannotResumeCapture() started.
+◇ Test conferenceSessionLeaveReleasesCaptureBeforeUnresponsiveServer() started.
+◇ Test stage08UploadCancellationAndAccountDrainReleasePendingRequests() started.
+◇ Test screenKeepsTransportInBackgroundAndLeaveRevokesLease() started.
+◇ Test conferenceSessionProcessesModerationDuringPendingPermission() started.
+✔ Test folderValidationNormalizesUnicodeAndRejectsHiddenControls() passed after 0.032 seconds.
+✔ Test conferenceInviteParsingRejectsCrossOriginAndAmbiguousLinks() passed after 0.060 seconds.
+✔ Test conferenceSocketHandshakeRequiresNegotiatedSubprotocol() passed after 0.069 seconds.
+◇ Test pushCompletionIsSafeAcrossConcurrentCallbacks() started.
+◇ Test actionsCanReplayToRestoredAccountWithoutCompletingProviderStream() started.
+◇ Test pushReportsSynchronouslyAndCompletesOnlyAfterCallKitResult() started.
+◇ Test cancellingAccountConsumerPreservesOtherAndFutureSubscriptions() started.
+◇ Test conferenceAudioRemainsApplicationManagedByDefault() started.
+◇ Test hostFactoriesCannotPretendToRegisterVoIPOrPlaceSystemCalls() started.
+◇ Test rejectedIncomingCallStillCompletesPushExactlyOnce() started.
+✔ Test settingsCapabilitiesOnlyUseAdvertisedModesAndSSHStaysDisabled() passed after 0.075 seconds.
+✔ Test recordingRechecksAuthorizationAfterDownloadAndDoesNotLeakRevokedFile() passed after 0.075 seconds.
+✔ Test notificationPreferencesPreserveCategoriesAndDoNotPretendVoIPSupport() passed after 0.075 seconds.
+✔ Test conferenceEnvelopeChecksScopeAndPreservesUnknownEvents() passed after 0.075 seconds.
+✔ Test conferenceRejectsScopeMismatchAndInvalidICEBeforeReturningState() passed after 0.075 seconds.
+✔ Test conferenceGuestSessionCannotSendCredentialsOutsideItsOriginOrRoom() passed after 0.075 seconds.
+✔ Test websocketUsesPublishedNamesAndIgnoresUnknownPayloads() passed after 0.075 seconds.
+✔ Test signedDownloadNeverReceivesBearerAndRejectsCorruptBytes() passed after 0.075 seconds.
+✔ Test productionTransportsRejectUnencryptedEndpointsBeforeNetworking() passed after 0.075 seconds.
+✔ Test recordingsActualRoutesCapabilitiesScopeAndCursor() passed after 0.075 seconds.
+✔ Test authenticatedFileURLCannotEscapeAccountOriginOrConversation() passed after 0.075 seconds.
+✔ Test versionsAndIntegerSequencesPreventDuplicateOrResurrectedMessages() passed after 0.076 seconds.
+✔ Test recordingMetadataRejectsCrossConferenceAndUnsafeSignedURLs() passed after 0.077 seconds.
+✔ Test directCallsPreserveHTTPFailuresAndRejectInvalidIDsBeforeTransport() passed after 0.077 seconds.
+✔ Test conferenceSocketRequestAndFramingEnforceTrustBoundaries() passed after 0.077 seconds.
+✔ Test notificationDevicesRejectInvalidInputAndServerMetadataWithoutLeakingTokens() passed after 0.078 seconds.
+✔ Test conferenceRoleMatrixKeepsLobbyAndGuestPrivilegesSeparate() passed after 0.077 seconds.
+✔ Test callAndPushRepositoriesRejectGuestCredentialsBeforeAnyRequest() passed after 0.077 seconds.
+✔ Test conferenceNegotiationCoalescesRevisionsAndIgnoresUnrelatedAcknowledgements() passed after 0.077 seconds.
+✔ Test foldersUseOpaquePaginationAndCompleteOrderAndRejectScopeMismatch() passed after 0.077 seconds.
+✔ Test conferenceGuestResumeUsesBearerOnlyForMatchingInviteAndNeverRefreshes() passed after 0.077 seconds.
+✔ Test folderDeletionAndRemovalNeverDeleteUnderlyingContent() passed after 0.078 seconds.
+✔ Test fiveAccountsPerOriginAndMetadataContainNoSessionSecrets() passed after 0.078 seconds.
+✔ Test accountTemporaryFilesAreIsolatedAndBounded() passed after 0.078 seconds.
+✔ Test recordingPermissionsFollowActualParticipantAndRequesterPolicy() passed after 0.078 seconds.
+✔ Test stage08AccountDeletionRejectionsNeverReplayOrExpireValidSession() passed after 0.078 seconds.
+✔ Test directCallEventHasAccountScopeWithoutConversationEnvelope() passed after 0.078 seconds.
+✔ Test conferenceRESTUsesAuditedTicketMediaAndMessageContracts() passed after 0.078 seconds.
+✔ Test stage08AccountDeletionUnknownOutcomeIsNeverReportedAsSuccessOrRetried() passed after 0.079 seconds.
+✔ Test conferenceStateAndTrackCatalogRejectCrossScopeAndMisboundSources() passed after 0.078 seconds.
+✔ Test directCallsRejectMismatchedAndMalformedServerState() passed after 0.080 seconds.
+✔ Test malformedCallEventsCannotBecomeChatEvents() passed after 0.076 seconds.
+✔ Test serverCharacterAndFileLimitsAreEnforced() passed after 0.076 seconds.
+✔ Test notificationDeviceContractUsesOnlyOrdinaryTokenFieldsAndScopedRevoke() passed after 0.079 seconds.
+✔ Test conferenceICERequiresCandidateFieldAndBoundsNativeInput() passed after 0.076 seconds.
+✔ Test successfulDownloadIsBoundedBeforeAccumulation() passed after 0.080 seconds.
+✔ Test conferenceCommandsUseLowercaseScopeAndExplicitICEEndMarker() passed after 0.079 seconds.
+✔ Test stage08AccountDeletionInvalidPasswordNeverSendsRequest() passed after 0.079 seconds.
+✔ Test pushCompletionIsSafeAcrossConcurrentCallbacks() passed after 0.009 seconds.
+✔ Test conferenceAudioRemainsApplicationManagedByDefault() passed after 0.008 seconds.
+✔ Test directCallOwnershipSeparatesOtherDevicesAndAccountScope() passed after 0.083 seconds.
+✔ Test settingsProfileContractNormalizesOnlyNameAndChecksAccount() passed after 0.080 seconds.
+✔ Test repeated401ExpiresWithoutInfiniteRefresh() passed after 0.084 seconds.
+✔ Test refreshRejectsChangedAccountAndMalformedCookie() passed after 0.083 seconds.
+✔ Test forbiddenAndOfflineDoNotDestroySessions() passed after 0.080 seconds.
+✔ Test stage08AccountDeletionSendsOneScopedPasswordMutationAfterPreflightRefresh() passed after 0.085 seconds.
+✔ Test tinyDownloadPreservesLargerUnauthorizedResponse() passed after 0.082 seconds.
+✔ Test cancelledDownloadDoesNotRemainInFlight() passed after 0.086 seconds.
+✔ Test stage08AccountDeletionKeepsAffirmativeResultWhenConcurrentReadSeesRevocation() passed after 0.087 seconds.
+✔ Test recordingDownloadCloseCancelsAnActualPendingURLSessionRequest() passed after 0.086 seconds.
+✔ Test stage08UploadPreservesBoundedSuccessAndHTTPError() passed after 0.091 seconds.
+✔ Test stage08UploadRejectsOversizeBeforeResponseFinishes() passed after 0.087 seconds.
+✔ Test downloadProgressUsesReceivedBytesAndFinishesAtOne() passed after 0.090 seconds.
+✔ Test recordingDownloadStreamsChecksHashAndCleansAccountFiles() passed after 0.097 seconds.
+✔ Test recordingDownloadRejectsRedirectDenialWrongMIMEChecksumAndSize() passed after 0.100 seconds.
+✔ Test calendarRESTSerializesUTCAndUsesAuditedScheduleCancelTimeline() passed after 0.101 seconds.
+✔ Test logoutDrainsRefreshWriteBeforeKeychainDeletion() passed after 0.111 seconds.
+✔ Test directCallsEmitCanonicalUUIDsExactActionBodiesAndAcceptExpiredActionResult() passed after 0.109 seconds.
+✔ Test stage08UploadCancellationAndAccountDrainReleasePendingRequests() passed after 0.113 seconds.
+✔ Test stage07SettingsInitialProfileRejectsAnotherUser() passed after 0.130 seconds.
+✔ Test concurrentUnauthorizedRequestsRefreshOnceAndRetryOnce() passed after 0.133 seconds.
+✔ Test reconnectUsesFreshTicketsDeduplicatesAndStopsOnCancellation() passed after 0.144 seconds.
+✔ Test pushReportsSynchronouslyAndCompletesOnlyAfterCallKitResult() passed after 0.094 seconds.
+✔ Test hostFactoriesCannotPretendToRegisterVoIPOrPlaceSystemCalls() passed after 0.094 seconds.
+✔ Test rejectedIncomingCallStillCompletesPushExactlyOnce() passed after 0.094 seconds.
+✔ Test stage08ThirtyReconnectsUseFreshTicketsWithoutSocketOverlap() passed after 0.188 seconds.
+✔ Test actionsCanReplayToRestoredAccountWithoutCompletingProviderStream() passed after 0.134 seconds.
+✔ Test recordingsModelCancellationCannotRestorePlaybackAfterAccountClose() passed after 0.223 seconds.
+✔ Test conferenceWorkspaceCannotReplaceAnExistingCallByCreatingAnother() passed after 0.225 seconds.
+✔ Test settingsCloseRejectsLateProfileSaveAndLocalIndexCallback() passed after 0.225 seconds.
+✔ Test conferenceWorkspaceOwnerInvitationStartsScheduledMeeting() passed after 0.224 seconds.
+✔ Test directCallRejectsMeetingConflictBeforeCreatingOrAccepting() passed after 0.233 seconds.
+✔ Test foldersDiscardResponsesAfterAccountClosed() passed after 0.233 seconds.
+✔ Test cancellingAccountConsumerPreservesOtherAndFutureSubscriptions() passed after 0.158 seconds.
+✔ Test conferenceWorkspaceUncertainDepartureEndsBusyStateAndBlocksReuse() passed after 0.236 seconds.
+✔ Suite "Native calling boundaries" passed after 0.236 seconds.
+✔ Test calendarPartialFeedsAndPaginationDoNotHideFailuresOrDuplicateMeetings() passed after 0.240 seconds.
+✔ Test directCallRetriesUnknownCreateWithSameIdempotencyKey() passed after 0.252 seconds.
+✔ Test foldersRefreshRevokesRemovedSelectionAndPendingPage() passed after 0.256 seconds.
+✔ Test pushNoopGatewayOrDeniedPermissionNeverRegisters() passed after 0.259 seconds.
+✔ Test directCallStartRejectionCancelsOwnedRing() passed after 0.260 seconds.
+✔ Test calendarCloseFencesInflightLoadsAndAmbiguousCreateRequiresReview() passed after 0.261 seconds.
+✔ Test conferenceSessionLobbyStopsOnTerminalAuthorizationFailure() passed after 0.261 seconds.
+✔ Test conferenceWorkspaceCloseCompensatesLateJoinWithoutInstallingCall() passed after 0.262 seconds.
+✔ Test settingsSavePersistsAllFiveNotificationFieldsAndSurvivesFreshModel() passed after 0.262 seconds.
+✔ Test conferenceWorkspaceClosedInviteCannotStartMeetingAfterLateRead() passed after 0.263 seconds.
+✔ Test conferenceSessionDoesNotRetryHTTPValidationFailure() passed after 0.268 seconds.
+✔ Test cancellingUploadStopsBeforeFinalizeAndRemovesStagedFile() passed after 0.287 seconds.
+✔ Test foldersRejectMalformedListsPagesAndGuestScopes() passed after 0.289 seconds.
+✔ Test directCallIncomingMultiDeviceAcceptanceClosesOnlyLocalCallKit() passed after 0.286 seconds.
+✔ Test lateHistoryCannotReplaceAnotherSelectedConversation() passed after 0.292 seconds.
+✔ Test directCallInitialInactiveAudioSnapshotPreservesOutgoingVideoIntent() passed after 0.296 seconds.
+✔ Test uncertainSendRetriesSameRequestAndProducesOneMessage() passed after 0.292 seconds.
+✔ Test conferenceSessionDepartureWaitsForRESTCompletion() passed after 0.297 seconds.
+✔ Test directCallStartRejectionPreservesUnknownServerCancellation() passed after 0.293 seconds.
+✔ Test recordingsBackCannotDeleteNewPlaybackWhileOldCancellationDrains() passed after 0.303 seconds.
+✔ Test directCallLateAcceptAfterAccountCloseNeverCreatesMediaAndCompensates() passed after 0.308 seconds.
+✔ Test directCallEndAfterUnknownCreateResolvesAcceptedCallWithOriginalKeyWithoutCapture() passed after 0.313 seconds.
+✔ Test conferenceSessionUnresponsiveDepartureStaysUnsafeAfterLateCompletion() passed after 0.319 seconds.
+✔ Test directCallDuplicateSystemActionCompletesExactlyOnce() passed after 0.320 seconds.
+✔ Test directCallEndDuringCreateCancelsLateCallWithoutStartingSystemOrMedia() passed after 0.320 seconds.
+✔ Test directCallDoesNotTrustSocketDTOAndRejectsOlderRESTVersion() passed after 0.326 seconds.
+✔ Test conferenceWorkspaceRepeatedDismissPreservesLateLeaveBarrier() passed after 0.330 seconds.
+✔ Test directCallReconcilesLostCreateResponseIntoOneSystemStartBeforeMedia() passed after 0.326 seconds.
+✔ Test pushRegistrationRequiresExplicitConsentAndPersistsBeforeSendingToken() passed after 0.333 seconds.
+✔ Test directCallRepeatedEndRetriesUnknownCancellationAtSameServerVersion() passed after 0.336 seconds.
+✔ Test conferenceSessionUsesAssignedWorkerICEAndKeepsRESTPolicy() passed after 0.337 seconds.
+✔ Test conferenceSessionWorkerMediaErrorIsPeerScopedAndTerminal() passed after 0.339 seconds.
+✔ Test conferenceSessionScheduledMembershipRejoinsAfterRoomStarts() passed after 0.339 seconds.
+✔ Test conferenceSessionLeaveReleasesCaptureBeforeUnresponsiveServer() passed after 0.334 seconds.
+✔ Test conferenceGuestLateJoinCannotReplaceRestoredAccount() passed after 0.340 seconds.
+✔ Test conferenceSessionKickClosesPendingCaptureWithoutAnotherRESTRead() passed after 0.343 seconds.
+✔ Test pushTokenRotationRevokesOldReceiptBeforeNewRegistration() passed after 0.344 seconds.
+✔ Test directCallCameraRetryUsesActualCaptureAfterInitialPermissionDenial() passed after 0.344 seconds.
+✔ Test directCallAnswerTimeoutStopsCaptureAndDoesNotLaterFulfill() passed after 0.340 seconds.
+✔ Test directCallHeartbeatWatchdogClosesCaptureWhileRenewalIsHung() passed after 0.345 seconds.
+✔ Test conferenceSessionMapsNativeTrackThroughSDPMidAndCatalog() passed after 0.344 seconds.
+✔ Test directCallCancelledCreationStaysCaptureOffAcrossUnknownCancelAndAcceptance() passed after 0.341 seconds.
+✔ Test pushJournalFailurePreventsPOSTOrRevokesUnpersistedReceipt() passed after 0.345 seconds.
+✔ Test pushForegroundPermissionRevocationStopsDeliveryAndCleansOwnBinding() passed after 0.348 seconds.
+✔ Test stage07RestoredAndSwitchedProfilesUseFreshAccountMetadataWithoutReplacingCredentials() passed after 0.344 seconds.
+✔ Test directCallPOSTAndReconciliationAwaitTheSameRejectedSystemStart() passed after 0.349 seconds.
+✔ Test conferenceSessionProcessesModerationDuringPendingPermission() passed after 0.343 seconds.
+✔ Test directCallAnswerWaitsForSFUReadyWithoutWaitingForSystemAudioActivation() passed after 0.352 seconds.
+✔ Test pushDetachDrainsLateRegistrationAndRevokesItsReceipt() passed after 0.351 seconds.
+✔ Test restoredAccountsSwitchWithoutSharingStateAndLogoutOnlyRemovesSelected() passed after 0.354 seconds.
+✔ Test pushOfflineCleanupSurvivesRestartAndBlocksEveryOtherAccountAndServer() passed after 0.353 seconds.
+✔ Test conferenceSessionWaitsForReadyAcknowledgementAndRTCConnection() passed after 0.354 seconds.
+✔ Test pushUnknownResponseCanRecoverOnlyWithMatchingFreshOSToken() passed after 0.355 seconds.
+✔ Test stage08AccountDeletionDrainsLatePushWriteBeforeForgettingConfirmedScope() passed after 0.356 seconds.
+✔ Test stage08AccountDeletionRemovesOnlyConfirmedScopeAndFencesIdentityChanges() passed after 0.358 seconds.
+✔ Test conferenceSessionBackgroundInvalidatesPendingPermissionAndUsesFreshEngine() passed after 0.359 seconds.
+✔ Test conferenceSessionRetriesAreBoundedAndAuthorizationFailureIsTerminal() passed after 0.360 seconds.
+✔ Test screenConflictRollsBackOnlyScreenAndKeepsConversation() passed after 0.361 seconds.
+✔ Test screenKeepsTransportInBackgroundAndLeaveRevokesLease() passed after 0.359 seconds.
+✔ Test conferenceSessionReadyWithoutICEConnectionTimesOutAndCleansMedia() passed after 0.371 seconds.
+✔ Test stage08AccountDeletionFailurePreservesWorkspaceCredentialsAndCachedFiles() passed after 0.373 seconds.
+✔ Test screenPolicyAndOldLeaseCannotResumeCapture() passed after 0.385 seconds.
+✔ Test screenStopDuringPendingStartWaitsForRemovalAcknowledgement() passed after 0.405 seconds.
+✔ Test stage08ThirtyMaximumSizeUploadStagingCyclesCleanAccountFiles() passed after 0.429 seconds.
+✔ Test screenConsentFrameAndServerAckAreAllRequiredAndStopFencesFrames() passed after 0.454 seconds.
+✔ Test stage08ThirtyRecordingDownloadAndCancelCyclesCleanFiles() passed after 0.714 seconds.
+✔ Test stage08ThirtyDirectCallAnswerEndCyclesReleaseResources() passed after 0.899 seconds.
+✔ Test stage08ThirtyConferenceScreenCyclesReleaseResources() passed after 2.769 seconds.
+✔ Test run with 151 tests in 1 suite passed after 2.769 seconds.
+◇ Test run started.
+↳ Testing Library Version: 2084
+↳ Target Platform: arm64e-apple-macos14.0
+◇ Test reopeningServerFormRequiresANewCheck() started.
+◇ Test invalidAddressNeverStartsRequestOrAdvances() started.
+◇ Test successfulCheckPersistsOriginBeforeLogin() started.
+◇ Test tabsPreserveIndependentPathsAndDemoExitClearsThem() started.
+◇ Test leavingConnectionCancelsPendingCheck() started.
+◇ Test staleResponseCannotReplaceNewServer() started.
+◇ Test offlineIsDistinctAndRetryCanSucceed() started.
+◇ Test leavingWhileSavingCannotNavigateBackToLogin() started.
+✔ Test tabsPreserveIndependentPathsAndDemoExitClearsThem() passed after 0.001 seconds.
+✔ Test invalidAddressNeverStartsRequestOrAdvances() passed after 0.001 seconds.
+✔ Test leavingConnectionCancelsPendingCheck() passed after 0.008 seconds.
+✔ Test reopeningServerFormRequiresANewCheck() passed after 0.008 seconds.
+✔ Test successfulCheckPersistsOriginBeforeLogin() passed after 0.008 seconds.
+✔ Test leavingWhileSavingCannotNavigateBackToLogin() passed after 0.016 seconds.
+✔ Test offlineIsDistinctAndRetryCanSucceed() passed after 0.016 seconds.
+✔ Test staleResponseCannotReplaceNewServer() passed after 0.016 seconds.
+✔ Test run with 8 tests in 0 suites passed after 0.016 seconds.
+◇ Test run started.
+↳ Testing Library Version: 2084
+↳ Target Platform: arm64e-apple-macos14.0
+◇ Test normalizesOriginAndPreservesCustomPort() started.
+◇ Test calendarPresentationDoesNotChangeInstantAcrossZonesOrRepeatedHours() started.
+◇ Test rejectsUnsafeOrigins(_:) started.
+◇ Test calendarPeriodsRespectDSTAndExclusiveMonthBoundary() started.
+◇ Test credentialsAreScopedByServerAndAccount() started.
+◇ Test realtimeUsesAuditedPathsAndEncodesTicket() started.
+◇ Test case passing 1 argument input → "meet.example" to rejectsUnsafeOrigins(_:) started.
+◇ Test decodeCannotBypassValidation() started.
+◇ Test case passing 1 argument input → "https://meet.example/api" to rejectsUnsafeOrigins(_:) started.
+◇ Test case passing 1 argument input → "https://user:pass@meet.example" to rejectsUnsafeOrigins(_:) started.
+◇ Test case passing 1 argument input → "https://meet.example?ticket=secret" to rejectsUnsafeOrigins(_:) started.
+◇ Test case passing 1 argument input → "http://meet.example" to rejectsUnsafeOrigins(_:) started.
+◇ Test case passing 1 argument input → "https://meet.example/#secret" to rejectsUnsafeOrigins(_:) started.
+◇ Test case passing 1 argument input → "https://meet.example:0" to rejectsUnsafeOrigins(_:) started.
+◇ Test case passing 1 argument input → "https://meet.example:65536" to rejectsUnsafeOrigins(_:) started.
+◇ Test case passing 1 argument input → "https://meet.example\evil" to rejectsUnsafeOrigins(_:) started.
+◇ Test case passing 1 argument input → "https://meet.example/a/.." to rejectsUnsafeOrigins(_:) started.
+◇ Test case passing 1 argument input → "https://meet.%65xample" to rejectsUnsafeOrigins(_:) started.
+◇ Test case passing 1 argument input → "https://meet. example" to rejectsUnsafeOrigins(_:) started.
+◇ Test case passing 1 argument input → "https://" to rejectsUnsafeOrigins(_:) started.
+◇ Test case passing 1 argument input → "" to rejectsUnsafeOrigins(_:) started.
+✔ Test realtimeUsesAuditedPathsAndEncodesTicket() passed after 0.001 seconds.
+✔ Test rejectsUnsafeOrigins(_:) with 14 test cases passed after 0.001 seconds.
+✔ Test normalizesOriginAndPreservesCustomPort() passed after 0.001 seconds.
+✔ Test credentialsAreScopedByServerAndAccount() passed after 0.001 seconds.
+✔ Test decodeCannotBypassValidation() passed after 0.001 seconds.
+✔ Test calendarPresentationDoesNotChangeInstantAcrossZonesOrRepeatedHours() passed after 0.003 seconds.
+✔ Test calendarPeriodsRespectDSTAndExclusiveMonthBoundary() passed after 0.003 seconds.
+✔ Test run with 7 tests in 0 suites passed after 0.003 seconds.
+◇ Test run started.
+↳ Testing Library Version: 2084
+↳ Target Platform: arm64e-apple-macos14.0
+◇ Suite BroadcastTests started.
+◇ Test stage08ThirtyBroadcastSocketLeasesReleaseDescriptorsAndFenceOldFrames() started.
+◇ Test screenConverterScalesNV12BeforeBGRAAndKeepsOpaqueWhite(_:) started.
+◇ Test screenConverterAppliesAllEightEXIFOrientations() started.
+◇ Test frameBoundsAndWireLease() started.
+◇ Test case passing 1 argument format → 875704422 to screenConverterScalesNV12BeforeBGRAAndKeepsOpaqueWhite(_:) started.
+◇ Test case passing 1 argument format → 875704438 to screenConverterScalesNV12BeforeBGRAAndKeepsOpaqueWhite(_:) started.
+✔ Test frameBoundsAndWireLease() passed after 0.001 seconds.
+◇ Test localSocketFramesPauseStopAndNewLease() started.
+✔ Test screenConverterAppliesAllEightEXIFOrientations() passed after 0.002 seconds.
+✔ Test screenConverterScalesNV12BeforeBGRAAndKeepsOpaqueWhite(_:) with 2 test cases passed after 0.003 seconds.
+✔ Test stage08ThirtyBroadcastSocketLeasesReleaseDescriptorsAndFenceOldFrames() passed after 0.015 seconds.
+✔ Test localSocketFramesPauseStopAndNewLease() passed after 0.104 seconds.
+◇ Test onlyOnePreparedOwnerAndCancelBeforeExtension() started.
+✔ Test onlyOnePreparedOwnerAndCancelBeforeExtension() passed after 0.211 seconds.
+◇ Test extensionExpiresWithoutHostHeartbeat() started.
+✔ Test extensionExpiresWithoutHostHeartbeat() passed after 5.081 seconds.
+✔ Suite BroadcastTests passed after 5.398 seconds.
+✔ Test run with 7 tests in 1 suite passed after 5.398 seconds.
+◇ Test run started.
+↳ Testing Library Version: 2084
+↳ Target Platform: arm64e-apple-macos14.0
+◇ Test rejectsMalformedVersion(_:) started.
+◇ Test probesOnlyPublicVersionEndpoint() started.
+◇ Test rejectsHTMLContentTypeAndLargeResponse() started.
+◇ Test preservesHTTPStatus(_:) started.
+◇ Test redirectsAreNotAccepted(_:) started.
+◇ Test case passing 1 argument body → "{}" to rejectsMalformedVersion(_:) started.
+◇ Test case passing 1 argument body → "<html>proxy login</html>" to rejectsMalformedVersion(_:) started.
+◇ Test case passing 1 argument status → 401 to preservesHTTPStatus(_:) started.
+◇ Test case passing 1 argument status → 301 to redirectsAreNotAccepted(_:) started.
+◇ Test case passing 1 argument status → 403 to preservesHTTPStatus(_:) started.
+◇ Test case passing 1 argument body → "{"version":"","commit":"a","buildTime":"b"}" to rejectsMalformedVersion(_:) started.
+◇ Test case passing 1 argument status → 302 to redirectsAreNotAccepted(_:) started.
+◇ Test case passing 1 argument status → 307 to redirectsAreNotAccepted(_:) started.
+◇ Test case passing 1 argument status → 404 to preservesHTTPStatus(_:) started.
+◇ Test case passing 1 argument status → 429 to preservesHTTPStatus(_:) started.
+◇ Test case passing 1 argument status → 308 to redirectsAreNotAccepted(_:) started.
+◇ Test case passing 1 argument status → 500 to preservesHTTPStatus(_:) started.
+✔ Test probesOnlyPublicVersionEndpoint() passed after 0.001 seconds.
+✔ Test rejectsMalformedVersion(_:) with 3 test cases passed after 0.001 seconds.
+✔ Test redirectsAreNotAccepted(_:) with 4 test cases passed after 0.001 seconds.
+✔ Test preservesHTTPStatus(_:) with 5 test cases passed after 0.001 seconds.
+✔ Test rejectsHTMLContentTypeAndLargeResponse() passed after 0.003 seconds.
+✔ Test run with 5 tests in 0 suites passed after 0.004 seconds.

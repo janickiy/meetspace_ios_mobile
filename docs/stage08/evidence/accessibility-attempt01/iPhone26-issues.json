@@ -1,0 +1,466 @@
+[
+  {
+    "detail": "This element appears to display text that should be represented using the accessibility API.",
+    "summary": "Potentially inaccessible text",
+    "screen": "welcome",
+    "type": "2",
+    "label": "",
+    "element": ""
+  },
+  {
+    "type": "131072",
+    "detail": "Text of this SwiftUI.AccessibilityNode may be clipped at larger Dynamic Type sizes.",
+    "element": "",
+    "label": "Команда ближе.\nИдей больше.",
+    "summary": "Text clipped",
+    "screen": "welcome"
+  },
+  {
+    "detail": "User will not be able to change the font size of this SwiftUI.AccessibilityNode",
+    "label": "fixture.example",
+    "type": "65536",
+    "summary": "Dynamic Type font sizes are partially unsupported",
+    "screen": "messages",
+    "element": ""
+  },
+  {
+    "element": "",
+    "type": "65536",
+    "screen": "messages",
+    "summary": "Dynamic Type font sizes are partially unsupported",
+    "detail": "User will not be able to change the font size of this SwiftUI.AccessibilityNode",
+    "label": "Переподключение…"
+  },
+  {
+    "detail": "User will not be able to change the font size of this SwiftUI.AccessibilityNode",
+    "label": "Встречи",
+    "summary": "Dynamic Type font sizes are partially unsupported",
+    "element": "",
+    "type": "65536",
+    "screen": "messages"
+  },
+  {
+    "summary": "Dynamic Type font sizes are partially unsupported",
+    "screen": "messages",
+    "detail": "User will not be able to change the font size of this SwiftUI.AccessibilityNode",
+    "type": "65536",
+    "element": "",
+    "label": "Чаты"
+  },
+  {
+    "detail": "User will not be able to change the font size of this SwiftUI.AccessibilityNode",
+    "type": "65536",
+    "label": "ТЕ",
+    "screen": "messages",
+    "element": "",
+    "summary": "Dynamic Type font sizes are partially unsupported"
+  },
+  {
+    "detail": "User will not be able to change the font size of this SwiftUI.AccessibilityNode",
+    "element": "",
+    "summary": "Dynamic Type font sizes are partially unsupported",
+    "screen": "messages",
+    "type": "65536",
+    "label": "Профиль"
+  },
+  {
+    "element": "",
+    "screen": "messages",
+    "label": "fixture.example",
+    "summary": "Text clipped",
+    "detail": "Text of this SwiftUI.AccessibilityNode may be clipped at larger Dynamic Type sizes.",
+    "type": "131072"
+  },
+  {
+    "element": "",
+    "screen": "messages",
+    "type": "8",
+    "detail": "The accessibilityLabel of this SwiftUI.AccessibilityNode is not human-readable.",
+    "label": "fixture.example",
+    "summary": "Label not human-readable"
+  },
+  {
+    "summary": "Contrast failed",
+    "screen": "messages",
+    "element": "",
+    "label": "ТЕ",
+    "type": "1",
+    "detail": "Contrast failed for SwiftUI.AccessibilityNode"
+  },
+  {
+    "type": "65536",
+    "label": "Встречи",
+    "summary": "Dynamic Type font sizes are partially unsupported",
+    "screen": "profile",
+    "detail": "User will not be able to change the font size of this SwiftUI.AccessibilityNode",
+    "element": ""
+  },
+  {
+    "element": "",
+    "type": "65536",
+    "label": "fixture.example",
+    "summary": "Dynamic Type font sizes are partially unsupported",
+    "screen": "profile",
+    "detail": "User will not be able to change the font size of this SwiftUI.AccessibilityNode"
+  },
+  {
+    "element": "",
+    "screen": "profile",
+    "summary": "Dynamic Type font sizes are partially unsupported",
+    "type": "65536",
+    "label": "Чаты",
+    "detail": "User will not be able to change the font size of this SwiftUI.AccessibilityNode"
+  },
+  {
+    "summary": "Dynamic Type font sizes are partially unsupported",
+    "detail": "User will not be able to change the font size of this SwiftUI.AccessibilityNode",
+    "screen": "profile",
+    "type": "65536",
+    "element": "",
+    "label": "Профиль"
+  },
+  {
+    "summary": "Label not human-readable",
+    "element": "",
+    "detail": "The accessibilityLabel of this SwiftUI.AccessibilityNode is not human-readable.",
+    "label": "first@fixture.example",
+    "screen": "profile",
+    "type": "8"
+  },
+  {
+    "type": "8",
+    "detail": "The accessibilityLabel of this SwiftUI.AccessibilityNode is not human-readable.",
+    "element": "",
+    "screen": "profile",
+    "summary": "Label not human-readable",
+    "label": "fixture.example"
+  },
+  {
+    "screen": "calendar",
+    "detail": "User will not be able to change the font size of this SwiftUI.AccessibilityNode",
+    "element": "",
+    "type": "65536",
+    "summary": "Dynamic Type font sizes are partially unsupported",
+    "label": "Сегодня"
+  },
+  {
+    "type": "65536",
+    "summary": "Dynamic Type font sizes are partially unsupported",
+    "detail": "User will not be able to change the font size of this SwiftUI.AccessibilityNode",
+    "screen": "calendar",
+    "element": "",
+    "label": "10:00"
+  },
+  {
+    "type": "65536",
+    "detail": "User will not be able to change the font size of this SwiftUI.AccessibilityNode",
+    "screen": "calendar",
+    "label": "Встречи",
+    "summary": "Dynamic Type font sizes are partially unsupported",
+    "element": ""
+  },
+  {
+    "screen": "calendar",
+    "type": "65536",
+    "detail": "User will not be able to change the font size of this SwiftUI.AccessibilityNode",
+    "element": "",
+    "label": "12:00",
+    "summary": "Dynamic Type font sizes are partially unsupported"
+  },
+  {
+    "detail": "User will not be able to change the font size of this SwiftUI.AccessibilityNode",
+    "element": "",
+    "label": "Ноябрь 2026",
+    "screen": "calendar",
+    "type": "65536",
+    "summary": "Dynamic Type font sizes are partially unsupported"
+  },
+  {
+    "screen": "calendar",
+    "summary": "Dynamic Type font sizes are partially unsupported",
+    "label": "Сб",
+    "element": "",
+    "detail": "User will not be able to change the font size of this SwiftUI.AccessibilityNode",
+    "type": "65536"
+  },
+  {
+    "summary": "Dynamic Type font sizes are partially unsupported",
+    "type": "65536",
+    "element": "",
+    "label": "Вт",
+    "detail": "User will not be able to change the font size of this SwiftUI.AccessibilityNode",
+    "screen": "calendar"
+  },
+  {
+    "type": "65536",
+    "screen": "calendar",
+    "detail": "User will not be able to change the font size of this SwiftUI.AccessibilityNode",
+    "summary": "Dynamic Type font sizes are partially unsupported",
+    "element": "",
+    "label": "11:00"
+  },
+  {
+    "type": "65536",
+    "screen": "calendar",
+    "detail": "User will not be able to change the font size of this SwiftUI.AccessibilityNode",
+    "label": "Чаты",
+    "summary": "Dynamic Type font sizes are partially unsupported",
+    "element": ""
+  },
+  {
+    "detail": "User will not be able to change the font size of this SwiftUI.AccessibilityNode",
+    "screen": "calendar",
+    "label": "Вс",
+    "summary": "Dynamic Type font sizes are partially unsupported",
+    "type": "65536",
+    "element": ""
+  },
+  {
+    "label": "Пт",
+    "type": "65536",
+    "detail": "User will not be able to change the font size of this SwiftUI.AccessibilityNode",
+    "element": "",
+    "screen": "calendar",
+    "summary": "Dynamic Type font sizes are partially unsupported"
+  },
+  {
+    "label": "Ср",
+    "element": "",
+    "type": "65536",
+    "summary": "Dynamic Type font sizes are partially unsupported",
+    "screen": "calendar",
+    "detail": "User will not be able to change the font size of this SwiftUI.AccessibilityNode"
+  },
+  {
+    "type": "65536",
+    "screen": "calendar",
+    "summary": "Dynamic Type font sizes are partially unsupported",
+    "detail": "User will not be able to change the font size of this SwiftUI.AccessibilityNode",
+    "element": "",
+    "label": "Чт"
+  },
+  {
+    "detail": "User will not be able to change the font size of this SwiftUI.AccessibilityNode",
+    "type": "65536",
+    "element": "",
+    "summary": "Dynamic Type font sizes are partially unsupported",
+    "label": "Профиль",
+    "screen": "calendar"
+  },
+  {
+    "summary": "Dynamic Type font sizes are partially unsupported",
+    "detail": "User will not be able to change the font size of this SwiftUI.AccessibilityNode",
+    "label": "09:00",
+    "type": "65536",
+    "element": "",
+    "screen": "calendar"
+  },
+  {
+    "label": "Пн",
+    "detail": "User will not be able to change the font size of this SwiftUI.AccessibilityNode",
+    "screen": "calendar",
+    "type": "65536",
+    "summary": "Dynamic Type font sizes are partially unsupported",
+    "element": ""
+  },
+  {
+    "screen": "calendar",
+    "type": "1",
+    "detail": "Contrast failed for SwiftUI.AccessibilityNode",
+    "element": "",
+    "summary": "Contrast failed",
+    "label": "Сегодня"
+  },
+  {
+    "summary": "Potentially inaccessible text",
+    "label": "",
+    "type": "2",
+    "detail": "This element appears to display text that should be represented using the accessibility API.",
+    "screen": "calendar",
+    "element": ""
+  },
+  {
+    "label": "",
+    "type": "2",
+    "summary": "Potentially inaccessible text",
+    "screen": "calendar",
+    "detail": "This element appears to display text that should be represented using the accessibility API.",
+    "element": ""
+  },
+  {
+    "screen": "calendar",
+    "detail": "This element appears to display text that should be represented using the accessibility API.",
+    "element": "",
+    "label": "",
+    "type": "2",
+    "summary": "Potentially inaccessible text"
+  },
+  {
+    "detail": "This element appears to display text that should be represented using the accessibility API.",
+    "screen": "calendar",
+    "label": "",
+    "type": "2",
+    "element": "",
+    "summary": "Potentially inaccessible text"
+  },
+  {
+    "summary": "Contrast failed",
+    "type": "1",
+    "element": "",
+    "label": "Срок хранения записей задаётся сервером. Доступ проверяется перед воспроизведением и скачиванием.",
+    "detail": "Contrast failed for SwiftUI.AccessibilityNode",
+    "screen": "recordings"
+  },
+  {
+    "element": "",
+    "screen": "recordings",
+    "summary": "Dynamic Type font sizes are partially unsupported",
+    "label": "6 нояб. 2026 г.",
+    "type": "65536",
+    "detail": "User will not be able to change the font size of this SwiftUI.AccessibilityNode"
+  },
+  {
+    "element": "",
+    "type": "65536",
+    "summary": "Dynamic Type font sizes are partially unsupported",
+    "screen": "recordings",
+    "label": "Встречи",
+    "detail": "User will not be able to change the font size of this SwiftUI.AccessibilityNode"
+  },
+  {
+    "element": "",
+    "label": "Не удалось записать",
+    "detail": "User will not be able to change the font size of this SwiftUI.AccessibilityNode",
+    "screen": "recordings",
+    "type": "65536",
+    "summary": "Dynamic Type font sizes are partially unsupported"
+  },
+  {
+    "label": "Обрабатывается",
+    "screen": "recordings",
+    "type": "65536",
+    "detail": "User will not be able to change the font size of this SwiftUI.AccessibilityNode",
+    "element": "",
+    "summary": "Dynamic Type font sizes are partially unsupported"
+  },
+  {
+    "element": "",
+    "type": "65536",
+    "label": "6 нояб. 2026 г.",
+    "detail": "User will not be able to change the font size of this SwiftUI.AccessibilityNode",
+    "screen": "recordings",
+    "summary": "Dynamic Type font sizes are partially unsupported"
+  },
+  {
+    "detail": "User will not be able to change the font size of this SwiftUI.AccessibilityNode",
+    "label": "6 нояб. 2026 г.",
+    "element": "",
+    "type": "65536",
+    "screen": "recordings",
+    "summary": "Dynamic Type font sizes are partially unsupported"
+  },
+  {
+    "type": "65536",
+    "summary": "Dynamic Type font sizes are partially unsupported",
+    "element": "",
+    "screen": "recordings",
+    "label": "Поиск и фильтры применяются к загруженным записям.",
+    "detail": "User will not be able to change the font size of this SwiftUI.AccessibilityNode"
+  },
+  {
+    "detail": "User will not be able to change the font size of this SwiftUI.AccessibilityNode",
+    "summary": "Dynamic Type font sizes are partially unsupported",
+    "label": "6 нояб. 2026 г.",
+    "type": "65536",
+    "screen": "recordings",
+    "element": ""
+  },
+  {
+    "label": "Чаты",
+    "type": "65536",
+    "summary": "Dynamic Type font sizes are partially unsupported",
+    "detail": "User will not be able to change the font size of this SwiftUI.AccessibilityNode",
+    "screen": "recordings",
+    "element": ""
+  },
+  {
+    "label": "Готова",
+    "screen": "recordings",
+    "type": "65536",
+    "summary": "Dynamic Type font sizes are partially unsupported",
+    "detail": "User will not be able to change the font size of this SwiftUI.AccessibilityNode",
+    "element": ""
+  },
+  {
+    "detail": "User will not be able to change the font size of this SwiftUI.AccessibilityNode",
+    "element": "",
+    "label": "Готова",
+    "screen": "recordings",
+    "type": "65536",
+    "summary": "Dynamic Type font sizes are partially unsupported"
+  },
+  {
+    "summary": "Dynamic Type font sizes are partially unsupported",
+    "type": "65536",
+    "detail": "User will not be able to change the font size of this SwiftUI.AccessibilityNode",
+    "label": "Профиль",
+    "screen": "recordings",
+    "element": ""
+  },
+  {
+    "summary": "Dynamic Type font sizes are partially unsupported",
+    "detail": "User will not be able to change the font size of this SwiftUI.AccessibilityNode",
+    "element": "",
+    "label": "Профиль",
+    "type": "65536",
+    "screen": "folders"
+  },
+  {
+    "summary": "Dynamic Type font sizes are partially unsupported",
+    "screen": "folders",
+    "detail": "User will not be able to change the font size of this SwiftUI.AccessibilityNode",
+    "type": "65536",
+    "element": "",
+    "label": "Личное пространство"
+  },
+  {
+    "screen": "folders",
+    "element": "",
+    "detail": "User will not be able to change the font size of this SwiftUI.AccessibilityNode",
+    "summary": "Dynamic Type font sizes are partially unsupported",
+    "type": "65536",
+    "label": "Встречи"
+  },
+  {
+    "type": "65536",
+    "summary": "Dynamic Type font sizes are partially unsupported",
+    "detail": "User will not be able to change the font size of this SwiftUI.AccessibilityNode",
+    "element": "",
+    "screen": "folders",
+    "label": "Чаты"
+  },
+  {
+    "element": "",
+    "type": "65536",
+    "screen": "settings",
+    "label": "Профиль",
+    "summary": "Dynamic Type font sizes are partially unsupported",
+    "detail": "User will not be able to change the font size of this SwiftUI.AccessibilityNode"
+  },
+  {
+    "label": "Встречи",
+    "detail": "User will not be able to change the font size of this SwiftUI.AccessibilityNode",
+    "type": "65536",
+    "summary": "Dynamic Type font sizes are partially unsupported",
+    "screen": "settings",
+    "element": ""
+  },
+  {
+    "detail": "User will not be able to change the font size of this SwiftUI.AccessibilityNode",
+    "summary": "Dynamic Type font sizes are partially unsupported",
+    "screen": "settings",
+    "type": "65536",
+    "element": "",
+    "label": "Чаты"
+  }
+]

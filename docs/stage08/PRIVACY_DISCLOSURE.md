@@ -43,4 +43,4 @@ App и extension имеют свои `PrivacyInfo.xcprivacy`, SDK — свой; 
 - Сгенерировать Xcode Privacy Report из окончательного архива, сопоставить его с этой матрицей и проверить warnings. Source-only plist validation не является отчётом Xcode.
 - Подтвердить export compliance с учётом WebRTC/BoringSSL; не проставлять exemption автоматически.
 
-Статус окончательных labels/privacy policy/архивного Xcode Privacy Report: **BLOCKED**, пока владелец не подтвердил фактическое развёртывание и нет подписанного production archive. Никакие private keys, device tokens, account identifiers или содержимое provisioning profiles в evidence не сохраняются.
+Статус окончательных labels/privacy policy/архивного Xcode Privacy Report: **BLOCKED**, пока владелец не подтвердил фактическое развёртывание и нет подписанного production archive. Реальные private keys, device tokens, production account identifiers и содержимое provisioning profiles в evidence не сохраняются. Синтетические UUID из изолированных API/UI fixtures присутствуют в тестовых отчётах.

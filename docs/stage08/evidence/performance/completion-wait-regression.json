@@ -1,0 +1,34 @@
+{
+  "reason": "CI2 observed connected phase before separately scheduled coordinator mediaChanged Task completed CallKit action. Wait for actual action result; assert exactly one success before end and after close. No production change.",
+  "filter_passed": 1,
+  "filtered_cycles": 30,
+  "full_suite_runs": [
+    {
+      "run": 1,
+      "log": "completion-wait-full-1.log",
+      "passed_test_functions": 176,
+      "skipped_test_functions": 5,
+      "registered_test_functions": 181
+    },
+    {
+      "run": 2,
+      "log": "completion-wait-full-2.log",
+      "passed_test_functions": 176,
+      "skipped_test_functions": 5,
+      "registered_test_functions": 181
+    },
+    {
+      "run": 3,
+      "log": "completion-wait-full-3.log",
+      "passed_test_functions": 176,
+      "skipped_test_functions": 5,
+      "registered_test_functions": 181
+    }
+  ],
+  "scope": "macOS SwiftPM doubles; not native CallKit/device timing",
+  "source_sha256": {
+    "Packages/MeetSpaceKit/Tests/IntegrationTests/DirectCallCoordinatorTests.swift": "50d707075a065a5cf6039a8a4292ff8f1598d1e6c8d06bea8043024c5e8899b1",
+    "Packages/MeetSpaceKit/Sources/Features/DirectCallCoordinator.swift": "2685b1b57b201c2c27e3c93c83262aaf2c72442faf620e487e94940cda14eb59",
+    "Packages/MeetSpaceKit/Sources/Features/ConferenceSession.swift": "196a039fe97122b2317cd10fc91ca5faf6f7c58b30b1472538d13d678c59425c"
+  }
+}

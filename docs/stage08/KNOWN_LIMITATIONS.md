@@ -15,6 +15,7 @@
 | Серверные видеозаписи | PARTIAL | Настоящий audio-only pipeline проверен на этапе 7. Composite/screen-focus video, реальный микрофон, долгий playback, Files export и physical lock требуют отдельной проверки |
 | App Store privacy / metadata | BLOCKED publisher input | Privacy-policy/support URLs, возрастной рейтинг, export classification, права на материалы, review contact/account и итоговые App Privacy answers |
 | Скриншоты | EVIDENCE ONLY | Снимки реального приложения с изолированными fixture данными; для карточки Store нужны выбранные владельцем финальные материалы и проверка актуальных display classes |
+| Visual parity с макетами | PARTIAL | Реальные normal/AX5 снимки проверяются по основным экранам; полная матрица состояний всех 21 дизайн-макетов, все размеры устройств, клавиатура, loading/error/empty состояния и ручное принятие владельцем не закрыты. См. ACCESSIBILITY_REVIEW.md и ACCESSIBILITY_IPAD_REVIEW.md |
 | Доступность | PARTIAL | Автоматический аудит не заменяет ручной VoiceOver/Switch Control с пользователем и физическим устройством |
 | SSH installation | DISABLED | Только план из этапа 7; установки и backend изменений не выполнялось |
 

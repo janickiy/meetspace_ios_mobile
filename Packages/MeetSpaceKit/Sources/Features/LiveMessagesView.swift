@@ -70,6 +70,7 @@ struct LiveMessagesView: View {
         Label(tr(model.realtimeState == .connected ? "Подключено" : "Переподключение…"),
               systemImage: model.realtimeState == .connected ? "checkmark.circle" : "arrow.triangle.2.circlepath")
             .fixedSize(horizontal: false, vertical: true)
+            .accessibilityIdentifier("messages.connectionStatus")
     }
     private func row(_ item: Conversation) -> some View {
         HStack(spacing: 12) {

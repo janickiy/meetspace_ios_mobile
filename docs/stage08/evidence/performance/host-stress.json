@@ -8,11 +8,11 @@
     "logicalCPUs": 10,
     "swift": "swift-driver version: 1.168.6 Apple Swift version 6.4 (swiftlang-6.4.0.34.1 clang-2100.3.34.1)\nTarget: arm64-apple-macosx27.0.0"
   },
-  "sourceCommit": "42c02958b4f25296e282fd7efb66c0ac0d83c3a0",
+  "sourceCommit": "acc193a47e9f94016ff2345f76f6294f53fcb13c",
   "workingTreeDirty": true,
   "sourceHashes": {
     "Packages/MeetSpaceKit/Tests/IntegrationTests/ConferenceSessionTests.swift": "499c77e4bb553f8de8c6668a45ff2228da4854228f60a6adf04c05560782e2f2",
-    "Packages/MeetSpaceKit/Tests/IntegrationTests/DirectCallCoordinatorTests.swift": "eb3c74dda779af3a1a45db0762b8d5d7126c2728e1e96a215cc794628f8eb501",
+    "Packages/MeetSpaceKit/Tests/IntegrationTests/DirectCallCoordinatorTests.swift": "50d707075a065a5cf6039a8a4292ff8f1598d1e6c8d06bea8043024c5e8899b1",
     "Packages/MeetSpaceKit/Tests/IntegrationTests/RecordingsTests.swift": "467b7cfce905e9df31a99c1d89ce646f8b9ec4c1333307635f14afc231d889a9",
     "Packages/MeetSpaceKit/Tests/IntegrationTests/RealtimeStressTests.swift": "86d6255aba73354f9c34ede41e113b555ba4a8e09b5b18b21ab93997579dec41",
     "Packages/MeetSpaceKit/Tests/IntegrationTests/FileTransferStressTests.swift": "097b221dede213f7bd2586145e4e24e5eecc47cb612eff406098f60e1ada39c7",
@@ -26,7 +26,7 @@
     "Packages/MeetSpaceKit/Sources/Broadcast/BroadcastWire.swift": "a7adbbabfa97f810444d9f3c59c8c622bcb9f418c6984e3eeb98542992c8a580",
     "Packages/MeetSpaceKit/Sources/API/RecordingDownloads.swift": "bbfaf2b8e1310039829a0846c17fcc20110b4d453b8d0ca622a5e4abf99960e3",
     "Packages/MeetSpaceKit/Sources/API/MessagingRepository.swift": "d44d89ebe0acc02674edc3c87b223f0ceda91b9437eac8d7332f969079fcbbda",
-    "Packages/MeetSpaceKit/Sources/API/Authentication.swift": "ab0f8b14cd392b2bdb29062ecde6ef49c0b3cf516a11d4312167a75fbfc67ec4",
+    "Packages/MeetSpaceKit/Sources/API/Authentication.swift": "d4c3032821c0fd01cf08ca5f2878cce389d0a9780af69861a43597ddc63a26bf",
     "scripts/measure_host_stress.py": "dc74e899c56183dadeaa8ef3c43dc64df326c99b7ca0d50a5cbceec61ca910ec"
   },
   "command": [
@@ -45,45 +45,45 @@
     {
       "run": 1,
       "exitCode": 0,
-      "wallMonotonicSec": 3.4562,
-      "timeUserCPUSec": 2.22,
-      "timeSystemCPUSec": 0.63,
-      "timeMaximumRSSBytes": 889405440,
-      "sampledMaximumTreeRSSKiB": 915968,
+      "wallMonotonicSec": 3.6493,
+      "timeUserCPUSec": 2.2,
+      "timeSystemCPUSec": 0.57,
+      "timeMaximumRSSBytes": 990183424,
+      "sampledMaximumTreeRSSKiB": 1038816,
       "tests": [
         {
           "name": "stage08ThirtyReconnectsUseFreshTicketsWithoutSocketOverlap",
-          "durationSec": 0.087
+          "durationSec": 0.093
         },
         {
           "name": "stage08ThirtyMaximumSizeUploadStagingCyclesCleanAccountFiles",
-          "durationSec": 0.433
+          "durationSec": 0.426
         },
         {
           "name": "stage08ThirtyDirectCallAnswerEndCyclesReleaseResources",
-          "durationSec": 0.61
+          "durationSec": 0.653
         },
         {
           "name": "stage08ThirtyRecordingDownloadAndCancelCyclesCleanFiles",
-          "durationSec": 0.651
+          "durationSec": 0.659
         },
         {
           "name": "stage08ThirtyConferenceScreenCyclesReleaseResources",
-          "durationSec": 2.193
+          "durationSec": 2.497
         },
         {
           "name": "stage08ThirtyBroadcastSocketLeasesReleaseDescriptorsAndFenceOldFrames",
-          "durationSec": 0.016
+          "durationSec": 0.014
         }
       ]
     },
     {
       "run": 2,
       "exitCode": 0,
-      "wallMonotonicSec": 2.7849,
-      "timeUserCPUSec": 1.83,
-      "timeSystemCPUSec": 0.49,
-      "timeMaximumRSSBytes": 990461952,
+      "wallMonotonicSec": 2.9913,
+      "timeUserCPUSec": 1.73,
+      "timeSystemCPUSec": 0.4,
+      "timeMaximumRSSBytes": 990298112,
       "sampledMaximumTreeRSSKiB": 1038704,
       "tests": [
         {
@@ -92,19 +92,19 @@
         },
         {
           "name": "stage08ThirtyMaximumSizeUploadStagingCyclesCleanAccountFiles",
-          "durationSec": 0.414
+          "durationSec": 0.333
         },
         {
           "name": "stage08ThirtyDirectCallAnswerEndCyclesReleaseResources",
-          "durationSec": 0.609
+          "durationSec": 0.566
         },
         {
           "name": "stage08ThirtyRecordingDownloadAndCancelCyclesCleanFiles",
-          "durationSec": 0.653
+          "durationSec": 0.598
         },
         {
           "name": "stage08ThirtyConferenceScreenCyclesReleaseResources",
-          "durationSec": 2.197
+          "durationSec": 2.469
         },
         {
           "name": "stage08ThirtyBroadcastSocketLeasesReleaseDescriptorsAndFenceOldFrames",
@@ -115,31 +115,31 @@
     {
       "run": 3,
       "exitCode": 0,
-      "wallMonotonicSec": 2.829,
-      "timeUserCPUSec": 1.81,
-      "timeSystemCPUSec": 0.45,
-      "timeMaximumRSSBytes": 989855744,
-      "sampledMaximumTreeRSSKiB": 1038288,
+      "wallMonotonicSec": 3.0162,
+      "timeUserCPUSec": 1.72,
+      "timeSystemCPUSec": 0.41,
+      "timeMaximumRSSBytes": 991297536,
+      "sampledMaximumTreeRSSKiB": 1039776,
       "tests": [
         {
           "name": "stage08ThirtyReconnectsUseFreshTicketsWithoutSocketOverlap",
-          "durationSec": 0.145
+          "durationSec": 0.084
         },
         {
           "name": "stage08ThirtyMaximumSizeUploadStagingCyclesCleanAccountFiles",
-          "durationSec": 0.417
+          "durationSec": 0.329
         },
         {
           "name": "stage08ThirtyDirectCallAnswerEndCyclesReleaseResources",
-          "durationSec": 0.636
+          "durationSec": 0.554
         },
         {
           "name": "stage08ThirtyRecordingDownloadAndCancelCyclesCleanFiles",
-          "durationSec": 0.698
+          "durationSec": 0.601
         },
         {
           "name": "stage08ThirtyConferenceScreenCyclesReleaseResources",
-          "durationSec": 2.26
+          "durationSec": 2.455
         },
         {
           "name": "stage08ThirtyBroadcastSocketLeasesReleaseDescriptorsAndFenceOldFrames",
@@ -148,6 +148,6 @@
       ]
     }
   ],
-  "medianCommandWallSec": 2.829,
+  "medianCommandWallSec": 3.0162,
   "acceptance": "Six functional stress tests pass each run. No performance threshold or energy result is inferred. Weak-release assertions cover selected Swift objects; they are not a process-wide leak detector."
 }

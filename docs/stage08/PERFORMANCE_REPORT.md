@@ -6,11 +6,23 @@ ReplayKit. Host-метрики ниже не являются приёмкой �
 
 ## Фактически выполнено
 
-`swift test --filter stage08` прошёл **9/9**, включая 6 stress tests и 3 security
-upload tests. Затем уже собранные 6 stress tests выполнены в трёх отдельных процессах:
-**18/18 PASS**, по 30 циклов каждого сценария на запуск (90 в трёх измеренных запусках).
-Первый sanity-прогон отдельно добавляет ещё 30 циклов. Новых product source правок
+Финальные 6 stress tests выполнены в трёх отдельных процессах: **18/18 PASS**,
+по 30 циклов каждого сценария на запуск (90 в трёх измеренных запусках run03).
+После исправления проверки CallKit completion дополнительно прошли один целевой
+30-cycle тест и три полных suite: **176 passed / 5 opt-in skipped из 181** каждый.
+Новых product source правок
 для performance не понадобилось; открытых P0/P1 по проверенным сценариям не выявлено.
+
+Первоначальный `swift test --filter stage08` прошёл 9/9 (6 stress + 3 security upload).
+Однако CI2 под параллельной нагрузкой обнаружил race в самом stress assertion:
+`ConferenceSession.phase = .connected` предшествует отдельно запланированному
+`DirectCallCoordinator.mediaChanged` Task, который завершает CallKit action. Тест
+теперь ограниченно ждёт фактический результат action через существующий `callEventually`,
+затем проверяет ровно один успешный результат до end и повторно после close. Состояние
+connected также проверяется; задержки фиксированной длительности не добавлены.
+Это не дефект media/CallKit реализации. [Regression receipt](evidence/performance/completion-wait-regression.json)
+и три полных лога находятся рядом. Старый run02 заменён новым baseline run03 с
+исправленным тестом и финальной реализацией Authentication; его метрики не смешаны с новыми.
 
 | Сценарий / тест | Что действительно проверено | Граница |
 | --- | --- | --- |
@@ -36,11 +48,11 @@ process. Каждый повтор SwiftPM запускается заново. 
 
 | Повтор | Wall monotonic, с | CPU user / system, с | `/usr/bin/time` peak RSS, bytes | Максимум sampled tree RSS, KiB |
 | --- | ---: | ---: | ---: | ---: |
-| 1 | 3.4562 | 2.22 / 0.63 | 889405440 | 915968 |
-| 2 | 2.7849 | 1.83 / 0.49 | 990461952 | 1038704 |
-| 3 | 2.8290 | 1.81 / 0.45 | 989855744 | 1038288 |
+| 1 | 3.6493 | 2.20 / 0.57 | 990183424 | 1038816 |
+| 2 | 2.9913 | 1.73 / 0.40 | 990298112 | 1038704 |
+| 3 | 3.0162 | 1.72 / 0.41 | 991297536 | 1039776 |
 
-Медиана полного command wall time — **2.829 с**. Это baseline данной машины, не
+Медиана полного command wall time — **3.0162 с**. Это baseline данной машины, не
 обещание launch/call latency и не performance budget. `/usr/bin/time -l` даёт CPU
 и high-water RSS; отдельный `ps` sampler примерно каждые 50 мс суммирует RSS
 процессов дерева и может повторно учитывать shared pages. RSS между независимыми
@@ -55,24 +67,23 @@ swift test --package-path Packages/MeetSpaceKit \
   --sdk /Library/Developer/CommandLineTools/SDKs/MacOSX26.4.sdk \
   -Xswiftc -load-plugin-library \
   -Xswiftc /Library/Developer/CommandLineTools/usr/lib/swift/host/plugins/testing/libTestingMacros.dylib \
-  --filter stage08
+  --filter stage08ThirtyDirectCallAnswerEndCyclesReleaseResources
+# После сборки три полных swift test --skip-build; затем измерения:
 python3 scripts/measure_host_stress.py \
   --sdk /Library/Developer/CommandLineTools/SDKs/MacOSX26.4.sdk \
-  --output /tmp/meetspace-stage08-host-stress-02
+  --output /tmp/meetspace-stage08-host-stress-03
 ```
 
 [host-stress.json](evidence/performance/host-stress.json) содержит exact command,
 source hashes проверенных тестов/основных production компонентов, рабочий commit и
 `workingTreeDirty=true`: измерялся рабочий снимок до финального Stage8 commit.
-После этих измерений добавлена отдельная реализация удаления аккаунта, в том числе
-метод в `Authentication.swift`; её проверки приведены в [ACCOUNT_DELETION.md](ACCOUNT_DELETION.md).
-Исторический hash `Authentication.swift` в performance receipt намеренно сохранён:
-он описывает измеренный снимок, а не позднейший финальный исходник. Stress-сценарии
-удаление аккаунта не вызывают. Это scoped snapshot, не список всего покрытия. Raw time output, sampled RSS и три
+Snapshot run03 включает актуальный `Authentication.swift` и исправленный call stress test;
+отдельная проверка удаления аккаунта приведена в [ACCOUNT_DELETION.md](ACCOUNT_DELETION.md).
+Stress-сценарии удаление аккаунта не вызывают. Это scoped snapshot, не список всего покрытия. Raw time output, sampled RSS и три
 тестовых лога сохранены рядом; [filtered-tests.txt](evidence/performance/filtered-tests.txt)
-содержит результаты исходных 9 tests. Первый запуск benchmark успешно исполнил tests,
-но не записал итоговый JSON из-за неверного имени source path в collector; после
-исправления выполнены все три измерения заново, в отчёт включён только полный run02.
+содержит только исторические результаты исходных 9 tests. Текущие измерения и hashes
+относятся к run03; raw logs run-1…run-3 заменены вместе с JSON. Первые run01/run02
+не используются как текущий performance baseline.
 
 ## Аудит ограничений ресурсов
 

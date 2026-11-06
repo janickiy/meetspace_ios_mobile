@@ -61,9 +61,8 @@ struct WorkspaceView: View {
         Button { model.tab = tab } label: {
             VStack(spacing: 5) {
                 Image(systemName: icon).font(.system(size: 21))
-                if !typeSize.isAccessibilitySize {
-                    Text(tr(title)).font(MSTheme.font(10, weight: .semibold, relativeTo: .caption))
-                }
+                Text(tr(title)).font(MSTheme.font(10, weight: .semibold, relativeTo: .caption))
+                    .multilineTextAlignment(.center).fixedSize(horizontal: false, vertical: true)
             }.frame(maxWidth: .infinity, minHeight: 54).padding(.bottom, 3)
                 .foregroundStyle(model.tab == tab ? MSTheme.accent : MSTheme.muted).contentShape(Rectangle())
         }.buttonStyle(.plain).accessibilityIdentifier("tab.\(tab.rawValue)")
