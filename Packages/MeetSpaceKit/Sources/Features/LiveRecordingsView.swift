@@ -7,16 +7,28 @@ import MeetSpaceDesignSystem
 struct LiveRecordingsView: View {
     @Bindable var model: RecordingsModel
     @State private var confirmingDelete = false
+    private let scrollTopID = "recordingsScrollTop"
     var body: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: 20) {
-                if let selected = model.selected { detail(selected) } else { library }
-                if let error = model.error {
-                    Text(tr(error)).font(MSTheme.font(13)).foregroundStyle(MSTheme.danger).accessibilityIdentifier("recordingsError")
-                }
-                if model.loading { ProgressView().frame(maxWidth: .infinity) }
-            }.padding(24).frame(maxWidth: 1140).frame(maxWidth: .infinity)
+        ScrollViewReader { proxy in
+            ScrollView {
+                VStack(alignment: .leading, spacing: 20) {
+                    if let selected = model.selected { detail(selected) } else { library }
+                    if model.loading { ProgressView().frame(maxWidth: .infinity) }
+                }.padding(24).frame(maxWidth: 1140).frame(maxWidth: .infinity).id(scrollTopID)
+            }
+            .onChange(of: model.selected?.id) { _, _ in
+                proxy.scrollTo(scrollTopID, anchor: .top)
+            }
         }.background(MSTheme.background).navigationTitle(tr("Записи"))
+            .safeAreaInset(edge: .top, spacing: 0) {
+                if let error = model.error {
+                    Text(tr(error)).font(MSTheme.font(13)).foregroundStyle(MSTheme.danger)
+                        .frame(maxWidth: .infinity, alignment: .leading).padding(16)
+                        .background(MSTheme.danger.opacity(0.08), in: RoundedRectangle(cornerRadius: 12))
+                        .padding(.horizontal, 24).padding(.vertical, 12).background(MSTheme.background)
+                        .accessibilityIdentifier("recordingsError")
+                }
+            }
             .task { if model.items.isEmpty { await model.load() } }
             .refreshable { if let row = model.selected { await model.select(row) } else { await model.load() } }
             .onDisappear { Task { await model.back() } }

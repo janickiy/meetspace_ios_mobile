@@ -52,8 +52,10 @@ import XCTest
         XCTAssertTrue(title.waitForExistence(timeout: 5)); title.tap(); title.typeText("План команды\n")
         let submit = app.buttons["schedule.submit"]; reveal(submit, in: app); submit.tap()
         let event = app.buttons["calendar.event.33333333-3333-4333-8333-333333333333"]
-        reveal(event, in: app)
+        reveal(app.segmentedControls["calendar.mode"], in: app, towardTop: true)
         capture(app, name: "stage07-calendar-week")
+        reveal(event, in: app)
+        capture(app, name: "stage07-calendar-agenda")
         event.tap(); app.buttons["calendar.reschedule"].tap()
         let duration = app.steppers["schedule.duration"]
         XCTAssertTrue(duration.waitForExistence(timeout: 5)); duration.buttons.element(boundBy: 1).tap()
@@ -66,8 +68,15 @@ import XCTest
         app.segmentedControls["calendar.mode"].buttons["Список"].tap()
         reveal(event, in: app); capture(app, name: "stage07-calendar-list")
         event.tap(); app.buttons["calendar.cancel"].tap()
-        let confirm = app.buttons.matching(identifier: "Отменить встречу").allElementsBoundByIndex.last!
-        XCTAssertTrue(confirm.waitForExistence(timeout: 5)); confirm.tap()
+        // A confirmation action and the covered form button share the same title.
+        // Select the action, never the underlying calendar.cancel control.
+        let confirm = app.buttons.matching(NSPredicate(format: "label == %@ AND identifier != %@",
+            "Отменить встречу", "calendar.cancel")).firstMatch
+        XCTAssertTrue(confirm.waitForExistence(timeout: 5))
+        let confirmReady = XCTNSPredicateExpectation(predicate: NSPredicate(format: "hittable == true"), object: confirm)
+        XCTAssertEqual(XCTWaiter.wait(for: [confirmReady], timeout: 5), .completed); confirm.tap()
+        let detailClosed = XCTNSPredicateExpectation(predicate: NSPredicate(format: "exists == false"), object: app.buttons["calendar.cancel"])
+        XCTAssertEqual(XCTWaiter.wait(for: [detailClosed], timeout: 5), .completed)
         XCTAssertTrue(event.waitForExistence(timeout: 5)); event.tap()
         XCTAssertTrue(app.staticTexts["Отменена"].waitForExistence(timeout: 5))
         XCTAssertFalse(app.buttons["calendar.reschedule"].exists)
@@ -156,6 +165,8 @@ import XCTest
         XCTAssertTrue(player.waitForExistence(timeout: 10))
         Thread.sleep(forTimeInterval: 3)
         XCTAssertFalse(app.staticTexts["recordingsError"].exists)
+        XCTAssertTrue(app.buttons["Все записи"].isHittable)
+        XCTAssertTrue(app.staticTexts["recordingTitle"].isHittable)
         capture(app, name: "stage07-recording-server-audio")
     }
 
@@ -165,6 +176,9 @@ import XCTest
         let ready = app.buttons["recording.77777777-7777-4777-8777-777777777771"]
         XCTAssertTrue(ready.waitForExistence(timeout: 10)); ready.tap()
         XCTAssertTrue(app.staticTexts["recordingsError"].waitForExistence(timeout: 5))
+        let errorVisible = XCTNSPredicateExpectation(predicate: NSPredicate(format: "hittable == true"), object: app.staticTexts["recordingsError"])
+        XCTAssertEqual(XCTWaiter.wait(for: [errorVisible], timeout: 5), .completed)
+        XCTAssertLessThan(app.staticTexts["recordingsError"].frame.maxY, app.buttons["tab.profile"].frame.minY)
         XCTAssertFalse(app.buttons["playRecording"].exists)
         XCTAssertFalse(app.buttons["downloadRecording"].exists)
         capture(app, name: "stage07-recording-denied")
