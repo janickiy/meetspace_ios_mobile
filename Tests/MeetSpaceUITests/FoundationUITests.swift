@@ -6,13 +6,17 @@ import XCTest
         // Passwords can render a remote sheet whose AX subtree is absent from
         // the app snapshot. Handle only this unrelated system prompt.
         addUIInterruptionMonitor(withDescription: "Decline saving fixture passwords") { element in
-            let titles = ["Save Password?", "Сохранить пароль?"]
-            guard titles.contains(where: { element.label == $0 || element.staticTexts[$0].exists }) else { return false }
-            for title in ["Not Now", "Не сейчас"] {
-                let decline = element.buttons[title].firstMatch
-                if decline.exists && decline.isHittable { decline.tap(); return true }
+            // XCTest's synchronous callback lacks an actor annotation in SDK 18.5.
+            // Verify the executor before accessing the main-actor UI elements.
+            MainActor.assumeIsolated {
+                let titles = ["Save Password?", "Сохранить пароль?"]
+                guard titles.contains(where: { element.label == $0 || element.staticTexts[$0].exists }) else { return false }
+                for title in ["Not Now", "Не сейчас"] {
+                    let decline = element.buttons[title].firstMatch
+                    if decline.exists && decline.isHittable { decline.tap(); return true }
+                }
+                return false
             }
-            return false
         }
     }
 
