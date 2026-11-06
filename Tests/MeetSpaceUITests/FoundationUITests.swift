@@ -412,36 +412,13 @@ import UIKit
             }
             XCTAssertTrue(keyboard.keys["f"].waitForExistence(timeout: 5))
             capture(app, name: "stage08-account-deletion-keyboard-" + (value == "fixture-password" ? "retry" : "initial"))
-            for character in value {
-                let key = keyboard.keys[String(character)]
-                if !key.exists {
-                    // iPad exposes equivalent number/letter toggles on both sides.
-                    let more = keyboard.keys.matching(identifier: "more").firstMatch
-                    XCTAssertTrue(more.waitForExistence(timeout: 5)); more.tap()
-                    // A fresh iPad can show its native key-flick tutorial instead of
-                    // switching layouts. Dismiss only the observed system explanation.
-                    let tutorial = keyboard.staticTexts.matching(NSPredicate(format: "label == %@",
-                        "Для доступа к альтернативным буквам на клавиатуре\nпотяните вниз на клавише и отпустите.")).firstMatch
-                    // CI13 exposes this native tutorial after the first second. Wait
-                    // for either outcome of the mode tap, not just the requested key.
-                    let modeDeadline = Date().addingTimeInterval(10)
-                    while Date() < modeDeadline && !key.exists && !tutorial.exists {
-                        Thread.sleep(forTimeInterval: 0.2)
-                    }
-                    if tutorial.exists {
-                        capture(app, name: "stage08-account-deletion-keyboard-help")
-                        let acknowledge = keyboard.buttons.matching(NSPredicate(format: "label == %@", "ОК")).firstMatch
-                        XCTAssertTrue(acknowledge.waitForExistence(timeout: 5)); acknowledge.tap()
-                        let dismissed = XCTNSPredicateExpectation(predicate: NSPredicate(format: "exists == false"), object: tutorial)
-                        XCTAssertEqual(XCTWaiter.wait(for: [dismissed], timeout: 5), .completed)
-                        // The tutorial can consume the original mode-change tap.
-                        if !key.waitForExistence(timeout: 1) {
-                            XCTAssertTrue(more.waitForExistence(timeout: 5)); more.tap()
-                        }
-                    }
-                }
-                XCTAssertTrue(key.waitForExistence(timeout: 5)); key.tap()
-            }
+            // Use XCTest's native typing only after observing the Latin layout.
+            // Manual numeric-mode taps triggered an iPad tutorial whose visible
+            // text was absent from optimized AX queries in CI15. This still enters
+            // the unchanged password through the real SecureField and strict fixture.
+            password.typeText(value)
+            let entered = XCTNSPredicateExpectation(predicate: NSPredicate(format: "isEnabled == true"), object: submit)
+            XCTAssertEqual(XCTWaiter.wait(for: [entered], timeout: 5), .completed)
             let done = keyboard.buttons.matching(identifier: "Done").firstMatch
             XCTAssertTrue(done.waitForExistence(timeout: 5)); done.tap()
         }
