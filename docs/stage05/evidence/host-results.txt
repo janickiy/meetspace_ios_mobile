@@ -1,8 +1,8 @@
 ✔ Test run with 2 tests in 0 suites passed after 0.003 seconds.
-➜ Test actualBackendTwoClientsAndFiles() skipped.
-➜ Test actualBackendConferenceRESTAndGuestScope() skipped.
 ➜ Test actualBackendDirectCallsDevicesAndPrivateSFU() skipped.
-✔ Test run with 104 tests in 1 suite passed after 0.214 seconds.
+➜ Test actualBackendConferenceRESTAndGuestScope() skipped.
+➜ Test actualBackendTwoClientsAndFiles() skipped.
+✔ Test run with 104 tests in 1 suite passed after 0.210 seconds.
 ✔ Test run with 8 tests in 0 suites passed after 0.014 seconds.
 ✔ Test run with 5 tests in 0 suites passed after 0.001 seconds.
-✔ Test run with 5 tests in 0 suites passed after 0.003 seconds.
+✔ Test run with 5 tests in 0 suites passed after 0.002 seconds.

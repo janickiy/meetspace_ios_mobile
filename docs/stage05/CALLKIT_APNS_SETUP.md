@@ -2,7 +2,7 @@
 
 Дата проверки исходников и документации Apple: 2026-11-06.
 
-## Что реализуется на клиенте
+## Что реализовано на клиенте
 
 `MeetSpaceCalling` разделяет системные звонки, обычные APNs и VoIP PushKit. Один
 `CXProvider`/`CXCallController` живёт на уровне процесса; координаторы отдельных
@@ -14,7 +14,9 @@
 а проверенного account-scoped redial/NSUserActivity контракта ещё нет.
 
 Обычный APNs adapter получает новый токен от UIApplication; PushKit имеет отдельный
-registry и отдельный registrar. Токены не сохраняются и не выводятся в лог. Завершение
+registry и отдельный registrar. Ротация VoIP-токена дожидается предыдущих записей,
+включая запросы, не прекратившие I/O после cancellation; отзыв выполняется после
+этой цепочки. Токены не сохраняются и не выводятся в лог. Завершение
 аккаунтной сессии сначала отключает регистрацию обычных remote notifications, затем
 модель удаляет точные серверные регистрации этого устройства.
 
@@ -157,7 +159,15 @@ completion success/error ровно один раз, конкурентный ca
 Это не подписанная iOS-сборка и не проверка APNs/CallKit на устройстве.
 
 `CallAudioIntegrationTests.testDirectCallCanNegotiateBeforeCallKitActivatesAudio`
-добавлен для hosted iOS CI. До получения результата CI он считается NOT_RUN.
+прошёл на iPhone SE (3rd generation) и iPad mini (A17 Pro) в
+[CI 42156868557](https://github.com/janickiy/meetspace_ios_mobile/actions/runs/42156868557),
+исходники `b430f2b4fc0ecde1806966fc4cdfe3d7546f27b4`. На каждом устройстве прошли
+4 hosted native tests и 15 UI tests; Release simulator build также успешен.
+Среда: Xcode 16.4, SDK 18.5, ARM64 Simulator runtime 26.2. Результаты и точные
+границы [зафиксированы в отчёте](README.md#зафиксированный-результат-ci).
+Этот тест подтверждает подготовку native WebRTC peer с выключенным capture до
+системной активации, но не получение настоящего CallKit audio callback или
+двусторонний аппаратный звук. UI сценарии используют CallKit/APNs/media doubles.
 
 | Физический сценарий | Статус | Что нужно подтвердить |
 | --- | --- | --- |

@@ -1,0 +1,230 @@
+{
+  "sourceCommit": "b430f2b4fc0ecde1806966fc4cdfe3d7546f27b4",
+  "runID": 42156868557,
+  "screenshots": [
+    {
+      "path": "screenshots/iPhone-stage05-chat-call-actions.png",
+      "sha256": "a59ac58f6a30ad010c1f71b9090eebe5c0b8d4b38fb98b55f32be5c73f9d72c5",
+      "testIdentifier": "FoundationUITests/testAuthenticatedChatSendAndLogout()",
+      "attachment": {
+        "configurationName": "Test Scheme Action",
+        "deviceId": "B220EC43-535F-472F-935A-5B2D0E9F2975",
+        "deviceName": "iPhone SE (3rd generation)",
+        "exportedFileName": "F4B61710-F363-4A73-9C29-97F001A61B90.png",
+        "isAssociatedWithFailure": false,
+        "suggestedHumanReadableName": "stage03-live-thread_0_4FCA060D-BDDB-4A78-B691-E9F52FEF9A28.png",
+        "timestamp": 1793936300.221
+      }
+    },
+    {
+      "path": "screenshots/iPhone-stage05-other-device.png",
+      "sha256": "523aa3d53dac3bb05697e12faa522079d15e4f1e83fbc9f2b574cb8f14fa23e0",
+      "testIdentifier": "FoundationUITests/testDirectCallAcceptedOnOtherDeviceHasNoCaptureControls()",
+      "attachment": {
+        "configurationName": "Test Scheme Action",
+        "deviceId": "B220EC43-535F-472F-935A-5B2D0E9F2975",
+        "deviceName": "iPhone SE (3rd generation)",
+        "exportedFileName": "9E28EA3D-FECE-4536-AEAA-97E0F4A6D0AF.png",
+        "isAssociatedWithFailure": false,
+        "suggestedHumanReadableName": "stage05-other-device_0_AE15634A-965E-4558-A21F-48C476801D81.png",
+        "timestamp": 1793936509.524
+      }
+    },
+    {
+      "path": "screenshots/iPhone-stage05-ended.png",
+      "sha256": "1e35f2d442779a1fb9717709d6e92bed0e46353fabdd563fb0cb5f23cafce692",
+      "testIdentifier": "FoundationUITests/testDirectIncomingAnswerControlsMinimizeAndEnd()",
+      "attachment": {
+        "configurationName": "Test Scheme Action",
+        "deviceId": "B220EC43-535F-472F-935A-5B2D0E9F2975",
+        "deviceName": "iPhone SE (3rd generation)",
+        "exportedFileName": "F9A000A4-AA24-41BD-B46D-206887FF5936.png",
+        "isAssociatedWithFailure": false,
+        "suggestedHumanReadableName": "stage05-ended_0_556FFEDD-7BF0-4EBE-95DA-684F84402589.png",
+        "timestamp": 1793936556.387
+      }
+    },
+    {
+      "path": "screenshots/iPhone-stage05-minimized.png",
+      "sha256": "6c6bdd6cb9566f29e38ca48292a5993437060e3d9cdcb5f676a019c4bb90189b",
+      "testIdentifier": "FoundationUITests/testDirectIncomingAnswerControlsMinimizeAndEnd()",
+      "attachment": {
+        "configurationName": "Test Scheme Action",
+        "deviceId": "B220EC43-535F-472F-935A-5B2D0E9F2975",
+        "deviceName": "iPhone SE (3rd generation)",
+        "exportedFileName": "CCE9C0EE-B3C6-44B1-84E6-C269B3EC54FF.png",
+        "isAssociatedWithFailure": false,
+        "suggestedHumanReadableName": "stage05-minimized_0_62349AA8-505F-496C-8892-20BAAABD5486.png",
+        "timestamp": 1793936552.177
+      }
+    },
+    {
+      "path": "screenshots/iPhone-stage05-connected.png",
+      "sha256": "38a3a8ab898a2be7aa544337f9e9b3b7f44977f79e794a063eb79bffede0c545",
+      "testIdentifier": "FoundationUITests/testDirectIncomingAnswerControlsMinimizeAndEnd()",
+      "attachment": {
+        "configurationName": "Test Scheme Action",
+        "deviceId": "B220EC43-535F-472F-935A-5B2D0E9F2975",
+        "deviceName": "iPhone SE (3rd generation)",
+        "exportedFileName": "890D67AA-DD2F-40E4-B9BD-87ED600FCD2D.png",
+        "isAssociatedWithFailure": false,
+        "suggestedHumanReadableName": "stage05-connected_0_2C266B21-2B21-4938-8731-36D26F75D78C.png",
+        "timestamp": 1793936545.086
+      }
+    },
+    {
+      "path": "screenshots/iPhone-stage05-incoming.png",
+      "sha256": "d9470fbdbae27c389e982f9db466d3752e9ebf4c74a1eb398efd5051d289cdb3",
+      "testIdentifier": "FoundationUITests/testDirectIncomingAnswerControlsMinimizeAndEnd()",
+      "attachment": {
+        "configurationName": "Test Scheme Action",
+        "deviceId": "B220EC43-535F-472F-935A-5B2D0E9F2975",
+        "deviceName": "iPhone SE (3rd generation)",
+        "exportedFileName": "21871F97-CCC3-4596-99B7-F4FA81038EEB.png",
+        "isAssociatedWithFailure": false,
+        "suggestedHumanReadableName": "stage05-incoming_0_E08D3A6A-E764-4A96-98C3-93C96DCB1F6B.png",
+        "timestamp": 1793936531.201
+      }
+    },
+    {
+      "path": "screenshots/iPhone-stage05-outgoing.png",
+      "sha256": "a384010c7a7a0c92da318bbcf859345a362172444d906ca6ebafd313e42a94a7",
+      "testIdentifier": "FoundationUITests/testDirectOutgoingCancelFromConversation()",
+      "attachment": {
+        "configurationName": "Test Scheme Action",
+        "deviceId": "B220EC43-535F-472F-935A-5B2D0E9F2975",
+        "deviceName": "iPhone SE (3rd generation)",
+        "exportedFileName": "5F9A7F0A-6902-40DB-9C1C-098512B36A23.png",
+        "isAssociatedWithFailure": false,
+        "suggestedHumanReadableName": "stage05-outgoing_0_8186598A-8640-4DA1-A830-266BC0879712.png",
+        "timestamp": 1793936585.844
+      }
+    },
+    {
+      "path": "screenshots/iPhone-stage05-push-enabled.png",
+      "sha256": "85ec63d0ea1d9f86d3170536bf052e957aeea36a72507a20f411f8033c420596",
+      "testIdentifier": "FoundationUITests/testOrdinaryPushOptInAndDisableWithFixtureToken()",
+      "attachment": {
+        "configurationName": "Test Scheme Action",
+        "deviceId": "B220EC43-535F-472F-935A-5B2D0E9F2975",
+        "deviceName": "iPhone SE (3rd generation)",
+        "exportedFileName": "E72C5C8E-81CE-4945-95EF-4B52C8F2511D.png",
+        "isAssociatedWithFailure": false,
+        "suggestedHumanReadableName": "stage05-push-enabled_0_2D91B5E2-A179-466E-8039-374046E528BE.png",
+        "timestamp": 1793936671.274
+      }
+    },
+    {
+      "path": "screenshots/iPad-stage05-chat-call-actions.png",
+      "sha256": "e05034f1fed082b5eba03d1e840a321b94263b38e260b09562bf4ce03f432de8",
+      "testIdentifier": "FoundationUITests/testAuthenticatedChatSendAndLogout()",
+      "attachment": {
+        "configurationName": "Test Scheme Action",
+        "deviceId": "58FC786A-CE65-4DA0-B4B5-579AA6B53315",
+        "deviceName": "iPad mini (A17 Pro)",
+        "exportedFileName": "2622E35E-E11B-4EE1-A97A-4B3B2CA0343B.png",
+        "isAssociatedWithFailure": false,
+        "suggestedHumanReadableName": "stage03-live-thread_0_0F08FB25-96E7-4298-9180-3998733B7064.png",
+        "timestamp": 1793936670.462
+      }
+    },
+    {
+      "path": "screenshots/iPad-stage05-other-device.png",
+      "sha256": "d4c5281477cfa757eed198f466a10cea099d766c5577346c6c6e66ae9f310a8d",
+      "testIdentifier": "FoundationUITests/testDirectCallAcceptedOnOtherDeviceHasNoCaptureControls()",
+      "attachment": {
+        "configurationName": "Test Scheme Action",
+        "deviceId": "58FC786A-CE65-4DA0-B4B5-579AA6B53315",
+        "deviceName": "iPad mini (A17 Pro)",
+        "exportedFileName": "915822E2-C031-4ACF-8DBD-34B732918D3D.png",
+        "isAssociatedWithFailure": false,
+        "suggestedHumanReadableName": "stage05-other-device_0_C3733B9D-9797-4927-B29B-AB0AFE479A0E.png",
+        "timestamp": 1793936906.493
+      }
+    },
+    {
+      "path": "screenshots/iPad-stage05-ended.png",
+      "sha256": "df9065858e3477c871009d0ae3a1554d451e4825656f274d3af442837eb4be7f",
+      "testIdentifier": "FoundationUITests/testDirectIncomingAnswerControlsMinimizeAndEnd()",
+      "attachment": {
+        "configurationName": "Test Scheme Action",
+        "deviceId": "58FC786A-CE65-4DA0-B4B5-579AA6B53315",
+        "deviceName": "iPad mini (A17 Pro)",
+        "exportedFileName": "6CA31725-77CF-4B4F-8017-3B419853F863.png",
+        "isAssociatedWithFailure": false,
+        "suggestedHumanReadableName": "stage05-ended_0_97A2C200-443C-4EC3-8921-B40FD86D866D.png",
+        "timestamp": 1793936961.61
+      }
+    },
+    {
+      "path": "screenshots/iPad-stage05-minimized.png",
+      "sha256": "dff7b1c4c252e89d682b8ee6f68a927a21a5da297d71d1bf9e6a6a9ce9d897a2",
+      "testIdentifier": "FoundationUITests/testDirectIncomingAnswerControlsMinimizeAndEnd()",
+      "attachment": {
+        "configurationName": "Test Scheme Action",
+        "deviceId": "58FC786A-CE65-4DA0-B4B5-579AA6B53315",
+        "deviceName": "iPad mini (A17 Pro)",
+        "exportedFileName": "958803CB-2099-46D7-9637-1ECEB3B5D91D.png",
+        "isAssociatedWithFailure": false,
+        "suggestedHumanReadableName": "stage05-minimized_0_F72E74F5-6179-4416-B4E5-6B26D72D8743.png",
+        "timestamp": 1793936956.293
+      }
+    },
+    {
+      "path": "screenshots/iPad-stage05-connected.png",
+      "sha256": "d95046f973618ab010098e756165623b081d7c761790a67f595faf8e847db4af",
+      "testIdentifier": "FoundationUITests/testDirectIncomingAnswerControlsMinimizeAndEnd()",
+      "attachment": {
+        "configurationName": "Test Scheme Action",
+        "deviceId": "58FC786A-CE65-4DA0-B4B5-579AA6B53315",
+        "deviceName": "iPad mini (A17 Pro)",
+        "exportedFileName": "86977504-C1A5-4E10-AF26-830C50180C4C.png",
+        "isAssociatedWithFailure": false,
+        "suggestedHumanReadableName": "stage05-connected_0_E5DB8673-295A-4740-8FAC-535EAD5F86D1.png",
+        "timestamp": 1793936948.914
+      }
+    },
+    {
+      "path": "screenshots/iPad-stage05-incoming.png",
+      "sha256": "e6591fcc86156b43afaf11ed9fd345a17605bcad8531e574743039deb8e9516f",
+      "testIdentifier": "FoundationUITests/testDirectIncomingAnswerControlsMinimizeAndEnd()",
+      "attachment": {
+        "configurationName": "Test Scheme Action",
+        "deviceId": "58FC786A-CE65-4DA0-B4B5-579AA6B53315",
+        "deviceName": "iPad mini (A17 Pro)",
+        "exportedFileName": "AAA0F38A-3A24-4D85-953B-4C4106DF453A.png",
+        "isAssociatedWithFailure": false,
+        "suggestedHumanReadableName": "stage05-incoming_0_89EF0AF4-04D2-483F-9635-461447718510.png",
+        "timestamp": 1793936934.393
+      }
+    },
+    {
+      "path": "screenshots/iPad-stage05-outgoing.png",
+      "sha256": "cd811aed528d2f8abd8b0870754892f25f51bad8abe13e450f34200ec982df93",
+      "testIdentifier": "FoundationUITests/testDirectOutgoingCancelFromConversation()",
+      "attachment": {
+        "configurationName": "Test Scheme Action",
+        "deviceId": "58FC786A-CE65-4DA0-B4B5-579AA6B53315",
+        "deviceName": "iPad mini (A17 Pro)",
+        "exportedFileName": "F54311F3-DAAB-431D-9675-366280214839.png",
+        "isAssociatedWithFailure": false,
+        "suggestedHumanReadableName": "stage05-outgoing_0_0DCC92A4-9E63-413A-AB30-FBA4CD080497.png",
+        "timestamp": 1793937003.102
+      }
+    },
+    {
+      "path": "screenshots/iPad-stage05-push-enabled.png",
+      "sha256": "5a23bf6ee751350c7196c2c76de3935cccbfee34286927426db90258902ba425",
+      "testIdentifier": "FoundationUITests/testOrdinaryPushOptInAndDisableWithFixtureToken()",
+      "attachment": {
+        "configurationName": "Test Scheme Action",
+        "deviceId": "58FC786A-CE65-4DA0-B4B5-579AA6B53315",
+        "deviceName": "iPad mini (A17 Pro)",
+        "exportedFileName": "E4221317-9CA2-4D45-A6FC-B1384E9F4A26.png",
+        "isAssociatedWithFailure": false,
+        "suggestedHumanReadableName": "stage05-push-enabled_0_745948C8-1756-4F0F-A85A-606B1AA58FC2.png",
+        "timestamp": 1793937175.517
+      }
+    }
+  ]
+}

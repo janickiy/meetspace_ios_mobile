@@ -6,7 +6,9 @@
 
 ## Поведение приложения
 
-Из личного чата доступны аудио- и видеозвонки. Один процесс содержит один CallKit
+Из личного чата доступны аудио- и видеозвонки через две отдельные кнопки по 44 pt.
+Это iOS-адаптация выбора типа звонка: в макете показана одна кнопка телефона.
+При крупных accessibility-шрифтах действия переносятся в отдельный ряд. Один процесс содержит один CallKit
 provider; каждому аккаунту создаётся отдельный координатор с новым clientId.
 При входящем звонке user WebSocket инициирует REST-сверку и системный входящий экран.
 Приём, отклонение, отмена и завершение используют существующие calls endpoints.
@@ -28,8 +30,9 @@ heartbeat локальное медиа выключается раньше се
 Смена аккаунта сначала закрывает звонок и медиа, затем старую сессию.
 
 Экран использует опубликованные personal-call.css и previews макета: тёмная сцена,
-аватар/видео собеседника, локальное превью, заголовок, таймер, управление и возврат
-в чат. Добавлены серверные состояния входящего/отклонённого/пропущенного звонка,
+аватар/видео собеседника, локальное превью, заголовок, таймер и управление.
+Сворачивание возвращает предыдущий экран: для исходящего это открытый чат, для
+входящего переписка собеседника автоматически не открывается. Добавлены серверные состояния входящего/отклонённого/пропущенного звонка,
 неизвестного результата и ответа на другом устройстве. Демонстрация экрана из макета
 не заявляется: вместо неё доступен выбор динамика; нативный screen sharing — отдельный этап.
 Размеры кнопок адаптированы к iOS accessibility. Полная пиксельная идентичность не заявляется.
@@ -63,15 +66,17 @@ PushKit реализован отдельным нативным adapter. Он �
 | Проверки | `Tests/IntegrationTests/*Call*Tests.swift`, `*Notification*Tests.swift`, `PushRegistrationLifecycleTests.swift`, hosted `CallAudioIntegrationTests.swift`, UI `FoundationUITests.swift`, `scripts/run_calls_contract.py` |
 
 Пути `Sources` и `Tests/IntegrationTests` относятся к `Packages/MeetSpaceKit`.
+Полный перечень изменений относительно этапа 4 — [changed-files.txt](evidence/changed-files.txt).
 
 ## Границы приёмки
 
 | Критерий | Статус |
 | --- | --- |
 | Аудит фактического API, Android и опубликованных макетов | PASS — [контракт](CONTRACT_AUDIT.md) |
-| Автоматические проверки модели, lifecycle, владения устройством и push journal | Результаты и точный проверенный commit фиксируются в итоговом evidence |
-| Реальные calls REST/user WS/private SFU/device registration на одноразовом backend | Прогон выполнен; окончательное evidence фиксируется после проверки итогового кода |
-| Native CallKit/PushKit/APNs adapters и iPhone/iPad UI | Сборка и simulator smoke фиксируются в итоговом evidence; doubles не доказывают системную доставку |
+| Автоматические проверки модели, lifecycle, владения устройством и push journal | PASS — 121 тест Swift-пакета, включая регрессии прошлых этапов; 3 opt-in проверки с внешним backend пропущены в обычном запуске |
+| Реальные calls REST/user WS/private SFU/device registration на одноразовом backend | PASS — 1 контрактный тест, 48.468 с; [результат](evidence/runtime-tests.txt), [хеши исходников](evidence/runtime-sources.json) |
+| Компиляция native CallKit/PushKit/APNs adapters | PASS — Debug simulator tests и Release iOS Simulator build; подпись и системная доставка этим не подтверждаются |
+| iPhone/iPad UI и hosted native tests | PASS — по 19/19: 15 UI и 4 hosted теста на каждом семействе; UI использует doubles |
 | Входящий CallKit из настоящего APNs/VoIP в background/terminated | BLOCKED — отсутствуют серверный VoIP payload/token contract, APNs deployment и подписанные физические устройства |
 | Реальные микрофон, камера, Bluetooth, lockscreen, interruption, iOS ↔ Android/Web | NOT_RUN на устройствах; симулятор это не заменяет |
 | Ключи Apple на клиенте, изменение backend, использование VoIP для обычных уведомлений | Не выполнялись |
@@ -79,6 +84,48 @@ PushKit реализован отдельным нативным adapter. Он �
 [Настройка и отдельное предложение серверных изменений](CALLKIT_APNS_SETUP.md)
 содержит условия снятия блокеров и полную матрицу физических проверок. Следующий
 этап не запускался. Нельзя отмечать весь этап production PASS по simulator-тестам.
+
+## Зафиксированный результат CI
+
+[GitHub Actions 42156868557](https://github.com/janickiy/meetspace_ios_mobile/actions/runs/42156868557)
+завершился успешно на исходниках
+[`b430f2b4fc0ecde1806966fc4cdfe3d7546f27b4`](https://github.com/janickiy/meetspace_ios_mobile/commit/b430f2b4fc0ecde1806966fc4cdfe3d7546f27b4).
+После этого коммита добавлены только отчёт и evidence в `docs/stage05`;
+код приложения, тестов, проекта и CI не менялся.
+
+Среда: macOS 15.8.2, Xcode 16.4 (16F6), SDK 18.5; ARM64 Simulator runtime 26.2
+(23C54). Устройства: iPhone SE (3rd generation), iPad mini (A17 Pro).
+Swift-пакет: 124 зарегистрированных теста, 121 PASS и 3 opt-in SKIP.
+Release: `BUILD SUCCEEDED`. На каждом симуляторе: 19 PASS, 0 FAIL, 0 SKIP.
+Hosted набор проверяет Keychain, два сценария настоящего WebRTC с выключенным
+capture и подготовку прямого звонка до CallKit audio activation.
+
+[CI receipt](evidence/ci-run.json) содержит SHA, jobs, artifact digests и summaries.
+Сохранены [package results](evidence/package-results.txt),
+[iPhone results](evidence/iPhone-results.txt), [iPad results](evidence/iPad-results.txt),
+исходные summaries [iPhone](evidence/iPhone-summary.json) и
+[iPad](evidence/iPad-summary.json), а также [локальный Swift run](evidence/host-results.txt).
+
+## Проверенные экраны
+
+Просмотрены все 16 кадров из успешного CI: в этих portrait fixtures нет перекрытий
+текста и основных действий. Это не полная проверка landscape, Dynamic Type,
+VoiceOver или пиксельного соответствия макету. На компактном iPhone дополнительная
+кнопка смены камеры находится ниже первого viewport прокручиваемого экрана звонка.
+Надпись «Тестовое видео» обозначает media double, а «Переподключение…» в списке чатов —
+состояние QuietSockets fixture, не измерение реального backend.
+Происхождение и SHA256 каждого PNG сохранены в [screenshots.json](evidence/screenshots.json).
+
+| Состояние | iPhone | iPad |
+| --- | --- | --- |
+| Кнопки аудио/видеозвонка в чате | [PNG](evidence/screenshots/iPhone-stage05-chat-call-actions.png) | [PNG](evidence/screenshots/iPad-stage05-chat-call-actions.png) |
+| Входящий звонок | [PNG](evidence/screenshots/iPhone-stage05-incoming.png) | [PNG](evidence/screenshots/iPad-stage05-incoming.png) |
+| Исходящий звонок | [PNG](evidence/screenshots/iPhone-stage05-outgoing.png) | [PNG](evidence/screenshots/iPad-stage05-outgoing.png) |
+| Соединение и управление | [PNG](evidence/screenshots/iPhone-stage05-connected.png) | [PNG](evidence/screenshots/iPad-stage05-connected.png) |
+| Свёрнутый баннер | [PNG](evidence/screenshots/iPhone-stage05-minimized.png) | [PNG](evidence/screenshots/iPad-stage05-minimized.png) |
+| Завершение | [PNG](evidence/screenshots/iPhone-stage05-ended.png) | [PNG](evidence/screenshots/iPad-stage05-ended.png) |
+| Ответ на другом устройстве | [PNG](evidence/screenshots/iPhone-stage05-other-device.png) | [PNG](evidence/screenshots/iPad-stage05-other-device.png) |
+| Регистрация обычных уведомлений | [PNG](evidence/screenshots/iPhone-stage05-push-enabled.png) | [PNG](evidence/screenshots/iPad-stage05-push-enabled.png) |
 
 ## Команды воспроизведения
 
@@ -90,6 +137,10 @@ python3 scripts/verify_foundation.py
 python3 scripts/verify_audit.py --source-root /tmp/meetspace-ios-audit-20261105
 git diff --check
 ```
+
+Результат финального запуска: PASS воспроизводимости Xcode-проекта и foundation;
+аудит сверил 120 source hashes, 124 design files и 156 route/group declarations;
+`git diff --check` завершился с кодом 0. Это проверка целостности, не runtime-сертификация.
 
 Локально, с установленными Command Line Tools и SDK 26.4:
 

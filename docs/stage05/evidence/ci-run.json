@@ -1,0 +1,129 @@
+{
+  "sourceCommit": "b430f2b4fc0ecde1806966fc4cdfe3d7546f27b4",
+  "runID": 42156868557,
+  "url": "https://github.com/janickiy/meetspace_ios_mobile/actions/runs/42156868557",
+  "conclusion": "success",
+  "createdAt": "2026-11-06T03:29:36Z",
+  "updatedAt": "2026-11-06T03:53:54Z",
+  "packageTests": {
+    "passed": 121,
+    "optInSkipped": 3,
+    "total": 124
+  },
+  "releaseBuild": "BUILD SUCCEEDED",
+  "jobs": [
+    {
+      "id": 127693017012,
+      "name": "simulators (iPad)",
+      "html_url": "https://github.com/janickiy/meetspace_ios_mobile/actions/runs/42156868557/job/127693017012",
+      "conclusion": "success",
+      "started_at": "2026-11-06T03:35:07Z",
+      "completed_at": "2026-11-06T03:53:53Z"
+    },
+    {
+      "id": 127693017225,
+      "name": "package",
+      "html_url": "https://github.com/janickiy/meetspace_ios_mobile/actions/runs/42156868557/job/127693017225",
+      "conclusion": "success",
+      "started_at": "2026-11-06T03:34:40Z",
+      "completed_at": "2026-11-06T03:38:07Z"
+    },
+    {
+      "id": 127693017282,
+      "name": "simulators (iPhone)",
+      "html_url": "https://github.com/janickiy/meetspace_ios_mobile/actions/runs/42156868557/job/127693017282",
+      "conclusion": "success",
+      "started_at": "2026-11-06T03:29:40Z",
+      "completed_at": "2026-11-06T03:45:28Z"
+    }
+  ],
+  "artifacts": [
+    {
+      "id": 13475673603,
+      "name": "results-iPad",
+      "size_in_bytes": 31833067,
+      "digest": "sha256:34e353a4305fc0de62ca1e7d5ca927af1540459be6239f42ac4fc5e709622c2d"
+    },
+    {
+      "id": 13474784115,
+      "name": "results-iPhone",
+      "size_in_bytes": 13996545,
+      "digest": "sha256:d2238ac740476a45ffb59a187a66a02f6e4599aa384da244b15b8bc808f1c80f"
+    }
+  ],
+  "simulators": {
+    "iPhone": {
+      "devicesAndConfigurations": [
+        {
+          "device": {
+            "architecture": "arm64",
+            "deviceId": "B220EC43-535F-472F-935A-5B2D0E9F2975",
+            "deviceName": "iPhone SE (3rd generation)",
+            "modelName": "iPhone SE (3rd generation)",
+            "osBuildNumber": "23C54",
+            "osVersion": "26.2",
+            "platform": "iOS Simulator"
+          },
+          "expectedFailures": 0,
+          "failedTests": 0,
+          "passedTests": 19,
+          "skippedTests": 0,
+          "testPlanConfiguration": {
+            "configurationId": "1",
+            "configurationName": "Test Scheme Action"
+          }
+        }
+      ],
+      "environmentDescription": "MeetSpace-Debug · Built with macOS 15.8.2",
+      "expectedFailures": 0,
+      "failedTests": 0,
+      "finishTime": 1793936705.62,
+      "passedTests": 19,
+      "result": "Passed",
+      "skippedTests": 0,
+      "startTime": 1793935929.623,
+      "statistics": [],
+      "testFailures": [],
+      "title": "Test - MeetSpace-Debug",
+      "topInsights": [],
+      "totalTestCount": 19
+    },
+    "iPad": {
+      "devicesAndConfigurations": [
+        {
+          "device": {
+            "architecture": "arm64",
+            "deviceId": "58FC786A-CE65-4DA0-B4B5-579AA6B53315",
+            "deviceName": "iPad mini (A17 Pro)",
+            "modelName": "iPad mini (A17 Pro)",
+            "osBuildNumber": "23C54",
+            "osVersion": "26.2",
+            "platform": "iOS Simulator"
+          },
+          "expectedFailures": 0,
+          "failedTests": 0,
+          "passedTests": 19,
+          "skippedTests": 0,
+          "testPlanConfiguration": {
+            "configurationId": "1",
+            "configurationName": "Test Scheme Action"
+          }
+        }
+      ],
+      "environmentDescription": "MeetSpace-Debug · Built with macOS 15.8.2",
+      "expectedFailures": 0,
+      "failedTests": 0,
+      "finishTime": 1793937210.961,
+      "passedTests": 19,
+      "result": "Passed",
+      "skippedTests": 0,
+      "startTime": 1793936282.848,
+      "statistics": [],
+      "testFailures": [],
+      "title": "Test - MeetSpace-Debug",
+      "topInsights": [],
+      "totalTestCount": 19
+    }
+  },
+  "limitations": "UI scenarios use DEBUG REST/signaling/media doubles. Hosted tests load the actual WebRTC SDK with capture off. Physical-device and deployment acceptance remain separate."
+}
