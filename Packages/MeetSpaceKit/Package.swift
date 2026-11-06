@@ -13,6 +13,7 @@ let package = Package(
         .library(name: "MeetSpaceRealtime", targets: ["MeetSpaceRealtime"]),
         .library(name: "MeetSpaceMedia", targets: ["MeetSpaceMedia"]),
         .library(name: "MeetSpaceCalling", targets: ["MeetSpaceCalling"]),
+        .library(name: "MeetSpaceBroadcast", targets: ["MeetSpaceBroadcast"]),
         .library(name: "MeetSpaceDesignSystem", targets: ["MeetSpaceDesignSystem"]),
         .executable(name: "FoundationPreviewRenderer", targets: ["FoundationPreviewRenderer"])
     ],
@@ -24,15 +25,17 @@ let package = Package(
         .target(name: "MeetSpaceAPI", dependencies: ["MeetSpaceCore"], path: "Sources/API"),
         .target(name: "MeetSpaceStorage", dependencies: ["MeetSpaceCore"], path: "Sources/Storage"),
         .target(name: "MeetSpaceRealtime", dependencies: ["MeetSpaceCore", "MeetSpaceAPI"], path: "Sources/Realtime"),
-        .target(name: "MeetSpaceMedia", dependencies: ["MeetSpaceCore", .product(name: "WebRTC", package: "WebRTC", condition: .when(platforms: [.iOS]))], path: "Sources/Media", resources: [.process("Resources")]),
+        .target(name: "MeetSpaceBroadcast", path: "Sources/Broadcast"),
+        .target(name: "MeetSpaceMedia", dependencies: ["MeetSpaceCore", "MeetSpaceBroadcast", .product(name: "WebRTC", package: "WebRTC", condition: .when(platforms: [.iOS]))], path: "Sources/Media", resources: [.process("Resources")]),
         .target(name: "MeetSpaceCalling", dependencies: ["MeetSpaceMedia"], path: "Sources/Calling"),
         .target(name: "MeetSpaceDesignSystem", path: "Sources/DesignSystem", resources: [.process("Resources")]),
-        .target(name: "MeetSpaceFeatures", dependencies: ["MeetSpaceCore", "MeetSpaceAPI", "MeetSpaceStorage", "MeetSpaceRealtime", "MeetSpaceMedia", "MeetSpaceCalling", "MeetSpaceDesignSystem"], path: "Sources/Features"),
+        .target(name: "MeetSpaceFeatures", dependencies: ["MeetSpaceCore", "MeetSpaceAPI", "MeetSpaceStorage", "MeetSpaceRealtime", "MeetSpaceMedia", "MeetSpaceCalling", "MeetSpaceBroadcast", "MeetSpaceDesignSystem"], path: "Sources/Features"),
         .executableTarget(name: "FoundationPreviewRenderer", dependencies: ["MeetSpaceFeatures", "MeetSpaceDesignSystem", "MeetSpaceCore"], path: "Tools/PreviewRenderer"),
         .testTarget(name: "CoreTests", dependencies: ["MeetSpaceCore", "MeetSpaceRealtime"]),
         .testTarget(name: "APITests", dependencies: ["MeetSpaceAPI", "MeetSpaceCore"]),
         .testTarget(name: "StorageTests", dependencies: ["MeetSpaceStorage", "MeetSpaceCore"]),
         .testTarget(name: "FeaturesTests", dependencies: ["MeetSpaceFeatures", "MeetSpaceCore", "MeetSpaceAPI"]),
-        .testTarget(name: "IntegrationTests", dependencies: ["MeetSpaceCore", "MeetSpaceAPI", "MeetSpaceStorage", "MeetSpaceRealtime", "MeetSpaceMedia", "MeetSpaceCalling", "MeetSpaceFeatures"])
+        .testTarget(name: "BroadcastTests", dependencies: ["MeetSpaceBroadcast"]),
+        .testTarget(name: "IntegrationTests", dependencies: ["MeetSpaceCore", "MeetSpaceAPI", "MeetSpaceStorage", "MeetSpaceRealtime", "MeetSpaceMedia", "MeetSpaceCalling", "MeetSpaceBroadcast", "MeetSpaceFeatures"])
     ]
 )

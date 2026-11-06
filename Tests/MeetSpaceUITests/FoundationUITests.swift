@@ -344,6 +344,42 @@ import XCTest
         XCTAssertFalse(app.buttons["directCallBanner"].exists)
     }
 
+    func testScreenShareStartStopAndRestartInConferenceWithFixtures() {
+        let app = launch()
+        createConference(app, title: "Демонстрация экрана")
+        joinConference(app)
+        let start = app.buttons["screenShareStart"]
+        XCTAssertTrue(start.waitForExistence(timeout: 10)); start.tap()
+        XCTAssertTrue(app.staticTexts["Вы демонстрируете экран"].waitForExistence(timeout: 10))
+        capture(app, name: "stage06-meeting-sharing")
+        app.buttons["screenShareStop"].tap()
+        XCTAssertTrue(start.waitForExistence(timeout: 10))
+        let enabled = XCTNSPredicateExpectation(predicate: NSPredicate(format: "enabled == true"), object: start)
+        XCTAssertEqual(XCTWaiter.wait(for: [enabled], timeout: 10), .completed)
+        start.tap()
+        XCTAssertTrue(app.staticTexts["Вы демонстрируете экран"].waitForExistence(timeout: 10))
+        app.buttons["screenShareStop"].tap()
+        XCTAssertTrue(start.waitForExistence(timeout: 10))
+        capture(app, name: "stage06-meeting-stopped")
+        leaveConference(app)
+    }
+
+    func testScreenConflictKeepsDirectCallAndMicrophoneWithFixtures() {
+        let app = launch(["-call-incoming", "-screen-conflict"]); login(app)
+        callControl(app, "directCallAnswer").tap()
+        let microphone = callControl(app, "directCallMic")
+        let enabled = XCTNSPredicateExpectation(predicate: NSPredicate(format: "enabled == true"), object: microphone)
+        XCTAssertEqual(XCTWaiter.wait(for: [enabled], timeout: 10), .completed)
+        waitForValue("Включён", of: microphone)
+        callControl(app, "screenShareStart", towardTop: true).tap()
+        XCTAssertTrue(app.staticTexts["Экран уже показывает другой участник."].waitForExistence(timeout: 10))
+        capture(app, name: "stage06-direct-conflict")
+        waitForValue("Включён", of: app.buttons["directCallMic"])
+        XCTAssertTrue(app.staticTexts["Соединение установлено"].exists)
+        callControl(app, "directCallEnd").tap()
+        XCTAssertTrue(app.buttons["directCallDone"].waitForExistence(timeout: 10))
+    }
+
     func testDirectOutgoingCancelFromConversation() {
         let app = launch(); login(app)
         let chat = app.buttons["conversation.22222222-2222-4222-8222-222222222222"]

@@ -5,6 +5,7 @@ import MeetSpaceAPI
 import MeetSpaceFeatures
 import MeetSpaceRealtime
 import MeetSpaceMedia
+import MeetSpaceBroadcast
 import MeetSpaceCalling
 import SwiftUI
 
@@ -15,7 +16,7 @@ enum UITestDependencies {
         let calling = Calling(), notifications = Notifications()
         return AppDependencies(serverProbe: Probe(), configuration: Preferences(), credentials: Secrets(),
                                transport: { server }, sockets: QuietSockets(),
-                               conferenceSockets: ConferenceSockets(server: server), media: { Media() },
+                               conferenceSockets: ConferenceSockets(server: server), media: { Media() }, broadcast: { Broadcast() },
                                calling: { calling }, notifications: { notifications })
     }
     /// Broadcast subscriptions model the process-wide native provider across account replacement.
@@ -123,8 +124,12 @@ enum UITestDependencies {
                     "tracks": [], "iceServers": [], "videoCapture": ["maxWidth": 1280, "maxHeight": 720, "maxFrameRate": 30],
                     "policy": ["version": 1, "microphoneBlocked": false, "cameraBlocked": false, "screenBlocked": false, "kicked": false]], reply: command.id)
             case "media.offer":
-                struct Offer: Decodable { let negotiationId: String }
+                struct Offer: Decodable { let negotiationId: String; let publications: [ConferenceMediaPublication] }
                 let offer = try command.payload(Offer.self)
+                if ProcessInfo.processInfo.arguments.contains("-screen-conflict"), offer.publications.contains(where: { $0.source == "video/screen" }) {
+                    try event("error", ["code": "screen_sharing_conflict", "message": "Screen busy"], reply: command.id)
+                    return
+                }
                 try event("media.answer", ["mediaPeerId": mediaPeerID.uuidString.lowercased(), "negotiationId": offer.negotiationId,
                     "sdp": "v=0\r\nm=audio 9 UDP/TLS/RTP/SAVPF 111\r\na=mid:0\r\na=sendrecv\r\n"], reply: command.id)
             case "media.ready": try event("ack", ["type": "media.ready"], reply: command.id)
@@ -140,26 +145,61 @@ enum UITestDependencies {
         }
         func close() { continuation.finish() }
     }
+    /// Explicit DEBUG fixture: lifecycle/frame delivery is simulated; no system picker is exercised.
+    @MainActor private final class Broadcast: ScreenBroadcastController {
+        let events: AsyncStream<ScreenBroadcastEvent>
+        let frames: AsyncStream<ScreenBroadcastFrame>
+        private let event: AsyncStream<ScreenBroadcastEvent>.Continuation
+        private let frame: AsyncStream<ScreenBroadcastFrame>.Continuation
+        let isAvailable = true
+        let extensionBundleID: String? = "fixture.broadcast"
+        private(set) var sessionID: UUID?
+        private var task: Task<Void, Never>?
+        init() { (events, event) = AsyncStream.makeStream(); (frames, frame) = AsyncStream.makeStream(bufferingPolicy: .bufferingNewest(1)) }
+        func prepare(configuration: ScreenBroadcastConfiguration) {
+            let id = UUID(); sessionID = id
+            task = Task { [weak self] in
+                do { try await Task.sleep(for: .milliseconds(250)) } catch { return }
+                guard let self, self.sessionID == id else { return }
+                self.event.yield(.started(id))
+                var stamp: Int64 = 0
+                while !Task.isCancelled, self.sessionID == id {
+                    do { try await Task.sleep(for: .milliseconds(100)) } catch { return }
+                    stamp += 100_000_000
+                    self.frame.yield(ScreenBroadcastFrame(sessionID: id, width: 2, height: 2, rowBytes: 8,
+                        timestampNs: stamp, pixels: Data(repeating: 0, count: 16)))
+                }
+            }
+        }
+        func stop() { task?.cancel(); task = nil; sessionID = nil }
+    }
     /// Explicit UI-test media double: never requests OS permissions or creates a native capture session.
     @MainActor private final class Media: ConferenceMediaEngine {
         let events: AsyncStream<ConferenceMediaEvent>
         let continuation: AsyncStream<ConferenceMediaEvent>.Continuation
         let localVideoTrackID = "fixture-local-camera"
         private var microphone = false, camera = false, closed = false, front = true
-        private var microphoneAllowed = true, cameraAllowed = true
+        private var microphoneAllowed = true, cameraAllowed = true, screenAllowed = false, screen = false
         init() { (events, continuation) = AsyncStream.makeStream(bufferingPolicy: .bufferingOldest(128)) }
+        var localScreenVideoTrackID: String { "fixture-screen" }
+        func rollbackLocalOffer() async throws {}
+        func setScreenEnabled(_ enabled: Bool) async throws {
+            guard !enabled || (screenAllowed && cameraAllowed) else { throw ConferenceMediaError.publicationBlocked }
+            screen = enabled; continuation.yield(.screenCaptureState(enabled)); continuation.yield(.negotiationNeeded)
+        }
+        func pushScreenFrame(_ frame: ScreenBroadcastFrame) throws {}
         func configure(_ configuration: ConferenceMediaConfiguration) {
             microphoneAllowed = configuration.microphoneAllowed; cameraAllowed = configuration.cameraAllowed
             continuation.yield(.audioRoute("Динамик"))
         }
         func makeOffer(iceRestart: Bool) throws -> ConferenceMediaOffer {
             guard !closed else { throw CancellationError() }
-            return ConferenceMediaOffer(sdp: "v=0\r\nm=audio 9 UDP/TLS/RTP/SAVPF 111\r\na=mid:0\r\na=recvonly\r\n", publications: [])
+            return ConferenceMediaOffer(sdp: "v=0\r\nm=audio 9 UDP/TLS/RTP/SAVPF 111\r\na=mid:0\r\na=recvonly\r\n", publications: screen ? [.init(mid: "2", source: "video/screen", trackId: localScreenVideoTrackID)] : [])
         }
         func applyAnswer(_ sdp: String) { if !closed { continuation.yield(.connectionState(.connected)) } }
         func addRemoteCandidate(_ candidate: MeetSpaceMedia.ConferenceICECandidate) {}
-        func setPublicationPermissions(microphone: Bool, camera: Bool) throws {
-            microphoneAllowed = microphone; cameraAllowed = camera
+        func setPublicationPermissions(microphone: Bool, camera: Bool, screen: Bool) throws {
+            microphoneAllowed = microphone; cameraAllowed = camera; screenAllowed = screen && camera
             if !microphone { try setMicrophoneEnabled(false) }; if !camera { try setCameraEnabled(false) }
         }
         func setMicrophoneEnabled(_ enabled: Bool) throws {

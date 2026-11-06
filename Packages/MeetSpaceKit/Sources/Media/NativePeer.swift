@@ -18,10 +18,14 @@ private final class RTCReference<Value>: @unchecked Sendable {
     let audioTrack: RTCAudioTrack
     let videoTrack: RTCVideoTrack
     let videoSource: RTCVideoSource
+    let screenSource: RTCVideoSource
+    private(set) var screenTrack: RTCVideoTrack?
+    private var screenSenderReady = false
     private let factory: RTCPeerConnectionFactory
     private var connection: RTCPeerConnection?
     private var microphone: RTCRtpTransceiver?
     private var camera: RTCRtpTransceiver?
+    private var screen: RTCRtpTransceiver?
     private var pendingCandidates: [ConferenceICECandidate] = []
     private var hasRemoteDescription = false
     private var makingOffer = false
@@ -41,6 +45,7 @@ private final class RTCReference<Value>: @unchecked Sendable {
         streamID = configuration.mediaPeerID.uuidString.lowercased()
         audioTrack = factory.audioTrack(withTrackId: "microphone-" + streamID)
         videoSource = factory.videoSource()
+        screenSource = factory.videoSource(forScreenCast: true)
         videoTrack = factory.videoTrack(with: videoSource, trackId: videoTrackID)
         audioTrack.isEnabled = false; videoTrack.isEnabled = false
         self.emit = emit; self.receivedVideo = receivedVideo; self.removedVideo = removedVideo
@@ -60,7 +65,7 @@ private final class RTCReference<Value>: @unchecked Sendable {
             // Match Android's offer shape: microphone/camera, screen video/audio, then remote slots.
             microphone = try transceiver(type: .audio, direction: .recvOnly)
             camera = try transceiver(type: .video, direction: .recvOnly)
-            _ = try transceiver(type: .video, direction: .recvOnly)
+            screen = try transceiver(type: .video, direction: .recvOnly)
             _ = try transceiver(type: .audio, direction: .recvOnly)
             for _ in 0..<(2 * (configuration.maxPeers - 1)) {
                 _ = try transceiver(type: .audio, direction: .recvOnly)
@@ -127,6 +132,13 @@ private final class RTCReference<Value>: @unchecked Sendable {
             publications.append(ConferenceMediaPublication(mid: camera.mid, source: "camera",
                 trackId: try wireTrackID(mid: camera.mid, sdp: localSDP)))
         }
+        if let screen, screen.direction == .sendRecv, let screenTrack {
+            guard !screen.mid.isEmpty else { throw ConferenceMediaError.negotiation }
+            // The server treats this as an opaque capture-generation identifier, independent
+            // of WebRTC's stable sender msid. A new capture must never reuse the old generation.
+            publications.append(ConferenceMediaPublication(mid: screen.mid, source: "video/screen",
+                                                            trackId: screenTrack.trackId))
+        }
         return ConferenceMediaOffer(sdp: localSDP, publications: publications)
     }
 
@@ -145,10 +157,11 @@ private final class RTCReference<Value>: @unchecked Sendable {
         throw ConferenceMediaError.negotiation
     }
 
-    func setPublicationPermissions(microphone: Bool, camera: Bool) throws {
+    func setPublicationPermissions(microphone: Bool, camera: Bool, screen: Bool) throws {
         guard connection != nil else { throw ConferenceMediaError.notConfigured }
         if !microphone { try setMicrophoneEnabled(false) }
         if !camera { try setCameraEnabled(false) }
+        if !screen || !camera { try setScreenEnabled(false, trackID: nil) }
     }
 
     func setMicrophoneEnabled(_ enabled: Bool) throws {
@@ -161,12 +174,50 @@ private final class RTCReference<Value>: @unchecked Sendable {
         try setSource(camera, track: enabled ? videoTrack : nil)
     }
 
-    private func setSource(_ transceiver: RTCRtpTransceiver?, track: RTCMediaStreamTrack?) throws {
+    func setScreenEnabled(_ enabled: Bool, trackID: String?) throws {
+        screenTrack?.isEnabled = false; screenSenderReady = false
+        if !enabled {
+            screenTrack = nil
+            try setSource(screen, track: nil, streamID: streamID + "-screen")
+            return
+        }
+        guard let trackID else { throw ConferenceMediaError.invalidConfiguration }
+        let track = factory.videoTrack(with: screenSource, trackId: trackID)
+        track.isEnabled = false; screenTrack = track
+        do {
+            try setSource(screen, track: track, streamID: streamID + "-screen")
+            try configureScreenSender()
+        } catch {
+            track.isEnabled = false; screenTrack = nil
+            try? setSource(screen, track: nil, streamID: streamID + "-screen")
+            throw error
+        }
+    }
+
+    private func configureScreenSender() throws {
+        guard let screen, let screenTrack else { return }
+        let parameters = screen.sender.parameters
+        // M156 can expose no encodings until the first remote answer. Keep capture gated then.
+        guard !parameters.encodings.isEmpty else { return }
+        for encoding in parameters.encodings { encoding.maxFramerate = 10 }
+        screen.sender.parameters = parameters
+        guard screen.sender.parameters.encodings.allSatisfy({ $0.maxFramerate?.intValue == 10 }) else {
+            throw ConferenceMediaError.negotiation
+        }
+        screenSenderReady = true; screenTrack.isEnabled = true
+    }
+
+    func captureScreen(_ frame: RTCVideoFrame, capturer: RTCVideoCapturer) {
+        guard screenSenderReady, screenTrack?.isEnabled == true else { return }
+        screenSource.capturer(capturer, didCapture: frame)
+    }
+
+    private func setSource(_ transceiver: RTCRtpTransceiver?, track: RTCMediaStreamTrack?, streamID: String? = nil) throws {
         guard connection != nil, let transceiver else { throw ConferenceMediaError.notConfigured }
         let direction: RTCRtpTransceiverDirection = track == nil ? .recvOnly : .sendRecv
         if transceiver.sender.track?.trackId != track?.trackId || transceiver.direction != direction { publicationRevision += 1 }
         transceiver.sender.track = track
-        transceiver.sender.streamIds = [streamID]
+        transceiver.sender.streamIds = [streamID ?? self.streamID]
         var error: NSError?
         transceiver.setDirection(direction, error: &error)
         if error != nil { throw ConferenceMediaError.negotiation }
@@ -184,6 +235,7 @@ private final class RTCReference<Value>: @unchecked Sendable {
         try Task.checkCancellation()
         guard self.connection === connection else { throw CancellationError() }
         hasRemoteDescription = true
+        try configureScreenSender()
         let queued = pendingCandidates; pendingCandidates.removeAll()
         for candidate in queued { try await addRemoteCandidate(candidate) }
         // Unified Plan may reuse a receiver/MID. Refresh references after every answer as well.
@@ -191,6 +243,22 @@ private final class RTCReference<Value>: @unchecked Sendable {
             if let track = transceiver.receiver.track as? RTCVideoTrack {
                 receivedVideo(track, ConferenceVideoTrack(id: track.trackId, mid: transceiver.mid, streamID: nil, isLocal: false))
             }
+        }
+    }
+
+    func rollbackLocalOffer() async throws {
+        guard let connection, !makingOffer else { throw ConferenceMediaError.negotiation }
+        if connection.signalingState == .stable { return }
+        guard connection.signalingState == .haveLocalOffer else { throw ConferenceMediaError.negotiation }
+        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, any Error>) in
+            connection.setLocalDescription(RTCSessionDescription(type: .rollback, sdp: "")) { @Sendable error in
+                if error == nil { continuation.resume() }
+                else { continuation.resume(throwing: ConferenceMediaError.negotiation) }
+            }
+        }
+        try Task.checkCancellation()
+        guard self.connection === connection, connection.signalingState == .stable else {
+            throw ConferenceMediaError.negotiation
         }
     }
 
@@ -215,10 +283,11 @@ private final class RTCReference<Value>: @unchecked Sendable {
     }
 
     func close() {
-        audioTrack.isEnabled = false; videoTrack.isEnabled = false
+        audioTrack.isEnabled = false; videoTrack.isEnabled = false; screenTrack?.isEnabled = false
+        screenTrack = nil; screenSenderReady = false
         let old = connection; connection = nil
         old?.delegate = nil; old?.close()
-        microphone = nil; camera = nil; pendingCandidates.removeAll(); hasRemoteDescription = false
+        microphone = nil; camera = nil; screen = nil; pendingCandidates.removeAll(); hasRemoteDescription = false
     }
 
     private func accepts(_ identity: ObjectIdentifier) -> Bool { connection.map(ObjectIdentifier.init) == identity }

@@ -9,6 +9,178 @@
 			"isa" = "XCLocalSwiftPackageReference";
 			"relativePath" = "Packages/MeetSpaceKit";
 		};
+		"BF20BDD5C9007BE81C29DD66" = {
+			"isa" = "PBXFileReference";
+			"lastKnownFileType" = "text.plist.xml";
+			"path" = "Info.plist";
+			"sourceTree" = "<group>";
+		};
+		"B7A698C6FE6725132033E70A" = {
+			"isa" = "PBXFileReference";
+			"lastKnownFileType" = "text.plist.entitlements";
+			"path" = "MeetSpaceBroadcast.entitlements";
+			"sourceTree" = "<group>";
+		};
+		"D63BBA1769C088E13C181461" = {
+			"isa" = "PBXFileReference";
+			"lastKnownFileType" = "text.xml";
+			"path" = "PrivacyInfo.xcprivacy";
+			"sourceTree" = "<group>";
+		};
+		"55C43B642A7A47EB4D8B53A9" = {
+			"isa" = "PBXBuildFile";
+			"fileRef" = "D63BBA1769C088E13C181461";
+		};
+		"725D44A6351245058DEEFA7E" = {
+			"isa" = "PBXFileReference";
+			"lastKnownFileType" = "sourcecode.swift";
+			"path" = "SampleHandler.swift";
+			"sourceTree" = "<group>";
+		};
+		"8CD93C152B9F1759ADC23AE0" = {
+			"isa" = "PBXBuildFile";
+			"fileRef" = "725D44A6351245058DEEFA7E";
+		};
+		"2809D69429810A47C452FF9B" = {
+			"isa" = "PBXGroup";
+			"children" = (
+				"BF20BDD5C9007BE81C29DD66",
+				"B7A698C6FE6725132033E70A",
+				"D63BBA1769C088E13C181461",
+				"725D44A6351245058DEEFA7E",
+			);
+			"path" = "BroadcastExtension";
+			"sourceTree" = "<group>";
+		};
+		"153F5480C65FFA9F523CBEC8" = {
+			"isa" = "XCSwiftPackageProductDependency";
+			"package" = "BC4A71180870F7945155FBB0";
+			"productName" = "MeetSpaceBroadcast";
+		};
+		"326788A05C5C43881D70B081" = {
+			"isa" = "PBXBuildFile";
+			"productRef" = "153F5480C65FFA9F523CBEC8";
+		};
+		"0862F6FF0A705671BA1748F1" = {
+			"isa" = "PBXFileReference";
+			"explicitFileType" = "wrapper.app-extension";
+			"includeInIndex" = 0;
+			"path" = "BroadcastUpload.appex";
+			"sourceTree" = "BUILT_PRODUCTS_DIR";
+		};
+		"C0B82C05D127AB92C90D0DF0" = {
+			"isa" = "PBXSourcesBuildPhase";
+			"buildActionMask" = 2147483647;
+			"files" = (
+				"8CD93C152B9F1759ADC23AE0",
+			);
+			"runOnlyForDeploymentPostprocessing" = 0;
+		};
+		"E3C9CC8E58ED118EC0F3ADEB" = {
+			"isa" = "PBXFrameworksBuildPhase";
+			"buildActionMask" = 2147483647;
+			"files" = (
+				"326788A05C5C43881D70B081",
+			);
+			"runOnlyForDeploymentPostprocessing" = 0;
+		};
+		"F1454ABF6126950E6DEFA9C5" = {
+			"isa" = "PBXResourcesBuildPhase";
+			"buildActionMask" = 2147483647;
+			"files" = (
+				"55C43B642A7A47EB4D8B53A9",
+			);
+			"runOnlyForDeploymentPostprocessing" = 0;
+		};
+		"91B91DAF19BB7BAA672225DA" = {
+			"isa" = "XCBuildConfiguration";
+			"name" = "Debug";
+			"buildSettings" = {
+				"PRODUCT_NAME" = "$(TARGET_NAME)";
+				"PRODUCT_BUNDLE_IDENTIFIER" = "com.meetspace.ios.BroadcastUpload";
+				"CODE_SIGN_STYLE" = "Automatic";
+				"GENERATE_INFOPLIST_FILE" = "NO";
+				"TARGETED_DEVICE_FAMILY" = "1,2";
+				"SUPPORTED_PLATFORMS" = "iphoneos iphonesimulator";
+				"SUPPORTS_MACCATALYST" = "NO";
+				"SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD" = "NO";
+				"CODE_SIGN_ENTITLEMENTS" = "BroadcastExtension/MeetSpaceBroadcast.entitlements";
+				"INFOPLIST_FILE" = "BroadcastExtension/Info.plist";
+				"APPLICATION_EXTENSION_API_ONLY" = "YES";
+				"SKIP_INSTALL" = "YES";
+				"MARKETING_VERSION" = "0.2.0";
+				"CURRENT_PROJECT_VERSION" = "1";
+				"LD_RUNPATH_SEARCH_PATHS" = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				"SWIFT_OPTIMIZATION_LEVEL" = "-Onone";
+				"DEBUG_INFORMATION_FORMAT" = "dwarf";
+				"ONLY_ACTIVE_ARCH" = "YES";
+				"APS_ENVIRONMENT" = "development";
+				"ENABLE_TESTABILITY" = "YES";
+				"SWIFT_ACTIVE_COMPILATION_CONDITIONS" = "$(inherited) DEBUG";
+			};
+		};
+		"8B30BC7B31A61C835904D493" = {
+			"isa" = "XCBuildConfiguration";
+			"name" = "Release";
+			"buildSettings" = {
+				"PRODUCT_NAME" = "$(TARGET_NAME)";
+				"PRODUCT_BUNDLE_IDENTIFIER" = "com.meetspace.ios.BroadcastUpload";
+				"CODE_SIGN_STYLE" = "Automatic";
+				"GENERATE_INFOPLIST_FILE" = "NO";
+				"TARGETED_DEVICE_FAMILY" = "1,2";
+				"SUPPORTED_PLATFORMS" = "iphoneos iphonesimulator";
+				"SUPPORTS_MACCATALYST" = "NO";
+				"SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD" = "NO";
+				"CODE_SIGN_ENTITLEMENTS" = "BroadcastExtension/MeetSpaceBroadcast.entitlements";
+				"INFOPLIST_FILE" = "BroadcastExtension/Info.plist";
+				"APPLICATION_EXTENSION_API_ONLY" = "YES";
+				"SKIP_INSTALL" = "YES";
+				"MARKETING_VERSION" = "0.2.0";
+				"CURRENT_PROJECT_VERSION" = "1";
+				"LD_RUNPATH_SEARCH_PATHS" = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				"SWIFT_OPTIMIZATION_LEVEL" = "-O";
+				"DEBUG_INFORMATION_FORMAT" = "dwarf-with-dsym";
+				"ONLY_ACTIVE_ARCH" = "NO";
+				"APS_ENVIRONMENT" = "production";
+			};
+		};
+		"7DA92ECD7FE70A78E753CEB7" = {
+			"isa" = "XCConfigurationList";
+			"buildConfigurations" = (
+				"91B91DAF19BB7BAA672225DA",
+				"8B30BC7B31A61C835904D493",
+			);
+			"defaultConfigurationIsVisible" = 0;
+			"defaultConfigurationName" = "Release";
+		};
+		"5B1019D2DD3EF7FA460A54D0" = {
+			"isa" = "PBXNativeTarget";
+			"buildConfigurationList" = "7DA92ECD7FE70A78E753CEB7";
+			"buildPhases" = (
+				"C0B82C05D127AB92C90D0DF0",
+				"E3C9CC8E58ED118EC0F3ADEB",
+				"F1454ABF6126950E6DEFA9C5",
+			);
+			"buildRules" = (
+			);
+			"dependencies" = (
+			);
+			"name" = "BroadcastUpload";
+			"packageProductDependencies" = (
+				"153F5480C65FFA9F523CBEC8",
+			);
+			"productName" = "BroadcastUpload";
+			"productReference" = "0862F6FF0A705671BA1748F1";
+			"productType" = "com.apple.product-type.app-extension";
+		};
 		"E22F3D16C14E3CEA667F4ECC" = {
 			"isa" = "PBXFileReference";
 			"lastKnownFileType" = "text.plist.xml";
@@ -110,6 +282,18 @@
 			"isa" = "PBXBuildFile";
 			"productRef" = "18532F5AB49ABCB9089A83CD";
 		};
+		"13F794E9F02745210180BC6E" = {
+			"isa" = "PBXContainerItemProxy";
+			"containerPortal" = "244210E48437B6556980A702";
+			"proxyType" = 1;
+			"remoteGlobalIDString" = "5B1019D2DD3EF7FA460A54D0";
+			"remoteInfo" = "BroadcastUpload";
+		};
+		"9C691A116B055BFB34DC40DC" = {
+			"isa" = "PBXTargetDependency";
+			"target" = "5B1019D2DD3EF7FA460A54D0";
+			"targetProxy" = "13F794E9F02745210180BC6E";
+		};
 		"2AC38145899132AF4026E327" = {
 			"isa" = "PBXFileReference";
 			"explicitFileType" = "wrapper.application";
@@ -144,6 +328,26 @@
 			"files" = (
 				"41CB30F93E0309227270B55D",
 			);
+			"runOnlyForDeploymentPostprocessing" = 0;
+		};
+		"F164B8DBC4A56BFCCF125CFE" = {
+			"isa" = "PBXBuildFile";
+			"fileRef" = "0862F6FF0A705671BA1748F1";
+			"settings" = {
+				"ATTRIBUTES" = (
+					"RemoveHeadersOnCopy",
+				);
+			};
+		};
+		"A263D8B2F4BB817DF885FA78" = {
+			"isa" = "PBXCopyFilesBuildPhase";
+			"buildActionMask" = 2147483647;
+			"dstPath" = "";
+			"dstSubfolderSpec" = 13;
+			"files" = (
+				"F164B8DBC4A56BFCCF125CFE",
+			);
+			"name" = "Embed App Extensions";
 			"runOnlyForDeploymentPostprocessing" = 0;
 		};
 		"F3C85039B741D59B9F7FD9C0" = {
@@ -216,10 +420,12 @@
 				"FD2CD7218484179B1F30F7AF",
 				"35D22E8E61B4F4EA94A83D25",
 				"90536DD5607C469DCE3CB905",
+				"A263D8B2F4BB817DF885FA78",
 			);
 			"buildRules" = (
 			);
 			"dependencies" = (
+				"9C691A116B055BFB34DC40DC",
 			);
 			"name" = "MeetSpace";
 			"packageProductDependencies" = (
@@ -555,6 +761,7 @@
 		"0A3E27B8CA818264D75C8D81" = {
 			"isa" = "PBXGroup";
 			"children" = (
+				"0862F6FF0A705671BA1748F1",
 				"2AC38145899132AF4026E327",
 				"C4E291A6BAC79D7761857C57",
 				"F4ED68AB44B90DFB25B50141",
@@ -571,6 +778,7 @@
 		"0035FE99EA2940F7FA633A58" = {
 			"isa" = "PBXGroup";
 			"children" = (
+				"2809D69429810A47C452FF9B",
 				"082CC8140C5DED09CFE9E4EA",
 				"4D5FC6C0D9725D09B197E0BD",
 				"2EDE14053B8EEC1705DEDA5D",
@@ -586,6 +794,7 @@
 				"IPHONEOS_DEPLOYMENT_TARGET" = "18.0";
 				"SDKROOT" = "iphoneos";
 				"SWIFT_VERSION" = "6.0";
+				"BROADCAST_APP_GROUP" = "group.com.meetspace.ios.broadcast";
 				"SWIFT_STRICT_CONCURRENCY" = "complete";
 				"CLANG_ENABLE_MODULES" = "YES";
 				"CLANG_ENABLE_OBJC_ARC" = "YES";
@@ -605,6 +814,7 @@
 				"IPHONEOS_DEPLOYMENT_TARGET" = "18.0";
 				"SDKROOT" = "iphoneos";
 				"SWIFT_VERSION" = "6.0";
+				"BROADCAST_APP_GROUP" = "group.com.meetspace.ios.broadcast";
 				"SWIFT_STRICT_CONCURRENCY" = "complete";
 				"CLANG_ENABLE_MODULES" = "YES";
 				"CLANG_ENABLE_OBJC_ARC" = "YES";
@@ -654,6 +864,7 @@
 				"BC4A71180870F7945155FBB0",
 			);
 			"targets" = (
+				"5B1019D2DD3EF7FA460A54D0",
 				"A4CD3D2CE60E07499E400487",
 				"11D4AE41AD30B351ACA40338",
 				"F1E24C28410584307FAB8488",

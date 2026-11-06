@@ -4,9 +4,14 @@ import MeetSpaceCore
 import MeetSpaceAPI
 import MeetSpaceRealtime
 import MeetSpaceMedia
+import MeetSpaceBroadcast
 
 public enum ConferencePhase: String, Sendable {
     case prejoin, waiting, connecting, connected, reconnecting, suspended, ended, failed
+}
+
+public enum ConferenceScreenShareState: String, Sendable {
+    case idle, preparing, awaitingSystem, starting, active, paused, stopping, failed
 }
 
 /// A direct call owns its hidden SFU room through the call endpoint, never meeting membership mutations.
@@ -42,6 +47,17 @@ public struct DirectConferenceContext: Sendable {
     public private(set) var audioRoute = ""
     public private(set) var microphoneBlocked = false
     public private(set) var cameraBlocked = false
+    public private(set) var screenBlocked = false
+    public private(set) var screenShareState: ConferenceScreenShareState = .idle
+    public private(set) var screenShareError: String?
+    public private(set) var screenPickerExtensionBundleID: String?
+    public var screenSharing: Bool { screenShareState == .active }
+    public var canStartScreenShare: Bool {
+        !closed && foreground && phase == .connected && !screenBlocked && !cameraBlocked &&
+        [.idle, .failed].contains(screenShareState) && screenStopTask == nil &&
+        !tracks.contains { $0.source == "video/screen" && $0.participantId != participant.id }
+    }
+    public var hasScreenBroadcast: Bool { [.awaitingSystem, .starting, .active, .paused, .stopping].contains(screenShareState) }
     public private(set) var media: (any ConferenceMediaEngine)?
     public private(set) var videoTracks: [ConferenceVideoTrack] = []
     public private(set) var tracks: [ConferenceSignalTrack] = []
@@ -55,6 +71,20 @@ public struct DirectConferenceContext: Sendable {
     public var chatVisible = false
     @ObservationIgnored private let sockets: any ConferenceSocketFactory
     @ObservationIgnored private let makeMedia: @MainActor @Sendable () -> any ConferenceMediaEngine
+    @ObservationIgnored private let makeBroadcast: @MainActor @Sendable () -> any ScreenBroadcastController
+    @ObservationIgnored private var broadcast: (any ScreenBroadcastController)?
+    @ObservationIgnored private var screenEpoch = UUID()
+    @ObservationIgnored private var broadcastID: UUID?
+    @ObservationIgnored private var screenEventsTask: Task<Void, Never>?
+    @ObservationIgnored private var screenFramesTask: Task<Void, Never>?
+    @ObservationIgnored private var screenPrepareDeadline: Task<Void, Never>?
+    @ObservationIgnored private var screenStopTask: Task<Void, Never>?
+    @ObservationIgnored private var screenSenderEnabled = false
+    @ObservationIgnored private var screenHasFrame = false
+    @ObservationIgnored private var screenOfferEnabled = false
+    @ObservationIgnored private var screenServerEnabled = false
+    @ObservationIgnored private var screenLastTimestamp: Int64 = -1
+    @ObservationIgnored private var screenLimits = ScreenBroadcastConfiguration()
     @ObservationIgnored private let sleep: @Sendable (Double) async throws -> Void
     @ObservationIgnored private var generation = UUID()
     @ObservationIgnored private var closed = false
@@ -112,12 +142,13 @@ public struct DirectConferenceContext: Sendable {
                 directContext: DirectConferenceContext? = nil,
                 sockets: any ConferenceSocketFactory = URLSessionConferenceSocketFactory(),
                 makeMedia: @escaping @MainActor @Sendable () -> any ConferenceMediaEngine = { ConferenceMediaFactory.make() },
+                makeBroadcast: @escaping @MainActor @Sendable () -> any ScreenBroadcastController = { BroadcastControllerFactory.make() },
                 sleep: @escaping @Sendable (Double) async throws -> Void = { try await Task.sleep(for: .seconds($0)) }) {
         self.repository = repository; self.title = title; self.participant = participant
         self.directContext = directContext
-        conferenceID = participant.conferenceId; self.sockets = sockets; self.makeMedia = makeMedia; self.sleep = sleep
+        conferenceID = participant.conferenceId; self.sockets = sockets; self.makeMedia = makeMedia; self.makeBroadcast = makeBroadcast; self.sleep = sleep
         phase = participant.isWaiting ? .waiting : .prejoin
-        microphoneBlocked = participant.microphoneBlocked; cameraBlocked = participant.cameraBlocked
+        microphoneBlocked = participant.microphoneBlocked; cameraBlocked = participant.cameraBlocked; screenBlocked = participant.screenBlocked
     }
 
     public func participantID(for video: ConferenceVideoTrack) -> UUID? {
@@ -168,7 +199,7 @@ public struct DirectConferenceContext: Sendable {
                     let membership = try await repository.selfParticipant(conferenceID); try ensure(epoch)
                     guard membership.canParticipate else { throw ClientError.scopeMismatch }
                     participant = membership
-                    microphoneBlocked = membership.microphoneBlocked; cameraBlocked = membership.cameraBlocked
+                    microphoneBlocked = membership.microphoneBlocked; cameraBlocked = membership.cameraBlocked; screenBlocked = membership.screenBlocked
                     policyVersion = membership.mediaPolicyVersion
                 } else {
                 let conference = try await repository.read(conferenceID); try ensure(epoch)
@@ -185,7 +216,7 @@ public struct DirectConferenceContext: Sendable {
                     else { phase = .ended; error = "Участие во встрече завершено." }
                     return
                 }
-                microphoneBlocked = membership.microphoneBlocked; cameraBlocked = membership.cameraBlocked
+                microphoneBlocked = membership.microphoneBlocked; cameraBlocked = membership.cameraBlocked; screenBlocked = membership.screenBlocked
                 policyVersion = membership.mediaPolicyVersion
                 }
                 let config = try await repository.ice()
@@ -300,6 +331,8 @@ public struct DirectConferenceContext: Sendable {
                 }
             }
             let capture = joined.videoCapture
+            screenLimits = ScreenBroadcastConfiguration(maxWidth: min(1280, capture.maxWidth),
+                maxHeight: min(720, capture.maxHeight), maxFrameRate: min(10, capture.maxFrameRate))
             let workerConfig = try ICEConfiguration(iceServers: joined.iceServers ?? config.iceServers,
                 iceTransportPolicy: config.iceTransportPolicy, expiresAt: config.expiresAt).validated()
             try await engine.configure(ConferenceMediaConfiguration(
@@ -344,6 +377,8 @@ public struct DirectConferenceContext: Sendable {
             let ack = try event.payload(ConferenceSignalAck.self)
             if ack.type == "media.ready", event.replyTo == readyRequest, readyRequest != nil {
                 deadlineTask?.cancel(); readyRequest = nil; offerRequest = nil; negotiationID = nil; offerBusy = false
+                screenServerEnabled = screenOfferEnabled
+                updateScreenState()
                 readyAcknowledged = true
                 if rtcConnected { markConnected(epoch) } else { armConnectionDeadline(seconds: 30, epoch: epoch) }
                 try await negotiate(epoch)
@@ -400,6 +435,17 @@ public struct DirectConferenceContext: Sendable {
         case "error":
             let failure = try event.payload(ConferenceSignalErrorPayload.self)
             guard let reply = event.replyTo, [joinRequest, offerRequest, readyRequest].contains(reply) else { return }
+            if failure.code == "screen_sharing_conflict", screenOfferEnabled, event.replyTo == offerRequest {
+                deadlineTask?.cancel()
+                try await media?.rollbackLocalOffer(); try ensure(epoch)
+                offerRequest = nil; readyRequest = nil; negotiationID = nil; offerBusy = false
+                screenOfferEnabled = false
+                screenShareError = "Экран уже показывает другой участник."
+                await stopScreenShare()
+                try ensure(epoch)
+                needsOffer = true; try await negotiate(epoch)
+                return
+            }
             // Server rejection invalidates the pending transaction. A fresh peer avoids a stale local offer.
             if ["media_policy_blocked", "screen_sharing_conflict"].contains(failure.code) {
                 wantsMicrophone = false; wantsCamera = false
@@ -427,6 +473,7 @@ public struct DirectConferenceContext: Sendable {
         armDeadline(seconds: 20, epoch: epoch)
         let transaction = UUID(); negotiationID = transaction
         let offer = try await media.makeOffer(iceRestart: false); try ensure(epoch)
+        screenOfferEnabled = offer.publications.contains { $0.source == "video/screen" }
         let request = UUID(); offerRequest = request
         try await send("media.offer", data: OfferCommand(mediaPeerId: peerID.uuidString.lowercased(),
             negotiationId: transaction.uuidString.lowercased(), sdp: offer.sdp, publications: offer.publications), request: request)
@@ -476,10 +523,14 @@ public struct DirectConferenceContext: Sendable {
             case .captureState(let mic, let cam, let front):
                 microphone = mic; camera = cam; frontCamera = front
                 publishPresence(epoch)
+            case .screenCaptureState(let enabled):
+                screenSenderEnabled = enabled
+                updateScreenState(); syncVideos(); publishPresence(epoch)
             case .audioRoute(let route): audioRoute = route
             case .networkPathChanged: recover(RealtimeError.disconnected)
             case .interrupted(let began):
                 if began {
+                    await stopScreenShare()
                     wantsMicrophone = false; wantsCamera = false; error = "Медиа остановлено из-за аудиопрерывания."
                     await media?.suspend(); try ensure(epoch)
                 }
@@ -501,21 +552,25 @@ public struct DirectConferenceContext: Sendable {
         guard policy.version > policyVersion else { return }
         policyVersion = policy.version
         if policy.kicked { await leave(); return }
-        microphoneBlocked = policy.microphoneBlocked; cameraBlocked = policy.cameraBlocked
+        microphoneBlocked = policy.microphoneBlocked; cameraBlocked = policy.cameraBlocked; screenBlocked = policy.screenBlocked
         if microphoneBlocked { wantsMicrophone = false }
         if cameraBlocked { wantsCamera = false }
         let epoch = generation
-        try await media?.setPublicationPermissions(microphone: !microphoneBlocked, camera: !cameraBlocked)
+        if screenBlocked || cameraBlocked { await stopScreenShare() }
+        try await media?.setPublicationPermissions(microphone: !microphoneBlocked, camera: !cameraBlocked,
+                                                   screen: broadcastID != nil && !screenBlocked && !cameraBlocked)
         try ensure(epoch)
     }
     private func applyParticipantPolicy(_ participant: ConferenceParticipant) async {
         guard participant.mediaPolicyVersion > policyVersion else { return }
         policyVersion = participant.mediaPolicyVersion
-        microphoneBlocked = participant.microphoneBlocked; cameraBlocked = participant.cameraBlocked
+        microphoneBlocked = participant.microphoneBlocked; cameraBlocked = participant.cameraBlocked; screenBlocked = participant.screenBlocked
         if microphoneBlocked { wantsMicrophone = false }
         if cameraBlocked { wantsCamera = false }
         let epoch = generation
-        do { try await media?.setPublicationPermissions(microphone: !microphoneBlocked, camera: !cameraBlocked) }
+        if screenBlocked || cameraBlocked { await stopScreenShare() }
+        do { try await media?.setPublicationPermissions(microphone: !microphoneBlocked, camera: !cameraBlocked,
+                                                         screen: broadcastID != nil && !screenBlocked && !cameraBlocked) }
         catch { if isCurrent(epoch) { recover(error) } }
     }
 
@@ -523,7 +578,7 @@ public struct DirectConferenceContext: Sendable {
         guard let connectionID, sequence < 9_007_199_254_740_991 else { return }
         sequence += 1
         pendingPresence = ConferenceMediaState(connectionID: connectionID, sequence: sequence,
-                                        microphoneEnabled: microphone, cameraEnabled: camera)
+                                        microphoneEnabled: microphone, cameraEnabled: camera, screenSharing: screenSharing)
         guard presenceTask == nil else { return }
         presenceTask = Task { [weak self] in
             guard let self else { return }
@@ -533,6 +588,149 @@ public struct DirectConferenceContext: Sendable {
                 do { _ = try await repository.updateMedia(conferenceID, state: state) }
                 catch { if isCurrent(epoch), !Self.isRetryable(error) { recover(error); return } }
             }
+        }
+    }
+
+    public func prepareScreenShare() async {
+        guard canStartScreenShare, media != nil else { return }
+        screenShareError = nil
+        let controller = makeBroadcast()
+        guard controller.isAvailable else {
+            screenShareState = .failed
+            screenShareError = "Демонстрация экрана недоступна в этой сборке."
+            return
+        }
+        screenShareState = .preparing
+        let token = UUID(), epoch = generation
+        screenEpoch = token; broadcast = controller; screenHasFrame = false; screenLastTimestamp = -1
+        do {
+            try await controller.prepare(configuration: screenLimits)
+            guard isCurrent(epoch), screenEpoch == token, !screenBlocked, !cameraBlocked else {
+                await controller.stop(); return
+            }
+            guard let id = controller.sessionID else { throw ScreenBroadcastError.staleSession }
+            broadcastID = id; screenPickerExtensionBundleID = controller.extensionBundleID
+            screenShareState = .awaitingSystem
+            screenEventsTask = Task { [weak self] in
+                for await event in controller.events {
+                    guard let self, self.isCurrent(epoch), self.screenEpoch == token else { return }
+                    await self.handleScreenEvent(event, epoch: epoch, token: token)
+                }
+            }
+            screenFramesTask = Task { [weak self] in
+                for await frame in controller.frames {
+                    guard let self, self.isCurrent(epoch), self.screenEpoch == token else { return }
+                    await self.handleScreenFrame(frame, epoch: epoch)
+                }
+            }
+            screenPrepareDeadline = Task { [weak self] in
+                do { try await Task.sleep(for: .seconds(90)) } catch { return }
+                guard let self, self.isCurrent(epoch), self.screenEpoch == token,
+                      self.screenShareState == .awaitingSystem else { return }
+                self.screenShareError = "Запуск демонстрации отменён или не подтверждён."
+                await self.stopScreenShare()
+            }
+            // Preparation never enables capture or adds a publication. The system picker is the consent UI.
+        } catch {
+            guard generation == epoch, screenEpoch == token else { return }
+            screenShareError = "Не удалось подготовить демонстрацию экрана."
+            await stopScreenShare()
+        }
+    }
+
+    private func handleScreenEvent(_ event: ScreenBroadcastEvent, epoch: UUID, token: UUID) async {
+        let id: UUID
+        switch event {
+        case .started(let value), .paused(let value), .resumed(let value), .stopped(let value, _): id = value
+        }
+        guard id == broadcastID, screenEpoch == token, isCurrent(epoch) else { return }
+        do {
+            switch event {
+            case .started, .resumed:
+                guard !screenBlocked, !cameraBlocked, phase == .connected, let media else {
+                    screenShareError = "Демонстрация запрещена или соединение потеряно."
+                    await stopScreenShare(); return
+                }
+                screenPrepareDeadline?.cancel(); screenPrepareDeadline = nil
+                screenShareState = .starting; screenHasFrame = false
+                try await media.setPublicationPermissions(microphone: !microphoneBlocked, camera: !cameraBlocked, screen: true)
+                guard isCurrent(epoch), screenEpoch == token, broadcastID == id else { return }
+                try await media.setScreenEnabled(true)
+                guard isCurrent(epoch), screenEpoch == token, broadcastID == id else { return }
+                screenSenderEnabled = true; needsOffer = true; try await negotiate(epoch)
+            case .paused:
+                screenShareState = .paused; screenHasFrame = false; screenSenderEnabled = false
+                try await media?.setScreenEnabled(false); try ensure(epoch)
+                needsOffer = true; try await negotiate(epoch); publishPresence(epoch)
+            case .stopped(_, let reason):
+                if reason != .user {
+                    screenShareError = reason == .memoryPressure ? "Демонстрация остановлена: недостаточно памяти." : "Трансляция остановлена. Для продолжения запустите её заново."
+                }
+                await stopScreenShare()
+            }
+        } catch {
+            guard generation == epoch else { return }
+            screenShareError = "Не удалось передать экран."
+            await stopScreenShare()
+        }
+    }
+    private func handleScreenFrame(_ frame: ScreenBroadcastFrame, epoch: UUID) async {
+        guard frame.sessionID == broadcastID, screenSenderEnabled, [.starting, .active].contains(screenShareState),
+              !screenBlocked, !cameraBlocked, phase == .connected, frame.timestampNs > screenLastTimestamp,
+              let media else { return }
+        do {
+            try frame.validated(configuration: screenLimits)
+            try media.pushScreenFrame(frame)
+            screenLastTimestamp = frame.timestampNs; screenHasFrame = true; updateScreenState()
+        } catch {
+            guard generation == epoch else { return }
+            screenShareError = "Не удалось передать экран."
+            await stopScreenShare()
+        }
+    }
+    public func stopScreenShare() async {
+        if let screenStopTask { await screenStopTask.value; return }
+        guard broadcast != nil || screenSenderEnabled || screenServerEnabled || screenOfferEnabled ||
+                [.preparing, .awaitingSystem, .starting, .active, .paused].contains(screenShareState) else { return }
+        let previous = broadcast, engine = media, epoch = generation
+        let mustNegotiate = screenSenderEnabled || screenOfferEnabled || screenServerEnabled
+        invalidateScreenBroadcast()
+        screenSenderEnabled = false; screenHasFrame = false
+        screenShareState = mustNegotiate ? .stopping : (screenShareError == nil ? .idle : .failed)
+        let task = Task { @MainActor [weak self] in
+            // Stop WebRTC before waiting for extension teardown. Old frame tasks are already fenced.
+            do { try await engine?.setScreenEnabled(false) }
+            catch {
+                if let self, self.generation == epoch { self.recover(ConferenceMediaError.negotiation) }
+            }
+            await previous?.stop()
+            guard let self, self.isCurrent(epoch) else { return }
+            self.publishPresence(epoch)
+            if mustNegotiate {
+                self.needsOffer = true
+                do { try await self.negotiate(epoch) } catch { self.recover(error) }
+            } else { self.updateScreenState() }
+        }
+        screenStopTask = task; await task.value
+        if generation == epoch { screenStopTask = nil; updateScreenState() }
+    }
+    private func invalidateScreenBroadcast() {
+        screenEpoch = UUID(); broadcastID = nil; broadcast = nil; screenPickerExtensionBundleID = nil
+        screenEventsTask?.cancel(); screenFramesTask?.cancel(); screenPrepareDeadline?.cancel()
+        screenEventsTask = nil; screenFramesTask = nil; screenPrepareDeadline = nil
+        screenHasFrame = false; screenLastTimestamp = -1
+    }
+    private func updateScreenState() {
+        if [.starting, .active].contains(screenShareState), broadcastID != nil,
+           screenSenderEnabled, screenServerEnabled, screenHasFrame {
+            if screenShareState != .active { screenShareState = .active; publishPresence(generation) }
+        } else if screenShareState == .stopping, !screenServerEnabled, !screenOfferEnabled, !offerBusy {
+            screenShareState = screenShareError == nil ? .idle : .failed
+        }
+        if !closed, !foreground, !isDirectCall, !hasScreenBroadcast,
+           [.connecting, .connected, .reconnecting].contains(phase) {
+            phase = .suspended
+            _ = detachAttempt()
         }
     }
 
@@ -649,6 +847,12 @@ public struct DirectConferenceContext: Sendable {
             }
             return
         }
+        if !active, hasScreenBroadcast {
+            wantsMicrophone = false; wantsCamera = false
+            do { try await media?.setCameraEnabled(false); try await media?.setMicrophoneEnabled(false) }
+            catch { self.error = mediaMessage(error) }
+            return
+        }
         if !active {
             lobbyTask?.cancel(); lobbyTask = nil
             if [.connecting, .connected, .reconnecting].contains(phase) {
@@ -673,7 +877,7 @@ public struct DirectConferenceContext: Sendable {
         }
     }
     private func recover(_ failure: any Error) {
-        guard !closed, (foreground || isDirectCall), recoveryTask == nil, !(failure is CancellationError) else { return }
+        guard !closed, (foreground || isDirectCall || hasScreenBroadcast), recoveryTask == nil, !(failure is CancellationError) else { return }
         if let connectedAt, Date().timeIntervalSince(connectedAt) > 30 { reconnectCount = 0 }
         if !isDirectCall { wantsMicrophone = false }
         wantsCamera = false
@@ -681,6 +885,7 @@ public struct DirectConferenceContext: Sendable {
         phase = retryable ? .reconnecting : .failed
         error = retryable ? "Соединение прервано. Камера и микрофон выключены." : userMessage(failure)
         let cleanup = detachAttempt(), epoch = generation
+        if !foreground, !isDirectCall { phase = .suspended; return }
         recoveryTask = Task { [weak self] in
             guard let self else { return }
             await cleanup.value
@@ -723,6 +928,10 @@ public struct DirectConferenceContext: Sendable {
 
     /// Reset state before awaiting resource disposal so an old cleanup cannot erase a newer attempt.
     private func detachAttempt() -> Task<Void, Never> {
+        let previousBroadcast = broadcast, previousScreenStop = screenStopTask
+        invalidateScreenBroadcast()
+        screenShareState = .idle; screenSenderEnabled = false; screenServerEnabled = false; screenOfferEnabled = false
+        screenStopTask = nil
         generation = UUID()
         attemptTask?.cancel(); receiveTask?.cancel(); eventTask?.cancel(); deviceTask?.cancel()
         initialDevicesTask?.cancel(); deadlineTask?.cancel(); connectionDeadlineTask?.cancel(); expiryTask?.cancel(); presenceTask?.cancel()
@@ -738,6 +947,9 @@ public struct DirectConferenceContext: Sendable {
         answerApplied = false; sequence = 0; policyVersion = -1; revision = -1; connectedAt = nil
         hasSentOffer = false; readyAcknowledged = false; rtcConnected = false; gatheringComplete = false; iceConfiguration = nil
         let task = Task {
+            try? await previousMedia?.setScreenEnabled(false)
+            await previousBroadcast?.stop()
+            await previousScreenStop?.value
             await previousCleanup?.value
             await previousMedia?.close()
             await previousSocket?.close()
@@ -781,7 +993,13 @@ public struct DirectConferenceContext: Sendable {
     private func syncVideos() {
         videoParticipants = [:]; screenVideoIDs = []
         videoTracks = rawVideoTracks.filter { video in
-            if video.isLocal { return true }
+            if video.isLocal {
+                if video.id == media?.localScreenVideoTrackID {
+                    guard screenSenderEnabled else { return false }
+                    screenVideoIDs.insert(video.id)
+                }
+                return true
+            }
             guard let mid = video.mid, let binding = answerTracks[mid],
                   let track = tracks.first(where: { $0.id == binding.trackID && $0.streamId == binding.streamID && $0.kind == "video" }) else { return false }
             videoParticipants[video.id] = track.participantId

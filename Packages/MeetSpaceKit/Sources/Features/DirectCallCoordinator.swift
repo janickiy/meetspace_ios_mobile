@@ -4,6 +4,7 @@ import MeetSpaceCore
 import MeetSpaceAPI
 import MeetSpaceRealtime
 import MeetSpaceMedia
+import MeetSpaceBroadcast
 import MeetSpaceCalling
 
 /// Account-scoped durable call state. Socket notifications only invalidate REST state;
@@ -33,6 +34,7 @@ import MeetSpaceCalling
     @ObservationIgnored private let system: any SystemCalling
     @ObservationIgnored private let sockets: any ConferenceSocketFactory
     @ObservationIgnored private let makeMedia: @MainActor @Sendable () -> any ConferenceMediaEngine
+    @ObservationIgnored private let makeBroadcast: @MainActor @Sendable () -> any ScreenBroadcastController
     @ObservationIgnored private let canUseMedia: @MainActor () -> Bool
     @ObservationIgnored private let sleep: @Sendable (Double) async throws -> Void
     @ObservationIgnored private let now: @Sendable () -> Date
@@ -71,11 +73,12 @@ import MeetSpaceCalling
     public init(repository: any DirectCallsServing, conferenceRepository: ConferenceRepository,
                 system: any SystemCalling, sockets: any ConferenceSocketFactory = URLSessionConferenceSocketFactory(),
                 makeMedia: @escaping @MainActor @Sendable () -> any ConferenceMediaEngine = { ConferenceMediaFactory.make() },
+                makeBroadcast: @escaping @MainActor @Sendable () -> any ScreenBroadcastController = { BroadcastControllerFactory.make() },
                 canUseMedia: @escaping @MainActor () -> Bool = { true }, clientID: UUID = UUID(),
                 sleep: @escaping @Sendable (Double) async throws -> Void = { try await Task.sleep(for: .seconds($0)) },
                 now: @escaping @Sendable () -> Date = { Date() }) {
         self.repository = repository; self.conferenceRepository = conferenceRepository; self.system = system
-        self.sockets = sockets; self.makeMedia = makeMedia; self.canUseMedia = canUseMedia; self.clientID = clientID
+        self.sockets = sockets; self.makeMedia = makeMedia; self.makeBroadcast = makeBroadcast; self.canUseMedia = canUseMedia; self.clientID = clientID
         self.sleep = sleep; self.now = now
         let events = system.events
         eventsTask = Task { [weak self] in
@@ -341,7 +344,7 @@ import MeetSpaceCalling
         // This placeholder is replaced by scoped REST membership before opening the socket.
         let member = ConferenceParticipant(id: UUID(), conferenceId: room, userId: user, displayName: "Вы")
         let session = ConferenceSession(repository: conferenceRepository, title: incoming.peer(for: user)?.displayName ?? "Личный звонок",
-            participant: member, directContext: context, sockets: sockets, makeMedia: makeMedia, sleep: sleep)
+            participant: member, directContext: context, sockets: sockets, makeMedia: makeMedia, makeBroadcast: makeBroadcast, sleep: sleep)
         mediaSession = session
         session.wantsMicrophone = microphoneWanted
         session.wantsCamera = cameraWanted && (!system.isAvailable || systemAudioActive) && foreground

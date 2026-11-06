@@ -2,6 +2,7 @@ import Foundation
 import XCTest
 import MeetSpaceCore
 import MeetSpaceMedia
+import MeetSpaceBroadcast
 
 /// Hosted iOS tests load the actual M156 binary. They deliberately do not request camera/microphone
 /// access, and therefore do not replace the required physical-device capture/interoperability tests.
@@ -59,7 +60,7 @@ import MeetSpaceMedia
                 try await media.setCameraEnabled(true)
                 XCTFail("Blocked camera was enabled")
             } catch { XCTAssertEqual(error as? ConferenceMediaError, .publicationBlocked) }
-            try await media.setPublicationPermissions(microphone: true, camera: true)
+            try await media.setPublicationPermissions(microphone: true, camera: true, screen: false)
             let offer = try await media.makeOffer(iceRestart: false)
             XCTAssertTrue(offer.publications.isEmpty, "Unblocking must not silently enable capture")
             XCTAssertFalse(offer.sdp.contains("a=sendrecv"))
@@ -69,5 +70,66 @@ import MeetSpaceMedia
             await media.close()
             throw error
         }
+    }
+
+    func testScreenGenerationRollbackAndPolicyWithCaptureOff() async throws {
+        let media = ConferenceMediaFactory.make()
+        do {
+            try await media.configure(ConferenceMediaConfiguration(iceServers: [], maxPeers: 2,
+                mediaPeerID: UUID(), screenAllowed: true))
+            var generations = Set<String>()
+            for _ in 0..<3 {
+                try await media.setScreenEnabled(true)
+                let trackID = media.localScreenVideoTrackID
+                XCTAssertTrue(generations.insert(trackID).inserted, "A restarted capture must have a new generation")
+                let offer = try await media.makeOffer(iceRestart: false)
+                XCTAssertEqual(offer.publications.count, 1)
+                XCTAssertEqual(offer.publications.first?.source, "video/screen")
+                XCTAssertEqual(offer.publications.first?.trackId, trackID)
+                XCTAssertEqual(offer.sdp.components(separatedBy: "\r\nm=").count - 1, 8)
+                // Screen conflict is rejected before server SetRemoteDescription: rollback locally.
+                try await media.rollbackLocalOffer()
+                try await media.setScreenEnabled(false)
+                let withoutScreen = try await media.makeOffer(iceRestart: false)
+                XCTAssertTrue(withoutScreen.publications.isEmpty)
+                XCTAssertFalse(withoutScreen.sdp.contains("a=sendrecv"))
+                XCTAssertEqual(withoutScreen.sdp.components(separatedBy: "\r\nm=").count - 1, 8)
+                try await media.rollbackLocalOffer()
+            }
+            try await media.setPublicationPermissions(microphone: true, camera: false, screen: true)
+            do { try await media.setScreenEnabled(true); XCTFail("Camera policy must also block screen video") }
+            catch { XCTAssertEqual(error as? ConferenceMediaError, .publicationBlocked) }
+            try await media.setPublicationPermissions(microphone: true, camera: true, screen: false)
+            do { try await media.setScreenEnabled(true); XCTFail("Screen policy was ignored") }
+            catch { XCTAssertEqual(error as? ConferenceMediaError, .publicationBlocked) }
+            await media.close()
+        } catch { await media.close(); throw error }
+    }
+
+    func testScreenRejectsInvalidAndStaleFrameSession() async throws {
+        let media = ConferenceMediaFactory.make()
+        do {
+            try await media.configure(ConferenceMediaConfiguration(iceServers: [], maxPeers: 2,
+                mediaPeerID: UUID(), screenAllowed: true))
+            try await media.setScreenEnabled(true)
+            let id = UUID()
+            let valid = ScreenBroadcastFrame(sessionID: id, width: 2, height: 2, rowBytes: 8,
+                timestampNs: 1, pixels: Data(repeating: 0, count: 16))
+            try media.pushScreenFrame(valid)
+            do {
+                try media.pushScreenFrame(ScreenBroadcastFrame(sessionID: UUID(), width: 2, height: 2,
+                    rowBytes: 8, timestampNs: 100_000_001, pixels: Data(repeating: 0, count: 16)))
+                XCTFail("A different IPC session crossed the active screen generation")
+            } catch { XCTAssertEqual(error as? ConferenceMediaError, .invalidScreenFrame) }
+            do {
+                try media.pushScreenFrame(ScreenBroadcastFrame(sessionID: id, width: 2, height: 2,
+                    rowBytes: 8, timestampNs: 100_000_001, pixels: Data(repeating: 0, count: 15)))
+                XCTFail("A truncated frame was accepted")
+            } catch { XCTAssertEqual(error as? ConferenceMediaError, .invalidScreenFrame) }
+            try await media.setScreenEnabled(false)
+            do { try media.pushScreenFrame(valid); XCTFail("A stopped screen accepted another frame") }
+            catch { XCTAssertEqual(error as? ConferenceMediaError, .screenUnavailable) }
+            await media.close()
+        } catch { await media.close(); throw error }
     }
 }

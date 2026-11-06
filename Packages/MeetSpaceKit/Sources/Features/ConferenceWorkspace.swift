@@ -4,6 +4,7 @@ import MeetSpaceCore
 import MeetSpaceAPI
 import MeetSpaceRealtime
 import MeetSpaceMedia
+import MeetSpaceBroadcast
 
 @MainActor @Observable public final class ConferenceWorkspace {
     public let repository: ConferenceRepository
@@ -14,14 +15,16 @@ import MeetSpaceMedia
     public var error: String?
     @ObservationIgnored private let sockets: any ConferenceSocketFactory
     @ObservationIgnored private let makeMedia: @MainActor @Sendable () -> any ConferenceMediaEngine
+    @ObservationIgnored private let makeBroadcast: @MainActor @Sendable () -> any ScreenBroadcastController
     @ObservationIgnored private let canUseMedia: @MainActor () -> Bool
     @ObservationIgnored private var epoch = UUID()
     @ObservationIgnored private var closed = false
     @ObservationIgnored private var departing: ConferenceSession?
     public init(repository: ConferenceRepository, sockets: any ConferenceSocketFactory,
                 makeMedia: @escaping @MainActor @Sendable () -> any ConferenceMediaEngine,
+                makeBroadcast: @escaping @MainActor @Sendable () -> any ScreenBroadcastController = { BroadcastControllerFactory.make() },
                 canUseMedia: @escaping @MainActor () -> Bool = { true }) {
-        self.repository = repository; self.sockets = sockets; self.makeMedia = makeMedia
+        self.repository = repository; self.sockets = sockets; self.makeMedia = makeMedia; self.makeBroadcast = makeBroadcast
         self.canUseMedia = canUseMedia
     }
     public func load() async {
@@ -94,7 +97,7 @@ import MeetSpaceMedia
     }
     private func install(_ conference: Conference, membership: ConferenceParticipant) {
         call = ConferenceSession(repository: repository, title: conference.title, participant: membership,
-                                 sockets: sockets, makeMedia: makeMedia)
+                                 sockets: sockets, makeMedia: makeMedia, makeBroadcast: makeBroadcast)
         call?.observeLobby()
     }
     private func mediaAvailable() -> Bool {

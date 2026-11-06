@@ -1,0 +1,24 @@
+{
+  "backendCommit": "0bd1248a2411842515af4e02f1e95821616748fb",
+  "images": {
+    "postgres": "sha256:742f40ea20b9ff2ff31db5458d127452988a2164df9e17441e191f3b72252193",
+    "redis": "sha256:e7723ff73d963f5cc6d9c4643ea3d989527a402a319239054e9472a7fb9219a2",
+    "minio": "sha256:b77a54e06b9c7e8f05cfd3873675644f094302bacd3aa7588a92ca30f44a2ee1",
+    "rabbitmq": "sha256:bda54cf7b1dc13aff98091ef8c99d59ca37c396b38eef1b21232f533136ba0ec",
+    "mediaworker": "sha256:5291449c3df73caf6ed85e649dec1b9e818b39a5d8c871e97afc13e9cd5e8fa8",
+    "api": "sha256:5291449c3df73caf6ed85e649dec1b9e818b39a5d8c871e97afc13e9cd5e8fa8"
+  },
+  "result": 0,
+  "screenSharerLimit": 1,
+  "syntheticRTPOnly": true,
+  "transport": "isolated Docker HTTP/WS + DTLS/SRTP; production requires HTTPS/WSS",
+  "sourceHashes": {
+    "scripts/run_replaykit_contract.py": "9735d88c0c4193115a05bb2e3bf38feeaf9e950d00eee24215576dca1f63c71d",
+    "scripts/fixtures/screen_probe.go": "85f7b67a8fb5b75a2dae0b6051a425753c252affa291bbf1fcf2efe68a8fca80"
+  },
+  "limitations": [
+    "Synthetic VP8/Opus packets; no decoded visual-quality assertion",
+    "Expected rejected offers are generated without local apply because Pion lacks rollback; native rollback is not exercised",
+    "No ReplayKit, system audio, physical device, TURN, network handover or FPS/CPU/RAM measurement"
+  ]
+}

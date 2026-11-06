@@ -97,17 +97,22 @@ struct LiveConferenceView: View {
     }
     private var videoGrid: some View {
         ScrollView {
+            VStack(spacing: 12) {
+                ForEach(session.videoTracks.filter { session.isScreenTrack($0) && !$0.isLocal }) { track in
+                    if let media = session.media {
+                        VStack(alignment: .leading, spacing: 8) {
+                            Text((session.participants.first { $0.id == session.participantID(for: track) }?.displayName ?? tr("Участник")) + " · " + tr("Демонстрация экрана"))
+                                .font(MSTheme.font(12))
+                            media.videoView(trackID: track.id, mirrored: false, fit: true)
+                                .frame(minHeight: 260).background(panel).clipShape(RoundedRectangle(cornerRadius: 16))
+                        }.accessibilityIdentifier("remoteScreenStage")
+                    }
+                }
             LazyVGrid(columns: [GridItem(.adaptive(minimum: typeSize.isAccessibilitySize ? 260 : 160))], spacing: 12) {
                 let roster = session.participants.filter { $0.canParticipate }
                 if roster.isEmpty { participantTile(session.participant) }
                 ForEach(roster) { participantTile($0) }
-                ForEach(session.videoTracks.filter { session.isScreenTrack($0) }) { track in
-                    if let media = session.media {
-                        media.videoView(trackID: track.id, mirrored: false)
-                            .frame(minHeight: 180).background(panel).clipShape(RoundedRectangle(cornerRadius: 16))
-                            .accessibilityLabel(tr("Демонстрация экрана"))
-                    }
-                }
+            }
             }
         }
     }
@@ -133,6 +138,7 @@ struct LiveConferenceView: View {
     }
     private func controls(compact: Bool) -> some View {
         VStack(spacing: 6) {
+            ScreenShareControls(session: session).padding(.horizontal, 12)
             HStack(spacing: 12) {
                 control(session.microphone ? "mic.fill" : "mic.slash", "Микрофон", id: "conferenceMic", compact: compact,
                         active: session.microphone, disabled: session.microphoneBlocked || session.busy || session.phase != .connected) {

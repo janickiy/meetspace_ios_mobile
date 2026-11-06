@@ -156,11 +156,11 @@ import MeetSpaceCalling
         let workspace = MessagingModel(client: client, downloads: dependencies.transport(), sockets: dependencies.sockets)
         messaging = workspace; addingAccount = false
         conferences = ConferenceWorkspace(repository: ConferenceRepository(client: client),
-            sockets: dependencies.conferenceSockets, makeMedia: dependencies.media,
+            sockets: dependencies.conferenceSockets, makeMedia: dependencies.media, makeBroadcast: dependencies.broadcast,
             canUseMedia: { [weak self] in self?.calls?.isActive != true && self?.calls?.busy != true })
         let calls = DirectCallCoordinator(repository: DirectCallsRepository(client: client),
             conferenceRepository: ConferenceRepository(client: client), system: systemCalling,
-            sockets: dependencies.conferenceSockets, makeMedia: dependencies.media,
+            sockets: dependencies.conferenceSockets, makeMedia: dependencies.media, makeBroadcast: dependencies.broadcast,
             canUseMedia: { [weak self] in self?.conferences?.call == nil && self?.conferences?.busy != true })
         self.calls = calls
         workspace.onCallUpdate = { [weak calls] call in Task { await calls?.receive(call) } }

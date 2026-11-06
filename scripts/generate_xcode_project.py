@@ -55,7 +55,8 @@ def make_project():
     targets = []
     # Media is linked once, transitively through Features in the app. Hosted tests import that
     # compiled module and resolve its symbols through BUNDLE_LOADER, not a second package product.
-    target_names = [("MeetSpace", "App", "application", "app", ["MeetSpaceFeatures", "MeetSpaceCore", "MeetSpaceAPI", "MeetSpaceRealtime"]),
+    target_names = [("BroadcastUpload", "BroadcastExtension", "app-extension", "appex", ["MeetSpaceBroadcast"]),
+                    ("MeetSpace", "App", "application", "app", ["MeetSpaceFeatures", "MeetSpaceCore", "MeetSpaceAPI", "MeetSpaceRealtime"]),
                     ("MeetSpaceTests", "Tests/MeetSpaceTests", "bundle.unit-test", "xctest", ["MeetSpaceCore", "MeetSpaceStorage"]),
                     ("MeetSpaceUITests", "Tests/MeetSpaceUITests", "bundle.ui-testing", "xctest", [])]
     for name, directory, kind, extension, modules in target_names:
@@ -75,11 +76,15 @@ def make_project():
             product = add(name + module, "XCSwiftPackageProductDependency", package=package, productName=module)
             packages.append(product)
             frameworks.append(add(name + module + "Link", "PBXBuildFile", productRef=product))
-        if name != "MeetSpace":
+        if name in ("MeetSpaceTests", "MeetSpaceUITests"):
             proxy = add(name + "Proxy", "PBXContainerItemProxy", containerPortal=project_id, proxyType=1,
                         remoteGlobalIDString=uid("MeetSpaceTarget"), remoteInfo="MeetSpace")
             dependencies.append(add(name + "Dependency", "PBXTargetDependency", target=uid("MeetSpaceTarget"), targetProxy=proxy))
-        product = add(name + "Product", "PBXFileReference", explicitFileType="wrapper.application" if extension == "app" else "wrapper.cfbundle",
+        if name == "MeetSpace":
+            proxy = add(name + "BroadcastProxy", "PBXContainerItemProxy", containerPortal=project_id, proxyType=1,
+                        remoteGlobalIDString=uid("BroadcastUploadTarget"), remoteInfo="BroadcastUpload")
+            dependencies.append(add(name + "BroadcastDependency", "PBXTargetDependency", target=uid("BroadcastUploadTarget"), targetProxy=proxy))
+        product = add(name + "Product", "PBXFileReference", explicitFileType={"app": "wrapper.application", "appex": "wrapper.app-extension", "xctest": "wrapper.cfbundle"}[extension],
                       includeInIndex=0, path=f"{name}.{extension}", sourceTree="BUILT_PRODUCTS_DIR")
         product_files.append(product)
         settings = dict(PRODUCT_NAME="$(TARGET_NAME)", PRODUCT_BUNDLE_IDENTIFIER="com.meetspace.ios" + ("" if name == "MeetSpace" else "." + name),
@@ -88,6 +93,11 @@ def make_project():
         if name == "MeetSpace":
             settings.update(CODE_SIGN_ENTITLEMENTS="App/MeetSpace.entitlements", INFOPLIST_FILE="App/Info.plist", GENERATE_INFOPLIST_FILE="NO", MARKETING_VERSION="0.2.0",
                             CURRENT_PROJECT_VERSION="1", LD_RUNPATH_SEARCH_PATHS=["$(inherited)", "@executable_path/Frameworks"])
+        elif name == "BroadcastUpload":
+            settings.update(CODE_SIGN_ENTITLEMENTS="BroadcastExtension/MeetSpaceBroadcast.entitlements",
+                            INFOPLIST_FILE="BroadcastExtension/Info.plist", GENERATE_INFOPLIST_FILE="NO",
+                            APPLICATION_EXTENSION_API_ONLY="YES", SKIP_INSTALL="YES", MARKETING_VERSION="0.2.0",
+                            CURRENT_PROJECT_VERSION="1", LD_RUNPATH_SEARCH_PATHS=["$(inherited)", "@executable_path/Frameworks", "@executable_path/../../Frameworks"])
         elif name == "MeetSpaceTests":
             settings.update(TEST_HOST="$(BUILT_PRODUCTS_DIR)/MeetSpace.app/MeetSpace",
                             BUNDLE_LOADER="$(TEST_HOST)", LD_RUNPATH_SEARCH_PATHS=["$(inherited)", "@executable_path/Frameworks", "@loader_path/Frameworks"])
@@ -96,6 +106,10 @@ def make_project():
         phases = [add(name + "Sources", "PBXSourcesBuildPhase", buildActionMask=2147483647, files=sources, runOnlyForDeploymentPostprocessing=0),
                   add(name + "Frameworks", "PBXFrameworksBuildPhase", buildActionMask=2147483647, files=frameworks, runOnlyForDeploymentPostprocessing=0),
                   add(name + "Resources", "PBXResourcesBuildPhase", buildActionMask=2147483647, files=resources, runOnlyForDeploymentPostprocessing=0)]
+        if name == "MeetSpace":
+            embedded = add("EmbedBroadcastProduct", "PBXBuildFile", fileRef=uid("BroadcastUploadProduct"), settings={"ATTRIBUTES": ["RemoveHeadersOnCopy"]})
+            phases.append(add("EmbedBroadcastPhase", "PBXCopyFilesBuildPhase", buildActionMask=2147483647,
+                              dstPath="", dstSubfolderSpec=13, files=[embedded], name="Embed App Extensions", runOnlyForDeploymentPostprocessing=0))
         targets.append(add(name + "Target", "PBXNativeTarget", buildConfigurationList=configs(name, settings), buildPhases=phases,
                            buildRules=[], dependencies=dependencies, name=name, packageProductDependencies=packages,
                            productName=name, productReference=product, productType="com.apple.product-type." + kind))
@@ -103,6 +117,7 @@ def make_project():
     package_group = add("packageGroup", "PBXFileReference", lastKnownFileType="wrapper", path="Packages/MeetSpaceKit", sourceTree="<group>")
     group = add("mainGroup", "PBXGroup", children=source_groups + [package_group, products], sourceTree="<group>")
     base_settings = dict(IPHONEOS_DEPLOYMENT_TARGET="18.0", SDKROOT="iphoneos", SWIFT_VERSION="6.0",
+                         BROADCAST_APP_GROUP="group.com.meetspace.ios.broadcast",
                          SWIFT_STRICT_CONCURRENCY="complete", CLANG_ENABLE_MODULES="YES", CLANG_ENABLE_OBJC_ARC="YES",
                          GCC_C_LANGUAGE_STANDARD="gnu17", SWIFT_EMIT_LOC_STRINGS="YES")
     add("project", "PBXProject", attributes={"BuildIndependentTargetsInParallel": "YES", "LastUpgradeCheck": "1600",

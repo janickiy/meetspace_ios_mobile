@@ -31,8 +31,9 @@ struct DirectCallView: View {
                                 .accessibilityLabel(tr("Длительность звонка"))
                         }
                     }
+                    if connected, let session = call.mediaSession { ScreenShareControls(session: session) }
                     video.frame(height: max(typeSize.isAccessibilitySize ? 340 : 260,
-                        proxy.size.height - (call.error != nil || call.mediaSession?.error != nil ? 300 : 210)))
+                        proxy.size.height - (call.error != nil || call.mediaSession?.error != nil ? 370 : 280)))
                     if let error = call.error ?? call.mediaSession?.error {
                         Text(tr(error)).font(MSTheme.font(13)).multilineTextAlignment(.center)
                             .foregroundStyle(Color(red: 1, green: 0.65, blue: 0.67)).accessibilityIdentifier("directCallError")
@@ -76,8 +77,8 @@ struct DirectCallView: View {
     }
     @ViewBuilder private var video: some View {
         if let session = call.mediaSession, let media = session.media,
-           let remote = session.videoTracks.first(where: { !$0.isLocal }) {
-            media.videoView(trackID: remote.id, mirrored: false)
+           let remote = session.videoTracks.first(where: { !$0.isLocal && session.isScreenTrack($0) }) ?? session.videoTracks.first(where: { !$0.isLocal }) {
+            media.videoView(trackID: remote.id, mirrored: false, fit: session.isScreenTrack(remote))
                 .clipShape(RoundedRectangle(cornerRadius: 22))
                 .overlay(alignment: .topTrailing) { localPreview(session).padding(14) }
                 .overlay(alignment: .bottomLeading) { peerLabels.padding(18).background(.black.opacity(0.4), in: RoundedRectangle(cornerRadius: 16)).padding(12) }
@@ -105,7 +106,7 @@ struct DirectCallView: View {
         }
     }
     @ViewBuilder private func localPreview(_ session: ConferenceSession) -> some View {
-        if session.camera, let media = session.media, let local = session.videoTracks.first(where: \.isLocal) {
+        if session.camera, let media = session.media, let local = session.videoTracks.first(where: { $0.isLocal && !session.isScreenTrack($0) }) {
             media.videoView(trackID: local.id, mirrored: session.frontCamera)
                 .frame(width: 90, height: 120).clipShape(RoundedRectangle(cornerRadius: 12))
                 .accessibilityElement(children: .ignore)

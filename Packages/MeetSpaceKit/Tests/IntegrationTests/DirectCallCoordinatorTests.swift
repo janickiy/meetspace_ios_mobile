@@ -4,6 +4,7 @@ import Testing
 import MeetSpaceCore
 import MeetSpaceAPI
 import MeetSpaceMedia
+import MeetSpaceBroadcast
 import MeetSpaceRealtime
 import MeetSpaceCalling
 @testable import MeetSpaceFeatures
@@ -213,11 +214,15 @@ private actor CallSockets: ConferenceSocketFactory {
     var cameraFailures = 0, cameraAttempts = 0
     var configuration: ConferenceMediaConfiguration?
     init() { (events, continuation) = AsyncStream.makeStream() }
+    var localScreenVideoTrackID: String { "fixture-screen" }
+    func rollbackLocalOffer() async throws {}
+    func setScreenEnabled(_ enabled: Bool) async throws {}
+    func pushScreenFrame(_ frame: ScreenBroadcastFrame) throws {}
     func configure(_ configuration: ConferenceMediaConfiguration) { self.configuration = configuration }
     func makeOffer(iceRestart: Bool) -> ConferenceMediaOffer { ConferenceMediaOffer(sdp: "v=0\r\n", publications: []) }
     func applyAnswer(_ sdp: String) { continuation.yield(.connectionState(.connected)) }
     func addRemoteCandidate(_ candidate: ConferenceICECandidate) {}
-    func setPublicationPermissions(microphone: Bool, camera: Bool) {}
+    func setPublicationPermissions(microphone: Bool, camera: Bool, screen: Bool) {}
     func setMicrophoneEnabled(_ enabled: Bool) { microphone = enabled; capture() }
     func setCameraEnabled(_ enabled: Bool) throws {
         if enabled {

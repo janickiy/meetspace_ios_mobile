@@ -11,6 +11,8 @@
     <key>CFBundleShortVersionString</key><string>$(MARKETING_VERSION)</string>
     <key>CFBundleVersion</key><string>$(CURRENT_PROJECT_VERSION)</string>
     <key>LSRequiresIPhoneOS</key><true/>
+    <key>MeetSpaceBroadcastAppGroup</key><string>$(BROADCAST_APP_GROUP)</string>
+    <key>MeetSpaceBroadcastExtension</key><string>com.meetspace.ios.BroadcastUpload</string>
     <key>NSCameraUsageDescription</key><string>Камера передаёт ваше видео участникам встречи или личного звонка, когда вы её включаете.</string>
     <key>NSMicrophoneUsageDescription</key><string>Микрофон передаёт ваш голос участникам встречи или личного звонка, когда вы его включаете.</string>
     <key>UIBackgroundModes</key><array><string>audio</string><string>voip</string></array>

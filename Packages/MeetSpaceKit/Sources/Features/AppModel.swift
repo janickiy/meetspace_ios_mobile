@@ -6,6 +6,7 @@ import MeetSpaceStorage
 import MeetSpaceRealtime
 import MeetSpaceMedia
 import MeetSpaceCalling
+import MeetSpaceBroadcast
 
 public struct AppDependencies: Sendable {
     public let serverProbe: any ServerProbing
@@ -16,6 +17,7 @@ public struct AppDependencies: Sendable {
     public let sockets: any RealtimeSocketFactory
     public let conferenceSockets: any ConferenceSocketFactory
     public let media: @MainActor @Sendable () -> any ConferenceMediaEngine
+    public let broadcast: @MainActor @Sendable () -> any ScreenBroadcastController
     public let calling: @MainActor @Sendable () -> any SystemCalling
     public let notifications: @MainActor @Sendable () -> any NormalPushNotifications
     public let pushStore: any PushRegistrationStore
@@ -25,12 +27,13 @@ public struct AppDependencies: Sendable {
                 sockets: any RealtimeSocketFactory = URLSessionSocketFactory(),
                 conferenceSockets: any ConferenceSocketFactory = URLSessionConferenceSocketFactory(),
                 media: @escaping @MainActor @Sendable () -> any ConferenceMediaEngine = { ConferenceMediaFactory.make() },
+                broadcast: @escaping @MainActor @Sendable () -> any ScreenBroadcastController = { BroadcastControllerFactory.make() },
                 calling: @escaping @MainActor @Sendable () -> any SystemCalling = { SystemCallingFactory.make() },
                 notifications: @escaping @MainActor @Sendable () -> any NormalPushNotifications = { NormalPushNotificationsFactory.make() },
                 pushStore: any PushRegistrationStore = MemoryPushRegistrationStore()) {
         self.serverProbe = serverProbe; self.configuration = configuration; self.credentials = credentials
         self.accounts = accounts; self.transport = transport; self.sockets = sockets
-        self.conferenceSockets = conferenceSockets; self.media = media
+        self.conferenceSockets = conferenceSockets; self.media = media; self.broadcast = broadcast
         self.calling = calling; self.notifications = notifications; self.pushStore = pushStore
     }
     @MainActor public static func live(calling: (any SystemCalling)? = nil,
@@ -117,7 +120,7 @@ public struct AppDependencies: Sendable {
                 _ = try? await repository.leave(guest.conferenceID); return false
             }
             guestConference = ConferenceSession(repository: repository, title: invite.title, participant: guest.participant,
-                sockets: dependencies.conferenceSockets, makeMedia: dependencies.media)
+                sockets: dependencies.conferenceSockets, makeMedia: dependencies.media, makeBroadcast: dependencies.broadcast)
             guestConference?.observeLobby()
             return true
         } catch { guestError = userMessage(error); return false }

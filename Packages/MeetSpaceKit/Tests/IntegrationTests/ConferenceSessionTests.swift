@@ -4,6 +4,7 @@ import Testing
 import MeetSpaceCore
 import MeetSpaceAPI
 import MeetSpaceMedia
+import MeetSpaceBroadcast
 import MeetSpaceRealtime
 @testable import MeetSpaceFeatures
 
@@ -129,22 +130,31 @@ private actor SessionSockets: ConferenceSocketFactory {
     let localVideoTrackID = UUID().uuidString
     var configuration: ConferenceMediaConfiguration?
     var microphone = false, camera = false, closed = false
-    var microphoneAllowed = true, cameraAllowed = true
+    var microphoneAllowed = true, cameraAllowed = true, screenAllowed = false
+    var screen = false, rollbacks = 0, screenFrames = 0
     var closeCount = 0, offers = 0
     var microphoneGate: SessionPermissionGate?
     init() { (events, continuation) = AsyncStream.makeStream() }
+    var localScreenVideoTrackID: String { "fixture-screen" }
+    func rollbackLocalOffer() async throws { rollbacks += 1 }
+    func setScreenEnabled(_ enabled: Bool) async throws {
+        guard !enabled || (screenAllowed && cameraAllowed) else { throw ConferenceMediaError.publicationBlocked }
+        screen = enabled; continuation.yield(.screenCaptureState(enabled))
+        continuation.yield(.negotiationNeeded)
+    }
+    func pushScreenFrame(_ frame: ScreenBroadcastFrame) throws { screenFrames += 1 }
     func configure(_ configuration: ConferenceMediaConfiguration) {
         self.configuration = configuration
         microphoneAllowed = configuration.microphoneAllowed; cameraAllowed = configuration.cameraAllowed
     }
     func makeOffer(iceRestart: Bool) throws -> ConferenceMediaOffer {
         guard !closed else { throw CancellationError() }; offers += 1
-        return ConferenceMediaOffer(sdp: "v=0\r\nm=audio 9 UDP/TLS/RTP/SAVPF 111\r\na=mid:0\r\na=recvonly\r\n", publications: [])
+        return ConferenceMediaOffer(sdp: "v=0\r\nm=audio 9 UDP/TLS/RTP/SAVPF 111\r\na=mid:0\r\na=recvonly\r\n", publications: screen ? [.init(mid: "2", source: "video/screen", trackId: localScreenVideoTrackID)] : [])
     }
     func applyAnswer(_ sdp: String) throws { if closed { throw CancellationError() } }
     func addRemoteCandidate(_ candidate: MeetSpaceMedia.ConferenceICECandidate) {}
-    func setPublicationPermissions(microphone: Bool, camera: Bool) {
-        microphoneAllowed = microphone; cameraAllowed = camera
+    func setPublicationPermissions(microphone: Bool, camera: Bool, screen: Bool) {
+        microphoneAllowed = microphone; cameraAllowed = camera; screenAllowed = screen && camera
         if !microphone { self.microphone = false }; if !camera { self.camera = false }
         capture()
     }
@@ -215,6 +225,142 @@ private actor SessionSockets: ConferenceSocketFactory {
     #expect(engine.configuration?.iceServers.first?.urls == ["stun:fixture.example:3478"])
     await session.leave()
     #expect(engine.closed && session.videoTracks.isEmpty && session.phase == .ended)
+}
+
+@MainActor private final class SessionBroadcast: ScreenBroadcastController {
+    let events: AsyncStream<ScreenBroadcastEvent>
+    let event: AsyncStream<ScreenBroadcastEvent>.Continuation
+    let frames: AsyncStream<ScreenBroadcastFrame>
+    let frame: AsyncStream<ScreenBroadcastFrame>.Continuation
+    var isAvailable = true
+    let extensionBundleID: String? = "fixture.broadcast"
+    var sessionID: UUID?
+    var stops = 0
+    init() {
+        (events, event) = AsyncStream.makeStream()
+        (frames, frame) = AsyncStream.makeStream()
+    }
+    func prepare(configuration: ScreenBroadcastConfiguration) { sessionID = UUID() }
+    func stop() { stops += 1; sessionID = nil }
+    func sendFrame(_ id: UUID, timestamp: Int64 = 1) {
+        frame.yield(ScreenBroadcastFrame(sessionID: id, width: 2, height: 2, rowBytes: 8,
+            timestampNs: timestamp, pixels: Data(repeating: 0, count: 16)))
+    }
+}
+@MainActor private func acknowledgeLatestScreenOffer(_ socket: SessionSocket) async throws {
+    let before = await socket.count("media.ready")
+    let offer = try #require(await socket.last("media.offer"))
+    struct Offer: Decodable { let negotiationId: String }
+    await socket.emit(try SessionFixture.event("media.answer", ["mediaPeerId": SessionFixture.peer.uuidString,
+        "negotiationId": offer.payload(Offer.self).negotiationId, "sdp": "v=0\r\nm=audio 9 UDP/TLS/RTP/SAVPF 111\r\na=mid:0\r\n"], reply: offer.id))
+    try await sessionEventually { await socket.count("media.ready") > before }
+    let ready = try #require(await socket.last("media.ready"))
+    await socket.emit(try SessionFixture.event("ack", ["type": "media.ready"], reply: ready.id))
+    try await Task.sleep(for: .milliseconds(15))
+}
+@MainActor private func screenSession() async throws -> (ConferenceSession, SessionEngine, SessionSocket, SessionBroadcast) {
+    let sockets = SessionSockets(), engine = SessionEngine(), broadcast = SessionBroadcast()
+    let session = ConferenceSession(repository: try SessionFixture.repository(), title: "Fixture", participant: SessionFixture.member,
+        sockets: sockets, makeMedia: { engine }, makeBroadcast: { broadcast })
+    let socket = try await joinSession(session, sockets: sockets)
+    engine.emit(.connectionState(.connected))
+    try await acknowledgeLatestScreenOffer(socket)
+    try await sessionEventually { session.phase == .connected }
+    return (session, engine, socket, broadcast)
+}
+
+@Test @MainActor func screenConsentFrameAndServerAckAreAllRequiredAndStopFencesFrames() async throws {
+    let (session, engine, socket, broadcast) = try await screenSession()
+    await session.prepareScreenShare()
+    let id = try #require(broadcast.sessionID)
+    #expect(session.screenShareState == .awaitingSystem && !engine.screen)
+    broadcast.event.yield(.started(id))
+    try await sessionEventually { let count = await socket.count("media.offer"); return engine.screen && count > 1 }
+    broadcast.sendFrame(id)
+    try await sessionEventually { engine.screenFrames == 1 }
+    #expect(!session.screenSharing)
+    try await acknowledgeLatestScreenOffer(socket)
+    try await sessionEventually { session.screenSharing }
+    for _ in 0..<3 {
+        let offers = await socket.count("media.offer"), answers = await socket.count("media.ready")
+        if offers > answers { try await acknowledgeLatestScreenOffer(socket) }
+    }
+    let offers = await socket.count("media.offer")
+    await session.stopScreenShare()
+    #expect(!engine.screen && !session.screenSharing && broadcast.stops == 1)
+    broadcast.sendFrame(id, timestamp: 200_000_001)
+    try await Task.sleep(for: .milliseconds(20))
+    #expect(engine.screenFrames == 1)
+    try await sessionEventually { await socket.count("media.offer") > offers }
+    try await acknowledgeLatestScreenOffer(socket)
+    // An already queued negotiationNeeded may require one final coalesced empty offer.
+    if session.screenShareState == .stopping { try await acknowledgeLatestScreenOffer(socket) }
+    try await sessionEventually { session.screenShareState == .idle }
+    await session.leave()
+}
+
+@Test @MainActor func screenConflictRollsBackOnlyScreenAndKeepsConversation() async throws {
+    let (session, engine, socket, broadcast) = try await screenSession()
+    engine.microphone = true; engine.camera = true
+    engine.emit(.captureState(microphone: true, camera: true, frontCamera: true))
+    await session.prepareScreenShare()
+    let id = try #require(broadcast.sessionID)
+    broadcast.event.yield(.started(id))
+    try await sessionEventually { let count = await socket.count("media.offer"); return engine.screen && count > 1 }
+    let rejected = try #require(await socket.last("media.offer"))
+    await socket.emit(try SessionFixture.event("error", ["code": "screen_sharing_conflict", "message": "Screen busy"], reply: rejected.id))
+    try await sessionEventually { engine.rollbacks == 1 && !engine.screen && broadcast.stops == 1 }
+    #expect(engine.microphone && engine.camera && !engine.closed && session.phase == .connected)
+    #expect(session.screenShareError != nil)
+    await session.leave()
+}
+
+@Test @MainActor func screenStopDuringPendingStartWaitsForRemovalAcknowledgement() async throws {
+    let (session, engine, socket, broadcast) = try await screenSession()
+    await session.prepareScreenShare()
+    let id = try #require(broadcast.sessionID)
+    broadcast.event.yield(.started(id))
+    try await sessionEventually { let count = await socket.count("media.offer"); return engine.screen && count > 1 }
+    let startOffer = try #require(await socket.last("media.offer"))
+    await session.stopScreenShare()
+    #expect(session.screenShareState == .stopping && !engine.screen && broadcast.stops == 1)
+    #expect(!session.canStartScreenShare)
+    try await acknowledgeLatestScreenOffer(socket)
+    try await sessionEventually { await socket.last("media.offer")?.id != startOffer.id }
+    #expect(session.screenShareState == .stopping && !session.screenSharing)
+    try await acknowledgeLatestScreenOffer(socket)
+    try await sessionEventually { session.screenShareState == .idle }
+    await session.leave()
+}
+
+@Test @MainActor func screenPolicyAndOldLeaseCannotResumeCapture() async throws {
+    let (session, engine, socket, broadcast) = try await screenSession()
+    await session.prepareScreenShare()
+    let id = try #require(broadcast.sessionID)
+    broadcast.event.yield(.started(id))
+    try await sessionEventually { engine.screen }
+    var policy = SessionFixture.policy; policy["version"] = 2; policy["screenBlocked"] = true
+    await socket.emit(try SessionFixture.event("media.policy", ["mediaPeerId": SessionFixture.peer.uuidString, "policy": policy]))
+    try await sessionEventually { session.screenBlocked && !engine.screen && broadcast.stops == 1 }
+    broadcast.event.yield(.resumed(id)); broadcast.sendFrame(id)
+    try await Task.sleep(for: .milliseconds(20))
+    #expect(!engine.screen && engine.screenFrames == 0 && !session.canStartScreenShare)
+    await session.leave()
+}
+
+@Test @MainActor func screenKeepsTransportInBackgroundAndLeaveRevokesLease() async throws {
+    let (session, engine, socket, broadcast) = try await screenSession()
+    await session.prepareScreenShare()
+    let id = try #require(broadcast.sessionID)
+    broadcast.event.yield(.started(id))
+    try await sessionEventually { engine.screen }
+    await session.setForeground(false)
+    #expect(!engine.closed && !engine.microphone && !engine.camera)
+    await session.leave()
+    let closes = await socket.closes
+    #expect(engine.closed && broadcast.stops == 1 && closes == 1)
+    broadcast.sendFrame(id)
+    #expect(engine.screenFrames == 0)
 }
 
 @Test @MainActor func conferenceSessionProcessesModerationDuringPendingPermission() async throws {

@@ -28,6 +28,7 @@ import UIKit
 @MainActor struct ConferenceVideoRenderer: UIViewRepresentable {
     let track: RTCVideoTrack?
     let mirrored: Bool
+    let fit: Bool
     let registry: ConferenceRendererRegistry
     final class Coordinator {
         let id = UUID()
@@ -38,12 +39,13 @@ import UIKit
     func makeCoordinator() -> Coordinator { Coordinator(registry: registry) }
     func makeUIView(context: Context) -> RTCMTLVideoView {
         let view = RTCMTLVideoView(frame: .zero)
-        view.videoContentMode = .scaleAspectFill
+        view.videoContentMode = fit ? .scaleAspectFit : .scaleAspectFill
         view.clipsToBounds = true; view.isAccessibilityElement = false
         updateUIView(view, context: context)
         return view
     }
     func updateUIView(_ view: RTCMTLVideoView, context: Context) {
+        view.videoContentMode = fit ? .scaleAspectFit : .scaleAspectFill
         if context.coordinator.track !== track {
             registry.detach(context.coordinator.id)
             context.coordinator.track = track

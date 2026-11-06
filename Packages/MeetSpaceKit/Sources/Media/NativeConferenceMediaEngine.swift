@@ -3,16 +3,24 @@ import Foundation
 import SwiftUI
 import UIKit
 import Network
+import MeetSpaceBroadcast
 @preconcurrency import AVFoundation
 @preconcurrency import WebRTC
 
 @MainActor final class NativeConferenceMediaEngine: NSObject, ConferenceMediaEngine {
     let events: AsyncStream<ConferenceMediaEvent>
     let localVideoTrackID = "camera-" + UUID().uuidString.lowercased()
+    private(set) var localScreenVideoTrackID = "screen-" + UUID().uuidString.lowercased()
     private let continuation: AsyncStream<ConferenceMediaEvent>.Continuation
     private var configuration: ConferenceMediaConfiguration?
     private var peer: NativePeer?
     private var capturer: RTCCameraVideoCapturer?
+    private var screenCapturer: RTCVideoCapturer?
+    private var screenPool: CVPixelBufferPool?
+    private var screenDimensions: (width: Int, height: Int)?
+    private var screenSessionID: UUID?
+    private var screenTimestamp: Int64?
+    private var screenEnabled = false
     private var remoteTracks: [String: RTCVideoTrack] = [:]
     private var remoteReferences: [String: ConferenceVideoTrack] = [:]
     private let renderers = ConferenceRendererRegistry()
@@ -88,15 +96,21 @@ import Network
         try await peer.applyAnswer(sdp)
     }
 
+    func rollbackLocalOffer() async throws {
+        guard !closed, let peer else { throw ConferenceMediaError.notConfigured }
+        try await peer.rollbackLocalOffer()
+    }
+
     func addRemoteCandidate(_ candidate: ConferenceICECandidate) async throws {
         guard !closed, let peer else { throw ConferenceMediaError.notConfigured }
         try await peer.addRemoteCandidate(candidate)
     }
 
-    func setPublicationPermissions(microphone: Bool, camera: Bool) async throws {
+    func setPublicationPermissions(microphone: Bool, camera: Bool, screen: Bool) async throws {
         guard !closed, let peer else { throw ConferenceMediaError.notConfigured }
         permissionsGeneration = UUID(); let operation = permissionsGeneration
         configuration?.microphoneAllowed = microphone; configuration?.cameraAllowed = camera
+        configuration?.screenAllowed = screen && camera
         // Publish directions must change even while muted; SFU validates every sending SDP section.
         // A direction update failure must never skip stopping the other forbidden capture.
         var stoppedCleanly = true
@@ -106,10 +120,88 @@ import Network
         if !camera {
             do { try await setCameraEnabled(false) } catch { stoppedCleanly = false }
         }
+        if !screen || !camera {
+            do { try await setScreenEnabled(false) } catch { stoppedCleanly = false }
+        }
         guard !closed, self.peer === peer, permissionsGeneration == operation else { throw CancellationError() }
         guard stoppedCleanly else { throw ConferenceMediaError.negotiation }
-        do { try peer.setPublicationPermissions(microphone: microphone, camera: camera) }
+        do { try peer.setPublicationPermissions(microphone: microphone, camera: camera, screen: screen) }
         catch { throw ConferenceMediaError.negotiation }
+    }
+
+    func setScreenEnabled(_ enabled: Bool) async throws {
+        guard !closed, let peer else { throw ConferenceMediaError.notConfigured }
+        if enabled && screenEnabled { return }
+        if !enabled {
+            let wasEnabled = screenEnabled
+            screenEnabled = false; screenSessionID = nil; screenTimestamp = nil
+            screenCapturer = nil; screenPool = nil; screenDimensions = nil
+            renderers.detach(trackID: localScreenVideoTrackID)
+            let removal = Result { try peer.setScreenEnabled(false, trackID: nil) }
+            if wasEnabled { emit(.videoTrackRemoved(localScreenVideoTrackID)); emit(.screenCaptureState(false)) }
+            try removal.get()
+            return
+        }
+        guard configuration?.screenAllowed == true, configuration?.cameraAllowed == true else {
+            throw ConferenceMediaError.publicationBlocked
+        }
+        guard !interrupted else { throw ConferenceMediaError.interrupted }
+        try Task.checkCancellation()
+        localScreenVideoTrackID = "screen-" + UUID().uuidString.lowercased()
+        try peer.setScreenEnabled(true, trackID: localScreenVideoTrackID)
+        screenCapturer = RTCVideoCapturer(delegate: peer.screenSource)
+        screenEnabled = true; screenSessionID = nil; screenTimestamp = nil
+        emit(.videoTrackAdded(ConferenceVideoTrack(id: localScreenVideoTrackID, mid: nil,
+            streamID: configuration!.mediaPeerID.uuidString.lowercased() + "-screen", isLocal: true)))
+        emit(.screenCaptureState(true))
+    }
+
+    func pushScreenFrame(_ frame: ScreenBroadcastFrame) throws {
+        guard !closed, screenEnabled, let peer, let screenCapturer else { throw ConferenceMediaError.screenUnavailable }
+        guard !interrupted, configuration?.screenAllowed == true, configuration?.cameraAllowed == true else {
+            throw ConferenceMediaError.publicationBlocked
+        }
+        guard (1...1280).contains(frame.width), (1...1280).contains(frame.height),
+              frame.width * frame.height <= 1280 * 720, frame.rowBytes == frame.width * 4,
+              frame.pixels.count == frame.rowBytes * frame.height, frame.timestampNs >= 0,
+              screenSessionID == nil || screenSessionID == frame.sessionID else {
+            throw ConferenceMediaError.invalidScreenFrame
+        }
+        if let last = screenTimestamp, frame.timestampNs <= last || frame.timestampNs - last < 100_000_000 { return }
+        if screenDimensions?.width != frame.width || screenDimensions?.height != frame.height {
+            screenPool = nil
+            let attributes: [String: Any] = [
+                kCVPixelBufferPixelFormatTypeKey as String: kCVPixelFormatType_32BGRA,
+                kCVPixelBufferWidthKey as String: frame.width, kCVPixelBufferHeightKey as String: frame.height,
+                kCVPixelBufferIOSurfacePropertiesKey as String: [:]
+            ]
+            guard CVPixelBufferPoolCreate(nil, nil, attributes as CFDictionary, &screenPool) == kCVReturnSuccess else {
+                throw ConferenceMediaError.capture
+            }
+            screenDimensions = (frame.width, frame.height)
+            peer.screenSource.adaptOutputFormat(toWidth: Int32(frame.width), height: Int32(frame.height), fps: 10)
+        }
+        guard let screenPool else { throw ConferenceMediaError.capture }
+        var buffer: CVPixelBuffer?
+        let result = CVPixelBufferPoolCreatePixelBufferWithAuxAttributes(nil, screenPool,
+            [kCVPixelBufferPoolAllocationThresholdKey as String: 3] as CFDictionary, &buffer)
+        if result == kCVReturnWouldExceedAllocationThreshold { return } // Encoder backpressure: no frame backlog.
+        guard result == kCVReturnSuccess, let buffer,
+              CVPixelBufferLockBaseAddress(buffer, []) == kCVReturnSuccess else { throw ConferenceMediaError.capture }
+        guard let destination = CVPixelBufferGetBaseAddress(buffer) else {
+            CVPixelBufferUnlockBaseAddress(buffer, []); throw ConferenceMediaError.capture
+        }
+        let stride = CVPixelBufferGetBytesPerRow(buffer)
+        frame.pixels.withUnsafeBytes { bytes in
+            guard let source = bytes.baseAddress else { return }
+            for row in 0..<frame.height {
+                memcpy(destination.advanced(by: row * stride), source.advanced(by: row * frame.rowBytes), frame.rowBytes)
+            }
+        }
+        CVPixelBufferUnlockBaseAddress(buffer, [])
+        screenSessionID = frame.sessionID; screenTimestamp = frame.timestampNs
+        peer.captureScreen(RTCVideoFrame(buffer: RTCCVPixelBuffer(pixelBuffer: buffer), rotation: ._0,
+                                        timeStampNs: frame.timestampNs), capturer: screenCapturer)
     }
 
     func setMicrophoneEnabled(_ enabled: Bool) async throws {
@@ -220,6 +312,7 @@ import Network
         peer?.audioTrack.isEnabled = false; peer?.videoTrack.isEnabled = false
         try? peer?.setMicrophoneEnabled(false); try? peer?.setCameraEnabled(false)
         microphoneEnabled = false; cameraEnabled = false; captureChanged()
+        try? await setScreenEnabled(false)
         RTCAudioSession.sharedInstance().isAudioEnabled = false
         if let capturer { await stopCapture(capturer) }
     }
@@ -236,6 +329,8 @@ import Network
         pathMonitor?.cancel(); pathMonitor = nil
         peer?.audioTrack.isEnabled = false; peer?.videoTrack.isEnabled = false
         microphoneEnabled = false; cameraEnabled = false
+        screenEnabled = false; screenSessionID = nil; screenTimestamp = nil
+        screenCapturer = nil; screenPool = nil; screenDimensions = nil
         renderers.detachAll()
         peer?.close(); peer = nil
         let audio = RTCAudioSession.sharedInstance()
@@ -249,14 +344,20 @@ import Network
         for id in remoteTracks.keys { continuation.yield(.videoTrackRemoved(id)) }
         remoteTracks.removeAll(); remoteReferences.removeAll(); configuration = nil
         continuation.yield(.videoTrackRemoved(localVideoTrackID))
+        continuation.yield(.videoTrackRemoved(localScreenVideoTrackID)); continuation.yield(.screenCaptureState(false))
         continuation.yield(.captureState(microphone: false, camera: false, frontCamera: frontCamera))
         continuation.yield(.connectionState(.closed)); continuation.finish()
     }
 
     func videoView(trackID: String, mirrored: Bool) -> AnyView {
-        let track = trackID == localVideoTrackID ? peer?.videoTrack : remoteTracks[trackID]
+        videoView(trackID: trackID, mirrored: mirrored, fit: trackID == localScreenVideoTrackID)
+    }
+
+    func videoView(trackID: String, mirrored: Bool, fit: Bool) -> AnyView {
+        let track = trackID == localVideoTrackID ? peer?.videoTrack :
+            (trackID == localScreenVideoTrackID ? peer?.screenTrack : remoteTracks[trackID])
         // A new engine must also get a new UIView/coordinator, whose registry owns the attachment.
-        return AnyView(ConferenceVideoRenderer(track: track, mirrored: mirrored, registry: renderers)
+        return AnyView(ConferenceVideoRenderer(track: track, mirrored: mirrored, fit: fit, registry: renderers)
             .id(ObjectIdentifier(renderers)))
     }
 

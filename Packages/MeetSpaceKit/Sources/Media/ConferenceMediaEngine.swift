@@ -1,6 +1,7 @@
 import Foundation
 import SwiftUI
 import MeetSpaceCore
+import MeetSpaceBroadcast
 
 public enum ConferenceAudioActivation: Equatable, Sendable { case application, callKit }
 
@@ -14,15 +15,18 @@ public struct ConferenceMediaConfiguration: Sendable {
     public var maxFrameRate: Int
     public var microphoneAllowed: Bool
     public var cameraAllowed: Bool
+    public var screenAllowed: Bool
     public var audioActivation: ConferenceAudioActivation
     public init(iceServers: [ICEServer], iceTransportPolicy: String = "all", maxPeers: Int = 8,
                 mediaPeerID: UUID, maxWidth: Int = 1280, maxHeight: Int = 720, maxFrameRate: Int = 30,
                 microphoneAllowed: Bool = true, cameraAllowed: Bool = true,
+                screenAllowed: Bool = false,
                 audioActivation: ConferenceAudioActivation = .application) {
         self.iceServers = iceServers; self.iceTransportPolicy = iceTransportPolicy
         self.maxPeers = maxPeers; self.mediaPeerID = mediaPeerID
         self.maxWidth = maxWidth; self.maxHeight = maxHeight; self.maxFrameRate = maxFrameRate
         self.microphoneAllowed = microphoneAllowed; self.cameraAllowed = cameraAllowed
+        self.screenAllowed = screenAllowed
         self.audioActivation = audioActivation
     }
 }
@@ -71,6 +75,7 @@ public enum ConferenceMediaConnectionState: String, Equatable, Sendable {
 public enum ConferenceMediaError: Error, Equatable, Sendable {
     case unavailable, invalidConfiguration, notConfigured, negotiation, invalidCandidate, publicationBlocked
     case microphonePermissionDenied, cameraPermissionDenied, cameraUnavailable, capture, audioSession, interrupted
+    case screenUnavailable, invalidScreenFrame
 }
 
 public enum ConferenceMediaEvent: Equatable, Sendable {
@@ -81,6 +86,7 @@ public enum ConferenceMediaEvent: Equatable, Sendable {
     case videoTrackAdded(ConferenceVideoTrack)
     case videoTrackRemoved(String)
     case captureState(microphone: Bool, camera: Bool, frontCamera: Bool)
+    case screenCaptureState(Bool)
     case audioRoute(String)
     case interrupted(Bool)
     case networkPathChanged
@@ -92,18 +98,29 @@ public enum ConferenceMediaEvent: Equatable, Sendable {
 @MainActor public protocol ConferenceMediaEngine: AnyObject {
     var events: AsyncStream<ConferenceMediaEvent> { get }
     var localVideoTrackID: String { get }
+    var localScreenVideoTrackID: String { get }
     func configure(_ configuration: ConferenceMediaConfiguration) async throws
     func makeOffer(iceRestart: Bool) async throws -> ConferenceMediaOffer
     func applyAnswer(_ sdp: String) async throws
+    func rollbackLocalOffer() async throws
     func addRemoteCandidate(_ candidate: ConferenceICECandidate) async throws
-    func setPublicationPermissions(microphone: Bool, camera: Bool) async throws
+    func setPublicationPermissions(microphone: Bool, camera: Bool, screen: Bool) async throws
     func setMicrophoneEnabled(_ enabled: Bool) async throws
     func setCameraEnabled(_ enabled: Bool) async throws
+    func setScreenEnabled(_ enabled: Bool) async throws
+    func pushScreenFrame(_ frame: ScreenBroadcastFrame) throws
     func switchCamera() async throws
     func setSpeakerEnabled(_ enabled: Bool) throws
     func suspend() async
     func close() async
     func videoView(trackID: String, mirrored: Bool) -> AnyView
+    func videoView(trackID: String, mirrored: Bool, fit: Bool) -> AnyView
+}
+
+public extension ConferenceMediaEngine {
+    func videoView(trackID: String, mirrored: Bool, fit: Bool) -> AnyView {
+        videoView(trackID: trackID, mirrored: mirrored)
+    }
 }
 
 @MainActor public enum ConferenceMediaFactory {
@@ -131,13 +148,17 @@ public enum WebRTCLibrary {
 @MainActor private final class UnavailableConferenceMediaEngine: ConferenceMediaEngine {
     let events = AsyncStream<ConferenceMediaEvent> { $0.finish() }
     let localVideoTrackID = "unavailable"
+    let localScreenVideoTrackID = "unavailable-screen"
     func configure(_ configuration: ConferenceMediaConfiguration) async throws { throw ConferenceMediaError.unavailable }
     func makeOffer(iceRestart: Bool) async throws -> ConferenceMediaOffer { throw ConferenceMediaError.unavailable }
     func applyAnswer(_ sdp: String) async throws { throw ConferenceMediaError.unavailable }
+    func rollbackLocalOffer() async throws { throw ConferenceMediaError.unavailable }
     func addRemoteCandidate(_ candidate: ConferenceICECandidate) async throws { throw ConferenceMediaError.unavailable }
-    func setPublicationPermissions(microphone: Bool, camera: Bool) async throws { throw ConferenceMediaError.unavailable }
+    func setPublicationPermissions(microphone: Bool, camera: Bool, screen: Bool) async throws { throw ConferenceMediaError.unavailable }
     func setMicrophoneEnabled(_ enabled: Bool) async throws { throw ConferenceMediaError.unavailable }
     func setCameraEnabled(_ enabled: Bool) async throws { throw ConferenceMediaError.unavailable }
+    func setScreenEnabled(_ enabled: Bool) async throws { throw ConferenceMediaError.unavailable }
+    func pushScreenFrame(_ frame: ScreenBroadcastFrame) throws { throw ConferenceMediaError.unavailable }
     func switchCamera() async throws { throw ConferenceMediaError.unavailable }
     func setSpeakerEnabled(_ enabled: Bool) throws { throw ConferenceMediaError.unavailable }
     func suspend() async { }

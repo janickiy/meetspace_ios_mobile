@@ -1,0 +1,7 @@
+PASS screen publication: video/screen metadata, peer-screen stream and synthetic VP8 RTP reach remote peer alongside camera/Opus
+PASS competing screen offer: screen_sharing_conflict is correlated; previous presenter and both base connections survive
+PASS ten screen start/stop generations: receive slots are reused within the SDP budget; remote screen track removed each time
+PASS screen moderation: removes screen, rejects blocked source, releases presenter slot and permits explicit new generation after unblocking
+PASS camera moderation: camera and screen are retired together while microphone RTP continues; presenter slot is released
+PASS abrupt publisher socket close: owned tracks are removed and another peer can reserve the screen slot
+PASS screen contract probe; synthetic RTP only, no ReplayKit/device/audio/performance claim
