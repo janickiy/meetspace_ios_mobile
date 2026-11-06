@@ -49,7 +49,8 @@ jobs:
           retention-days: 7
   simulators:
     runs-on: macos-15-intel
-    timeout-minutes: 55
+    # CI10 iPad26 reached the 55m limit with eight tests remaining; preserve the full matrix.
+    timeout-minutes: 90
     strategy:
       fail-fast: false
       matrix:

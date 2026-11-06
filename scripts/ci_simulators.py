@@ -4,7 +4,67 @@ import argparse
 import json
 import platform
 import subprocess
+import time
 from pathlib import Path
+
+
+def export_results(result, label, test_exit_code):
+    """Diagnostic failures never replace the native xcodebuild result."""
+    receipt = {"schema": 1, "nativeTestExitCode": test_exit_code, "status": "RUNNING",
+               "expectedExports": ["summary", "attachments", "diagnostics"], "exports": []}
+    receipt_path = result.parent / f"{label}-export-status.json"
+
+    def save():
+        try:
+            receipt_path.write_text(json.dumps(receipt, indent=2) + "\n")
+        except OSError as error:
+            print(f"Could not save export receipt: {type(error).__name__}", flush=True)
+
+    if not result.exists():
+        receipt.update(status="FAIL", reason="No xcresult exists; no diagnostic success inferred")
+        save()
+        return
+    commands = [
+        ("summary", 30, ["xcrun", "xcresulttool", "get", "test-results", "summary", "--path", str(result)]),
+        ("attachments", 120, ["xcrun", "xcresulttool", "export", "attachments", "--path", str(result),
+                              "--output-path", str(result.parent / f"{label}-screenshots")]),
+        ("diagnostics", 60, ["xcrun", "xcresulttool", "export", "diagnostics", "--path", str(result),
+                             "--output-path", str(result.parent / f"{label}-diagnostics")]),
+    ]
+    for name, timeout, command in commands:
+        log = result.parent / f"{label}-{name}-export.log"
+        partial = result.parent / f"{label}-summary.partial.json"
+        record = {"name": name, "argv": command, "timeoutSeconds": timeout,
+                  "log": log.name, "exitCode": None, "timedOut": False, "status": "RUNNING"}
+        receipt["exports"].append(record)
+        save()
+        started = time.monotonic()
+        try:
+            with log.open("w") as output:
+                if name == "summary":
+                    with partial.open("w") as summary:
+                        completed = subprocess.run(command, stdout=summary, stderr=output, check=False, timeout=timeout)
+                else:
+                    completed = subprocess.run(command, stdout=output, stderr=subprocess.STDOUT, check=False, timeout=timeout)
+            record["exitCode"] = completed.returncode
+            record["status"] = "FAIL"
+            if completed.returncode == 0:
+                if name == "summary":
+                    value = json.loads(partial.read_text())
+                    if not isinstance(value, dict):
+                        raise ValueError("Summary must be a JSON object")
+                    # Publish a complete summary before potentially slow attachments/diagnostics.
+                    partial.replace(result.parent / f"{label}-summary.json")
+                record["status"] = "PASS"
+        except subprocess.TimeoutExpired:
+            record.update(status="FAIL", timedOut=True, reason="Export exceeded its bounded wait")
+        except (OSError, ValueError) as error:
+            record.update(status="FAIL", reason=type(error).__name__)
+        record["elapsedSeconds"] = round(time.monotonic() - started, 3)
+        save()
+        print(f"{label} {name} export: {record['status']} (exit={record['exitCode']}, timeout={record['timedOut']})", flush=True)
+    receipt["status"] = "PASS" if all(item["status"] == "PASS" for item in receipt["exports"]) else "FAIL"
+    save()
 
 
 def main():
@@ -52,21 +112,18 @@ def main():
                      "-only-testing:MeetSpaceUITests/FoundationUITests/testStage08AccountDeletionRequiresPasswordAndConfirmation",
                      "-only-testing:MeetSpaceUITests/FoundationUITests/testConferenceCreateMediaControlsChatAndLeave",
                      "-only-testing:MeetSpaceUITests/FoundationUITests/testLargeTextNavigationAndAppearance"]
+    test_exit_code = None
     try:
         subprocess.run(["xcodebuild", "-project", "MeetSpace.xcodeproj", "-scheme", "MeetSpace-Debug",
                         "-destination", f"platform=iOS Simulator,id={udid}", "-destination-timeout", "120",
                         "-resultBundlePath", str(result), "-parallel-testing-enabled", "NO",
                         *selection, "test"], check=True)
+        test_exit_code = 0
+    except subprocess.CalledProcessError as error:
+        test_exit_code = error.returncode
+        raise
     finally:
-        if result.exists():
-            # Diagnostic export must not replace the actual xcodebuild test result.
-            subprocess.run(["xcrun", "xcresulttool", "export", "attachments", "--path", str(result),
-                            "--output-path", f"artifacts/{label}-screenshots"], check=False)
-            subprocess.run(["xcrun", "xcresulttool", "export", "diagnostics", "--path", str(result),
-                            "--output-path", f"artifacts/{label}-diagnostics"], check=False)
-            with (result.parent / f"{label}-summary.json").open("w") as summary:
-                subprocess.run(["xcrun", "xcresulttool", "get", "test-results", "summary",
-                                "--path", str(result)], stdout=summary, check=False)
+        export_results(result, label, test_exit_code)
 
 
 if __name__ == "__main__":

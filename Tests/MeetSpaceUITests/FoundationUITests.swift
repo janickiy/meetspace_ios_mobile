@@ -38,13 +38,38 @@ import UIKit
     }
 
     private func openProfileFeature(_ identifier: String, in app: XCUIApplication) {
-        app.buttons["tab.profile"].tap()
+        openProfile(in: app)
         let link = app.buttons[identifier]
         // Returning to this tab preserves its scroll offset, including after an
         // audit has sampled a lower row. Reveal in either direction from its frame.
         revealEntireText(link, in: app)
         XCTAssertGreaterThanOrEqual(link.frame.height, 44, "The entire navigation row must be tappable")
         link.tap()
+    }
+
+    private func openProfile(in app: XCUIApplication) {
+        let tab = app.buttons["tab.profile"]
+        XCTAssertTrue(tab.waitForExistence(timeout: 10))
+        tapAfterLogin(tab, in: app, expecting: app.buttons["openAccountSettings"],
+                      unchanged: { !app.buttons["openAccountSettings"].exists })
+    }
+
+    /// iOS 26 can present Passwords during XCTest's 60-second event-synthesis wait.
+    /// Retry only an observed, unapplied navigation/answer action after that exact sheet.
+    /// Never use this helper for send/delete/toggle or other repeatable server mutations.
+    private func tapAfterLogin(_ control: XCUIElement, in app: XCUIApplication,
+                               expecting target: XCUIElement, unchanged: () -> Bool) {
+        control.tap()
+        if target.waitForExistence(timeout: 10) { return }
+        if unchanged(), let decline = passwordDismissButton(app), decline.isHittable {
+            capture(app, name: "late-password-prompt-before-unapplied-action-retry")
+            decline.tap()
+            let dismissed = XCTNSPredicateExpectation(predicate: NSPredicate(format: "exists == false"), object: decline)
+            XCTAssertEqual(XCTWaiter.wait(for: [dismissed], timeout: 10), .completed)
+            // Recheck state after dismissal: a delayed successful action must not repeat.
+            if !target.exists && unchanged() { control.tap() }
+        }
+        XCTAssertTrue(target.waitForExistence(timeout: 10), "The requested transition must complete")
     }
 
     private func contentViewport(for element: XCUIElement, in app: XCUIApplication) -> CGRect {
@@ -106,6 +131,14 @@ import UIKit
     func testAccessibilityStage08CoreScreens() throws {
         let app = launch()
         var issues: [[String: String]] = []
+        var attempts: [[String: Any]] = []
+        var passID = 0
+        func attachAttempts() {
+            guard let data = try? JSONSerialization.data(withJSONObject:
+                ["schemaVersion": 1, "attempts": attempts], options: [.prettyPrinted, .sortedKeys]) else { return }
+            let attachment = XCTAttachment(data: data, uniformTypeIdentifier: "public.json")
+            attachment.name = "stage08-audit-attempts"; attachment.lifetime = .keepAlways; add(attachment)
+        }
         func reviewedCase(_ issue: AuditFinding, screen: String, viewport: CGRect?) -> String? {
             let id = issue.identifier
             let label = issue.label
@@ -191,26 +224,65 @@ import UIKit
                            "resolution": resolution ?? "unresolved"])
         }
         func collect(_ category: XCUIAccessibilityAuditType, screen: String) throws -> [AuditFinding] {
-            var findings: [AuditFinding] = []
-            do {
-                try app.performAccessibilityAudit(for: category) { issue in
-                    // The audit engine is waiting for this callback. Obtain one immutable
-                    // element snapshot; never traverse the app or evaluate predicates here.
-                    let snapshot = try? issue.element?.snapshot()
-                    findings.append(AuditFinding(auditType: issue.auditType,
-                        summary: issue.compactDescription, detail: issue.detailedDescription,
-                        identifier: snapshot?.identifier ?? "", label: snapshot?.label ?? "",
-                        frame: snapshot?.frame))
-                    return true
+            passID += 1
+            let names: [(XCUIAccessibilityAuditType, String)] = [(.contrast, "contrast"),
+                (.elementDetection, "elementDetection"), (.hitRegion, "hitRegion"),
+                (.sufficientElementDescription, "sufficientElementDescription"), (.trait, "trait"),
+                (.dynamicType, "dynamicType"), (.textClipped, "textClipped")]
+            let categoryName = names.first { $0.0 == category }?.1 ?? "unknown"
+            for attempt in 1...2 {
+                var findings: [AuditFinding] = []
+                var callbackCount = 0
+                let startedAt = ISO8601DateFormatter().string(from: Date())
+                let started = ProcessInfo.processInfo.systemUptime
+                var receipt: [String: Any] = ["passID": passID, "screen": screen,
+                    "categoryRawValue": category.rawValue, "categoryName": categoryName,
+                    "phase": screen.hasSuffix("-visible-retest") ? "visibleRetest" : "initial", "attempt": attempt,
+                    "startedAtUTC": startedAt, "settleSecondsBeforeAttempt": attempt == 1 ? 0 : 2]
+                do {
+                    try XCTContext.runActivity(named: "Audit \(screen) \(categoryName) attempt \(attempt)") { _ in
+                        try app.performAccessibilityAudit(for: category) { issue in
+                            callbackCount += 1
+                            // One immutable snapshot; never traverse the app or evaluate
+                            // review predicates while the audit engine waits for its callback.
+                            let snapshot = try? issue.element?.snapshot()
+                            findings.append(AuditFinding(auditType: issue.auditType,
+                                summary: issue.compactDescription, detail: issue.detailedDescription,
+                                identifier: snapshot?.identifier ?? "", label: snapshot?.label ?? "",
+                                frame: snapshot?.frame))
+                            return true
+                        }
+                    }
+                    receipt.merge(["outcome": "completed", "callbackCount": callbackCount,
+                        "findingsCount": findings.count, "elapsedSeconds": ProcessInfo.processInfo.systemUptime - started,
+                        "retryDecision": "none"]) { _, value in value }
+                    attempts.append(receipt)
+                    return findings
+                } catch {
+                    let engineError = error as NSError
+                    let observedTimeoutCategory = category == .elementDetection || category == .dynamicType
+                    let retry = attempt == 1 && observedTimeoutCategory && callbackCount == 0 && findings.isEmpty &&
+                        engineError.domain == "com.apple.xcode.xctest.accessibilityAudit" && engineError.code == -56
+                    receipt.merge(["outcome": "engineError", "callbackCount": callbackCount,
+                        "findingsCount": findings.count, "elapsedSeconds": ProcessInfo.processInfo.systemUptime - started,
+                        "error": ["domain": engineError.domain, "code": engineError.code,
+                                  "description": engineError.localizedDescription],
+                        "retryDecision": retry ? "retryAfterSettle" : "throw"]) { _, value in value }
+                    attempts.append(receipt)
+                    attachAttempts()
+                    if retry {
+                        // CI10/13 timed out inside Apple's element-detection/Dynamic Type
+                        // engine before any callback. Repeat that same pass once, preserving
+                        // the failed attempt; never waive a finding or change the viewport.
+                        Thread.sleep(forTimeInterval: 2)
+                        continue
+                    }
+                    for finding in findings { record(finding, screen: screen, resolution: nil) }
+                    attachIssues()
+                    throw error
                 }
-            } catch {
-                // Preserve findings received before an interrupted audit; the error still
-                // fails the test and none of these records receives a reviewed resolution.
-                for finding in findings { record(finding, screen: screen, resolution: nil) }
-                attachIssues()
-                throw error
             }
-            return findings
+            preconditionFailure("Every audit attempt returns findings or throws")
         }
         func contrastViewport(_ issue: AuditFinding) -> CGRect? {
             guard issue.auditType == .contrast, issue.frame != nil else { return nil }
@@ -227,7 +299,7 @@ import UIKit
                 let findings = try collect(category, screen: screen)
                 Thread.sleep(forTimeInterval: 0.5)
                 // Resolve frozen fields only after Apple's audit has returned. Hierarchy
-                // lookups here cannot hold the audit callback open and trigger Code -56.
+                // lookups here cannot hold the audit callback open.
                 for issue in findings {
                     let viewport = contrastViewport(issue)
                     var resolution = reviewedCase(issue, screen: screen, viewport: viewport)
@@ -267,6 +339,7 @@ import UIKit
                 let progress = XCTAttachment(data: data, uniformTypeIdentifier: "public.json")
                 progress.name = "stage08-audit-progress-" + screen; progress.lifetime = .keepAlways; add(progress)
             }
+            attachAttempts()
         }
         func attachIssues() {
             if let data = try? JSONSerialization.data(withJSONObject: issues, options: [.prettyPrinted, .sortedKeys]) {
@@ -282,7 +355,7 @@ import UIKit
         app.buttons["tab.messages"].tap()
         XCTAssertTrue(app.buttons["conversation.22222222-2222-4222-8222-222222222222"].waitForExistence(timeout: 10))
         try audit("messages")
-        app.buttons["tab.profile"].tap()
+        openProfile(in: app)
         XCTAssertTrue(app.buttons["openAccountSettings"].waitForExistence(timeout: 5))
         try audit("profile")
         openProfileFeature("openCalendar", in: app)
@@ -337,7 +410,13 @@ import UIKit
                     // switching layouts. Dismiss only the observed system explanation.
                     let tutorial = keyboard.staticTexts.matching(NSPredicate(format: "label == %@",
                         "Для доступа к альтернативным буквам на клавиатуре\nпотяните вниз на клавише и отпустите.")).firstMatch
-                    if tutorial.waitForExistence(timeout: 1) {
+                    // CI13 exposes this native tutorial after the first second. Wait
+                    // for either outcome of the mode tap, not just the requested key.
+                    let modeDeadline = Date().addingTimeInterval(10)
+                    while Date() < modeDeadline && !key.exists && !tutorial.exists {
+                        Thread.sleep(forTimeInterval: 0.2)
+                    }
+                    if tutorial.exists {
                         capture(app, name: "stage08-account-deletion-keyboard-help")
                         let acknowledge = keyboard.buttons.matching(NSPredicate(format: "label == %@", "ОК")).firstMatch
                         XCTAssertTrue(acknowledge.waitForExistence(timeout: 5)); acknowledge.tap()
@@ -887,12 +966,18 @@ import UIKit
         return control
     }
 
+    private func answerIncomingCall(_ app: XCUIApplication, acceptedElsewhere: Bool = false) {
+        let answer = callControl(app, "directCallAnswer")
+        let target = acceptedElsewhere ? app.staticTexts["Звонок продолжается на другом устройстве."] : app.buttons["directCallMic"]
+        tapAfterLogin(answer, in: app, expecting: target, unchanged: { answer.exists && answer.isEnabled })
+    }
+
     /// DEBUG CallKit, REST and SFU doubles exercise application state; this is not a device VoIP test.
     func testDirectIncomingAnswerControlsMinimizeAndEnd() {
         let app = launch(["-call-incoming"]); login(app)
         XCTAssertTrue(app.buttons["directCallAnswer"].waitForExistence(timeout: 10))
         capture(app, name: "stage05-incoming")
-        callControl(app, "directCallAnswer").tap()
+        answerIncomingCall(app)
         let microphone = callControl(app, "directCallMic")
         let enabled = XCTNSPredicateExpectation(predicate: NSPredicate(format: "enabled == true"), object: microphone)
         XCTAssertEqual(XCTWaiter.wait(for: [enabled], timeout: 10), .completed)
@@ -945,7 +1030,7 @@ import UIKit
 
     func testScreenConflictKeepsDirectCallAndMicrophoneWithFixtures() {
         let app = launch(["-call-incoming", "-screen-conflict"]); login(app)
-        callControl(app, "directCallAnswer").tap()
+        answerIncomingCall(app)
         let microphone = callControl(app, "directCallMic")
         let enabled = XCTNSPredicateExpectation(predicate: NSPredicate(format: "enabled == true"), object: microphone)
         XCTAssertEqual(XCTWaiter.wait(for: [enabled], timeout: 10), .completed)
@@ -979,7 +1064,7 @@ import UIKit
 
     func testDirectCallAcceptedOnOtherDeviceHasNoCaptureControls() {
         let app = launch(["-call-incoming", "-call-other-device"]); login(app)
-        callControl(app, "directCallAnswer").tap()
+        answerIncomingCall(app, acceptedElsewhere: true)
         XCTAssertTrue(app.staticTexts["Звонок продолжается на другом устройстве."].waitForExistence(timeout: 10))
         XCTAssertFalse(app.buttons["directCallMic"].exists)
         XCTAssertFalse(app.buttons["directCallCamera"].exists)
@@ -989,7 +1074,7 @@ import UIKit
 
     func testOrdinaryPushOptInAndDisableWithFixtureToken() {
         let app = launch(); login(app)
-        XCTAssertTrue(app.buttons["tab.profile"].waitForExistence(timeout: 10)); app.buttons["tab.profile"].tap()
+        openProfile(in: app)
         let toggle = app.switches["pushNotificationsToggle"]
         XCTAssertTrue(toggle.waitForExistence(timeout: 10))
         for _ in 0..<4 where !toggle.isHittable { app.swipeUp() }
