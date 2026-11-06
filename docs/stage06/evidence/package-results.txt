@@ -1,0 +1,7 @@
+2026-11-06T09:12:51.4431870Z ✘ Test actualBackendDirectCallsDevicesAndPrivateSFU() skipped.
+2026-11-06T09:12:51.4895200Z ✘ Test actualBackendConferenceRESTAndGuestScope() skipped.
+2026-11-06T09:12:51.5280840Z ✘ Test actualBackendTwoClientsAndFiles() skipped.
+2026-11-06T09:12:56.8879700Z ✔ Test run with 135 tests passed after 5.721 seconds.
+2026-11-06T09:15:36.4775670Z ** BUILD SUCCEEDED **
+2026-11-06T09:15:33.3485000Z ValidateEmbeddedBinary /Users/runner/Library/Developer/Xcode/DerivedData/MeetSpace-cwtmbceagoeyddchxldzcnlramqn/Build/Products/Release-iphonesimulator/MeetSpace.app/PlugIns/BroadcastUpload.appex (in target 'MeetSpace' from project 'MeetSpace')
+2026-11-06T09:15:33.3721420Z     /Applications/Xcode_16.4.app/Contents/Developer/usr/bin/embeddedBinaryValidationUtility /Users/runner/Library/Developer/Xcode/DerivedData/MeetSpace-cwtmbceagoeyddchxldzcnlramqn/Build/Products/Release-iphonesimulator/MeetSpace.app/PlugIns/BroadcastUpload.appex -info-plist-path /Users/runner/Library/Developer/Xcode/DerivedData/MeetSpace-cwtmbceagoeyddchxldzcnlramqn/Build/Products/Release-iphonesimulator/MeetSpace.app/Info.plist

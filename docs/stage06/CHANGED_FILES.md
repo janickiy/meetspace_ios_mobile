@@ -1,0 +1,73 @@
+# Файлы этапа 06
+
+Относительно этапа 5 `691f33220187ab8d499984a490b8c03fef98a44c`.
+Исполняемый код и тесты: `8d3aea2514f00d2475460a951341f44103378c9d`;
+финальное дополнение содержит только README и документы/evidence.
+`A` — добавлен, `M` — изменён.
+
+| Статус | Файл |
+| --- | --- |
+| M | [App/Info.plist](../../App/Info.plist) |
+| M | [App/MeetSpace.entitlements](../../App/MeetSpace.entitlements) |
+| M | [App/PrivacyInfo.xcprivacy](../../App/PrivacyInfo.xcprivacy) |
+| M | [App/UITestDependencies.swift](../../App/UITestDependencies.swift) |
+| A | [BroadcastExtension/Info.plist](../../BroadcastExtension/Info.plist) |
+| A | [BroadcastExtension/MeetSpaceBroadcast.entitlements](../../BroadcastExtension/MeetSpaceBroadcast.entitlements) |
+| A | [BroadcastExtension/PrivacyInfo.xcprivacy](../../BroadcastExtension/PrivacyInfo.xcprivacy) |
+| A | [BroadcastExtension/SampleHandler.swift](../../BroadcastExtension/SampleHandler.swift) |
+| M | [MeetSpace.xcodeproj/project.pbxproj](../../MeetSpace.xcodeproj/project.pbxproj) |
+| M | [Packages/MeetSpaceKit/Package.swift](../../Packages/MeetSpaceKit/Package.swift) |
+| A | [Packages/MeetSpaceKit/Sources/Broadcast/BroadcastHostChannel.swift](../../Packages/MeetSpaceKit/Sources/Broadcast/BroadcastHostChannel.swift) |
+| A | [Packages/MeetSpaceKit/Sources/Broadcast/BroadcastTypes.swift](../../Packages/MeetSpaceKit/Sources/Broadcast/BroadcastTypes.swift) |
+| A | [Packages/MeetSpaceKit/Sources/Broadcast/BroadcastUploadConnection.swift](../../Packages/MeetSpaceKit/Sources/Broadcast/BroadcastUploadConnection.swift) |
+| A | [Packages/MeetSpaceKit/Sources/Broadcast/BroadcastWire.swift](../../Packages/MeetSpaceKit/Sources/Broadcast/BroadcastWire.swift) |
+| A | [Packages/MeetSpaceKit/Sources/Broadcast/ScreenBroadcastController.swift](../../Packages/MeetSpaceKit/Sources/Broadcast/ScreenBroadcastController.swift) |
+| A | [Packages/MeetSpaceKit/Sources/Broadcast/ScreenFrameConverter.swift](../../Packages/MeetSpaceKit/Sources/Broadcast/ScreenFrameConverter.swift) |
+| M | [Packages/MeetSpaceKit/Sources/DesignSystem/Resources/ru.lproj/Localizable.strings](../../Packages/MeetSpaceKit/Sources/DesignSystem/Resources/ru.lproj/Localizable.strings) |
+| M | [Packages/MeetSpaceKit/Sources/Features/AppModel.swift](../../Packages/MeetSpaceKit/Sources/Features/AppModel.swift) |
+| M | [Packages/MeetSpaceKit/Sources/Features/ConferenceSession.swift](../../Packages/MeetSpaceKit/Sources/Features/ConferenceSession.swift) |
+| M | [Packages/MeetSpaceKit/Sources/Features/ConferenceWorkspace.swift](../../Packages/MeetSpaceKit/Sources/Features/ConferenceWorkspace.swift) |
+| M | [Packages/MeetSpaceKit/Sources/Features/DirectCallCoordinator.swift](../../Packages/MeetSpaceKit/Sources/Features/DirectCallCoordinator.swift) |
+| M | [Packages/MeetSpaceKit/Sources/Features/DirectCallView.swift](../../Packages/MeetSpaceKit/Sources/Features/DirectCallView.swift) |
+| M | [Packages/MeetSpaceKit/Sources/Features/IdentityModel.swift](../../Packages/MeetSpaceKit/Sources/Features/IdentityModel.swift) |
+| M | [Packages/MeetSpaceKit/Sources/Features/LiveConferenceView.swift](../../Packages/MeetSpaceKit/Sources/Features/LiveConferenceView.swift) |
+| A | [Packages/MeetSpaceKit/Sources/Features/ScreenShareControls.swift](../../Packages/MeetSpaceKit/Sources/Features/ScreenShareControls.swift) |
+| M | [Packages/MeetSpaceKit/Sources/Media/ConferenceMediaEngine.swift](../../Packages/MeetSpaceKit/Sources/Media/ConferenceMediaEngine.swift) |
+| M | [Packages/MeetSpaceKit/Sources/Media/ConferenceVideoRenderer.swift](../../Packages/MeetSpaceKit/Sources/Media/ConferenceVideoRenderer.swift) |
+| M | [Packages/MeetSpaceKit/Sources/Media/NativeConferenceMediaEngine.swift](../../Packages/MeetSpaceKit/Sources/Media/NativeConferenceMediaEngine.swift) |
+| M | [Packages/MeetSpaceKit/Sources/Media/NativePeer.swift](../../Packages/MeetSpaceKit/Sources/Media/NativePeer.swift) |
+| A | [Packages/MeetSpaceKit/Tests/BroadcastTests/BroadcastTests.swift](../../Packages/MeetSpaceKit/Tests/BroadcastTests/BroadcastTests.swift) |
+| A | [Packages/MeetSpaceKit/Tests/BroadcastTests/ScreenFrameConverterTests.swift](../../Packages/MeetSpaceKit/Tests/BroadcastTests/ScreenFrameConverterTests.swift) |
+| M | [Packages/MeetSpaceKit/Tests/IntegrationTests/ConferenceSessionTests.swift](../../Packages/MeetSpaceKit/Tests/IntegrationTests/ConferenceSessionTests.swift) |
+| M | [Packages/MeetSpaceKit/Tests/IntegrationTests/DirectCallCoordinatorTests.swift](../../Packages/MeetSpaceKit/Tests/IntegrationTests/DirectCallCoordinatorTests.swift) |
+| M | [README.md](../../README.md) |
+| M | [Tests/MeetSpaceTests/MediaIntegrationTests.swift](../../Tests/MeetSpaceTests/MediaIntegrationTests.swift) |
+| M | [Tests/MeetSpaceUITests/FoundationUITests.swift](../../Tests/MeetSpaceUITests/FoundationUITests.swift) |
+| A | [docs/stage06/CHANGED_FILES.md](../../docs/stage06/CHANGED_FILES.md) |
+| A | [docs/stage06/CONTRACT_AUDIT.md](../../docs/stage06/CONTRACT_AUDIT.md) |
+| A | [docs/stage06/DEVICE_TEST_PLAN.md](../../docs/stage06/DEVICE_TEST_PLAN.md) |
+| A | [docs/stage06/README.md](../../docs/stage06/README.md) |
+| A | [docs/stage06/evidence/ci-run.json](../../docs/stage06/evidence/ci-run.json) |
+| A | [docs/stage06/evidence/host-results.txt](../../docs/stage06/evidence/host-results.txt) |
+| A | [docs/stage06/evidence/iPad-results.txt](../../docs/stage06/evidence/iPad-results.txt) |
+| A | [docs/stage06/evidence/iPad-summary.json](../../docs/stage06/evidence/iPad-summary.json) |
+| A | [docs/stage06/evidence/iPhone-results.txt](../../docs/stage06/evidence/iPhone-results.txt) |
+| A | [docs/stage06/evidence/iPhone-summary.json](../../docs/stage06/evidence/iPhone-summary.json) |
+| A | [docs/stage06/evidence/package-results.txt](../../docs/stage06/evidence/package-results.txt) |
+| A | [docs/stage06/evidence/runtime/runtime.json](../../docs/stage06/evidence/runtime/runtime.json) |
+| A | [docs/stage06/evidence/runtime/screen-probe.log](../../docs/stage06/evidence/runtime/screen-probe.log) |
+| A | [docs/stage06/evidence/runtime/sfu-cleanup.json](../../docs/stage06/evidence/runtime/sfu-cleanup.json) |
+| A | [docs/stage06/evidence/screenshots.json](../../docs/stage06/evidence/screenshots.json) |
+| A | [docs/stage06/evidence/screenshots/iPad-stage06-direct-conflict.png](../../docs/stage06/evidence/screenshots/iPad-stage06-direct-conflict.png) |
+| A | [docs/stage06/evidence/screenshots/iPad-stage06-direct-controls.png](../../docs/stage06/evidence/screenshots/iPad-stage06-direct-controls.png) |
+| A | [docs/stage06/evidence/screenshots/iPad-stage06-meeting-chat.png](../../docs/stage06/evidence/screenshots/iPad-stage06-meeting-chat.png) |
+| A | [docs/stage06/evidence/screenshots/iPad-stage06-meeting-sharing.png](../../docs/stage06/evidence/screenshots/iPad-stage06-meeting-sharing.png) |
+| A | [docs/stage06/evidence/screenshots/iPad-stage06-meeting-stopped.png](../../docs/stage06/evidence/screenshots/iPad-stage06-meeting-stopped.png) |
+| A | [docs/stage06/evidence/screenshots/iPhone-stage06-direct-conflict.png](../../docs/stage06/evidence/screenshots/iPhone-stage06-direct-conflict.png) |
+| A | [docs/stage06/evidence/screenshots/iPhone-stage06-direct-controls.png](../../docs/stage06/evidence/screenshots/iPhone-stage06-direct-controls.png) |
+| A | [docs/stage06/evidence/screenshots/iPhone-stage06-meeting-chat.png](../../docs/stage06/evidence/screenshots/iPhone-stage06-meeting-chat.png) |
+| A | [docs/stage06/evidence/screenshots/iPhone-stage06-meeting-sharing.png](../../docs/stage06/evidence/screenshots/iPhone-stage06-meeting-sharing.png) |
+| A | [docs/stage06/evidence/screenshots/iPhone-stage06-meeting-stopped.png](../../docs/stage06/evidence/screenshots/iPhone-stage06-meeting-stopped.png) |
+| A | [scripts/fixtures/screen_probe.go](../../scripts/fixtures/screen_probe.go) |
+| M | [scripts/generate_xcode_project.py](../../scripts/generate_xcode_project.py) |
+| A | [scripts/run_replaykit_contract.py](../../scripts/run_replaykit_contract.py) |

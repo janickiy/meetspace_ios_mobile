@@ -1,0 +1,12 @@
+Application/test source: 8d3aea2514f00d2475460a951341f44103378c9d
+Host SDK: CommandLineTools MacOSX26.4.sdk; Swift Testing macro plugin loaded explicitly.
+
+✔ Test run with 2 tests in 0 suites passed after 0.003 seconds.
+➜ Test actualBackendConferenceRESTAndGuestScope() skipped.
+➜ Test actualBackendTwoClientsAndFiles() skipped.
+➜ Test actualBackendDirectCallsDevicesAndPrivateSFU() skipped.
+✔ Test run with 109 tests in 1 suite passed after 0.307 seconds.
+✔ Test run with 8 tests in 0 suites passed after 0.017 seconds.
+✔ Test run with 5 tests in 0 suites passed after 0.001 seconds.
+✔ Test run with 6 tests in 1 suite passed after 5.401 seconds.
+✔ Test run with 5 tests in 0 suites passed after 0.003 seconds.

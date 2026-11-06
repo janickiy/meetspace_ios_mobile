@@ -1,0 +1,42 @@
+{
+  "devicesAndConfigurations" : [
+    {
+      "device" : {
+        "architecture" : "arm64",
+        "deviceId" : "58FC786A-CE65-4DA0-B4B5-579AA6B53315",
+        "deviceName" : "iPad mini (A17 Pro)",
+        "modelName" : "iPad mini (A17 Pro)",
+        "osBuildNumber" : "23C54",
+        "osVersion" : "26.2",
+        "platform" : "iOS Simulator"
+      },
+      "expectedFailures" : 0,
+      "failedTests" : 0,
+      "passedTests" : 23,
+      "skippedTests" : 0,
+      "testPlanConfiguration" : {
+        "configurationId" : "1",
+        "configurationName" : "Test Scheme Action"
+      }
+    }
+  ],
+  "environmentDescription" : "MeetSpace-Debug · Built with macOS 15.8.2",
+  "expectedFailures" : 0,
+  "failedTests" : 0,
+  "finishTime" : 1793957279.13,
+  "passedTests" : 23,
+  "result" : "Passed",
+  "skippedTests" : 0,
+  "startTime" : 1793956362.68,
+  "statistics" : [
+
+  ],
+  "testFailures" : [
+
+  ],
+  "title" : "Test - MeetSpace-Debug",
+  "topInsights" : [
+
+  ],
+  "totalTestCount" : 23
+}

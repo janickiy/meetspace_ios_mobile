@@ -1,0 +1,32 @@
+2026-11-06T09:15:41.3927740Z Test Case '-[MeetSpaceTests.CallAudioIntegrationTests testDirectCallCanNegotiateBeforeCallKitActivatesAudio]' passed (1.071 seconds).
+2026-11-06T09:15:41.6394830Z 	 Executed 1 test, with 0 failures (0 unexpected) in 1.071 (1.072) seconds
+2026-11-06T09:15:41.7727530Z Test Case '-[MeetSpaceTests.KeychainIntegrationTests testKeychainRoundTripUpdateAndScopedDeletion]' passed (0.031 seconds).
+2026-11-06T09:15:42.1722440Z 	 Executed 1 test, with 0 failures (0 unexpected) in 0.031 (0.031) seconds
+2026-11-06T09:15:44.2061810Z Test Case '-[MeetSpaceTests.MediaIntegrationTests testBlockedSourcesNeverRequestPermissionsOrAppearInOffer]' passed (0.952 seconds).
+2026-11-06T09:15:44.3682440Z Test Case '-[MeetSpaceTests.MediaIntegrationTests testNativePeerOfferAndCloseCyclesWithCaptureOff]' passed (0.297 seconds).
+2026-11-06T09:15:44.4320200Z Test Case '-[MeetSpaceTests.MediaIntegrationTests testScreenGenerationRollbackAndPolicyWithCaptureOff]' passed (0.104 seconds).
+2026-11-06T09:15:44.4620750Z Test Case '-[MeetSpaceTests.MediaIntegrationTests testScreenRejectsInvalidAndStaleFrameSession]' passed (0.054 seconds).
+2026-11-06T09:15:44.4864390Z 	 Executed 4 tests, with 0 failures (0 unexpected) in 1.409 (1.410) seconds
+2026-11-06T09:15:44.5148780Z 	 Executed 6 tests, with 0 failures (0 unexpected) in 2.511 (3.759) seconds
+2026-11-06T09:15:44.5364460Z 	 Executed 6 tests, with 0 failures (0 unexpected) in 2.511 (3.760) seconds
+2026-11-06T09:16:53.9731180Z Test Case '-[MeetSpaceUITests.FoundationUITests testAuthenticatedChatSendAndLogout]' passed (48.862 seconds).
+2026-11-06T09:17:13.4595160Z Test Case '-[MeetSpaceUITests.FoundationUITests testAuthenticationErrorIsVisibleAndDoesNotOpenWorkspace]' passed (19.136 seconds).
+2026-11-06T09:18:11.9896410Z Test Case '-[MeetSpaceUITests.FoundationUITests testConferenceCreateMediaControlsChatAndLeave]' passed (58.848 seconds).
+2026-11-06T09:18:56.7809290Z Test Case '-[MeetSpaceUITests.FoundationUITests testConferenceDeniedCameraPermissionKeepsCaptureOffAndCanLeave]' passed (44.787 seconds).
+2026-11-06T09:19:30.5519170Z Test Case '-[MeetSpaceUITests.FoundationUITests testCreateGroupWithSelectedMember]' passed (33.802 seconds).
+2026-11-06T09:19:53.6247360Z Test Case '-[MeetSpaceUITests.FoundationUITests testDirectCallAcceptedOnOtherDeviceHasNoCaptureControls]' passed (23.075 seconds).
+2026-11-06T09:20:42.7089750Z Test Case '-[MeetSpaceUITests.FoundationUITests testDirectIncomingAnswerControlsMinimizeAndEnd]' passed (49.046 seconds).
+2026-11-06T09:21:13.7866010Z Test Case '-[MeetSpaceUITests.FoundationUITests testDirectOutgoingCancelFromConversation]' passed (31.116 seconds).
+2026-11-06T09:21:30.1148190Z Test Case '-[MeetSpaceUITests.FoundationUITests testFirstLaunchDoesNotImplyAuthentication]' passed (15.874 seconds).
+2026-11-06T09:21:39.0721660Z Test Case '-[MeetSpaceUITests.FoundationUITests testInvalidHTTPAddressIsRejected]' passed (9.408 seconds).
+2026-11-06T09:21:54.3475810Z Test Case '-[MeetSpaceUITests.FoundationUITests testLargeTextNavigationAndAppearance]' passed (15.239 seconds).
+2026-11-06T09:22:01.8093350Z Test Case '-[MeetSpaceUITests.FoundationUITests testOfflineStateCanRetryInExplicitDemo]' passed (7.504 seconds).
+2026-11-06T09:22:29.0164290Z Test Case '-[MeetSpaceUITests.FoundationUITests testOrdinaryPushOptInAndDisableWithFixtureToken]' passed (27.180 seconds).
+2026-11-06T09:22:59.9424110Z Test Case '-[MeetSpaceUITests.FoundationUITests testScreenConflictKeepsDirectCallAndMicrophoneWithFixtures]' passed (30.950 seconds).
+2026-11-06T09:23:50.8645270Z Test Case '-[MeetSpaceUITests.FoundationUITests testScreenShareStartStopAndRestartInConferenceWithFixtures]' passed (50.924 seconds).
+2026-11-06T09:24:20.6922810Z Test Case '-[MeetSpaceUITests.FoundationUITests testStateScreensAreReachable]' passed (29.816 seconds).
+2026-11-06T09:24:31.2571760Z Test Case '-[MeetSpaceUITests.FoundationUITests testValidServerAdvancesToAuthenticationWithEmptySubmitDisabled]' passed (10.573 seconds).
+2026-11-06T09:24:31.2614360Z 	 Executed 17 tests, with 0 failures (0 unexpected) in 506.141 (506.152) seconds
+2026-11-06T09:24:31.2664910Z 	 Executed 17 tests, with 0 failures (0 unexpected) in 506.141 (506.153) seconds
+2026-11-06T09:24:31.2668840Z 	 Executed 17 tests, with 0 failures (0 unexpected) in 506.141 (506.154) seconds
+2026-11-06T09:24:33.2150210Z ** TEST SUCCEEDED **
