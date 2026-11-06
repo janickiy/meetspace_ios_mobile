@@ -175,7 +175,9 @@ private struct DirectCallPresentation: ViewModifier {
         }, set: { if !$0 { model.identity.calls?.minimize() } })
     }
     func body(content: Content) -> some View {
-        content.safeAreaInset(edge: .top, spacing: 0) {
+        // Give the navigation container its own reduced frame. Changing only its safe-area
+        // inset while dismissing the call cover clips page headers on compact iOS layouts.
+        VStack(spacing: 0) {
             if let call = model.identity.calls, call.isActive, call.minimized {
                 Button { call.resume() } label: {
                     HStack {
@@ -186,6 +188,7 @@ private struct DirectCallPresentation: ViewModifier {
                     }.padding(12).foregroundStyle(MSTheme.accent).background(MSTheme.accentSoft)
                 }.buttonStyle(.plain).accessibilityIdentifier("directCallBanner")
             }
+            content
         }
         #if os(iOS)
         .fullScreenCover(isPresented: shown) { if let call = model.identity.calls { DirectCallView(call: call) } }

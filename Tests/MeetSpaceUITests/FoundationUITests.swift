@@ -316,7 +316,12 @@ import XCTest
         capture(app, name: "stage05-connected")
         camera.tap(); waitForValue("Выключена", of: camera)
         callControl(app, "directCallMinimize", towardTop: true).tap()
-        XCTAssertTrue(app.buttons["directCallBanner"].waitForExistence(timeout: 10))
+        let banner = app.buttons["directCallBanner"]
+        XCTAssertTrue(banner.waitForExistence(timeout: 10))
+        XCTAssertTrue(banner.isHittable)
+        let heading = app.staticTexts["Сообщения"].firstMatch
+        XCTAssertTrue(heading.waitForExistence(timeout: 5))
+        XCTAssertGreaterThanOrEqual(heading.frame.minY, banner.frame.maxY - 1, "The call banner must not cover the workspace header")
         capture(app, name: "stage05-minimized")
         app.buttons["directCallBanner"].tap()
         callControl(app, "directCallEnd").tap()
@@ -373,6 +378,8 @@ import XCTest
         let registered = XCTNSPredicateExpectation(predicate: NSPredicate(format: "label CONTAINS %@", "Токен сохранён сервером"),
             object: app.staticTexts["pushNotificationsStatus"])
         XCTAssertEqual(XCTWaiter.wait(for: [registered], timeout: 10), .completed)
+        let status = app.staticTexts["pushNotificationsStatus"]
+        for _ in 0..<3 where status.frame.maxY > app.buttons["tab.profile"].frame.minY { app.swipeUp() }
         capture(app, name: "stage05-push-enabled")
         tapToggle()
         let disabled = XCTNSPredicateExpectation(predicate: NSPredicate(format: "label CONTAINS %@", "выключены"),
