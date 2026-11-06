@@ -73,7 +73,7 @@ def main():
     parser.add_argument("--runtime-major", type=int)
     parser.add_argument("--preferred-device")
     parser.add_argument("--label")
-    parser.add_argument("--scope", choices=["full", "audit", "compatibility", "deletion"], default="full")
+    parser.add_argument("--scope", choices=["full", "audit", "compatibility", "deletion", "regression"], default="full")
     args = parser.parse_args()
     inventory = json.loads(subprocess.check_output(["xcrun", "simctl", "list", "devices", "available", "--json"], text=True))
     candidates = []
@@ -105,6 +105,14 @@ def main():
     selection = []
     if args.scope == "deletion":
         selection = ["-only-testing:MeetSpaceUITests/FoundationUITests/testStage08AccountDeletionRequiresPasswordAndConfirmation"]
+    elif args.scope == "regression":
+        # Target the observed keyboard/profile harness failures on every device/runtime.
+        # This is a separate regression result, not a replacement for the full baseline.
+        selection = ["-only-testing:MeetSpaceTests",
+                     "-only-testing:MeetSpaceUITests/FoundationUITests/testAccessibilityStage08CoreScreens",
+                     "-only-testing:MeetSpaceUITests/FoundationUITests/testAccessibilityStage08LargeTextLiveFlow",
+                     "-only-testing:MeetSpaceUITests/FoundationUITests/testStage07SettingsPersistProfilePreferencesAndSSHDisabled",
+                     "-only-testing:MeetSpaceUITests/FoundationUITests/testStage08AccountDeletionRequiresPasswordAndConfirmation"]
     elif args.scope != "full":
         selection = ["-only-testing:MeetSpaceTests",
                      "-only-testing:MeetSpaceUITests/FoundationUITests/testAccessibilityStage08CoreScreens",

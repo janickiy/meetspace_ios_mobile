@@ -396,7 +396,8 @@ import UIKit
             // Russian secure keyboard silently discarded synthetic Latin typeText
             // events. Select the real Latin keyboard and tap its actual keys.
             for _ in 0..<4 where !keyboard.keys["f"].exists {
-                let next = keyboard.buttons.matching(NSPredicate(format:
+                // On iOS 26 this system button is a sibling of Keyboard, not its child.
+                let next = app.buttons.matching(NSPredicate(format:
                     "identifier == %@ OR label IN %@", "emoji", ["Следующая клавиатура", "Next keyboard"])).firstMatch
                 XCTAssertTrue(next.waitForExistence(timeout: 5)); next.tap()
             }
@@ -561,7 +562,7 @@ import UIKit
 
     func testStage07SettingsPersistProfilePreferencesAndSSHDisabled() {
         let app = launch(); login(app)
-        app.buttons["tab.profile"].tap(); app.buttons["openAccountSettings"].tap()
+        openProfileFeature("openAccountSettings", in: app)
         let profile = app.buttons["settingsSection.profile"]
         XCTAssertTrue(profile.waitForExistence(timeout: 5)); profile.tap()
         let name = app.textFields["profileDisplayName"]
