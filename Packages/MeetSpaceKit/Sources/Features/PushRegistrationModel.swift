@@ -36,6 +36,10 @@ import MeetSpaceCalling
     }
     deinit { eventsTask?.cancel() }
 
+    /// Stop OS delivery synchronously before unrelated awaited call/media cleanup. This does
+    /// not confirm server revocation: the owner must still await detach before closing credentials.
+    public func suspendDelivery() { invalidate(); enabled = false }
+
     /// Attach only after calling detach on the previous account while its client is still open.
     /// The defensive cleanup here also handles callers that replace a scope directly.
     @discardableResult public func attach(repository next: any NotificationDevicesServing) async -> Bool {

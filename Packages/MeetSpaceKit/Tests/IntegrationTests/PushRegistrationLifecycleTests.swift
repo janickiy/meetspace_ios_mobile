@@ -105,6 +105,10 @@ private actor PushServiceFixture: NotificationDevicesServing {
     platform.didRegister(deviceToken: Data(repeating: 0xAC, count: 32))
     try await waitForPush { await service.registerCount == 1 }
     let previousUnregister = platform.unregistrations
+    model.suspendDelivery()
+    #expect(platform.unregistrations == previousUnregister + 1 && !model.enabled)
+    // A late OS callback is ignored while the existing POST still must be drained and revoked.
+    platform.didRegister(deviceToken: Data(repeating: 0xAD, count: 32))
     let detached = Task { await model.detach() }
     try await waitForPush { platform.unregistrations > previousUnregister && !model.enabled }
     #expect(model.busy)

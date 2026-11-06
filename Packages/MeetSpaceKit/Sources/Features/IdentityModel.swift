@@ -93,6 +93,7 @@ import MeetSpaceCalling
             if active {
                 epoch = UUID(); sessionEvents?.cancel(); sessionEvents = nil
                 target = messaging?.client
+                notifications.suspendDelivery()
                 await calls?.close(); calls = nil
                 await conferences?.close(); conferences = nil
                 pushRemoved = await notifications.detach()
@@ -145,6 +146,7 @@ import MeetSpaceCalling
         epoch = UUID(); let current = epoch
         sessionEvents?.cancel()
         if let previous = messaging {
+            notifications.suspendDelivery()
             await calls?.close(); calls = nil
             await conferences?.close(); conferences = nil
             _ = await notifications.detach()
@@ -173,6 +175,7 @@ import MeetSpaceCalling
                 }
                 guard !Task.isCancelled, self.epoch == current else { return }
                 self.busy = true
+                self.notifications.suspendDelivery()
                 await self.calls?.close(); self.calls = nil
                 await self.conferences?.close(); self.conferences = nil
                 _ = await self.notifications.detach()

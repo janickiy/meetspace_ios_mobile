@@ -108,21 +108,10 @@ import MeetSpaceCalling
                   call.callerClientId == clientID.uuidString.lowercased() else { throw ClientError.scopeMismatch }
             await apply(call)
             pendingPeer = nil; createRequestID = nil; uncertain = false
-            guard valid(current), currentCall?.id == call.id, call.isActive, ownsMedia else { return }
-            if system.isAvailable, !reported.contains(call.id) {
-                reported.insert(call.id)
-                do {
-                    try await system.requestStart(descriptor(call))
-                    if mediaSession?.phase == .connected { system.reportConnected(callID: call.id, at: now()) }
-                }
-                catch {
-                    guard valid(current) else { return }
-                    self.error = "Системный звонок не запущен. Вызов отменяется."
-                    await terminate(reportReason: .failed)
-                }
-            }
         } catch {
             guard valid(current) else { return }
+            // REST reconciliation may already have recovered this request while POST was suspended.
+            if createRequestID == nil, pendingPeer == nil { return }
             uncertain = Self.uncertainResult(error)
             if !uncertain { pendingPeer = nil; createRequestID = nil }
             self.error = uncertain ? "Результат вызова неизвестен. Повторите проверку — новый звонок не создаётся." : userMessage(error)
@@ -237,12 +226,31 @@ import MeetSpaceCalling
             if !localIntent { cameraWanted = false }
             lastHeartbeat = nil; lastHeartbeatAttempt = nil
         }
+        if pendingPeer?.id == incoming.calleeUserId, incoming.callerUserId == repository.userID,
+           incoming.callerClientId == clientID.uuidString.lowercased() {
+            pendingPeer = nil; createRequestID = nil; uncertain = false
+        }
         if incoming.isTerminal {
             ending = false; uncertain = false
             failPendingAnswer(); await stopMedia()
             guard valid(current), applicationEpoch == application else { return }
             reportEnd(incoming, reason: incoming.status == .missed ? .unanswered : (incoming.status == .declined ? .declinedElsewhere : .remoteEnded))
             return
+        }
+        if incoming.callerUserId == repository.userID, ownsMedia, !ending,
+           system.isAvailable, !reported.contains(incoming.id), !failedReports.contains(incoming.id) {
+            // A create response can be lost while the peer accepts. The same owned REST call
+            // must still enter CallKit before its SFU audio waits for system activation.
+            reported.insert(incoming.id)
+            do { try await system.requestStart(descriptor(incoming)) }
+            catch {
+                guard valid(current), currentCall?.id == incoming.id else { return }
+                failedReports.insert(incoming.id)
+                self.error = "Системный звонок не запущен. Вызов отменяется."
+                await terminate(reportReason: .failed); return
+            }
+            guard valid(current), applicationEpoch == application else { return }
+            if mediaSession?.phase == .connected { system.reportConnected(callID: incoming.id, at: now()) }
         }
         if incoming.status == .ringing {
             guard !ending else { return }

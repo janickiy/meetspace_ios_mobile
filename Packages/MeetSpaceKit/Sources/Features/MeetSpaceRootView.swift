@@ -9,14 +9,16 @@ public struct MeetSpaceRootView: View {
     public init(model: AppModel) { self.model = model }
 
     public var body: some View {
-        Group {
-            if model.isDemo || (model.identity.messaging != nil && !model.identity.addingAccount) { WorkspaceView(model: model) }
-            else { OnboardingView(model: model) }
-        }
-        .font(MSTheme.font()).foregroundStyle(MSTheme.ink).tint(MSTheme.accent)
-        .buttonStyle(MSTextButtonStyle())
-        .preferredColorScheme(colorScheme)
-        .background(MSTheme.background)
+        lifecycleContent
+        .conferencePresentation(model: model)
+        .directCallPresentation(model: model)
+        .alert(tr("MeetSpace"), isPresented: Binding(get: { model.notice != nil }, set: { if !$0 { model.notice = nil } })) {
+            Button(tr("Понятно"), role: .cancel) { model.notice = nil }
+        } message: { Text(tr(model.notice ?? "")) }
+    }
+
+    private var lifecycleContent: some View {
+        styledContent
         .task {
             guard !restored else { return }
             restored = true; await model.restore()
@@ -37,11 +39,17 @@ public struct MeetSpaceRootView: View {
                 model.configuration.server = account.server; model.tab = .messages
             } else { model.sessionEnded() }
         }
-        .conferencePresentation(model: model)
-        .directCallPresentation(model: model)
-        .alert(tr("MeetSpace"), isPresented: Binding(get: { model.notice != nil }, set: { if !$0 { model.notice = nil } })) {
-            Button(tr("Понятно"), role: .cancel) { model.notice = nil }
-        } message: { Text(tr(model.notice ?? "")) }
+    }
+
+    private var styledContent: some View {
+        Group {
+            if model.isDemo || (model.identity.messaging != nil && !model.identity.addingAccount) { WorkspaceView(model: model) }
+            else { OnboardingView(model: model) }
+        }
+        .font(MSTheme.font()).foregroundStyle(MSTheme.ink).tint(MSTheme.accent)
+        .buttonStyle(MSTextButtonStyle())
+        .preferredColorScheme(colorScheme)
+        .background(MSTheme.background)
     }
 
     private var colorScheme: ColorScheme? {

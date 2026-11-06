@@ -238,6 +238,20 @@ private actor CallSockets: ConferenceSocketFactory {
     await calls.close(); #expect(!system.invalidated)
 }
 
+@Test @MainActor func directCallReconcilesLostCreateResponseIntoOneSystemStartBeforeMedia() async throws {
+    let service = CallService(), system = CallSystem(), sockets = CallSockets()
+    let calls = try coordinator(service, system: system, sockets: sockets)
+    await service.failCreate(); await calls.startOutgoing(peer: CallFixture.person)
+    #expect(calls.uncertain && calls.pendingPeer != nil && system.starts.isEmpty)
+    await service.set(CallFixture.value(.accepted, version: 2)); await calls.reconcile()
+    try await callEventually { await sockets.created.count == 1 }
+    #expect(system.starts == [CallFixture.call])
+    #expect(!calls.uncertain && calls.pendingPeer == nil)
+    await calls.reconcile()
+    #expect(system.starts.count == 1)
+    await calls.close()
+}
+
 @Test @MainActor func directCallRejectsMeetingConflictBeforeCreatingOrAccepting() async throws {
     let service = CallService(CallFixture.value(incoming: true)), system = CallSystem()
     let calls = try coordinator(service, system: system, canUse: { false })
