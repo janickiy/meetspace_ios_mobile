@@ -25,10 +25,13 @@ import MeetSpaceAPI
     @ObservationIgnored private var epoch = UUID()
     @ObservationIgnored private var closed = false
 
-    public init(repository: any SettingsServing,
+    public init(repository: any SettingsServing, initialProfile: AccountUser? = nil,
                 onProfileSaved: @escaping @MainActor @Sendable (AccountUser) async throws -> Void = { _ in }) {
-        self.repository = repository; self.account = repository.account; profile = repository.account.user
-        displayName = repository.account.user.displayName ?? ""; self.onProfileSaved = onProfileSaved
+        self.repository = repository; self.account = repository.account
+        // Identity may have just refreshed /auth/me while retaining this client's immutable
+        // account scope and renewed credentials. Seed presentation from that checked profile.
+        let current = initialProfile.flatMap { $0.id == repository.account.user.id ? $0 : nil } ?? repository.account.user
+        profile = current; displayName = current.displayName ?? ""; self.onProfileSaved = onProfileSaved
     }
     public var canSaveProfile: Bool {
         !busy && !closed && (try? ProfileValidation.displayName(displayName)).map { $0 != profile.displayName } == true

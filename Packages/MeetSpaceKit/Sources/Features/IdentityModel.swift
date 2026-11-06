@@ -164,7 +164,8 @@ import MeetSpaceCalling
         calendar = CalendarModel(repository: CalendarRepository(client: client), preferences: dependencies.calendarPreferences(client.account.key))
         folders = FoldersModel(repository: FoldersRepository(client: client))
         recordings = RecordingsModel(client: client, downloads: dependencies.recordingDownloads(client.account))
-        settings = SettingsModel(repository: SettingsRepository(client: client)) { [weak self] user in
+        let initialProfile = index.accounts.first(where: { $0.id == client.account.id })?.user
+        settings = SettingsModel(repository: SettingsRepository(client: client), initialProfile: initialProfile) { [weak self] user in
             guard let self, self.epoch == current, !self.busy, user.id == client.account.user.id,
                   let position = self.index.accounts.firstIndex(where: { $0.id == client.account.id }) else { throw ClientError.scopeMismatch }
             self.busy = true; defer { self.busy = false }

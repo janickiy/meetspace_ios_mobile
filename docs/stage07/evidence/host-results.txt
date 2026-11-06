@@ -1,0 +1,13 @@
+Local Command Line Tools SDK 26.4; 2026-11-06
+159 executed / 4 explicit opt-in skips / 163 total
+
+✔ Test run with 3 tests in 0 suites passed after 0.004 seconds.
+➜ Test actualBackendConferenceRESTAndGuestScope() skipped.
+➜ Test actualBackendTwoClientsAndFiles() skipped.
+➜ Test actualBackendCalendarFoldersSettingsAndRecordings() skipped.
+➜ Test actualBackendDirectCallsDevicesAndPrivateSFU() skipped.
+✔ Test run with 134 tests in 1 suite passed after 0.634 seconds.
+✔ Test run with 8 tests in 0 suites passed after 0.013 seconds.
+✔ Test run with 7 tests in 0 suites passed after 0.003 seconds.
+✔ Test run with 6 tests in 1 suite passed after 5.354 seconds.
+✔ Test run with 5 tests in 0 suites passed after 0.003 seconds.

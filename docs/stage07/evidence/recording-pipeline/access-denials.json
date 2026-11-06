@@ -1,0 +1,17 @@
+{
+  "source": "Aggregate of API structured request logs; credentials, URLs and identifiers omitted",
+  "requests": [
+    {
+      "method": "GET",
+      "routeTemplate": "/api/v1/conferences/:id/recordings/:recordingId",
+      "status": 403,
+      "count": 3
+    },
+    {
+      "method": "POST",
+      "routeTemplate": "/api/v1/conferences/:id/recordings/:recordingId/stop",
+      "status": 403,
+      "count": 1
+    }
+  ]
+}

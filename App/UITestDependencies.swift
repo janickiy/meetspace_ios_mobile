@@ -454,7 +454,7 @@ enum UITestDependencies {
                 return try response(["capabilities": ["recordingModes": ["composite", "audio_only"]], "buildVersion": "ui-fixture"])
             }
             if path == "/api/v1/recordings" {
-                let rows: [[String: Any]] = [UITestRecordingFixture.recordingID, UITestRecordingFixture.processingID, UITestRecordingFixture.failedID].map { id in
+                let rows: [[String: Any]] = [UITestRecordingFixture.recordingID, UITestRecordingFixture.processingID, UITestRecordingFixture.failedID, UITestRecordingFixture.audioID].map { id in
                     ["conference": recordingConference(), "recording": recordingFixture(id)]
                 }
                 return try response(["items": rows])
@@ -525,15 +525,17 @@ enum UITestDependencies {
              "updatedAt": "2026-11-06T08:02:00Z", "waitingRoomEnabled": false]
         }
         private func recordingFixture(_ id: String) -> [String: Any] {
-            let ready = id == UITestRecordingFixture.recordingID
-            let file: [String: Any] = ["uuid": UITestRecordingFixture.fileID, "recordId": 1,
-                "fileType": "final_mp4", "fileName": "meeting.mp4", "mimeType": "video/mp4",
-                "sizeBytes": UITestRecordingFixture.data.count, "checksumSha256": UITestRecordingFixture.sha256,
-                "url": "https://recording.fixture/meeting.mp4"]
-            return ["id": ready ? 1 : id == UITestRecordingFixture.processingID ? 2 : 3, "uuid": id,
-                "conferenceId": UITestRecordingFixture.conferenceID, "mode": "composite",
+            let audio = id == UITestRecordingFixture.audioID
+            let ready = id == UITestRecordingFixture.recordingID || audio
+            let file: [String: Any] = ["uuid": UITestRecordingFixture.fileID, "recordId": audio ? 4 : 1,
+                "fileType": audio ? "final_audio" : "final_mp4", "fileName": audio ? "meeting.m4a" : "meeting.mp4", "mimeType": audio ? "audio/mp4" : "video/mp4",
+                "sizeBytes": audio ? UITestRecordingFixture.audioData.count : UITestRecordingFixture.data.count,
+                "checksumSha256": audio ? UITestRecordingFixture.audioSHA256 : UITestRecordingFixture.sha256,
+                "url": audio ? "https://recording.fixture/meeting.m4a" : "https://recording.fixture/meeting.mp4"]
+            return ["id": audio ? 4 : ready ? 1 : id == UITestRecordingFixture.processingID ? 2 : 3, "uuid": id,
+                "conferenceId": UITestRecordingFixture.conferenceID, "mode": audio ? "audio_only" : "composite",
                 "status": ready ? "ready" : id == UITestRecordingFixture.processingID ? "processing" : "failed",
-                "createdAt": "2026-11-06T08:00:00Z", "requestedBy": first, "durationSec": ready ? 2 : 0,
+                "createdAt": "2026-11-06T08:00:00Z", "requestedBy": first, "durationSec": audio ? 8 : ready ? 2 : 0,
                 "files": ready ? [file] : []]
         }
     }

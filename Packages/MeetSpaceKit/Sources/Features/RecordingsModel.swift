@@ -76,7 +76,17 @@ import MeetSpaceAPI
             selected = RecordingLibraryItem(conference: row.conference, recording: recording)
         } catch { if valid(epoch), selectionID == requestID { self.error = Self.message(error) } }
     }
-    public func back() async { selectionID = UUID(); selected = nil; await cancelDownload(); await clearLocalFiles(); error = nil }
+    public func back() async {
+        // Detach the old operation and its files before suspension. The user can select
+        // another recording while a cancelled transfer drains; never clear that new state.
+        let pending = transfer
+        let urls = [playbackURL, exportURL].compactMap { $0 }
+        selectionID = UUID(); transferID = UUID(); transfer = nil; selected = nil
+        playbackURL = nil; exportURL = nil; downloading = false; progress = 0; error = nil
+        pending?.cancel()
+        if let pending, let url = try? await pending.value { await downloads.remove(url) }
+        for url in urls { await downloads.remove(url) }
+    }
     public func download(fileID: UUID, play: Bool) async {
         guard !closed, !downloading, let row = selected,
               let file = row.recording.files.first(where: { $0.id == fileID }), !play || file.playable else { return }

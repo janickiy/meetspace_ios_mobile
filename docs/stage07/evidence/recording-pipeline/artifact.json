@@ -1,0 +1,14 @@
+{
+  "downloadAuthentication": "fresh server-signed URL only; no account bearer/cookies",
+  "durationSec": 8,
+  "mimeType": "audio/mp4",
+  "mode": "audio_only",
+  "nonmemberAndRevokedMembershipDenied": true,
+  "serverFileName": "final.mp4",
+  "sha256": "fa17629d8db9171410af5fdbf58b74a2f344a3e363c6a88af8d33da1d3f79d69",
+  "signedGETStatus": 200,
+  "sizeBytes": 4775,
+  "source": "synthetic valid Opus silence, 20ms packets",
+  "status": "ready",
+  "unsignedGETStatus": 403
+}

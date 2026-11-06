@@ -31,7 +31,7 @@ ready, partial_ready, failed, cancelled. Неизвестные режимы н�
 ## Доступ к файлам
 
 Карточка содержит numeric `id` и `uuid`. У файла проверяется `recordId`, UUID,
-тип, MIME, положительный размер, SHA-256 (если дан), безопасное имя; неизвестные
+тип, MIME, положительный размер (если указан), SHA-256 (если дан), безопасное имя; неизвестные
 типы не экспортируются. Поддержаны final_mp4/video/mp4, final_audio/audio/mp4,
 tracks_archive/application/zip и preview_jpg/image/jpeg. Signed URL остаётся внутри
 API, не хранится в observable/persistent state и не попадает в текст ошибок.
@@ -55,7 +55,9 @@ AVPlayer получает только локальный проверенный
 отменяется, UUID поколения предотвращает позднее восстановление state. При фоне
 player ставится на паузу. Файлы account-scoped, исключены из backup, имеют Complete
 file protection на iOS, удаляются при закрытии модели; после аварийного завершения
-остаток удаляется при следующем создании downloader для этого аккаунта.
+очистка остатка повторяется при следующем создании downloader для этого аккаунта.
+Удаление выполняется best-effort: ошибки файловой системы сейчас не выводятся
+пользователю, гарантированное физическое удаление при I/O failure не обещается.
 
 Сохранение пользователем — системный share sheet; экспортированная копия находится
 под управлением выбранного приложения/Files и не может быть отозвана MeetSpace.
@@ -88,9 +90,15 @@ account-scoped RecordingsModel.
 participant/guest. HTTP в этих тестах подменяет URLProtocol/RoutedTransport: это не
 проверка production object storage или камеры/сервера записи.
 
-UI/hosted AVPlayer используют отдельный 2-секундный H.264 160×90 fixture без аудио,
+UI-тест AVPlayer использует отдельный 2-секундный H.264 160×90 fixture без аудио,
 созданный через AVAssetWriter: 2972 bytes, SHA-256
 `d890abd6474dfc4653d493c660f06bd510575e0cf6914e998ed23b132263bb93`.
+Второй fixture — скачанный результат настоящего pinned recorder worker: AAC stereo
+48 kHz, 8.252333 s, 4775 bytes, SHA-256
+`fa17629d8db9171410af5fdbf58b74a2f344a3e363c6a88af8d33da1d3f79d69`.
+Hosted тест проверяет playable/audio track/duration и продвижение времени AVPlayer;
+UI-тест открывает тот же файл. Передача этого файла в DEBUG fixture явно отделена от
+проверки настоящего signed download на стенде. Итог CI указан в основном отчёте.
 Фактические итоговые команды/результаты CI и backend стенда приведены в общем отчёте
 этапа 7. Реальное воспроизведение артефакта production SFU recording pipeline и
 проверки на физических устройствах требуют отдельного окружения; simulator fixture

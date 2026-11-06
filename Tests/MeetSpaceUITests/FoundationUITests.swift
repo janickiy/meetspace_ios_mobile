@@ -25,19 +25,31 @@ import XCTest
         return link
     }
 
-    private func reveal(_ element: XCUIElement, in app: XCUIApplication) {
+    private func reveal(_ element: XCUIElement, in app: XCUIApplication, towardTop: Bool = false) {
         XCTAssertTrue(element.waitForExistence(timeout: 10))
-        for _ in 0..<5 where !element.isHittable { app.swipeUp() }
+        for _ in 0..<5 where !element.isHittable {
+            let surface = app.scrollViews.firstMatch.exists ? app.scrollViews.firstMatch :
+                (app.collectionViews.firstMatch.exists ? app.collectionViews.firstMatch : app)
+            if towardTop { surface.swipeDown() } else { surface.swipeUp() }
+        }
         XCTAssertTrue(element.isHittable)
+    }
+
+    private func openProfileFeature(_ identifier: String, in app: XCUIApplication) {
+        app.buttons["tab.profile"].tap()
+        let link = app.buttons[identifier]
+        reveal(link, in: app)
+        XCTAssertGreaterThanOrEqual(link.frame.height, 44, "The entire navigation row must be tappable")
+        link.tap()
     }
 
     func testStage07CalendarCreateRescheduleCancelAndViews() {
         let app = launch(); login(app)
-        app.buttons["tab.profile"].tap(); app.buttons["openCalendar"].tap()
+        openProfileFeature("openCalendar", in: app)
         let schedule = app.buttons["calendar.schedule"]
         XCTAssertTrue(schedule.waitForExistence(timeout: 10)); schedule.tap()
         let title = app.textFields["schedule.title"]
-        XCTAssertTrue(title.waitForExistence(timeout: 5)); title.tap(); title.typeText("План команды")
+        XCTAssertTrue(title.waitForExistence(timeout: 5)); title.tap(); title.typeText("План команды\n")
         let submit = app.buttons["schedule.submit"]; reveal(submit, in: app); submit.tap()
         let event = app.buttons["calendar.event.33333333-3333-4333-8333-333333333333"]
         reveal(event, in: app)
@@ -48,6 +60,7 @@ import XCTest
         XCTAssertTrue(app.staticTexts["Длительность, мин: 35"].exists)
         XCTAssertTrue(app.buttons["schedule.submit"].waitForExistence(timeout: 5)); app.buttons["schedule.submit"].tap()
         XCTAssertTrue(event.waitForExistence(timeout: 5))
+        reveal(app.segmentedControls["calendar.mode"], in: app, towardTop: true)
         app.segmentedControls["calendar.mode"].buttons["Месяц"].tap()
         capture(app, name: "stage07-calendar-month")
         app.segmentedControls["calendar.mode"].buttons["Список"].tap()
@@ -62,7 +75,7 @@ import XCTest
 
     func testStage07FolderRemovalPreservesChat() {
         let app = launch(); login(app)
-        app.buttons["tab.profile"].tap(); app.buttons["openFolders"].tap()
+        openProfileFeature("openFolders", in: app)
         XCTAssertTrue(app.buttons["createFolder"].waitForExistence(timeout: 5)); app.buttons["createFolder"].tap()
         let field = app.textFields["folderName"]
         XCTAssertTrue(field.waitForExistence(timeout: 5)); field.tap(); field.typeText("Проект Альфа")
@@ -92,7 +105,9 @@ import XCTest
         XCTAssertTrue(profile.waitForExistence(timeout: 5)); profile.tap()
         let name = app.textFields["profileDisplayName"]
         XCTAssertTrue(name.waitForExistence(timeout: 5)); name.tap()
-        name.typeText(String(repeating: XCUIKeyboardKey.delete.rawValue, count: (name.value as? String ?? "").count) + "Имя iOS")
+        name.typeText(String(repeating: XCUIKeyboardKey.delete.rawValue, count: (name.value as? String ?? "").count) + "Имя iOS\n")
+        let dismissed = XCTNSPredicateExpectation(predicate: NSPredicate(format: "exists == false"), object: app.keyboards.firstMatch)
+        XCTAssertEqual(XCTWaiter.wait(for: [dismissed], timeout: 5), .completed)
         let save = app.buttons["saveProfile"]; reveal(save, in: app); save.tap()
         XCTAssertTrue(app.staticTexts["settingsSaved"].waitForExistence(timeout: 5))
         capture(app, name: "stage07-settings-profile")
@@ -119,7 +134,7 @@ import XCTest
 
     func testStage07RecordingsStatusAndNativePlayerWithLocalFixture() {
         let app = launch(); login(app)
-        app.buttons["tab.profile"].tap(); app.buttons["openRecordings"].tap()
+        openProfileFeature("openRecordings", in: app)
         let ready = app.buttons["recording.77777777-7777-4777-8777-777777777771"]
         XCTAssertTrue(ready.waitForExistence(timeout: 10)); capture(app, name: "stage07-recordings")
         app.buttons["recording.77777777-7777-4777-8777-777777777772"].tap()
@@ -134,11 +149,19 @@ import XCTest
         XCTAssertFalse(app.staticTexts["recordingsError"].exists)
         capture(app, name: "stage07-recording-player")
         XCTAssertTrue(app.buttons["downloadRecording"].isEnabled)
+        app.buttons["Все записи"].tap()
+        let audio = app.buttons["recording.77777777-7777-4777-8777-777777777774"]
+        reveal(audio, in: app); audio.tap()
+        XCTAssertTrue(app.buttons["playRecording"].waitForExistence(timeout: 5)); app.buttons["playRecording"].tap()
+        XCTAssertTrue(player.waitForExistence(timeout: 10))
+        Thread.sleep(forTimeInterval: 3)
+        XCTAssertFalse(app.staticTexts["recordingsError"].exists)
+        capture(app, name: "stage07-recording-server-audio")
     }
 
     func testStage07RecordingAccessDeniedNeverStartsPlayer() {
         let app = launch(["-recording-access-denied"]); login(app)
-        app.buttons["tab.profile"].tap(); app.buttons["openRecordings"].tap()
+        openProfileFeature("openRecordings", in: app)
         let ready = app.buttons["recording.77777777-7777-4777-8777-777777777771"]
         XCTAssertTrue(ready.waitForExistence(timeout: 10)); ready.tap()
         XCTAssertTrue(app.staticTexts["recordingsError"].waitForExistence(timeout: 5))

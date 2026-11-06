@@ -204,11 +204,17 @@ struct ScheduleMeetingForm: View {
     @State private var waitingRoom = false
     @State private var choosingZone = false
     @State private var initialized = false
+    @FocusState private var titleFocused: Bool
     @Environment(\.dismiss) private var dismiss
     var body: some View {
         NavigationStack {
             Form {
-                if meeting == nil { TextField(tr("Название встречи"), text: $title).accessibilityIdentifier("schedule.title") }
+                if meeting == nil {
+                    TextField(tr("Название встречи"), text: $title)
+                        .focused($titleFocused).submitLabel(.done)
+                        .onSubmit { titleFocused = false }
+                        .accessibilityIdentifier("schedule.title")
+                }
                 else { Text(meeting?.title ?? "").font(.headline) }
                 DatePicker(tr("Дата и время"), selection: $startsAt, in: Date()..., displayedComponents: [.date, .hourAndMinute])
                     .environment(\.timeZone, model.zone).accessibilityIdentifier("schedule.date")
@@ -222,6 +228,7 @@ struct ScheduleMeetingForm: View {
                 if meeting == nil { Toggle(tr("Комната ожидания"), isOn: $waitingRoom) }
                 if let error = model.error { Text(tr(error)).foregroundStyle(MSTheme.danger) }
                 Button(tr(meeting == nil ? "Запланировать встречу" : "Сохранить время")) {
+                    titleFocused = false
                     Task {
                         let saved: Bool
                         if let meeting { saved = await model.reschedule(meeting, at: startsAt, duration: hasDuration ? duration : nil) }
@@ -230,7 +237,8 @@ struct ScheduleMeetingForm: View {
                     }
                 }.disabled(model.busy || (meeting == nil && (title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || model.creationUncertain)))
                     .accessibilityIdentifier("schedule.submit")
-            }.navigationTitle(tr(meeting == nil ? "Запланировать" : "Перенести встречу")).msInlineTitle()
+            }.scrollDismissesKeyboard(.interactively)
+                .navigationTitle(tr(meeting == nil ? "Запланировать" : "Перенести встречу")).msInlineTitle()
                 .toolbar { ToolbarItem(placement: .cancellationAction) { Button(tr("Отмена")) { dismiss() }.disabled(model.busy) } }
                 .disabled(model.busy).interactiveDismissDisabled(model.busy)
                 .onAppear {

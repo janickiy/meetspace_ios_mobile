@@ -65,6 +65,7 @@ struct AccountSettingsView: View {
 private struct AccountSettingsContent: View {
     @Bindable var model: SettingsModel
     let section: AccountSettingsSection
+    @FocusState private var profileNameFocused: Bool
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 20) {
@@ -79,10 +80,16 @@ private struct AccountSettingsContent: View {
                 if let information = model.information {
                     Text(tr(information)).font(MSTheme.font(13)).foregroundStyle(MSTheme.muted).accessibilityIdentifier("settingsSaved")
                 }
-                Button(tr("Обновить настройки")) { Task { await model.load() } }
+                Button(tr("Обновить настройки")) {
+                    profileNameFocused = false
+                    Task { await model.load() }
+                }
                     .buttonStyle(MSButtonStyle(primary: false)).disabled(model.busy)
             }.padding(24).frame(maxWidth: 720).frame(maxWidth: .infinity, alignment: .topLeading)
         }.background(MSTheme.background)
+            .scrollDismissesKeyboard(.interactively)
+            .accessibilityIdentifier("accountSettingsScroll")
+            .onChange(of: section) { _, _ in profileNameFocused = false }
     }
     private var profile: some View {
         VStack(alignment: .leading, spacing: 16) {
@@ -96,13 +103,18 @@ private struct AccountSettingsContent: View {
             }.padding(.bottom, 12)
             Text(tr("Имя для встреч")).font(MSTheme.font(12, weight: .semibold))
             TextField(tr("Имя"), text: $model.displayName).textFieldStyle(.plain).msCard()
+                .focused($profileNameFocused).submitLabel(.done)
+                .onSubmit { profileNameFocused = false }
                 .disabled(model.busy).accessibilityIdentifier("profileDisplayName")
             Text(tr("От 1 до 100 символов")).font(MSTheme.font(12)).foregroundStyle(MSTheme.muted)
             Text(tr("Электронная почта")).font(MSTheme.font(12, weight: .semibold))
             Text(model.profile.email).textSelection(.enabled).frame(maxWidth: .infinity, alignment: .leading).msCard()
             Text(tr("Адрес используется для входа. Изменение email недоступно.")).font(MSTheme.font(12)).foregroundStyle(MSTheme.muted)
             if let error = model.profileError { errorMessage(error) }
-            Button(tr("Сохранить профиль")) { Task { await model.saveProfile() } }
+            Button(tr("Сохранить профиль")) {
+                profileNameFocused = false
+                Task { await model.saveProfile() }
+            }
                 .buttonStyle(MSButtonStyle()).disabled(!model.canSaveProfile).accessibilityIdentifier("saveProfile")
             Divider()
             LabeledContent(tr("Регистрация")) {

@@ -193,6 +193,83 @@ private actor RevokeAfterDownload: RecordingDownloading {
     #expect(model.items.isEmpty)
 }
 
+private actor DelayedRecordingCancellation: RecordingDownloading {
+    let oldURL = URL(fileURLWithPath: "/tmp/recording-old-operation-fixture.mp4")
+    let newURL = URL(fileURLWithPath: "/tmp/recording-new-operation-fixture.mp4")
+    private(set) var removed: [URL] = []
+    private var requests = 0
+    private var cancelled = false
+    private var released = false
+    private var startedWaiters: [CheckedContinuation<Void, Never>] = []
+    private var cancelledWaiters: [CheckedContinuation<Void, Never>] = []
+    private var held: CheckedContinuation<Void, Never>?
+    func download(url: URL, file: RecordingFile, progress: TransferProgress?) async throws -> URL {
+        requests += 1
+        guard requests == 1 else { return newURL }
+        for waiter in startedWaiters { waiter.resume() }; startedWaiters = []
+        // Deliberately ignore cancellation until explicitly released: real transport cleanup
+        // can take time, and reentrant UI work must remain safe during that interval.
+        await withTaskCancellationHandler {
+            await waitForRelease()
+        } onCancel: {
+            Task { await self.markCancelled() }
+        }
+        return oldURL
+    }
+    func waitForFirstRequest() async {
+        if requests > 0 { return }
+        await withCheckedContinuation { startedWaiters.append($0) }
+    }
+    func waitForCancellation() async {
+        if cancelled { return }
+        await withCheckedContinuation { cancelledWaiters.append($0) }
+    }
+    private func markCancelled() {
+        cancelled = true
+        for waiter in cancelledWaiters { waiter.resume() }; cancelledWaiters = []
+    }
+    private func waitForRelease() async {
+        if released { return }
+        await withCheckedContinuation { held = $0 }
+    }
+    func releaseFirst() { released = true; held?.resume(); held = nil }
+    func remove(_ url: URL) { removed.append(url) }
+    func close() { releaseFirst() }
+}
+
+@Test @MainActor func recordingsBackCannotDeleteNewPlaybackWhileOldCancellationDrains() async throws {
+    let downloads = DelayedRecordingCancellation()
+    let transport = RoutedTransport { request, _ in
+        if request.url?.path == "/api/v1/recordings" { throw APIError.offline }
+        return try Fixture.response(["item": RecordingFixture.card()])
+    }
+    let model = RecordingsModel(client: try RecordingFixture.client(transport), downloads: downloads)
+    let row = RecordingLibraryItem(conference: RecordingFixture.meeting(), recording: MeetingRecording(id: RecordingFixture.recording,
+        conferenceID: RecordingFixture.conference, mode: "composite", status: "ready", createdAt: Date()))
+    await model.select(row)
+    let oldDownload = Task { await model.download(fileID: RecordingFixture.file, play: true) }
+    await downloads.waitForFirstRequest()
+    let leaving = Task { await model.back() }
+    await downloads.waitForCancellation()
+    #expect(model.selected == nil && !model.downloading)
+
+    // Reopen the same recording and complete a fresh authorized transfer before the old one exits.
+    await model.select(row)
+    await model.download(fileID: RecordingFixture.file, play: true)
+    let currentURL = downloads.newURL
+    #expect(model.playbackURL == currentURL)
+    await model.load() // A new, unrelated error must also survive completion of the old back().
+    let currentError = try #require(model.error)
+    await downloads.releaseFirst()
+    await oldDownload.value; await leaving.value
+
+    #expect(model.selected?.id == row.id && model.playbackURL == currentURL)
+    #expect(model.error == currentError)
+    #expect(await downloads.removed.contains(downloads.oldURL))
+    #expect(await !downloads.removed.contains(currentURL))
+    await model.close()
+}
+
 @Test func recordingPermissionsFollowActualParticipantAndRequesterPolicy() {
     let conference = RecordingFixture.meeting()
     let memberID = UUID()

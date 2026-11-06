@@ -83,7 +83,7 @@ struct LiveProfileView: View {
     private func workspaceLink(_ title: String, icon: String, route: AppRoute, id: String) -> some View {
         Button { app.navigate(route) } label: {
             HStack { Label(tr(title), systemImage: icon); Spacer(); Image(systemName: "chevron.right") }
-                .frame(minHeight: 44)
+                .frame(minHeight: 44).contentShape(Rectangle())
         }.buttonStyle(.plain).accessibilityIdentifier(id)
     }
     private var notificationSettings: some View {

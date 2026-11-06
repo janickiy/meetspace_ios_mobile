@@ -1,0 +1,58 @@
+{
+  "backendCommit": "0bd1248a2411842515af4e02f1e95821616748fb",
+  "images": {
+    "postgres": "sha256:742f40ea20b9ff2ff31db5458d127452988a2164df9e17441e191f3b72252193",
+    "redis": "sha256:e7723ff73d963f5cc6d9c4643ea3d989527a402a319239054e9472a7fb9219a2",
+    "minio": "sha256:b77a54e06b9c7e8f05cfd3873675644f094302bacd3aa7588a92ca30f44a2ee1",
+    "rabbitmq": "sha256:bda54cf7b1dc13aff98091ef8c99d59ca37c396b38eef1b21232f533136ba0ec",
+    "mediaworker": "sha256:5291449c3df73caf6ed85e649dec1b9e818b39a5d8c871e97afc13e9cd5e8fa8",
+    "api": "sha256:5291449c3df73caf6ed85e649dec1b9e818b39a5d8c871e97afc13e9cd5e8fa8",
+    "recordworker": "sha256:d37e4a93b60ce872d856eb2accfcf9626a082a14a28e36eb80881a70ff54660d"
+  },
+  "result": 0,
+  "recordingMode": "audio_only",
+  "syntheticSource": "valid Opus silence, 20ms packets",
+  "realRecorderFFmpegAndS3": true,
+  "transport": "isolated Docker HTTP/WS + DTLS/SRTP; production requires HTTPS/WSS",
+  "sourceHashes": {
+    "scripts/run_recording_pipeline.py": "a3891bf25d84529bd60f1ce088e176493cecde3b9c32b457339b584d27e03686",
+    "scripts/fixtures/recording_probe.go": "f84da3a68313443f19654b18f73950cd6de3261604358f04a2b6e4cf1b6e5688"
+  },
+  "limitations": [
+    "Synthetic silent audio source, no microphone or camera capture",
+    "No video rendering or iOS/AVPlayer/device acceptance",
+    "Test-only internal HTTP/WS and signed-download HTTPS to known HTTP MinIO adapter; no public TLS deployment"
+  ],
+  "artifact": {
+    "downloadAuthentication": "fresh server-signed URL only; no account bearer/cookies",
+    "durationSec": 8,
+    "mimeType": "audio/mp4",
+    "mode": "audio_only",
+    "nonmemberAndRevokedMembershipDenied": true,
+    "serverFileName": "final.mp4",
+    "sha256": "fa17629d8db9171410af5fdbf58b74a2f344a3e363c6a88af8d33da1d3f79d69",
+    "signedGETStatus": 200,
+    "sizeBytes": 4775,
+    "source": "synthetic valid Opus silence, 20ms packets",
+    "status": "ready",
+    "unsignedGETStatus": 403
+  },
+  "ffprobe": {
+    "programs": [],
+    "streams": [
+      {
+        "codec_name": "aac",
+        "codec_type": "audio",
+        "sample_rate": "48000",
+        "channels": 2,
+        "duration": "8.252333",
+        "nb_read_frames": "389"
+      }
+    ],
+    "format": {
+      "duration": "8.252333",
+      "size": "4775"
+    }
+  },
+  "ffmpegDecode": "PASS, exit code 0"
+}

@@ -1,0 +1,19 @@
+{
+    "programs": [
+
+    ],
+    "streams": [
+        {
+            "codec_name": "aac",
+            "codec_type": "audio",
+            "sample_rate": "48000",
+            "channels": 2,
+            "duration": "8.252333",
+            "nb_read_frames": "389"
+        }
+    ],
+    "format": {
+        "duration": "8.252333",
+        "size": "4775"
+    }
+}

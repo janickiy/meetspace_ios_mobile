@@ -1,0 +1,8 @@
+PASS native Pion Opus source published through real SFU; synthetic silence 20ms packets
+STATE recording=starting
+STATE recording=recording
+STATE recording=stopping
+STATE recording=processing
+STATE recording=ready
+PASS real ready audio artifact, signed download checksum/length, unsigned object 403, member access and nonmember/revoked-member denial
+PASS recording pipeline probe; real audio artifact from synthetic silence, no video/device/iOS playback claim
