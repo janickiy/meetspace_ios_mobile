@@ -59,8 +59,14 @@ struct WorkspaceView: View {
 
     private func tabButton(_ tab: AppTab, title: String, icon: String) -> some View {
         Button { model.tab = tab } label: {
-            VStack(spacing: 5) {
+            // At accessibility sizes, place the icon beside the fully scaled label
+            // so two-line words do not also pay for a separate icon row.
+            let layout = typeSize.isAccessibilitySize
+                ? AnyLayout(HStackLayout(spacing: 4))
+                : AnyLayout(VStackLayout(spacing: 5))
+            layout {
                 Image(systemName: icon).font(.system(size: 21))
+                    .fixedSize().accessibilityHidden(true)
                 Text(tr(title)).font(MSTheme.font(10, weight: .semibold, relativeTo: .caption))
                     .multilineTextAlignment(.center).fixedSize(horizontal: false, vertical: true)
             }.frame(maxWidth: .infinity, minHeight: 54).padding(.bottom, 3)
@@ -121,17 +127,20 @@ struct PageHeader<Actions: View>: View {
 
 struct SearchBox: View {
     @Binding var text: String
+    @Environment(\.dynamicTypeSize) private var typeSize
     let placeholder: String
     var onSubmit: () -> Void = {}
     var body: some View {
         HStack(spacing: 10) {
             Image(systemName: "magnifyingglass").foregroundStyle(MSTheme.muted).accessibilityHidden(true)
             #if os(iOS)
-            AccessibleTextField(text: $text, placeholder: tr(placeholder), label: tr(placeholder), onSubmit: onSubmit)
+            AccessibleTextField(text: $text, placeholder: tr(typeSize.isAccessibilitySize ? "Поиск" : placeholder),
+                                label: tr(placeholder), identifier: "searchField.\(placeholder)", onSubmit: onSubmit)
                 .frame(minHeight: 44)
             #else
-            TextField(tr(placeholder), text: $text).textFieldStyle(.plain).frame(minHeight: 44)
-                .accessibilityLabel(tr(placeholder)).onSubmit(onSubmit)
+            TextField(tr(typeSize.isAccessibilitySize ? "Поиск" : placeholder), text: $text)
+                .textFieldStyle(.plain).frame(minHeight: 44)
+                .accessibilityLabel(tr(placeholder)).accessibilityIdentifier("searchField.\(placeholder)").onSubmit(onSubmit)
             #endif
             if !text.isEmpty { Button { text = "" } label: { Image(systemName: "xmark.circle.fill") }.accessibilityLabel(tr("Очистить поиск")) }
         }.padding(.horizontal, 12).frame(minHeight: 44).background(MSTheme.surface, in: RoundedRectangle(cornerRadius: 12))

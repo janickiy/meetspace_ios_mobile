@@ -45,23 +45,48 @@ import UIKit
         link.tap()
     }
 
+    private func contentViewport(for element: XCUIElement, in app: XCUIApplication) -> CGRect {
+        var frame = app.frame
+        if app.navigationBars.firstMatch.exists {
+            let top = app.navigationBars.firstMatch.frame.maxY
+            frame = frame.intersection(CGRect(x: frame.minX, y: top, width: frame.width, height: max(0, frame.maxY - top)))
+        }
+        if app.buttons["tab.profile"].exists {
+            frame.size.height = max(0, min(frame.maxY, app.buttons["tab.profile"].frame.minY) - frame.minY)
+        }
+        let id = element.identifier, label = element.label
+        for scroll in app.scrollViews.allElementsBoundByIndex where scroll.frame.width > 0 && scroll.frame.height > 0 {
+            let child = id.isEmpty
+                ? scroll.descendants(matching: .any).matching(NSPredicate(format: "label == %@", label)).firstMatch
+                : scroll.descendants(matching: .any).matching(identifier: id).firstMatch
+            if (!id.isEmpty || !label.isEmpty) && child.exists { frame = frame.intersection(scroll.frame) }
+        }
+        return frame
+    }
+
     private func revealEntireText(_ element: XCUIElement, in app: XCUIApplication) {
         XCTAssertTrue(element.waitForExistence(timeout: 10))
-        let top = app.navigationBars.firstMatch.frame.maxY + 8
-        let bottom = app.buttons["tab.profile"].frame.minY - 8
         for _ in 0..<16 {
+            let viewport = contentViewport(for: element, in: app).insetBy(dx: 1, dy: 4)
             let frame = element.frame
-            if frame.minY >= top && frame.maxY <= bottom { break }
-            let movesUp = frame.maxY > bottom
-            let startY = movesUp ? bottom - 30 : top + 30
-            let distance = min(bottom - top - 60, max(40, movesUp ? frame.maxY - bottom + 20 : top - frame.minY + 20))
-            let endY = movesUp ? startY - distance : startY + distance
-            let start = app.coordinate(withNormalizedOffset: .zero).withOffset(CGVector(dx: app.frame.midX, dy: startY))
-            let end = app.coordinate(withNormalizedOffset: .zero).withOffset(CGVector(dx: app.frame.midX, dy: endY))
-            start.press(forDuration: 0.1, thenDragTo: end)
+            if viewport.contains(frame) { return }
+            XCTAssertLessThanOrEqual(frame.height, viewport.height, "Target must fit vertically for a whole-element sample")
+            let horizontal = frame.minX < viewport.minX || frame.maxX > viewport.maxX
+            let delta = horizontal ? frame.midX - viewport.midX : frame.midY - viewport.midY
+            let capacity = max(1, (horizontal ? viewport.width : viewport.height) - 30)
+            let distance = min(capacity, abs(delta))
+            let center = CGPoint(x: viewport.midX, y: viewport.midY)
+            let start = horizontal
+                ? CGPoint(x: center.x + (delta > 0 ? distance / 2 : -distance / 2), y: center.y)
+                : CGPoint(x: center.x, y: center.y + (delta > 0 ? distance / 2 : -distance / 2))
+            let end = horizontal ? CGPoint(x: start.x - (delta > 0 ? distance : -distance), y: start.y)
+                : CGPoint(x: start.x, y: start.y - (delta > 0 ? distance : -distance))
+            let origin = app.coordinate(withNormalizedOffset: .zero)
+            origin.withOffset(CGVector(dx: start.x, dy: start.y)).press(forDuration: 0.1,
+                thenDragTo: origin.withOffset(CGVector(dx: end.x, dy: end.y)),
+                withVelocity: .slow, thenHoldForDuration: 0.3)
         }
-        XCTAssertGreaterThanOrEqual(element.frame.minY, top)
-        XCTAssertLessThanOrEqual(element.frame.maxY, bottom)
+        XCTAssertTrue(contentViewport(for: element, in: app).contains(element.frame), "Target must be fully visible")
     }
 
     func testAccessibilityStage08CoreScreens() throws {
@@ -70,6 +95,10 @@ import UIKit
         func reviewedCase(_ issue: XCUIAccessibilityAuditIssue, screen: String) -> String? {
             let id = issue.element?.identifier ?? ""
             let label = issue.element?.label ?? ""
+            if screen == "settings", issue.auditType == .contrast, id == "saveProfile",
+               app.buttons["saveProfile"].exists, !app.buttons["saveProfile"].isEnabled {
+                return "reviewed: unchanged profile; disabled save action (inactive-control contrast exemption)"
+            }
             // These are reviewed cases, not a category-wide exclusion. Preserve every raw
             // finding in the attachment. TypographyAccessibilityTests independently measures
             // the bundled fonts at all 12 sizes; the AX5 flow captures the actual layouts.
@@ -89,9 +118,9 @@ import UIKit
                   issue.compactDescription == "Dynamic Type font sizes are partially unsupported" else { return nil }
             let exact: [String: Set<String>] = [
                 "messages": ["messages.connectionStatus"],
-                "calendar": ["calendar.heading", "calendar.periodTitle", "calendar.today"],
-                "recordings": ["recordings.filterHint"], "folders": ["folders.subtitle"]]
-            let calendarIDs = Set((0...7).map { "calendar.weekday.\($0)" } +
+                "calendar": ["calendar.heading", "calendar.periodTitle", "calendar.today", "calendar.scopeTitle", "calendar.timeZoneTitle"],
+                "recordings": ["recordings.filterHint", "recordings.modeTitle", "recordings.statusTitle"], "folders": ["folders.subtitle"]]
+            let calendarIDs = Set((0...6).map { "calendar.weekday.\($0)" } +
                                   (0...23).map { "calendar.hour.\($0)" })
             let recordingIDs = Set((1...4).flatMap { index in
                 ["recording.date.77777777-7777-4777-8777-77777777777\(index)",
@@ -102,9 +131,9 @@ import UIKit
                 (screen == "recordings" && recordingIDs.contains(id)) {
                 return "reviewed: measured custom-font scaling; separate AX5 layout coverage"
             }
-            if ["Чаты", "Встречи", "Профиль"].contains(label),
-               let frame = issue.element?.frame,
-               frame.minY >= app.buttons["tab.profile"].frame.minY - 1 {
+            let tabs = ["Чаты": "tab.messages", "Встречи": "tab.meetings", "Профиль": "tab.profile"]
+            if let tabID = tabs[label], let frame = issue.element?.frame,
+               app.buttons[tabID].frame.contains(frame) {
                 return "reviewed: measured custom-font scaling; uncapped multiline tab label"
             }
             return nil
@@ -117,6 +146,7 @@ import UIKit
                            "resolution": resolution ?? "unresolved"])
         }
         func audit(_ screen: String) throws {
+            var deferred: [(Int, String)] = []
             capture(app, name: "stage08-accessibility-" + screen)
             // Audit contrast before the engine changes Dynamic Type. Keep the categories
             // separate so each pass sees a settled layout after the preceding trait change.
@@ -125,16 +155,35 @@ import UIKit
             for category in categories {
                 try app.performAccessibilityAudit(for: category) { issue in
                     var resolution = reviewedCase(issue, screen: screen)
-                    if screen == "recordings", issue.auditType == .contrast,
-                       issue.element?.identifier == "recordings.retentionNotice",
-                       let frame = issue.element?.frame,
-                       frame.maxY > app.buttons["tab.profile"].frame.minY {
-                        resolution = "deferred: footer clipped by scroll viewport; requires visible retest"
+                    if issue.auditType == .contrast, let element = issue.element,
+                       !element.identifier.isEmpty, !contentViewport(for: element, in: app).contains(element.frame) {
+                        resolution = "deferred: outside scroll viewport; requires fully visible retest"
+                        deferred.append((issues.count, element.identifier))
                     }
                     record(issue, screen: screen, resolution: resolution)
                     return true
                 }
                 Thread.sleep(forTimeInterval: 0.5)
+            }
+            // Contrast cannot be measured from pixels clipped by a scroll container or
+            // covered by persistent chrome. Revisit each identified initial finding in view.
+            for (index, identifier) in deferred {
+                let target = app.descendants(matching: .any).matching(identifier: identifier).firstMatch
+                revealEntireText(target, in: app)
+                capture(app, name: "stage08-accessibility-\(screen)-visible-\(identifier)")
+                var targetFailed = false
+                try app.performAccessibilityAudit(for: .contrast) { issue in
+                    let isTarget = issue.element?.identifier == identifier
+                    if isTarget { targetFailed = true }
+                    var resolution = reviewedCase(issue, screen: screen)
+                    if !isTarget, let element = issue.element,
+                       !contentViewport(for: element, in: app).contains(element.frame) {
+                        resolution = "outside retest viewport: no contrast measurement"
+                    }
+                    record(issue, screen: screen + "-visible-retest", resolution: resolution)
+                    return true
+                }
+                issues[index]["resolution"] = targetFailed ? "retest failed; see unresolved finding" : "verified: fully visible contrast retest passed"
             }
             if let data = try? JSONSerialization.data(withJSONObject: issues, options: [.prettyPrinted, .sortedKeys]) {
                 let progress = XCTAttachment(data: data, uniformTypeIdentifier: "public.json")
@@ -165,21 +214,6 @@ import UIKit
         openProfileFeature("openRecordings", in: app)
         XCTAssertTrue(app.buttons["recording.77777777-7777-4777-8777-777777777771"].waitForExistence(timeout: 10))
         try audit("recordings")
-        let footer = app.staticTexts["recordings.retentionNotice"]
-        revealEntireText(footer, in: app)
-        capture(app, name: "stage08-accessibility-recordings-footer")
-        var footerFailures = 0
-        try app.performAccessibilityAudit(for: .contrast) { issue in
-            let isFooter = issue.element?.identifier == "recordings.retentionNotice"
-            if isFooter { footerFailures += 1 }
-            record(issue, screen: "recordings-footer", resolution: isFooter ? nil : reviewedCase(issue, screen: "recordings"))
-            return true
-        }
-        if footerFailures == 0 {
-            for index in issues.indices where issues[index]["resolution"]?.hasPrefix("deferred:") == true {
-                issues[index]["resolution"] = "verified: fully visible footer contrast retest passed"
-            }
-        }
         app.navigationBars.buttons.firstMatch.tap()
         openProfileFeature("openFolders", in: app)
         XCTAssertTrue(app.buttons["createFolder"].waitForExistence(timeout: 5))

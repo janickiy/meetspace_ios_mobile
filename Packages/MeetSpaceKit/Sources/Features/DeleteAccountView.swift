@@ -21,10 +21,22 @@ struct DeleteAccountView: View {
                 Section {
                     SecureField(tr("Пароль аккаунта"), text: $password)
                         .textContentType(.password).focused($passwordFocused).submitLabel(.done)
-                        .onSubmit { passwordFocused = false }.accessibilityIdentifier("deleteAccount.password")
+                        #if os(iOS)
+                        .textInputAutocapitalization(.never)
+                        #endif
+                        .autocorrectionDisabled()
+                        .onSubmit {
+                            #if DEBUG
+                            traceFixtureInput("submit", password)
+                            #endif
+                            passwordFocused = false
+                        }.accessibilityIdentifier("deleteAccount.password")
                     Button(tr("Удалить аккаунт на сервере"), role: .destructive) {
                         // The confirmation owns the submitted value, independent of subsequent
                         // SecureField/Form presentation and focus changes.
+                        #if DEBUG
+                        traceFixtureInput("prepare", password)
+                        #endif
                         pendingPassword = password; passwordFocused = false
                     }.disabled(password.isEmpty || identity.busy).accessibilityIdentifier("deleteAccount.submit")
                 }
@@ -40,6 +52,9 @@ struct DeleteAccountView: View {
                     isPresented: Binding(get: { pendingPassword != nil }, set: { if !$0 { pendingPassword = nil } }),
                     presenting: pendingPassword) { supplied in
                     Button(tr("Удалить навсегда"), role: .destructive) {
+                        #if DEBUG
+                        traceFixtureInput("confirm", supplied)
+                        #endif
                         password = ""; pendingPassword = nil
                         Task { if await identity.deleteAccount(account, password: supplied) { dismiss() } }
                     }.accessibilityIdentifier("deleteAccount.confirm")
@@ -48,4 +63,20 @@ struct DeleteAccountView: View {
                 }
         }.onDisappear { password = ""; pendingPassword = nil }
     }
+
+    #if DEBUG
+    // Only synthetic UI-test input is classified. Never log a password, length, or hash.
+    private func traceFixtureInput(_ stage: String, _ value: String) {
+        guard ProcessInfo.processInfo.arguments.contains("-uitesting") else { return }
+        let classification: String
+        switch value {
+        case "": classification = "empty"
+        case "fixture-password": classification = "expected"
+        case "incorrect-password": classification = "rejected"
+        case "Fixture-password": classification = "capitalized"
+        default: classification = "other"
+        }
+        NSLog("MeetSpaceDeletionDiagnostic stage=%@ input=%@", stage, classification)
+    }
+    #endif
 }

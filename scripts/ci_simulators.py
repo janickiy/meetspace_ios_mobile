@@ -12,7 +12,7 @@ def main():
     parser.add_argument("--runtime-major", type=int)
     parser.add_argument("--preferred-device")
     parser.add_argument("--label")
-    parser.add_argument("--scope", choices=["full", "audit", "compatibility"], default="full")
+    parser.add_argument("--scope", choices=["full", "audit", "compatibility", "deletion"], default="full")
     args = parser.parse_args()
     inventory = json.loads(subprocess.check_output(["xcrun", "simctl", "list", "devices", "available", "--json"], text=True))
     candidates = []
@@ -41,7 +41,9 @@ def main():
         "preferredDeviceMatched": preferred, "xcode": subprocess.check_output(["xcodebuild", "-version"], text=True),
     }, indent=2) + "\n")
     selection = []
-    if args.scope != "full":
+    if args.scope == "deletion":
+        selection = ["-only-testing:MeetSpaceUITests/FoundationUITests/testStage08AccountDeletionRequiresPasswordAndConfirmation"]
+    elif args.scope != "full":
         selection = ["-only-testing:MeetSpaceTests",
                      "-only-testing:MeetSpaceUITests/FoundationUITests/testAccessibilityStage08CoreScreens",
                      "-only-testing:MeetSpaceUITests/FoundationUITests/testAccessibilityStage08LargeTextLiveFlow",
@@ -54,6 +56,12 @@ def main():
                         "-resultBundlePath", str(result), "-parallel-testing-enabled", "NO",
                         *selection, "test"], check=True)
     finally:
+        # UI-test diagnostics contain only enum classifications of synthetic fixture
+        # inputs, never passwords, lengths, hashes, tokens or production account data.
+        with (result.parent / f"{label}-fixture-diagnostics.txt").open("w") as diagnostic:
+            subprocess.run(["xcrun", "simctl", "spawn", udid, "log", "show", "--style", "compact",
+                            "--predicate", 'eventMessage CONTAINS "MeetSpaceDeletionDiagnostic"',
+                            "--last", "1h"], stdout=diagnostic, stderr=subprocess.DEVNULL, check=False)
         if result.exists():
             # Diagnostic export must not replace the actual xcodebuild test result.
             subprocess.run(["xcrun", "xcresulttool", "export", "attachments", "--path", str(result),

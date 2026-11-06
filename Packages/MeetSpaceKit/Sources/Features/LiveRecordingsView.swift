@@ -85,7 +85,7 @@ struct LiveRecordingsView: View {
                 Text(tr("Все форматы")).tag("all")
                 ForEach(RecordingMode.allCases) { Text(tr($0.title)).tag($0.rawValue) }
             }
-        } label: { filterLabel(modeFilterTitle) }
+        } label: { filterLabel(modeFilterTitle, identifier: "recordings.modeTitle") }
             .buttonStyle(.plain).foregroundStyle(MSTheme.accent)
             .accessibilityLabel(tr("Формат записи")).accessibilityValue(tr(modeFilterTitle))
             .accessibilityIdentifier("recordingModeFilter")
@@ -95,7 +95,7 @@ struct LiveRecordingsView: View {
                 Text(tr("Готовые")).tag("ready")
                 Text(tr("В обработке")).tag("processing")
             }
-        } label: { filterLabel(statusFilterTitle) }
+        } label: { filterLabel(statusFilterTitle, identifier: "recordings.statusTitle") }
             .buttonStyle(.plain).foregroundStyle(MSTheme.accent)
             .accessibilityLabel(tr("Статус записи")).accessibilityValue(tr(statusFilterTitle))
             .accessibilityIdentifier("recordingStatusFilter")
@@ -108,9 +108,10 @@ struct LiveRecordingsView: View {
         default: "Все статусы"
         }
     }
-    private func filterLabel(_ title: String) -> some View {
+    private func filterLabel(_ title: String, identifier: String) -> some View {
         HStack(alignment: .firstTextBaseline, spacing: 8) {
-            Text(tr(title)).fixedSize(horizontal: false, vertical: true).multilineTextAlignment(.leading)
+            Text(tr(title)).font(MSTheme.font(17)).fixedSize(horizontal: false, vertical: true).multilineTextAlignment(.leading)
+                .accessibilityIdentifier(identifier)
             Image(systemName: "chevron.up.chevron.down").font(MSTheme.font(10)).accessibilityHidden(true)
         }.frame(minHeight: 44).contentShape(Rectangle())
     }

@@ -98,7 +98,8 @@ struct LiveCalendarView: View {
             }
         } label: {
             HStack(alignment: .firstTextBaseline, spacing: 8) {
-                Text(tr(scopeTitle)).fixedSize(horizontal: false, vertical: true).multilineTextAlignment(.leading)
+                Text(tr(scopeTitle)).font(MSTheme.font(17)).fixedSize(horizontal: false, vertical: true).multilineTextAlignment(.leading)
+                    .accessibilityIdentifier("calendar.scopeTitle")
                 Image(systemName: "chevron.up.chevron.down").font(MSTheme.font(10)).accessibilityHidden(true)
             }.frame(minHeight: 44).contentShape(Rectangle())
         }.buttonStyle(.plain).foregroundStyle(MSTheme.accent)
@@ -106,7 +107,11 @@ struct LiveCalendarView: View {
     }
     private var timeZoneButton: some View {
         Button { choosingZone = true } label: {
-            Label(model.zone.identifier, systemImage: "clock")
+            Label {
+                Text(model.zone.identifier).accessibilityIdentifier("calendar.timeZoneTitle")
+            } icon: {
+                Image(systemName: "clock").accessibilityHidden(true)
+            }
                 .fixedSize(horizontal: false, vertical: true).multilineTextAlignment(.leading).frame(minHeight: 44)
         }.font(MSTheme.font(12)).accessibilityIdentifier("calendar.timeZone")
     }

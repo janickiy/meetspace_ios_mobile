@@ -7,7 +7,7 @@ on:
       scope:
         description: Test scope
         type: choice
-        options: [full, audit]
+        options: [full, audit, deletion]
         default: full
 
 permissions:
@@ -66,8 +66,8 @@ jobs:
       - name: App, Keychain and UI tests
         # Focused diagnosis covers the smallest supported phone and a large current iPad.
         # The default/full run always executes all four device/runtime combinations.
-        if: inputs.scope != 'audit' || matrix.label == 'iPhone18' || matrix.label == 'iPad26'
-        run: python3 scripts/ci_simulators.py --family '${{ matrix.family }}' --runtime-major '${{ matrix.runtime }}' --label '${{ matrix.label }}' --preferred-device '${{ matrix.device }}' --scope '${{ inputs.scope == 'audit' && 'audit' || matrix.scope }}'
+        if: (inputs.scope != 'audit' && inputs.scope != 'deletion') || matrix.label == 'iPhone18' || matrix.label == 'iPad26'
+        run: python3 scripts/ci_simulators.py --family '${{ matrix.family }}' --runtime-major '${{ matrix.runtime }}' --label '${{ matrix.label }}' --preferred-device '${{ matrix.device }}' --scope '${{ inputs.scope == 'audit' && 'audit' || inputs.scope == 'deletion' && 'deletion' || matrix.scope }}'
       - name: Upload simulator test results
         if: always()
         uses: actions/upload-artifact@v4
