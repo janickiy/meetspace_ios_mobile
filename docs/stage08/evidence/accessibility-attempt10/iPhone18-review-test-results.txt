@@ -1,0 +1,8 @@
+Source log: /tmp/meetspace-stage08-ci-42263390594/simulators_iPhone_18_iPhone18_compatibility_iPhone_SE_3rd_generation_.log
+SHA-256: 19999e92775fa37cdda6819cbec4d774ad686cae1ed28be28a8bb42e03f4a5f3
+
+4144: 2026-11-06T18:03:23.9289980Z Test Case '-[MeetSpaceUITests.FoundationUITests testAccessibilityStage08CoreScreens]' passed (592.715 seconds).
+5010: 2026-11-06T18:07:20.9230840Z Test Case '-[MeetSpaceUITests.FoundationUITests testAccessibilityStage08LargeTextLiveFlow]' passed (237.005 seconds).
+5484: 2026-11-06T18:09:37.5165400Z Test Case '-[MeetSpaceUITests.FoundationUITests testConferenceCreateMediaControlsChatAndLeave]' passed (136.549 seconds).
+5540: 2026-11-06T18:10:02.3973740Z Test Case '-[MeetSpaceUITests.FoundationUITests testLargeTextNavigationAndAppearance]' passed (24.961 seconds).
+6410: 2026-11-06T18:14:21.0372540Z Test Case '-[MeetSpaceUITests.FoundationUITests testStage08AccountDeletionRequiresPasswordAndConfirmation]' failed (258.574 seconds).

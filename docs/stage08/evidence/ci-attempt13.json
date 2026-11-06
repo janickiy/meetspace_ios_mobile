@@ -1,0 +1,53 @@
+{
+  "runID": 42270899385,
+  "sourceCommit": "a052abdacaf49d05a68b17725dda0e4b096bb86e",
+  "conclusion": "cancelled",
+  "url": "https://github.com/janickiy/meetspace_ios_mobile/actions/runs/42270899385",
+  "authorRequestedSupersedeCancellation": "2026-11-06T18:57Z",
+  "jobs": [
+    {
+      "id": 128075143346,
+      "name": "package",
+      "conclusion": "success",
+      "started_at": "2026-11-06T18:28:15Z",
+      "completed_at": "2026-11-06T18:37:45Z"
+    },
+    {
+      "id": 128075143864,
+      "name": "simulators (iPhone, 26, iPhone26, full, iPhone 17 Pro Max)",
+      "conclusion": "cancelled",
+      "started_at": "2026-11-06T18:28:14Z",
+      "completed_at": "2026-11-06T18:59:27Z"
+    },
+    {
+      "id": 128075143951,
+      "name": "simulators (iPad, 18, iPad18, compatibility, iPad mini (A17 Pro))",
+      "conclusion": "failure",
+      "started_at": "2026-11-06T18:28:14Z",
+      "completed_at": "2026-11-06T18:51:34Z"
+    },
+    {
+      "id": 128075144030,
+      "name": "simulators (iPad, 26, iPad26, full, iPad Pro 13-inch (M5))",
+      "conclusion": "cancelled",
+      "started_at": "2026-11-06T18:37:48Z",
+      "completed_at": "2026-11-06T19:00:34Z"
+    },
+    {
+      "id": 128075144145,
+      "name": "simulators (iPhone, 18, iPhone18, compatibility, iPhone SE (3rd generation))",
+      "conclusion": "cancelled",
+      "started_at": "2026-11-06T18:41:43Z",
+      "completed_at": "2026-11-06T18:59:45Z"
+    }
+  ],
+  "completedNativeResults": {
+    "iPad18": {
+      "passed": 13,
+      "failed": 2,
+      "skipped": 0
+    }
+  },
+  "cancelledNativeJobsCountedAsCoverage": false,
+  "package": "SUCCESS; archive independently checked in release-product-attempt13/receipt.json"
+}

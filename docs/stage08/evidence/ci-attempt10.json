@@ -1,0 +1,240 @@
+{
+  "runID": 42263390594,
+  "sourceCommit": "e0a37748eb865b84dddf3da6339d16e0d8e1a0fe",
+  "workflowConclusion": "failure",
+  "packageConclusion": "success",
+  "sourceRunSHA256": "c97c01c7ffd5a26b33e6303ab2ad449bb0d76462cf0b5e5eaae61dd110908807",
+  "sourceJobsSHA256": "adb7d72433885712387b8071fd074dc64d60c82aae588b29bacd0aa65162bf85",
+  "iPhone26": {
+    "jobID": 128050749488,
+    "conclusion": "failure",
+    "passed": 30,
+    "failed": 5,
+    "total": 35,
+    "summarySHA256": "a27a65e0bf16f94b6edb8338c95664b9818f3239d90bf46a440438d70cd63585",
+    "logSHA256": "f64538063cdfef128f2852a2b1c9f6e489f534fff0317ebaae311e0add4188f5",
+    "failedTests": [
+      "testAccessibilityStage08CoreScreens",
+      "testDirectCallAcceptedOnOtherDeviceHasNoCaptureControls",
+      "testOrdinaryPushOptInAndDisableWithFixtureToken",
+      "testScreenConflictKeepsDirectCallAndMicrophoneWithFixtures",
+      "testStage08AccountDeletionRequiresPasswordAndConfirmation"
+    ],
+    "observations": [
+      "Core accessibility audit failed with XCTest code -56; not a successful audit or a new specific contrast finding.",
+      "Each other failure has a final Save Password? sheet with Not Now and Save over the unchanged pre-action UI.",
+      "Accepted-other-device and screen-conflict remain Incoming with Answer; push-opt-in and deletion remain on selected Messages tab.",
+      "Accepted-other-device video has no sheet at55s or116s and has the sheet at118s. Tap began56.32s; XCTest waited60.10s for idle before animation notification timeout and event synthesis.",
+      "A pre-tap check alone cannot exclude a prompt that appears during XCTest idle waiting. Recovery must require the observed prompt plus an unmet postcondition before retrying the original UI action."
+    ],
+    "sourceFailureAXSHA256": {
+      "0AF0A934-72A4-45ED-9DB0-B3F328ED6E5B.txt": "7cfb97b8c2be716d1e02d4b4de0d1e18edfa2c5932b7ab11aaa00e4b0d756b6e",
+      "5CAE51C2-C12C-4C1E-8E95-574E73ECFD53.txt": "b2e6aca2ea6013470310803834b341df638590a184fd20413a15582881af8377",
+      "89EEA720-9836-41AF-840C-5C3C6E8FF6CF.txt": "4f4c5d2b9152b946b93f7e3e56ea7e1e29e1183874e9a3d4bb21f11115e3c556",
+      "D19739B5-0014-42E5-BF51-AD46EB5A8719.txt": "1f2f568d68e3f320d6016b040d2e2e728ee1b49358faafd2839e2cfeb9bc7ad2"
+    },
+    "video": {
+      "attachment": "28B76C32-C374-4260-82A8-2C2F47242C1E.mp4",
+      "sha256": "dfcdcba22f1ee6bf8b89894de8a3f2ffb435eb5f4e6b94d9b8c0776cc071e968",
+      "retainedFrameSeconds": [
+        55.0,
+        118.0
+      ],
+      "method": "AVAssetImageGenerator; zero tolerance; unchanged frames"
+    },
+    "uiDurationSeconds": 2480.933
+  },
+  "iPad26": {
+    "jobID": 128050749435,
+    "conclusion": "cancelled",
+    "cause": "55-minute job deadline, not superseding workflow",
+    "logSHA256": "774deab197de0e9a9e29839453d1c911ff1b419df9d48db8d863cbef7eae2e62",
+    "completedTests": 27,
+    "completedPassed": 26,
+    "completedFailed": 1,
+    "plannedTotal": 35,
+    "partialOnly": true,
+    "completedCases": [
+      {
+        "test": "testDirectCallCanNegotiateBeforeCallKitActivatesAudio",
+        "result": "passed",
+        "durationSeconds": 0.541
+      },
+      {
+        "test": "testKeychainRoundTripUpdateAndScopedDeletion",
+        "result": "passed",
+        "durationSeconds": 1.124
+      },
+      {
+        "test": "testBlockedSourcesNeverRequestPermissionsOrAppearInOffer",
+        "result": "passed",
+        "durationSeconds": 0.492
+      },
+      {
+        "test": "testNativePeerOfferAndCloseCyclesWithCaptureOff",
+        "result": "passed",
+        "durationSeconds": 1.651
+      },
+      {
+        "test": "testScreenGenerationRollbackAndPolicyWithCaptureOff",
+        "result": "passed",
+        "durationSeconds": 0.751
+      },
+      {
+        "test": "testScreenRejectsInvalidAndStaleFrameSession",
+        "result": "passed",
+        "durationSeconds": 0.353
+      },
+      {
+        "test": "testActualServerAACArtifactAdvancesNativePlayerTime",
+        "result": "passed",
+        "durationSeconds": 7.441
+      },
+      {
+        "test": "testCredentialsRemainDeviceOnlyAndUnsynchronizedAfterUpdate",
+        "result": "passed",
+        "durationSeconds": 0.09
+      },
+      {
+        "test": "testPushCleanupJournalUsesTheSameDeviceOnlyProtection",
+        "result": "passed",
+        "durationSeconds": 0.052
+      },
+      {
+        "test": "testBundledFontsScaleInActualUIKitHostingAtAllDynamicTypeSizes",
+        "result": "passed",
+        "durationSeconds": 5.034
+      },
+      {
+        "test": "testAccessibilityStage08CoreScreens",
+        "result": "failed",
+        "durationSeconds": 324.602
+      },
+      {
+        "test": "testAccessibilityStage08LargeTextLiveFlow",
+        "result": "passed",
+        "durationSeconds": 585.341
+      },
+      {
+        "test": "testAuthenticatedChatSendAndLogout",
+        "result": "passed",
+        "durationSeconds": 131.236
+      },
+      {
+        "test": "testAuthenticationErrorIsVisibleAndDoesNotOpenWorkspace",
+        "result": "passed",
+        "durationSeconds": 69.884
+      },
+      {
+        "test": "testConferenceCreateMediaControlsChatAndLeave",
+        "result": "passed",
+        "durationSeconds": 196.99
+      },
+      {
+        "test": "testConferenceDeniedCameraPermissionKeepsCaptureOffAndCanLeave",
+        "result": "passed",
+        "durationSeconds": 126.524
+      },
+      {
+        "test": "testCreateGroupWithSelectedMember",
+        "result": "passed",
+        "durationSeconds": 162.108
+      },
+      {
+        "test": "testDirectCallAcceptedOnOtherDeviceHasNoCaptureControls",
+        "result": "passed",
+        "durationSeconds": 85.36
+      },
+      {
+        "test": "testDirectIncomingAnswerControlsMinimizeAndEnd",
+        "result": "passed",
+        "durationSeconds": 130.675
+      },
+      {
+        "test": "testDirectOutgoingCancelFromConversation",
+        "result": "passed",
+        "durationSeconds": 111.583
+      },
+      {
+        "test": "testFirstLaunchDoesNotImplyAuthentication",
+        "result": "passed",
+        "durationSeconds": 36.631
+      },
+      {
+        "test": "testInvalidHTTPAddressIsRejected",
+        "result": "passed",
+        "durationSeconds": 26.566
+      },
+      {
+        "test": "testLargeTextNavigationAndAppearance",
+        "result": "passed",
+        "durationSeconds": 36.534
+      },
+      {
+        "test": "testOfflineStateCanRetryInExplicitDemo",
+        "result": "passed",
+        "durationSeconds": 23.105
+      },
+      {
+        "test": "testOrdinaryPushOptInAndDisableWithFixtureToken",
+        "result": "passed",
+        "durationSeconds": 93.015
+      },
+      {
+        "test": "testScreenConflictKeepsDirectCallAndMicrophoneWithFixtures",
+        "result": "passed",
+        "durationSeconds": 97.762
+      },
+      {
+        "test": "testScreenShareStartStopAndRestartInConferenceWithFixtures",
+        "result": "passed",
+        "durationSeconds": 158.568
+      }
+    ],
+    "lastCompleted": {
+      "test": "testScreenShareStartStopAndRestartInConferenceWithFixtures",
+      "atUTC": "18:37:56.390375",
+      "durationSeconds": 158.568
+    },
+    "inProgressAtCancel": "testStage07CalendarCreateRescheduleCancelAndViews",
+    "testStartUTC": "18:37:56.540843",
+    "lastProgressUTC": "18:38:00.463272",
+    "lastProgress": "Setting up automation session",
+    "cancelUTC": "18:38:03.166263",
+    "remainingUIIncludingInProgress": [
+      "testStage07CalendarCreateRescheduleCancelAndViews",
+      "testStage07FolderRemovalPreservesChat",
+      "testStage07RecordingAccessDeniedNeverStartsPlayer",
+      "testStage07RecordingsStatusAndNativePlayerWithLocalFixture",
+      "testStage07SettingsPersistProfilePreferencesAndSSHDisabled",
+      "testStage08AccountDeletionRequiresPasswordAndConfirmation",
+      "testStateScreensAreReachable",
+      "testValidServerAdvancesToAuthenticationWithEmptySubmitDisabled"
+    ],
+    "boundary": "No completed full-suite summary claimed. Calendar and seven following tests did not finish; partial completed tests do not turn cancelled job into PASS."
+  },
+  "timeoutEstimate": {
+    "basis": "iPad kept progressing until cancellation; eight remaining UI tests take731.751s on completed iPhone26 run. Common-test runtime ratio iPad/iPhone1.352 gives approximately16.49 additional minutes, before export and a completed core audit.",
+    "recommendedBoundMinutes": 90,
+    "scope": "CI job budget estimate, not app performance or a guarantee of success."
+  },
+  "retainedFiles": [
+    {
+      "file": "ci-attempt10/iPhone26-passwords-overlay-excerpts.txt",
+      "sha256": "da6f95dea78e41f6aff319799a572949c63b6d34ee3e24e93f57547c58f6b7d3"
+    },
+    {
+      "file": "ci-attempt10/iPhone26-before-late-password-prompt.png",
+      "sha256": "03f140c5c94cbf3ef8a0354a8c999e0a925b3bb58077ebf99eeeb431ac02eec0"
+    },
+    {
+      "file": "ci-attempt10/iPhone26-late-password-prompt.png",
+      "sha256": "4b28f8a19118983891339b72d891b2e72f347d762a198dd81b3a9df8120f5f37"
+    }
+  ],
+  "boundaries": [
+    "Old e0a37748 source; no result transfer to CI13/a052abd or local push-ordering patch.",
+    "All observed UI uses synthetic dependencies, with actual simulator OS Passwords sheets. No real passwords, raw request bodies or user credentials retained.",
+    "Physical-device behavior, real APNs delivery and production service behavior not measured."
+  ]
+}

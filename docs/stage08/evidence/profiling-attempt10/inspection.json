@@ -1,0 +1,155 @@
+{
+  "sourceCommit": "e0a37748eb865b84dddf3da6339d16e0d8e1a0fe",
+  "receiptStatus": "FAIL",
+  "reason": "Exact tested simulator boot did not finish within its bounded wait",
+  "elapsedSeconds": 108.01,
+  "scope": "Debug iOS Simulator app, early post-launch/idle welcome UI, -uitesting fixtures; 15s Time Profiler plus 15s Allocations by default. Not app launch latency, 30 calls, network throughput, physical-device CPU/memory/energy, or absence of leaks.",
+  "nativeTestResultIndependent": true,
+  "cpuPercent": null,
+  "rssBytes": null,
+  "energy": null,
+  "performanceAcceptance": "NOT_ESTABLISHED",
+  "files": [
+    {
+      "file": "developer-directory.log",
+      "bytes": 48,
+      "sha256": "f61dc333807430553f78902403e4cc45b547d508c03963122c5c75c6d27beedb"
+    },
+    {
+      "file": "find-xctrace.log",
+      "bytes": 64,
+      "sha256": "fced716e12a27e0cbca2dd5cdb966bd2536657b6a4db58785ae79c210059bfa8"
+    },
+    {
+      "file": "receipt.json",
+      "bytes": 6776,
+      "sha256": "0af2884c4b52bcb8719c13b33620a7d4d1ea4728e609cfa2410c0dcd155590df"
+    },
+    {
+      "file": "simctl-devices.log",
+      "bytes": 69030,
+      "sha256": "5d6974d8e6ba0e75667bc55d67c7cb16cb98157c4822cc2b38ce7ec5f184e85e"
+    },
+    {
+      "file": "simctl-launch-help.log",
+      "bytes": 1363,
+      "sha256": "94ae148cf375cb65a0e14daa78230d1cd0520ea6772d75afecba422d96fcc4b2"
+    },
+    {
+      "file": "simulator-boot.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "simulator-bootstatus.log",
+      "bytes": 1248,
+      "sha256": "584e8f69916f5fd5625579051b57b57c011c44b647017b9f27ab849c3061ad2d"
+    },
+    {
+      "file": "simulator-cleanup.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "xcode-version.log",
+      "bytes": 32,
+      "sha256": "bb7fc9a8f5e063e81975b33054b3a526c91bcccff263ad11d5bd8bcdbe8f0973"
+    },
+    {
+      "file": "xctrace-devices.log",
+      "bytes": 9762,
+      "sha256": "bf0a616406b0a4826b7113dd182240cbb195136d9a249358387bc9410c9a45ed"
+    },
+    {
+      "file": "xctrace-export-help.log",
+      "bytes": 1100,
+      "sha256": "953fc6079baaffd9d66b7d0f02aa3cfeed12c728425a9c1584120657cf4d8e9d"
+    },
+    {
+      "file": "xctrace-record-help.log",
+      "bytes": 3113,
+      "sha256": "bf49e4335bbf747b830f7a37d16e848385d3c865591833e0e77123dd29bf4525"
+    },
+    {
+      "file": "xctrace-templates.log",
+      "bytes": 373,
+      "sha256": "93eeae90861c44f3682a086d06ef9644a669bc71dd6350a8aff052f907bebe0a"
+    },
+    {
+      "file": "xctrace-version.log",
+      "bytes": 30,
+      "sha256": "187a4766a4b84a2657d81964ef8409fa5314d6e9fc121dfaa75604076c5a072b"
+    }
+  ],
+  "receiptHashChecks": [
+    {
+      "file": "developer-directory.log",
+      "matches": true
+    },
+    {
+      "file": "find-xctrace.log",
+      "matches": true
+    },
+    {
+      "file": "simctl-devices.log",
+      "matches": true
+    },
+    {
+      "file": "simctl-launch-help.log",
+      "matches": true
+    },
+    {
+      "file": "simulator-boot.log",
+      "matches": true
+    },
+    {
+      "file": "simulator-bootstatus.log",
+      "matches": true
+    },
+    {
+      "file": "simulator-cleanup.log",
+      "matches": true
+    },
+    {
+      "file": "xcode-version.log",
+      "matches": true
+    },
+    {
+      "file": "xctrace-devices.log",
+      "matches": true
+    },
+    {
+      "file": "xctrace-export-help.log",
+      "matches": true
+    },
+    {
+      "file": "xctrace-record-help.log",
+      "matches": true
+    },
+    {
+      "file": "xctrace-templates.log",
+      "matches": true
+    },
+    {
+      "file": "xctrace-version.log",
+      "matches": true
+    }
+  ],
+  "captures": [],
+  "cleanupCommands": [
+    {
+      "name": "simulator-cleanup",
+      "argv": [
+        "xcrun",
+        "simctl",
+        "shutdown",
+        "4E62D48E-A75F-4AF3-BDC2-1C74916B5810"
+      ],
+      "log": "simulator-cleanup.log",
+      "exitCode": -2,
+      "timedOut": true,
+      "reason": "command timeout",
+      "elapsedSeconds": 11.296
+    }
+  ]
+}

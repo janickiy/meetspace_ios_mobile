@@ -1,0 +1,28 @@
+{
+  "runID": 42246539623,
+  "sourceCommit": "afea55c2700e85457ab686bf498c117732d455e8",
+  "result": "FAIL",
+  "interpretation": "Both inputs were already classified other at onSubmit. The later stages also report other; category equality alone does not prove byte-for-byte equality. Exact input transformation remains unknown; caps fix alone did not resolve failure.",
+  "results": [
+    {
+      "label": "iPhone18",
+      "passedTests": 0,
+      "failedTests": 1,
+      "scope": "deletion-only UI",
+      "traceFile": "iPhone18-attempt05-trace.txt",
+      "traceSHA256": "be7276c070a88372257f24ff27e9a53742e68f26724e78cb0414b8695012b700",
+      "sourceAttachment": "iPhone18-diagnostics/0_Test_iPhone SE (3rd generation)_Diagnostics/MeetSpaceUITests-F3A73144-A44B-4445-B23A-65B797AD0EAC-Configuration-Test Scheme Action-Iteration-1/MeetSpaceUITests-AC943D1C-C169-41E6-AE87-AD99704E935B/StandardOutputAndStandardError-com.meetspace.ios.txt",
+      "sourceAttachmentSHA256": "2c6cbeaf2519a30d7e1dd905c8d4bb06afa4df90f8424a8d98b872018e206646"
+    },
+    {
+      "label": "iPad26",
+      "passedTests": 0,
+      "failedTests": 1,
+      "scope": "deletion-only UI",
+      "traceFile": "iPad26-attempt05-trace.txt",
+      "traceSHA256": "a84950ef23fadd845a57b17f28f9e9bc16c0006acc7bcf8224150ea73cac11e5",
+      "sourceAttachment": "iPad26-diagnostics/0_Test_iPad Pro 13-inch (M5)_Diagnostics/MeetSpaceUITests-0E6F1CBA-760E-4F46-AE21-372462D7DAFF-Configuration-Test Scheme Action-Iteration-1/MeetSpaceUITests-D2FBC074-7E55-472B-87E1-A0CA635E824F/StandardOutputAndStandardError-com.meetspace.ios.txt",
+      "sourceAttachmentSHA256": "338d9871c7b30a394294065d43727d1b3c4ec97523a32c1f7d97e1d3507b03d7"
+    }
+  ]
+}

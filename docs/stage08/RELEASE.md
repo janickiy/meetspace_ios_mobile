@@ -5,6 +5,7 @@
 ## Текущее состояние и ограничения
 
 - Проект рассчитан на iPhone/iPad, iOS 18+. Release использует оптимизацию `-O`, dSYM, отдельный ReplayKit Upload Extension, production APNs entitlement и общий App Group.
+- Для `a052abdacaf49d05a68b17725dda0e4b096bb86e` CI13 собрал настоящий неподписанный device archive: версия `0.2.0 (1)`, Xcode `26.3 (17C529)`, SDK `iphoneos26.2`, minimum `18.0`. Скачанный архив независимо прошёл 59 packaging checks; [receipt и хеши](evidence/release-product-attempt13/receipt.json). Это результат сборки; native suite и signing учитываются отдельно.
 - На локальном хосте выбран Command Line Tools, полного Xcode нет; валидных code-signing identities — 0, provisioning profiles — 0. Проверялись только наличие и количество, без экспорта ключей, сертификатов или содержимого профилей. Подключение/возможности физических устройств этим не доказаны.
 - Архив с Apple Distribution, экспорт `.ipa`, TestFlight, реальный APNs и физические device gates остаются **BLOCKED** до доступности необходимых ресурсов. Эта работа не выполняет отправку в Apple.
 - WebRTC M156 закреплён по версии, Git revision и checksum; его device framework поставляется без подписи дистрибьютора. Подписание/происхождение SDK и полнота notices требуют закрытия перед распространением. Подробнее ниже.
@@ -97,6 +98,14 @@ Apple требует manifests и подписи для перечисленны
 До заполнения карточки продукта оператор подтверждает название, категорию, локализованные description/keywords, support URL, privacy-policy URL, контакт для review и demo account на доступном сервере. Нет автоматической публикации и выдуманных серверных credentials.
 
 Нужны актуальные ответы App Privacy и age rating (включая пользовательские сообщения/файлы), export compliance для используемой криптографии TLS/DTLS-SRTP/BoringSSL и права на бренд/ресурсы. `ITSAppUsesNonExemptEncryption` намеренно не установлен в `false` без классификации экспортёром. Account deletion должна быть доступна из приложения при наличии регистрации; удаление локального аккаунта/Keychain не равно удалению серверного аккаунта. Требование: [Offering account deletion in your app](https://developer.apple.com/support/offering-account-deletion-in-your-app/).
+
+На этапе 8 реализовано серверное удаление из профиля с паролем и подтверждением:
+[контракт и lifecycle](ACCOUNT_DELETION.md), [настоящий одноразовый backend-прогон](API_CONTRACT.md).
+Неверный пароль сохраняет сессии, подтверждённое удаление отзывает их; другой аккаунт
+сохраняется. Эти API-проверки не заменяют завершение UI-проверки на текущем исходнике,
+проверку подписанной установки и подтверждение владельцем политики удаления общих
+данных. Актуальный итог simulator matrix должен быть указан в [TEST_REPORT.md](TEST_REPORT.md);
+незавершённый либо неуспешный прогон не закрывает release gate.
 
 Реальные simulator screenshots лежат в evidence Stage 7 и Stage 8. Они подтверждают UI проверенных сценариев; это не обещание готовых маркетинговых App Store screenshots. Для загрузки нужны выбранные владельцем реальные экраны без fixture data и подходящие размеры актуальных iPhone/iPad display classes. Требования размеров проверяются перед upload по [Screenshot specifications](https://developer.apple.com/help/app-store-connect/reference/screenshot-specifications/).
 

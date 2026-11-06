@@ -1,0 +1,62 @@
+[
+  {
+    "detail" : "Text of this element may be clipped at larger Dynamic Type sizes.",
+    "element" : "welcome.heading",
+    "frame" : "(24.0, 146.5, 265.5, 82.5)",
+    "label" : "Команда ближе.\nИдей больше.",
+    "resolution" : "reviewed: welcome heading; complete AX5 text in ACCESSIBILITY_REVIEW.md",
+    "screen" : "welcome",
+    "summary" : "Text clipped",
+    "type" : "131072"
+  },
+  {
+    "detail" : "Contrast is not high enough for element unless font size is larger.",
+    "element" : "",
+    "frame" : "(30.0, 251.5, 44.0, 44.0)",
+    "label" : "ТЕ",
+    "resolution" : "reviewed: decorative avatar initials; accessible row has the full name",
+    "screen" : "messages",
+    "summary" : "Contrast nearly passed",
+    "type" : "1"
+  },
+  {
+    "detail" : "User will not be able to change the font size of this element",
+    "element" : "",
+    "frame" : "(30.0, 251.5, 44.0, 44.0)",
+    "label" : "ТЕ",
+    "resolution" : "reviewed: decorative avatar initials; accessible row has the full name",
+    "screen" : "messages",
+    "summary" : "Dynamic Type font sizes are partially unsupported",
+    "type" : "65536"
+  },
+  {
+    "detail" : "User will not be able to change the font size of this element",
+    "element" : "messages.connectionStatus",
+    "frame" : "(222.5, 100.00146484375, 132.5, 13.5)",
+    "label" : "Переподключение…",
+    "resolution" : "reviewed: measured custom-font scaling; separate AX5 layout coverage",
+    "screen" : "messages",
+    "summary" : "Dynamic Type font sizes are partially unsupported",
+    "type" : "65536"
+  },
+  {
+    "detail" : "Contrast failed for element",
+    "element" : "addAccount",
+    "frame" : "(24.0, 654.0, 327.0, 44.0)",
+    "label" : "Добавить аккаунт",
+    "resolution" : "verified: fully visible contrast retest produced no target finding",
+    "screen" : "profile",
+    "summary" : "Contrast failed",
+    "type" : "1"
+  },
+  {
+    "detail" : "Contrast failed for element",
+    "element" : "",
+    "frame" : "(41.5, -14.0, 98.5, 17.0)",
+    "label" : "Календарь",
+    "resolution" : "outside retest viewport: no contrast measurement",
+    "screen" : "profile-visible-retest",
+    "summary" : "Contrast failed",
+    "type" : "1"
+  }
+]

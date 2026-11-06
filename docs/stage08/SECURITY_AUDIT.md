@@ -33,6 +33,92 @@ auth middleware/session repository и recording access/library: новый backe
 завершается ровно один раз, session инвалидируется и при успехе, и при ошибке.
 Сеансы upload входят в account cancellation, последующий logout остаётся возможен.
 
+## P2: регистрация push одновременно с удалением аккаунта
+
+Дополнительный source review backend `9e6058c31cc07bff0f48d8f7f6a40106c55c4881`
+подтвердил окно гонки очистки push-привязок. Локальное исправление порядка операций
+iOS прошло **host regression PASS**, его нативный прогон пока **PENDING**; серверная межклиентская гонка
+остаётся **OPEN P2**. Backend в рамках этой работы не изменяется. Это отдельное
+наблюдение и не закрывается успешным upload-response regression выше.
+
+`DeleteAccount` берёт `users` row lock, отзывает сессии и удаляет `push_devices` в
+транзакции. Если на пользователя ссылается общая история, физическое удаление
+откатывается до savepoint, а строка остаётся анонимной с пустым `password_hash`.
+[account_repository.go:33–108](https://github.com/janickiy/meet-space/blob/9e6058c31cc07bff0f48d8f7f6a40106c55c4881/internal/infrastructure/postgres/account_repository.go#L33-L108).
+
+Регистрация устройства проходит auth middleware до вызова обработчика. Затем
+`SaveDevice` берёт другой, advisory lock `userID + ":devices"` и выполняет UPSERT,
+не проверяя, что владелец ещё имеет действующий аккаунт, и не координируя эту
+проверку с account deletion. UPSERT сбрасывает `revoked_at`/`disabled_at`.
+[auth.go:123–143](https://github.com/janickiy/meet-space/blob/9e6058c31cc07bff0f48d8f7f6a40106c55c4881/internal/transport/http/middleware/auth.go#L123-L143),
+[RegisterDevice:523–540](https://github.com/janickiy/meet-space/blob/9e6058c31cc07bff0f48d8f7f6a40106c55c4881/internal/usecase/integrations/service.go#L523-L540),
+[integration_repository.go:110–123](https://github.com/janickiy/meet-space/blob/9e6058c31cc07bff0f48d8f7f6a40106c55c4881/internal/infrastructure/postgres/integration_repository.go#L110-L123).
+
+Допустимый порядок: POST devices уже авторизован → DELETE очищает данные и
+фиксирует tombstone → задержанный SaveDevice записывает токен. FK проверяет
+существование `users.id`; tombstone удовлетворяет ему. Если пользователь удалён
+физически, последующая вставка не пройдёт FK. Поэтому проблема касается
+**уже авторизованной конкурентной операции**, в том числе с другого устройства,
+а не любого нового запроса после удаления.
+[FK push_devices:8–16](https://github.com/janickiy/meet-space/blob/9e6058c31cc07bff0f48d8f7f6a40106c55c4881/database/migrations/000016_external_integrations.up.sql#L8-L16).
+Новые проверки сессии после commit исключают tombstone и отозванные сессии;
+восстановление device row не восстанавливает пароль, bearer или refresh session.
+[session repository:123–145](https://github.com/janickiy/meet-space/blob/9e6058c31cc07bff0f48d8f7f6a40106c55c4881/internal/infrastructure/postgres/auth_session_repository.go#L123-L145),
+[AuthorizeSession:504–519](https://github.com/janickiy/meet-space/blob/9e6058c31cc07bff0f48d8f7f6a40106c55c4881/internal/usecase/auth/sessions.go#L504-L519).
+
+Подтверждённая граница P2 — возможность сохранить зашифрованный push token,
+fingerprint и связь с прежним user ID после подтверждённой очистки аккаунта.
+Воспроизведение конкретного interleaving на PostgreSQL и доставка APNs здесь
+не выполнялись. Само наличие device row не доказывает получение уведомлений:
+DELETE также удаляет preferences/notification jobs, а delivery проверяет событие,
+права и включённый push. Уже начатая доставка требует отдельной серверной проверки;
+она не объявлена ни безопасной, ни подтверждённой утечкой.
+[delivery checks:887–947](https://github.com/janickiy/meet-space/blob/9e6058c31cc07bff0f48d8f7f6a40106c55c4881/internal/usecase/integrations/service.go#L887-L947).
+В этих границах нет доказательства захвата чужого аккаунта, обхода новой
+авторизации или раскрытия содержимого, которое обосновывало бы P0/P1.
+
+Локальное исправление останавливает новые OS token callbacks и дожидается
+прежних операций очереди **до** отправки DELETE; после подтверждённого успеха
+забывается только journal текущего server/user. Прежний порядок ожидал очередь
+уже после DELETE и потому не обеспечивал нужного порядка записи. Journal
+сохраняется до server200; ошибка предварительного revoke сама по себе
+не запрещает authoritative DELETE. При отказе или неизвестном результате
+возобновление допускается только для той же пары account/epoch и прежнего
+enabled intent, без нового permission prompt. Подтверждены delayed POST/revoke/DELETE
+ordering, failed-revoke branch, enabled/off × 422/409/503/timeout и fencing устаревшего
+token после disable/scope switch: **11/11 focused PASS**, полный пакет **184 tests:
+179 PASS / 5 opt-in SKIP**. [Receipt, команды и source hashes](evidence/account-deletion/push-ordering/receipt.json)
+фиксируют рабочий снимок поверх `e0a37748eb865b84dddf3da6339d16e0d8e1a0fe`;
+использованы production lifecycle/API с controlled transport/platform doubles.
+Нативная проверка нового patch ещё **PENDING**; CI10 начат до него. Локальная
+очередь не сериализует другой клиент и не гарантирует завершение серверного
+запроса, ответ которого потерян. Полное закрытие требует серверной проверки
+действующего аккаунта под общим с DELETE механизмом транзакционной блокировки
+и отдельного concurrency regression; iOS patch этого не обещает.
+
+## P2: восстановление push после ошибки локальной очистки
+
+**OPEN P2, availability; source review, без нового fault-injection прогона.**
+Если журнал уже содержит pending fingerprint без доступного OS token,
+предварительный `clean` не может подтвердить revoke. После успешного DELETE200
+`accountDeletionConfirmed` удаляет только этот scope, но ошибка `store.save(next)`
+оставляет прежний journal. Identity сообщает о неподтверждённой локальной очистке,
+закрывает клиент и удаляет credentials/index уже удалённого аккаунта.
+[PushRegistrationModel:93–106](https://github.com/janickiy/meetspace_ios_mobile/blob/04f70a3d80bfd8cd9314c798f0eb3fc7e58b343f/Packages/MeetSpaceKit/Sources/Features/PushRegistrationModel.swift#L93-L106),
+[IdentityModel:151–168](https://github.com/janickiy/meetspace_ios_mobile/blob/04f70a3d80bfd8cd9314c798f0eb3fc7e58b343f/Packages/MeetSpaceKit/Sources/Features/IdentityModel.swift#L151-L168).
+
+Даже после восстановления хранилища старая binding может блокировать push другого
+аккаунта через глобальный `hasBindings`: `retryCleanup` работает с текущим scope,
+а повторение подтверждённой очистки удалённого scope не предусмотрено.
+Обычный путь с успешной записью журнала этим дефектом не затронут. Последствие —
+недоступность регистрации push, не восстановление удалённого аккаунта или обход
+авторизации. Само серверное удаление не объявляется неуспешным.
+
+Для закрытия нужен отдельный механизм восстановления локальной очистки с сохранением
+подтверждённого server200 и тестом единичного отказа storage. После перезапуска
+приложения один ответ401 не даёт права молча забыть неизвестную push-привязку.
+Текущее консервативное блокирование не ослаблено ради доступности.
+
 ## Проверенные границы
 
 | Область | Наблюдение в исходниках | Результат / предел |
@@ -40,7 +126,7 @@ auth middleware/session repository и recording access/library: новый backe
 | ATS и TLS | В Info.plist приложения и extension нет ATS exceptions. URLSession использует системное trust evaluation без custom trust callback. API допускает HTTPS, sockets — WSS; redirects отклоняются. | PASS source review и negative URL tests; реальный MITM/истёкший сертификат на устройстве не тестировался. |
 | Origin и API scope | `ServerOrigin` отвергает credentials, subpath, query, fragment, percent/backslash/control ambiguity; нормализует scheme/host/default port. `EndpointURL` строит маршруты из проверенных компонентов. AuthenticatedClient закреплён за origin/account. | PASS; чужой URL из ответа не становится назначением bearer-запроса. |
 | Session credentials | Access token и refresh-cookie хранятся только в Keychain; auth cookie отправляется явно только в auth routes. Account index содержит origin, UUID, имя/email и иные public account fields, не токены. Refresh single-flight; logout дожидается сохранения refresh перед удалением credentials. | PASS существующих scope/refresh/logout regression tests. Имя, email и IDs остаются персональными данными, хотя это не секреты авторизации. |
-| Keychain | Credential и push-journal stores используют scoped service/account queries, `WhenUnlockedThisDeviceOnly`, `Synchronizable=false`, без plaintext fallback или общего удаления Keychain. Отдельный journal содержит IDs и SHA-256 fingerprints, не OS push token. | PASS source review; новые hosted attribute tests требуют результата Xcode CI. Работа при locked device и после restore требует физического устройства. |
+| Keychain | Credential и push-journal stores используют scoped service/account queries, `WhenUnlockedThisDeviceOnly`, `Synchronizable=false`, без plaintext fallback или общего удаления Keychain. Отдельный journal содержит IDs и SHA-256 fingerprints, не OS push token. | PASS source review и hosted attribute tests на всех четырёх симуляторах CI3. Работа при locked device и после restore требует физического устройства. |
 | Chat attachments | Файл ограничен 10 MiB, импорт через security-scoped resource и NSFileCoordinator; unsafe filename/path отвергается. Authenticated content URL должен точно соответствовать origin/conversation/attachment. Signed downloads не получают bearer/cookies; длина/hash проверяются. | PASS unit/integration boundaries. P2 upload-response buffering исправлен выше. |
 | Записи | Signed URLs не сохраняются в observable/persistent metadata. Отдельная ephemeral session без bearer/cookies/cache; HTTPS, без redirects; 512 MiB disk-stream limit, MIME/size/hash, повторная авторизация после загрузки. AVPlayer получает локальный файл. | PASS тестов потока, отзыва прав и cleanup. Удалённый отзыв уже начатого playback или экспортированной копии не обещается. |
 | Файлы на устройстве | Account-scoped cache; iOS Complete file protection, исключение media directories из backup. Cleanup при уходе/закрытии модели, recording crash leftovers очищаются при следующем открытии downloader аккаунта. | PASS источников и cleanup tests. Удаление best-effort при I/O failure; physical lock/backup verification — BLOCKED. |
@@ -74,12 +160,12 @@ swift test --package-path Packages/MeetSpaceKit \
 git diff --check
 ```
 
-Первичный log: `/tmp/meetspace-stage08-stress-first.log`. URLProtocol доставляет
+Сохранённый вывод первого прогона: [filtered-tests.txt](evidence/performance/filtered-tests.txt). URLProtocol доставляет
 ответы настоящему URLSession delegate; сетевые TLS/сертификаты этим тестом не
 проверяются. Новые hosted `Stage08SecurityKeychainTests.swift` читают только
 attributes созданных тестовых Keychain items после add/update; секретные данные
 не запрашиваются и не печатаются. Итоговый Xcode/full-suite результат фиксируется
-в `TEST_REPORT.md`, до него hosted tests не объявляются выполненными.
+в `TEST_REPORT.md`: CI3 выполнил оба Keychain-теста на iPhone/iPad с iOS18/26; повтор текущего исходника учитывается отдельно.
 
 [Source-review evidence](evidence/security-source-review.json) фиксирует scan
 production Swift sinks, отсутствие custom trust bypass/process execution, ключи

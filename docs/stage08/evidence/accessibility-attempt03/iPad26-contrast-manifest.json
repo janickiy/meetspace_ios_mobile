@@ -1,0 +1,76 @@
+{
+  "ciRun": 42240106296,
+  "sourceCommit": "586bfe875355f930a5d463214bd7860a78ac189e",
+  "artifact": "results-iPad26",
+  "rawFindingsFile": "iPad26-contrast-raw-issues.json",
+  "rawFindingsSha256": "e1d10f677d57a87b11915242e1199efa5ae4da0347ae6c14ab2707e27d8987f4",
+  "screenshots": [
+    {
+      "screen": "welcome",
+      "sourceExportedFile": "46D6DAFA-B393-4A22-B167-5052EC8B0C4D.png",
+      "file": "screenshots/iPad26-stage08-accessibility-welcome.png",
+      "sha256": "beb92127e01bec6d84201a383326439721ccf1eeebba499d2876a61808281a8e",
+      "provenance": "unchanged XCTest PNG attachment"
+    },
+    {
+      "screen": "messages",
+      "sourceExportedFile": "180F7D5D-37DF-4688-A08A-348B22D5B22F.png",
+      "file": "screenshots/iPad26-stage08-accessibility-messages.png",
+      "sha256": "8827762afde3119b209eff486f546731b57a45554d65bf947a2926cb05f5cc90",
+      "provenance": "unchanged XCTest PNG attachment"
+    },
+    {
+      "screen": "calendar",
+      "sourceExportedFile": "20EF2407-0EA5-4D51-AF4F-6366B398C241.png",
+      "file": "screenshots/iPad26-stage08-accessibility-calendar.png",
+      "sha256": "81f93d1ef3d6b8ce78c5b987c246e2318bd745be58ed2cba67d60bbb6ad094b4",
+      "provenance": "unchanged XCTest PNG attachment"
+    },
+    {
+      "screen": "recordings",
+      "sourceExportedFile": "0DFAF18F-7E8D-4AF2-9699-BA48D4A428A9.png",
+      "file": "screenshots/iPad26-stage08-accessibility-recordings.png",
+      "sha256": "63c51e74d0687faa08b955e0defd74a0fad620b83ff4e36d9b086a3910823aab",
+      "provenance": "unchanged XCTest PNG attachment"
+    },
+    {
+      "screen": "recordings-footer",
+      "sourceExportedFile": "1F4265A2-8F82-4B8E-B397-CFDA96219D63.png",
+      "file": "screenshots/iPad26-stage08-accessibility-recordings-footer.png",
+      "sha256": "36c8bb70b8292d46a450ff0418253f176bdcbc51ad11bb442e5d0dec54cd9249",
+      "provenance": "unchanged XCTest PNG attachment"
+    },
+    {
+      "screen": "folders",
+      "sourceExportedFile": "790EBF03-E1D3-40E2-8CF1-261189DC4E87.png",
+      "file": "screenshots/iPad26-stage08-accessibility-folders.png",
+      "sha256": "8f393d2580ab3a1a7e6988274cb9f588a109bcd394e40966e4c0bed40d6fb73e",
+      "provenance": "unchanged XCTest PNG attachment"
+    },
+    {
+      "screen": "settings",
+      "sourceExportedFile": "A4F2C0F6-1E9E-4272-B402-3C2E069307F3.png",
+      "file": "screenshots/iPad26-stage08-accessibility-settings.png",
+      "sha256": "fd4a58f48d05b98f03df7185e537e9cd6e39401c4140426555b394dfddca71a7",
+      "provenance": "unchanged XCTest PNG attachment"
+    }
+  ],
+  "passwordPromptFrame": {
+    "sourceExportedFile": "1DCA4F3D-DB04-44C4-943F-1DB9F0B77A91.mp4",
+    "sha256": "63678c3c908a1d60680b541d7b4cd1a37387d1fa72721f8aa25e5e0f6fdc2201",
+    "artifact": "results-iPad26/iPad26-screenshots",
+    "videoDurationSeconds": 63.125,
+    "requestedFrameSeconds": 62.125,
+    "extraction": "AVAssetImageGenerator, preferred track transform, zero before/after tolerance, lossless PNG; no crop, resize or retouch",
+    "file": "screenshots/iPad26-password-prompt-ax5-video-frame.png",
+    "sha256PNG": "d83f82d6bc00fc48139bd3626e40cc3199e10600b4f5e8dae1790ac97e1d2d03",
+    "actualFrameSeconds": 60.31666666666667
+  },
+  "passwordPromptLog": {
+    "sourceLog": "simulators_iPad_26_iPad26_full_iPad_Pro_13-inch_M5_.log",
+    "sourceLineStart": 4280,
+    "sourceLineEnd": 4307,
+    "file": "iPad26-password-login-log.txt",
+    "sha256": "b78136166ac5b5ee05b09c6cce8da1334bef5185a4cbc0eacbd172c5ee077420"
+  }
+}

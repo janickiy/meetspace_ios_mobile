@@ -1,0 +1,229 @@
+{
+  "ciRun": 42252310226,
+  "sourceCommit": "c88fe5adebe7395b4f43ab51b6c6369aa95d09f5",
+  "artifact": "results-iPhone18",
+  "scope": "audit",
+  "device": "iPhone SE (3rd generation)",
+  "runtime": [
+    18,
+    6
+  ],
+  "imagePixels": [
+    750,
+    1334
+  ],
+  "viewPoints": [
+    375,
+    667
+  ],
+  "summary": {
+    "passed": 13,
+    "failed": 2,
+    "total": 15
+  },
+  "reviewScope": "15 AX5 live-flow screenshots,1 dark demo screenshot,1 profile visible-retest screenshot; partial CoreScreens progress only",
+  "currentSourceNotVerified": "6b6d1bbda9224d459e2a07d551db65956946f2fe",
+  "files": [
+    {
+      "file": "iPhone18-stage08-audit-progress-profile.json",
+      "sha256": "b3fb73054af0366289ac0d67ccf6a34a35ffa7d564fed75388253b2ef0f4f013",
+      "originalExportedFileName": "F67D4822-2B90-4321-A535-6402A51C19CA.json",
+      "originalSuggestedName": "stage08-audit-progress-profile_0_2CE51E2E-6734-4EAE-8E47-BE9A7FED2C19.json",
+      "testIdentifier": "FoundationUITests/testAccessibilityStage08CoreScreens()",
+      "timestamp": 1793983105.004,
+      "kind": "unchanged partial progress JSON"
+    },
+    {
+      "file": "screenshots/iPhone18-stage08-accessibility-profile-visible-addAccount.png",
+      "sha256": "ceb56e7e701a475ad98bfa11c8aa5013e43c38a4c8ede1dae8f8bd4fa44f5699",
+      "originalExportedFileName": "9109DD8F-239B-4FF6-B03F-88BD4ED203D7.png",
+      "originalSuggestedName": "stage08-accessibility-profile-visible-addAccount_0_B64FEB5F-FC9B-48C1-93F3-ECF6B8E3C28F.png",
+      "testIdentifier": "FoundationUITests/testAccessibilityStage08CoreScreens()",
+      "timestamp": 1793983103.456,
+      "kind": "unchanged XCTest screenshot"
+    },
+    {
+      "file": "iPhone18-stage08-audit-progress-messages.json",
+      "sha256": "23be18de25c2e73b0e26c1e56e0c5c267368fa80cb389744cea4f3427966fea4",
+      "originalExportedFileName": "984ED4D9-7991-40C6-A1FE-AF90DF33AA2D.json",
+      "originalSuggestedName": "stage08-audit-progress-messages_0_B1ECBAC6-0FBB-45E0-B04B-BAF4AA313EEE.json",
+      "testIdentifier": "FoundationUITests/testAccessibilityStage08CoreScreens()",
+      "timestamp": 1793983086.268,
+      "kind": "unchanged partial progress JSON"
+    },
+    {
+      "file": "iPhone18-stage08-audit-progress-welcome.json",
+      "sha256": "728400914f877e53b58070b9633dc1e9c318f6cdf603e4ab85da1f6a23bd3df9",
+      "originalExportedFileName": "EE9D25F9-5B59-46F7-B4C5-CCA4240DAF51.json",
+      "originalSuggestedName": "stage08-audit-progress-welcome_0_323A2237-C9C4-411B-89E7-83383E9057D8.json",
+      "testIdentifier": "FoundationUITests/testAccessibilityStage08CoreScreens()",
+      "timestamp": 1793983034.225,
+      "kind": "unchanged partial progress JSON"
+    },
+    {
+      "file": "screenshots/iPhone18-stage08-large-text-settings.png",
+      "sha256": "b8c280d642476df308da0bb98b5f931c480c5bf09696cae0336656462a20d719",
+      "originalExportedFileName": "DB69C0DB-F72A-46EF-BEE5-94D59E5E9215.png",
+      "originalSuggestedName": "stage08-large-text-settings_0_6A4FB91E-F8DB-475B-AA5B-1EEA36EA3EAC.png",
+      "testIdentifier": "FoundationUITests/testAccessibilityStage08LargeTextLiveFlow()",
+      "timestamp": 1793983255.319,
+      "kind": "unchanged XCTest screenshot"
+    },
+    {
+      "file": "screenshots/iPhone18-stage08-large-text-folders.png",
+      "sha256": "f7a01826fc858ede650c51bb8c7b6da892ecc1fe5393bde9af5d30f33a403278",
+      "originalExportedFileName": "283E3EDF-A393-4BA9-B29D-ADEBBFFE6334.png",
+      "originalSuggestedName": "stage08-large-text-folders_0_A2053B21-A5FB-4C4D-9C59-A183D5A1E549.png",
+      "testIdentifier": "FoundationUITests/testAccessibilityStage08LargeTextLiveFlow()",
+      "timestamp": 1793983251.357,
+      "kind": "unchanged XCTest screenshot"
+    },
+    {
+      "file": "screenshots/iPhone18-stage08-large-text-recordings-footer.png",
+      "sha256": "0450fdbaa298b14e434a7174136f2c6c172b4d388173015ca342c2b6104d03b3",
+      "originalExportedFileName": "3E941D44-DCE8-41EB-B708-E0F610ACE734.png",
+      "originalSuggestedName": "stage08-large-text-recordings-footer_0_4BFDF6A2-030E-4C8E-9134-733603E35267.png",
+      "testIdentifier": "FoundationUITests/testAccessibilityStage08LargeTextLiveFlow()",
+      "timestamp": 1793983247.188,
+      "kind": "unchanged XCTest screenshot"
+    },
+    {
+      "file": "screenshots/iPhone18-stage08-large-text-recording-4.png",
+      "sha256": "1aa1402eacf451292c51013f31050052e2fb7972f6cf54d2f8273b5538247d70",
+      "originalExportedFileName": "389B3868-C2B3-4A87-943B-1813D712CF84.png",
+      "originalSuggestedName": "stage08-large-text-recording-4_0_EAD14BB1-D0A1-44AC-AD85-A2AD69F5E9F7.png",
+      "testIdentifier": "FoundationUITests/testAccessibilityStage08LargeTextLiveFlow()",
+      "timestamp": 1793983240.723,
+      "kind": "unchanged XCTest screenshot"
+    },
+    {
+      "file": "screenshots/iPhone18-stage08-large-text-recording-3.png",
+      "sha256": "539d6aa0a22fd59184929496ca04c31a67e5091a214b7f704dc3c9a575ad852d",
+      "originalExportedFileName": "AE2116CA-2EAA-4234-8788-169298708091.png",
+      "originalSuggestedName": "stage08-large-text-recording-3_0_BA138570-D84B-4B06-AB34-D19BBD5EA96E.png",
+      "testIdentifier": "FoundationUITests/testAccessibilityStage08LargeTextLiveFlow()",
+      "timestamp": 1793983234.969,
+      "kind": "unchanged XCTest screenshot"
+    },
+    {
+      "file": "screenshots/iPhone18-stage08-large-text-recording-2.png",
+      "sha256": "b6ac06d0468ba4d3263e92c829c54550544bac7e3ce405bb38fe3dcd7e4ab631",
+      "originalExportedFileName": "FDD4FD7A-11EE-40CF-89F0-97835160AACD.png",
+      "originalSuggestedName": "stage08-large-text-recording-2_0_7C169532-0CFF-4BEB-A715-B3B2439F1024.png",
+      "testIdentifier": "FoundationUITests/testAccessibilityStage08LargeTextLiveFlow()",
+      "timestamp": 1793983229.165,
+      "kind": "unchanged XCTest screenshot"
+    },
+    {
+      "file": "screenshots/iPhone18-stage08-large-text-recording-1.png",
+      "sha256": "d9223fbd4000958f37239b651f0386c8a692450e6bece7033f2f596b016ac79d",
+      "originalExportedFileName": "6CD056FE-133A-4822-BC16-430D9B54C07E.png",
+      "originalSuggestedName": "stage08-large-text-recording-1_0_74D5A07D-B21C-4690-B293-CF518870715C.png",
+      "testIdentifier": "FoundationUITests/testAccessibilityStage08LargeTextLiveFlow()",
+      "timestamp": 1793983223.605,
+      "kind": "unchanged XCTest screenshot"
+    },
+    {
+      "file": "screenshots/iPhone18-stage08-large-text-recordings.png",
+      "sha256": "ed54961f1db655402ca16fafad4fedc90ded1472743e3bbfd85c1066b81897a4",
+      "originalExportedFileName": "9DA38781-9860-4B65-878C-AF8E28EF4792.png",
+      "originalSuggestedName": "stage08-large-text-recordings_0_F44E31F6-7C21-4CE3-AE89-71D1CA8ED593.png",
+      "testIdentifier": "FoundationUITests/testAccessibilityStage08LargeTextLiveFlow()",
+      "timestamp": 1793983215.44,
+      "kind": "unchanged XCTest screenshot"
+    },
+    {
+      "file": "screenshots/iPhone18-stage08-large-text-calendar-hour-18.png",
+      "sha256": "754d9e008a9da15ffc6194c41c8a15619cdea2640938c415d6bbdbbac9dd7456",
+      "originalExportedFileName": "D14DF501-A871-4539-BE91-2BEC9BB34BF5.png",
+      "originalSuggestedName": "stage08-large-text-calendar-hour-18_0_DF91E01D-D20B-438F-9C9F-1ACA86A4F5F1.png",
+      "testIdentifier": "FoundationUITests/testAccessibilityStage08LargeTextLiveFlow()",
+      "timestamp": 1793983211.703,
+      "kind": "unchanged XCTest screenshot"
+    },
+    {
+      "file": "screenshots/iPhone18-stage08-large-text-calendar-hour-12.png",
+      "sha256": "194668def7626cd2017fe9407e50742dc23d008ca17826f236a3eb5482f1bdd8",
+      "originalExportedFileName": "223902ED-D155-49E7-B5A8-1A8AB712EDC0.png",
+      "originalSuggestedName": "stage08-large-text-calendar-hour-12_0_07DB73F9-6704-4DCF-9965-E97B30D1FB63.png",
+      "testIdentifier": "FoundationUITests/testAccessibilityStage08LargeTextLiveFlow()",
+      "timestamp": 1793983203.245,
+      "kind": "unchanged XCTest screenshot"
+    },
+    {
+      "file": "screenshots/iPhone18-stage08-large-text-calendar-hour-9.png",
+      "sha256": "a3b85367042b841eca70a9309a0147ad059f5fc56f48ba42e6dee32810f71791",
+      "originalExportedFileName": "A295D9F9-5D01-42F8-9896-AF46FF8C7C75.png",
+      "originalSuggestedName": "stage08-large-text-calendar-hour-9_0_EEF1E8EA-9DD7-4188-9422-46B62631F7D9.png",
+      "testIdentifier": "FoundationUITests/testAccessibilityStage08LargeTextLiveFlow()",
+      "timestamp": 1793983197.555,
+      "kind": "unchanged XCTest screenshot"
+    },
+    {
+      "file": "screenshots/iPhone18-stage08-large-text-calendar.png",
+      "sha256": "9c62c37320f1ca29ba4538e42ad0205065e60592422f7c3505289a76afafe890",
+      "originalExportedFileName": "D6FC0A09-668C-445D-A3A0-9BD1B4FB491C.png",
+      "originalSuggestedName": "stage08-large-text-calendar_0_D0A9D8C7-5B61-4246-B22F-24780642E00D.png",
+      "testIdentifier": "FoundationUITests/testAccessibilityStage08LargeTextLiveFlow()",
+      "timestamp": 1793983182.215,
+      "kind": "unchanged XCTest screenshot"
+    },
+    {
+      "file": "screenshots/iPhone18-stage08-large-text-profile.png",
+      "sha256": "0e8397de754cb14be770dc71276e1633c0f7f0cf6edd8650395bcb858a677ff9",
+      "originalExportedFileName": "4223AA70-5185-44A4-8280-8B00D9B0D66D.png",
+      "originalSuggestedName": "stage08-large-text-profile_0_E56209FE-9078-4F09-A0C1-D5EA4743FF64.png",
+      "testIdentifier": "FoundationUITests/testAccessibilityStage08LargeTextLiveFlow()",
+      "timestamp": 1793983165.951,
+      "kind": "unchanged XCTest screenshot"
+    },
+    {
+      "file": "screenshots/iPhone18-stage08-large-text-messages.png",
+      "sha256": "a867724d75e5bfb5b51e395524d2bcd56573ec6b7dfee9e236e8cbddae924464",
+      "originalExportedFileName": "DC08DF85-8825-4485-8E23-56F211996FE9.png",
+      "originalSuggestedName": "stage08-large-text-messages_0_68F3A3BB-D634-41AC-AADA-CFA916D6F144.png",
+      "testIdentifier": "FoundationUITests/testAccessibilityStage08LargeTextLiveFlow()",
+      "timestamp": 1793983160.475,
+      "kind": "unchanged XCTest screenshot"
+    },
+    {
+      "file": "screenshots/iPhone18-stage08-large-text-welcome.png",
+      "sha256": "697d8defdbd95a73d22f547863c8c41787347c31cbeda036453802d25f134792",
+      "originalExportedFileName": "4067DCB1-0524-4360-BCB7-7252B9EF26DD.png",
+      "originalSuggestedName": "stage08-large-text-welcome_0_90B0211E-7586-4A96-9BE4-69306F03EA9E.png",
+      "testIdentifier": "FoundationUITests/testAccessibilityStage08LargeTextLiveFlow()",
+      "timestamp": 1793983120.34,
+      "kind": "unchanged XCTest screenshot"
+    },
+    {
+      "file": "screenshots/iPhone18-appearance-dark-large-text.png",
+      "sha256": "fbdc2d9b5d5c743f0f5cb593f6ebd2feeb3e0b88aee250a5aabe6f938159e96b",
+      "originalExportedFileName": "79D69594-B544-4D49-BCA4-E18194F79D11.png",
+      "originalSuggestedName": "appearance-dark-large-text_0_8AABAC53-5307-499C-BEAB-AA5058323BB3.png",
+      "testIdentifier": "FoundationUITests/testLargeTextNavigationAndAppearance()",
+      "timestamp": 1793983358.041,
+      "kind": "unchanged XCTest screenshot"
+    },
+    {
+      "file": "iPhone18-environment.json",
+      "sha256": "db51f64a349350841a1cf3526411fefe10e9c0cec5d21a6305719100d49703bc",
+      "kind": "unchanged CI artifact"
+    },
+    {
+      "file": "iPhone18-summary.json",
+      "sha256": "22b008f49b9d698605dcb7b8ac1dfe7177b24478330c9b2862a66c46b337a433",
+      "kind": "unchanged CI artifact"
+    },
+    {
+      "file": "iPhone18-export-manifest.json",
+      "sha256": "096ebeaeb43c0ea218c4df96b157f792317f63d6a73536fc7f30469e6c947698",
+      "kind": "unchanged export manifest"
+    },
+    {
+      "file": "iPhone18-review-test-results.txt",
+      "sha256": "81c1c1fc4ea1b76365ada0ab81af7ceec343c0702129aaf14f6bd0d7ac2d97d7",
+      "kind": "verbatim selected CI log lines with original line numbers",
+      "sourceLog": "simulators_iPhone_18_iPhone18_compatibility_iPhone_SE_3rd_generation_.log"
+    }
+  ]
+}

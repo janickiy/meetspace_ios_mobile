@@ -1,0 +1,61 @@
+PASS: source.generated_project: Project matches deterministic generator
+PASS: source.platform: iOS18 deployment, Swift6 complete concurrency, no project-level DEBUG
+PASS: source.app.release: Optimized Release, no DEBUG fixtures, dSYM generation enabled
+PASS: source.extension.release: Optimized Release, no DEBUG fixtures, dSYM generation enabled
+PASS: source.apns: Release APNs environment is production
+PASS: source.extension_safety: Extension-safe APIs and embedded archive product
+PASS: source.versions: App and extension marketing/build versions agree
+PASS: source.archive_scheme: Archive uses Release
+PASS: source.ats: Default strict ATS; no exceptions
+PASS: source.permissions: Camera/microphone purpose strings present
+PASS: source.extension_id: ReplayKit identifier matches embedded target
+PASS: source.background_modes: Declared call background modes only
+PASS: source.replaykit: ReplayKit upload extension point
+PASS: source.entitlements: Minimal entitlements with matching configurable App Group
+PASS: source.app.tracking: No tracking or tracking domains declared
+PASS: source.app.timers: Elapsed-time deadlines require SystemBootTime/35F9.1
+PASS: source.app.preferences: Private app preferences require UserDefaults/CA92.1
+PASS: source.app.data.Name: Account-linked server data; app functionality only
+PASS: source.app.data.EmailAddress: Account-linked server data; app functionality only
+PASS: source.app.data.UserID: Account-linked server data; app functionality only
+PASS: source.app.data.DeviceID: Account-linked server data; app functionality only
+PASS: source.app.data.EmailsOrTextMessages: Account-linked server data; app functionality only
+PASS: source.app.data.PhotosorVideos: Account-linked server data; app functionality only
+PASS: source.app.data.AudioData: Account-linked server data; app functionality only
+PASS: source.app.data.OtherUserContent: Account-linked server data; app functionality only
+PASS: source.extension.tracking: No tracking or tracking domains declared
+PASS: source.extension.timers: Elapsed-time deadlines require SystemBootTime/35F9.1
+PASS: source.app_icon: AppIcon catalog contains a 1024-pixel icon and is selected for compilation
+PASS: source.dependency_pin: WebRTC source resolution is pinned to audited revision/version
+PASS: source.binary_checksum: Audited M156 binary checksum recorded; SPM verifies downloaded artifact
+PASS: archive.application_count: Exactly one app in archive
+PASS: archive.dsym: Archive includes app dSYM
+PASS: product.device_sdk: Actual device product uses Xcode26+/iOS26+ SDK (Apple requirement since 2026-04-28)
+PASS: product.minimum_os: iOS18+ deployment target
+PASS: product.identity: Resolved application bundle identity
+PASS: product.app_icon: Compiled asset catalog and primary icon metadata
+PASS: product.app.tracking: No tracking or tracking domains declared
+PASS: product.app.timers: Elapsed-time deadlines require SystemBootTime/35F9.1
+PASS: product.app.preferences: Private app preferences require UserDefaults/CA92.1
+PASS: product.app.data.Name: Account-linked server data; app functionality only
+PASS: product.app.data.EmailAddress: Account-linked server data; app functionality only
+PASS: product.app.data.UserID: Account-linked server data; app functionality only
+PASS: product.app.data.DeviceID: Account-linked server data; app functionality only
+PASS: product.app.data.EmailsOrTextMessages: Account-linked server data; app functionality only
+PASS: product.app.data.PhotosorVideos: Account-linked server data; app functionality only
+PASS: product.app.data.AudioData: Account-linked server data; app functionality only
+PASS: product.app.data.OtherUserContent: Account-linked server data; app functionality only
+PASS: product.extension_count: Exactly one ReplayKit extension embedded
+PASS: product.extension_metadata: Compiled app/extension identifiers, App Group and versions agree
+PASS: product.extension_sdk: Extension and app use the same Xcode, device SDK and deployment target
+PASS: product.extension.tracking: No tracking or tracking domains declared
+PASS: product.extension.timers: Elapsed-time deadlines require SystemBootTime/35F9.1
+PASS: product.webrtc: Native WebRTC binary and its own privacy manifest embedded
+PASS: product.notice.WebRTC-LICENSE.txt: Bundled dependency notice: WebRTC-LICENSE.txt
+PASS: product.notice.WebRTC-PATENTS.txt: Bundled dependency notice: WebRTC-PATENTS.txt
+PASS: product.notice.WebRTC-THIRD-PARTY-NOTICES.txt: Bundled dependency notice: WebRTC-THIRD-PARTY-NOTICES.txt
+PASS: product.notice.WebRTC-Distribution-LICENSE.txt: Bundled dependency notice: WebRTC-Distribution-LICENSE.txt
+PASS: product.notice.Inter-OFL.txt: Bundled dependency notice: Inter-OFL.txt
+PASS: product.no_test_payload: No test bundles in distribution product
+BLOCKED: signing.distribution: Not requested; an unsigned device build does not prove archive/export/signing readiness
+Packaging gate: PASS; App Store distribution approval: NOT_GRANTED

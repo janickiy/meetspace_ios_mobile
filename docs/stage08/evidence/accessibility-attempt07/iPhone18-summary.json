@@ -1,0 +1,57 @@
+{
+  "devicesAndConfigurations" : [
+    {
+      "device" : {
+        "architecture" : "arm64",
+        "deviceId" : "C3630581-519B-49DA-9400-67A78DCD42C8",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "modelName" : "iPhone SE (3rd generation)",
+        "osBuildNumber" : "22G86",
+        "osVersion" : "18.6",
+        "platform" : "iOS Simulator"
+      },
+      "expectedFailures" : 0,
+      "failedTests" : 2,
+      "passedTests" : 13,
+      "skippedTests" : 0,
+      "testPlanConfiguration" : {
+        "configurationId" : "1",
+        "configurationName" : "Test Scheme Action"
+      }
+    }
+  ],
+  "environmentDescription" : "MeetSpace-Debug · Built with macOS 15.8.2",
+  "expectedFailures" : 0,
+  "failedTests" : 2,
+  "finishTime" : 1793983504.365,
+  "passedTests" : 13,
+  "result" : "Failed",
+  "skippedTests" : 0,
+  "startTime" : 1793982410.15,
+  "statistics" : [
+
+  ],
+  "testFailures" : [
+    {
+      "failureText" : "XCTAssertTrue failed",
+      "targetName" : "MeetSpaceUITests",
+      "testIdentifier" : 11,
+      "testIdentifierString" : "FoundationUITests/testAccessibilityStage08CoreScreens()",
+      "testIdentifierURL" : "test://com.apple.xcode/MeetSpace/MeetSpaceUITests/FoundationUITests/testAccessibilityStage08CoreScreens",
+      "testName" : "testAccessibilityStage08CoreScreens()"
+    },
+    {
+      "failureText" : "XCTAssertTrue failed",
+      "targetName" : "MeetSpaceUITests",
+      "testIdentifier" : 15,
+      "testIdentifierString" : "FoundationUITests/testStage08AccountDeletionRequiresPasswordAndConfirmation()",
+      "testIdentifierURL" : "test://com.apple.xcode/MeetSpace/MeetSpaceUITests/FoundationUITests/testStage08AccountDeletionRequiresPasswordAndConfirmation",
+      "testName" : "testStage08AccountDeletionRequiresPasswordAndConfirmation()"
+    }
+  ],
+  "title" : "Test - MeetSpace-Debug",
+  "topInsights" : [
+
+  ],
+  "totalTestCount" : 15
+}

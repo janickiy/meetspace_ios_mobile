@@ -1,0 +1,273 @@
+{
+  "schema": 1,
+  "status": "FAIL",
+  "scope": "Debug iOS Simulator app, early post-launch/idle welcome UI, -uitesting fixtures; 15s Time Profiler plus 15s Allocations by default. Not app launch latency, 30 calls, network throughput, physical-device CPU/memory/energy, or absence of leaks.",
+  "simulatorUDID": "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+  "bundleID": "com.meetspace.ios",
+  "requestedSecondsPerTemplate": 15,
+  "wallBudgetSeconds": 180,
+  "sourceCommit": "e0a37748eb865b84dddf3da6339d16e0d8e1a0fe",
+  "commands": [
+    {
+      "name": "developer-directory",
+      "argv": [
+        "xcode-select",
+        "-p"
+      ],
+      "log": "developer-directory.log",
+      "exitCode": 0,
+      "timedOut": false,
+      "elapsedSeconds": 0.018
+    },
+    {
+      "name": "xcode-version",
+      "argv": [
+        "xcodebuild",
+        "-version"
+      ],
+      "log": "xcode-version.log",
+      "exitCode": 0,
+      "timedOut": false,
+      "elapsedSeconds": 0.843
+    },
+    {
+      "name": "find-xctrace",
+      "argv": [
+        "xcrun",
+        "--find",
+        "xctrace"
+      ],
+      "log": "find-xctrace.log",
+      "exitCode": 0,
+      "timedOut": false,
+      "elapsedSeconds": 2.704
+    },
+    {
+      "name": "xctrace-version",
+      "argv": [
+        "xcrun",
+        "xctrace",
+        "version"
+      ],
+      "log": "xctrace-version.log",
+      "exitCode": 0,
+      "timedOut": false,
+      "elapsedSeconds": 1.541
+    },
+    {
+      "name": "xctrace-templates",
+      "argv": [
+        "xcrun",
+        "xctrace",
+        "list",
+        "templates"
+      ],
+      "log": "xctrace-templates.log",
+      "exitCode": 0,
+      "timedOut": false,
+      "elapsedSeconds": 4.79
+    },
+    {
+      "name": "xctrace-devices",
+      "argv": [
+        "xcrun",
+        "xctrace",
+        "list",
+        "devices"
+      ],
+      "log": "xctrace-devices.log",
+      "exitCode": 0,
+      "timedOut": false,
+      "elapsedSeconds": 5.536
+    },
+    {
+      "name": "xctrace-record-help",
+      "argv": [
+        "xcrun",
+        "xctrace",
+        "help",
+        "record"
+      ],
+      "log": "xctrace-record-help.log",
+      "exitCode": 0,
+      "timedOut": false,
+      "elapsedSeconds": 0.614
+    },
+    {
+      "name": "xctrace-export-help",
+      "argv": [
+        "xcrun",
+        "xctrace",
+        "help",
+        "export"
+      ],
+      "log": "xctrace-export-help.log",
+      "exitCode": 0,
+      "timedOut": false,
+      "elapsedSeconds": 0.751
+    },
+    {
+      "name": "simctl-launch-help",
+      "argv": [
+        "xcrun",
+        "simctl",
+        "help",
+        "launch"
+      ],
+      "log": "simctl-launch-help.log",
+      "exitCode": 0,
+      "timedOut": false,
+      "elapsedSeconds": 2.435
+    },
+    {
+      "name": "simctl-devices",
+      "argv": [
+        "xcrun",
+        "simctl",
+        "list",
+        "devices",
+        "available",
+        "--json"
+      ],
+      "log": "simctl-devices.log",
+      "exitCode": 0,
+      "timedOut": false,
+      "elapsedSeconds": 0.812
+    },
+    {
+      "name": "simulator-boot",
+      "argv": [
+        "xcrun",
+        "simctl",
+        "boot",
+        "4E62D48E-A75F-4AF3-BDC2-1C74916B5810"
+      ],
+      "log": "simulator-boot.log",
+      "exitCode": 0,
+      "timedOut": false,
+      "elapsedSeconds": 2.104
+    },
+    {
+      "name": "simulator-bootstatus",
+      "argv": [
+        "xcrun",
+        "simctl",
+        "bootstatus",
+        "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "-b"
+      ],
+      "log": "simulator-bootstatus.log",
+      "exitCode": -15,
+      "timedOut": true,
+      "reason": "command timeout",
+      "elapsedSeconds": 74.449
+    },
+    {
+      "name": "simulator-cleanup",
+      "argv": [
+        "xcrun",
+        "simctl",
+        "shutdown",
+        "4E62D48E-A75F-4AF3-BDC2-1C74916B5810"
+      ],
+      "log": "simulator-cleanup.log",
+      "exitCode": -2,
+      "timedOut": true,
+      "reason": "command timeout",
+      "elapsedSeconds": 11.296
+    }
+  ],
+  "captures": [],
+  "notCovered": [
+    "launch latency",
+    "30 call cycles",
+    "Leaks",
+    "screen sharing",
+    "reconnect",
+    "transfers",
+    "physical devices",
+    "energy",
+    "Release performance"
+  ],
+  "testDestinationEvidence": {
+    "summary": "artifacts/iPhone18-summary.json",
+    "sha256": "a2c59a8d38617bc7156615184709ed6cece217e6a246617acda1321b057d0197",
+    "deviceIDs": [
+      "4E62D48E-A75F-4AF3-BDC2-1C74916B5810"
+    ],
+    "testResult": "Failed"
+  },
+  "elapsedSeconds": 108.01,
+  "runtime": "com.apple.CoreSimulator.SimRuntime.iOS-18-6",
+  "deviceName": "iPhone SE (3rd generation)",
+  "initialSimulatorState": "Shutdown",
+  "bootedByProfiler": true,
+  "reason": "Exact tested simulator boot did not finish within its bounded wait",
+  "evidenceFiles": [
+    {
+      "file": "developer-directory.log",
+      "bytes": 48,
+      "sha256": "f61dc333807430553f78902403e4cc45b547d508c03963122c5c75c6d27beedb"
+    },
+    {
+      "file": "find-xctrace.log",
+      "bytes": 64,
+      "sha256": "fced716e12a27e0cbca2dd5cdb966bd2536657b6a4db58785ae79c210059bfa8"
+    },
+    {
+      "file": "simctl-devices.log",
+      "bytes": 69030,
+      "sha256": "5d6974d8e6ba0e75667bc55d67c7cb16cb98157c4822cc2b38ce7ec5f184e85e"
+    },
+    {
+      "file": "simctl-launch-help.log",
+      "bytes": 1363,
+      "sha256": "94ae148cf375cb65a0e14daa78230d1cd0520ea6772d75afecba422d96fcc4b2"
+    },
+    {
+      "file": "simulator-boot.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "simulator-bootstatus.log",
+      "bytes": 1248,
+      "sha256": "584e8f69916f5fd5625579051b57b57c011c44b647017b9f27ab849c3061ad2d"
+    },
+    {
+      "file": "simulator-cleanup.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "xcode-version.log",
+      "bytes": 32,
+      "sha256": "bb7fc9a8f5e063e81975b33054b3a526c91bcccff263ad11d5bd8bcdbe8f0973"
+    },
+    {
+      "file": "xctrace-devices.log",
+      "bytes": 9762,
+      "sha256": "bf0a616406b0a4826b7113dd182240cbb195136d9a249358387bc9410c9a45ed"
+    },
+    {
+      "file": "xctrace-export-help.log",
+      "bytes": 1100,
+      "sha256": "953fc6079baaffd9d66b7d0f02aa3cfeed12c728425a9c1584120657cf4d8e9d"
+    },
+    {
+      "file": "xctrace-record-help.log",
+      "bytes": 3113,
+      "sha256": "bf49e4335bbf747b830f7a37d16e848385d3c865591833e0e77123dd29bf4525"
+    },
+    {
+      "file": "xctrace-templates.log",
+      "bytes": 373,
+      "sha256": "93eeae90861c44f3682a086d06ef9644a669bc71dd6350a8aff052f907bebe0a"
+    },
+    {
+      "file": "xctrace-version.log",
+      "bytes": 30,
+      "sha256": "187a4766a4b84a2657d81964ef8409fa5314d6e9fc121dfaa75604076c5a072b"
+    }
+  ]
+}

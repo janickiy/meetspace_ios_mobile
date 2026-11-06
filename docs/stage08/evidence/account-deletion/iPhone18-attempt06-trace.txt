@@ -1,0 +1,9 @@
+MeetSpaceDeletionDiagnostic stage=submit input=ascii-other
+MeetSpaceDeletionDiagnostic stage=prepare input=ascii-other
+MeetSpaceDeletionDiagnostic stage=prepare input=ascii-other
+MeetSpaceDeletionDiagnostic stage=confirm input=ascii-other
+MeetSpaceDeletionDiagnostic stage=transport input=ascii-other
+MeetSpaceDeletionDiagnostic stage=submit input=ascii-other
+MeetSpaceDeletionDiagnostic stage=prepare input=ascii-other
+MeetSpaceDeletionDiagnostic stage=confirm input=ascii-other
+MeetSpaceDeletionDiagnostic stage=transport input=ascii-other

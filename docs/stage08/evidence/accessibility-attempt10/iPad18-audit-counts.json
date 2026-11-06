@@ -1,0 +1,40 @@
+{
+  "findings": 21,
+  "types": {
+    "131072": 1,
+    "1": 4,
+    "65536": 16
+  },
+  "resolutions": {
+    "reviewed: welcome heading; complete AX5 text in ACCESSIBILITY_REVIEW.md": 1,
+    "reviewed: decorative avatar initials; accessible row has the full name": 1,
+    "reviewed: actual opaque glyph/background pixels; ACCESSIBILITY_CONTRAST_REVIEW.md": 2,
+    "reviewed: measured custom-font scaling; separate AX5 layout coverage": 16,
+    "reviewed: unchanged profile; disabled save action (inactive-control contrast exemption)": 1
+  },
+  "screens": {
+    "welcome": 1,
+    "messages": 1,
+    "profile": 0,
+    "calendar": 16,
+    "recordings": 1,
+    "folders": 1,
+    "settings": 1
+  },
+  "unresolved": 0,
+  "pendingDeferred": 0,
+  "outsideRetestViewport": 0,
+  "visibleRetestFindings": 0,
+  "emptyIdentifier": 1,
+  "emptyLabel": 0,
+  "emptyFrame": 0,
+  "progressCounts": {
+    "welcome": 1,
+    "messages": 2,
+    "profile": 2,
+    "calendar": 18,
+    "recordings": 19,
+    "folders": 20,
+    "settings": 21
+  }
+}

@@ -1,0 +1,67 @@
+{
+  "runID": 42270899385,
+  "sourceCommit": "a052abdacaf49d05a68b17725dda0e4b096bb86e",
+  "label": "iPad18",
+  "jobID": 128075143951,
+  "result": "FAIL",
+  "summary": {
+    "passedTests": 13,
+    "failedTests": 2,
+    "skippedTests": 0,
+    "totalTestCount": 15
+  },
+  "failedTests": {
+    "testAccessibilityStage08CoreScreens": "XCTest accessibility audit Code=-56 at line211;186.434s",
+    "testStage08AccountDeletionRequiresPasswordAndConfirmation": "Expected hyphen Key after native more tap at line352;119.643s"
+  },
+  "sources": [
+    {
+      "file": "results-iPad18/iPad18-summary.json",
+      "sha256": "ad1a0d23e0fe3888d3b30d42bf06d744d30717c123d36fa24d4c91a2b33318bf"
+    },
+    {
+      "file": "simulators_iPad_18_iPad18_compatibility_iPad_mini_A17_Pro_.log",
+      "sha256": "773eea23a12716320b987e732f8a2500e48fa9b1dd2cd73e8738b49ad1df4c5a"
+    },
+    {
+      "file": "results-iPad18/iPad18-screenshots/manifest.json",
+      "sha256": "7f412d9fa198c2d371bc38ce7fc8a38ebf9c7bdcca95a491c4c918c8d72f4624"
+    },
+    {
+      "file": "results-iPad18/iPad18-screenshots/32097E7D-0F7E-45B5-BAC2-FDD477F1A346.txt",
+      "sha256": "5a66a60de9fa34b3ceb6ae28ef7efc8809ba3b5c69ebde880c98b8035b7b1709"
+    },
+    {
+      "file": "results-iPad18/iPad18-screenshots/758F8DB3-AD1D-4C90-A54F-204780DD32FB.txt",
+      "sha256": "33ef93d243a378d520f6af7922e7357b6535e94b4f2e97706af527a19c05ed68"
+    },
+    {
+      "file": "results-iPad18/iPad18-screenshots/89811735-BA35-4E85-AA22-5A598E86AFB4.mp4",
+      "sha256": "95a098b10571fbdf3a7eec4fdad3bb256694d350d991b3f3ff764fa8da60fa90"
+    }
+  ],
+  "retainedFiles": [
+    {
+      "file": "attempt13/iPad18-keyboard-tutorial.txt",
+      "sha256": "ae1eff50f26a8559153528a1d8048a5ce88a4289c49c21199dec4e60acd2e267"
+    },
+    {
+      "file": "attempt13/iPad18-keyboard-tutorial.png",
+      "sha256": "0d1ffb412ea236c05ab843bc2506bbe9e139d4979ea42a40aa53d5252b9e3669"
+    }
+  ],
+  "videoFrame": {
+    "file": "attempt13/iPad18-keyboard-tutorial.png",
+    "secondsFromStart": 118.0,
+    "videoStartTimestamp": 1793990796.959,
+    "method": "AVAssetImageGenerator; zero before/after tolerance; no crop or edit"
+  },
+  "observations": [
+    "The first input reached native more tap; ordinary keys were replaced by the observed iPad key-flick tutorial. No submit/confirm/DELETE was reached.",
+    "The one-second exact-label tutorial lookup returned false, then the helper waited only for the absent hyphen key. Both collected AX snapshots contain exactly the expected tutorial text, one Keyboard and one Button label ОК.",
+    "The tutorial label including newline equals the source literal exactly; no label or wrapper change is evidenced.",
+    "Video +110s already shows tutorial; AX snapshot after the unsuccessful one-second lookup records it at1793990909.295. This proves the one-shot branch missed the state, not the precise cause or timing of AX availability.",
+    "A bounded wait for either expected key or exact tutorial, followed by the observed native ОК action and verified dismissal, is a proposed harness correction; no new native result is inferred."
+  ],
+  "boundary": "Completed iPad18 compatibility result only. Other CI13 native jobs remain pending at receipt creation. Strict fixture password guard unchanged; no product deletion failure inferred from this pre-submit keyboard stop. No physical-device or production API claim."
+}

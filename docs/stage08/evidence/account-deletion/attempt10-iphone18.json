@@ -1,0 +1,57 @@
+{
+  "runID": 42263390594,
+  "sourceCommit": "e0a37748eb865b84dddf3da6339d16e0d8e1a0fe",
+  "label": "iPhone18",
+  "result": "FAIL",
+  "summary": {
+    "passedTests": 14,
+    "failedTests": 1,
+    "skippedTests": 0,
+    "totalTestCount": 15
+  },
+  "failedTestNames": [
+    "testStage08AccountDeletionRequiresPasswordAndConfirmation()"
+  ],
+  "sourceSummary": {
+    "attachment": "iPhone18-summary.json",
+    "sha256": "a2c59a8d38617bc7156615184709ed6cece217e6a246617acda1321b057d0197"
+  },
+  "sourceFailureAX": {
+    "attachment": "0E454CD8-9125-43B2-BEFC-8CBB370C9A9C.txt",
+    "sha256": "fc917308061c4495df4294c37c31d9e6bf6dd963c5c17b211efd737361cb1036"
+  },
+  "sourceVideo": {
+    "attachment": "EBA88BF5-08BE-4647-B56D-3281B0B3FEB2.mp4",
+    "sha256": "36dedeed8484aa0d924cb065a958f49410e2dd86c83d1587c59264ab1cb0af28",
+    "startTimestamp": 1793988602.423
+  },
+  "retainedFiles": [
+    {
+      "file": "attempt10/iPhone18-deletion-confirmed-login.txt",
+      "sha256": "606106e2b3942275118caab57f8eec8dc96ba3d9c92055629f48050209316c6b"
+    },
+    {
+      "file": "attempt10/iPhone18-deletion-confirmed-login.png",
+      "sha256": "422db5d3c809bb1013acfafbb035f2af38bd3bf151c2708abd4e3da5ba625eb1"
+    }
+  ],
+  "videoFrame": {
+    "file": "attempt10/iPhone18-deletion-confirmed-login.png",
+    "secondsFromStart": 250.0,
+    "method": "AVAssetImageGenerator; zero before/after tolerance; no crop or edit"
+  },
+  "observations": [
+    "Final AX and video show the login screen, empty email/password fields, authenticationSubmit and the message Аккаунт удалён на сервере.; no deletion form or error remains.",
+    "The test failed waiting for connectServer (welcome) after the second confirmation. AppModel.sessionEnded explicitly selects login, retaining server configuration.",
+    "The first incorrect input, cancellation, rejection and cleared-input assertions completed. Both native-key inputs and Done taps completed; the second input passed the unchanged strict fixture password guard.",
+    "The stage08-account-deletion PNG was captured BEFORE the second submit and still displays the previous rejection message; it is not the final result."
+  ],
+  "sourceChecksums": {
+    "App/UITestDependencies.swift": "bd939e4a205ebd96bedfea2f1d626f419f2f56727c0d356e5cad8c4063e569b7",
+    "Packages/MeetSpaceKit/Sources/Features/AppModel.swift": "6cdd76432294703ae78feca1feaedf27e1e6ea4e8ea39a5aebbdde1ca24c95c4",
+    "Packages/MeetSpaceKit/Sources/Features/MeetSpaceRootView.swift": "22244fcac3d67fd27e6d3c44ec35604353850e7cac913f5bdf192b7a2cc2ca0d",
+    "Packages/MeetSpaceKit/Sources/Features/IdentityModel.swift": "d6e31e4bc4486a6697d17c27076fcb90913839cfd8a6ecdb2c909b80d6593e8a"
+  },
+  "expectedTestCorrection": "Assert native login plus explicit deletion-success message and absence of deletion form. Preserve strict password guard. Fresh run required; historical result remains FAIL.",
+  "boundary": "Synthetic fixture UI flow on iOS18 simulator, not a production HTTP request or real backend deletion. Does not validate local push-ordering patch0216c99, APNs delivery or physical device behavior."
+}

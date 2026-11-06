@@ -1,0 +1,85 @@
+{
+  "devicesAndConfigurations" : [
+    {
+      "device" : {
+        "architecture" : "x86_64",
+        "deviceId" : "8F28AB82-E741-43D2-8CA2-7E1A1C0FD514",
+        "deviceName" : "iPhone 17 Pro Max",
+        "modelName" : "iPhone 17 Pro Max",
+        "osBuildNumber" : "23C54",
+        "osVersion" : "26.2",
+        "platform" : "iOS Simulator"
+      },
+      "expectedFailures" : 0,
+      "failedTests" : 5,
+      "passedTests" : 30,
+      "skippedTests" : 0,
+      "testPlanConfiguration" : {
+        "configurationId" : "1",
+        "configurationName" : "Test Scheme Action"
+      }
+    }
+  ],
+  "environmentDescription" : "MeetSpace-Debug · Built with macOS 15.7.9",
+  "expectedFailures" : 0,
+  "failedTests" : 5,
+  "finishTime" : 1793990436.281,
+  "passedTests" : 30,
+  "result" : "Failed",
+  "skippedTests" : 0,
+  "startTime" : 1793987300.297,
+  "statistics" : [
+
+  ],
+  "testFailures" : [
+    {
+      "failureText" : "failed: caught error: \"Error Domain=com.apple.xcode.xctest.accessibilityAudit Code=-56 \"Audit failed to complete in time\" UserInfo={NSLocalizedDescription=Audit failed to complete in time}\"",
+      "targetName" : "MeetSpaceUITests",
+      "testIdentifier" : 11,
+      "testIdentifierString" : "FoundationUITests/testAccessibilityStage08CoreScreens()",
+      "testIdentifierURL" : "test://com.apple.xcode/MeetSpace/MeetSpaceUITests/FoundationUITests/testAccessibilityStage08CoreScreens",
+      "testName" : "testAccessibilityStage08CoreScreens()"
+    },
+    {
+      "failureText" : "XCTAssertTrue failed",
+      "targetName" : "MeetSpaceUITests",
+      "testIdentifier" : 18,
+      "testIdentifierString" : "FoundationUITests/testDirectCallAcceptedOnOtherDeviceHasNoCaptureControls()",
+      "testIdentifierURL" : "test://com.apple.xcode/MeetSpace/MeetSpaceUITests/FoundationUITests/testDirectCallAcceptedOnOtherDeviceHasNoCaptureControls",
+      "testName" : "testDirectCallAcceptedOnOtherDeviceHasNoCaptureControls()"
+    },
+    {
+      "failureText" : "XCTAssertTrue failed",
+      "targetName" : "MeetSpaceUITests",
+      "testIdentifier" : 25,
+      "testIdentifierString" : "FoundationUITests/testOrdinaryPushOptInAndDisableWithFixtureToken()",
+      "testIdentifierURL" : "test://com.apple.xcode/MeetSpace/MeetSpaceUITests/FoundationUITests/testOrdinaryPushOptInAndDisableWithFixtureToken",
+      "testName" : "testOrdinaryPushOptInAndDisableWithFixtureToken()"
+    },
+    {
+      "failureText" : "XCTAssertTrue failed",
+      "targetName" : "MeetSpaceUITests",
+      "testIdentifier" : 26,
+      "testIdentifierString" : "FoundationUITests/testScreenConflictKeepsDirectCallAndMicrophoneWithFixtures()",
+      "testIdentifierURL" : "test://com.apple.xcode/MeetSpace/MeetSpaceUITests/FoundationUITests/testScreenConflictKeepsDirectCallAndMicrophoneWithFixtures",
+      "testName" : "testScreenConflictKeepsDirectCallAndMicrophoneWithFixtures()"
+    },
+    {
+      "failureText" : "XCTAssertTrue failed",
+      "targetName" : "MeetSpaceUITests",
+      "testIdentifier" : 33,
+      "testIdentifierString" : "FoundationUITests/testStage08AccountDeletionRequiresPasswordAndConfirmation()",
+      "testIdentifierURL" : "test://com.apple.xcode/MeetSpace/MeetSpaceUITests/FoundationUITests/testStage08AccountDeletionRequiresPasswordAndConfirmation",
+      "testName" : "testStage08AccountDeletionRequiresPasswordAndConfirmation()"
+    }
+  ],
+  "title" : "Test - MeetSpace-Debug",
+  "topInsights" : [
+    {
+      "category" : "Longest Test Runs",
+      "impact" : "12% of duration",
+      "text" : "1 longest test run with outlier durations exceeding 304.31s (three standard deviations)"
+    }
+  ],
+  "totalTestCount" : 35
+}

@@ -1,0 +1,100 @@
+{
+  "schema": 1,
+  "recordedAtUTC": "2026-11-06T17:59:55.640698+00:00",
+  "status": "PASS_HOST_NATIVE_PENDING",
+  "baseCommit": "e0a37748eb865b84dddf3da6339d16e0d8e1a0fe",
+  "workingTreeDirty": true,
+  "scope": "Production IdentityModel/PushRegistrationModel/AuthenticatedClient/NotificationDeviceRepository with controlled transport and APNs platform doubles; no production server or APNs delivery.",
+  "limitations": [
+    "Native iOS build/UI of this push-ordering patch pending fresh CI; CI10 source predates this fix.",
+    "Local queue orders completed client requests only. Lost responses do not prove server completion; other-client/already-authorized backend SaveDevice race remains OPEN P2."
+  ],
+  "commands": [
+    {
+      "argv": [
+        "swift",
+        "test",
+        "--package-path",
+        "Packages/MeetSpaceKit",
+        "--sdk",
+        "/Library/Developer/CommandLineTools/SDKs/MacOSX26.4.sdk",
+        "-Xswiftc",
+        "-load-plugin-library",
+        "-Xswiftc",
+        "/Library/Developer/CommandLineTools/usr/lib/swift/host/plugins/testing/libTestingMacros.dylib",
+        "--filter",
+        "stage08AccountDeletion"
+      ],
+      "exitCode": 0
+    },
+    {
+      "argv": [
+        "swift",
+        "test",
+        "--package-path",
+        "Packages/MeetSpaceKit",
+        "--skip-build",
+        "--sdk",
+        "/Library/Developer/CommandLineTools/SDKs/MacOSX26.4.sdk"
+      ],
+      "exitCode": 0
+    },
+    {
+      "argv": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "scope": "Four changed production/test files",
+      "exitCode": 0
+    }
+  ],
+  "focused": {
+    "total": 11,
+    "passed": 11,
+    "skipped": 0
+  },
+  "full": {
+    "total": 184,
+    "executedPassed": 179,
+    "skipped": 5
+  },
+  "newTests": [
+    "stage08AccountDeletionWaitsForLatePushWriteAndCleanupBeforeDELETE",
+    "stage08AccountDeletionRejectionAndUnknownRestorePriorPushIntentWithoutPrompt",
+    "stage08AccountDeletionPushPauseCannotRestoreAnotherScopeOrOverrideDisable"
+  ],
+  "newCases": [
+    "held registration and completed revoke precede DELETE",
+    "failed revoke preserves binding until authoritative DELETE200 and does not block DELETE",
+    "enabled/off intent across422,409,503,timeout; no replay or permission prompt; callbacks can register again after failure",
+    "same-user other-origin cannot pause current scope; stale tokens cannot override disable or account switch"
+  ],
+  "priorAttempt": "First local compilation failed only because the new test platform double omitted two required NormalPushNotifications callbacks. Added those stubs before the successful focused/full runs.",
+  "sourceSHA256": {
+    "Packages/MeetSpaceKit/Sources/Features/IdentityModel.swift": "8d47cc0fd7b3861d5356c14f8d348c9bc3f8d15bcfee37eab617d348331a3ec3",
+    "Packages/MeetSpaceKit/Sources/Features/PushRegistrationModel.swift": "14511498a17d0373d2bbf07afe80db17bff64aa8c37e22f8d565106f269b763a",
+    "Packages/MeetSpaceKit/Tests/IntegrationTests/AccountDeletionTests.swift": "55884ab1917a5f66d541b624e8335f7db3761551ccdc49fea3422d3109f7719d",
+    "Packages/MeetSpaceKit/Tests/IntegrationTests/PushRegistrationLifecycleTests.swift": "8b98a10fa8c928bd78fc5b4afd89bfadd18b77eb8b32efa4020ce4829697b7cf",
+    "Packages/MeetSpaceKit/Sources/API/Authentication.swift": "d4c3032821c0fd01cf08ca5f2878cce389d0a9780af69861a43597ddc63a26bf",
+    "Packages/MeetSpaceKit/Sources/API/NotificationDeviceRepository.swift": "01e40c5f70e536543ca4cfbef46478a5309484b3187a8bc1d0453270da0ef84e",
+    "Packages/MeetSpaceKit/Sources/Core/PushRegistration.swift": "10cee6168f49fc86188685cc3bfda72e139487ffe6bf9c1a642052e8168f50a6",
+    "Packages/MeetSpaceKit/Sources/Storage/PushRegistrationStore.swift": "48a58ddc33f786c3915d926beb83b01c42fdfdd7c8f8c58665c4793581dde576"
+  },
+  "evidence": [
+    {
+      "file": "focused-tests.txt",
+      "sha256": "971823bca0c9a7338d2a2c3207b37526024d648f6f7f93d0e721e2ac44ac6888",
+      "bytes": 2405,
+      "rawLogSHA256": "6262cd39d2e77bf25363480da1c232d8de53e23b6dfd34b154d618f772aa9564",
+      "extraction": "Only build completion and top-level test-name/result/skip lines. All parameterized Test case lines excluded."
+    },
+    {
+      "file": "full-suite.txt",
+      "sha256": "befb7df7f8c9fdbbb8a7fd4dcb2b53348f1257755afcc65acc6ccb68c2330d9e",
+      "bytes": 31480,
+      "rawLogSHA256": "0109e4893ae5b6b6914bc7315b9517f2bb712eb607ff857bff1d90db43e085eb",
+      "extraction": "Only build completion and top-level test-name/result/skip lines. All parameterized Test case lines excluded."
+    }
+  ]
+}

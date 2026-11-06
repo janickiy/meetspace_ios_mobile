@@ -1,0 +1,30 @@
+{
+  "run": 42240106296,
+  "sourceCommit": "586bfe875355f930a5d463214bd7860a78ac189e",
+  "scope": [
+    "calendar.weekday.0",
+    "calendar.weekday.4"
+  ],
+  "files": [
+    {
+      "file": "iPad18-calendar-normal.png",
+      "bytes": 148072,
+      "sha256": "d436a64875627feee78d9b7e36bd1cd8d953bf3cd7fac5dc23c9c3f235427328"
+    },
+    {
+      "file": "iPad18-weekday-raw-issues.json",
+      "bytes": 579,
+      "sha256": "8281f9561709aa67691653b1cfa6560bc5bec9d03c4865cfa570fb3a3a1ac8cf"
+    },
+    {
+      "file": "weekday-contrast.swift",
+      "bytes": 4638,
+      "sha256": "309d5fee1207425ab6e41f458db44554591427d612cb78a37fc1cb395a54c1eb"
+    },
+    {
+      "file": "iPad18-weekday-pixel-contrast.json",
+      "bytes": 8570,
+      "sha256": "a53dceeb884bc975e88ec340867cbf8f31b50b9099dfb698034304f8c66a95cc"
+    }
+  ]
+}

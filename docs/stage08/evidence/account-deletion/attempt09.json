@@ -1,0 +1,103 @@
+{
+  "runID": 42257624204,
+  "sourceCommit": "f1eda3a79501530dd4af86830d90837816890258",
+  "scope": "Two completed iOS 18 compatibility jobs; not a completed full native acceptance",
+  "results": [
+    {
+      "label": "iPhone18",
+      "result": "FAIL",
+      "passedTests": 12,
+      "failedTests": 3,
+      "skippedTests": 0,
+      "totalTestCount": 15,
+      "sourceSummaryAttachment": "iPhone18-summary.json",
+      "sourceSummarySHA256": "407a1de710860c532eb614167decb1551435136b589da5efee8bc846a7f433e0",
+      "failedTestNames": [
+        "testAccessibilityStage08CoreScreens()",
+        "testConferenceCreateMediaControlsChatAndLeave()",
+        "testStage08AccountDeletionRequiresPasswordAndConfirmation()"
+      ]
+    },
+    {
+      "label": "iPad18",
+      "result": "FAIL",
+      "passedTests": 12,
+      "failedTests": 3,
+      "skippedTests": 0,
+      "totalTestCount": 15,
+      "sourceSummaryAttachment": "iPad18-summary.json",
+      "sourceSummarySHA256": "030e50547cc0df54d9cbf36cd0e64b3a699b88a20885a61c4e4b810f1d106a07",
+      "failedTestNames": [
+        "testAccessibilityStage08CoreScreens()",
+        "testConferenceCreateMediaControlsChatAndLeave()",
+        "testStage08AccountDeletionRequiresPasswordAndConfirmation()"
+      ]
+    }
+  ],
+  "sourceFailureAX": {
+    "attachment": "26D13227-F5AF-48BB-93EE-2E8838D05EEA.txt",
+    "sha256": "2c9cb16bdb9a78c074e51c4de80d5b52a03e85408a314c51320edb9e2f604aad"
+  },
+  "retainedFiles": [
+    {
+      "file": "attempt09/iPhone18-keyboard-and-masked-field.txt",
+      "sha256": "d7bf350761a00527e94ecb7d526a7d2b8fcf97a9c1340837a9d1e8c4accddaf8"
+    }
+  ],
+  "observations": [
+    "iPhone18: all native key taps in the first known-invalid fixture input completed; the secure field shows 18 masks. The actual password value is not exported; mask count does not prove byte equality.",
+    "iPhone18: native return Button has identifier Done and lowercase label done. The old case-sensitive label IN [Done, Готово] query did not match it. The test stopped before submitting or sending DELETE.",
+    "iPad18: two native Key elements share identifier more and label цифры. The single-element lookup failed during the first input before DELETE.",
+    "Both completed jobs also failed the old core accessibility timeout and conference camera-off assertion; later candidate fixes are not covered by this result."
+  ],
+  "nextCandidate": {
+    "runID": 42263390594,
+    "sourceCommit": "e0a37748eb865b84dddf3da6339d16e0d8e1a0fe",
+    "status": "PENDING",
+    "fixes": [
+      "Select one mirrored native more key with firstMatch.",
+      "Use the observed native Done identifier instead of a case-sensitive localized label query."
+    ]
+  },
+  "boundary": "Ephemeral -uitesting simulator and strict fixture guard unchanged. No password value or password hash retained. No API success, complete deletion UI, current full-suite acceptance or physical-device result claimed.",
+  "workflowResult": {
+    "status": "completed",
+    "conclusion": "cancelled",
+    "reason": "Superseded by CI10 through workflow concurrency; not runner-capacity acquisition failure",
+    "sourceRunSHA256": "321622c533399332c9f79e1253902064259a75f586ed785441bc15d7e08cab64",
+    "sourceJobsSHA256": "cca0cc78cd0cb33c335b23630887ab1bf4b700941ca7b6d3718da537b0205a9c",
+    "jobs": [
+      {
+        "id": 128028928075,
+        "name": "package",
+        "conclusion": "success",
+        "completed_at": "2026-11-06T17:10:28Z"
+      },
+      {
+        "id": 128028928392,
+        "name": "simulators (iPad, 18, iPad18, compatibility, iPad mini (A17 Pro))",
+        "conclusion": "failure",
+        "completed_at": "2026-11-06T17:26:41Z"
+      },
+      {
+        "id": 128028928492,
+        "name": "simulators (iPhone, 18, iPhone18, compatibility, iPhone SE (3rd generation))",
+        "conclusion": "failure",
+        "completed_at": "2026-11-06T17:33:29Z"
+      },
+      {
+        "id": 128028928595,
+        "name": "simulators (iPad, 26, iPad26, full, iPad Pro 13-inch (M5))",
+        "conclusion": "cancelled",
+        "completed_at": "2026-11-06T17:38:54Z"
+      },
+      {
+        "id": 128028928809,
+        "name": "simulators (iPhone, 26, iPhone26, full, iPhone 17 Pro Max)",
+        "conclusion": "cancelled",
+        "completed_at": "2026-11-06T17:41:28Z"
+      }
+    ],
+    "boundary": "Partially completed cancelled iOS26 jobs are not counted as successful tests."
+  }
+}

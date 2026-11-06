@@ -1,0 +1,27 @@
+Source: CI13 run42270899385, source a052abdacaf49d05a68b17725dda0e4b096bb86e, iPad18.
+Only the native keyboard subtree is retained; no account/password value is copied.
+
+32097E7D-0F7E-45B5-BAC2-FDD477F1A346.txt
+          Keyboard, 0x1163c01b0, {{0.0, 848.0}, {744.0, 282.0}} <AX element pid: 26988, elementOrHash.elementID: 4447185248.72>
+            Other, 0x1163c02d0, {{0.0, 848.0}, {744.0, 282.0}} <AX element pid: 26988, elementOrHash.elementID: 4826905024.575>
+              StaticText, 0x1163c03f0, {{0.0, 888.5}, {744.0, 60.0}}, label: 'Для доступа к альтернативным буквам на клавиатуре
+потяните вниз на клавише и отпустите.' <AX element pid: 26988, elementOrHash.elementID: 4423749680.576>
+              Other, 0x1163c0510, {{307.0, 959.0}, {61.0, 60.0}} <AX element pid: 26988, elementOrHash.elementID: 4826911424.577>
+              Button, 0x1163c0630, {{307.0, 959.0}, {61.0, 60.0}}, label: 'f, &' <AX element pid: 26988, elementOrHash.elementID: 4449068400.578>
+              Other, 0x1163c0750, {{376.0, 958.0}, {61.5, 62.0}} <AX element pid: 26988, elementOrHash.elementID: 4816251136.579>
+              Button, 0x1163c0870, {{376.0, 958.0}, {61.5, 62.0}}, label: 'f, &' <AX element pid: 26988, elementOrHash.elementID: 4826865008.580>
+              Button, 0x1163c0990, {{279.0, 1084.8}, {186.0, 20.0}}, label: 'ОК' <AX element pid: 26988, elementOrHash.elementID: 4423874784.581>
+                StaticText, 0x1163c0ab0, {{360.0, 1084.2}, {24.0, 21.0}}, label: 'ОК' <AX element pid: 26988, elementOrHash.elementID: 4826948976.582>
+
+758F8DB3-AD1D-4C90-A54F-204780DD32FB.txt
+          Keyboard, 0x1063ae120, {{0.0, 848.0}, {744.0, 282.0}} <AX element pid: 26988, elementOrHash.elementID: 4447185248.72>
+            Other, 0x1063997c0, {{0.0, 848.0}, {744.0, 282.0}} <AX element pid: 26988, elementOrHash.elementID: 4826905024.575>
+              StaticText, 0x1063a3810, {{0.0, 888.5}, {744.0, 60.0}}, label: 'Для доступа к альтернативным буквам на клавиатуре
+потяните вниз на клавише и отпустите.' <AX element pid: 26988, elementOrHash.elementID: 4423749680.576>
+              Other, 0x1063a2010, {{307.0, 959.0}, {61.0, 60.0}} <AX element pid: 26988, elementOrHash.elementID: 4826911424.577>
+              Button, 0x1063a1cb0, {{307.0, 959.0}, {61.0, 60.0}}, label: 'f, &' <AX element pid: 26988, elementOrHash.elementID: 4449068400.578>
+              Other, 0x10639e0a0, {{376.0, 958.0}, {61.5, 62.0}} <AX element pid: 26988, elementOrHash.elementID: 4816251136.579>
+              Button, 0x1063a3b70, {{376.0, 958.0}, {61.5, 62.0}}, label: 'f, &' <AX element pid: 26988, elementOrHash.elementID: 4826865008.580>
+              Button, 0x1063ac8f0, {{279.0, 1084.8}, {186.0, 20.0}}, label: 'ОК' <AX element pid: 26988, elementOrHash.elementID: 4423874784.581>
+                StaticText, 0x1063acfd0, {{360.0, 1084.2}, {24.0, 21.0}}, label: 'ОК' <AX element pid: 26988, elementOrHash.elementID: 4826948976.582>
+

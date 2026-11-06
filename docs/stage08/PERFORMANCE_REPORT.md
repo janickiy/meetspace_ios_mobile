@@ -1,12 +1,15 @@
 # Производительность и lifecycle: этап 08
 
 Дата: 2026-11-06. **PASS** для описанных host stress assertions. **BLOCKED** для
-Instruments/device CPU, memory, energy, длительного реального звонка и физического
-ReplayKit. Host-метрики ниже не являются приёмкой производительности приложения iOS.
+Instruments на физическом устройстве, device CPU/memory/energy, длительного реального
+звонка и физического ReplayKit. Simulator profiling CI8 — **BLOCKED** на Shutdown
+preflight; CI10 — **FAIL** на ожидании boot и cleanup. Новый вариант с увеличенными
+ограниченными ожиданиями — **PENDING**; записи и измерения пока не получены.
+Host-метрики ниже не являются приёмкой производительности приложения iOS.
 
 ## Фактически выполнено
 
-Финальные 6 stress tests выполнены в трёх отдельных процессах: **18/18 PASS**,
+Зафиксированный host baseline: 6 stress tests выполнены в трёх отдельных процессах: **18/18 PASS**,
 по 30 циклов каждого сценария на запуск (90 в трёх измеренных запусках run03).
 После исправления проверки CallKit completion дополнительно прошли один целевой
 30-cycle тест и три полных suite: **176 passed / 5 opt-in skipped из 181** каждый.
@@ -43,8 +46,10 @@ WebRTC C++ allocations. Сохранённые ресурсы и системн�
 Среда: macOS kernel Darwin 27.0.0, arm64, 10 logical CPU, Apple Swift 6.4,
 Command Line Tools SDK MacOSX26.4. Debug binaries. Сборка исключена `--skip-build`.
 Внутри IntegrationTests stress cases запускаются параллельно; BroadcastTests — отдельный
-process. Каждый повтор SwiftPM запускается заново. Значения относятся ко всему
-командному дереву SwiftPM/test runner, а не к MeetSpace iOS.
+process. Каждый повтор SwiftPM запускается заново. Это показатели host-запуска
+SwiftPM/test runner, а не измерение процесса MeetSpace iOS. `time` high-water RSS
+из `rusage` и сумма RSS дерева в момент `ps` sample — разные величины; первая
+не является суммой одновременной памяти всех процессов.
 
 | Повтор | Wall monotonic, с | CPU user / system, с | `/usr/bin/time` peak RSS, bytes | Максимум sampled tree RSS, KiB |
 | --- | ---: | ---: | ---: | ---: |
@@ -100,23 +105,128 @@ Stress-сценарии удаление аккаунта не вызывают.
   соответствующих этапов, включая [готовый AAC pipeline](../stage07/RECORDING_PIPELINE.md).
   Они не переименованы в iOS device performance или текущие 30-cycle network tests.
 
-## Instruments и device acceptance — BLOCKED
+## Instruments: device acceptance — BLOCKED, simulator CI10 — FAIL, повтор — PENDING
 
 Локально `xcode-select -p` вернул `/Library/Developer/CommandLineTools`,
-`xcrun --find xctrace` завершился 72 (`unable to find utility xctrace`). Полного Xcode,
-подписанной установки и подключённых тестовых устройств нет. Отсутствующие Allocations,
+`xcrun --find xctrace` завершился 72 (`unable to find utility xctrace`). Полного Xcode и подписанной установки нет; доступный путь запуска на физическом
+устройстве не установлен. Наличие подключённых устройств без devicectl не проверено. Отсутствующие Allocations,
 Leaks, Time Profiler и Energy/Power Profiler traces не заменяются host RSS.
 Apple описывает [Instruments performance tools](https://developer.apple.com/documentation/xcode/performance-and-metrics)
 и [измерение энергии на реальном устройстве](https://help.apple.com/xcode/mac/current/en.lproj/devf7f7c5fcd.html).
 
-Минимальный дополнительный CI шаг с полным Xcode сначала должен сохранить
-`xcrun xctrace version`, `xcrun xctrace list templates`, `xcrun xctrace list devices`
-и `xcrun xctrace help record`. Затем отдельная simulator recording job может привязать
-доступный Time Profiler/Allocations template к PID приложения и сохранить `.trace`
-при коротком воспроизводимом UI сценарии. Конкретные templates/target attach нужно
-проверить на runner, а недоступность profiler отметить BLOCKED; отсутствие trace
-не считать успешным profiling. Такой simulator trace не измеряет iPhone energy.
-Workflow принадлежит root; этот отчёт не утверждает, что profiler job уже запускался.
+В [.github/workflows/ios.yml](../../.github/workflows/ios.yml) добавлен отдельный шаг
+`Diagnostic Instruments baseline (reported separately)` после нативных тестов.
+Он запускается только для `iPhone18`, при `scope != deletion`, включая случай
+неуспешных тестов (`always()`). `continue-on-error: true` сохраняет результат
+нативных тестов независимо от диагностического шага: зелёный job не означает
+успешное profiling. Статус profiler определяется отдельным `receipt.json`.
+
+Первый запуск этого шага выполнен в
+[CI8 / 42255060641](https://github.com/janickiy/meetspace_ios_mobile/actions/runs/42255060641),
+source `6b6d1bbda9224d459e2a07d551db65956946f2fe`, runner `macos-15-intel`,
+`DEVELOPER_DIR=/Applications/Xcode_26.3.app/Contents/Developer`.
+Фактические версии: Xcode 26.3 / build 17C529, xctrace 26.0 (17C529).
+[Receipt](evidence/profiling-attempt08/receipt.json) зафиксировал **BLOCKED** после
+**13.959 с preflight**, `captures=[]`, exit code диагностического шага 2.
+Это длительность подготовки profiler, не launch latency приложения.
+
+[simctl inventory](evidence/profiling-attempt08/simctl-devices.log) показывает
+`4E62D48E-A75F-4AF3-BDC2-1C74916B5810` в состоянии Shutdown. Тот же UUID указан
+в [test summary](evidence/profiling-attempt08/iPhone18-summary.json) и environment:
+гипотеза выбора другого клонированного устройства этими данными не подтверждается.
+Первый вариант скрипта требовал уже Booted simulator и остановился до проверки
+app container, запуска приложения или attach. `.trace`, TOC и таблиц измерений нет.
+[Template inventory](evidence/profiling-attempt08/xctrace-templates.log) действительно
+содержит Time Profiler и Allocations, а также Leaks и Power Profiler; это подтверждает
+наличие templates, но не поддержку attach или device energy на данном runner.
+Неизменённые receipt/inventory/help/environment/summary сохранены с SHA-256 в
+[manifest](evidence/profiling-attempt08/manifest.json). Ожидание runner capacity
+в предыдущем CI7 на ARM не является измерением или доказательством недоступности Instruments.
+
+Исправление source `92357498a693f82000e3df90ac637df3e9971c5e` требует подтверждения
+точного единственного iOS Simulator UUID через `xcresulttool` summary. С явным
+`--boot-if-needed` оно запускает именно этот симулятор при Shutdown, ограниченно
+ждёт `bootstatus`, повторно проверяет inventories и существующий app container.
+Другой simulator, установка найденного через glob приложения или host fallback
+не используются. Boot/bootstatus errors сохраняются как FAIL; отсутствие app — BLOCKED.
+Если скрипт сам включил симулятор, cleanup пытается вернуть его в Shutdown;
+результат этой команды проверяется отдельно и не предполагается успешным.
+
+[CI10 / 42263390594](https://github.com/janickiy/meetspace_ios_mobile/actions/runs/42263390594),
+source `e0a37748eb865b84dddf3da6339d16e0d8e1a0fe`, действительно выполнил новый
+boot path, но завершился **FAIL**, а не BLOCKED или RECORDED.
+[Receipt](evidence/profiling-attempt10/receipt.json) содержит **108.01 с** общей
+подготовки/cleanup, `captures=[]`; `simctl boot` завершился 0 за 2.104 с.
+Последующий `bootstatus` с timeout 45 с получил `timedOut=true`, exit −15,
+наблюдаемое elapsed 74.449 с. В [логе bootstatus](evidence/profiling-attempt10/simulator-bootstatus.log)
+видны BackBoard → Data Migration → System App и terminal Finished при внутреннем
+elapsed **58 с**. Эта строка не отменяет timeout/сигнал завершения команды и не
+доказывает успешный preflight. `simctl shutdown` с timeout 5 с также истёк:
+elapsed **11.296 с**, exit −2; финальное состояние Shutdown не подтверждено.
+Приложение, attach и экспорт таблиц не запускались: `.trace`, TOC, CPU/RSS/energy
+метрик нет. Это сбой ограниченного ожидания подготовки симулятора; недоступность
+Instruments на этом runner им не установлена. Нативные тесты этой job также
+завершились неуспешно, но их причина и приёмка ведутся отдельно в [TEST_REPORT.md](TEST_REPORT.md).
+
+Неизменённые CI10 логи, receipt, summary/environment и воспроизводимый анализ
+сохранены в [manifest](evidence/profiling-attempt10/manifest.json) и
+[inspection](evidence/profiling-attempt10/inspection.json): 14 исходных profiler
+файлов, 0 несовпадений их receipt-хешей, 0 captures. SHA-256 ZIP совпал с digest
+GitHub artifact. Новый вариант ожиданий ниже подготовлен по наблюдённым 58 с boot;
+его реальная проверка пока **PENDING**. Кандидат `a052abdacaf49d05a68b17725dda0e4b096bb86e` включает новые пределы;
+исторические CI11/CI12 не подтверждают этот вариант и не переименовываются
+в успешное profiling.
+
+Текущая команда шага после исправления:
+
+```sh
+meetspace_profile_udid=$(python3 -c 'import json; print(json.load(open("artifacts/iPhone18-environment.json"))["udid"])')
+python3 scripts/profile_simulator.py \
+  --simulator "$meetspace_profile_udid" \
+  --test-summary artifacts/iPhone18-summary.json --boot-if-needed \
+  --output artifacts/iPhone18-profiling
+```
+
+[scripts/profile_simulator.py](../../scripts/profile_simulator.py) использует по
+умолчанию `--seconds 15 --wall-budget 240`: две последовательные записи по 15 секунд
+(Time Profiler и Allocations), общий бюджет планирования команд 240 секунд плюс
+завершение процессов по сигналам и отдельный cleanup. Каждая запись имеет timeout
+40 секунд; boot/bootstatus ограничены 15/90 секундами в пределах общего бюджета;
+cleanup приложения — 5 с, shutdown симулятора — 30 с. Это запрошенные deadlines,
+а не гарантия точного wall time: CI10 показал превышение; причины дополнительной
+задержки отдельно не измерялись. Версия CI10 ещё использовала бюджет 180 с и пределы 45/5 с;
+её сохранённый receipt не изменён. Новый вариант прошёл `py_compile` и пять mock
+проверок ошибок/границ target; это не native profiler run.
+Скрипт сохраняет версии, templates/devices и справку CLI, проверяет
+точный booted simulator UUID и fixture marker приложения. Для каждого template
+он запускает `com.meetspace.ios -uitesting`, сверяет PID/executable и выполняет:
+
+```sh
+xcrun xctrace record --template "$template" --device "$meetspace_profile_udid" \
+  --attach "$pid" --time-limit 15s --output "$trace"
+xcrun xctrace export --input "$trace" --toc --output "$toc"
+```
+
+`--no-prompt` добавляется только при наличии в справке установленного `xctrace`.
+Далее скрипт экспортирует обнаруженные CPU/allocation tables, проверяет PID в TOC
+и считает фактические строки XML. Сохраняются `.trace`, inventory, stdout/stderr,
+точные argv/exit codes, TOC, таблицы и `receipt.json`; их загружает общий artifact
+`results-iPhone18`. Если setup шага не дошёл до создания receipt, это тоже требует
+разбора лога, а не трактуется как успешная запись.
+
+Receipt различает `RECORDED`, `BLOCKED` и `FAIL`. Непустая trace сама по себе
+недостаточна: отсутствие подходящей schema или строк получает `NO_RECOGNIZED_SCHEMA`
+либо `NO_RECORDS`; неуспешные record/export сохраняют ошибку. Даже `RECORDED` с
+`measurementGate=NONEMPTY_TABLES_REVIEW_REQUIRED` означает только получение данных,
+которые ещё нужно изучить, а не performance PASS. У CI8 фактический итог —
+**BLOCKED**, у CI10 — **FAIL** до capture, у нового варианта — **PENDING**;
+CPU/RSS числа не заявлены.
+
+Это короткая запись уже запущенного Debug fixture UI в покое. Она не измеряет
+launch latency, 30 звонков, непрерывный звонок, ReplayKit, reconnect, transfer,
+Leaks, Release performance или энергию физического iPhone. Эти границы сохраняются
+даже при успешном attach. Отсутствие локального `xctrace` также не закрывает
+доступную CI-проверку внешним статусом BLOCKED.
 
 Для физической приёмки после появления signing/device/HTTPS deployment:
 

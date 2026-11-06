@@ -1,0 +1,11 @@
+{
+  "device": "iPhone SE (3rd generation)",
+  "runtime": [
+    18,
+    6
+  ],
+  "udid": "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+  "scope": "audit",
+  "preferredDeviceMatched": true,
+  "xcode": "Xcode 26.3\nBuild version 17C529\n"
+}

@@ -1,0 +1,72 @@
+{
+  "derivedReview": true,
+  "run": "42270899385",
+  "sourceSHA": "a052abdacaf49d05a68b17725dda0e4b096bb86e",
+  "screen": "messages",
+  "failedCategory": "dynamicType",
+  "categoryBasis": "Sixth engine invocation after messages PNG; first five calls completed. Maps to tested source ordered category array. Old harness did not explicitly log category names.",
+  "enginePassesUTC": [
+    {
+      "category": "contrast",
+      "start": "18:39:51.998",
+      "response": "18:39:52.775",
+      "error": null
+    },
+    {
+      "category": "elementDetection",
+      "start": "18:39:55.203",
+      "response": "18:39:56.488",
+      "error": null
+    },
+    {
+      "category": "hitRegion",
+      "start": "18:39:57.182",
+      "response": "18:39:57.454",
+      "error": null
+    },
+    {
+      "category": "sufficientElementDescription",
+      "start": "18:39:58.123",
+      "response": "18:39:58.547",
+      "error": null
+    },
+    {
+      "category": "trait",
+      "start": "18:39:59.233",
+      "response": "18:39:59.589",
+      "error": null
+    },
+    {
+      "category": "dynamicType",
+      "start": "18:40:00.291",
+      "response": "18:40:15.318",
+      "error": {
+        "domain": "com.apple.xcode.xctest.accessibilityAudit",
+        "code": -56
+      },
+      "reportedElapsedSeconds": 15.027
+    }
+  ],
+  "failedPassFindings": 0,
+  "failedPassCallbackElementQueries": 0,
+  "callbackCountStatus": "Inferred from raw and diagnostic sequence, not a native counter in this tested source",
+  "rawFindingsTotal": 2,
+  "overallJob": {
+    "passed": 13,
+    "failed": 2,
+    "total": 15
+  },
+  "videoSource": {
+    "ZIPMember": "iPad18-screenshots/3BFABE0B-5192-4356-9D9B-6D60959EA3FE.mp4",
+    "sha256": "51227a037b9a2e7b492aaf953636f0a16bfdb35c5d30d19c328046aa28f2ed56",
+    "assetDurationSeconds": 183.985,
+    "copiedFrames": 4,
+    "frameTimeSemantics": "Use actualVideoPresentationSeconds, not the requested seek time. Recording is sparse. Absolute wall-clock alignment has not been independently calibrated."
+  },
+  "visualObservations": [
+    "No Passwords sheet visible in reviewed pre/during/post-timeout frames.",
+    "Later frames actual174.848333/177.541667 show larger heading and conversation text than actual158.165.",
+    "A 2-second sleep is not evidence of completed trait restoration; no longer universal wait interval is established."
+  ],
+  "recoveryStatus": "CI14 candidate04f70a3 adds one retry for two exact categories with exact NSError and zero callbacks/findings. Native recovery result PENDING."
+}

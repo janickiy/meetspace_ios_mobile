@@ -1,0 +1,63 @@
+{
+  "runID": 42252310226,
+  "sourceCommit": "c88fe5adebe7395b4f43ab51b6c6369aa95d09f5",
+  "label": "iPhone18",
+  "result": "FAIL",
+  "summary": {
+    "passedTests": 13,
+    "failedTests": 2,
+    "skippedTests": 0,
+    "totalTestCount": 15
+  },
+  "failedTestNames": [
+    "testAccessibilityStage08CoreScreens()",
+    "testStage08AccountDeletionRequiresPasswordAndConfirmation()"
+  ],
+  "sourceSummary": {
+    "attachment": "iPhone18-summary.json",
+    "sha256": "22b008f49b9d698605dcb7b8ac1dfe7177b24478330c9b2862a66c46b337a433"
+  },
+  "sourceAppOutput": {
+    "attachment": "iPhone18-diagnostics/0_Test_iPhone SE (3rd generation)_Diagnostics/MeetSpaceUITests-F6B7695E-C1CF-4C8B-A9A0-351CFCC334A9-Configuration-Test Scheme Action-Iteration-1/MeetSpaceUITests-597FFA79-B115-42A3-B26E-B6BAA2133E13/StandardOutputAndStandardError-com.meetspace.ios.txt",
+    "sha256": "8da95b35916683b0df5bafaea460c3ed68988654e21f8656543c27b32c51ae7c"
+  },
+  "sourceVideo": {
+    "attachment": "C98839AF-279F-4997-A83C-134256513517.mp4",
+    "sha256": "e7a8e37974b8bfdd2a2b346c6a87a9c6e8e638a34da3d51528d4e099454ab95b",
+    "startTimestamp": 1793983358.329
+  },
+  "retainedFiles": [
+    {
+      "file": "attempt07/iPhone18-keyboard-and-masked-field.txt",
+      "sha256": "440c5659dced1552bb27c7bb2d000ab737c1adecb0fb3e9427bed77acb4c2ccc"
+    },
+    {
+      "file": "attempt07/iPhone18-keyboard-before-input.png",
+      "sha256": "27d186fcc0e96e68bbad9148e1444d82b524fa7602c1ed25d12828b11b40345b"
+    },
+    {
+      "file": "attempt07/iPhone18-trace.txt",
+      "sha256": "125b684e817354e70b58b430b08c4a55fbf4ff5f33f5a18074a44a87d2405f98"
+    }
+  ],
+  "videoFrame": {
+    "file": "attempt07/iPhone18-keyboard-before-input.png",
+    "secondsFromStart": 44.5,
+    "firstRequestedInputSecondsFromStart": 45.182,
+    "method": "AVAssetImageGenerator; zero before/after tolerance; no crop or edit"
+  },
+  "observations": [
+    "Visible keyboard is Russian ЙЦУКЕН. Native next-keyboard control is identifier emoji, label Следующая клавиатура, value English (UK).",
+    "Serialized XCTest events request all 18 known-invalid fixture characters and all 16 known-valid fixture characters independently; no arbitrary actual input is retained.",
+    "Both attempts have only one nonempty stage=edit before submit, classified known-dropped-characters; subsequent submit/prepare/confirm/transport share that category.",
+    "AX secure field has one mask character after each complete input, before confirmation; field becomes empty after confirmation. Category equality is not byte equality."
+  ],
+  "timingUTC": {
+    "firstNonemptyEdit": "16:43:27.377092",
+    "firstRequestedHyphenAttachment": "16:43:27.570",
+    "secondNonemptyEdit": "16:43:50.390399",
+    "secondRequestedHyphenAttachment": "16:43:50.593"
+  },
+  "inference": "The sole nonempty update occurs during the requested hyphen event in both attempts; one retained hyphen is the strongest timing-based explanation. The actual character was not logged, so this is an inference. Native English keyboard/key taps are the next UI-only verification, not a proven fix yet.",
+  "boundary": "Ephemeral GitHub iPhone18 simulator with -uitesting; no actual user password, production account, input bypass, guard relaxation, or physical-device claim."
+}

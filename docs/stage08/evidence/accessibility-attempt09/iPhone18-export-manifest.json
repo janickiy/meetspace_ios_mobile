@@ -1,0 +1,1910 @@
+[
+  {
+    "attachments" : [
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "A5689114-AE7D-4776-A166-99EA8A4FE922.json",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "stage08-actual-font-scaling_0_D8B2F134-F2A7-4AFE-91DE-9F4F12ECBCDF.json",
+        "timestamp" : 1793984949.388
+      }
+    ],
+    "testIdentifier" : "TypographyAccessibilityTests/testBundledFontsScaleInActualUIKitHostingAtAllDynamicTypeSizes()",
+    "testIdentifierURL" : "test://com.apple.xcode/MeetSpace/MeetSpaceTests/TypographyAccessibilityTests/testBundledFontsScaleInActualUIKitHostingAtAllDynamicTypeSizes"
+  },
+  {
+    "attachments" : [
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "2584AED5-7BE4-490C-80DA-85D3EC88704A.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "stage08-accessibility-profile_0_A5A14CF6-5B40-4566-B093-5C2A4C0389CF.png",
+        "timestamp" : 1793985197.04
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "53D8829B-3B0E-4E38-A211-F2BADDC53051",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "UI Snapshot 2026-11-06 at 05.13.13 PM",
+        "timestamp" : 1793985193.361
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "70890A88-0538-4CA7-B93E-327BF967E5B7",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-11-06 at 05.13.13 PM",
+        "timestamp" : 1793985193.771
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "DF14B717-F074-47AC-B213-AC7290D69ACE.json",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "stage08-audit-progress-messages_0_CA8EB66B-F2D5-4E0D-8BD3-431FE1BFAD5E.json",
+        "timestamp" : 1793985192.401
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "F1ACDE3D-A1FD-471F-837F-D35053530A4D.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "stage08-accessibility-messages_0_D6B3112E-D4CA-4B6E-977E-21AF01430ADA.png",
+        "timestamp" : 1793985144.917
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "CC1D15FB-309B-4C30-ACAA-7E05F67CADC2",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "UI Snapshot 2026-11-06 at 05.12.21 PM",
+        "timestamp" : 1793985141.719
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "4C84C4A6-68B6-448B-9D62-FA17FA4DFC3E",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-11-06 at 05.12.22 PM",
+        "timestamp" : 1793985142.336
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "B5013758-5D05-4F76-AE5F-118056AB5EE7",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "UI Snapshot 2026-11-06 at 05.12.20 PM",
+        "timestamp" : 1793985140.721
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "311F2754-8900-4A2D-81BF-AA5E93ED0CFD",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "UI Snapshot 2026-11-06 at 05.11.54 PM",
+        "timestamp" : 1793985114.889
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "945CCBFA-FAA6-44E1-B7AB-6C4CF57CB1A2",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-11-06 at 05.11.56 PM",
+        "timestamp" : 1793985116.806
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "9FEBF733-BE1A-4EFC-98F6-B03F375B3A08",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "UI Snapshot 2026-11-06 at 05.11.53 PM",
+        "timestamp" : 1793985113.029
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "05EE9700-E6B1-4C67-972B-E46FEF28520D",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-11-06 at 05.11.53 PM",
+        "timestamp" : 1793985113.481
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "4EEC6BD6-0357-450B-9746-2425421DBA2A",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "UI Snapshot 2026-11-06 at 05.11.49 PM",
+        "timestamp" : 1793985109.379
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "26CC70E4-2D0C-4A02-819F-C1FD0AF8E59B",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-11-06 at 05.11.49 PM",
+        "timestamp" : 1793985109.977
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "979BAA23-66CC-4D3F-BEB2-EBE4AF4B0CB7",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "UI Snapshot 2026-11-06 at 05.11.46 PM",
+        "timestamp" : 1793985106.747
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "F2CBC8F5-BEC6-40A2-9B41-368DD295BE52",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-11-06 at 05.11.47 PM",
+        "timestamp" : 1793985107.194
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "20C1ADD8-58A3-40C2-A361-5DBA99264E17",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "UI Snapshot 2026-11-06 at 05.11.43 PM",
+        "timestamp" : 1793985103.295
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "9457DDA3-2480-44F3-B001-4AA00B4302B3",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-11-06 at 05.11.43 PM",
+        "timestamp" : 1793985103.999
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "8330BF17-31BE-41FB-89BB-C8EBD8F2D325",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "UI Snapshot 2026-11-06 at 05.11.37 PM",
+        "timestamp" : 1793985097.186
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "D49CB816-7BD5-4C29-9136-78A70D52B7E3",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-11-06 at 05.11.39 PM",
+        "timestamp" : 1793985099.007
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "37544409-DCDF-4101-A609-CCE5C12B818F",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "UI Snapshot 2026-11-06 at 05.11.33 PM",
+        "timestamp" : 1793985093.633
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "C187D0BC-3B00-49A5-9E6E-0F270A9DDCA3",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-11-06 at 05.11.34 PM",
+        "timestamp" : 1793985094.249
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "9C07F436-8C67-4003-80FC-9501DA1885C6",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "UI Snapshot 2026-11-06 at 05.11.29 PM",
+        "timestamp" : 1793985089.793
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "5AFAB162-C38A-4D83-973E-121382C20AD2",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-11-06 at 05.11.30 PM",
+        "timestamp" : 1793985090.232
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "0A34E12D-D3B6-41BE-9284-03582B4F6F1D",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "UI Snapshot 2026-11-06 at 05.11.26 PM",
+        "timestamp" : 1793985086
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "8ECAB977-ECB9-41BF-A5FC-AC55C33A44CA",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-11-06 at 05.11.26 PM",
+        "timestamp" : 1793985086.358
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "067B42AC-EA94-4A61-BF7A-463C8CB38CB2",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "UI Snapshot 2026-11-06 at 05.11.19 PM",
+        "timestamp" : 1793985079.278
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "0F05E745-9496-4902-B21F-869D784C8008",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-11-06 at 05.11.20 PM",
+        "timestamp" : 1793985080.191
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "9FE8F18C-CD20-4AF4-9142-913FEBE7587E",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "UI Snapshot 2026-11-06 at 05.11.13 PM",
+        "timestamp" : 1793985073.504
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "25DCFE29-FA29-42D3-BE06-FE6C431BBAFD",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-11-06 at 05.11.13 PM",
+        "timestamp" : 1793985073.911
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "B03CC922-F827-4D66-9DCF-C24222BED0B7",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "UI Snapshot 2026-11-06 at 05.10.59 PM",
+        "timestamp" : 1793985059.215
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "7673B0A3-2AC7-4977-84A0-C7D7D87A67B8",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-11-06 at 05.10.59 PM",
+        "timestamp" : 1793985059.837
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "07454782-6C62-4AA9-810E-9889519D5C7E",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "UI Snapshot 2026-11-06 at 05.10.49 PM",
+        "timestamp" : 1793985049.979
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "442AF4AD-7B8D-4748-8B40-914A233BED87",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-11-06 at 05.10.50 PM",
+        "timestamp" : 1793985050.327
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "03832721-F520-4E70-A5AA-60C614C04080",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "UI Snapshot 2026-11-06 at 05.10.47 PM",
+        "timestamp" : 1793985047.99
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "28AA2F4B-0C95-4785-8122-BE1859AAA32B",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-11-06 at 05.10.48 PM",
+        "timestamp" : 1793985048.464
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "DAEEC8C7-0A80-48DB-8AC7-6B547267F577.json",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "stage08-audit-progress-welcome_0_85FD1625-37B6-4D40-B3BD-F1BDB18B55B1.json",
+        "timestamp" : 1793985030.295
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "3872A0DA-200E-4410-93E0-5803C772E990.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "stage08-accessibility-welcome_0_A81894E1-84AC-467A-9050-0834F6BC1E33.png",
+        "timestamp" : 1793985007.846
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "A7535EE9-409C-45F1-8ECD-B10C7545BCEE.mp4",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Screen Recording 2026-11-06 at 05.09.54 PM.mp4",
+        "timestamp" : 1793984994.009
+      }
+    ],
+    "testIdentifier" : "FoundationUITests/testAccessibilityStage08CoreScreens()",
+    "testIdentifierURL" : "test://com.apple.xcode/MeetSpace/MeetSpaceUITests/FoundationUITests/testAccessibilityStage08CoreScreens"
+  },
+  {
+    "attachments" : [
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "244FB202-F513-4C29-8149-4A70492AD5A0.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "stage08-large-text-settings_0_EFF4C399-DADF-4242-BECC-F43D5CDB158E.png",
+        "timestamp" : 1793985692.312
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "6198BD6B-E270-4936-ABEA-F3AF148B89E8.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "stage08-large-text-folders_0_E19A8094-EDE5-46BC-8E9E-4747F5CE9234.png",
+        "timestamp" : 1793985672.081
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "8B0E3B35-0B30-4FA0-A9A6-216DF680A06C.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "stage08-large-text-recordings-footer_0_07D0CFF7-EC8E-4C80-B5AC-F85CF5B1CD61.png",
+        "timestamp" : 1793985615.978
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "360F3A35-9027-48DC-901D-F86BF09DD48A.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "stage08-large-text-recording-4_0_4921AD57-95FD-465F-87BC-3FE6E03C6203.png",
+        "timestamp" : 1793985605.701
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "89BC6FE1-F550-43A9-AB7C-A247FE298A68.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "stage08-large-text-recording-3_0_B8113558-C019-43B4-80D0-3C697083680D.png",
+        "timestamp" : 1793985594.524
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "02AAA693-8A5A-426D-A1D5-BB5C39604842.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "stage08-large-text-recording-2_0_837410DE-97F8-48E8-A009-6324F1D9CD4A.png",
+        "timestamp" : 1793985584.828
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "CD9F1E58-0BC0-47F2-87A5-5794E0029A72.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "stage08-large-text-recording-1_0_AB858A7C-3CA4-414B-B0C2-17F7723E8670.png",
+        "timestamp" : 1793985573.938
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "0EB2BF04-8841-4E91-8CA7-690D0DAA47C7.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "stage08-large-text-recordings_0_009C737B-147C-4326-B79F-D95587AEFACF.png",
+        "timestamp" : 1793985562.866
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "20E91E28-8FDE-4B75-8D4C-0C364ADC2632.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "stage08-large-text-calendar-hour-18_0_E284356A-1A7E-470F-B35A-2B4C7FD56663.png",
+        "timestamp" : 1793985551.122
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "233BA508-7A4F-41AB-9945-7A9AAFDF1D05.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "stage08-large-text-calendar-hour-12_0_FCB443B5-A111-4C28-BA4E-73AFF71BD39B.png",
+        "timestamp" : 1793985529.221
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "68AAEC1C-C59E-432D-8A47-75B8E7C56522.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "stage08-large-text-calendar-hour-9_0_09FFEB6B-C0BA-4586-83F2-4BEF36A31EEF.png",
+        "timestamp" : 1793985510.988
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "9306DC59-1D25-407B-8E54-8D99FC2080F5.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "stage08-large-text-calendar_0_C6DF2783-DF70-4F14-8CB4-119B53EF0064.png",
+        "timestamp" : 1793985474.647
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "48DF1B16-B353-4C47-8A07-0D320983F5B2.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "stage08-large-text-profile_0_5B2A9006-733E-43B0-B0B1-9B448DA88A1A.png",
+        "timestamp" : 1793985456.647
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "EF1229FD-E6A5-49AF-8A9D-495A9B5AA8AD.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "stage08-large-text-messages-conversation_0_6CB489D0-D628-4BA0-8EB8-C312D3577F7E.png",
+        "timestamp" : 1793985453.516
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "37EFECE3-925D-4072-89E7-FBB3EF7B2551.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "stage08-large-text-messages_0_3BB720A5-2319-4BA3-ADD2-C3522A650C14.png",
+        "timestamp" : 1793985445.059
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "C871DE6D-887D-4BD6-9990-46BB8635181B.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "stage08-large-text-welcome_0_8F2FA910-CD8E-4940-8934-E4A9E1EAB6BB.png",
+        "timestamp" : 1793985302.654
+      }
+    ],
+    "testIdentifier" : "FoundationUITests/testAccessibilityStage08LargeTextLiveFlow()",
+    "testIdentifierURL" : "test://com.apple.xcode/MeetSpace/MeetSpaceUITests/FoundationUITests/testAccessibilityStage08LargeTextLiveFlow"
+  },
+  {
+    "attachments" : [
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "D071D80B-58F9-42E2-BEB4-8F8099F8F560.txt",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Debug description for `\"conferenceCamera\" Button`_0_F257D388-F90C-4764-840C-AA59E1EDD3AF.txt",
+        "timestamp" : 1793985851.65
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "C8620A0C-4CB8-49E7-93DE-E40971706558",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "UI Snapshot 2026-11-06 at 05.24.11 PM",
+        "timestamp" : 1793985851.65
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "456086BA-3224-45B7-A77F-B0823C0BEC53",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "UI Snapshot 2026-11-06 at 05.24.10 PM",
+        "timestamp" : 1793985850.607
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "12D57615-97F4-4729-A334-5BC862A0B62B.txt",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Debug description for `\"conferenceCamera\" Button`_0_5C6CA215-5849-4EA1-9623-A65EF7C44497.txt",
+        "timestamp" : 1793985849.364
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "6017FE7F-882B-4D55-A5B7-11C5515548CC",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "UI Snapshot 2026-11-06 at 05.24.09 PM",
+        "timestamp" : 1793985849.365
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "68A98207-F709-4B7F-B03E-BECDAFD70ED7",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "UI Snapshot 2026-11-06 at 05.24.07 PM",
+        "timestamp" : 1793985847.551
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "8C4DEEB7-113B-488A-9330-5FFE72EDC4B0.txt",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Debug description for `\"conferenceCamera\" Button`_0_B55DE95A-A05C-466E-B96C-3B938B0B19B9.txt",
+        "timestamp" : 1793985847.279
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "FBB24AD8-06CD-48D0-8604-084AC19E781E",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "UI Snapshot 2026-11-06 at 05.24.07 PM",
+        "timestamp" : 1793985847.279
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "7E8927CB-9F2F-4017-AD88-021023F1DFFD",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "UI Snapshot 2026-11-06 at 05.24.05 PM",
+        "timestamp" : 1793985845.601
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "4FFFB455-1F73-4284-9BB9-9454F77BAB05.txt",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Debug description for `\"conferenceCamera\" Button`_0_6B8AE1D8-5C4E-4D2C-B1C9-AC004BCC2292.txt",
+        "timestamp" : 1793985844.43
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "232C216B-9AB3-4191-8947-DBF2D909107A",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "UI Snapshot 2026-11-06 at 05.24.04 PM",
+        "timestamp" : 1793985844.431
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "4B8F6377-496D-46E4-A1EF-034B86CD4680",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "UI Snapshot 2026-11-06 at 05.24.02 PM",
+        "timestamp" : 1793985842.549
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "AE396721-F3AF-4212-ADFA-68EEF19FE494",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "UI Snapshot 2026-11-06 at 05.24.00 PM",
+        "timestamp" : 1793985840.637
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "98904305-6883-4514-9617-04BFEA7BA036",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-11-06 at 05.24.01 PM",
+        "timestamp" : 1793985841.35
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "8BED6437-9A94-4CE8-AF8A-64CDF729A0E5",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "UI Snapshot 2026-11-06 at 05.23.58 PM",
+        "timestamp" : 1793985838.262
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "535CAFF2-9524-48EB-A078-5920CB967642",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-11-06 at 05.23.58 PM",
+        "timestamp" : 1793985838.617
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "F9374230-201C-4456-8532-C6A246798FA4.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "stage04-meeting-chat_0_31683397-62E5-4A11-A049-73B9D4D2B721.png",
+        "timestamp" : 1793985830.365
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "0ECBE07F-FFDB-457B-BEA2-C85C4E3D0AC3",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "UI Snapshot 2026-11-06 at 05.23.47 PM",
+        "timestamp" : 1793985827.557
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "D7A8F7C2-7C41-469D-8C72-75441C85E454",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-11-06 at 05.23.47 PM",
+        "timestamp" : 1793985827.912
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "B59D7C9A-A819-41ED-94F4-A3B116A10742",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "UI Snapshot 2026-11-06 at 05.23.45 PM",
+        "timestamp" : 1793985825.946
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "5C54CC0F-0BF4-44A3-82A8-FDDF1B2E1839",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-11-06 at 05.23.46 PM",
+        "timestamp" : 1793985826.453
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "5954AC9A-1FE1-43DA-B8D7-22FA24F97FE7",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "UI Snapshot 2026-11-06 at 05.23.43 PM",
+        "timestamp" : 1793985823.195
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "9FB0EFB3-A3AB-4FD4-8E9C-6A1F3B973571",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-11-06 at 05.23.43 PM",
+        "timestamp" : 1793985823.545
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "B208D8BE-430D-46D3-9812-B69CFE0B8E41",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "UI Snapshot 2026-11-06 at 05.23.39 PM",
+        "timestamp" : 1793985819.723
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "4B652AF4-F8B5-4564-889C-F0F97E4FBF2C",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-11-06 at 05.23.40 PM",
+        "timestamp" : 1793985820.074
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "C489DE93-1E30-44B8-B03E-F1EBD43C45D5",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "UI Snapshot 2026-11-06 at 05.23.38 PM",
+        "timestamp" : 1793985818.04
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "6C8589FD-AAC2-4881-8BF2-5EDF030E71A0",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-11-06 at 05.23.38 PM",
+        "timestamp" : 1793985818.433
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "E816C385-3749-402D-90ED-E7083D3F6893.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "stage04-participants_0_4DE53F68-0332-415C-BE28-8DF50555E5C3.png",
+        "timestamp" : 1793985815.937
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "DFE668CE-7A73-404D-80E1-7FDF4B70F419",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "UI Snapshot 2026-11-06 at 05.23.32 PM",
+        "timestamp" : 1793985812.511
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "F0565554-C3B8-4908-BB16-696F59B5B73B",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-11-06 at 05.23.32 PM",
+        "timestamp" : 1793985812.867
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "4500E401-3E5C-4A88-AF5E-D8BA47921487.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "stage04-connected_0_3F626603-1DBD-4457-9A7D-97820025964A.png",
+        "timestamp" : 1793985812.066
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "B6538BC0-E24E-4834-B81E-FA499B4120D4",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "UI Snapshot 2026-11-06 at 05.23.30 PM",
+        "timestamp" : 1793985810.221
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "1F3205C0-137F-43AD-9CF6-67CD00B1617C",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "UI Snapshot 2026-11-06 at 05.23.28 PM",
+        "timestamp" : 1793985808.587
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "9069FC5F-009F-46C7-9EA6-39E8684D3ECC",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-11-06 at 05.23.28 PM",
+        "timestamp" : 1793985808.954
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "56AB1FEF-94EF-4933-91BA-6982A307A331",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "UI Snapshot 2026-11-06 at 05.23.28 PM",
+        "timestamp" : 1793985808.053
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "DAF8BA0A-FDEE-404A-B317-6F4A448AE517",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "UI Snapshot 2026-11-06 at 05.23.26 PM",
+        "timestamp" : 1793985806.454
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "714DA27E-93D2-4336-BBAC-1CA0177B5145",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-11-06 at 05.23.26 PM",
+        "timestamp" : 1793985806.812
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "3A5F0453-6A58-4133-A38D-3F95A93986B6",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "UI Snapshot 2026-11-06 at 05.23.25 PM",
+        "timestamp" : 1793985805.817
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "E8591000-98A8-4A19-9A50-547A8F26EF48",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "UI Snapshot 2026-11-06 at 05.23.24 PM",
+        "timestamp" : 1793985804.161
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "521B4C9F-62AA-4820-9CEC-2B4DFFBDDFA0",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-11-06 at 05.23.24 PM",
+        "timestamp" : 1793985804.547
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "3F8121C6-7F39-4548-A465-C371635AE387",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "UI Snapshot 2026-11-06 at 05.23.23 PM",
+        "timestamp" : 1793985803.671
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "436287AA-EF57-489D-8530-CDFE04826DA6",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "UI Snapshot 2026-11-06 at 05.23.22 PM",
+        "timestamp" : 1793985802.225
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "ECDA7770-5F76-467B-A624-81F13D5BD8FA",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "UI Snapshot 2026-11-06 at 05.23.20 PM",
+        "timestamp" : 1793985800.537
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "FC0872DD-5E29-4D82-9EBD-17BB2FB2AB4D",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "UI Snapshot 2026-11-06 at 05.23.17 PM",
+        "timestamp" : 1793985797.558
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "5EB288A1-3F2E-4698-91D0-8C4B9464914C",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-11-06 at 05.23.17 PM",
+        "timestamp" : 1793985797.904
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "027C362C-8FA6-427D-BBAB-C7937DF82A58.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "stage04-prejoin_0_B9333535-F81F-492B-921F-820C26E88EDD.png",
+        "timestamp" : 1793985797.005
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "5902F2AD-C1A2-4996-8684-12100EA0B528",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "UI Snapshot 2026-11-06 at 05.23.12 PM",
+        "timestamp" : 1793985792.733
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "F3FF794A-5E21-441D-9DFB-0E52D1EDC21C",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-11-06 at 05.23.13 PM",
+        "timestamp" : 1793985793.151
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "A9B82B4C-9DA0-4960-8583-FA6C23FF1F33",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "UI Snapshot 2026-11-06 at 05.23.07 PM",
+        "timestamp" : 1793985787.118
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "1EE12CD6-2A76-45EB-9E01-9EAE5A593455",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-11-06 at 05.23.07 PM",
+        "timestamp" : 1793985787.635
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "2B5E72DA-B8D7-41EC-B606-A2F856219228",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "UI Snapshot 2026-11-06 at 05.23.01 PM",
+        "timestamp" : 1793985781.302
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "26C40FE4-FAAE-4DF4-8890-8AD6FD0545E0",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-11-06 at 05.23.01 PM",
+        "timestamp" : 1793985781.653
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "48BF55CC-972A-4F58-BD01-0A1217086AEA",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "UI Snapshot 2026-11-06 at 05.22.54 PM",
+        "timestamp" : 1793985774.788
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "C183793C-ECAC-49D6-B795-C36FEA0460F3",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-11-06 at 05.22.55 PM",
+        "timestamp" : 1793985775.178
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "5FFD8394-9790-4B4E-BFDE-D0DE82560736",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "UI Snapshot 2026-11-06 at 05.22.52 PM",
+        "timestamp" : 1793985772.417
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "34065600-D66F-4AA3-BF88-5E0C9C8A2FA8",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-11-06 at 05.22.52 PM",
+        "timestamp" : 1793985772.771
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "8F9A4C64-E4BC-4524-8C76-1232C98BBDFB",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "UI Snapshot 2026-11-06 at 05.22.50 PM",
+        "timestamp" : 1793985770.84
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "CA788076-71F5-4276-A7FE-DB635C36275E",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "UI Snapshot 2026-11-06 at 05.22.29 PM",
+        "timestamp" : 1793985749.689
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "40B91702-1B29-4E14-97C4-D4DBDFDFD43C",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-11-06 at 05.22.30 PM",
+        "timestamp" : 1793985750.503
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "7813FBFD-DBA3-4427-9D80-C43F093227F0",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "UI Snapshot 2026-11-06 at 05.22.28 PM",
+        "timestamp" : 1793985748.426
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "A7C64291-A3C4-4F44-BCE4-7EEA61372B51",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-11-06 at 05.22.28 PM",
+        "timestamp" : 1793985748.901
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "E72A215F-BD6B-49A5-94F1-7AF4D341E4EB",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "UI Snapshot 2026-11-06 at 05.22.26 PM",
+        "timestamp" : 1793985746.974
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "2D536173-57B2-4905-9B6A-B560FEF9C5CD",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-11-06 at 05.22.27 PM",
+        "timestamp" : 1793985747.51
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "A5A7305A-0531-4967-8FF8-AA4B7B838FA4",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "UI Snapshot 2026-11-06 at 05.22.25 PM",
+        "timestamp" : 1793985745.473
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "65529F92-92E5-4F40-91EE-BC777C527EE2",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-11-06 at 05.22.25 PM",
+        "timestamp" : 1793985745.962
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "FC8AAD23-99BF-4D08-B380-6AB76F129F93",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-11-06 at 05.22.24 PM",
+        "timestamp" : 1793985744.472
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "F2B74F61-314A-49AA-8C90-C7DD10E28CCF",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-11-06 at 05.22.21 PM",
+        "timestamp" : 1793985741.798
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "F0A5FBE0-B793-488E-AAA4-1A8689C8F06B",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-11-06 at 05.22.18 PM",
+        "timestamp" : 1793985738.538
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "D138A4C6-FEC8-472C-A3E5-D46556ECF53D",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-11-06 at 05.22.15 PM",
+        "timestamp" : 1793985735.764
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "AAECDD83-37C4-4207-99F5-03F546B99F4A",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-11-06 at 05.22.13 PM",
+        "timestamp" : 1793985733.842
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "26F92285-9050-48F5-BF8D-D8E439D70344",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-11-06 at 05.22.09 PM",
+        "timestamp" : 1793985729.253
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "E55B6A1C-20EE-46A2-B166-F43A79F47B43",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-11-06 at 05.22.04 PM",
+        "timestamp" : 1793985724.721
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "A86BD0F7-5CC4-430F-89E0-7DD239569756",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-11-06 at 05.21.59 PM",
+        "timestamp" : 1793985719.91
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "01FD886E-AE94-44B4-96E6-106CB23FA547",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-11-06 at 05.21.55 PM",
+        "timestamp" : 1793985715.671
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "E84ADE59-9237-44E3-A792-A57BE0C07A1E",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-11-06 at 05.21.53 PM",
+        "timestamp" : 1793985713.956
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "E940B135-8B2A-4CCF-AFD5-FA05EA387DFB.mp4",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Screen Recording 2026-11-06 at 05.21.34 PM.mp4",
+        "timestamp" : 1793985694.271
+      }
+    ],
+    "testIdentifier" : "FoundationUITests/testConferenceCreateMediaControlsChatAndLeave()",
+    "testIdentifierURL" : "test://com.apple.xcode/MeetSpace/MeetSpaceUITests/FoundationUITests/testConferenceCreateMediaControlsChatAndLeave"
+  },
+  {
+    "attachments" : [
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "EA3F095B-6F3A-48A3-842E-6BD821513A15.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "appearance-dark-large-text_0_F23B750C-5DB7-41C3-989E-976203967003.png",
+        "timestamp" : 1793985878.301
+      }
+    ],
+    "testIdentifier" : "FoundationUITests/testLargeTextNavigationAndAppearance()",
+    "testIdentifierURL" : "test://com.apple.xcode/MeetSpace/MeetSpaceUITests/FoundationUITests/testLargeTextNavigationAndAppearance"
+  },
+  {
+    "attachments" : [
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "26D13227-F5AF-48BB-93EE-2E8838D05EEA.txt",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "App UI hierarchy for com.meetspace_0_3424C749-9296-4A69-BD8C-761B6F61A856.ios",
+        "timestamp" : 1793986038.265
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "56DC8E84-EF42-4E6A-B629-CA853C0A80C2",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "UI Snapshot 2026-11-06 at 05.27.18 PM",
+        "timestamp" : 1793986038.265
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "9150CE58-43A2-409A-90D2-4DD792B1B730.txt",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Debug description for `Button (First Match)`_0_6A5E673C-A90B-4AB1-A2B8-53E89F82AE2E.txt",
+        "timestamp" : 1793986029.79
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "B1D1E1B0-4D1F-47D1-B00B-858A410B2BEC.txt",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Debug description for `Button (First Match)`_0_E65610CB-F2CC-4841-A8A1-53D9B4C173B9.txt",
+        "timestamp" : 1793986028.258
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "5E45CBDC-32D1-4A0F-AE2A-2BDA807CAF67",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "UI Snapshot 2026-11-06 at 05.27.04 PM",
+        "timestamp" : 1793986024.123
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "FAED7015-B42B-435E-B354-E0488DD3703E",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-11-06 at 05.27.04 PM",
+        "timestamp" : 1793986024.502
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "3B37EF9D-21A4-4956-80E9-8D9F8337B1A9",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "UI Snapshot 2026-11-06 at 05.27.01 PM",
+        "timestamp" : 1793986021.148
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "95C2E969-7549-4E71-B66E-21DC346858E2",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-11-06 at 05.27.01 PM",
+        "timestamp" : 1793986021.54
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "6B599A54-10D8-4546-AD32-447F34EB7B93",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "UI Snapshot 2026-11-06 at 05.26.58 PM",
+        "timestamp" : 1793986018.261
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "1AA92557-D3F8-442F-8236-4A96EE19C986",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-11-06 at 05.26.58 PM",
+        "timestamp" : 1793986018.61
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "13EAF2FC-7765-4CEF-BD2C-3D53070C85EA",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "UI Snapshot 2026-11-06 at 05.26.55 PM",
+        "timestamp" : 1793986015.524
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "512BBA94-44BD-42A0-8032-5F1E571E98F9",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-11-06 at 05.26.55 PM",
+        "timestamp" : 1793986015.876
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "87D3012E-540B-48E1-9AF5-A79C97613CB9",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "UI Snapshot 2026-11-06 at 05.26.52 PM",
+        "timestamp" : 1793986012.922
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "C94058ED-832B-43BF-B9AE-2F3023E02B79",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-11-06 at 05.26.53 PM",
+        "timestamp" : 1793986013.281
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "129A32BB-E5A8-4213-851E-76611779169B",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "UI Snapshot 2026-11-06 at 05.26.50 PM",
+        "timestamp" : 1793986010.229
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "77FB3FAA-F16B-4B94-9916-5682BF0892C7",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-11-06 at 05.26.50 PM",
+        "timestamp" : 1793986010.586
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "7BEE25CB-E5EA-4E00-AC7E-929EF102F5E6",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "UI Snapshot 2026-11-06 at 05.26.46 PM",
+        "timestamp" : 1793986006.909
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "0EF0DF8B-2948-4845-858F-A174454B1F89",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-11-06 at 05.26.47 PM",
+        "timestamp" : 1793986007.254
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "214C99AB-E277-4812-86C4-27EA67E6C13C",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "UI Snapshot 2026-11-06 at 05.26.44 PM",
+        "timestamp" : 1793986004.133
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "73628987-AF7E-47FE-816C-50A3FD76813D",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-11-06 at 05.26.44 PM",
+        "timestamp" : 1793986004.482
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "0CAA1B2C-B500-42BE-8C33-DB8E1A56B0DE",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "UI Snapshot 2026-11-06 at 05.26.41 PM",
+        "timestamp" : 1793986001.448
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "A0721B74-2DB4-4545-A592-C614192B900C",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-11-06 at 05.26.41 PM",
+        "timestamp" : 1793986001.834
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "C76D231E-F316-418A-9C3A-32DF1B1FD968",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "UI Snapshot 2026-11-06 at 05.26.38 PM",
+        "timestamp" : 1793985998.929
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "5008DA53-E613-42E2-9023-D67E86AF60D8",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-11-06 at 05.26.39 PM",
+        "timestamp" : 1793985999.274
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "E6DA698C-A587-4510-A931-B6964690DFD3",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "UI Snapshot 2026-11-06 at 05.26.36 PM",
+        "timestamp" : 1793985996.382
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "6B08526F-4B1A-4237-8B88-D3752C94C5C4",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-11-06 at 05.26.36 PM",
+        "timestamp" : 1793985996.718
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "B2110D26-CDFC-4100-B35D-88B30F13F067",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "UI Snapshot 2026-11-06 at 05.26.34 PM",
+        "timestamp" : 1793985994.11
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "F0A9EBD6-F999-4509-B2A5-18CD8BF59922",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-11-06 at 05.26.34 PM",
+        "timestamp" : 1793985994.449
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "20E4CBC7-8281-431C-8E03-B04AAF96E9C3",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "UI Snapshot 2026-11-06 at 05.26.31 PM",
+        "timestamp" : 1793985991.792
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "77A036FE-4413-4614-AF7A-34A10A266CF2",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-11-06 at 05.26.32 PM",
+        "timestamp" : 1793985992.186
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "7E3DD660-DB69-426C-BD33-D1E9D6630824",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "UI Snapshot 2026-11-06 at 05.26.29 PM",
+        "timestamp" : 1793985989.653
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "3252A93E-1DF7-42EC-8E9D-D24D5B523B62",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-11-06 at 05.26.29 PM",
+        "timestamp" : 1793985989.978
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "2403AA88-A26A-4276-B71E-8809B5EF4A2C",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "UI Snapshot 2026-11-06 at 05.26.27 PM",
+        "timestamp" : 1793985987.44
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "59DF989E-9190-475E-88DA-37C0E0D9B255",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-11-06 at 05.26.27 PM",
+        "timestamp" : 1793985987.767
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "9A5FC68C-F869-4039-9C6D-423504034FA3",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "UI Snapshot 2026-11-06 at 05.26.25 PM",
+        "timestamp" : 1793985985.001
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "6C8739E2-2D2A-40BC-8E08-94FBB40B83C8",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-11-06 at 05.26.25 PM",
+        "timestamp" : 1793985985.333
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "2BEAB360-7553-4087-8EF4-7FE60D4A1C90",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "UI Snapshot 2026-11-06 at 05.26.22 PM",
+        "timestamp" : 1793985982.555
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "7375090E-303B-4250-A16D-ED742FFB9F80",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-11-06 at 05.26.22 PM",
+        "timestamp" : 1793985982.893
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "376DBC3D-3C57-4FF6-AA07-68233DE21F3A",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "UI Snapshot 2026-11-06 at 05.26.20 PM",
+        "timestamp" : 1793985980.044
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "0FB535E5-5403-411D-B08D-795FD8220F7A",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-11-06 at 05.26.20 PM",
+        "timestamp" : 1793985980.377
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "B7E9B392-2825-4FF2-A4CC-5EB4FFA9950A",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "UI Snapshot 2026-11-06 at 05.26.17 PM",
+        "timestamp" : 1793985977.347
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "5AFB7E5F-401A-4A2D-A0C7-13CAB199BAB8",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-11-06 at 05.26.17 PM",
+        "timestamp" : 1793985977.853
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "C6F46F52-6491-4B28-8FE8-078AD05A7E4C",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "UI Snapshot 2026-11-06 at 05.26.13 PM",
+        "timestamp" : 1793985973.836
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "6A17187F-796F-463D-AD21-4B67E22600D2",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-11-06 at 05.26.14 PM",
+        "timestamp" : 1793985974.168
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "3E98E400-F053-470D-A412-48EFA5BF3155.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "stage08-account-deletion-keyboard-initial_0_264376B2-7665-4D7B-B1D2-1CA67B28A299.png",
+        "timestamp" : 1793985971.892
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "8FF33E49-0301-4424-A97C-58ABE6F7D087",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "UI Snapshot 2026-11-06 at 05.26.07 PM",
+        "timestamp" : 1793985967.299
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "81FF7937-AD1C-43AF-96C7-95852F649B4A",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-11-06 at 05.26.07 PM",
+        "timestamp" : 1793985967.711
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "F149C9D8-B784-43C6-9862-F855AF6AB50F",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "UI Snapshot 2026-11-06 at 05.25.59 PM",
+        "timestamp" : 1793985959.959
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "79B9CE8B-52BE-4215-9380-3A2F8605016F",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-11-06 at 05.26.00 PM",
+        "timestamp" : 1793985960.39
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "931E361F-1A03-4875-825B-C1B784748380",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "UI Snapshot 2026-11-06 at 05.25.56 PM",
+        "timestamp" : 1793985956.273
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "7DD61BD6-78FB-4E06-80F2-BCE54607FE7D",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-11-06 at 05.25.56 PM",
+        "timestamp" : 1793985956.623
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "F7E5AE02-31F3-4CAD-AB63-55A02EE63012",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "UI Snapshot 2026-11-06 at 05.25.48 PM",
+        "timestamp" : 1793985948.936
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "5378FB5A-5B64-49D6-B3FF-1BB1999962E6",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-11-06 at 05.25.52 PM",
+        "timestamp" : 1793985952.252
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "BB0FB93E-F370-4BFE-88AF-E12C56307A57",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "UI Snapshot 2026-11-06 at 05.25.45 PM",
+        "timestamp" : 1793985945.064
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "A78E1942-5587-4ED5-92B4-6CE8428E780F",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-11-06 at 05.25.45 PM",
+        "timestamp" : 1793985945.407
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "9D64FE44-2C28-46D5-B57F-4EC51CED51D8",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "UI Snapshot 2026-11-06 at 05.25.44 PM",
+        "timestamp" : 1793985944.79
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "4F78C916-BFE7-4253-8C71-3035B153721F",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "UI Snapshot 2026-11-06 at 05.25.27 PM",
+        "timestamp" : 1793985927.182
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "688126E3-77CB-4776-8B82-27D070C92A10",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-11-06 at 05.25.27 PM",
+        "timestamp" : 1793985927.786
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "F131C518-9C39-403D-8FEE-819B2560D796",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "UI Snapshot 2026-11-06 at 05.25.25 PM",
+        "timestamp" : 1793985925.985
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "8B06E808-5370-485E-805F-D94DA09C23F1",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-11-06 at 05.25.26 PM",
+        "timestamp" : 1793985926.452
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "96073FF3-EE00-4DBC-B3E6-46579AB6AAEE",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "UI Snapshot 2026-11-06 at 05.25.23 PM",
+        "timestamp" : 1793985923.934
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "D64A149D-824D-440D-9B55-EE65716A7026",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-11-06 at 05.25.24 PM",
+        "timestamp" : 1793985924.482
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "2D188023-D653-4786-9F7B-849F5CDD3F4A",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "UI Snapshot 2026-11-06 at 05.25.22 PM",
+        "timestamp" : 1793985922.892
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "1E086F18-2008-4F88-9A59-CFDE9F998941",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-11-06 at 05.25.23 PM",
+        "timestamp" : 1793985923.341
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "477093A3-EB9B-45A3-8266-878D844063BD",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-11-06 at 05.25.21 PM",
+        "timestamp" : 1793985921.72
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "5D7C9051-21F9-470B-8C96-683C756E0AA6",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-11-06 at 05.25.19 PM",
+        "timestamp" : 1793985919.511
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "74F31D69-27EA-4B68-A6B4-632C838570B7",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-11-06 at 05.25.16 PM",
+        "timestamp" : 1793985916.582
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "A4C7892D-8908-4E3D-B661-020B3CC4BF0A",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-11-06 at 05.25.14 PM",
+        "timestamp" : 1793985914.052
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "1753CD29-C79B-4C43-A93A-5A0504021C98",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-11-06 at 05.25.12 PM",
+        "timestamp" : 1793985912.077
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "6A786107-9BB5-4287-8B40-C31D9042CD38",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-11-06 at 05.25.08 PM",
+        "timestamp" : 1793985908.912
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "73C05F44-E846-449D-BD03-F73A87DDDF08",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-11-06 at 05.25.04 PM",
+        "timestamp" : 1793985904.846
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "931EE4C4-BAFD-46FA-9DEE-21C2D32F34B5",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-11-06 at 05.24.59 PM",
+        "timestamp" : 1793985899.052
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "709DCBDE-88FA-48B3-97F1-C639500ADD52",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-11-06 at 05.24.54 PM",
+        "timestamp" : 1793985894.331
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "CBD09A04-167C-4D1E-A997-946D5FC5AD97",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-11-06 at 05.24.52 PM",
+        "timestamp" : 1793985892.644
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "0DF9CE05-789B-438D-9856-C80C44003B47.mp4",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Screen Recording 2026-11-06 at 05.24.39 PM.mp4",
+        "timestamp" : 1793985879.195
+      }
+    ],
+    "testIdentifier" : "FoundationUITests/testStage08AccountDeletionRequiresPasswordAndConfirmation()",
+    "testIdentifierURL" : "test://com.apple.xcode/MeetSpace/MeetSpaceUITests/FoundationUITests/testStage08AccountDeletionRequiresPasswordAndConfirmation"
+  }
+]

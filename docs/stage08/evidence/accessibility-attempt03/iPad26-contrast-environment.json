@@ -1,0 +1,11 @@
+{
+  "device": "iPad Pro 13-inch (M5)",
+  "runtime": [
+    26,
+    2
+  ],
+  "udid": "73C19119-B10E-4309-872E-C53EF3F0EF27",
+  "scope": "full",
+  "preferredDeviceMatched": true,
+  "xcode": "Xcode 26.3\nBuild version 17C529\n"
+}

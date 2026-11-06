@@ -1,0 +1,369 @@
+{
+  "runID": 42240106296,
+  "sourceCommit": "586bfe875355f930a5d463214bd7860a78ac189e",
+  "conclusion": "failure",
+  "purpose": "Historical failed full audit; source fixes require a new full result",
+  "attachments": [
+    {
+      "file": "iPhone18-font-scaling.json",
+      "sha256": "5d4358d7cba41675258cff65eaee9b6767f793c3a9f524def36258205c534423",
+      "attachment": {
+        "configurationName": "Test Scheme Action",
+        "deviceId": "4F81E126-BE3E-449A-94EC-1FD73DB135B2",
+        "deviceName": "iPhone SE (3rd generation)",
+        "exportedFileName": "01D4F6AB-5DB9-43EC-A92E-17B50A795227.json",
+        "isAssociatedWithFailure": false,
+        "suggestedHumanReadableName": "stage08-actual-font-scaling_0_5C70713C-706B-4AFC-8EB3-339069D02E8B.json",
+        "timestamp": 1793978136.857
+      }
+    },
+    {
+      "file": "iPhone18-issues.json",
+      "sha256": "06cd128a7178d38db96d334e861b8c623fc08a49400059af79e9753e96e42916",
+      "attachment": {
+        "configurationName": "Test Scheme Action",
+        "deviceId": "4F81E126-BE3E-449A-94EC-1FD73DB135B2",
+        "deviceName": "iPhone SE (3rd generation)",
+        "exportedFileName": "90F9CF16-08B0-4826-AFFD-9474BFB50063.json",
+        "isAssociatedWithFailure": false,
+        "suggestedHumanReadableName": "stage08-accessibility-issues_0_B08D5251-9A3F-4B98-BB5A-2020BA39F462.json",
+        "timestamp": 1793978317.542
+      }
+    },
+    {
+      "file": "iPad18-font-scaling.json",
+      "sha256": "5d4358d7cba41675258cff65eaee9b6767f793c3a9f524def36258205c534423",
+      "attachment": {
+        "configurationName": "Test Scheme Action",
+        "deviceId": "2A250684-88E3-4EDB-A21E-B7726B4C69F6",
+        "deviceName": "iPad mini (A17 Pro)",
+        "exportedFileName": "D4BE9EB5-BC87-4640-AAF2-17985DBB4623.json",
+        "isAssociatedWithFailure": false,
+        "suggestedHumanReadableName": "stage08-actual-font-scaling_0_9F10583F-5DEB-45B2-AB37-260D47761417.json",
+        "timestamp": 1793978563.553
+      }
+    },
+    {
+      "file": "iPad18-issues.json",
+      "sha256": "584cef3eac1abec2a236198708ced533412bbd3bc9363f4a263842fbd7b5b425",
+      "attachment": {
+        "configurationName": "Test Scheme Action",
+        "deviceId": "2A250684-88E3-4EDB-A21E-B7726B4C69F6",
+        "deviceName": "iPad mini (A17 Pro)",
+        "exportedFileName": "12717895-C684-4317-A9FA-77C8D1223063.json",
+        "isAssociatedWithFailure": false,
+        "suggestedHumanReadableName": "stage08-accessibility-issues_0_B460572A-F1C1-4D4C-9C38-A05A8DCDABAD.json",
+        "timestamp": 1793978809.286
+      }
+    },
+    {
+      "file": "iPhone26-font-scaling.json",
+      "sha256": "6c4cd6924d034e62013161b71fb5b641c1130a8af7d9117b090ffd69b58f272c",
+      "attachment": {
+        "configurationName": "Test Scheme Action",
+        "deviceId": "A79AB685-CC5B-4589-9565-0DF10B54130F",
+        "deviceName": "iPhone 17 Pro Max",
+        "exportedFileName": "ADF91879-B557-4312-95CD-ACB05C0C9218.json",
+        "isAssociatedWithFailure": false,
+        "suggestedHumanReadableName": "stage08-actual-font-scaling_0_EA713098-1731-452D-AD7C-D2C97D158D86.json",
+        "timestamp": 1793978588.901
+      }
+    },
+    {
+      "file": "iPhone26-issues.json",
+      "sha256": "7d9f5a126b2caf838a1cd71c8e3b0e6b63904f1968eb30d71e27ce5a0cd07868",
+      "attachment": {
+        "configurationName": "Test Scheme Action",
+        "deviceId": "A79AB685-CC5B-4589-9565-0DF10B54130F",
+        "deviceName": "iPhone 17 Pro Max",
+        "exportedFileName": "BC599B6E-604B-4A7F-A3A8-0BFE16A44BBB.json",
+        "isAssociatedWithFailure": false,
+        "suggestedHumanReadableName": "stage08-accessibility-issues_0_D4F6CEEF-1D6C-4FD3-A47A-7BBDDBC9F460.json",
+        "timestamp": 1793978800.689
+      }
+    },
+    {
+      "file": "iPad26-font-scaling.json",
+      "sha256": "5d4358d7cba41675258cff65eaee9b6767f793c3a9f524def36258205c534423",
+      "attachment": {
+        "configurationName": "Test Scheme Action",
+        "deviceId": "73C19119-B10E-4309-872E-C53EF3F0EF27",
+        "deviceName": "iPad Pro 13-inch (M5)",
+        "exportedFileName": "C799FFA4-32D9-4A62-B997-E6BCC20E1FC5.json",
+        "isAssociatedWithFailure": false,
+        "suggestedHumanReadableName": "stage08-actual-font-scaling_0_3B73CACE-4C17-4736-9523-3DEF8F5F605F.json",
+        "timestamp": 1793977940.481
+      }
+    },
+    {
+      "file": "iPad26-issues.json",
+      "sha256": "e1d10f677d57a87b11915242e1199efa5ae4da0347ae6c14ab2707e27d8987f4",
+      "attachment": {
+        "configurationName": "Test Scheme Action",
+        "deviceId": "73C19119-B10E-4309-872E-C53EF3F0EF27",
+        "deviceName": "iPad Pro 13-inch (M5)",
+        "exportedFileName": "B85A794F-1BC1-42FE-96DE-B9D1BAEE5618.json",
+        "isAssociatedWithFailure": false,
+        "suggestedHumanReadableName": "stage08-accessibility-issues_0_EAC54FA4-DD32-4632-8621-8AF48101349A.json",
+        "timestamp": 1793978217.548
+      }
+    }
+  ],
+  "simulators": {
+    "iPhone18": {
+      "devicesAndConfigurations": [
+        {
+          "device": {
+            "architecture": "arm64",
+            "deviceId": "4F81E126-BE3E-449A-94EC-1FD73DB135B2",
+            "deviceName": "iPhone SE (3rd generation)",
+            "modelName": "iPhone SE (3rd generation)",
+            "osBuildNumber": "22G86",
+            "osVersion": "18.6",
+            "platform": "iOS Simulator"
+          },
+          "expectedFailures": 0,
+          "failedTests": 4,
+          "passedTests": 11,
+          "skippedTests": 0,
+          "testPlanConfiguration": {
+            "configurationId": "1",
+            "configurationName": "Test Scheme Action"
+          }
+        }
+      ],
+      "environmentDescription": "MeetSpace-Debug · Built with macOS 15.8.2",
+      "expectedFailures": 0,
+      "failedTests": 4,
+      "finishTime": 1793978630.285,
+      "passedTests": 11,
+      "result": "Failed",
+      "skippedTests": 0,
+      "startTime": 1793978004.465,
+      "statistics": [],
+      "testFailures": [
+        {
+          "failureText": "XCTAssertTrue failed - Unresolved accessibility issues: [[\"detail\": \"Contrast failed for element\", \"resolution\": \"unresolved\", \"screen\": \"profile\", \"summary\": \"Contrast failed\", \"label\": \"Добавить аккаунт\", \"frame\": \"(24.0, 654.0, 327.0, 44.0)\", \"type\": \"1\", \"element\": \"addAccount\"], [\"type\": \"1\", \"frame\": \"(344.25, 369.25, 13.5, 12.5)\", \"element\": \"calendar.weekday.5\", \"summary\": \"Contrast failed\", \"label\": \"Сб\", \"resolution\": \"unresolved\", \"detail\": \"Contrast failed for element\", \"screen\": \"calendar\"], [\"resolution\": \"unresolved\", \"element\": \"\", \"screen\": \"calendar\", \"detail\": \"User will not be able to change the font size of this element\", \"type\": \"65536\", \"label\": \"Все встречи\", \"frame\": \"(20.0, 223.0, 101.5, 44.0)\", \"summary\": \"Dynamic Type font sizes are partially unsupported\"], [\"frame\": \"(305.0, 223.0, 50.0, 44.0)\", \"label\": \"GMT\", \"detail\": \"User will not be able to change the font size of this element\", \"screen\": \"calendar\", \"summary\": \"Dynamic Type font sizes are partially unsupported\", \"element\": \"\", \"type\": \"65536\", \"resolution\": \"unresolved\"], [\"frame\": \"(146.0, 602.5, 113.5, 13.5)\", \"detail\": \"Contrast failed for element\", \"label\": \"Не удалось записать\", \"screen\": \"recordings\", \"resolution\": \"unresolved\", \"type\": \"1\", \"summary\": \"Contrast failed\", \"element\": \"recording.status.77777777-7777-4777-8777-777777777773\"], [\"screen\": \"recordings\", \"label\": \"Все форматы\", \"resolution\": \"unresolved\", \"type\": \"65536\", \"summary\": \"Dynamic Type font sizes are partially unsupported\", \"detail\": \"User will not be able to change the font size of this element\", \"frame\": \"(24.0, 195.5, 108.0, 44.0)\", \"element\": \"\"], [\"element\": \"\", \"resolution\": \"unresolved\", \"summary\": \"Dynamic Type font sizes are partially unsupported\", \"detail\": \"User will not be able to change the font size of this element\", \"type\": \"65536\", \"screen\": \"recordings\", \"label\": \"Все статусы\", \"frame\": \"(148.0, 195.5, 101.0, 44.0)\"], [\"summary\": \"Text clipped\", \"detail\": \"Text of this element may be clipped at larger Dynamic Type sizes.\", \"label\": \"Поиск записей\", \"type\": \"131072\", \"element\": \"\", \"screen\": \"recordings\", \"frame\": \"(62.5, 135.5, 276.5, 44.0)\", \"resolution\": \"unresolved\"], [\"screen\": \"recordings-footer\", \"type\": \"1\", \"summary\": \"Contrast failed\", \"detail\": \"Contrast failed for element\", \"element\": \"\", \"label\": \"Обсуждение проекта\", \"resolution\": \"unresolved\", \"frame\": \"(146.0, -8.0, 93.5, 34.0)\"], [\"element\": \"recording.status.77777777-7777-4777-8777-777777777771\", \"resolution\": \"unresolved\", \"detail\": \"Contrast failed for element\", \"summary\": \"Contrast failed\", \"label\": \"Готова\", \"screen\": \"recordings-footer\", \"type\": \"1\", \"frame\": \"(146.0, 51.5, 36.5, 13.5)\"]]",
+          "targetName": "MeetSpaceUITests",
+          "testIdentifier": 11,
+          "testIdentifierString": "FoundationUITests/testAccessibilityStage08CoreScreens()",
+          "testIdentifierURL": "test://com.apple.xcode/MeetSpace/MeetSpaceUITests/FoundationUITests/testAccessibilityStage08CoreScreens",
+          "testName": "testAccessibilityStage08CoreScreens()"
+        },
+        {
+          "failureText": "XCTAssertGreaterThanOrEqual failed: (\"47.5\") is less than (\"72.0\")",
+          "targetName": "MeetSpaceUITests",
+          "testIdentifier": 12,
+          "testIdentifierString": "FoundationUITests/testAccessibilityStage08LargeTextLiveFlow()",
+          "testIdentifierURL": "test://com.apple.xcode/MeetSpace/MeetSpaceUITests/FoundationUITests/testAccessibilityStage08LargeTextLiveFlow",
+          "testName": "testAccessibilityStage08LargeTextLiveFlow()"
+        },
+        {
+          "failureText": "XCTAssertLessThan failed: (\"175.5\") is not less than (\"166.75\") - Persistent controls must leave space for large-text content",
+          "targetName": "MeetSpaceUITests",
+          "testIdentifier": 14,
+          "testIdentifierString": "FoundationUITests/testLargeTextNavigationAndAppearance()",
+          "testIdentifierURL": "test://com.apple.xcode/MeetSpace/MeetSpaceUITests/FoundationUITests/testLargeTextNavigationAndAppearance",
+          "testName": "testLargeTextNavigationAndAppearance()"
+        },
+        {
+          "failureText": "XCTAssertTrue failed",
+          "targetName": "MeetSpaceUITests",
+          "testIdentifier": 15,
+          "testIdentifierString": "FoundationUITests/testStage08AccountDeletionRequiresPasswordAndConfirmation()",
+          "testIdentifierURL": "test://com.apple.xcode/MeetSpace/MeetSpaceUITests/FoundationUITests/testStage08AccountDeletionRequiresPasswordAndConfirmation",
+          "testName": "testStage08AccountDeletionRequiresPasswordAndConfirmation()"
+        }
+      ],
+      "title": "Test - MeetSpace-Debug",
+      "topInsights": [],
+      "totalTestCount": 15
+    },
+    "iPad18": {
+      "devicesAndConfigurations": [
+        {
+          "device": {
+            "architecture": "arm64",
+            "deviceId": "2A250684-88E3-4EDB-A21E-B7726B4C69F6",
+            "deviceName": "iPad mini (A17 Pro)",
+            "modelName": "iPad mini (A17 Pro)",
+            "osBuildNumber": "22G86",
+            "osVersion": "18.6",
+            "platform": "iOS Simulator"
+          },
+          "expectedFailures": 0,
+          "failedTests": 2,
+          "passedTests": 13,
+          "skippedTests": 0,
+          "testPlanConfiguration": {
+            "configurationId": "1",
+            "configurationName": "Test Scheme Action"
+          }
+        }
+      ],
+      "environmentDescription": "MeetSpace-Debug · Built with macOS 15.8.2",
+      "expectedFailures": 0,
+      "failedTests": 2,
+      "finishTime": 1793979115.67,
+      "passedTests": 13,
+      "result": "Failed",
+      "skippedTests": 0,
+      "startTime": 1793978313.412,
+      "statistics": [],
+      "testFailures": [
+        {
+          "failureText": "XCTAssertTrue failed - Unresolved accessibility issues: [[\"detail\": \"Contrast is not high enough for element unless font size is larger.\", \"screen\": \"calendar\", \"type\": \"1\", \"resolution\": \"unresolved\", \"frame\": \"(49.25, 379.25, 13.5, 12.5)\", \"label\": \"Пн\", \"element\": \"calendar.weekday.0\", \"summary\": \"Contrast nearly passed\"], [\"type\": \"1\", \"label\": \"Пт\", \"resolution\": \"unresolved\", \"frame\": \"(285.75, 379.25, 12.5, 12.5)\", \"screen\": \"calendar\", \"summary\": \"Contrast failed\", \"detail\": \"Contrast failed for element\", \"element\": \"calendar.weekday.4\"], [\"element\": \"saveProfile\", \"type\": \"1\", \"summary\": \"Contrast failed\", \"label\": \"Сохранить профиль\", \"resolution\": \"unresolved\", \"frame\": \"(334.0, 509.5, 362.0, 44.0)\", \"detail\": \"Contrast failed for element\", \"screen\": \"settings\"]]",
+          "targetName": "MeetSpaceUITests",
+          "testIdentifier": 11,
+          "testIdentifierString": "FoundationUITests/testAccessibilityStage08CoreScreens()",
+          "testIdentifierURL": "test://com.apple.xcode/MeetSpace/MeetSpaceUITests/FoundationUITests/testAccessibilityStage08CoreScreens",
+          "testName": "testAccessibilityStage08CoreScreens()"
+        },
+        {
+          "failureText": "XCTAssertTrue failed",
+          "targetName": "MeetSpaceUITests",
+          "testIdentifier": 15,
+          "testIdentifierString": "FoundationUITests/testStage08AccountDeletionRequiresPasswordAndConfirmation()",
+          "testIdentifierURL": "test://com.apple.xcode/MeetSpace/MeetSpaceUITests/FoundationUITests/testStage08AccountDeletionRequiresPasswordAndConfirmation",
+          "testName": "testStage08AccountDeletionRequiresPasswordAndConfirmation()"
+        }
+      ],
+      "title": "Test - MeetSpace-Debug",
+      "topInsights": [],
+      "totalTestCount": 15
+    },
+    "iPhone26": {
+      "devicesAndConfigurations": [
+        {
+          "device": {
+            "architecture": "arm64",
+            "deviceId": "A79AB685-CC5B-4589-9565-0DF10B54130F",
+            "deviceName": "iPhone 17 Pro Max",
+            "modelName": "iPhone 17 Pro Max",
+            "osBuildNumber": "23C54",
+            "osVersion": "26.2",
+            "platform": "iOS Simulator"
+          },
+          "expectedFailures": 0,
+          "failedTests": 2,
+          "passedTests": 33,
+          "skippedTests": 0,
+          "testPlanConfiguration": {
+            "configurationId": "1",
+            "configurationName": "Test Scheme Action"
+          }
+        }
+      ],
+      "environmentDescription": "MeetSpace-Debug · Built with macOS 15.8.2",
+      "expectedFailures": 0,
+      "failedTests": 2,
+      "finishTime": 1793979860.85,
+      "passedTests": 33,
+      "result": "Failed",
+      "skippedTests": 0,
+      "startTime": 1793978316.924,
+      "statistics": [],
+      "testFailures": [
+        {
+          "failureText": "XCTAssertTrue failed - Unresolved accessibility issues: [[\"type\": \"65536\", \"detail\": \"User will not be able to change the font size of this SwiftUI.AccessibilityNode\", \"summary\": \"Dynamic Type font sizes are partially unsupported\", \"resolution\": \"unresolved\", \"element\": \"\", \"frame\": \"(20.0, 275.0, 102.33333333333333, 44.0)\", \"screen\": \"calendar\", \"label\": \"Все встречи\"], [\"type\": \"65536\", \"element\": \"\", \"detail\": \"User will not be able to change the font size of this SwiftUI.AccessibilityNode\", \"resolution\": \"unresolved\", \"summary\": \"Dynamic Type font sizes are partially unsupported\", \"frame\": \"(370.3333333333333, 275.0, 49.666666666666686, 44.0)\", \"screen\": \"calendar\", \"label\": \"GMT\"], [\"screen\": \"recordings\", \"summary\": \"Dynamic Type font sizes are partially unsupported\", \"detail\": \"User will not be able to change the font size of this SwiftUI.AccessibilityNode\", \"frame\": \"(149.00000000000003, 247.66666666666666, 101.66666666666663, 43.99999999999997)\", \"element\": \"\", \"label\": \"Все статусы\", \"resolution\": \"unresolved\", \"type\": \"65536\"], [\"detail\": \"User will not be able to change the font size of this SwiftUI.AccessibilityNode\", \"type\": \"65536\", \"resolution\": \"unresolved\", \"label\": \"Все форматы\", \"frame\": \"(24.00000000000003, 247.66666666666666, 109.0, 43.99999999999997)\", \"screen\": \"recordings\", \"summary\": \"Dynamic Type font sizes are partially unsupported\", \"element\": \"\"], [\"frame\": \"(24.0, 73.66666666666666, 190.66666666666666, 31.666666666666657)\", \"type\": \"1\", \"summary\": \"Contrast failed\", \"screen\": \"recordings-footer\", \"detail\": \"Contrast failed for SwiftUI.AccessibilityNode\", \"element\": \"\", \"label\": \"Записи встреч\", \"resolution\": \"unresolved\"]]",
+          "targetName": "MeetSpaceUITests",
+          "testIdentifier": 11,
+          "testIdentifierString": "FoundationUITests/testAccessibilityStage08CoreScreens()",
+          "testIdentifierURL": "test://com.apple.xcode/MeetSpace/MeetSpaceUITests/FoundationUITests/testAccessibilityStage08CoreScreens",
+          "testName": "testAccessibilityStage08CoreScreens()"
+        },
+        {
+          "failureText": "XCTAssertTrue failed",
+          "targetName": "MeetSpaceUITests",
+          "testIdentifier": 33,
+          "testIdentifierString": "FoundationUITests/testStage08AccountDeletionRequiresPasswordAndConfirmation()",
+          "testIdentifierURL": "test://com.apple.xcode/MeetSpace/MeetSpaceUITests/FoundationUITests/testStage08AccountDeletionRequiresPasswordAndConfirmation",
+          "testName": "testStage08AccountDeletionRequiresPasswordAndConfirmation()"
+        }
+      ],
+      "title": "Test - MeetSpace-Debug",
+      "topInsights": [
+        {
+          "category": "Longest Test Runs",
+          "impact": "14% of duration",
+          "text": "1 longest test run with outlier durations exceeding 154.24s (three standard deviations)"
+        }
+      ],
+      "totalTestCount": 35
+    },
+    "iPad26": {
+      "devicesAndConfigurations": [
+        {
+          "device": {
+            "architecture": "arm64",
+            "deviceId": "73C19119-B10E-4309-872E-C53EF3F0EF27",
+            "deviceName": "iPad Pro 13-inch (M5)",
+            "modelName": "iPad Pro 13-inch (M5)",
+            "osBuildNumber": "23C54",
+            "osVersion": "26.2",
+            "platform": "iOS Simulator"
+          },
+          "expectedFailures": 0,
+          "failedTests": 3,
+          "passedTests": 32,
+          "skippedTests": 0,
+          "testPlanConfiguration": {
+            "configurationId": "1",
+            "configurationName": "Test Scheme Action"
+          }
+        }
+      ],
+      "environmentDescription": "MeetSpace-Debug · Built with macOS 15.8.2",
+      "expectedFailures": 0,
+      "failedTests": 3,
+      "finishTime": 1793979338.503,
+      "passedTests": 32,
+      "result": "Failed",
+      "skippedTests": 0,
+      "startTime": 1793977729.977,
+      "statistics": [],
+      "testFailures": [
+        {
+          "failureText": "XCTAssertTrue failed - Unresolved accessibility issues: [[\"frame\": \"(623.0, 459.5, 200.5, 13.5)\", \"element\": \"\", \"resolution\": \"unresolved\", \"summary\": \"Contrast failed\", \"screen\": \"welcome\", \"label\": \"Создать пространство на своём VPS\", \"type\": \"1\", \"detail\": \"Contrast failed for SwiftUI.AccessibilityNode\"], [\"summary\": \"Contrast failed\", \"detail\": \"Contrast failed for SwiftUI.AccessibilityNode\", \"frame\": \"(611.75, 641.0, 149.0, 98.75)\", \"type\": \"1\", \"element\": \"\", \"resolution\": \"unresolved\", \"screen\": \"messages\", \"label\": \"Выберите чат\"], [\"frame\": \"(794.25, 395.0, 83.5, 13.5)\", \"type\": \"1\", \"screen\": \"calendar\", \"summary\": \"Contrast failed\", \"label\": \"На этой неделе\", \"detail\": \"Contrast failed for SwiftUI.AccessibilityNode\", \"resolution\": \"unresolved\", \"element\": \"\"], [\"resolution\": \"unresolved\", \"type\": \"1\", \"element\": \"calendar.weekday.0\", \"frame\": \"(49.25, 391.25, 13.5, 12.5)\", \"screen\": \"calendar\", \"summary\": \"Contrast nearly passed\", \"detail\": \"Contrast is not high enough for SwiftUI.AccessibilityNode unless font size is larger.\", \"label\": \"Пн\"], [\"detail\": \"Contrast failed for SwiftUI.AccessibilityNode\", \"type\": \"1\", \"summary\": \"Contrast failed\", \"screen\": \"calendar\", \"element\": \"calendar.weekday.4\", \"label\": \"Пт\", \"frame\": \"(285.75, 391.25, 12.5, 12.5)\", \"resolution\": \"unresolved\"], [\"label\": \"Готова\", \"type\": \"1\", \"screen\": \"recordings\", \"summary\": \"Contrast failed\", \"detail\": \"Contrast failed for SwiftUI.AccessibilityNode\", \"frame\": \"(146.0, 369.5, 36.5, 13.5)\", \"resolution\": \"unresolved\", \"element\": \"recording.status.77777777-7777-4777-8777-777777777771\"], [\"type\": \"1\", \"detail\": \"Contrast failed for SwiftUI.AccessibilityNode\", \"frame\": \"(146.0, 481.5, 90.5, 13.5)\", \"element\": \"recording.status.77777777-7777-4777-8777-777777777772\", \"resolution\": \"unresolved\", \"label\": \"Обрабатывается\", \"screen\": \"recordings\", \"summary\": \"Contrast failed\"], [\"detail\": \"Contrast failed for SwiftUI.AccessibilityNode\", \"screen\": \"recordings\", \"frame\": \"(146.0, 593.5, 113.5, 13.5)\", \"label\": \"Не удалось записать\", \"type\": \"1\", \"resolution\": \"unresolved\", \"element\": \"recording.status.77777777-7777-4777-8777-777777777773\", \"summary\": \"Contrast failed\"], [\"label\": \"Готова\", \"screen\": \"recordings\", \"resolution\": \"unresolved\", \"summary\": \"Contrast failed\", \"detail\": \"Contrast failed for SwiftUI.AccessibilityNode\", \"frame\": \"(146.0, 705.5, 36.5, 13.5)\", \"type\": \"1\", \"element\": \"recording.status.77777777-7777-4777-8777-777777777774\"], [\"summary\": \"Contrast failed\", \"frame\": \"(146.0, 369.5, 36.5, 13.5)\", \"type\": \"1\", \"detail\": \"Contrast failed for SwiftUI.AccessibilityNode\", \"element\": \"recording.status.77777777-7777-4777-8777-777777777771\", \"label\": \"Готова\", \"screen\": \"recordings-footer\", \"resolution\": \"unresolved\"], [\"label\": \"Обрабатывается\", \"type\": \"1\", \"detail\": \"Contrast failed for SwiftUI.AccessibilityNode\", \"resolution\": \"unresolved\", \"screen\": \"recordings-footer\", \"element\": \"recording.status.77777777-7777-4777-8777-777777777772\", \"frame\": \"(146.0, 481.5, 90.5, 13.5)\", \"summary\": \"Contrast failed\"], [\"screen\": \"recordings-footer\", \"type\": \"1\", \"label\": \"Не удалось записать\", \"detail\": \"Contrast failed for SwiftUI.AccessibilityNode\", \"resolution\": \"unresolved\", \"summary\": \"Contrast failed\", \"frame\": \"(146.0, 593.5, 113.5, 13.5)\", \"element\": \"recording.status.77777777-7777-4777-8777-777777777773\"], [\"element\": \"recording.status.77777777-7777-4777-8777-777777777774\", \"summary\": \"Contrast failed\", \"type\": \"1\", \"label\": \"Готова\", \"resolution\": \"unresolved\", \"screen\": \"recordings-footer\", \"frame\": \"(146.0, 705.5, 36.5, 13.5)\", \"detail\": \"Contrast failed for SwiftUI.AccessibilityNode\"], [\"element\": \"folders.subtitle\", \"label\": \"Личное пространство\", \"screen\": \"folders\", \"resolution\": \"unresolved\", \"summary\": \"Contrast failed\", \"detail\": \"Contrast failed for SwiftUI.AccessibilityNode\", \"type\": \"1\", \"frame\": \"(20.0, 106.0, 121.5, 13.5)\"], [\"detail\": \"Contrast failed for SwiftUI.AccessibilityNode\", \"frame\": \"(56.0, 142.0, 40.0, 40.0)\", \"summary\": \"Contrast failed\", \"label\": \"ПЕ\", \"screen\": \"settings\", \"type\": \"1\", \"element\": \"\", \"resolution\": \"unresolved\"], [\"element\": \"saveProfile\", \"label\": \"Сохранить профиль\", \"type\": \"1\", \"screen\": \"settings\", \"detail\": \"Contrast failed for SwiftUI.AccessibilityNode\", \"frame\": \"(334.0, 507.0, 650.0, 44.0)\", \"summary\": \"Contrast failed\", \"resolution\": \"unresolved\"]]",
+          "targetName": "MeetSpaceUITests",
+          "testIdentifier": 11,
+          "testIdentifierString": "FoundationUITests/testAccessibilityStage08CoreScreens()",
+          "testIdentifierURL": "test://com.apple.xcode/MeetSpace/MeetSpaceUITests/FoundationUITests/testAccessibilityStage08CoreScreens",
+          "testName": "testAccessibilityStage08CoreScreens()"
+        },
+        {
+          "failureText": "XCTAssertFalse failed - The password prompt must no longer block the workspace",
+          "targetName": "MeetSpaceUITests",
+          "testIdentifier": 12,
+          "testIdentifierString": "FoundationUITests/testAccessibilityStage08LargeTextLiveFlow()",
+          "testIdentifierURL": "test://com.apple.xcode/MeetSpace/MeetSpaceUITests/FoundationUITests/testAccessibilityStage08LargeTextLiveFlow",
+          "testName": "testAccessibilityStage08LargeTextLiveFlow()"
+        },
+        {
+          "failureText": "XCTAssertTrue failed",
+          "targetName": "MeetSpaceUITests",
+          "testIdentifier": 33,
+          "testIdentifierString": "FoundationUITests/testStage08AccountDeletionRequiresPasswordAndConfirmation()",
+          "testIdentifierURL": "test://com.apple.xcode/MeetSpace/MeetSpaceUITests/FoundationUITests/testStage08AccountDeletionRequiresPasswordAndConfirmation",
+          "testName": "testStage08AccountDeletionRequiresPasswordAndConfirmation()"
+        }
+      ],
+      "title": "Test - MeetSpace-Debug",
+      "topInsights": [
+        {
+          "category": "Longest Test Runs",
+          "impact": "17% of duration",
+          "text": "1 longest test run with outlier durations exceeding 171.82s (three standard deviations)"
+        }
+      ],
+      "totalTestCount": 35
+    }
+  },
+  "artifactDigests": {
+    "results-iPhone26": "sha256:6b927bbfdf219d044a035a7dbb6a28ebec58c2203e6c7985c4565797d802c9f0",
+    "results-iPad26": "sha256:2ce4fdd388d096cc449493ba660f4f0e857a5bc2bfc3a8dc192c358263ce10b8",
+    "results-iPad18": "sha256:269e7a43e3dd2c06de0929bb72e8a70d2cc634d47cefeab18681d9b62f7e91f9",
+    "results-iPhone18": "sha256:6ffae0576fa91a3ed59de3be27e672ab1f6c8b4a17fb132addd7a42f5f457564",
+    "release-unsigned": "sha256:2b0b1a13636a57de8ca629e15486750c71e0d5e94b419bb0dfccbb4c9412a887"
+  }
+}

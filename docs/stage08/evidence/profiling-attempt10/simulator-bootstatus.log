@@ -1,0 +1,39 @@
+Monitoring boot status for iPhone SE (3rd generation) (4E62D48E-A75F-4AF3-BDC2-1C74916B5810).
+[2026-11-06 18:18:38 +0000] Status=1, isTerminal=NO, Elapsed=00:05.
+	Waiting on BackBoard
+
+[2026-11-06 18:19:43 +0000] Status=2, isTerminal=NO, Elapsed=00:38.
+	Waiting on Data Migration
+		Reason:(null)
+		Migration Elapsed:00:09 seconds
+
+[2026-11-06 18:19:43 +0000] Status=4, isTerminal=NO, Elapsed=00:43.
+	Waiting on System App
+
+[2026-11-06 18:19:43 +0000] Status=4, isTerminal=NO, Elapsed=00:45.
+	Waiting on System App
+
+[2026-11-06 18:19:43 +0000] Status=4, isTerminal=NO, Elapsed=00:46.
+	Waiting on System App
+
+[2026-11-06 18:19:43 +0000] Status=4, isTerminal=NO, Elapsed=00:47.
+	Waiting on System App
+
+[2026-11-06 18:19:43 +0000] Status=4, isTerminal=NO, Elapsed=00:50.
+	Waiting on System App
+
+[2026-11-06 18:19:43 +0000] Status=4, isTerminal=NO, Elapsed=00:53.
+	Waiting on System App
+
+[2026-11-06 18:19:43 +0000] Status=4, isTerminal=NO, Elapsed=00:54.
+	Waiting on System App
+
+[2026-11-06 18:19:43 +0000] Status=4, isTerminal=NO, Elapsed=00:55.
+	Waiting on System App
+
+[2026-11-06 18:19:43 +0000] Status=4, isTerminal=NO, Elapsed=00:56.
+	Waiting on System App
+
+[2026-11-06 18:19:43 +0000] Status=4294967295, isTerminal=YES, Elapsed=00:58.
+	Finished
+

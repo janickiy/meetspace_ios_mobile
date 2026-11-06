@@ -1,0 +1,23 @@
+usage: xctrace export [<options>] [--toc | --xpath expression]
+
+description:
+	Export given .trace using supplied query to the XML file format that can be later read and post-processed
+
+options:
+	--input <file>              Export data from the given .trace file
+	--output <path>             Command output is written to the given path, if specified
+	--toc                       Present entities to export in the table of contents form
+	--xpath <expression>        Choose elements to export using specified XPath expression
+	--har                       Export data as the HTTP Archive file
+
+global options:
+	--quiet        Make terminal ouput less verbose
+
+notes:
+	If output path is not specified, the export operation output will be written to the standard output.
+	Table of Contents and XPath query are two separate modes and they cannot be specified together.
+
+examples:
+	xctrace export --input input.trace --toc
+	xctrace export --input input.trace --toc --output table_of_contents.xml
+	xctrace export --input input.trace --xpath '/trace-toc/run[@number="1"]/data/table[@schema="my-table-schema"]'

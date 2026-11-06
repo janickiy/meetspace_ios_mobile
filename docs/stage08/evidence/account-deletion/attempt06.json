@@ -1,0 +1,28 @@
+{
+  "runID": 42248873526,
+  "sourceCommit": "4ec80d4493dfd0e50b1bc5d96ba8267e749ef53c",
+  "result": "FAIL",
+  "interpretation": "Explicit native Done did not fix the synthetic input. Both attempts are already ascii-other before confirmation; category equality does not prove byte equality. No actual input is retained.",
+  "results": [
+    {
+      "label": "iPhone18",
+      "passedTests": 0,
+      "failedTests": 1,
+      "scope": "deletion-only UI",
+      "traceFile": "iPhone18-attempt06-trace.txt",
+      "traceSHA256": "6371dd95f5a8be9b1ef0900c41c1222bdccf3d35ffce0a87dff3c20646e40ba5",
+      "sourceAttachment": "iPhone18-diagnostics/0_Test_iPhone SE (3rd generation)_Diagnostics/MeetSpaceUITests-9DF1B5DE-3A83-4A51-85FA-FDF43B813DBF-Configuration-Test Scheme Action-Iteration-1/MeetSpaceUITests-86DE8D86-CEED-43E0-A5FA-A495E868FFB6/StandardOutputAndStandardError-com.meetspace.ios.txt",
+      "sourceAttachmentSHA256": "608b9438c250436cdcee5da72dfc59ddaf441cfb37cd85fb19fc27e3038c59bf"
+    },
+    {
+      "label": "iPad26",
+      "passedTests": 0,
+      "failedTests": 1,
+      "scope": "deletion-only UI",
+      "traceFile": "iPad26-attempt06-trace.txt",
+      "traceSHA256": "6371dd95f5a8be9b1ef0900c41c1222bdccf3d35ffce0a87dff3c20646e40ba5",
+      "sourceAttachment": "iPad26-diagnostics/0_Test_iPad Pro 13-inch (M5)_Diagnostics/MeetSpaceUITests-51C0AA05-92D6-42C5-811D-14BD80364213-Configuration-Test Scheme Action-Iteration-1/MeetSpaceUITests-265B4965-249C-4CA5-BF76-4584369B7330/StandardOutputAndStandardError-com.meetspace.ios.txt",
+      "sourceAttachmentSHA256": "10d130248986d4555d4c5a0aa7dcaf22ab0c36e186f0cdcbc29533099e904527"
+    }
+  ]
+}

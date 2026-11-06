@@ -1,0 +1,13 @@
+{
+  "device": "iPad mini (A17 Pro)",
+  "runtime": [
+    18,
+    6
+  ],
+  "udid": "97EF782D-9317-4024-908C-4F9E8417C2D2",
+  "scope": "compatibility",
+  "hostArchitecture": "x86_64",
+  "hostOS": "macOS-15.7.9-x86_64-i386-64bit-Mach-O",
+  "preferredDeviceMatched": true,
+  "xcode": "Xcode 26.3\nBuild version 17C529\n"
+}

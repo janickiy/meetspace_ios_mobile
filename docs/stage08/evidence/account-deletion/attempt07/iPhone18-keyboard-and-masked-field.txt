@@ -1,0 +1,11 @@
+Known synthetic fixtures only. Values below are native keyboard labels and a secure-field mask, never the entered password. Object addresses omitted; retained AX fields otherwise unchanged.
+
+16:43:23.083824 UTC [AX; object addresses omitted] Key, label: 'й'
+16:43:23.083824 UTC [AX; object addresses omitted] Key, identifier: 'more', label: 'цифры'
+16:43:23.083824 UTC [AX; object addresses omitted] Button, identifier: 'emoji', label: 'Следующая клавиатура', value: English (UK)
+16:43:23.083824 UTC [AX; object addresses omitted] Button, identifier: 'Done', label: 'Готово'
+16:43:23.257357 UTC [AX; object addresses omitted] Key, identifier: 'more'
+16:43:23.257357 UTC [AX; object addresses omitted] Button, identifier: 'emoji'
+16:43:23.257357 UTC [AX; object addresses omitted] Button, identifier: 'Done'
+16:43:34.228140 UTC [AX; object addresses omitted] SecureTextField, identifier: 'deleteAccount.password', placeholderValue: 'Пароль аккаунта', value: •
+16:43:57.482008 UTC [AX; object addresses omitted] SecureTextField, identifier: 'deleteAccount.password', placeholderValue: 'Пароль аккаунта', value: •

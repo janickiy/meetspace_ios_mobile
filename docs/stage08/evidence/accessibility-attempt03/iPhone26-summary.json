@@ -1,0 +1,61 @@
+{
+  "devicesAndConfigurations" : [
+    {
+      "device" : {
+        "architecture" : "arm64",
+        "deviceId" : "A79AB685-CC5B-4589-9565-0DF10B54130F",
+        "deviceName" : "iPhone 17 Pro Max",
+        "modelName" : "iPhone 17 Pro Max",
+        "osBuildNumber" : "23C54",
+        "osVersion" : "26.2",
+        "platform" : "iOS Simulator"
+      },
+      "expectedFailures" : 0,
+      "failedTests" : 2,
+      "passedTests" : 33,
+      "skippedTests" : 0,
+      "testPlanConfiguration" : {
+        "configurationId" : "1",
+        "configurationName" : "Test Scheme Action"
+      }
+    }
+  ],
+  "environmentDescription" : "MeetSpace-Debug · Built with macOS 15.8.2",
+  "expectedFailures" : 0,
+  "failedTests" : 2,
+  "finishTime" : 1793979860.85,
+  "passedTests" : 33,
+  "result" : "Failed",
+  "skippedTests" : 0,
+  "startTime" : 1793978316.924,
+  "statistics" : [
+
+  ],
+  "testFailures" : [
+    {
+      "failureText" : "XCTAssertTrue failed - Unresolved accessibility issues: [[\"type\": \"65536\", \"detail\": \"User will not be able to change the font size of this SwiftUI.AccessibilityNode\", \"summary\": \"Dynamic Type font sizes are partially unsupported\", \"resolution\": \"unresolved\", \"element\": \"\", \"frame\": \"(20.0, 275.0, 102.33333333333333, 44.0)\", \"screen\": \"calendar\", \"label\": \"Все встречи\"], [\"type\": \"65536\", \"element\": \"\", \"detail\": \"User will not be able to change the font size of this SwiftUI.AccessibilityNode\", \"resolution\": \"unresolved\", \"summary\": \"Dynamic Type font sizes are partially unsupported\", \"frame\": \"(370.3333333333333, 275.0, 49.666666666666686, 44.0)\", \"screen\": \"calendar\", \"label\": \"GMT\"], [\"screen\": \"recordings\", \"summary\": \"Dynamic Type font sizes are partially unsupported\", \"detail\": \"User will not be able to change the font size of this SwiftUI.AccessibilityNode\", \"frame\": \"(149.00000000000003, 247.66666666666666, 101.66666666666663, 43.99999999999997)\", \"element\": \"\", \"label\": \"Все статусы\", \"resolution\": \"unresolved\", \"type\": \"65536\"], [\"detail\": \"User will not be able to change the font size of this SwiftUI.AccessibilityNode\", \"type\": \"65536\", \"resolution\": \"unresolved\", \"label\": \"Все форматы\", \"frame\": \"(24.00000000000003, 247.66666666666666, 109.0, 43.99999999999997)\", \"screen\": \"recordings\", \"summary\": \"Dynamic Type font sizes are partially unsupported\", \"element\": \"\"], [\"frame\": \"(24.0, 73.66666666666666, 190.66666666666666, 31.666666666666657)\", \"type\": \"1\", \"summary\": \"Contrast failed\", \"screen\": \"recordings-footer\", \"detail\": \"Contrast failed for SwiftUI.AccessibilityNode\", \"element\": \"\", \"label\": \"Записи встреч\", \"resolution\": \"unresolved\"]]",
+      "targetName" : "MeetSpaceUITests",
+      "testIdentifier" : 11,
+      "testIdentifierString" : "FoundationUITests/testAccessibilityStage08CoreScreens()",
+      "testIdentifierURL" : "test://com.apple.xcode/MeetSpace/MeetSpaceUITests/FoundationUITests/testAccessibilityStage08CoreScreens",
+      "testName" : "testAccessibilityStage08CoreScreens()"
+    },
+    {
+      "failureText" : "XCTAssertTrue failed",
+      "targetName" : "MeetSpaceUITests",
+      "testIdentifier" : 33,
+      "testIdentifierString" : "FoundationUITests/testStage08AccountDeletionRequiresPasswordAndConfirmation()",
+      "testIdentifierURL" : "test://com.apple.xcode/MeetSpace/MeetSpaceUITests/FoundationUITests/testStage08AccountDeletionRequiresPasswordAndConfirmation",
+      "testName" : "testStage08AccountDeletionRequiresPasswordAndConfirmation()"
+    }
+  ],
+  "title" : "Test - MeetSpace-Debug",
+  "topInsights" : [
+    {
+      "category" : "Longest Test Runs",
+      "impact" : "14% of duration",
+      "text" : "1 longest test run with outlier durations exceeding 154.24s (three standard deviations)"
+    }
+  ],
+  "totalTestCount" : 35
+}

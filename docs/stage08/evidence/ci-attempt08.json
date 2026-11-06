@@ -1,0 +1,193 @@
+{
+  "runID": 42255060641,
+  "sourceCommit": "6b6d1bbda9224d459e2a07d551db65956946f2fe",
+  "result": "FAIL",
+  "packageJob": "success",
+  "scope": "audit iPhone18 and iPad26 only; iPhone26/iPad18 inventory-only jobs ran no tests",
+  "results": [
+    {
+      "label": "iPhone18",
+      "passedTests": 12,
+      "failedTests": 3,
+      "skippedTests": 0,
+      "totalTestCount": 15,
+      "sourceSummaryAttachment": "iPhone18-summary.json",
+      "sourceSummarySHA256": "66caa8a7f9ea65e9ac301c4c147ec0837b7fcffd614e4adb2a77422509987638",
+      "failures": [
+        {
+          "test": "testAccessibilityStage08CoreScreens()",
+          "failure": "failed: caught error: \"Error Domain=com.apple.xcode.xctest.accessibilityAudit Code=-56 \"Audit failed to complete in time\" UserInfo={NSLocalizedDescription=Audit failed to complete in time}\""
+        },
+        {
+          "test": "testConferenceCreateMediaControlsChatAndLeave()",
+          "failure": "XCTAssertEqual failed: (\"XCTWaiterResult(rawValue: 2)\") is not equal to (\"XCTWaiterResult(rawValue: 1)\")"
+        },
+        {
+          "test": "testStage08AccountDeletionRequiresPasswordAndConfirmation()",
+          "failure": "XCTAssertTrue failed"
+        }
+      ],
+      "historicalDeletionTrace": [
+        {
+          "stage": "edit",
+          "inputClassification": "known-dropped-characters"
+        },
+        {
+          "stage": "submit",
+          "inputClassification": "known-dropped-characters"
+        },
+        {
+          "stage": "prepare",
+          "inputClassification": "known-dropped-characters"
+        },
+        {
+          "stage": "prepare",
+          "inputClassification": "known-dropped-characters"
+        },
+        {
+          "stage": "confirm",
+          "inputClassification": "known-dropped-characters"
+        },
+        {
+          "stage": "edit",
+          "inputClassification": "empty"
+        },
+        {
+          "stage": "transport",
+          "inputClassification": "known-dropped-characters"
+        },
+        {
+          "stage": "edit",
+          "inputClassification": "known-dropped-characters"
+        },
+        {
+          "stage": "submit",
+          "inputClassification": "known-dropped-characters"
+        },
+        {
+          "stage": "prepare",
+          "inputClassification": "known-dropped-characters"
+        },
+        {
+          "stage": "confirm",
+          "inputClassification": "known-dropped-characters"
+        },
+        {
+          "stage": "edit",
+          "inputClassification": "empty"
+        },
+        {
+          "stage": "transport",
+          "inputClassification": "known-dropped-characters"
+        }
+      ],
+      "sourceAppOutputSHA256": "e402c0af040deadf708b4b57995d2cfccdbfd5cc06ad7a4d30d62a411defd0c8",
+      "conferenceObservation": {
+        "sourceAttachmentsSHA256": {
+          "FB64D2ED-6105-4172-8CF8-33A13F5CB978": "7db0b3ea9a5ce8bc9b168938c78fe607eea025c5c3309f40060fc4da39fbba13",
+          "0921C0B8-E1FE-4C66-8DD1-D35CC67AA8E2.txt": "afe3135920a6d945e4bfca0ce4b76c4020d4de7b3bf1b2b3495e4256fd6b1dcf",
+          "A65DFA9C-A28E-4342-BE32-83F6E4E53FD5.mp4": "8158f0d4e74b95f9c255934315a36b9ba650ebddf290d3257bd61f1712f6f177"
+        },
+        "oldSourceTestLine": 777,
+        "operation": "Camera off immediately after closing chat with keyboard open",
+        "cameraTapPoint": [
+          90.55000009015203,
+          272.50000008940697
+        ],
+        "touchDownUpIntervalSeconds": 0.05,
+        "finalCameraAXFrame": [
+          84.5,
+          524.0,
+          60.5,
+          62.5
+        ],
+        "finalCameraAXValue": "Включён",
+        "videoRelativeSeconds": [
+          103.5,
+          103.8,
+          104.5
+        ],
+        "conclusion": "The tap was issued during keyboard dismissal and movement of controls. The camera remained on. Wait for the observed keyboard/chat dismissal before the next tap; no media failure was observed."
+      }
+    },
+    {
+      "label": "iPad26",
+      "passedTests": 13,
+      "failedTests": 2,
+      "skippedTests": 0,
+      "totalTestCount": 15,
+      "sourceSummaryAttachment": "iPad26-summary.json",
+      "sourceSummarySHA256": "355766616fcd7c45508841ac481e960cca53b02a519d16171f0b005ba2ecfcdf",
+      "failures": [
+        {
+          "test": "testAccessibilityStage08CoreScreens()",
+          "failure": "failed: caught error: \"Error Domain=com.apple.xcode.xctest.accessibilityAudit Code=-56 \"Audit failed to complete in time\" UserInfo={NSLocalizedDescription=Audit failed to complete in time}\""
+        },
+        {
+          "test": "testStage08AccountDeletionRequiresPasswordAndConfirmation()",
+          "failure": "XCTAssertTrue failed"
+        }
+      ],
+      "historicalDeletionTrace": [
+        {
+          "stage": "edit",
+          "inputClassification": "known-dropped-characters"
+        },
+        {
+          "stage": "submit",
+          "inputClassification": "known-dropped-characters"
+        },
+        {
+          "stage": "prepare",
+          "inputClassification": "known-dropped-characters"
+        },
+        {
+          "stage": "prepare",
+          "inputClassification": "known-dropped-characters"
+        },
+        {
+          "stage": "confirm",
+          "inputClassification": "known-dropped-characters"
+        },
+        {
+          "stage": "edit",
+          "inputClassification": "empty"
+        },
+        {
+          "stage": "transport",
+          "inputClassification": "known-dropped-characters"
+        },
+        {
+          "stage": "edit",
+          "inputClassification": "known-dropped-characters"
+        },
+        {
+          "stage": "submit",
+          "inputClassification": "known-dropped-characters"
+        },
+        {
+          "stage": "prepare",
+          "inputClassification": "known-dropped-characters"
+        },
+        {
+          "stage": "confirm",
+          "inputClassification": "known-dropped-characters"
+        },
+        {
+          "stage": "edit",
+          "inputClassification": "empty"
+        },
+        {
+          "stage": "transport",
+          "inputClassification": "known-dropped-characters"
+        }
+      ],
+      "sourceAppOutputSHA256": "718cbf9ffa42b593756e6a475564cab6dedbd2d248d7ddc2a5ee31320b7d7918"
+    }
+  ],
+  "boundaries": [
+    "Old per-character typeText input and temporary enum diagnostics; not the new CI9 native keyboard path.",
+    "Core accessibility audit timed out with XCTest error -56 on both selected simulators.",
+    "No successful current full-suite or physical-device result is implied."
+  ]
+}

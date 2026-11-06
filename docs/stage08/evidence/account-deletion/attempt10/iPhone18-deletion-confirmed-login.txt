@@ -1,0 +1,9 @@
+CI10 iPhone18 final failure AX: login after successful strict-fixture deletion. Object addresses omitted.
+Source attachment: 0E454CD8-9125-43B2-BEFC-8CBB370C9A9C.txt
+
+Button, {{307.0, 44.0}, {44.0, 44.0}}, identifier: 'xmark', label: 'На главную'
+StaticText, {{24.0, 152.5}, {266.5, 39.0}}, label: 'С возвращением.'
+TextField, {{24.0, 355.5}, {327.0, 46.5}}, label: 'Электронная почта', placeholderValue: 'name@example.com'
+SecureTextField, {{24.0, 445.0}, {327.0, 45.0}}, label: 'Пароль', placeholderValue: 'Пароль'
+StaticText, {{24.0, 510.0}, {193.0, 17.0}}, label: 'Аккаунт удалён на сервере.'
+Button, {{24.0, 547.0}, {327.0, 44.0}}, identifier: 'authenticationSubmit', label: 'Войти', Disabled

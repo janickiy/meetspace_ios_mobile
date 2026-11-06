@@ -1,0 +1,98 @@
+{
+  "findings": 24,
+  "types": {
+    "131072": 1,
+    "1": 9,
+    "65536": 14
+  },
+  "resolutions": {
+    "reviewed: welcome heading; complete AX5 text in ACCESSIBILITY_REVIEW.md": 1,
+    "reviewed: decorative avatar initials; accessible row has the full name": 1,
+    "verified: fully visible contrast retest produced no target finding": 3,
+    "outside retest viewport: no contrast measurement": 5,
+    "reviewed: measured custom-font scaling; separate AX5 layout coverage": 12,
+    "reviewed: menu title inside exact control; measured font scaling and AX5 multiline layout": 2
+  },
+  "screens": {
+    "welcome": 1,
+    "messages": 1,
+    "profile": 1,
+    "profile-visible-retest": 1,
+    "calendar": 13,
+    "calendar-visible-retest": 1,
+    "recordings": 2,
+    "recordings-visible-retest": 3,
+    "folders": 1
+  },
+  "reviewed": 16,
+  "verifiedNoTargetFinding": 3,
+  "unresolved": 0,
+  "pendingDeferred": 0,
+  "outsideRetestViewport": 5,
+  "visibleRetestFindings": 5,
+  "emptyIdentifier": 3,
+  "emptyLabel": 0,
+  "emptyFrame": 0,
+  "progressCounts": {
+    "welcome": 1,
+    "messages": 2,
+    "profile": 4,
+    "calendar": 18,
+    "recordings": 23,
+    "folders": 24,
+    "settings": 24
+  },
+  "unmeasuredRetestFindings": [
+    {
+      "detail": "Contrast failed for element",
+      "element": "",
+      "frame": "(41.5, -14.0, 98.5, 17.0)",
+      "label": "Календарь",
+      "resolution": "outside retest viewport: no contrast measurement",
+      "screen": "profile-visible-retest",
+      "summary": "Contrast failed",
+      "type": "1"
+    },
+    {
+      "detail": "Contrast failed for element",
+      "element": "calendar.weekday.1",
+      "frame": "(18.25, 369.25, 11.5, 12.5)",
+      "label": "Вт",
+      "resolution": "outside retest viewport: no contrast measurement",
+      "screen": "calendar-visible-retest",
+      "summary": "Contrast failed",
+      "type": "1"
+    },
+    {
+      "detail": "Contrast failed for element",
+      "element": "recordings.filterHint",
+      "frame": "(24.0, -9.5, 307.5, 13.5)",
+      "label": "Поиск и фильтры применяются к загруженным записям.",
+      "resolution": "outside retest viewport: no contrast measurement",
+      "screen": "recordings-visible-retest",
+      "summary": "Contrast failed",
+      "type": "1"
+    },
+    {
+      "detail": "Contrast failed for element",
+      "element": "recordings.retentionNotice",
+      "frame": "(24.0, 564.0, 327.0, 72.0)",
+      "label": "Срок хранения записей задаётся сервером. Доступ проверяется перед воспроизведением и скачиванием.",
+      "resolution": "outside retest viewport: no contrast measurement",
+      "screen": "recordings-visible-retest",
+      "summary": "Contrast failed",
+      "type": "1"
+    },
+    {
+      "detail": "Contrast failed for element",
+      "element": "",
+      "frame": "(146.0, 36.0, 93.5, 34.0)",
+      "label": "Обсуждение проекта",
+      "resolution": "outside retest viewport: no contrast measurement",
+      "screen": "recordings-visible-retest",
+      "summary": "Contrast failed",
+      "type": "1"
+    }
+  ],
+  "note": "outsideRetestViewport findings are retained coverage gaps, not successful contrast measurements; AX5 layout PNG does not measure contrast."
+}

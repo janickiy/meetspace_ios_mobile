@@ -142,6 +142,76 @@
         1320,
         2868
       ]
+    },
+    {
+      "file": "screenshots/iPad26-stage08-large-text-settings.png",
+      "exportedFileName": "E97C69E9-EE88-4207-B78D-02ADA7BC1D8C.png",
+      "sha256": "c804e6434ac8c855e06d453112576fac765bfb74e35cefeac9c43f90f817681d",
+      "device": "iPad Pro 13-inch (M5)",
+      "pixels": [
+        2064,
+        2752
+      ]
+    },
+    {
+      "file": "screenshots/iPad26-stage08-large-text-folders.png",
+      "exportedFileName": "EDAFEE20-DC93-4F69-8C49-A78B171D425A.png",
+      "sha256": "9d8bf69b2f532f12cb3589eedbee80dd0d3b72c1d9a53fbbfa69e1e1f5f39673",
+      "device": "iPad Pro 13-inch (M5)",
+      "pixels": [
+        2064,
+        2752
+      ]
+    },
+    {
+      "file": "screenshots/iPad26-stage08-large-text-recordings.png",
+      "exportedFileName": "60C278BF-7E5B-4440-BF7D-C82BB681BBC1.png",
+      "sha256": "f51282da6f1e06750681942536d0e980cb1e6d3b71819e6c45cb5703296dfcc7",
+      "device": "iPad Pro 13-inch (M5)",
+      "pixels": [
+        2064,
+        2752
+      ]
+    },
+    {
+      "file": "screenshots/iPad26-stage08-large-text-calendar.png",
+      "exportedFileName": "C066CCBE-CB5D-435A-A136-FA71561A8D2D.png",
+      "sha256": "8030804889c939ae6169b379baf176db627a2b80b3fd2bbcc45bef6128e4fa44",
+      "device": "iPad Pro 13-inch (M5)",
+      "pixels": [
+        2064,
+        2752
+      ]
+    },
+    {
+      "file": "screenshots/iPad26-stage08-large-text-profile.png",
+      "exportedFileName": "0D6EDEED-2A65-4BC6-A562-2FBC17083D68.png",
+      "sha256": "22debf63101fc01fbc0677fc5700462c812165cd5e0b40aa59eee5275fa529bd",
+      "device": "iPad Pro 13-inch (M5)",
+      "pixels": [
+        2064,
+        2752
+      ]
+    },
+    {
+      "file": "screenshots/iPad26-stage08-large-text-messages.png",
+      "exportedFileName": "4DA956AC-B709-4322-BF9E-438437E81EB2.png",
+      "sha256": "929cdd5fda88ee8c77c9f3ff4123ff43baa613a23791e7d5c6b93711cdff5b34",
+      "device": "iPad Pro 13-inch (M5)",
+      "pixels": [
+        2064,
+        2752
+      ]
+    },
+    {
+      "file": "screenshots/iPad26-stage08-large-text-welcome.png",
+      "exportedFileName": "1CC5D02E-8E3C-4E8C-937D-BE60588D5419.png",
+      "sha256": "c8066808041c8c8126d266d78371c9f7799fdfd8fd1f416ff5d393cb54f60e0a",
+      "device": "iPad Pro 13-inch (M5)",
+      "pixels": [
+        2064,
+        2752
+      ]
     }
   ]
 }

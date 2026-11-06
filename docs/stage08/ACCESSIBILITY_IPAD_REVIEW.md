@@ -6,13 +6,13 @@
 
 - CI2: [run 42233879641](https://github.com/janickiy/meetspace_ios_mobile/actions/runs/42233879641), source `acc193a`.
 - Artifact `results-iPad26`, сценарий `testAccessibilityStage08LargeTextLiveFlow`, launch category `UICTContentSizeCategoryAccessibilityXXXL` (AX5).
-- Environment JSON: `/tmp/meetspace-stage08-ci-42233879641/results-iPad26/iPad26-environment.json`. Он сообщает iPad Pro 13-inch (M5), iPadOS simulator 26.2, Xcode 26.3 (17C529), scope `audit`.
+- Environment JSON: [iPad26-environment.json](evidence/accessibility-attempt02/iPad26-environment.json). Он сообщает iPad Pro 13-inch (M5), iPadOS simulator 26.2, Xcode 26.3 (17C529), scope `audit`.
 - Manifest: `/tmp/meetspace-stage08-ci-42233879641/results-iPad26/iPad26-screenshots/manifest.json`.
 - Все PNG — **2064 × 2752 pixels**, portrait. Ниже `y` — приблизительная доля высоты полного изображения, отсчитанная сверху; это визуальные границы, **не измеренные AX frames или hit regions**.
 
 Важно: `/tmp/iPad26-issues.json` содержит 53 записи и после JSON-декодирования **полностью совпадает** с `evidence/accessibility-attempt01/iPad26-issues.json`. Это raw **CI1**, а не новый аудит CI2. Его локальный SHA256 — `060141277c1bf4cb7a57b24959b3dd9962ecf56afda258cfdcdda82f46fb45d3` (форматирование отличается от файла в Git). В просмотренном CI2 manifest не найдено attachments с issues/progress. Поэтому документ сопоставляет CI1 findings с более поздними CI2 AX5 screenshots; он **не утверждает повторение или исчезновение findings в CI2**.
 
-Пути ниже относятся к реальным скачанным artifacts. Для долговременного хранения после очистки `/tmp` следует использовать CI artifact/manifest и приведённые SHA256; переименование PNG не меняет их содержимое.
+Все семь просмотренных PNG сохранены без изменений в репозитории; [manifest](evidence/accessibility-attempt02/manifest.json) связывает их имена с исходными attachment filenames и SHA256.
 
 | Экран | Exported filename в указанной папке screenshots | SHA256 |
 | --- | --- | --- |
@@ -28,7 +28,7 @@
 
 ### Welcome
 
-[Просмотренный PNG](/tmp/meetspace-stage08-ci-42233879641/results-iPad26/iPad26-screenshots/1CC5D02E-8E3C-4E8C-937D-BE60588D5419.png).
+[Просмотренный PNG](evidence/accessibility-attempt02/screenshots/iPad26-stage08-large-text-welcome.png).
 
 `Команда ближе.\nИдей больше.` полностью виден примерно в области `y=0.17…0.31`: строки «Команда», «ближе.», «Идей больше.». Нет обрезанных букв, наложения соседнего текста или многоточия. Весь заголовок расположен внутри контента, далеко от нижней границы viewport. Это прямое визуальное подтверждение для узкого случая `welcome.heading + textClipped` на данном iPad/runtime/AX5.
 
@@ -38,7 +38,7 @@
 
 ### Calendar
 
-[Просмотренный PNG](/tmp/meetspace-stage08-ci-42233879641/results-iPad26/iPad26-screenshots/C066CCBE-CB5D-435A-A136-FA71561A8D2D.png).
+[Просмотренный PNG](evidence/accessibility-attempt02/screenshots/iPad26-stage08-large-text-calendar.png).
 
 Полностью видны:
 
@@ -54,7 +54,7 @@
 
 ### Recordings
 
-[Просмотренный PNG](/tmp/meetspace-stage08-ci-42233879641/results-iPad26/iPad26-screenshots/60C278BF-7E5B-4440-BF7D-C82BB681BBC1.png).
+[Просмотренный PNG](evidence/accessibility-attempt02/screenshots/iPad26-stage08-large-text-recordings.png).
 
 Заголовок, поиск и оба menu filters видны целиком. Caption «Поиск и фильтры применяются к загруженным записям.» полностью помещается около `y=0.28…0.30`.
 
@@ -64,7 +64,7 @@
 
 ### Folders
 
-[Просмотренный PNG](/tmp/meetspace-stage08-ci-42233879641/results-iPad26/iPad26-screenshots/EDAFEE20-DC93-4F69-8C49-A78B171D425A.png).
+[Просмотренный PNG](evidence/accessibility-attempt02/screenshots/iPad26-stage08-large-text-folders.png).
 
 Целиком видны eyebrow «Личное пространство» (`y≈0.08…0.10`), subtitle «Соберите встречи и чаты в удобные папки.» (`y≈0.12…0.15`), create action, empty state и пояснение «Папки видны только вам. Удаление папки не удаляет встречи и чаты.» (`y≈0.28…0.34`, две строки). Нет обрезанных окончаний.
 
@@ -72,7 +72,7 @@ CI1 partial-Dynamic-Type finding относится **к eyebrow «Личное 
 
 ### Messages
 
-[Просмотренный PNG](/tmp/meetspace-stage08-ci-42233879641/results-iPad26/iPad26-screenshots/4DA956AC-B709-4322-BF9E-438437E81EB2.png).
+[Просмотренный PNG](evidence/accessibility-attempt02/screenshots/iPad26-stage08-large-text-messages.png).
 
 Полностью видны heading, server, connection status, search, два фильтра и одна conversation row. Текст «Переподключение…» содержит штатное многоточие в самом localized string; его наличие не доказывает truncation. Название и preview чата видны полностью. Это не проверка history/composer или списка других разговоров.
 
@@ -80,13 +80,13 @@ CI1 partial-Dynamic-Type finding относится **к eyebrow «Личное 
 
 ### Profile
 
-[Просмотренный PNG](/tmp/meetspace-stage08-ci-42233879641/results-iPad26/iPad26-screenshots/0D6EDEED-2A65-4BC6-A562-2FBC17083D68.png).
+[Просмотренный PNG](evidence/accessibility-attempt02/screenshots/iPad26-stage08-large-text-profile.png).
 
 Видны полностью heading, имя/email/server, настройки аккаунта, три feature links, heading аккаунтов, одна account row, add action и подсказка лимита. Заголовок уведомлений виден, но следующий toggle/текст начинается у нижней границы и обрезается viewport. **Не проверены** нижние notification descriptions, appearance picker, licenses и delete account action. Decorative avatar также показывает точки; этот review не утверждает полноту его инициалов.
 
 ### Settings
 
-[Просмотренный PNG](/tmp/meetspace-stage08-ci-42233879641/results-iPad26/iPad26-screenshots/E97C69E9-EE88-4207-B78D-02ADA7BC1D8C.png).
+[Просмотренный PNG](evidence/accessibility-attempt02/screenshots/iPad26-stage08-large-text-settings.png).
 
 При AX5 используется компактный section list; все четыре названия полностью видны, примерно `y=0.08…0.34`. Sidebar отсутствует по адаптивному правилу. **Не проверены** формы внутри этих четырёх разделов, profile input, Save, device metadata и server capabilities; данный снимок их не содержит.
 

@@ -1,0 +1,55 @@
+{
+  "runID": 42263390594,
+  "sourceCommit": "e0a37748eb865b84dddf3da6339d16e0d8e1a0fe",
+  "label": "iPad18",
+  "result": "FAIL",
+  "summary": {
+    "passedTests": 14,
+    "failedTests": 1,
+    "skippedTests": 0,
+    "totalTestCount": 15
+  },
+  "failedTestNames": [
+    "testStage08AccountDeletionRequiresPasswordAndConfirmation()"
+  ],
+  "sourceSummary": {
+    "attachment": "iPad18-summary.json",
+    "sha256": "39ecde5eb88d7e54deabb08b0d797849cd88a02fdd821d46bcc25447486d8e37"
+  },
+  "sourceFailureAX": {
+    "attachment": "D2282512-42AE-4272-BB7A-07108E75D6E8.txt",
+    "sha256": "957fda5833a640540e94e02e45e2e3e9828411ca628d02e7f547804a3d56a7d5"
+  },
+  "sourceVideo": {
+    "attachment": "3BBE7DA5-403C-4B0D-815C-C30788C45B8C.mp4",
+    "sha256": "bb5a9b79a6a264a538b4c3a2e1ce18f3e1f88daa2b1682ed3083c57d18225754",
+    "startTimestamp": 1793988547.658
+  },
+  "retainedFiles": [
+    {
+      "file": "attempt10/iPad18-keyboard-onboarding.txt",
+      "sha256": "8260b9a99450dfa10decb6adfd399d0ecae16bfd93639ddcf6713f193102a9fe"
+    },
+    {
+      "file": "attempt10/iPad18-keyboard-onboarding.png",
+      "sha256": "286deb0b6ab3af76188bffa3e3da2fb9703b0503f3b8925e26cb880550faa66a"
+    }
+  ],
+  "videoFrame": {
+    "file": "attempt10/iPad18-keyboard-onboarding.png",
+    "secondsFromStart": 130.0,
+    "method": "AVAssetImageGenerator; zero before/after tolerance; no crop or edit"
+  },
+  "observations": [
+    "The native more key tap completed, then the iPad key-flick onboarding overlay replaced ordinary keyboard keys.",
+    "The failure AX contains the exact Russian tutorial text and one Keyboard Button with label ОК (U+041E U+041A), no identifier. Its child StaticText shares that label; the selector must be restricted to Button.",
+    "The expected hyphen key is not exposed while onboarding is shown. This failure does not establish a different identifier or character for the hyphen.",
+    "The first password input stopped before submission/confirmation/DELETE; strict fixture guard is unchanged and was not reached."
+  ],
+  "otherCompletedTests": {
+    "testAccessibilityStage08CoreScreens": "PASS;434.632s",
+    "testConferenceCreateMediaControlsChatAndLeave": "PASS;134.474s"
+  },
+  "candidate": "Root preparing exact observed tutorial guard plus native OK tap when expected key is absent after more; native verification PENDING.",
+  "boundary": "One completed iPad18 compatibility result on e0a37748; other CI10 job results not inferred. Does not test local push-ordering patch0216c99/CI11, APNs delivery, real production account deletion or physical devices."
+}

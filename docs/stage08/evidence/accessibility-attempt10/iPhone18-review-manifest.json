@@ -1,0 +1,661 @@
+{
+  "run": "42263390594",
+  "runURL": "https://github.com/janickiy/meetspace_ios_mobile/actions/runs/42263390594",
+  "sourceSHA": "e0a37748eb865b84dddf3da6339d16e0d8e1a0fe",
+  "reviewedOn": "2026-11-06",
+  "device": "iPhone SE (3rd generation)",
+  "runtime": "iOS 18.6",
+  "displayPoints": [
+    375,
+    667
+  ],
+  "imagesUnmodified": true,
+  "normalPNGCount": 7,
+  "visibleRetestPNGCount": 3,
+  "AX5PNGCount": 16,
+  "allCopiedPNGVisuallyReviewed": true,
+  "files": [
+    {
+      "file": "iPhone18-stage08-accessibility-issues.json",
+      "sourceFile": "/tmp/meetspace-stage08-ci-42263390594/results-iPhone18/iPhone18-screenshots/DD3C64A2-6A22-405E-931A-5CE7A6103105.json",
+      "sha256": "3c76fdf0bc7ab30850f437d65b14c1101a21ec52a1fb7cf1f710baad1e386ed5",
+      "testIdentifier": "FoundationUITests/testAccessibilityStage08CoreScreens()",
+      "attachment": {
+        "configurationName": "Test Scheme Action",
+        "deviceId": "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName": "iPhone SE (3rd generation)",
+        "exportedFileName": "DD3C64A2-6A22-405E-931A-5CE7A6103105.json",
+        "isAssociatedWithFailure": false,
+        "suggestedHumanReadableName": "stage08-accessibility-issues_0_CBCA5CFC-BB5C-4789-B99F-32692507C99D.json",
+        "timestamp": 1793988203.153
+      }
+    },
+    {
+      "file": "iPhone18-stage08-audit-progress-settings.json",
+      "sourceFile": "/tmp/meetspace-stage08-ci-42263390594/results-iPhone18/iPhone18-screenshots/6FD5BD77-A807-4788-BDB9-0DBA4F223232.json",
+      "sha256": "3c76fdf0bc7ab30850f437d65b14c1101a21ec52a1fb7cf1f710baad1e386ed5",
+      "testIdentifier": "FoundationUITests/testAccessibilityStage08CoreScreens()",
+      "attachment": {
+        "configurationName": "Test Scheme Action",
+        "deviceId": "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName": "iPhone SE (3rd generation)",
+        "exportedFileName": "6FD5BD77-A807-4788-BDB9-0DBA4F223232.json",
+        "isAssociatedWithFailure": false,
+        "suggestedHumanReadableName": "stage08-audit-progress-settings_0_ECB005A5-4AEC-4F55-9F12-664E597A0934.json",
+        "timestamp": 1793988203.149
+      }
+    },
+    {
+      "file": "screenshots/iPhone18-stage08-accessibility-settings.png",
+      "sourceFile": "/tmp/meetspace-stage08-ci-42263390594/results-iPhone18/iPhone18-screenshots/3586E7E6-E4BC-4837-BF8B-9EFDD2167466.png",
+      "sha256": "c1df6bee643ee9449eb2436222e3d7f81b60170a6fc21f97ad0c8d13c129e3c4",
+      "testIdentifier": "FoundationUITests/testAccessibilityStage08CoreScreens()",
+      "attachment": {
+        "configurationName": "Test Scheme Action",
+        "deviceId": "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName": "iPhone SE (3rd generation)",
+        "exportedFileName": "3586E7E6-E4BC-4837-BF8B-9EFDD2167466.png",
+        "isAssociatedWithFailure": false,
+        "suggestedHumanReadableName": "stage08-accessibility-settings_0_91BEC687-77F9-4046-8B2D-D9FE1DAE7CEF.png",
+        "timestamp": 1793988184.323
+      },
+      "pixels": [
+        750,
+        1334
+      ]
+    },
+    {
+      "file": "iPhone18-stage08-audit-progress-folders.json",
+      "sourceFile": "/tmp/meetspace-stage08-ci-42263390594/results-iPhone18/iPhone18-screenshots/B5CFD887-18D6-4B31-9585-331989A1B97B.json",
+      "sha256": "3c76fdf0bc7ab30850f437d65b14c1101a21ec52a1fb7cf1f710baad1e386ed5",
+      "testIdentifier": "FoundationUITests/testAccessibilityStage08CoreScreens()",
+      "attachment": {
+        "configurationName": "Test Scheme Action",
+        "deviceId": "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName": "iPhone SE (3rd generation)",
+        "exportedFileName": "B5CFD887-18D6-4B31-9585-331989A1B97B.json",
+        "isAssociatedWithFailure": false,
+        "suggestedHumanReadableName": "stage08-audit-progress-folders_0_5FFD7E43-3F0F-43D3-9212-6C8774904423.json",
+        "timestamp": 1793988174.897
+      }
+    },
+    {
+      "file": "screenshots/iPhone18-stage08-accessibility-folders.png",
+      "sourceFile": "/tmp/meetspace-stage08-ci-42263390594/results-iPhone18/iPhone18-screenshots/D3FE658B-135E-4693-AE9C-03E65409A548.png",
+      "sha256": "fa0e8078a439703da6b13a3e09cc1861439b41a3f3f01d71d91a36d4f42542ba",
+      "testIdentifier": "FoundationUITests/testAccessibilityStage08CoreScreens()",
+      "attachment": {
+        "configurationName": "Test Scheme Action",
+        "deviceId": "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName": "iPhone SE (3rd generation)",
+        "exportedFileName": "D3FE658B-135E-4693-AE9C-03E65409A548.png",
+        "isAssociatedWithFailure": false,
+        "suggestedHumanReadableName": "stage08-accessibility-folders_0_0C1193D1-3D66-4723-A005-50CB9AB35790.png",
+        "timestamp": 1793988145.684
+      },
+      "pixels": [
+        750,
+        1334
+      ]
+    },
+    {
+      "file": "iPhone18-stage08-audit-progress-recordings.json",
+      "sourceFile": "/tmp/meetspace-stage08-ci-42263390594/results-iPhone18/iPhone18-screenshots/B219FDFE-400D-4FA4-945C-28AF85B7139D.json",
+      "sha256": "14802339a3bf41e72a6a47991217ba5338928562746c917ac2411ea2c4c945bf",
+      "testIdentifier": "FoundationUITests/testAccessibilityStage08CoreScreens()",
+      "attachment": {
+        "configurationName": "Test Scheme Action",
+        "deviceId": "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName": "iPhone SE (3rd generation)",
+        "exportedFileName": "B219FDFE-400D-4FA4-945C-28AF85B7139D.json",
+        "isAssociatedWithFailure": false,
+        "suggestedHumanReadableName": "stage08-audit-progress-recordings_0_05BF1427-6FA1-442A-93D9-B9FFFD966766.json",
+        "timestamp": 1793988127.208
+      }
+    },
+    {
+      "file": "screenshots/iPhone18-stage08-accessibility-recordings-visible-recording.status.77777777-7777-4777-8777-777777777773.png",
+      "sourceFile": "/tmp/meetspace-stage08-ci-42263390594/results-iPhone18/iPhone18-screenshots/58CCD656-1AF2-46BB-92F7-83F8DA578AFD.png",
+      "sha256": "901a7dbce4416da88c6461173408f6a4c24cc6026466496b579a8180316c7268",
+      "testIdentifier": "FoundationUITests/testAccessibilityStage08CoreScreens()",
+      "attachment": {
+        "configurationName": "Test Scheme Action",
+        "deviceId": "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName": "iPhone SE (3rd generation)",
+        "exportedFileName": "58CCD656-1AF2-46BB-92F7-83F8DA578AFD.png",
+        "isAssociatedWithFailure": false,
+        "suggestedHumanReadableName": "stage08-accessibility-recordings-visible-recording.status_0_4D6D27CF-0D5D-48FB-B91C-CBF315D12167.77777777-7777-4777-8777-777777777773",
+        "timestamp": 1793988117.717
+      },
+      "pixels": [
+        750,
+        1334
+      ]
+    },
+    {
+      "file": "screenshots/iPhone18-stage08-accessibility-recordings.png",
+      "sourceFile": "/tmp/meetspace-stage08-ci-42263390594/results-iPhone18/iPhone18-screenshots/DA561975-E8F0-4D89-845A-533D1CB329F7.png",
+      "sha256": "fbaf537b1d75a2fd12ee1eb33826e7d76fecd4fa991a516c5ce8b9fbe9900036",
+      "testIdentifier": "FoundationUITests/testAccessibilityStage08CoreScreens()",
+      "attachment": {
+        "configurationName": "Test Scheme Action",
+        "deviceId": "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName": "iPhone SE (3rd generation)",
+        "exportedFileName": "DA561975-E8F0-4D89-845A-533D1CB329F7.png",
+        "isAssociatedWithFailure": false,
+        "suggestedHumanReadableName": "stage08-accessibility-recordings_0_33F83EA4-AE16-42C2-B74D-8F4486C21A68.png",
+        "timestamp": 1793988067.314
+      },
+      "pixels": [
+        750,
+        1334
+      ]
+    },
+    {
+      "file": "iPhone18-stage08-audit-progress-calendar.json",
+      "sourceFile": "/tmp/meetspace-stage08-ci-42263390594/results-iPhone18/iPhone18-screenshots/45583049-DB34-4879-B645-2677C12144BA.json",
+      "sha256": "66671e0c38c640dac57671755e03b82dc2d8736484514c57ede52ec2833b1c42",
+      "testIdentifier": "FoundationUITests/testAccessibilityStage08CoreScreens()",
+      "attachment": {
+        "configurationName": "Test Scheme Action",
+        "deviceId": "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName": "iPhone SE (3rd generation)",
+        "exportedFileName": "45583049-DB34-4879-B645-2677C12144BA.json",
+        "isAssociatedWithFailure": false,
+        "suggestedHumanReadableName": "stage08-audit-progress-calendar_0_952F2E16-1F76-44B3-980A-9C4BCCF6C523.json",
+        "timestamp": 1793988040.463
+      }
+    },
+    {
+      "file": "screenshots/iPhone18-stage08-accessibility-calendar-visible-calendar.weekday.5.png",
+      "sourceFile": "/tmp/meetspace-stage08-ci-42263390594/results-iPhone18/iPhone18-screenshots/A6A6516F-8D75-44A0-B779-3AE977520DC2.png",
+      "sha256": "c5b61517c1dbc76184b07b89de08f0ecef418e7f7b06c5eb052dec9c8523b578",
+      "testIdentifier": "FoundationUITests/testAccessibilityStage08CoreScreens()",
+      "attachment": {
+        "configurationName": "Test Scheme Action",
+        "deviceId": "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName": "iPhone SE (3rd generation)",
+        "exportedFileName": "A6A6516F-8D75-44A0-B779-3AE977520DC2.png",
+        "isAssociatedWithFailure": false,
+        "suggestedHumanReadableName": "stage08-accessibility-calendar-visible-calendar.weekday_0_A7683457-AEA1-4FC6-A1DF-60CD2395BD29.5",
+        "timestamp": 1793988034.695
+      },
+      "pixels": [
+        750,
+        1334
+      ]
+    },
+    {
+      "file": "screenshots/iPhone18-stage08-accessibility-calendar.png",
+      "sourceFile": "/tmp/meetspace-stage08-ci-42263390594/results-iPhone18/iPhone18-screenshots/ABE1A5E7-2F10-40F9-BC2F-BE1368D83752.png",
+      "sha256": "a78bb115191a18372d500ec85dea377af1bcdfa9b78581810a3ed43e4f936907",
+      "testIdentifier": "FoundationUITests/testAccessibilityStage08CoreScreens()",
+      "attachment": {
+        "configurationName": "Test Scheme Action",
+        "deviceId": "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName": "iPhone SE (3rd generation)",
+        "exportedFileName": "ABE1A5E7-2F10-40F9-BC2F-BE1368D83752.png",
+        "isAssociatedWithFailure": false,
+        "suggestedHumanReadableName": "stage08-accessibility-calendar_0_BD49F294-A4E5-45F9-8ED1-6BEB98C4BEC5.png",
+        "timestamp": 1793987967.015
+      },
+      "pixels": [
+        750,
+        1334
+      ]
+    },
+    {
+      "file": "iPhone18-stage08-audit-progress-profile.json",
+      "sourceFile": "/tmp/meetspace-stage08-ci-42263390594/results-iPhone18/iPhone18-screenshots/043C1A2F-34FE-402A-A71B-68E4D2692009.json",
+      "sha256": "019c836035c7b38195f603693c32dd8502a655cb98c137434db809c41af720ef",
+      "testIdentifier": "FoundationUITests/testAccessibilityStage08CoreScreens()",
+      "attachment": {
+        "configurationName": "Test Scheme Action",
+        "deviceId": "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName": "iPhone SE (3rd generation)",
+        "exportedFileName": "043C1A2F-34FE-402A-A71B-68E4D2692009.json",
+        "isAssociatedWithFailure": false,
+        "suggestedHumanReadableName": "stage08-audit-progress-profile_0_C9CD33F7-E0DC-4B26-9D2C-937165CBC492.json",
+        "timestamp": 1793987840.838
+      }
+    },
+    {
+      "file": "screenshots/iPhone18-stage08-accessibility-profile-visible-addAccount.png",
+      "sourceFile": "/tmp/meetspace-stage08-ci-42263390594/results-iPhone18/iPhone18-screenshots/976EF831-23FA-43AE-B06F-719FEB152A1C.png",
+      "sha256": "0b0af62221fb8f6cbb8c13a92b3872e6c9b4385b8d91e4f15d393454470925cd",
+      "testIdentifier": "FoundationUITests/testAccessibilityStage08CoreScreens()",
+      "attachment": {
+        "configurationName": "Test Scheme Action",
+        "deviceId": "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName": "iPhone SE (3rd generation)",
+        "exportedFileName": "976EF831-23FA-43AE-B06F-719FEB152A1C.png",
+        "isAssociatedWithFailure": false,
+        "suggestedHumanReadableName": "stage08-accessibility-profile-visible-addAccount_0_D26DF68C-1898-4E29-98A7-F33E6B86ACDA.png",
+        "timestamp": 1793987837.405
+      },
+      "pixels": [
+        750,
+        1334
+      ]
+    },
+    {
+      "file": "screenshots/iPhone18-stage08-accessibility-profile.png",
+      "sourceFile": "/tmp/meetspace-stage08-ci-42263390594/results-iPhone18/iPhone18-screenshots/BF7E6005-19F3-433F-A602-2730156795F3.png",
+      "sha256": "66347e6c0d53a5bbe0c6b74c3dde1cb6d54362f1d992f94d8f7319f09085bf54",
+      "testIdentifier": "FoundationUITests/testAccessibilityStage08CoreScreens()",
+      "attachment": {
+        "configurationName": "Test Scheme Action",
+        "deviceId": "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName": "iPhone SE (3rd generation)",
+        "exportedFileName": "BF7E6005-19F3-433F-A602-2730156795F3.png",
+        "isAssociatedWithFailure": false,
+        "suggestedHumanReadableName": "stage08-accessibility-profile_0_B049C825-024A-4374-9847-DB97B653D0A0.png",
+        "timestamp": 1793987793.587
+      },
+      "pixels": [
+        750,
+        1334
+      ]
+    },
+    {
+      "file": "iPhone18-stage08-audit-progress-messages.json",
+      "sourceFile": "/tmp/meetspace-stage08-ci-42263390594/results-iPhone18/iPhone18-screenshots/E86B8E33-116E-42D9-976A-3F28C4D8EE46.json",
+      "sha256": "470ccac084d42e57ab5e88387049f92b4af34a371dc9dc655939714c3fc5b77a",
+      "testIdentifier": "FoundationUITests/testAccessibilityStage08CoreScreens()",
+      "attachment": {
+        "configurationName": "Test Scheme Action",
+        "deviceId": "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName": "iPhone SE (3rd generation)",
+        "exportedFileName": "E86B8E33-116E-42D9-976A-3F28C4D8EE46.json",
+        "isAssociatedWithFailure": false,
+        "suggestedHumanReadableName": "stage08-audit-progress-messages_0_F3594EC0-FD56-4A28-B063-63CC1E1B99B1.json",
+        "timestamp": 1793987789.835
+      }
+    },
+    {
+      "file": "screenshots/iPhone18-stage08-accessibility-messages.png",
+      "sourceFile": "/tmp/meetspace-stage08-ci-42263390594/results-iPhone18/iPhone18-screenshots/5278F7A1-A107-411B-B94C-D2A3C88350DB.png",
+      "sha256": "68b993ed5616b08e33b9897d8c839e6baf1a1d4a40059977dac5fa3977de3115",
+      "testIdentifier": "FoundationUITests/testAccessibilityStage08CoreScreens()",
+      "attachment": {
+        "configurationName": "Test Scheme Action",
+        "deviceId": "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName": "iPhone SE (3rd generation)",
+        "exportedFileName": "5278F7A1-A107-411B-B94C-D2A3C88350DB.png",
+        "isAssociatedWithFailure": false,
+        "suggestedHumanReadableName": "stage08-accessibility-messages_0_C4889421-44C0-45FE-B0B6-137F3F9291C4.png",
+        "timestamp": 1793987768.641
+      },
+      "pixels": [
+        750,
+        1334
+      ]
+    },
+    {
+      "file": "iPhone18-stage08-audit-progress-welcome.json",
+      "sourceFile": "/tmp/meetspace-stage08-ci-42263390594/results-iPhone18/iPhone18-screenshots/B3E38917-9BD6-41E9-B7DE-9D7EDF3F7A0A.json",
+      "sha256": "728400914f877e53b58070b9633dc1e9c318f6cdf603e4ab85da1f6a23bd3df9",
+      "testIdentifier": "FoundationUITests/testAccessibilityStage08CoreScreens()",
+      "attachment": {
+        "configurationName": "Test Scheme Action",
+        "deviceId": "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName": "iPhone SE (3rd generation)",
+        "exportedFileName": "B3E38917-9BD6-41E9-B7DE-9D7EDF3F7A0A.json",
+        "isAssociatedWithFailure": false,
+        "suggestedHumanReadableName": "stage08-audit-progress-welcome_0_79B57A92-4F14-40E6-8DD3-A38B12C134A6.json",
+        "timestamp": 1793987653.02
+      }
+    },
+    {
+      "file": "screenshots/iPhone18-stage08-accessibility-welcome.png",
+      "sourceFile": "/tmp/meetspace-stage08-ci-42263390594/results-iPhone18/iPhone18-screenshots/C1B12D69-6803-45B2-9111-388AF2CE9199.png",
+      "sha256": "dc6b777c451c86f6316756ba8c9dc51d010d0b5c380e03d6c2227691a1f44802",
+      "testIdentifier": "FoundationUITests/testAccessibilityStage08CoreScreens()",
+      "attachment": {
+        "configurationName": "Test Scheme Action",
+        "deviceId": "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName": "iPhone SE (3rd generation)",
+        "exportedFileName": "C1B12D69-6803-45B2-9111-388AF2CE9199.png",
+        "isAssociatedWithFailure": false,
+        "suggestedHumanReadableName": "stage08-accessibility-welcome_0_ED4F4CED-C5EE-4416-AA69-086DBDD353C9.png",
+        "timestamp": 1793987630.864
+      },
+      "pixels": [
+        750,
+        1334
+      ]
+    },
+    {
+      "file": "screenshots/iPhone18-stage08-large-text-settings.png",
+      "sourceFile": "/tmp/meetspace-stage08-ci-42263390594/results-iPhone18/iPhone18-screenshots/EB41D5E9-2C57-4C7C-B93B-D4AB93FF29E2.png",
+      "sha256": "7ec1c6d182f35e4ebde8061eff94a4439e638a6b17a59a47a1932f77144089f5",
+      "testIdentifier": "FoundationUITests/testAccessibilityStage08LargeTextLiveFlow()",
+      "attachment": {
+        "configurationName": "Test Scheme Action",
+        "deviceId": "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName": "iPhone SE (3rd generation)",
+        "exportedFileName": "EB41D5E9-2C57-4C7C-B93B-D4AB93FF29E2.png",
+        "isAssociatedWithFailure": false,
+        "suggestedHumanReadableName": "stage08-large-text-settings_0_A19B67C3-3B8C-4973-8A27-23427D6AFEA6.png",
+        "timestamp": 1793988438.886
+      },
+      "pixels": [
+        750,
+        1334
+      ]
+    },
+    {
+      "file": "screenshots/iPhone18-stage08-large-text-folders.png",
+      "sourceFile": "/tmp/meetspace-stage08-ci-42263390594/results-iPhone18/iPhone18-screenshots/167E46D9-1A31-4F1C-9404-FC1B473E2970.png",
+      "sha256": "462cf4b3a6e79fce372377d2058a5abf3ff2dd8b81f2e379d3788d42a4e2cb51",
+      "testIdentifier": "FoundationUITests/testAccessibilityStage08LargeTextLiveFlow()",
+      "attachment": {
+        "configurationName": "Test Scheme Action",
+        "deviceId": "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName": "iPhone SE (3rd generation)",
+        "exportedFileName": "167E46D9-1A31-4F1C-9404-FC1B473E2970.png",
+        "isAssociatedWithFailure": false,
+        "suggestedHumanReadableName": "stage08-large-text-folders_0_E6A7C970-3F21-4533-AAD4-B4D32A595480.png",
+        "timestamp": 1793988431.82
+      },
+      "pixels": [
+        750,
+        1334
+      ]
+    },
+    {
+      "file": "screenshots/iPhone18-stage08-large-text-recordings-footer.png",
+      "sourceFile": "/tmp/meetspace-stage08-ci-42263390594/results-iPhone18/iPhone18-screenshots/D030EF4A-70CB-4B11-958A-D12317BC9692.png",
+      "sha256": "ef38e76663137437db2f1fb99a3fb876a344655fbc038efb1ab9d3f399d568b0",
+      "testIdentifier": "FoundationUITests/testAccessibilityStage08LargeTextLiveFlow()",
+      "attachment": {
+        "configurationName": "Test Scheme Action",
+        "deviceId": "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName": "iPhone SE (3rd generation)",
+        "exportedFileName": "D030EF4A-70CB-4B11-958A-D12317BC9692.png",
+        "isAssociatedWithFailure": false,
+        "suggestedHumanReadableName": "stage08-large-text-recordings-footer_0_B1542099-74F2-4737-9E11-CA021160F1A2.png",
+        "timestamp": 1793988423.702
+      },
+      "pixels": [
+        750,
+        1334
+      ]
+    },
+    {
+      "file": "screenshots/iPhone18-stage08-large-text-recording-4.png",
+      "sourceFile": "/tmp/meetspace-stage08-ci-42263390594/results-iPhone18/iPhone18-screenshots/D6FE9340-3A94-4986-8008-115D08B12FE8.png",
+      "sha256": "12162bfc055ee2e75604b1fc9edde2e023d11b3b3f0fa441d179210acb32513c",
+      "testIdentifier": "FoundationUITests/testAccessibilityStage08LargeTextLiveFlow()",
+      "attachment": {
+        "configurationName": "Test Scheme Action",
+        "deviceId": "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName": "iPhone SE (3rd generation)",
+        "exportedFileName": "D6FE9340-3A94-4986-8008-115D08B12FE8.png",
+        "isAssociatedWithFailure": false,
+        "suggestedHumanReadableName": "stage08-large-text-recording-4_0_D5206837-3C9C-4DA0-A797-052C470C2383.png",
+        "timestamp": 1793988412.339
+      },
+      "pixels": [
+        750,
+        1334
+      ]
+    },
+    {
+      "file": "screenshots/iPhone18-stage08-large-text-recording-3.png",
+      "sourceFile": "/tmp/meetspace-stage08-ci-42263390594/results-iPhone18/iPhone18-screenshots/250D1F45-C187-4BC3-A520-FB37C3A0AE3D.png",
+      "sha256": "a73a74716ef49f85f8711427edaa9b742ba3257e49d99e1a668d2e2346cd60a5",
+      "testIdentifier": "FoundationUITests/testAccessibilityStage08LargeTextLiveFlow()",
+      "attachment": {
+        "configurationName": "Test Scheme Action",
+        "deviceId": "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName": "iPhone SE (3rd generation)",
+        "exportedFileName": "250D1F45-C187-4BC3-A520-FB37C3A0AE3D.png",
+        "isAssociatedWithFailure": false,
+        "suggestedHumanReadableName": "stage08-large-text-recording-3_0_BD099124-760B-481F-97DD-11B28BFE15B5.png",
+        "timestamp": 1793988401.244
+      },
+      "pixels": [
+        750,
+        1334
+      ]
+    },
+    {
+      "file": "screenshots/iPhone18-stage08-large-text-recording-2.png",
+      "sourceFile": "/tmp/meetspace-stage08-ci-42263390594/results-iPhone18/iPhone18-screenshots/C14764FA-E9DF-4717-96F7-6B62E9086C19.png",
+      "sha256": "c275dbf312eeb36c3497da51c4683022834669d7e696d3bf81049afe00bfc36e",
+      "testIdentifier": "FoundationUITests/testAccessibilityStage08LargeTextLiveFlow()",
+      "attachment": {
+        "configurationName": "Test Scheme Action",
+        "deviceId": "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName": "iPhone SE (3rd generation)",
+        "exportedFileName": "C14764FA-E9DF-4717-96F7-6B62E9086C19.png",
+        "isAssociatedWithFailure": false,
+        "suggestedHumanReadableName": "stage08-large-text-recording-2_0_9013C231-C2C1-4064-A9A7-77AAD7C4D1E3.png",
+        "timestamp": 1793988389.258
+      },
+      "pixels": [
+        750,
+        1334
+      ]
+    },
+    {
+      "file": "screenshots/iPhone18-stage08-large-text-recording-1.png",
+      "sourceFile": "/tmp/meetspace-stage08-ci-42263390594/results-iPhone18/iPhone18-screenshots/F6ECA419-69DF-4ECD-A45E-5AF6B6F05286.png",
+      "sha256": "bfac913538b8724f3a841acbadcac2b0a655d7d3764cfc9193af3b483c783b8d",
+      "testIdentifier": "FoundationUITests/testAccessibilityStage08LargeTextLiveFlow()",
+      "attachment": {
+        "configurationName": "Test Scheme Action",
+        "deviceId": "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName": "iPhone SE (3rd generation)",
+        "exportedFileName": "F6ECA419-69DF-4ECD-A45E-5AF6B6F05286.png",
+        "isAssociatedWithFailure": false,
+        "suggestedHumanReadableName": "stage08-large-text-recording-1_0_E3C57C68-0BEA-4BE9-81DF-BC00D120633E.png",
+        "timestamp": 1793988377.159
+      },
+      "pixels": [
+        750,
+        1334
+      ]
+    },
+    {
+      "file": "screenshots/iPhone18-stage08-large-text-recordings.png",
+      "sourceFile": "/tmp/meetspace-stage08-ci-42263390594/results-iPhone18/iPhone18-screenshots/B59AE784-8CF9-492D-B43E-BE03C00D2B4A.png",
+      "sha256": "b84e8ec5e57e06d8fafde4cf41829fbe9157bb18f4654b68e0d70002475037a8",
+      "testIdentifier": "FoundationUITests/testAccessibilityStage08LargeTextLiveFlow()",
+      "attachment": {
+        "configurationName": "Test Scheme Action",
+        "deviceId": "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName": "iPhone SE (3rd generation)",
+        "exportedFileName": "B59AE784-8CF9-492D-B43E-BE03C00D2B4A.png",
+        "isAssociatedWithFailure": false,
+        "suggestedHumanReadableName": "stage08-large-text-recordings_0_8D58F6F5-CE05-4AA2-B66D-2DB714509071.png",
+        "timestamp": 1793988365.906
+      },
+      "pixels": [
+        750,
+        1334
+      ]
+    },
+    {
+      "file": "screenshots/iPhone18-stage08-large-text-calendar-hour-18.png",
+      "sourceFile": "/tmp/meetspace-stage08-ci-42263390594/results-iPhone18/iPhone18-screenshots/8A0A776D-4B6E-4B8B-A96E-C6BC91ED7796.png",
+      "sha256": "0745c76b73be4bc02bf6c5f48ffc3a115d71d7dfc2bab951790b8152a7145de9",
+      "testIdentifier": "FoundationUITests/testAccessibilityStage08LargeTextLiveFlow()",
+      "attachment": {
+        "configurationName": "Test Scheme Action",
+        "deviceId": "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName": "iPhone SE (3rd generation)",
+        "exportedFileName": "8A0A776D-4B6E-4B8B-A96E-C6BC91ED7796.png",
+        "isAssociatedWithFailure": false,
+        "suggestedHumanReadableName": "stage08-large-text-calendar-hour-18_0_CF3A5333-DAC3-4BDD-8F0F-4AFE9F993ADD.png",
+        "timestamp": 1793988357.328
+      },
+      "pixels": [
+        750,
+        1334
+      ]
+    },
+    {
+      "file": "screenshots/iPhone18-stage08-large-text-calendar-hour-12.png",
+      "sourceFile": "/tmp/meetspace-stage08-ci-42263390594/results-iPhone18/iPhone18-screenshots/005488B9-263A-4E09-9334-B5209E654159.png",
+      "sha256": "a8f5017e822a8116a21a00e21f7d4466055f13111b2b76feafaa9c88c49c6eb4",
+      "testIdentifier": "FoundationUITests/testAccessibilityStage08LargeTextLiveFlow()",
+      "attachment": {
+        "configurationName": "Test Scheme Action",
+        "deviceId": "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName": "iPhone SE (3rd generation)",
+        "exportedFileName": "005488B9-263A-4E09-9334-B5209E654159.png",
+        "isAssociatedWithFailure": false,
+        "suggestedHumanReadableName": "stage08-large-text-calendar-hour-12_0_8934782B-568B-473D-BF9B-8A4CEBCD966C.png",
+        "timestamp": 1793988341.111
+      },
+      "pixels": [
+        750,
+        1334
+      ]
+    },
+    {
+      "file": "screenshots/iPhone18-stage08-large-text-calendar-hour-9.png",
+      "sourceFile": "/tmp/meetspace-stage08-ci-42263390594/results-iPhone18/iPhone18-screenshots/1E18723C-40CE-406F-B980-42A64C30A28D.png",
+      "sha256": "f65f0ba890b456629d7701917155e3ba2c76d4e1598e5d4398de52fdc37c988a",
+      "testIdentifier": "FoundationUITests/testAccessibilityStage08LargeTextLiveFlow()",
+      "attachment": {
+        "configurationName": "Test Scheme Action",
+        "deviceId": "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName": "iPhone SE (3rd generation)",
+        "exportedFileName": "1E18723C-40CE-406F-B980-42A64C30A28D.png",
+        "isAssociatedWithFailure": false,
+        "suggestedHumanReadableName": "stage08-large-text-calendar-hour-9_0_87FEF695-EF1B-44C5-9549-369B7754A2D0.png",
+        "timestamp": 1793988326.269
+      },
+      "pixels": [
+        750,
+        1334
+      ]
+    },
+    {
+      "file": "screenshots/iPhone18-stage08-large-text-calendar.png",
+      "sourceFile": "/tmp/meetspace-stage08-ci-42263390594/results-iPhone18/iPhone18-screenshots/8EFD5733-6A39-43E2-95AB-93AD9129B795.png",
+      "sha256": "2a93e088f6862e6f597f62b7e87c475c4993f6e167deb6159ec98ca3abfdd1bf",
+      "testIdentifier": "FoundationUITests/testAccessibilityStage08LargeTextLiveFlow()",
+      "attachment": {
+        "configurationName": "Test Scheme Action",
+        "deviceId": "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName": "iPhone SE (3rd generation)",
+        "exportedFileName": "8EFD5733-6A39-43E2-95AB-93AD9129B795.png",
+        "isAssociatedWithFailure": false,
+        "suggestedHumanReadableName": "stage08-large-text-calendar_0_9BEABA16-0885-4015-91BE-FA522748EED7.png",
+        "timestamp": 1793988303.052
+      },
+      "pixels": [
+        750,
+        1334
+      ]
+    },
+    {
+      "file": "screenshots/iPhone18-stage08-large-text-profile.png",
+      "sourceFile": "/tmp/meetspace-stage08-ci-42263390594/results-iPhone18/iPhone18-screenshots/EEC6C564-E0A8-4D0A-906E-6578C32198B1.png",
+      "sha256": "c029b93da62f7e00e1e8baace6f67e206cb835362ffadb42985ce55bc5eb7e61",
+      "testIdentifier": "FoundationUITests/testAccessibilityStage08LargeTextLiveFlow()",
+      "attachment": {
+        "configurationName": "Test Scheme Action",
+        "deviceId": "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName": "iPhone SE (3rd generation)",
+        "exportedFileName": "EEC6C564-E0A8-4D0A-906E-6578C32198B1.png",
+        "isAssociatedWithFailure": false,
+        "suggestedHumanReadableName": "stage08-large-text-profile_0_C37EB816-4E93-4F4C-83E5-6C4E6778D166.png",
+        "timestamp": 1793988287.789
+      },
+      "pixels": [
+        750,
+        1334
+      ]
+    },
+    {
+      "file": "screenshots/iPhone18-stage08-large-text-messages-conversation.png",
+      "sourceFile": "/tmp/meetspace-stage08-ci-42263390594/results-iPhone18/iPhone18-screenshots/D8F57FAE-4011-409A-93D4-52DBACF28C6D.png",
+      "sha256": "9a8bd933a9f1a9ef83eb73777b947a90f504060b0bedd07efade403a06c5e9f4",
+      "testIdentifier": "FoundationUITests/testAccessibilityStage08LargeTextLiveFlow()",
+      "attachment": {
+        "configurationName": "Test Scheme Action",
+        "deviceId": "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName": "iPhone SE (3rd generation)",
+        "exportedFileName": "D8F57FAE-4011-409A-93D4-52DBACF28C6D.png",
+        "isAssociatedWithFailure": false,
+        "suggestedHumanReadableName": "stage08-large-text-messages-conversation_0_0C01AC2A-DEA3-4C26-AE0A-9F168F4F6F3B.png",
+        "timestamp": 1793988285.862
+      },
+      "pixels": [
+        750,
+        1334
+      ]
+    },
+    {
+      "file": "screenshots/iPhone18-stage08-large-text-messages.png",
+      "sourceFile": "/tmp/meetspace-stage08-ci-42263390594/results-iPhone18/iPhone18-screenshots/6F8D7274-79A1-47C3-8320-246FC012E75F.png",
+      "sha256": "4b4b1ac1cd0665116b39d1c864742a1f7649ba0434671af1e55825a88a39efde",
+      "testIdentifier": "FoundationUITests/testAccessibilityStage08LargeTextLiveFlow()",
+      "attachment": {
+        "configurationName": "Test Scheme Action",
+        "deviceId": "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName": "iPhone SE (3rd generation)",
+        "exportedFileName": "6F8D7274-79A1-47C3-8320-246FC012E75F.png",
+        "isAssociatedWithFailure": false,
+        "suggestedHumanReadableName": "stage08-large-text-messages_0_66FBBB85-BCD8-4E71-94B1-A3B9F7F98405.png",
+        "timestamp": 1793988276.495
+      },
+      "pixels": [
+        750,
+        1334
+      ]
+    },
+    {
+      "file": "screenshots/iPhone18-stage08-large-text-welcome.png",
+      "sourceFile": "/tmp/meetspace-stage08-ci-42263390594/results-iPhone18/iPhone18-screenshots/899E7D2D-F39A-4D5C-936D-44A7C08BA1CB.png",
+      "sha256": "d050313c4322fd4cc592b4a887e602f42d0a792486812ee3586c2dbdd49878b7",
+      "testIdentifier": "FoundationUITests/testAccessibilityStage08LargeTextLiveFlow()",
+      "attachment": {
+        "configurationName": "Test Scheme Action",
+        "deviceId": "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName": "iPhone SE (3rd generation)",
+        "exportedFileName": "899E7D2D-F39A-4D5C-936D-44A7C08BA1CB.png",
+        "isAssociatedWithFailure": false,
+        "suggestedHumanReadableName": "stage08-large-text-welcome_0_0E7234FD-2CFE-467F-8174-38A174E53C4A.png",
+        "timestamp": 1793988216.343
+      },
+      "pixels": [
+        750,
+        1334
+      ]
+    },
+    {
+      "file": "iPhone18-summary.json",
+      "sourceFile": "/tmp/meetspace-stage08-ci-42263390594/results-iPhone18/iPhone18-summary.json",
+      "sha256": "a2c59a8d38617bc7156615184709ed6cece217e6a246617acda1321b057d0197"
+    },
+    {
+      "file": "iPhone18-environment.json",
+      "sourceFile": "/tmp/meetspace-stage08-ci-42263390594/results-iPhone18/iPhone18-environment.json",
+      "sha256": "991bd980714ef8c683af28db22389922e459ef94ddb81e5e8cbdc1ed11953136"
+    },
+    {
+      "file": "iPhone18-export-manifest.json",
+      "sourceFile": "/tmp/meetspace-stage08-ci-42263390594/results-iPhone18/iPhone18-screenshots/manifest.json",
+      "sha256": "2b22d520ac6e2b246289c828b2c447c89471461d749a8b5a3bf86e0709ad62c9"
+    },
+    {
+      "file": "iPhone18-audit-counts.json",
+      "sourceFile": null,
+      "sha256": "abe7322890f7432071182c27e125c8f42c32d860c14e65531382254b88826d1c",
+      "derivedFrom": "iPhone18-stage08-accessibility-issues.json and 7 cumulative progress files"
+    },
+    {
+      "file": "iPhone18-review-test-results.txt",
+      "sourceFile": null,
+      "sha256": "a61d92d95e7b95620c876a8ce20edc622ae8c22649d012286bb1b034b2cc9ba8",
+      "derivedFrom": "/tmp/meetspace-stage08-ci-42263390594/simulators_iPhone_18_iPhone18_compatibility_iPhone_SE_3rd_generation_.log",
+      "sourceLogSHA256": "19999e92775fa37cdda6819cbec4d774ad686cae1ed28be28a8bb42e03f4a5f3"
+    }
+  ]
+}

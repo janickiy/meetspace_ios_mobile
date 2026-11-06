@@ -1,0 +1,42 @@
+{
+  "derivedReview": true,
+  "sourceSHA": "e0a37748eb865b84dddf3da6339d16e0d8e1a0fe",
+  "run": "42263390594",
+  "screen": "messages",
+  "category": "elementDetection",
+  "categoryBasis": "The second audit invocation on messages, after a completed contrast pass, maps to elementDetection in the tested source ordered categories array. No category name was emitted directly by the old harness.",
+  "contrast": {
+    "engineStartedUTC": "2026-11-06T18:00:30.200Z",
+    "engineCompletedUTC": "2026-11-06T18:00:30.794Z",
+    "engineReportedDurationSeconds": 0.595,
+    "finding": "ТЕ",
+    "callbackElementQueriesUTC": [
+      "18:00:31.440",
+      "18:00:31.597"
+    ],
+    "postprocessingCompletedUTC": "18:00:33.590"
+  },
+  "failedAudit": {
+    "engineStartedUTC": "2026-11-06T18:00:33.591Z",
+    "engineResponseUTC": "2026-11-06T18:00:48.617Z",
+    "engineReportedDurationSeconds": 15.026,
+    "outerWaiterTimeoutSeconds": 65,
+    "errorDomain": "com.apple.xcode.xctest.accessibilityAudit",
+    "errorCode": -56,
+    "errorDescription": "Audit failed to complete in time",
+    "newFindingsInFailedCategory": 0,
+    "callbackElementQueriesDuringFailedAudit": 0
+  },
+  "rawFindingsTotal": 2,
+  "rawResolutions": [
+    "welcome.heading reviewed",
+    "messages decorative ТЕ reviewed"
+  ],
+  "overallJob": {
+    "passed": 30,
+    "failed": 5,
+    "total": 35
+  },
+  "conclusion": "An audit-engine timeout before findings for elementDetection is observed. A blocked snapshot callback is not supported as the location of this failure. The underlying engine cause is unknown.",
+  "proposedRetryStatus": "Not part of tested CI10 source; no recovery result is claimed."
+}

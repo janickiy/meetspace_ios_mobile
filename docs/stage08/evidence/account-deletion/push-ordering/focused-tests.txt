@@ -1,0 +1,26 @@
+Safe result excerpt: test names/results only; parameter values and request bodies excluded.
+Build complete! (13,37 с)
+◇ Test run started.
+◇ Test stage08AccountDeletionKeepsAffirmativeResultWhenConcurrentReadSeesRevocation() started.
+◇ Test stage08AccountDeletionUnknownOutcomeIsNeverReportedAsSuccessOrRetried() started.
+◇ Test stage08AccountDeletionSendsOneScopedPasswordMutationAfterPreflightRefresh() started.
+◇ Test stage08AccountDeletionRemovesOnlyConfirmedScopeAndFencesIdentityChanges() started.
+◇ Test stage08AccountDeletionFailurePreservesWorkspaceCredentialsAndCachedFiles() started.
+◇ Test stage08AccountDeletionRejectionAndUnknownRestorePriorPushIntentWithoutPrompt() started.
+◇ Test stage08AccountDeletionInvalidPasswordNeverSendsRequest() started.
+◇ Test stage08AccountDeletionDrainsLatePushWriteBeforeForgettingConfirmedScope() started.
+◇ Test stage08AccountDeletionPushPauseCannotRestoreAnotherScopeOrOverrideDisable() started.
+◇ Test stage08AccountDeletionRejectionsNeverReplayOrExpireValidSession() started.
+◇ Test stage08AccountDeletionWaitsForLatePushWriteAndCleanupBeforeDELETE() started.
+✔ Test stage08AccountDeletionInvalidPasswordNeverSendsRequest() passed after 0.009 seconds.
+✔ Test stage08AccountDeletionSendsOneScopedPasswordMutationAfterPreflightRefresh() passed after 0.011 seconds.
+✔ Test stage08AccountDeletionKeepsAffirmativeResultWhenConcurrentReadSeesRevocation() passed after 0.015 seconds.
+✔ Test stage08AccountDeletionUnknownOutcomeIsNeverReportedAsSuccessOrRetried() passed after 0.023 seconds.
+✔ Test stage08AccountDeletionRejectionsNeverReplayOrExpireValidSession() passed after 0.026 seconds.
+✔ Test stage08AccountDeletionPushPauseCannotRestoreAnotherScopeOrOverrideDisable() passed after 0.026 seconds.
+✔ Test stage08AccountDeletionRemovesOnlyConfirmedScopeAndFencesIdentityChanges() passed after 0.037 seconds.
+✔ Test stage08AccountDeletionFailurePreservesWorkspaceCredentialsAndCachedFiles() passed after 0.041 seconds.
+✔ Test stage08AccountDeletionWaitsForLatePushWriteAndCleanupBeforeDELETE() passed after 0.055 seconds.
+✔ Test stage08AccountDeletionDrainsLatePushWriteBeforeForgettingConfirmedScope() passed after 0.058 seconds.
+✔ Test stage08AccountDeletionRejectionAndUnknownRestorePriorPushIntentWithoutPrompt() passed after 0.099 seconds.
+✔ Test run with 11 tests in 0 suites passed after 0.099 seconds.

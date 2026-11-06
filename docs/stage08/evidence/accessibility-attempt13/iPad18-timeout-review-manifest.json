@@ -1,0 +1,80 @@
+{
+  "run": "42270899385",
+  "sourceSHA": "a052abdacaf49d05a68b17725dda0e4b096bb86e",
+  "reviewedOn": "2026-11-06",
+  "scope": "CI13 iPad18 CoreAX timeout + video frame/scale diagnostic; no accessibility PASS",
+  "files": [
+    {
+      "file": "iPad18-environment.json",
+      "sha256": "e6a5da8043cab961b415905e2a1d7a43044e965aeb6f03a5870dc5ece04b98fb",
+      "sourceZIPMember": "iPad18-environment.json"
+    },
+    {
+      "file": "iPad18-summary.json",
+      "sha256": "ad1a0d23e0fe3888d3b30d42bf06d744d30717c123d36fa24d4c91a2b33318bf",
+      "sourceZIPMember": "iPad18-summary.json"
+    },
+    {
+      "file": "iPad18-export-manifest.json",
+      "sha256": "7f412d9fa198c2d371bc38ce7fc8a38ebf9c7bdcca95a491c4c918c8d72f4624",
+      "sourceZIPMember": "iPad18-screenshots/manifest.json"
+    },
+    {
+      "file": "iPad18-stage08-accessibility-issues.json",
+      "sha256": "63a2d211f0d41de07b563adabb22fbc5a5dae35447b3fe1a79b94e53caa2131f",
+      "sourceZIPMember": "iPad18-screenshots/71C71561-A05A-4DE3-BD29-130F7483D34C.json"
+    },
+    {
+      "file": "iPad18-core-audit-session-excerpt.txt",
+      "sha256": "e6d8a599e5a0162b635c50366d8029ef02d9766d5d4b6437a1ab63beb19376d6",
+      "derivedFrom": "Session-MeetSpaceUITests diagnostic lines 14565...14708; original session SHA256 included"
+    },
+    {
+      "file": "iPad18-core-video-scale-ocr.json",
+      "sha256": "a0753eb0abf6562b5c677613e97d828d84b67b9019c592ae8c501fae47b33c6a",
+      "derivedFrom": "AVAssetImageGenerator frames + VNRecognizeTextRequest accurate ru-RU/en-US; no language correction"
+    },
+    {
+      "file": "extract-video-scale.swift",
+      "sha256": "224832c0488c18be45dfc6d464858a5d40b6205e00035954861b6b40409eb7d2",
+      "description": "Exact diagnostic extraction/OCR script used; input/output local paths retained; not an XCTest or production source file"
+    },
+    {
+      "file": "screenshots/iPad18-core-video-requested-149s.png",
+      "sha256": "06bb565cb2c85587692233cf7e7f16a916f6527089c8b8110a44b050ee99b82d",
+      "derivedFromVideo": "iPad18-screenshots/3BFABE0B-5192-4356-9D9B-6D60959EA3FE.mp4",
+      "requestedSeconds": 149,
+      "actualVideoPresentationSeconds": 140.405,
+      "note": "Native-resolution video frame export, no crop/resize; actual PTS may precede requested time because recording is sparse"
+    },
+    {
+      "file": "screenshots/iPad18-core-video-requested-166s.png",
+      "sha256": "b50d5a969fc2ce04c8ccf11562babdf2b69591cac702c558589688f2e104293d",
+      "derivedFromVideo": "iPad18-screenshots/3BFABE0B-5192-4356-9D9B-6D60959EA3FE.mp4",
+      "requestedSeconds": 166,
+      "actualVideoPresentationSeconds": 158.165,
+      "note": "Native-resolution video frame export, no crop/resize; actual PTS may precede requested time because recording is sparse"
+    },
+    {
+      "file": "screenshots/iPad18-core-video-requested-176s.png",
+      "sha256": "2079dd99449e11307f0441b1b2955f1dcdcba9f3be2d8a0c5a62ffe2f2466314",
+      "derivedFromVideo": "iPad18-screenshots/3BFABE0B-5192-4356-9D9B-6D60959EA3FE.mp4",
+      "requestedSeconds": 176,
+      "actualVideoPresentationSeconds": 174.84833333333333,
+      "note": "Native-resolution video frame export, no crop/resize; actual PTS may precede requested time because recording is sparse"
+    },
+    {
+      "file": "screenshots/iPad18-core-video-requested-180s.png",
+      "sha256": "b9e503d1e6836ff17dd5cdbcc069d760301f4b870db80a8e2d3b0c9a7d7c74c4",
+      "derivedFromVideo": "iPad18-screenshots/3BFABE0B-5192-4356-9D9B-6D60959EA3FE.mp4",
+      "requestedSeconds": 180,
+      "actualVideoPresentationSeconds": 177.54166666666666,
+      "note": "Native-resolution video frame export, no crop/resize; actual PTS may precede requested time because recording is sparse"
+    },
+    {
+      "file": "iPad18-core-audit-timeout-analysis.json",
+      "sha256": "7fd57389310ba435b957be2c05144f13707c057be9a756ea9387b320d603b11f",
+      "derivedFrom": "Original raw JSON, session excerpt, reviewed video frames and OCR measurements"
+    }
+  ]
+}

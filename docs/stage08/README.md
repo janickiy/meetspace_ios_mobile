@@ -13,10 +13,14 @@ device Release archive и проверяет его фактическое со�
 - [Аудит безопасности](SECURITY_AUDIT.md)
 - [Производительность: реальные host-измерения и device BLOCKED](PERFORMANCE_REPORT.md)
 - [Команды, результаты и границы тестирования](TEST_REPORT.md)
+- [История CI и расследования неуспешных прогонов](CI_HISTORY.md)
 - [Подпись, provisioning и выпуск](RELEASE.md)
 - [Privacy disclosures](PRIVACY_DISCLOSURE.md)
 - [Известные ограничения](KNOWN_LIMITATIONS.md)
 - [Актуальный backend и удаление аккаунта](API_CONTRACT.md)
+- [Матрица 21 макета и границы визуальной приёмки](VISUAL_REVIEW.md)
+- [Правила accessibility audit и независимые проверки](ACCESSIBILITY_POLICY.md)
+- [Список изменённых файлов](CHANGED_FILES.md)
 
 ## Исправление вывода предыдущего аудита
 

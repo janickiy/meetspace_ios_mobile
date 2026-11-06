@@ -1,0 +1,8 @@
+CI9 iPhone18, synthetic fixture only; selected source AX lines. Object addresses omitted.
+Source attachment: 26D13227-F5AF-48BB-93EE-2E8838D05EEA.txt
+
+SecureTextField, {{16.0, 376.5}, {343.0, 44.0}}, identifier: 'deleteAccount.password', placeholderValue: 'Пароль аккаунта', value: ••••••••••••••••••, Keyboard Focused
+Key, {{131.0, 512.0}, {37.5, 46.0}}, label: 'f'
+Key, {{0.0, 620.0}, {46.5, 46.0}}, identifier: 'more', label: 'цифры'
+Button, {{46.5, 620.0}, {47.0, 46.0}}, identifier: 'emoji', label: 'Следующая клавиатура', value: Русская
+Button, {{281.5, 620.0}, {93.5, 46.0}}, identifier: 'Done', label: 'done'

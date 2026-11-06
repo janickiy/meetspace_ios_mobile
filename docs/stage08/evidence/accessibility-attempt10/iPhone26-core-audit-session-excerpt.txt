@@ -1,0 +1,140 @@
+Source ZIP member: iPhone26-diagnostics/0_Test_iPhone 17 Pro Max_Diagnostics/MeetSpaceUITests-B0DFEF74-A4EB-4133-851B-7904DC0C8A3E-Configuration-Test Scheme Action-Iteration-1/MeetSpaceUITests-33E7D6FF-3C46-43A2-997A-269C20258C29/Session-MeetSpaceUITests-2026-11-06_175606-4awX7x.log
+Full session SHA256: 420646e636bbe790cec6033bddc1677e00025e6dea2f9e0485b05f9fb4196972
+
+14479: 18:00:30.200 MeetSpaceUITests-Runner[10112:35720] Creating future for 'running accessibility audit with config: <XCAXAuditConfiguration: 0x600000747460>' with timeout 65.00
+14480: 18:00:30.201 MeetSpaceUITests-Runner[10112:35720] <XCTWaiter: 0x600000d64840> entering wait loop for 65.00s with expectations: `running accessibility audit with config: <XCAXAuditConfiguration: 0x600000747460>`
+14481: 18:00:30.794 MeetSpaceUITests-Runner[10112:48473] Got accessibility audit response <XCAXAuditResultCollection: 0x600000024330>, error: (null)
+14482: 18:00:30.795 MeetSpaceUITests-Runner[10112:35720] Returning result XCTWaiterResultCompleted for synchronous waiter <XCTWaiter: 0x600000d64840>
+14483: 18:00:30.795 MeetSpaceUITests-Runner[10112:35720] Wait <XCTWaiterWait: 0x6000017b1c00> completed after 0.595s
+14484: 18:00:30.795 MeetSpaceUITests-Runner[10112:35720] cleaning up running accessibility audit with config: <XCAXAuditConfiguration: 0x600000747460>
+14485: 18:00:30.796 MeetSpaceUITests-Runner[10112:35720] Creating future for 'getting screen identifiers' with timeout 30.00
+14486: 18:00:30.796 MeetSpaceUITests-Runner[10112:35720] <XCTWaiter: 0x600000d76100> entering wait loop for 30.00s with expectations: `getting screen identifiers`
+14487: 18:00:30.796 MeetSpaceUITests-Runner[10112:35720] Returning result XCTWaiterResultCompleted for synchronous waiter <XCTWaiter: 0x600000d76100>
+14488: 18:00:30.796 MeetSpaceUITests-Runner[10112:35720] Wait <XCTWaiterWait: 0x600001776fc0> completed after 0.000s
+14489: 18:00:30.796 MeetSpaceUITests-Runner[10112:35720] cleaning up getting screen identifiers
+14490: 18:00:30.797 MeetSpaceUITests-Runner[10112:35720] Request screenshot: screenID '1', encoding 'Encoding(uniformTypeIdentifier: public.png, compressionQuality: 1.000000)'
+14491: 18:00:30.797 MeetSpaceUITests-Runner[10112:35720] Creating future for 'requesting screenshot' with timeout 30.00
+14492: 18:00:30.797 MeetSpaceUITests-Runner[10112:35720] <XCTWaiter: 0x600000d75f50> entering wait loop for 30.00s with expectations: `requesting screenshot`
+14493: 18:00:31.439 MeetSpaceUITests-Runner[10112:35720] Returning result XCTWaiterResultCompleted for synchronous waiter <XCTWaiter: 0x600000d75f50>
+14494: 18:00:31.439 MeetSpaceUITests-Runner[10112:35720] Wait <XCTWaiterWait: 0x6000017afb40> completed after 0.642s
+14495: 18:00:31.439 MeetSpaceUITests-Runner[10112:35720] cleaning up requesting screenshot
+14496: 18:00:31.440 MeetSpaceUITests-Runner[10112:35720] <XCTContext: 0x6000021183c0> started activity <XCActivityRecord: 0x600002140b40> 2026-11-06 18:00:31 +0000: Find the Any (Descendant with identity binding to AX element pid: 12502, elementOrHash.elementID: 4479870800.326)
+14497:     t =   191.02s Find the Any (Descendant with identity binding to AX element pid: 12502, elementOrHash.elementID: 4479870800.326)
+14498: 18:00:31.443 xcodebuild[1391:7609] _XCT_testCaseWithIdentifier:<XCTTestIdentifier leaf, method ["none", "none"]> willStartActivity:<XCActivityRecord: 0x600001bf4cd0> 2026-11-06 18:00:31 +0000: Find the Any (Descendant with identity binding to AX element pid: 12502, elementOrHash.elementID: 4479870800.326)
+14499: 18:00:31.444 xcodebuild[1391:7609] Nothing to delete
+14500: 18:00:31.440 MeetSpaceUITests-Runner[10112:35720] Executing query:
+14501: ↪︎ Descendant with identity binding to AX element pid: 12502, elementOrHash.elementID: 4479870800.326
+14502: 18:00:31.441 MeetSpaceUITests-Runner[10112:35720] Should evaluate query remotely? XCTDisableRemoteQueryEvaluation(d-write): NO, hasAutomationSession: YES, supportsRemoteEvaluation: YES
+14503: 18:00:31.441 MeetSpaceUITests-Runner[10112:35720] Getting matching snapshots for remotely evaluated query
+14504: 18:00:31.441 MeetSpaceUITests-Runner[10112:35720] Creating future for 'evaluating UI query' with timeout 30.00
+14505: 18:00:31.442 MeetSpaceUITests-Runner[10112:35720] <XCTWaiter: 0x600000d63cc0> entering wait loop for 30.00s with expectations: `evaluating UI query`
+14506: 18:00:31.517 MeetSpaceUITests-Runner[10112:35720] Returning result XCTWaiterResultCompleted for synchronous waiter <XCTWaiter: 0x600000d63cc0>
+14507: 18:00:31.517 MeetSpaceUITests-Runner[10112:35720] Wait <XCTWaiterWait: 0x6000017b6a80> completed after 0.075s
+14508: 18:00:31.517 MeetSpaceUITests-Runner[10112:35720] cleaning up evaluating UI query
+14509: 18:00:31.518 MeetSpaceUITests-Runner[10112:35720] results tree:
+14510: Application, pid: 12502
+14511:   Window (Main)
+14512:     Other
+14513:       Other
+14514:         Other
+14515:           Other
+14516:             Other
+14517:               Other
+14518:                 Other
+14519:                   Other
+14520:                     Other
+14521:                       Other
+14522:                         Other
+14523:                           Other
+14524:                             Other
+14525:                               Other
+14526:                                 Other
+14527:                                   ScrollView
+14528:                                     Other
+14529:                                       Other
+14530:                                         Button, identifier: 'conversation.22222222-2222-4222-8222-222222222222'
+14531:                                           StaticText
+14532: 18:00:31.518 MeetSpaceUITests-Runner[10112:35720] matches: {(
+14533:     StaticText
+14534: )}
+14535: 18:00:31.518 MeetSpaceUITests-Runner[10112:35720] <XCTContext: 0x6000021183c0> finished activity <XCActivityRecord: 0x600002140b40> 2026-11-06 18:00:31 +0000: Find the Any (Descendant with identity binding to AX element pid: 12502, elementOrHash.elementID: 4479870800.326) (0.0783269s)
+14536: 18:00:31.526 xcodebuild[1391:7609] _XCT_testCaseWithIdentifier:<XCTTestIdentifier leaf, method ["none", "none"]> didFinishActivity:<XCActivityRecord: 0x600001bf0f00> 2026-11-06 18:00:31 +0000: Find the Any (Descendant with identity binding to AX element pid: 12502, elementOrHash.elementID: 4479870800.326) (0.0783269s)
+14537: 18:00:31.527 xcodebuild[1391:7609] Nothing to delete
+14538: 18:00:31.519 MeetSpaceUITests-Runner[10112:35720] Creating future for 'fetching attributes 'XC_kAXXCAttributeLabel' for AX element pid: 12502, elementOrHash.elementID: 4479870800.326' with timeout 30.00
+14539: 18:00:31.519 MeetSpaceUITests-Runner[10112:35720] <XCTWaiter: 0x600000d52cd0> entering wait loop for 30.00s with expectations: `fetching attributes 'XC_kAXXCAttributeLabel' for AX element pid: 12502, elementOrHash.elementID: 4479870800.326`
+14540: 18:00:31.523 MeetSpaceUITests-Runner[10112:35720] Returning result XCTWaiterResultCompleted for synchronous waiter <XCTWaiter: 0x600000d52cd0>
+14541: 18:00:31.523 MeetSpaceUITests-Runner[10112:35720] Wait <XCTWaiterWait: 0x6000017c05c0> completed after 0.004s
+14542: 18:00:31.524 MeetSpaceUITests-Runner[10112:35720] cleaning up fetching attributes 'XC_kAXXCAttributeLabel' for AX element pid: 12502, elementOrHash.elementID: 4479870800.326
+14543: 18:00:31.524 MeetSpaceUITests-Runner[10112:35720] StaticText (AX element pid: 12502, elementOrHash.elementID: 4479870800.326) faulted in {
+14544:     "XC_kAXXCAttributeLabel" = "\U0422\U0415";
+14545: }: (no error) for label using XC_kAXXCAttributeLabel
+14546: 18:00:31.524 MeetSpaceUITests-Runner[10112:35720] Creating future for 'fetching attributes 'XC_kAXXCAttributeValue' for AX element pid: 12502, elementOrHash.elementID: 4479870800.326' with timeout 30.00
+14547: 18:00:31.525 MeetSpaceUITests-Runner[10112:35720] <XCTWaiter: 0x600000d5bf00> entering wait loop for 30.00s with expectations: `fetching attributes 'XC_kAXXCAttributeValue' for AX element pid: 12502, elementOrHash.elementID: 4479870800.326`
+14548: 18:00:31.531 MeetSpaceUITests-Runner[10112:35720] Returning result XCTWaiterResultCompleted for synchronous waiter <XCTWaiter: 0x600000d5bf00>
+14549: 18:00:31.531 MeetSpaceUITests-Runner[10112:35720] Wait <XCTWaiterWait: 0x6000017bf140> completed after 0.006s
+14550: 18:00:31.531 MeetSpaceUITests-Runner[10112:35720] cleaning up fetching attributes 'XC_kAXXCAttributeValue' for AX element pid: 12502, elementOrHash.elementID: 4479870800.326
+14551: 18:00:31.531 MeetSpaceUITests-Runner[10112:35720] StaticText, label: 'ТЕ' (AX element pid: 12502, elementOrHash.elementID: 4479870800.326) faulted in {
+14552: }: (no error) for value using XC_kAXXCAttributeValue
+14553: 18:00:31.532 MeetSpaceUITests-Runner[10112:35720] Creating future for 'fetching attributes 'XC_kAXXCAttributePlaceholderValue' for AX element pid: 12502, elementOrHash.elementID: 4479870800.326' with timeout 30.00
+14554: 18:00:31.532 MeetSpaceUITests-Runner[10112:35720] <XCTWaiter: 0x600000d63d20> entering wait loop for 30.00s with expectations: `fetching attributes 'XC_kAXXCAttributePlaceholderValue' for AX element pid: 12502, elementOrHash.elementID: 4479870800.326`
+14555: 18:00:31.536 MeetSpaceUITests-Runner[10112:35720] Returning result XCTWaiterResultCompleted for synchronous waiter <XCTWaiter: 0x600000d63d20>
+14556: 18:00:31.536 MeetSpaceUITests-Runner[10112:35720] Wait <XCTWaiterWait: 0x6000017b7a80> completed after 0.004s
+14557: 18:00:31.536 MeetSpaceUITests-Runner[10112:35720] cleaning up fetching attributes 'XC_kAXXCAttributePlaceholderValue' for AX element pid: 12502, elementOrHash.elementID: 4479870800.326
+14558: 18:00:31.536 MeetSpaceUITests-Runner[10112:35720] StaticText, label: 'ТЕ' (AX element pid: 12502, elementOrHash.elementID: 4479870800.326) faulted in {
+14559: }: (no error) for placeholderValue using XC_kAXXCAttributePlaceholderValue
+14560: 18:00:31.536 MeetSpaceUITests-Runner[10112:35720] <XCTContext: 0x6000021183c0> started activity <XCActivityRecord: 0x60000213c5a0> 2026-11-06 18:00:31 +0000: Find the "ТЕ" StaticText
+14561: 18:00:31.546 xcodebuild[1391:7609] _XCT_testCaseWithIdentifier:<XCTTestIdentifier leaf, method ["none", "none"]> willStartActivity:<XCActivityRecord: 0x600001bf0ff0> 2026-11-06 18:00:31 +0000: Find the "ТЕ" StaticText
+14562: 18:00:31.547 xcodebuild[1391:7609] Nothing to delete
+14563: 18:00:31.537 MeetSpaceUITests-Runner[10112:35720] Executing query:
+14564: ↪︎ Descendant with identity binding to AX element pid: 12502, elementOrHash.elementID: 4479870800.326
+14565: 18:00:31.537 MeetSpaceUITests-Runner[10112:35720] Should evaluate query remotely? XCTDisableRemoteQueryEvaluation(d-write): NO, hasAutomationSession: YES, supportsRemoteEvaluation: YES
+14566: 18:00:31.537 MeetSpaceUITests-Runner[10112:35720] Getting matching snapshots for remotely evaluated query
+14567: 18:00:31.538 MeetSpaceUITests-Runner[10112:35720] Creating future for 'evaluating UI query' with timeout 30.00
+14568: 18:00:31.538 MeetSpaceUITests-Runner[10112:35720] <XCTWaiter: 0x600000d737b0> entering wait loop for 30.00s with expectations: `evaluating UI query`
+14569:     t =   191.12s Find the "ТЕ" StaticText
+14570: 18:00:31.596 MeetSpaceUITests-Runner[10112:35720] Returning result XCTWaiterResultCompleted for synchronous waiter <XCTWaiter: 0x600000d737b0>
+14571: 18:00:31.596 MeetSpaceUITests-Runner[10112:35720] Wait <XCTWaiterWait: 0x6000017b2340> completed after 0.058s
+14572: 18:00:31.596 MeetSpaceUITests-Runner[10112:35720] cleaning up evaluating UI query
+14573: 18:00:31.597 MeetSpaceUITests-Runner[10112:35720] results tree:
+14574: Application, pid: 12502
+14575:   Window (Main)
+14576:     Other
+14577:       Other
+14578:         Other
+14579:           Other
+14580:             Other
+
+15392:                         Other
+15393:                           Other
+15394:                             Other
+15395:                               Other
+15396:                                 Other
+15397:                                   ScrollView
+15398:                                     Other
+15399:                                       Other
+15400:                                         Button, identifier: 'conversation.22222222-2222-4222-8222-222222222222', label: 'Тестовый собеседник, Проверка интерфейса чата'
+15401: 18:00:33.590 MeetSpaceUITests-Runner[10112:35720] matches: {(
+15402:     Button, identifier: 'conversation.22222222-2222-4222-8222-222222222222', label: 'Тестовый собеседник, Проверка интерфейса чата'
+15403: )}
+15404: 18:00:33.590 MeetSpaceUITests-Runner[10112:35720] <XCTContext: 0x6000021183c0> finished activity <XCActivityRecord: 0x60000213e210> 2026-11-06 18:00:33 +0000: Find the "conversation.22222222-2222-4222-8222-222222222222" Button (0.124758s)
+15405: 18:00:33.623 xcodebuild[1391:7609] _XCT_testCaseWithIdentifier:<XCTTestIdentifier leaf, method ["none", "none"]> didFinishActivity:<XCActivityRecord: 0x600001bf22b0> 2026-11-06 18:00:33 +0000: Find the "conversation.22222222-2222-4222-8222-222222222222" Button (0.124758s)
+15406: 18:00:33.623 xcodebuild[1391:7609] Nothing to delete
+15407: 18:00:33.591 MeetSpaceUITests-Runner[10112:35720] Creating future for 'running accessibility audit with config: <XCAXAuditConfiguration: 0x600000752c40>' with timeout 65.00
+15408: 18:00:33.591 MeetSpaceUITests-Runner[10112:35720] <XCTWaiter: 0x600000d81170> entering wait loop for 65.00s with expectations: `running accessibility audit with config: <XCAXAuditConfiguration: 0x600000752c40>`
+15409: 18:00:34.272 MeetSpaceUITests-Runner[10112:37800] Handling kAXPidStatusChangedNotification
+15410: 18:00:34.272 MeetSpaceUITests-Runner[10112:37800] Got kAXPidStatusChangedNotification for pid 8443: active
+15411: 18:00:34.330 MeetSpaceUITests-Runner[10112:35720] No application process found matching pid 8443, caching
+15412: 18:00:43.982 MeetSpaceUITests-Runner[10112:37800] Handling kAXPidStatusChangedNotification
+15413: 18:00:43.982 MeetSpaceUITests-Runner[10112:37800] Got kAXPidStatusChangedNotification for pid 10055: active
+15414: 18:00:44.066 MeetSpaceUITests-Runner[10112:35720] No application process found matching pid 10055, caching
+15415: 18:00:48.617 MeetSpaceUITests-Runner[10112:37800] Got accessibility audit response <XCAXAuditResultCollection: 0x600000024230>, error: Error Domain=com.apple.xcode.xctest.accessibilityAudit Code=-56 "Audit failed to complete in time" UserInfo={NSLocalizedDescription=Audit failed to complete in time}
+15416: 18:00:48.617 MeetSpaceUITests-Runner[10112:35720] Returning result XCTWaiterResultCompleted for synchronous waiter <XCTWaiter: 0x600000d81170>
+15417: 18:00:48.617 MeetSpaceUITests-Runner[10112:35720] Wait <XCTWaiterWait: 0x6000017cda80> completed after 15.026s
+15418: 18:00:48.618 MeetSpaceUITests-Runner[10112:35720] cleaning up running accessibility audit with config: <XCAXAuditConfiguration: 0x600000752c40>
+15419: 18:00:48.625 MeetSpaceUITests-Runner[10112:35720] <XCTContext: 0x600002129ef0> started activity <XCActivityRecord: 0x60000213d0e0> 2026-11-06 18:00:48 +0000: Added attachment named 'stage08-accessibility-issues'
+15420:     t =   208.21s Added attachment named 'stage08-accessibility-issues'
+15421: 18:00:48.627 xcodebuild[1391:7609] _XCT_testCaseWithIdentifier:<XCTTestIdentifier leaf, method ["none", "none"]> willStartActivity:<XCActivityRecord: 0x600001bf6170> 2026-11-06 18:00:48 +0000: Added attachment named 'stage08-accessibility-issues'
+15422: 18:00:48.627 xcodebuild[1391:7609] Nothing to delete
+15423: 18:00:48.626 MeetSpaceUITests-Runner[10112:35720] Activity B121E531-EDFE-47E0-9020-43DE84EEFCAA added attachment with name 'stage08-accessibility-issues', Uniform Type Identifier 'public.json', lifetime 'keepAlways', hasPayload: YES, size (in bytes): 814.
+15424: 18:00:48.626 MeetSpaceUITests-Runner[10112:35720] <XCTContext: 0x600002129ef0> finished activity <XCActivityRecord: 0x60000213d0e0> 2026-11-06 18:00:48 +0000: Added attachment named 'stage08-accessibility-issues' (0.00098002s)
+15425: 18:00:48.627 xcodebuild[1391:7609] _XCT_testCaseWithIdentifier:<XCTTestIdentifier leaf, method ["none", "none"]> didFinishActivity:<XCActivityRecord: 0x600001bf2350> 2026-11-06 18:00:48 +0000: Added attachment named 'stage08-accessibility-issues' (0.00098002s)

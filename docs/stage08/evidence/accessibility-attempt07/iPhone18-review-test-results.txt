@@ -1,0 +1,4 @@
+4106:2026-11-06T16:38:33.3304540Z /Users/runner/work/meetspace_ios_mobile/meetspace_ios_mobile/Tests/MeetSpaceUITests/FoundationUITests.swift:37: error: -[MeetSpaceUITests.FoundationUITests testAccessibilityStage08CoreScreens] : XCTAssertTrue failed
+4108:2026-11-06T16:38:33.7161610Z Test Case '-[MeetSpaceUITests.FoundationUITests testAccessibilityStage08CoreScreens]' failed (95.593 seconds).
+5023:2026-11-06T16:40:56.4126790Z Test Case '-[MeetSpaceUITests.FoundationUITests testAccessibilityStage08LargeTextLiveFlow]' passed (142.715 seconds).
+5593:2026-11-06T16:42:38.3008080Z Test Case '-[MeetSpaceUITests.FoundationUITests testLargeTextNavigationAndAppearance]' passed (14.004 seconds).

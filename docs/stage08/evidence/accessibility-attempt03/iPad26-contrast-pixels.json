@@ -1,0 +1,950 @@
+{
+  "ciRun" : 42240106296,
+  "contrastFindingCount" : 17,
+  "limits" : "Not Apple's algorithm; antialiased edge pixels have lower contrast; composite\/decorative\/disabled cases are separate; no claim about another screenshot, runtime or future revision",
+  "measurements" : [
+    {
+      "background" : "#ffffff",
+      "backgroundPixelCount" : 8024,
+      "coreContrastRatio" : 5.211215844073374,
+      "element" : "",
+      "foreground" : "#686c7d",
+      "foregroundPixelCount" : 699,
+      "framePoints" : [
+        623,
+        459.5,
+        200.5,
+        13.5
+      ],
+      "kind" : "visible text",
+      "label" : "Создать пространство на своём VPS",
+      "rawIndex" : 0,
+      "rawResolution" : "unresolved",
+      "screen" : "welcome",
+      "sourcePNG" : "screenshots\/iPad26-stage08-accessibility-welcome.png",
+      "sourceSHA256" : "beb92127e01bec6d84201a383326439721ccf1eeebba499d2876a61808281a8e",
+      "topColors" : [
+        {
+          "color" : "#ffffff",
+          "count" : 8024
+        },
+        {
+          "color" : "#686c7d",
+          "count" : 699
+        },
+        {
+          "color" : "#fefefe",
+          "count" : 146
+        },
+        {
+          "color" : "#868996",
+          "count" : 97
+        },
+        {
+          "color" : "#696d7e",
+          "count" : 46
+        },
+        {
+          "color" : "#6a6e7f",
+          "count" : 45
+        },
+        {
+          "color" : "#ebecee",
+          "count" : 41
+        },
+        {
+          "color" : "#fdfdfd",
+          "count" : 34
+        }
+      ]
+    },
+    {
+      "background" : "#f7f8fc",
+      "backgroundPixelCount" : 50242,
+      "coreContrastRatio" : 13.165410113140528,
+      "decorativeIcon" : {
+        "color" : "#90919b",
+        "contrastRatio" : 2.9492435626072386,
+        "pixelCount" : 3256
+      },
+      "element" : "",
+      "foreground" : "#292b3b",
+      "foregroundPixelCount" : 3154,
+      "framePoints" : [
+        611.75,
+        641,
+        149,
+        98.75
+      ],
+      "kind" : "composite text plus decorative system icon",
+      "label" : "Выберите чат",
+      "rawIndex" : 2,
+      "rawResolution" : "unresolved",
+      "screen" : "messages",
+      "sourcePNG" : "screenshots\/iPad26-stage08-accessibility-messages.png",
+      "sourceSHA256" : "8827762afde3119b209eff486f546731b57a45554d65bf947a2926cb05f5cc90",
+      "topColors" : [
+        {
+          "color" : "#f7f8fc",
+          "count" : 50242
+        },
+        {
+          "color" : "#90919b",
+          "count" : 3256
+        },
+        {
+          "color" : "#292b3b",
+          "count" : 3154
+        },
+        {
+          "color" : "#b4b5bd",
+          "count" : 75
+        },
+        {
+          "color" : "#dcdde3",
+          "count" : 68
+        },
+        {
+          "color" : "#d8d9df",
+          "count" : 66
+        },
+        {
+          "color" : "#93949e",
+          "count" : 54
+        },
+        {
+          "color" : "#c7c8cf",
+          "count" : 51
+        }
+      ]
+    },
+    {
+      "background" : "#eeeffe",
+      "backgroundPixelCount" : 5619,
+      "coreContrastRatio" : 4.6219326927231315,
+      "element" : "",
+      "foreground" : "#5d5fcd",
+      "foregroundPixelCount" : 154,
+      "framePoints" : [
+        30,
+        317.5,
+        44,
+        44
+      ],
+      "kind" : "decorative initials duplicate adjacent full name",
+      "label" : "ТЕ",
+      "rawIndex" : 3,
+      "rawResolution" : "reviewed: decorative avatar initials; accessible row has the full name",
+      "screen" : "messages",
+      "sourcePNG" : "screenshots\/iPad26-stage08-accessibility-messages.png",
+      "sourceSHA256" : "8827762afde3119b209eff486f546731b57a45554d65bf947a2926cb05f5cc90",
+      "topColors" : [
+        {
+          "color" : "#eeeffe",
+          "count" : 5619
+        },
+        {
+          "color" : "#ffffff",
+          "count" : 1500
+        },
+        {
+          "color" : "#5d5fcd",
+          "count" : 154
+        },
+        {
+          "color" : "#fdfdff",
+          "count" : 36
+        },
+        {
+          "color" : "#f3f4fe",
+          "count" : 32
+        },
+        {
+          "color" : "#fefeff",
+          "count" : 28
+        },
+        {
+          "color" : "#696bd1",
+          "count" : 26
+        },
+        {
+          "color" : "#f2f2fe",
+          "count" : 24
+        }
+      ]
+    },
+    {
+      "background" : "#ffffff",
+      "backgroundPixelCount" : 3358,
+      "coreContrastRatio" : 5.211215844073374,
+      "element" : "",
+      "foreground" : "#686c7d",
+      "foregroundPixelCount" : 285,
+      "framePoints" : [
+        794.25,
+        395,
+        83.5,
+        13.5
+      ],
+      "kind" : "visible text",
+      "label" : "На этой неделе",
+      "rawIndex" : 6,
+      "rawResolution" : "unresolved",
+      "screen" : "calendar",
+      "sourcePNG" : "screenshots\/iPad26-stage08-accessibility-calendar.png",
+      "sourceSHA256" : "81f93d1ef3d6b8ce78c5b987c246e2318bd745be58ed2cba67d60bbb6ad094b4",
+      "topColors" : [
+        {
+          "color" : "#ffffff",
+          "count" : 3358
+        },
+        {
+          "color" : "#686c7d",
+          "count" : 285
+        },
+        {
+          "color" : "#fefefe",
+          "count" : 52
+        },
+        {
+          "color" : "#6a6e7f",
+          "count" : 40
+        },
+        {
+          "color" : "#868996",
+          "count" : 26
+        },
+        {
+          "color" : "#9d9faa",
+          "count" : 26
+        },
+        {
+          "color" : "#696d7e",
+          "count" : 24
+        },
+        {
+          "color" : "#ebecee",
+          "count" : 24
+        }
+      ]
+    },
+    {
+      "background" : "#ffffff",
+      "backgroundPixelCount" : 550,
+      "coreContrastRatio" : 13.972171951774728,
+      "element" : "calendar.weekday.0",
+      "foreground" : "#292b3b",
+      "foregroundPixelCount" : 53,
+      "framePoints" : [
+        49.25,
+        391.25,
+        13.5,
+        12.5
+      ],
+      "kind" : "visible text",
+      "label" : "Пн",
+      "rawIndex" : 7,
+      "rawResolution" : "unresolved",
+      "screen" : "calendar",
+      "sourcePNG" : "screenshots\/iPad26-stage08-accessibility-calendar.png",
+      "sourceSHA256" : "81f93d1ef3d6b8ce78c5b987c246e2318bd745be58ed2cba67d60bbb6ad094b4",
+      "topColors" : [
+        {
+          "color" : "#ffffff",
+          "count" : 550
+        },
+        {
+          "color" : "#292b3b",
+          "count" : 53
+        },
+        {
+          "color" : "#ccccd0",
+          "count" : 14
+        },
+        {
+          "color" : "#e9e9eb",
+          "count" : 14
+        },
+        {
+          "color" : "#5f606c",
+          "count" : 12
+        },
+        {
+          "color" : "#7c7d87",
+          "count" : 12
+        },
+        {
+          "color" : "#898a93",
+          "count" : 11
+        },
+        {
+          "color" : "#323443",
+          "count" : 10
+        }
+      ]
+    },
+    {
+      "background" : "#5d5fcd",
+      "backgroundPixelCount" : 518,
+      "coreContrastRatio" : 5.2712558308611674,
+      "element" : "calendar.weekday.4",
+      "foreground" : "#ffffff",
+      "foregroundPixelCount" : 47,
+      "framePoints" : [
+        285.75,
+        391.25,
+        12.5,
+        12.5
+      ],
+      "kind" : "visible selected-day text",
+      "label" : "Пт",
+      "rawIndex" : 8,
+      "rawResolution" : "unresolved",
+      "screen" : "calendar",
+      "sourcePNG" : "screenshots\/iPad26-stage08-accessibility-calendar.png",
+      "sourceSHA256" : "81f93d1ef3d6b8ce78c5b987c246e2318bd745be58ed2cba67d60bbb6ad094b4",
+      "topColors" : [
+        {
+          "color" : "#5d5fcd",
+          "count" : 518
+        },
+        {
+          "color" : "#ffffff",
+          "count" : 47
+        },
+        {
+          "color" : "#6e6fd2",
+          "count" : 14
+        },
+        {
+          "color" : "#8485d9",
+          "count" : 14
+        },
+        {
+          "color" : "#c0c1ec",
+          "count" : 12
+        },
+        {
+          "color" : "#d6d7f2",
+          "count" : 12
+        },
+        {
+          "color" : "#b7b7e9",
+          "count" : 11
+        },
+        {
+          "color" : "#7f80d7",
+          "count" : 9
+        }
+      ]
+    },
+    {
+      "background" : "#ffffff",
+      "backgroundPixelCount" : 1440,
+      "coreContrastRatio" : 5.2712558308611674,
+      "element" : "recording.status.77777777-7777-4777-8777-777777777771",
+      "foreground" : "#5d5fcd",
+      "foregroundPixelCount" : 133,
+      "framePoints" : [
+        146,
+        369.5,
+        36.5,
+        13.5
+      ],
+      "kind" : "visible recording status",
+      "label" : "Готова",
+      "rawIndex" : 9,
+      "rawResolution" : "unresolved",
+      "screen" : "recordings",
+      "sourcePNG" : "screenshots\/iPad26-stage08-accessibility-recordings.png",
+      "sourceSHA256" : "63c51e74d0687faa08b955e0defd74a0fad620b83ff4e36d9b086a3910823aab",
+      "topColors" : [
+        {
+          "color" : "#ffffff",
+          "count" : 1440
+        },
+        {
+          "color" : "#5d5fcd",
+          "count" : 133
+        },
+        {
+          "color" : "#fefeff",
+          "count" : 41
+        },
+        {
+          "color" : "#6163ce",
+          "count" : 22
+        },
+        {
+          "color" : "#f5f5fc",
+          "count" : 17
+        },
+        {
+          "color" : "#cecff0",
+          "count" : 13
+        },
+        {
+          "color" : "#6567cf",
+          "count" : 12
+        },
+        {
+          "color" : "#787ad5",
+          "count" : 11
+        }
+      ]
+    },
+    {
+      "background" : "#ffffff",
+      "backgroundPixelCount" : 3461,
+      "coreContrastRatio" : 5.211215844073374,
+      "element" : "recording.status.77777777-7777-4777-8777-777777777772",
+      "foreground" : "#686c7d",
+      "foregroundPixelCount" : 355,
+      "framePoints" : [
+        146,
+        481.5,
+        90.5,
+        13.5
+      ],
+      "kind" : "visible text",
+      "label" : "Обрабатывается",
+      "rawIndex" : 10,
+      "rawResolution" : "unresolved",
+      "screen" : "recordings",
+      "sourcePNG" : "screenshots\/iPad26-stage08-accessibility-recordings.png",
+      "sourceSHA256" : "63c51e74d0687faa08b955e0defd74a0fad620b83ff4e36d9b086a3910823aab",
+      "topColors" : [
+        {
+          "color" : "#ffffff",
+          "count" : 3461
+        },
+        {
+          "color" : "#686c7d",
+          "count" : 355
+        },
+        {
+          "color" : "#fefefe",
+          "count" : 76
+        },
+        {
+          "color" : "#868996",
+          "count" : 31
+        },
+        {
+          "color" : "#6a6e7f",
+          "count" : 29
+        },
+        {
+          "color" : "#fdfdfd",
+          "count" : 22
+        },
+        {
+          "color" : "#696d7e",
+          "count" : 17
+        },
+        {
+          "color" : "#d1d3d8",
+          "count" : 16
+        }
+      ]
+    },
+    {
+      "background" : "#ffffff",
+      "backgroundPixelCount" : 4548,
+      "coreContrastRatio" : 5.211215844073374,
+      "element" : "recording.status.77777777-7777-4777-8777-777777777773",
+      "foreground" : "#686c7d",
+      "foregroundPixelCount" : 408,
+      "framePoints" : [
+        146,
+        593.5,
+        113.5,
+        13.5
+      ],
+      "kind" : "visible text",
+      "label" : "Не удалось записать",
+      "rawIndex" : 11,
+      "rawResolution" : "unresolved",
+      "screen" : "recordings",
+      "sourcePNG" : "screenshots\/iPad26-stage08-accessibility-recordings.png",
+      "sourceSHA256" : "63c51e74d0687faa08b955e0defd74a0fad620b83ff4e36d9b086a3910823aab",
+      "topColors" : [
+        {
+          "color" : "#ffffff",
+          "count" : 4548
+        },
+        {
+          "color" : "#686c7d",
+          "count" : 408
+        },
+        {
+          "color" : "#fefefe",
+          "count" : 74
+        },
+        {
+          "color" : "#868996",
+          "count" : 44
+        },
+        {
+          "color" : "#f6f6f7",
+          "count" : 26
+        },
+        {
+          "color" : "#ebecee",
+          "count" : 23
+        },
+        {
+          "color" : "#696d7e",
+          "count" : 22
+        },
+        {
+          "color" : "#707484",
+          "count" : 22
+        }
+      ]
+    },
+    {
+      "background" : "#ffffff",
+      "backgroundPixelCount" : 1440,
+      "coreContrastRatio" : 5.2712558308611674,
+      "element" : "recording.status.77777777-7777-4777-8777-777777777774",
+      "foreground" : "#5d5fcd",
+      "foregroundPixelCount" : 133,
+      "framePoints" : [
+        146,
+        705.5,
+        36.5,
+        13.5
+      ],
+      "kind" : "visible recording status",
+      "label" : "Готова",
+      "rawIndex" : 12,
+      "rawResolution" : "unresolved",
+      "screen" : "recordings",
+      "sourcePNG" : "screenshots\/iPad26-stage08-accessibility-recordings.png",
+      "sourceSHA256" : "63c51e74d0687faa08b955e0defd74a0fad620b83ff4e36d9b086a3910823aab",
+      "topColors" : [
+        {
+          "color" : "#ffffff",
+          "count" : 1440
+        },
+        {
+          "color" : "#5d5fcd",
+          "count" : 133
+        },
+        {
+          "color" : "#fefeff",
+          "count" : 41
+        },
+        {
+          "color" : "#6163ce",
+          "count" : 22
+        },
+        {
+          "color" : "#f5f5fc",
+          "count" : 17
+        },
+        {
+          "color" : "#cecff0",
+          "count" : 13
+        },
+        {
+          "color" : "#6567cf",
+          "count" : 12
+        },
+        {
+          "color" : "#787ad5",
+          "count" : 11
+        }
+      ]
+    },
+    {
+      "background" : "#ffffff",
+      "backgroundPixelCount" : 1440,
+      "coreContrastRatio" : 5.2712558308611674,
+      "element" : "recording.status.77777777-7777-4777-8777-777777777771",
+      "foreground" : "#5d5fcd",
+      "foregroundPixelCount" : 133,
+      "framePoints" : [
+        146,
+        369.5,
+        36.5,
+        13.5
+      ],
+      "kind" : "visible recording status",
+      "label" : "Готова",
+      "rawIndex" : 22,
+      "rawResolution" : "unresolved",
+      "screen" : "recordings-footer",
+      "sourcePNG" : "screenshots\/iPad26-stage08-accessibility-recordings-footer.png",
+      "sourceSHA256" : "36c8bb70b8292d46a450ff0418253f176bdcbc51ad11bb442e5d0dec54cd9249",
+      "topColors" : [
+        {
+          "color" : "#ffffff",
+          "count" : 1440
+        },
+        {
+          "color" : "#5d5fcd",
+          "count" : 133
+        },
+        {
+          "color" : "#fefeff",
+          "count" : 41
+        },
+        {
+          "color" : "#6163ce",
+          "count" : 22
+        },
+        {
+          "color" : "#f5f5fc",
+          "count" : 17
+        },
+        {
+          "color" : "#cecff0",
+          "count" : 13
+        },
+        {
+          "color" : "#6567cf",
+          "count" : 12
+        },
+        {
+          "color" : "#787ad5",
+          "count" : 11
+        }
+      ]
+    },
+    {
+      "background" : "#ffffff",
+      "backgroundPixelCount" : 3461,
+      "coreContrastRatio" : 5.211215844073374,
+      "element" : "recording.status.77777777-7777-4777-8777-777777777772",
+      "foreground" : "#686c7d",
+      "foregroundPixelCount" : 355,
+      "framePoints" : [
+        146,
+        481.5,
+        90.5,
+        13.5
+      ],
+      "kind" : "visible text",
+      "label" : "Обрабатывается",
+      "rawIndex" : 23,
+      "rawResolution" : "unresolved",
+      "screen" : "recordings-footer",
+      "sourcePNG" : "screenshots\/iPad26-stage08-accessibility-recordings-footer.png",
+      "sourceSHA256" : "36c8bb70b8292d46a450ff0418253f176bdcbc51ad11bb442e5d0dec54cd9249",
+      "topColors" : [
+        {
+          "color" : "#ffffff",
+          "count" : 3461
+        },
+        {
+          "color" : "#686c7d",
+          "count" : 355
+        },
+        {
+          "color" : "#fefefe",
+          "count" : 76
+        },
+        {
+          "color" : "#868996",
+          "count" : 31
+        },
+        {
+          "color" : "#6a6e7f",
+          "count" : 29
+        },
+        {
+          "color" : "#fdfdfd",
+          "count" : 22
+        },
+        {
+          "color" : "#696d7e",
+          "count" : 17
+        },
+        {
+          "color" : "#d1d3d8",
+          "count" : 16
+        }
+      ]
+    },
+    {
+      "background" : "#ffffff",
+      "backgroundPixelCount" : 4548,
+      "coreContrastRatio" : 5.211215844073374,
+      "element" : "recording.status.77777777-7777-4777-8777-777777777773",
+      "foreground" : "#686c7d",
+      "foregroundPixelCount" : 408,
+      "framePoints" : [
+        146,
+        593.5,
+        113.5,
+        13.5
+      ],
+      "kind" : "visible text",
+      "label" : "Не удалось записать",
+      "rawIndex" : 24,
+      "rawResolution" : "unresolved",
+      "screen" : "recordings-footer",
+      "sourcePNG" : "screenshots\/iPad26-stage08-accessibility-recordings-footer.png",
+      "sourceSHA256" : "36c8bb70b8292d46a450ff0418253f176bdcbc51ad11bb442e5d0dec54cd9249",
+      "topColors" : [
+        {
+          "color" : "#ffffff",
+          "count" : 4548
+        },
+        {
+          "color" : "#686c7d",
+          "count" : 408
+        },
+        {
+          "color" : "#fefefe",
+          "count" : 74
+        },
+        {
+          "color" : "#868996",
+          "count" : 44
+        },
+        {
+          "color" : "#f6f6f7",
+          "count" : 26
+        },
+        {
+          "color" : "#ebecee",
+          "count" : 23
+        },
+        {
+          "color" : "#696d7e",
+          "count" : 22
+        },
+        {
+          "color" : "#707484",
+          "count" : 22
+        }
+      ]
+    },
+    {
+      "background" : "#ffffff",
+      "backgroundPixelCount" : 1440,
+      "coreContrastRatio" : 5.2712558308611674,
+      "element" : "recording.status.77777777-7777-4777-8777-777777777774",
+      "foreground" : "#5d5fcd",
+      "foregroundPixelCount" : 133,
+      "framePoints" : [
+        146,
+        705.5,
+        36.5,
+        13.5
+      ],
+      "kind" : "visible recording status",
+      "label" : "Готова",
+      "rawIndex" : 25,
+      "rawResolution" : "unresolved",
+      "screen" : "recordings-footer",
+      "sourcePNG" : "screenshots\/iPad26-stage08-accessibility-recordings-footer.png",
+      "sourceSHA256" : "36c8bb70b8292d46a450ff0418253f176bdcbc51ad11bb442e5d0dec54cd9249",
+      "topColors" : [
+        {
+          "color" : "#ffffff",
+          "count" : 1440
+        },
+        {
+          "color" : "#5d5fcd",
+          "count" : 133
+        },
+        {
+          "color" : "#fefeff",
+          "count" : 41
+        },
+        {
+          "color" : "#6163ce",
+          "count" : 22
+        },
+        {
+          "color" : "#f5f5fc",
+          "count" : 17
+        },
+        {
+          "color" : "#cecff0",
+          "count" : 13
+        },
+        {
+          "color" : "#6567cf",
+          "count" : 12
+        },
+        {
+          "color" : "#787ad5",
+          "count" : 11
+        }
+      ]
+    },
+    {
+      "background" : "#f7f8fc",
+      "backgroundPixelCount" : 3710,
+      "coreContrastRatio" : 4.9668902633105443,
+      "element" : "folders.subtitle",
+      "foreground" : "#5d5fcd",
+      "foregroundPixelCount" : 719,
+      "framePoints" : [
+        20,
+        106,
+        121.5,
+        13.5
+      ],
+      "kind" : "visible text",
+      "label" : "Личное пространство",
+      "rawIndex" : 26,
+      "rawResolution" : "unresolved",
+      "screen" : "folders",
+      "sourcePNG" : "screenshots\/iPad26-stage08-accessibility-folders.png",
+      "sourceSHA256" : "8f393d2580ab3a1a7e6988274cb9f588a109bcd394e40966e4c0bed40d6fb73e",
+      "topColors" : [
+        {
+          "color" : "#f7f8fc",
+          "count" : 3710
+        },
+        {
+          "color" : "#f6f7fb",
+          "count" : 797
+        },
+        {
+          "color" : "#5d5fcd",
+          "count" : 719
+        },
+        {
+          "color" : "#5d5fcc",
+          "count" : 102
+        },
+        {
+          "color" : "#f5f6fb",
+          "count" : 85
+        },
+        {
+          "color" : "#f6f7fc",
+          "count" : 74
+        },
+        {
+          "color" : "#a7a9e4",
+          "count" : 37
+        },
+        {
+          "color" : "#6567d0",
+          "count" : 30
+        }
+      ]
+    },
+    {
+      "background" : "#eeeffe",
+      "backgroundPixelCount" : 4548,
+      "coreContrastRatio" : 4.6219326927231315,
+      "element" : "",
+      "foreground" : "#5d5fcd",
+      "foregroundPixelCount" : 168,
+      "framePoints" : [
+        56,
+        142,
+        40,
+        40
+      ],
+      "kind" : "decorative initials duplicate adjacent full name",
+      "label" : "ПЕ",
+      "rawIndex" : 28,
+      "rawResolution" : "unresolved",
+      "screen" : "settings",
+      "sourcePNG" : "screenshots\/iPad26-stage08-accessibility-settings.png",
+      "sourceSHA256" : "fd4a58f48d05b98f03df7185e537e9cd6e39401c4140426555b394dfddca71a7",
+      "topColors" : [
+        {
+          "color" : "#eeeffe",
+          "count" : 4548
+        },
+        {
+          "color" : "#ffffff",
+          "count" : 1236
+        },
+        {
+          "color" : "#5d5fcd",
+          "count" : 168
+        },
+        {
+          "color" : "#fdfdff",
+          "count" : 32
+        },
+        {
+          "color" : "#abace7",
+          "count" : 24
+        },
+        {
+          "color" : "#f1f2fe",
+          "count" : 24
+        },
+        {
+          "color" : "#f2f3fe",
+          "count" : 24
+        },
+        {
+          "color" : "#5e60cd",
+          "count" : 17
+        }
+      ]
+    },
+    {
+      "background" : "#b2b3e7",
+      "backgroundPixelCount" : 110882,
+      "coreContrastRatio" : 1.3939182261596694,
+      "element" : "saveProfile",
+      "foreground" : "#d5d5f2",
+      "foregroundPixelCount" : 1427,
+      "framePoints" : [
+        334,
+        507,
+        650,
+        44
+      ],
+      "kind" : "disabled control; opacity 0.45; not a normal-text contrast pass",
+      "label" : "Сохранить профиль",
+      "rawIndex" : 29,
+      "rawResolution" : "unresolved",
+      "screen" : "settings",
+      "sourcePNG" : "screenshots\/iPad26-stage08-accessibility-settings.png",
+      "sourceSHA256" : "fd4a58f48d05b98f03df7185e537e9cd6e39401c4140426555b394dfddca71a7",
+      "topColors" : [
+        {
+          "color" : "#b2b3e7",
+          "count" : 110882
+        },
+        {
+          "color" : "#d5d5f2",
+          "count" : 1427
+        },
+        {
+          "color" : "#f7f8fc",
+          "count" : 428
+        },
+        {
+          "color" : "#b6b7e8",
+          "count" : 100
+        },
+        {
+          "color" : "#bcbdea",
+          "count" : 88
+        },
+        {
+          "color" : "#c7c8ee",
+          "count" : 75
+        },
+        {
+          "color" : "#cecff0",
+          "count" : 64
+        },
+        {
+          "color" : "#b3b4e7",
+          "count" : 63
+        }
+      ]
+    }
+  ],
+  "method" : "Original PNG sRGB components; raw point frame multiplied by 2; floor\/ceil pixel bounds; exact color counts and WCAG relative luminance of observed core\/background pair",
+  "rawIssueCount" : 30,
+  "sourceCommit" : "586bfe875355f930a5d463214bd7860a78ac189e"
+}

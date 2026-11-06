@@ -1,0 +1,65 @@
+{
+  "devicesAndConfigurations" : [
+    {
+      "device" : {
+        "architecture" : "x86_64",
+        "deviceId" : "97EF782D-9317-4024-908C-4F9E8417C2D2",
+        "deviceName" : "iPad mini (A17 Pro)",
+        "modelName" : "iPad mini (A17 Pro)",
+        "osBuildNumber" : "22G86",
+        "osVersion" : "18.6",
+        "platform" : "iOS Simulator"
+      },
+      "expectedFailures" : 0,
+      "failedTests" : 3,
+      "passedTests" : 12,
+      "skippedTests" : 0,
+      "testPlanConfiguration" : {
+        "configurationId" : "1",
+        "configurationName" : "Test Scheme Action"
+      }
+    }
+  ],
+  "environmentDescription" : "MeetSpace-Debug · Built with macOS 15.7.9",
+  "expectedFailures" : 0,
+  "failedTests" : 3,
+  "finishTime" : 1793985941.668,
+  "passedTests" : 12,
+  "result" : "Failed",
+  "skippedTests" : 0,
+  "startTime" : 1793984641.671,
+  "statistics" : [
+
+  ],
+  "testFailures" : [
+    {
+      "failureText" : "failed: caught error: \"Error Domain=com.apple.xcode.xctest.accessibilityAudit Code=-56 \"Audit failed to complete in time\" UserInfo={NSLocalizedDescription=Audit failed to complete in time}\"",
+      "targetName" : "MeetSpaceUITests",
+      "testIdentifier" : 11,
+      "testIdentifierString" : "FoundationUITests/testAccessibilityStage08CoreScreens()",
+      "testIdentifierURL" : "test://com.apple.xcode/MeetSpace/MeetSpaceUITests/FoundationUITests/testAccessibilityStage08CoreScreens",
+      "testName" : "testAccessibilityStage08CoreScreens()"
+    },
+    {
+      "failureText" : "XCTAssertEqual failed: (\"XCTWaiterResult(rawValue: 2)\") is not equal to (\"XCTWaiterResult(rawValue: 1)\")",
+      "targetName" : "MeetSpaceUITests",
+      "testIdentifier" : 13,
+      "testIdentifierString" : "FoundationUITests/testConferenceCreateMediaControlsChatAndLeave()",
+      "testIdentifierURL" : "test://com.apple.xcode/MeetSpace/MeetSpaceUITests/FoundationUITests/testConferenceCreateMediaControlsChatAndLeave",
+      "testName" : "testConferenceCreateMediaControlsChatAndLeave()"
+    },
+    {
+      "failureText" : "Failed to tap \"more\" Key: Find single matching element. Multiple matching elements found for <XCUIElementQuery: 0x600002112cb0>.\nSparse tree of matches:\n→App element pid: 29441\n  ↳Window\n    ↳Other\n      ↳Other\n        ↳Other\n          ↳Keyboard\n            ↳Other\n              ↳Other, identifier: 'UIKeyboardLayoutStar Preview'\n                ↳Key, identifier: 'more', label: 'цифры'\n                ↳Key, identifier: 'more', label: 'цифры'\nPossibly caused by runtime issues:\nAutomation type mismatch: computed Button from legacy attributes vs Key from modern attribute. Input attributes and values: {\n    \"XC_kAXXCAttributeAutomationType\" = 20;\n    \"XC_kAXXCAttributeElementBaseType\" = UIAccessibilityElement;\n    \"XC_kAXXCAttributeElementType\" = UIAccessibilityElementKBKey;\n    \"XC_kAXXCAttributeTraits\" = 8589934641;\n}\nSee test report attachments for more detail.",
+      "targetName" : "MeetSpaceUITests",
+      "testIdentifier" : 15,
+      "testIdentifierString" : "FoundationUITests/testStage08AccountDeletionRequiresPasswordAndConfirmation()",
+      "testIdentifierURL" : "test://com.apple.xcode/MeetSpace/MeetSpaceUITests/FoundationUITests/testStage08AccountDeletionRequiresPasswordAndConfirmation",
+      "testName" : "testStage08AccountDeletionRequiresPasswordAndConfirmation()"
+    }
+  ],
+  "title" : "Test - MeetSpace-Debug",
+  "topInsights" : [
+
+  ],
+  "totalTestCount" : 15
+}

@@ -1,0 +1,22 @@
+[
+  {
+    "detail": "Contrast is not high enough for element unless font size is larger.",
+    "element": "calendar.weekday.0",
+    "frame": "(49.25, 379.25, 13.5, 12.5)",
+    "label": "Пн",
+    "resolution": "unresolved",
+    "screen": "calendar",
+    "summary": "Contrast nearly passed",
+    "type": "1"
+  },
+  {
+    "detail": "Contrast failed for element",
+    "element": "calendar.weekday.4",
+    "frame": "(285.75, 379.25, 12.5, 12.5)",
+    "label": "Пт",
+    "resolution": "unresolved",
+    "screen": "calendar",
+    "summary": "Contrast failed",
+    "type": "1"
+  }
+]

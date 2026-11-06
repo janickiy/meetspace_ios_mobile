@@ -1,0 +1,44 @@
+{
+  "run": "42263390594",
+  "sourceSHA": "e0a37748eb865b84dddf3da6339d16e0d8e1a0fe",
+  "reviewedOn": "2026-11-06",
+  "scope": "CI10 iPhone26 CoreAX timeout diagnostic; incomplete core screen coverage, not an accessibility PASS",
+  "imagesUnmodified": true,
+  "files": [
+    {
+      "file": "iPhone26-stage08-accessibility-issues.json",
+      "sourceZIPMember": "iPhone26-screenshots/D0E83BFF-CF8D-498F-A65D-7BE4C7606BE5.json",
+      "sha256": "72fb2421654a20a152557d812ba1425c23641de5c68c1afbc1786000ae5b071c"
+    },
+    {
+      "file": "iPhone26-environment.json",
+      "sourceZIPMember": "iPhone26-environment.json",
+      "sha256": "42f477b68c1f487eafb7b8ef197cea83b3bfc5c8d734c3bdc1d73b019c9b6943"
+    },
+    {
+      "file": "iPhone26-summary.json",
+      "sourceZIPMember": "iPhone26-summary.json",
+      "sha256": "a27a65e0bf16f94b6edb8338c95664b9818f3239d90bf46a440438d70cd63585"
+    },
+    {
+      "file": "screenshots/iPhone26-stage08-accessibility-messages.png",
+      "sourceZIPMember": "iPhone26-screenshots/F534159E-924C-41B6-A498-0495977FF097.png",
+      "sha256": "a6aa38e7b0abbb2aae68a99cf6b29f3869c71d0a4cfcb3d341d0e6aff9196223"
+    },
+    {
+      "file": "iPhone26-export-manifest.json",
+      "sourceZIPMember": "iPhone26-screenshots/manifest.json",
+      "sha256": "b2cdca3c9437ce069cd7c04f9d67c4169fde26f5433491cf9ee851a6f63ab7ab"
+    },
+    {
+      "file": "iPhone26-core-audit-session-excerpt.txt",
+      "derivedFrom": "original diagnostic session line excerpts, full session hash preserved in file",
+      "sha256": "f82006d157c537c87532cfc65eec7668142a8adf2519ebb93e1d56c28a2a09bf"
+    },
+    {
+      "file": "iPhone26-core-audit-timeout-analysis.json",
+      "derivedFrom": "iPhone26-core-audit-session-excerpt.txt + tested source category order + original raw/summary",
+      "sha256": "9359587d1461cc88c83fd02b6723d7421c82815796eb7d8ccf874e015845b730"
+    }
+  ]
+}

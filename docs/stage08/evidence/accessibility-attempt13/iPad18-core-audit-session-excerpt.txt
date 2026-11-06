@@ -1,0 +1,147 @@
+ZIP member: iPad18-diagnostics/0_Test_iPad mini (A17 Pro)_Diagnostics/MeetSpaceUITests-C38A9453-096C-4CAA-A873-2D6F5A14131E-Configuration-Test Scheme Action-Iteration-1/MeetSpaceUITests-0B41882A-1C35-4220-9A02-803249370E42/Session-MeetSpaceUITests-2026-11-06_183708-24hok6.log
+Full session SHA256: c7bdd5e11c4ac744aff9179b379ce4da6eed168a21b6164721b9edd3e472257a
+
+14565:                                 Other
+14566:                                   Other
+14567:                                     ScrollView
+14568:                                       Other
+14569:                                         Other
+14570:                                           Button, identifier: 'conversation.22222222-2222-4222-8222-222222222222', label: 'Тестовый собеседник, Проверка интерфейса чата'
+14571: 18:39:55.202 MeetSpaceUITests-Runner[9785:33763] matches: {(
+14572:     Button, identifier: 'conversation.22222222-2222-4222-8222-222222222222', label: 'Тестовый собеседник, Проверка интерфейса чата'
+14573: )}
+14574: 18:39:55.203 MeetSpaceUITests-Runner[9785:33763] <XCTContext: 0x600002111e00> finished activity <XCActivityRecord: 0x600002127070> 2026-11-06 18:39:55 +0000: Find the "conversation.22222222-2222-4222-8222-222222222222" Button (0.0960131s)
+14575: 18:39:55.204 xcodebuild[1412:7810] _XCT_testCaseWithIdentifier:<XCTTestIdentifier leaf, method ["none", "none"]> didFinishActivity:<XCActivityRecord: 0x600003aa4fa0> 2026-11-06 18:39:55 +0000: Find the "conversation.22222222-2222-4222-8222-222222222222" Button (0.0960131s)
+14576: 18:39:55.204 xcodebuild[1412:7810] Nothing to delete
+14577: 18:39:55.203 MeetSpaceUITests-Runner[9785:33763] Creating future for 'running accessibility audit with config: <XCAXAuditConfiguration: 0x6000002cfe20>' with timeout 65.00
+14578: 18:39:55.204 MeetSpaceUITests-Runner[9785:33763] <XCTWaiter: 0x600000d80d80> entering wait loop for 65.00s with expectations: `running accessibility audit with config: <XCAXAuditConfiguration: 0x6000002cfe20>`
+14579: 18:39:56.488 MeetSpaceUITests-Runner[9785:39789] Got accessibility audit response <XCAXAuditResultCollection: 0x600000014590>, error: (null)
+14580: 18:39:56.488 MeetSpaceUITests-Runner[9785:33763] Returning result XCTWaiterResultCompleted for synchronous waiter <XCTWaiter: 0x600000d80d80>
+14581: 18:39:56.488 MeetSpaceUITests-Runner[9785:33763] Wait <XCTWaiterWait: 0x6000017d9640> completed after 1.285s
+14582: 18:39:56.488 MeetSpaceUITests-Runner[9785:33763] cleaning up running accessibility audit with config: <XCAXAuditConfiguration: 0x6000002cfe20>
+14583: 18:39:56.489 MeetSpaceUITests-Runner[9785:33763] Creating future for 'getting screen identifiers' with timeout 30.00
+14584: 18:39:56.489 MeetSpaceUITests-Runner[9785:33763] <XCTWaiter: 0x600000d88360> entering wait loop for 30.00s with expectations: `getting screen identifiers`
+14585: 18:39:56.489 MeetSpaceUITests-Runner[9785:33763] Returning result XCTWaiterResultCompleted for synchronous waiter <XCTWaiter: 0x600000d88360>
+14586: 18:39:56.489 MeetSpaceUITests-Runner[9785:33763] Wait <XCTWaiterWait: 0x6000017ae080> completed after 0.000s
+14587: 18:39:56.489 MeetSpaceUITests-Runner[9785:33763] cleaning up getting screen identifiers
+14588: 18:39:56.489 MeetSpaceUITests-Runner[9785:33763] Request screenshot: screenID '1', encoding 'Encoding(uniformTypeIdentifier: public.png, compressionQuality: 1.000000)'
+14589: 18:39:56.490 MeetSpaceUITests-Runner[9785:33763] Creating future for 'requesting screenshot' with timeout 30.00
+14590: 18:39:56.490 MeetSpaceUITests-Runner[9785:33763] <XCTWaiter: 0x600000d78c30> entering wait loop for 30.00s with expectations: `requesting screenshot`
+14591: 18:39:56.529 MeetSpaceUITests-Runner[9785:39788] Handling kAXPidStatusChangedNotification
+14592: 18:39:56.529 MeetSpaceUITests-Runner[9785:39788] Got kAXPidStatusChangedNotification for pid 12144: active
+14593: 18:39:56.591 MeetSpaceUITests-Runner[9785:33763] No application process found matching pid 12144, caching
+14594: 18:39:56.680 MeetSpaceUITests-Runner[9785:33763] Returning result XCTWaiterResultCompleted for synchronous waiter <XCTWaiter: 0x600000d78c30>
+14595: 18:39:56.680 MeetSpaceUITests-Runner[9785:33763] Wait <XCTWaiterWait: 0x6000017dd280> completed after 0.190s
+14596: 18:39:56.680 MeetSpaceUITests-Runner[9785:33763] cleaning up requesting screenshot
+14597: 18:39:56.736 MeetSpaceUITests-Runner[9785:39789] Handling kAXPidStatusChangedNotification
+14598: 18:39:56.736 MeetSpaceUITests-Runner[9785:39789] Got kAXPidStatusChangedNotification for pid 11461: active
+14599: 18:39:56.785 MeetSpaceUITests-Runner[9785:39788] Handling kAXPidStatusChangedNotification
+14600: 18:39:56.785 MeetSpaceUITests-Runner[9785:39788] Got kAXPidStatusChangedNotification for pid 12811: active
+14601: 18:39:57.182 MeetSpaceUITests-Runner[9785:33763] Creating future for 'running accessibility audit with config: <XCAXAuditConfiguration: 0x6000002e4220>' with timeout 65.00
+14602: 18:39:57.183 MeetSpaceUITests-Runner[9785:33763] <XCTWaiter: 0x600000d84990> entering wait loop for 65.00s with expectations: `running accessibility audit with config: <XCAXAuditConfiguration: 0x6000002e4220>`
+14603: 18:39:57.183 MeetSpaceUITests-Runner[9785:33763] No application process found matching pid 11461, caching
+14604: 18:39:57.183 MeetSpaceUITests-Runner[9785:33763] No application process found matching pid 12811, caching
+14605: 18:39:57.454 MeetSpaceUITests-Runner[9785:39789] Got accessibility audit response <XCAXAuditResultCollection: 0x6000000066f0>, error: (null)
+14606: 18:39:57.455 MeetSpaceUITests-Runner[9785:33763] Returning result XCTWaiterResultCompleted for synchronous waiter <XCTWaiter: 0x600000d84990>
+14607: 18:39:57.455 MeetSpaceUITests-Runner[9785:33763] Wait <XCTWaiterWait: 0x6000017d2b80> completed after 0.272s
+14608: 18:39:57.455 MeetSpaceUITests-Runner[9785:33763] cleaning up running accessibility audit with config: <XCAXAuditConfiguration: 0x6000002e4220>
+14609: 18:39:57.455 MeetSpaceUITests-Runner[9785:33763] Creating future for 'getting screen identifiers' with timeout 30.00
+14610: 18:39:57.456 MeetSpaceUITests-Runner[9785:33763] <XCTWaiter: 0x600000d88780> entering wait loop for 30.00s with expectations: `getting screen identifiers`
+14611: 18:39:57.456 MeetSpaceUITests-Runner[9785:33763] Returning result XCTWaiterResultCompleted for synchronous waiter <XCTWaiter: 0x600000d88780>
+14612: 18:39:57.456 MeetSpaceUITests-Runner[9785:33763] Wait <XCTWaiterWait: 0x6000017a6300> completed after 0.000s
+14613: 18:39:57.456 MeetSpaceUITests-Runner[9785:33763] cleaning up getting screen identifiers
+14614: 18:39:57.456 MeetSpaceUITests-Runner[9785:33763] Request screenshot: screenID '1', encoding 'Encoding(uniformTypeIdentifier: public.png, compressionQuality: 1.000000)'
+14615: 18:39:57.456 MeetSpaceUITests-Runner[9785:33763] Creating future for 'requesting screenshot' with timeout 30.00
+14616: 18:39:57.456 MeetSpaceUITests-Runner[9785:33763] <XCTWaiter: 0x600000d88840> entering wait loop for 30.00s with expectations: `requesting screenshot`
+14617: 18:39:57.621 MeetSpaceUITests-Runner[9785:33763] Returning result XCTWaiterResultCompleted for synchronous waiter <XCTWaiter: 0x600000d88840>
+14618: 18:39:57.621 MeetSpaceUITests-Runner[9785:33763] Wait <XCTWaiterWait: 0x600001793f00> completed after 0.164s
+14619: 18:39:57.621 MeetSpaceUITests-Runner[9785:33763] cleaning up requesting screenshot
+14620: 18:39:57.902 MeetSpaceUITests-Runner[9785:33823] Handling kAXPidStatusChangedNotification
+14621: 18:39:57.903 MeetSpaceUITests-Runner[9785:33823] Got kAXPidStatusChangedNotification for pid 12818: active
+14622: 18:39:57.931 MeetSpaceUITests-Runner[9785:33823] Handling kAXPidStatusChangedNotification
+14623: 18:39:57.932 MeetSpaceUITests-Runner[9785:33823] Got kAXPidStatusChangedNotification for pid 9609: active
+14624: 18:39:58.123 MeetSpaceUITests-Runner[9785:33763] Creating future for 'running accessibility audit with config: <XCAXAuditConfiguration: 0x6000002e85e0>' with timeout 65.00
+14625: 18:39:58.124 MeetSpaceUITests-Runner[9785:33763] <XCTWaiter: 0x600000d88f00> entering wait loop for 65.00s with expectations: `running accessibility audit with config: <XCAXAuditConfiguration: 0x6000002e85e0>`
+14626: 18:39:58.124 MeetSpaceUITests-Runner[9785:33763] No application process found matching pid 12818, caching
+14627: 18:39:58.124 MeetSpaceUITests-Runner[9785:33763] No application process found matching pid 9609, caching
+14628: 18:39:58.547 MeetSpaceUITests-Runner[9785:33823] Got accessibility audit response <XCAXAuditResultCollection: 0x600000012450>, error: (null)
+14629: 18:39:58.547 MeetSpaceUITests-Runner[9785:33763] Returning result XCTWaiterResultCompleted for synchronous waiter <XCTWaiter: 0x600000d88f00>
+14630: 18:39:58.547 MeetSpaceUITests-Runner[9785:33763] Wait <XCTWaiterWait: 0x600001783c40> completed after 0.424s
+14631: 18:39:58.548 MeetSpaceUITests-Runner[9785:33763] cleaning up running accessibility audit with config: <XCAXAuditConfiguration: 0x6000002e85e0>
+14632: 18:39:58.548 MeetSpaceUITests-Runner[9785:33763] Creating future for 'getting screen identifiers' with timeout 30.00
+14633: 18:39:58.548 MeetSpaceUITests-Runner[9785:33763] <XCTWaiter: 0x600000d7afa0> entering wait loop for 30.00s with expectations: `getting screen identifiers`
+14634: 18:39:58.548 MeetSpaceUITests-Runner[9785:33763] Returning result XCTWaiterResultCompleted for synchronous waiter <XCTWaiter: 0x600000d7afa0>
+14635: 18:39:58.548 MeetSpaceUITests-Runner[9785:33763] Wait <XCTWaiterWait: 0x6000017dc180> completed after 0.000s
+14636: 18:39:58.549 MeetSpaceUITests-Runner[9785:33763] cleaning up getting screen identifiers
+14637: 18:39:58.549 MeetSpaceUITests-Runner[9785:33763] Request screenshot: screenID '1', encoding 'Encoding(uniformTypeIdentifier: public.png, compressionQuality: 1.000000)'
+14638: 18:39:58.549 MeetSpaceUITests-Runner[9785:33763] Creating future for 'requesting screenshot' with timeout 30.00
+14639: 18:39:58.549 MeetSpaceUITests-Runner[9785:33763] <XCTWaiter: 0x600000d7b9c0> entering wait loop for 30.00s with expectations: `requesting screenshot`
+14640: 18:39:58.732 MeetSpaceUITests-Runner[9785:33763] Returning result XCTWaiterResultCompleted for synchronous waiter <XCTWaiter: 0x600000d7b9c0>
+14641: 18:39:58.732 MeetSpaceUITests-Runner[9785:33763] Wait <XCTWaiterWait: 0x6000017ddb00> completed after 0.183s
+14642: 18:39:58.732 MeetSpaceUITests-Runner[9785:33763] cleaning up requesting screenshot
+14643: 18:39:59.233 MeetSpaceUITests-Runner[9785:33763] Creating future for 'running accessibility audit with config: <XCAXAuditConfiguration: 0x6000002e8620>' with timeout 65.00
+14644: 18:39:59.233 MeetSpaceUITests-Runner[9785:33763] <XCTWaiter: 0x600000d89050> entering wait loop for 65.00s with expectations: `running accessibility audit with config: <XCAXAuditConfiguration: 0x6000002e8620>`
+14645: 18:39:59.589 MeetSpaceUITests-Runner[9785:39789] Got accessibility audit response <XCAXAuditResultCollection: 0x600000006c30>, error: (null)
+14646: 18:39:59.589 MeetSpaceUITests-Runner[9785:33763] Returning result XCTWaiterResultCompleted for synchronous waiter <XCTWaiter: 0x600000d89050>
+14647: 18:39:59.589 MeetSpaceUITests-Runner[9785:33763] Wait <XCTWaiterWait: 0x6000017de580> completed after 0.356s
+14648: 18:39:59.590 MeetSpaceUITests-Runner[9785:33763] cleaning up running accessibility audit with config: <XCAXAuditConfiguration: 0x6000002e8620>
+14649: 18:39:59.590 MeetSpaceUITests-Runner[9785:33763] Creating future for 'getting screen identifiers' with timeout 30.00
+14650: 18:39:59.590 MeetSpaceUITests-Runner[9785:33763] <XCTWaiter: 0x600000d890b0> entering wait loop for 30.00s with expectations: `getting screen identifiers`
+14651: 18:39:59.590 MeetSpaceUITests-Runner[9785:33763] Returning result XCTWaiterResultCompleted for synchronous waiter <XCTWaiter: 0x600000d890b0>
+14652: 18:39:59.590 MeetSpaceUITests-Runner[9785:33763] Wait <XCTWaiterWait: 0x60000175cb00> completed after 0.000s
+14653: 18:39:59.591 MeetSpaceUITests-Runner[9785:33763] cleaning up getting screen identifiers
+14654: 18:39:59.591 MeetSpaceUITests-Runner[9785:33763] Request screenshot: screenID '1', encoding 'Encoding(uniformTypeIdentifier: public.png, compressionQuality: 1.000000)'
+14655: 18:39:59.591 MeetSpaceUITests-Runner[9785:33763] Creating future for 'requesting screenshot' with timeout 30.00
+14656: 18:39:59.591 MeetSpaceUITests-Runner[9785:33763] <XCTWaiter: 0x600000d891d0> entering wait loop for 30.00s with expectations: `requesting screenshot`
+14657: 18:39:59.789 MeetSpaceUITests-Runner[9785:33763] Returning result XCTWaiterResultCompleted for synchronous waiter <XCTWaiter: 0x600000d891d0>
+14658: 18:39:59.790 MeetSpaceUITests-Runner[9785:33763] Wait <XCTWaiterWait: 0x60000175cb00> completed after 0.198s
+14659: 18:39:59.790 MeetSpaceUITests-Runner[9785:33763] cleaning up requesting screenshot
+14660: 18:40:00.291 MeetSpaceUITests-Runner[9785:33763] Creating future for 'running accessibility audit with config: <XCAXAuditConfiguration: 0x6000002e48a0>' with timeout 65.00
+14661: 18:40:00.291 MeetSpaceUITests-Runner[9785:33763] <XCTWaiter: 0x600000d84150> entering wait loop for 65.00s with expectations: `running accessibility audit with config: <XCAXAuditConfiguration: 0x6000002e48a0>`
+14662: 18:40:01.782 MeetSpaceUITests-Runner[9785:33823] Handling kAXPidStatusChangedNotification
+14663: 18:40:01.782 MeetSpaceUITests-Runner[9785:33823] Got kAXPidStatusChangedNotification for pid 7691: active
+14664: 18:40:01.847 MeetSpaceUITests-Runner[9785:33763] No application process found matching pid 7691, caching
+14665: 18:40:04.763 MeetSpaceUITests-Runner[9785:39789] Handling kAXPidStatusChangedNotification
+14666: 18:40:04.764 MeetSpaceUITests-Runner[9785:39789] Got kAXPidStatusChangedNotification for pid 9609: active
+14667: 18:40:04.833 MeetSpaceUITests-Runner[9785:33763] No application process found matching pid 9609, caching
+14668: 18:40:05.731 MeetSpaceUITests-Runner[9785:39789] Handling kAXPidStatusChangedNotification
+14669: 18:40:05.732 MeetSpaceUITests-Runner[9785:39789] Got kAXPidStatusChangedNotification for pid 12811: active
+14670: 18:40:05.753 MeetSpaceUITests-Runner[9785:33763] No application process found matching pid 12811, caching
+14671: 18:40:07.263 MeetSpaceUITests-Runner[9785:39788] Handling kAXPidStatusChangedNotification
+14672: 18:40:07.264 MeetSpaceUITests-Runner[9785:39788] Got kAXPidStatusChangedNotification for pid 11461: active
+14673: 18:40:07.293 MeetSpaceUITests-Runner[9785:33763] No application process found matching pid 11461, caching
+14674: 18:40:07.745 MeetSpaceUITests-Runner[9785:39789] Handling kAXPidStatusChangedNotification
+14675: 18:40:07.746 MeetSpaceUITests-Runner[9785:39789] Got kAXPidStatusChangedNotification for pid 12811: active
+14676: 18:40:07.806 MeetSpaceUITests-Runner[9785:33763] No application process found matching pid 12811, caching
+14677: 18:40:08.081 MeetSpaceUITests-Runner[9785:39788] Handling kAXPidStatusChangedNotification
+14678: 18:40:08.081 MeetSpaceUITests-Runner[9785:39788] Got kAXPidStatusChangedNotification for pid 12811: active
+14679: 18:40:08.116 MeetSpaceUITests-Runner[9785:33763] No application process found matching pid 12811, caching
+14680: 18:40:09.357 MeetSpaceUITests-Runner[9785:39789] Handling kAXPidStatusChangedNotification
+14681: 18:40:09.358 MeetSpaceUITests-Runner[9785:39789] Got kAXPidStatusChangedNotification for pid 12811: active
+14682: 18:40:09.443 MeetSpaceUITests-Runner[9785:33763] No application process found matching pid 12811, caching
+14683: 18:40:10.128 MeetSpaceUITests-Runner[9785:39788] Handling kAXPidStatusChangedNotification
+14684: 18:40:10.128 MeetSpaceUITests-Runner[9785:39788] Got kAXPidStatusChangedNotification for pid 13958: active
+14685: 18:40:10.140 MeetSpaceUITests-Runner[9785:39789] Handling kAXPidStatusChangedNotification
+14686: 18:40:10.140 MeetSpaceUITests-Runner[9785:39789] Got kAXPidStatusChangedNotification for pid 9609: active
+14687: 18:40:10.157 MeetSpaceUITests-Runner[9785:33763] No application process found matching pid 13958, caching
+14688: 18:40:10.157 MeetSpaceUITests-Runner[9785:33763] No application process found matching pid 9609, caching
+14689: 18:40:10.227 MeetSpaceUITests-Runner[9785:39789] Handling kAXPidStatusChangedNotification
+14690: 18:40:10.227 MeetSpaceUITests-Runner[9785:39789] Got kAXPidStatusChangedNotification for pid 13958: active
+14691: 18:40:10.262 MeetSpaceUITests-Runner[9785:33763] No application process found matching pid 13958, caching
+14692: 18:40:12.092 MeetSpaceUITests-Runner[9785:39788] Handling kAXPidStatusChangedNotification
+14693: 18:40:12.093 MeetSpaceUITests-Runner[9785:39788] Got kAXPidStatusChangedNotification for pid 9438: active
+14694: 18:40:12.104 MeetSpaceUITests-Runner[9785:33763] No application process found matching pid 9438, caching
+14695: 18:40:12.181 MeetSpaceUITests-Runner[9785:39788] Handling kAXPidStatusChangedNotification
+14696: 18:40:12.181 MeetSpaceUITests-Runner[9785:39788] Got kAXPidStatusChangedNotification for pid 9609: active
+14697: 18:40:12.205 MeetSpaceUITests-Runner[9785:33763] No application process found matching pid 9609, caching
+14698: 18:40:15.318 MeetSpaceUITests-Runner[9785:39788] Got accessibility audit response <XCAXAuditResultCollection: 0x60000000a0e0>, error: Error Domain=com.apple.xcode.xctest.accessibilityAudit Code=-56 "Audit failed to complete in time" UserInfo={NSLocalizedDescription=Audit failed to complete in time}
+14699: 18:40:15.319 MeetSpaceUITests-Runner[9785:33763] Returning result XCTWaiterResultCompleted for synchronous waiter <XCTWaiter: 0x600000d84150>
+14700: 18:40:15.319 MeetSpaceUITests-Runner[9785:33763] Wait <XCTWaiterWait: 0x6000017d2b00> completed after 15.027s
+14701: 18:40:15.319 MeetSpaceUITests-Runner[9785:33763] cleaning up running accessibility audit with config: <XCAXAuditConfiguration: 0x6000002e48a0>
+14702: 18:40:15.322 MeetSpaceUITests-Runner[9785:33763] <XCTContext: 0x60000211bc50> started activity <XCActivityRecord: 0x600002118fa0> 2026-11-06 18:40:15 +0000: Added attachment named 'stage08-accessibility-issues'
+14703: 18:40:15.325 xcodebuild[1412:7810] _XCT_testCaseWithIdentifier:<XCTTestIdentifier leaf, method ["none", "none"]> willStartActivity:<XCActivityRecord: 0x600003aa4dc0> 2026-11-06 18:40:15 +0000: Added attachment named 'stage08-accessibility-issues'
+14704: 18:40:15.326 xcodebuild[1412:7810] Nothing to delete
+14705: 18:40:15.323 MeetSpaceUITests-Runner[9785:33763] Activity 6DB92519-ABC6-4E98-AF17-046D9C0EE390 added attachment with name 'stage08-accessibility-issues', Uniform Type Identifier 'public.json', lifetime 'keepAlways', hasPayload: YES, size (in bytes): 776.
+14706: 18:40:15.323 MeetSpaceUITests-Runner[9785:33763] <XCTContext: 0x60000211bc50> finished activity <XCActivityRecord: 0x600002118fa0> 2026-11-06 18:40:15 +0000: Added attachment named 'stage08-accessibility-issues' (0.000622034s)
+14707: 18:40:15.326 xcodebuild[1412:7810] _XCT_testCaseWithIdentifier:<XCTTestIdentifier leaf, method ["none", "none"]> didFinishActivity:<XCActivityRecord: 0x600003aa4f50> 2026-11-06 18:40:15 +0000: Added attachment named 'stage08-accessibility-issues' (0.000622034s)
+14708: 18:40:15.326 xcodebuild[1412:7810] Nothing to delete

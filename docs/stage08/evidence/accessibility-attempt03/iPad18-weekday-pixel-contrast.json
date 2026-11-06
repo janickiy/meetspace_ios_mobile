@@ -1,0 +1,489 @@
+{
+  "colorSpace" : "NSCalibratedRGBColorSpace",
+  "imageColorProfile" : "sRGB IEC61966-2.1",
+  "imageFile" : "iPad18-calendar-normal.png",
+  "imagePixels" : [
+    1488,
+    2266
+  ],
+  "imageSHA256" : "d436a64875627feee78d9b7e36bd1cd8d953bf3cd7fac5dc23c9c3f235427328",
+  "method" : "Unmodified PNG; native RGB pixel histogram in floor\/ceil XCTest bounds; WCAG relative luminance in sRGB; antialiased edge pixels retained in histogram.",
+  "pixelsPerPoint" : 2,
+  "platform" : "iPad mini (A17 Pro), iPadOS 18",
+  "run" : 42240106296,
+  "samples" : [
+    {
+      "auditType" : "contrast",
+      "backgroundRGB" : [
+        255,
+        255,
+        255
+      ],
+      "exactBackgroundPixelCount" : 550,
+      "exactForegroundPixelCount" : 53,
+      "foregroundRGB" : [
+        41,
+        43,
+        59
+      ],
+      "framePointsXYWH" : [
+        49.25,
+        379.25,
+        13.5,
+        12.5
+      ],
+      "histogram" : [
+        {
+          "count" : 550,
+          "rgb" : [
+            255,
+            255,
+            255
+          ]
+        },
+        {
+          "count" : 53,
+          "rgb" : [
+            41,
+            43,
+            59
+          ]
+        },
+        {
+          "count" : 14,
+          "rgb" : [
+            204,
+            204,
+            208
+          ]
+        },
+        {
+          "count" : 14,
+          "rgb" : [
+            233,
+            233,
+            235
+          ]
+        },
+        {
+          "count" : 12,
+          "rgb" : [
+            95,
+            96,
+            108
+          ]
+        },
+        {
+          "count" : 12,
+          "rgb" : [
+            124,
+            125,
+            135
+          ]
+        },
+        {
+          "count" : 11,
+          "rgb" : [
+            137,
+            138,
+            147
+          ]
+        },
+        {
+          "count" : 10,
+          "rgb" : [
+            50,
+            52,
+            67
+          ]
+        },
+        {
+          "count" : 10,
+          "rgb" : [
+            100,
+            101,
+            113
+          ]
+        },
+        {
+          "count" : 7,
+          "rgb" : [
+            84,
+            85,
+            98
+          ]
+        },
+        {
+          "count" : 7,
+          "rgb" : [
+            237,
+            237,
+            238
+          ]
+        },
+        {
+          "count" : 7,
+          "rgb" : [
+            248,
+            248,
+            249
+          ]
+        },
+        {
+          "count" : 4,
+          "rgb" : [
+            166,
+            167,
+            174
+          ]
+        },
+        {
+          "count" : 4,
+          "rgb" : [
+            211,
+            212,
+            215
+          ]
+        },
+        {
+          "count" : 1,
+          "rgb" : [
+            58,
+            60,
+            74
+          ]
+        },
+        {
+          "count" : 1,
+          "rgb" : [
+            65,
+            67,
+            81
+          ]
+        },
+        {
+          "count" : 1,
+          "rgb" : [
+            67,
+            69,
+            83
+          ]
+        },
+        {
+          "count" : 1,
+          "rgb" : [
+            75,
+            76,
+            90
+          ]
+        },
+        {
+          "count" : 1,
+          "rgb" : [
+            90,
+            91,
+            104
+          ]
+        },
+        {
+          "count" : 1,
+          "rgb" : [
+            97,
+            99,
+            110
+          ]
+        },
+        {
+          "count" : 1,
+          "rgb" : [
+            112,
+            114,
+            124
+          ]
+        },
+        {
+          "count" : 1,
+          "rgb" : [
+            117,
+            118,
+            128
+          ]
+        },
+        {
+          "count" : 1,
+          "rgb" : [
+            162,
+            163,
+            170
+          ]
+        },
+        {
+          "count" : 1,
+          "rgb" : [
+            205,
+            206,
+            210
+          ]
+        },
+        {
+          "count" : 1,
+          "rgb" : [
+            226,
+            227,
+            229
+          ]
+        },
+        {
+          "count" : 1,
+          "rgb" : [
+            243,
+            243,
+            244
+          ]
+        },
+        {
+          "count" : 1,
+          "rgb" : [
+            249,
+            249,
+            250
+          ]
+        }
+      ],
+      "identifier" : "calendar.weekday.0",
+      "label" : "Пн",
+      "pixelsAtContrastAtLeast4_5" : 100,
+      "samplePixelBoundsXYXYExclusive" : [
+        98,
+        758,
+        126,
+        784
+      ],
+      "sourcePairContrast" : 13.972171951774728,
+      "strongestObservedContrast" : 13.972171951774728,
+      "strongestObservedRGB" : [
+        41,
+        43,
+        59
+      ]
+    },
+    {
+      "auditType" : "contrast",
+      "backgroundRGB" : [
+        93,
+        95,
+        205
+      ],
+      "exactBackgroundPixelCount" : 518,
+      "exactForegroundPixelCount" : 47,
+      "foregroundRGB" : [
+        255,
+        255,
+        255
+      ],
+      "framePointsXYWH" : [
+        285.75,
+        379.25,
+        12.5,
+        12.5
+      ],
+      "histogram" : [
+        {
+          "count" : 518,
+          "rgb" : [
+            93,
+            95,
+            205
+          ]
+        },
+        {
+          "count" : 47,
+          "rgb" : [
+            255,
+            255,
+            255
+          ]
+        },
+        {
+          "count" : 14,
+          "rgb" : [
+            110,
+            111,
+            210
+          ]
+        },
+        {
+          "count" : 14,
+          "rgb" : [
+            132,
+            133,
+            217
+          ]
+        },
+        {
+          "count" : 12,
+          "rgb" : [
+            192,
+            193,
+            236
+          ]
+        },
+        {
+          "count" : 12,
+          "rgb" : [
+            214,
+            215,
+            242
+          ]
+        },
+        {
+          "count" : 11,
+          "rgb" : [
+            183,
+            183,
+            233
+          ]
+        },
+        {
+          "count" : 9,
+          "rgb" : [
+            127,
+            128,
+            215
+          ]
+        },
+        {
+          "count" : 9,
+          "rgb" : [
+            181,
+            182,
+            232
+          ]
+        },
+        {
+          "count" : 8,
+          "rgb" : [
+            242,
+            242,
+            251
+          ]
+        },
+        {
+          "count" : 7,
+          "rgb" : [
+            107,
+            109,
+            209
+          ]
+        },
+        {
+          "count" : 5,
+          "rgb" : [
+            199,
+            200,
+            238
+          ]
+        },
+        {
+          "count" : 1,
+          "rgb" : [
+            102,
+            104,
+            208
+          ]
+        },
+        {
+          "count" : 1,
+          "rgb" : [
+            106,
+            108,
+            209
+          ]
+        },
+        {
+          "count" : 1,
+          "rgb" : [
+            111,
+            113,
+            210
+          ]
+        },
+        {
+          "count" : 1,
+          "rgb" : [
+            115,
+            116,
+            212
+          ]
+        },
+        {
+          "count" : 1,
+          "rgb" : [
+            178,
+            179,
+            231
+          ]
+        },
+        {
+          "count" : 1,
+          "rgb" : [
+            198,
+            199,
+            237
+          ]
+        },
+        {
+          "count" : 1,
+          "rgb" : [
+            211,
+            212,
+            241
+          ]
+        },
+        {
+          "count" : 1,
+          "rgb" : [
+            213,
+            214,
+            242
+          ]
+        },
+        {
+          "count" : 1,
+          "rgb" : [
+            218,
+            219,
+            244
+          ]
+        },
+        {
+          "count" : 1,
+          "rgb" : [
+            230,
+            230,
+            247
+          ]
+        }
+      ],
+      "identifier" : "calendar.weekday.4",
+      "label" : "Пт",
+      "pixelsAtContrastAtLeast4_5" : 55,
+      "samplePixelBoundsXYXYExclusive" : [
+        571,
+        758,
+        597,
+        784
+      ],
+      "sourcePairContrast" : 5.2712558308611674,
+      "strongestObservedContrast" : 5.2712558308611674,
+      "strongestObservedRGB" : [
+        255,
+        255,
+        255
+      ]
+    }
+  ],
+  "scope" : "Exactly two fully visible weekday labels. Does not certify other labels, other states, whole-screen contrast, or clipped samples.",
+  "sourceAttachment" : "762282FB-8872-4286-822B-19A5FF4A5E32.png",
+  "sourceCommit" : "586bfe875355f930a5d463214bd7860a78ac189e"
+}

@@ -1,0 +1,341 @@
+{
+  "run": "42257624204",
+  "runURL": "https://github.com/janickiy/meetspace_ios_mobile/actions/runs/42257624204",
+  "sourceSHA": "f1eda3a79501530dd4af86830d90837816890258",
+  "reviewedOn": "2026-11-06",
+  "device": "iPad mini (A17 Pro)",
+  "runtime": "iOS 18.6",
+  "displayPoints": [
+    744,
+    1133
+  ],
+  "dynamicType": "UICTContentSizeCategoryAccessibilityXXXL",
+  "imagesUnmodified": true,
+  "files": [
+    {
+      "file": "screenshots/iPad18-stage08-large-text-settings.png",
+      "sourceFile": "/tmp/meetspace-stage08-ci-42257624204/results-iPad18/iPad18-screenshots/D236833F-90B3-48D5-ABAD-E98C0A67FE0B.png",
+      "sha256": "8421ef8d7af3f2634536784039b6e653d49569c516bc72f94326aaa877703046",
+      "testIdentifier": "FoundationUITests/testAccessibilityStage08LargeTextLiveFlow()",
+      "attachment": {
+        "configurationName": "Test Scheme Action",
+        "deviceId": "97EF782D-9317-4024-908C-4F9E8417C2D2",
+        "deviceName": "iPad mini (A17 Pro)",
+        "exportedFileName": "D236833F-90B3-48D5-ABAD-E98C0A67FE0B.png",
+        "isAssociatedWithFailure": false,
+        "suggestedHumanReadableName": "stage08-large-text-settings_0_E6237D8E-6BBF-4D4B-A124-0F469F46D8F4.png",
+        "timestamp": 1793985486.365
+      },
+      "pixels": [
+        1488,
+        2266
+      ]
+    },
+    {
+      "file": "screenshots/iPad18-stage08-large-text-folders.png",
+      "sourceFile": "/tmp/meetspace-stage08-ci-42257624204/results-iPad18/iPad18-screenshots/A4E3B265-5D09-44E8-B136-6C8851F06881.png",
+      "sha256": "955a80effb23ed14a32631ecade9561fc55bab72a966576e8afd11c1b4cc494f",
+      "testIdentifier": "FoundationUITests/testAccessibilityStage08LargeTextLiveFlow()",
+      "attachment": {
+        "configurationName": "Test Scheme Action",
+        "deviceId": "97EF782D-9317-4024-908C-4F9E8417C2D2",
+        "deviceName": "iPad mini (A17 Pro)",
+        "exportedFileName": "A4E3B265-5D09-44E8-B136-6C8851F06881.png",
+        "isAssociatedWithFailure": false,
+        "suggestedHumanReadableName": "stage08-large-text-folders_0_317432DC-BC78-4152-B04D-3628B9BBF05D.png",
+        "timestamp": 1793985478.96
+      },
+      "pixels": [
+        1488,
+        2266
+      ]
+    },
+    {
+      "file": "screenshots/iPad18-stage08-large-text-recordings-footer.png",
+      "sourceFile": "/tmp/meetspace-stage08-ci-42257624204/results-iPad18/iPad18-screenshots/2214F6CB-09E3-44A5-846A-FD936DB7287F.png",
+      "sha256": "2e86fe2400f1bca3b7b236159926afb23affc1d5f70beaeafd0ec918620a91e5",
+      "testIdentifier": "FoundationUITests/testAccessibilityStage08LargeTextLiveFlow()",
+      "attachment": {
+        "configurationName": "Test Scheme Action",
+        "deviceId": "97EF782D-9317-4024-908C-4F9E8417C2D2",
+        "deviceName": "iPad mini (A17 Pro)",
+        "exportedFileName": "2214F6CB-09E3-44A5-846A-FD936DB7287F.png",
+        "isAssociatedWithFailure": false,
+        "suggestedHumanReadableName": "stage08-large-text-recordings-footer_0_E7B5E3E1-07FA-4EB2-9451-52C864DFBD98.png",
+        "timestamp": 1793985470.303
+      },
+      "pixels": [
+        1488,
+        2266
+      ]
+    },
+    {
+      "file": "screenshots/iPad18-stage08-large-text-recording-4.png",
+      "sourceFile": "/tmp/meetspace-stage08-ci-42257624204/results-iPad18/iPad18-screenshots/B1A4945F-CA2B-4BF5-ADA8-2E335C32B697.png",
+      "sha256": "f595dc34c7f0a4be930692733d88397d693264fc75c77abfb68ce40e81083f36",
+      "testIdentifier": "FoundationUITests/testAccessibilityStage08LargeTextLiveFlow()",
+      "attachment": {
+        "configurationName": "Test Scheme Action",
+        "deviceId": "97EF782D-9317-4024-908C-4F9E8417C2D2",
+        "deviceName": "iPad mini (A17 Pro)",
+        "exportedFileName": "B1A4945F-CA2B-4BF5-ADA8-2E335C32B697.png",
+        "isAssociatedWithFailure": false,
+        "suggestedHumanReadableName": "stage08-large-text-recording-4_0_2D8641FB-447E-472B-AA39-DAA14CEA3CA3.png",
+        "timestamp": 1793985459.825
+      },
+      "pixels": [
+        1488,
+        2266
+      ]
+    },
+    {
+      "file": "screenshots/iPad18-stage08-large-text-recording-3.png",
+      "sourceFile": "/tmp/meetspace-stage08-ci-42257624204/results-iPad18/iPad18-screenshots/FB50018B-C047-4631-BD47-770DDA38DCA5.png",
+      "sha256": "f595dc34c7f0a4be930692733d88397d693264fc75c77abfb68ce40e81083f36",
+      "testIdentifier": "FoundationUITests/testAccessibilityStage08LargeTextLiveFlow()",
+      "attachment": {
+        "configurationName": "Test Scheme Action",
+        "deviceId": "97EF782D-9317-4024-908C-4F9E8417C2D2",
+        "deviceName": "iPad mini (A17 Pro)",
+        "exportedFileName": "FB50018B-C047-4631-BD47-770DDA38DCA5.png",
+        "isAssociatedWithFailure": false,
+        "suggestedHumanReadableName": "stage08-large-text-recording-3_0_6561AE2B-575B-437D-9A09-C0941207C511.png",
+        "timestamp": 1793985455.39
+      },
+      "pixels": [
+        1488,
+        2266
+      ]
+    },
+    {
+      "file": "screenshots/iPad18-stage08-large-text-recording-2.png",
+      "sourceFile": "/tmp/meetspace-stage08-ci-42257624204/results-iPad18/iPad18-screenshots/ACF29D2B-F2E5-4C85-ACE4-CDC89DD9BC16.png",
+      "sha256": "4dc1c1613a93658a70954e5ba3e8bc7b56608c23f1aad00e47895aa7e05f7925",
+      "testIdentifier": "FoundationUITests/testAccessibilityStage08LargeTextLiveFlow()",
+      "attachment": {
+        "configurationName": "Test Scheme Action",
+        "deviceId": "97EF782D-9317-4024-908C-4F9E8417C2D2",
+        "deviceName": "iPad mini (A17 Pro)",
+        "exportedFileName": "ACF29D2B-F2E5-4C85-ACE4-CDC89DD9BC16.png",
+        "isAssociatedWithFailure": false,
+        "suggestedHumanReadableName": "stage08-large-text-recording-2_0_8A2E0851-414E-4265-8F3D-8FBA6E3EA704.png",
+        "timestamp": 1793985444.477
+      },
+      "pixels": [
+        1488,
+        2266
+      ]
+    },
+    {
+      "file": "screenshots/iPad18-stage08-large-text-recording-1.png",
+      "sourceFile": "/tmp/meetspace-stage08-ci-42257624204/results-iPad18/iPad18-screenshots/B4C10A67-E848-4FE8-84F0-1C9B705DC600.png",
+      "sha256": "4dc1c1613a93658a70954e5ba3e8bc7b56608c23f1aad00e47895aa7e05f7925",
+      "testIdentifier": "FoundationUITests/testAccessibilityStage08LargeTextLiveFlow()",
+      "attachment": {
+        "configurationName": "Test Scheme Action",
+        "deviceId": "97EF782D-9317-4024-908C-4F9E8417C2D2",
+        "deviceName": "iPad mini (A17 Pro)",
+        "exportedFileName": "B4C10A67-E848-4FE8-84F0-1C9B705DC600.png",
+        "isAssociatedWithFailure": false,
+        "suggestedHumanReadableName": "stage08-large-text-recording-1_0_EEA2BEEA-FBD6-475B-96C1-BF0A7692398A.png",
+        "timestamp": 1793985439.102
+      },
+      "pixels": [
+        1488,
+        2266
+      ]
+    },
+    {
+      "file": "screenshots/iPad18-stage08-large-text-recordings.png",
+      "sourceFile": "/tmp/meetspace-stage08-ci-42257624204/results-iPad18/iPad18-screenshots/1B337DF1-2739-492B-90A0-98E0902A8C0F.png",
+      "sha256": "4dc1c1613a93658a70954e5ba3e8bc7b56608c23f1aad00e47895aa7e05f7925",
+      "testIdentifier": "FoundationUITests/testAccessibilityStage08LargeTextLiveFlow()",
+      "attachment": {
+        "configurationName": "Test Scheme Action",
+        "deviceId": "97EF782D-9317-4024-908C-4F9E8417C2D2",
+        "deviceName": "iPad mini (A17 Pro)",
+        "exportedFileName": "1B337DF1-2739-492B-90A0-98E0902A8C0F.png",
+        "isAssociatedWithFailure": false,
+        "suggestedHumanReadableName": "stage08-large-text-recordings_0_B512B9AC-3EAA-46F1-9FF9-A93CA486544F.png",
+        "timestamp": 1793985434.44
+      },
+      "pixels": [
+        1488,
+        2266
+      ]
+    },
+    {
+      "file": "screenshots/iPad18-stage08-large-text-calendar-hour-18.png",
+      "sourceFile": "/tmp/meetspace-stage08-ci-42257624204/results-iPad18/iPad18-screenshots/5DDDFEC1-D07E-4EC4-A9C8-92B3DE57D3A4.png",
+      "sha256": "f81cab15aa24be12acae278311179383fd04469d67673fb8b0b515b57ff77a13",
+      "testIdentifier": "FoundationUITests/testAccessibilityStage08LargeTextLiveFlow()",
+      "attachment": {
+        "configurationName": "Test Scheme Action",
+        "deviceId": "97EF782D-9317-4024-908C-4F9E8417C2D2",
+        "deviceName": "iPad mini (A17 Pro)",
+        "exportedFileName": "5DDDFEC1-D07E-4EC4-A9C8-92B3DE57D3A4.png",
+        "isAssociatedWithFailure": false,
+        "suggestedHumanReadableName": "stage08-large-text-calendar-hour-18_0_2A2A10B5-EA3D-44AD-B6FA-EB4D4FE9F5E0.png",
+        "timestamp": 1793985409.93
+      },
+      "pixels": [
+        1488,
+        2266
+      ]
+    },
+    {
+      "file": "screenshots/iPad18-stage08-large-text-calendar-hour-12.png",
+      "sourceFile": "/tmp/meetspace-stage08-ci-42257624204/results-iPad18/iPad18-screenshots/50CB744C-E835-46F4-966C-70D91171DCBF.png",
+      "sha256": "2d26efe6b8e701463b28c81df56639ed1eaf29127b6214669a5fb5dfa5620b19",
+      "testIdentifier": "FoundationUITests/testAccessibilityStage08LargeTextLiveFlow()",
+      "attachment": {
+        "configurationName": "Test Scheme Action",
+        "deviceId": "97EF782D-9317-4024-908C-4F9E8417C2D2",
+        "deviceName": "iPad mini (A17 Pro)",
+        "exportedFileName": "50CB744C-E835-46F4-966C-70D91171DCBF.png",
+        "isAssociatedWithFailure": false,
+        "suggestedHumanReadableName": "stage08-large-text-calendar-hour-12_0_03FC4C64-CCEE-4B2D-8C4A-180BFEF0523C.png",
+        "timestamp": 1793985394.527
+      },
+      "pixels": [
+        1488,
+        2266
+      ]
+    },
+    {
+      "file": "screenshots/iPad18-stage08-large-text-calendar-hour-9.png",
+      "sourceFile": "/tmp/meetspace-stage08-ci-42257624204/results-iPad18/iPad18-screenshots/B5F75A5D-CFBF-494E-9583-90147A9FD63C.png",
+      "sha256": "2d26efe6b8e701463b28c81df56639ed1eaf29127b6214669a5fb5dfa5620b19",
+      "testIdentifier": "FoundationUITests/testAccessibilityStage08LargeTextLiveFlow()",
+      "attachment": {
+        "configurationName": "Test Scheme Action",
+        "deviceId": "97EF782D-9317-4024-908C-4F9E8417C2D2",
+        "deviceName": "iPad mini (A17 Pro)",
+        "exportedFileName": "B5F75A5D-CFBF-494E-9583-90147A9FD63C.png",
+        "isAssociatedWithFailure": false,
+        "suggestedHumanReadableName": "stage08-large-text-calendar-hour-9_0_EBBD1957-FFAA-4135-A3B2-A960B0B8E367.png",
+        "timestamp": 1793985389.046
+      },
+      "pixels": [
+        1488,
+        2266
+      ]
+    },
+    {
+      "file": "screenshots/iPad18-stage08-large-text-calendar.png",
+      "sourceFile": "/tmp/meetspace-stage08-ci-42257624204/results-iPad18/iPad18-screenshots/5C85B390-4E7B-47ED-8279-8388D314A36E.png",
+      "sha256": "351255eab4c73817665479c722425fea607a747364562d7a75bb13ba40e971fc",
+      "testIdentifier": "FoundationUITests/testAccessibilityStage08LargeTextLiveFlow()",
+      "attachment": {
+        "configurationName": "Test Scheme Action",
+        "deviceId": "97EF782D-9317-4024-908C-4F9E8417C2D2",
+        "deviceName": "iPad mini (A17 Pro)",
+        "exportedFileName": "5C85B390-4E7B-47ED-8279-8388D314A36E.png",
+        "isAssociatedWithFailure": false,
+        "suggestedHumanReadableName": "stage08-large-text-calendar_0_F0BC71F9-51CC-43C3-B73E-C9EF8EE32315.png",
+        "timestamp": 1793985382.641
+      },
+      "pixels": [
+        1488,
+        2266
+      ]
+    },
+    {
+      "file": "screenshots/iPad18-stage08-large-text-profile.png",
+      "sourceFile": "/tmp/meetspace-stage08-ci-42257624204/results-iPad18/iPad18-screenshots/C023A0CC-E315-43A4-AA15-9C992072457E.png",
+      "sha256": "193a1fed2dd26e18b783fc0e188e6c8004d98f60b4a07b8412c4687bb17545dd",
+      "testIdentifier": "FoundationUITests/testAccessibilityStage08LargeTextLiveFlow()",
+      "attachment": {
+        "configurationName": "Test Scheme Action",
+        "deviceId": "97EF782D-9317-4024-908C-4F9E8417C2D2",
+        "deviceName": "iPad mini (A17 Pro)",
+        "exportedFileName": "C023A0CC-E315-43A4-AA15-9C992072457E.png",
+        "isAssociatedWithFailure": false,
+        "suggestedHumanReadableName": "stage08-large-text-profile_0_6180A277-09C9-4DAF-A76A-1306E267F3DE.png",
+        "timestamp": 1793985373.111
+      },
+      "pixels": [
+        1488,
+        2266
+      ]
+    },
+    {
+      "file": "screenshots/iPad18-stage08-large-text-messages-conversation.png",
+      "sourceFile": "/tmp/meetspace-stage08-ci-42257624204/results-iPad18/iPad18-screenshots/C24DF403-E439-42CB-88EC-F401C896572C.png",
+      "sha256": "90547b5ae2dd4187ea94c950bcee21c34886082376110e359c096f340025d951",
+      "testIdentifier": "FoundationUITests/testAccessibilityStage08LargeTextLiveFlow()",
+      "attachment": {
+        "configurationName": "Test Scheme Action",
+        "deviceId": "97EF782D-9317-4024-908C-4F9E8417C2D2",
+        "deviceName": "iPad mini (A17 Pro)",
+        "exportedFileName": "C24DF403-E439-42CB-88EC-F401C896572C.png",
+        "isAssociatedWithFailure": false,
+        "suggestedHumanReadableName": "stage08-large-text-messages-conversation_0_79347B9D-096B-4DB3-B646-22BEA867498C.png",
+        "timestamp": 1793985369.211
+      },
+      "pixels": [
+        1488,
+        2266
+      ]
+    },
+    {
+      "file": "screenshots/iPad18-stage08-large-text-messages.png",
+      "sourceFile": "/tmp/meetspace-stage08-ci-42257624204/results-iPad18/iPad18-screenshots/CCF50975-100A-4673-9454-7F6F258D58A6.png",
+      "sha256": "90547b5ae2dd4187ea94c950bcee21c34886082376110e359c096f340025d951",
+      "testIdentifier": "FoundationUITests/testAccessibilityStage08LargeTextLiveFlow()",
+      "attachment": {
+        "configurationName": "Test Scheme Action",
+        "deviceId": "97EF782D-9317-4024-908C-4F9E8417C2D2",
+        "deviceName": "iPad mini (A17 Pro)",
+        "exportedFileName": "CCF50975-100A-4673-9454-7F6F258D58A6.png",
+        "isAssociatedWithFailure": false,
+        "suggestedHumanReadableName": "stage08-large-text-messages_0_B9441DA7-E872-466B-9B87-0EEAAA91F204.png",
+        "timestamp": 1793985364.539
+      },
+      "pixels": [
+        1488,
+        2266
+      ]
+    },
+    {
+      "file": "screenshots/iPad18-stage08-large-text-welcome.png",
+      "sourceFile": "/tmp/meetspace-stage08-ci-42257624204/results-iPad18/iPad18-screenshots/B719C904-F765-4F94-9EC9-7BC1F2BF300F.png",
+      "sha256": "a4a24b3c7b26d7f6bfed5589722dd315637cd408af2242383d4e191595463ea1",
+      "testIdentifier": "FoundationUITests/testAccessibilityStage08LargeTextLiveFlow()",
+      "attachment": {
+        "configurationName": "Test Scheme Action",
+        "deviceId": "97EF782D-9317-4024-908C-4F9E8417C2D2",
+        "deviceName": "iPad mini (A17 Pro)",
+        "exportedFileName": "B719C904-F765-4F94-9EC9-7BC1F2BF300F.png",
+        "isAssociatedWithFailure": false,
+        "suggestedHumanReadableName": "stage08-large-text-welcome_0_FCF4C049-C91C-43E7-BC23-E2D75AC3C9C1.png",
+        "timestamp": 1793985278.649
+      },
+      "pixels": [
+        1488,
+        2266
+      ]
+    },
+    {
+      "file": "iPad18-environment.json",
+      "sourceFile": "/tmp/meetspace-stage08-ci-42257624204/results-iPad18/iPad18-environment.json",
+      "sha256": "e6a5da8043cab961b415905e2a1d7a43044e965aeb6f03a5870dc5ece04b98fb"
+    },
+    {
+      "file": "iPad18-summary.json",
+      "sourceFile": "/tmp/meetspace-stage08-ci-42257624204/results-iPad18/iPad18-summary.json",
+      "sha256": "030e50547cc0df54d9cbf36cd0e64b3a699b88a20885a61c4e4b810f1d106a07"
+    },
+    {
+      "file": "iPad18-export-manifest.json",
+      "sourceFile": "/tmp/meetspace-stage08-ci-42257624204/results-iPad18/iPad18-screenshots/manifest.json",
+      "sha256": "ff2fd414d4e7c469c80415d72a2cf7508abd1c92d18fa7f029ec13b0584174a1"
+    },
+    {
+      "file": "iPad18-review-test-results.txt",
+      "sha256": "cbd804e60f8b109b4dc034bb4aedcd4c2fecd699303696b3a0fa8e737b1598b3",
+      "sourceFile": "/tmp/meetspace-stage08-ci-42257624204/simulators_iPad_18_iPad18_compatibility_iPad_mini_A17_Pro_.log",
+      "selection": "Exact result lines for 5 relevant tests; line numbers from original log"
+    }
+  ]
+}

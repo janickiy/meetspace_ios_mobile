@@ -1,0 +1,57 @@
+{
+  "devicesAndConfigurations" : [
+    {
+      "device" : {
+        "architecture" : "arm64",
+        "deviceId" : "2A250684-88E3-4EDB-A21E-B7726B4C69F6",
+        "deviceName" : "iPad mini (A17 Pro)",
+        "modelName" : "iPad mini (A17 Pro)",
+        "osBuildNumber" : "22G86",
+        "osVersion" : "18.6",
+        "platform" : "iOS Simulator"
+      },
+      "expectedFailures" : 0,
+      "failedTests" : 2,
+      "passedTests" : 13,
+      "skippedTests" : 0,
+      "testPlanConfiguration" : {
+        "configurationId" : "1",
+        "configurationName" : "Test Scheme Action"
+      }
+    }
+  ],
+  "environmentDescription" : "MeetSpace-Debug · Built with macOS 15.8.2",
+  "expectedFailures" : 0,
+  "failedTests" : 2,
+  "finishTime" : 1793979115.67,
+  "passedTests" : 13,
+  "result" : "Failed",
+  "skippedTests" : 0,
+  "startTime" : 1793978313.412,
+  "statistics" : [
+
+  ],
+  "testFailures" : [
+    {
+      "failureText" : "XCTAssertTrue failed - Unresolved accessibility issues: [[\"detail\": \"Contrast is not high enough for element unless font size is larger.\", \"screen\": \"calendar\", \"type\": \"1\", \"resolution\": \"unresolved\", \"frame\": \"(49.25, 379.25, 13.5, 12.5)\", \"label\": \"Пн\", \"element\": \"calendar.weekday.0\", \"summary\": \"Contrast nearly passed\"], [\"type\": \"1\", \"label\": \"Пт\", \"resolution\": \"unresolved\", \"frame\": \"(285.75, 379.25, 12.5, 12.5)\", \"screen\": \"calendar\", \"summary\": \"Contrast failed\", \"detail\": \"Contrast failed for element\", \"element\": \"calendar.weekday.4\"], [\"element\": \"saveProfile\", \"type\": \"1\", \"summary\": \"Contrast failed\", \"label\": \"Сохранить профиль\", \"resolution\": \"unresolved\", \"frame\": \"(334.0, 509.5, 362.0, 44.0)\", \"detail\": \"Contrast failed for element\", \"screen\": \"settings\"]]",
+      "targetName" : "MeetSpaceUITests",
+      "testIdentifier" : 11,
+      "testIdentifierString" : "FoundationUITests/testAccessibilityStage08CoreScreens()",
+      "testIdentifierURL" : "test://com.apple.xcode/MeetSpace/MeetSpaceUITests/FoundationUITests/testAccessibilityStage08CoreScreens",
+      "testName" : "testAccessibilityStage08CoreScreens()"
+    },
+    {
+      "failureText" : "XCTAssertTrue failed",
+      "targetName" : "MeetSpaceUITests",
+      "testIdentifier" : 15,
+      "testIdentifierString" : "FoundationUITests/testStage08AccountDeletionRequiresPasswordAndConfirmation()",
+      "testIdentifierURL" : "test://com.apple.xcode/MeetSpace/MeetSpaceUITests/FoundationUITests/testStage08AccountDeletionRequiresPasswordAndConfirmation",
+      "testName" : "testStage08AccountDeletionRequiresPasswordAndConfirmation()"
+    }
+  ],
+  "title" : "Test - MeetSpace-Debug",
+  "topInsights" : [
+
+  ],
+  "totalTestCount" : 15
+}

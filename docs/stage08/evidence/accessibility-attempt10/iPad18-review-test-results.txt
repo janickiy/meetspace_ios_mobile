@@ -1,0 +1,7 @@
+Source log: /tmp/meetspace-stage08-ci-42263390594/simulators_iPad_18_iPad18_compatibility_iPad_mini_A17_Pro_.log
+Source SHA256: b6053926a0dc1e39e6a626f54f9c2e8128128073eb0e93a972283db3cda75a1e
+3952:2026-11-06T18:03:17.5363480Z Test Case '-[MeetSpaceUITests.FoundationUITests testAccessibilityStage08CoreScreens]' passed (434.632 seconds).
+4602:2026-11-06T18:06:33.0804980Z Test Case '-[MeetSpaceUITests.FoundationUITests testAccessibilityStage08LargeTextLiveFlow]' passed (195.451 seconds).
+5062:2026-11-06T18:08:47.5110730Z Test Case '-[MeetSpaceUITests.FoundationUITests testConferenceCreateMediaControlsChatAndLeave]' passed (134.474 seconds).
+5112:2026-11-06T18:09:07.7025620Z Test Case '-[MeetSpaceUITests.FoundationUITests testLargeTextNavigationAndAppearance]' passed (20.198 seconds).
+5530:2026-11-06T18:11:27.7891780Z Test Case '-[MeetSpaceUITests.FoundationUITests testStage08AccountDeletionRequiresPasswordAndConfirmation]' failed (140.116 seconds).

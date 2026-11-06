@@ -1,0 +1,91 @@
+{
+  "schema": 1,
+  "runID": 42255060641,
+  "sourceCommit": "6b6d1bbda9224d459e2a07d551db65956946f2fe",
+  "artifact": "results-iPhone18",
+  "copyPolicy": "Exact unchanged file copies; SHA-256 over original bytes",
+  "status": "BLOCKED",
+  "elapsedPreflightSeconds": 13.959,
+  "captures": [],
+  "interpretation": "Requested simulator was Shutdown after tests; no attach, trace, CPU, RSS or energy measurements occurred. Template inventory alone does not establish capture support.",
+  "files": [
+    {
+      "file": "receipt.json",
+      "artifactPath": "iPhone18-profiling/receipt.json",
+      "bytes": 4924,
+      "sha256": "7c725b2c69c6ac4abd6552944fb0206a8fa692202b9e828adb788b5969d651ef"
+    },
+    {
+      "file": "developer-directory.log",
+      "artifactPath": "iPhone18-profiling/developer-directory.log",
+      "bytes": 48,
+      "sha256": "f61dc333807430553f78902403e4cc45b547d508c03963122c5c75c6d27beedb"
+    },
+    {
+      "file": "find-xctrace.log",
+      "artifactPath": "iPhone18-profiling/find-xctrace.log",
+      "bytes": 64,
+      "sha256": "fced716e12a27e0cbca2dd5cdb966bd2536657b6a4db58785ae79c210059bfa8"
+    },
+    {
+      "file": "xcode-version.log",
+      "artifactPath": "iPhone18-profiling/xcode-version.log",
+      "bytes": 32,
+      "sha256": "bb7fc9a8f5e063e81975b33054b3a526c91bcccff263ad11d5bd8bcdbe8f0973"
+    },
+    {
+      "file": "xctrace-version.log",
+      "artifactPath": "iPhone18-profiling/xctrace-version.log",
+      "bytes": 30,
+      "sha256": "187a4766a4b84a2657d81964ef8409fa5314d6e9fc121dfaa75604076c5a072b"
+    },
+    {
+      "file": "xctrace-templates.log",
+      "artifactPath": "iPhone18-profiling/xctrace-templates.log",
+      "bytes": 373,
+      "sha256": "93eeae90861c44f3682a086d06ef9644a669bc71dd6350a8aff052f907bebe0a"
+    },
+    {
+      "file": "xctrace-devices.log",
+      "artifactPath": "iPhone18-profiling/xctrace-devices.log",
+      "bytes": 9762,
+      "sha256": "056952b42c72c93f016feaab9cb561b5d24874209545ca5d49a625acb35fb76a"
+    },
+    {
+      "file": "xctrace-record-help.log",
+      "artifactPath": "iPhone18-profiling/xctrace-record-help.log",
+      "bytes": 3113,
+      "sha256": "bf49e4335bbf747b830f7a37d16e848385d3c865591833e0e77123dd29bf4525"
+    },
+    {
+      "file": "xctrace-export-help.log",
+      "artifactPath": "iPhone18-profiling/xctrace-export-help.log",
+      "bytes": 1100,
+      "sha256": "953fc6079baaffd9d66b7d0f02aa3cfeed12c728425a9c1584120657cf4d8e9d"
+    },
+    {
+      "file": "simctl-launch-help.log",
+      "artifactPath": "iPhone18-profiling/simctl-launch-help.log",
+      "bytes": 1363,
+      "sha256": "94ae148cf375cb65a0e14daa78230d1cd0520ea6772d75afecba422d96fcc4b2"
+    },
+    {
+      "file": "simctl-devices.log",
+      "artifactPath": "iPhone18-profiling/simctl-devices.log",
+      "bytes": 69030,
+      "sha256": "e24fe4a68fa6aeb9cf07e24ba213f6676c7109233326acdab1bbadfd8ef0a1fd"
+    },
+    {
+      "file": "iPhone18-environment.json",
+      "artifactPath": "iPhone18-environment.json",
+      "bytes": 232,
+      "sha256": "6c9a01b8981904a6290f6e352d77cee4e88400cd467566de3a026a1b1323a3f9"
+    },
+    {
+      "file": "iPhone18-summary.json",
+      "artifactPath": "iPhone18-summary.json",
+      "bytes": 2606,
+      "sha256": "66caa8a7f9ea65e9ac301c4c147ec0837b7fcffd614e4adb2a77422509987638"
+    }
+  ]
+}
