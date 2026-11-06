@@ -1,0 +1,20 @@
+{
+  "reviewedAtUTC": "2026-11-06T20:46:02.568140+00:00",
+  "scope": "Direct visual inspection of four original native PNGs; deletion states only",
+  "wrongPassword": {
+    "path": "screenshots/iPad26-stage08-account-deletion-keyboard-retry.png",
+    "sha256": "c2b44fa249ee792b64bf18dfae44b1f24ecf8ccc25b326a496a573fa711c6041",
+    "observed": "Full red error text: Неверный пароль аккаунта. Проверьте пароль и повторите. Password placeholder is visible with no entered content shown; submit is visually disabled.",
+    "dedicatedErrorNamedCapture": false,
+    "originalFilenameRetained": true
+  },
+  "success": {
+    "path": "screenshots/iPad26-stage08-account-deletion-success.png",
+    "sha256": "44f4040469faad4978ad9949b3cf1f831e00fc2e5a5162f2ad416df5764d7cc5",
+    "observed": "Server login screen remains configured for fixture.example; green Аккаунт удалён на сервере. is visible; workspace tabs and deletion sheet are absent."
+  },
+  "initial": "Initial capture shows deletion warning/form, empty password placeholder and disabled submit.",
+  "beforeCorrectSubmit": "The stage08-account-deletion capture is before final submission: submit is enabled and the previous wrong-password message remains visible. It is not the success state.",
+  "keyboardVisibility": "The system keyboard is not visible in these app screenshots despite the original keyboard-* names. Latin selection is supported by native source/log assertions, not claimed from these pixels.",
+  "layoutObservation": "The sheet Cancel title Отмена wraps onto two lines in these captures; no blanket visual-quality PASS is declared."
+}

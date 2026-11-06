@@ -1,0 +1,15 @@
+2026-11-06T20:03:04.5094620Z Testing iPhone 17 Pro Max on iOS (26, 2): 17F0E734-D183-4810-AB97-F27FD9968039, scope=regression
+2026-11-06T20:09:57.9320420Z Test Case '-[MeetSpaceTests.CallAudioIntegrationTests testDirectCallCanNegotiateBeforeCallKitActivatesAudio]' passed (0.672 seconds).
+2026-11-06T20:09:58.4902630Z Test Case '-[MeetSpaceTests.KeychainIntegrationTests testKeychainRoundTripUpdateAndScopedDeletion]' passed (0.026 seconds).
+2026-11-06T20:10:03.9025510Z Test Case '-[MeetSpaceTests.MediaIntegrationTests testBlockedSourcesNeverRequestPermissionsOrAppearInOffer]' passed (0.761 seconds).
+2026-11-06T20:10:05.1271690Z Test Case '-[MeetSpaceTests.MediaIntegrationTests testNativePeerOfferAndCloseCyclesWithCaptureOff]' passed (0.565 seconds).
+2026-11-06T20:10:05.1285710Z Test Case '-[MeetSpaceTests.MediaIntegrationTests testScreenGenerationRollbackAndPolicyWithCaptureOff]' passed (0.168 seconds).
+2026-11-06T20:10:05.1291530Z Test Case '-[MeetSpaceTests.MediaIntegrationTests testScreenRejectsInvalidAndStaleFrameSession]' passed (0.067 seconds).
+2026-11-06T20:10:06.0575510Z Test Case '-[MeetSpaceTests.RecordingPlaybackTests testActualServerAACArtifactAdvancesNativePlayerTime]' passed (5.883 seconds).
+2026-11-06T20:10:06.1477570Z Test Case '-[MeetSpaceTests.Stage08SecurityKeychainTests testCredentialsRemainDeviceOnlyAndUnsynchronizedAfterUpdate]' passed (0.016 seconds).
+2026-11-06T20:10:06.2384470Z Test Case '-[MeetSpaceTests.Stage08SecurityKeychainTests testPushCleanupJournalUsesTheSameDeviceOnlyProtection]' passed (0.059 seconds).
+2026-11-06T20:10:07.0373160Z Test Case '-[MeetSpaceTests.TypographyAccessibilityTests testBundledFontsScaleInActualUIKitHostingAtAllDynamicTypeSizes]' passed (0.712 seconds).
+2026-11-06T20:14:17.2262160Z Test Case '-[MeetSpaceUITests.FoundationUITests testAccessibilityStage08CoreScreens]' passed (226.144 seconds).
+2026-11-06T20:16:31.8937890Z Test Case '-[MeetSpaceUITests.FoundationUITests testAccessibilityStage08LargeTextLiveFlow]' passed (134.659 seconds).
+2026-11-06T20:17:37.6451720Z Test Case '-[MeetSpaceUITests.FoundationUITests testStage07SettingsPersistProfilePreferencesAndSSHDisabled]' passed (65.763 seconds).
+2026-11-06T20:20:05.4243700Z Test Case '-[MeetSpaceUITests.FoundationUITests testStage08AccountDeletionRequiresPasswordAndConfirmation]' passed (147.763 seconds).

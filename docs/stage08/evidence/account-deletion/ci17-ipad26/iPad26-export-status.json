@@ -1,0 +1,68 @@
+{
+  "schema": 1,
+  "nativeTestExitCode": 0,
+  "status": "PASS",
+  "expectedExports": [
+    "summary",
+    "attachments",
+    "diagnostics"
+  ],
+  "exports": [
+    {
+      "name": "summary",
+      "argv": [
+        "xcrun",
+        "xcresulttool",
+        "get",
+        "test-results",
+        "summary",
+        "--path",
+        "artifacts/iPad26.xcresult"
+      ],
+      "timeoutSeconds": 30,
+      "log": "iPad26-summary-export.log",
+      "exitCode": 0,
+      "timedOut": false,
+      "status": "PASS",
+      "elapsedSeconds": 5.973
+    },
+    {
+      "name": "attachments",
+      "argv": [
+        "xcrun",
+        "xcresulttool",
+        "export",
+        "attachments",
+        "--path",
+        "artifacts/iPad26.xcresult",
+        "--output-path",
+        "artifacts/iPad26-screenshots"
+      ],
+      "timeoutSeconds": 120,
+      "log": "iPad26-attachments-export.log",
+      "exitCode": 0,
+      "timedOut": false,
+      "status": "PASS",
+      "elapsedSeconds": 0.23
+    },
+    {
+      "name": "diagnostics",
+      "argv": [
+        "xcrun",
+        "xcresulttool",
+        "export",
+        "diagnostics",
+        "--path",
+        "artifacts/iPad26.xcresult",
+        "--output-path",
+        "artifacts/iPad26-diagnostics"
+      ],
+      "timeoutSeconds": 60,
+      "log": "iPad26-diagnostics-export.log",
+      "exitCode": 0,
+      "timedOut": false,
+      "status": "PASS",
+      "elapsedSeconds": 0.222
+    }
+  ]
+}

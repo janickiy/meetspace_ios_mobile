@@ -1,0 +1,267 @@
+{
+  "algorithm": "sha256",
+  "excludesSelf": true,
+  "files": [
+    {
+      "path": "deletion-test-source.txt",
+      "sha256": "243e7bc17923a18ca3fe9f81b6aff67cb1d089bbe78a3c53826b416e6e5474f9",
+      "bytes": 4961
+    },
+    {
+      "path": "iPad18-attachment-manifest.json",
+      "sha256": "39046bd548ec4ce2711c95aa35f27c071c2f0d90c4f6fb7560f1869d618c1b36",
+      "bytes": 2092
+    },
+    {
+      "path": "iPad18-deletion-assertion-excerpt.txt",
+      "sha256": "be79fe0712b38806a094fa0e36829e4b52c92dc49b2d8021c8c52ff07205473a",
+      "bytes": 11446
+    },
+    {
+      "path": "iPad18-deletion-trace.txt",
+      "sha256": "84df4997a747458a4752e50df9be9a741337cad09895a69c8673efd012ce4177",
+      "bytes": 50123
+    },
+    {
+      "path": "iPad18-environment.json",
+      "sha256": "a59494cd92a417176edf7594dcc12eaae3fda09e08cfdb17ae07d9fc7356e73f",
+      "bytes": 310
+    },
+    {
+      "path": "iPad18-export-status.json",
+      "sha256": "d211b2a89d1eaf895bba1c36291e810c3309cc08b1a87319f24f735ea7bb068c",
+      "bytes": 1434
+    },
+    {
+      "path": "iPad18-native.log",
+      "sha256": "fbe8287a156f393a0445cbffbc84d531c20b3c7a24e7ccc55291fc9c7c48ad28",
+      "bytes": 931795
+    },
+    {
+      "path": "iPad18-summary.json",
+      "sha256": "1e5434e51dca7f9166f5a72f6dd1617e6a9279a8c39b7478daf731b45d29a3a3",
+      "bytes": 993
+    },
+    {
+      "path": "iPad26-attachment-manifest.json",
+      "sha256": "b2585889e2095c0b62d8de952f44dd08ccdf5d1ce51d2a540c955f53977cf5b1",
+      "bytes": 2100
+    },
+    {
+      "path": "iPad26-deletion-assertion-excerpt.txt",
+      "sha256": "db95a4e865433eea7591a382738ffa89f3d998b26cfc90b6a149c5f6ff14b072",
+      "bytes": 11607
+    },
+    {
+      "path": "iPad26-deletion-trace.txt",
+      "sha256": "e849fe70c946461e2f5a9252d96d7bf8e1ca1848333831ade26b6acb20772cde",
+      "bytes": 39666
+    },
+    {
+      "path": "iPad26-environment.json",
+      "sha256": "40b95c94ba36ea6a0a07a4cee3bef60ceae4023bcf405107903807e554498474",
+      "bytes": 312
+    },
+    {
+      "path": "iPad26-export-status.json",
+      "sha256": "4ddbf8e8850afb6ea32397fcb4bc495212bda4ef5d6c6a57f5b4542a07b9ead3",
+      "bytes": 1435
+    },
+    {
+      "path": "iPad26-native.log",
+      "sha256": "705ec02444080a863949b832af9eac24c5db976927405cc43ee74ef9ec6163d9",
+      "bytes": 921444
+    },
+    {
+      "path": "iPad26-summary.json",
+      "sha256": "3a98bb92b3131e447189325bbf4bad59aa64c64d58796259f0784765059d6bd9",
+      "bytes": 997
+    },
+    {
+      "path": "iPhone18-attachment-manifest.json",
+      "sha256": "f423295fbe9a82782b50a77d22613af6a6ed803b0b7e788262244c7257a097fb",
+      "bytes": 2120
+    },
+    {
+      "path": "iPhone18-deletion-assertion-excerpt.txt",
+      "sha256": "fba6cccf45601a2da7e8afe9da65da19fa88e9b0999e11a8e0f1f5c1b4563b91",
+      "bytes": 11540
+    },
+    {
+      "path": "iPhone18-deletion-trace.txt",
+      "sha256": "d427ffe977c7be21f1b34fd5cec997923de1dbd9f0db8d30677ff57b21dfcf52",
+      "bytes": 54202
+    },
+    {
+      "path": "iPhone18-environment.json",
+      "sha256": "9070256e23566460c58410d8f71136ca0a6199fcce9d43ee6ef3227859f9e8bd",
+      "bytes": 317
+    },
+    {
+      "path": "iPhone18-export-status.json",
+      "sha256": "75646d47dce7b29daf5dac4bdfb2b37b329439a0c0d7c58806440f0ccd17038d",
+      "bytes": 1451
+    },
+    {
+      "path": "iPhone18-native.log",
+      "sha256": "0ce5493e3cadd5f247c0918e25468d54103a4554bc99bef32f86fb2630e97781",
+      "bytes": 936101
+    },
+    {
+      "path": "iPhone18-summary.json",
+      "sha256": "984c028ceb7103890ef7a78f82bdf7a44ad6a2caa3296751f6fd6fe199150f20",
+      "bytes": 1008
+    },
+    {
+      "path": "iPhone26-attachment-manifest.json",
+      "sha256": "27783b01f0eaa65475a729e21db99ccad8a1af8ceb04141582aa017e4f6c8004",
+      "bytes": 2535
+    },
+    {
+      "path": "iPhone26-deletion-assertion-excerpt.txt",
+      "sha256": "7ade33cbbfa990d306ae0eb264ae433e275ed482f2783fc6eb330bcbd0a3368a",
+      "bytes": 11588
+    },
+    {
+      "path": "iPhone26-deletion-trace.txt",
+      "sha256": "90913311ee986418a68738164f0107d3863dc40d6037dfd9f2e904eb130c0fae",
+      "bytes": 38944
+    },
+    {
+      "path": "iPhone26-environment.json",
+      "sha256": "8c18c5a3b7ca14b4047863c53393bb05bc8a2240c476cce298cb9482d379c239",
+      "bytes": 308
+    },
+    {
+      "path": "iPhone26-export-status.json",
+      "sha256": "78449d1c00e97fa85d394641b3e74e52d0d27ac085bcca24bdb048c12212c103",
+      "bytes": 1450
+    },
+    {
+      "path": "iPhone26-native.log",
+      "sha256": "15326084180e0d50bbe1116245aaf3e0cb635460351be480da402752457fedba",
+      "bytes": 920524
+    },
+    {
+      "path": "iPhone26-summary.json",
+      "sha256": "11cd0d9930652029b985316961f05a14aff1ee7e879df5c79549152bc6c85ab1",
+      "bytes": 990
+    },
+    {
+      "path": "ipad-visual-review.json",
+      "sha256": "f3631578fd3c1db0276d1dc4c9af4e1e7e659fc6a83da8571e9b206e751705a9",
+      "bytes": 13328
+    },
+    {
+      "path": "iphone-visual-review.json",
+      "sha256": "aa1f0b6c048dd7cf161e7dcb83e5e1f37c0febd4b94c9d5a9765303271cb8096",
+      "bytes": 3762
+    },
+    {
+      "path": "raw-api/artifacts.json",
+      "sha256": "66bb5f453117dff1651c8ff862f57977916aa1e03e2f35d21468967b8c45207e",
+      "bytes": 3394
+    },
+    {
+      "path": "raw-api/jobs.json",
+      "sha256": "6b1439ed061b3fa9ac91b04ae0168193f601716f19a8ea7b70a52e10eb8ccc3b",
+      "bytes": 13411
+    },
+    {
+      "path": "raw-api/run.json",
+      "sha256": "10a50d9da10e11f27a9d63094842074fd0d38bbad35c92bc9867f48ac29404e4",
+      "bytes": 14244
+    },
+    {
+      "path": "receipt.json",
+      "sha256": "ac34fa6889e4c26808b5b04e4ffb1e3d886a7fc32328d3a4a8d751548e8308d5",
+      "bytes": 35070
+    },
+    {
+      "path": "screenshots.json",
+      "sha256": "9d4ee85320c453b668cbb110303b17fee94394e4a71fc691a9322ecd2b57fb8d",
+      "bytes": 14267
+    },
+    {
+      "path": "screenshots/iPad18-stage08-account-deletion-keyboard-initial.png",
+      "sha256": "efa532a8c4caa876b477f507c2b001fef0ba8a72ef104c8b56530aaa91160238",
+      "bytes": 301258
+    },
+    {
+      "path": "screenshots/iPad18-stage08-account-deletion-keyboard-retry.png",
+      "sha256": "375166bb94e43c7815f44bbfd51340319261ed595b7a23435eeb67a542b314e1",
+      "bytes": 310926
+    },
+    {
+      "path": "screenshots/iPad18-stage08-account-deletion-success.png",
+      "sha256": "6c18e8b99647c234ce60c0bf999452533009187982c1d453badc32d7df7b5ecc",
+      "bytes": 132695
+    },
+    {
+      "path": "screenshots/iPad18-stage08-account-deletion.png",
+      "sha256": "1e5f9c89073d9be2a74495f890c96ef0f5742336134a79f7c6352c5a6034f8c8",
+      "bytes": 346939
+    },
+    {
+      "path": "screenshots/iPad26-stage08-account-deletion-keyboard-initial.png",
+      "sha256": "b836a14f3b6bbbbcf8e7b96cf0cc97599e50429c88953d056cbb6211cb7f2faf",
+      "bytes": 308903
+    },
+    {
+      "path": "screenshots/iPad26-stage08-account-deletion-keyboard-retry.png",
+      "sha256": "c275a73dc207b2827d68c69b4c1441529b5b87e049268b2469d94746efbeb3ba",
+      "bytes": 319539
+    },
+    {
+      "path": "screenshots/iPad26-stage08-account-deletion-success.png",
+      "sha256": "268ea791a8f5a146ae3351b14be9c97152ebf5fe18e6859b6253f212977230a6",
+      "bytes": 265495
+    },
+    {
+      "path": "screenshots/iPad26-stage08-account-deletion.png",
+      "sha256": "9f4509836908e7f57dea035f5d5bee941c72a522f3063ca86120745a4e8adc6b",
+      "bytes": 361410
+    },
+    {
+      "path": "screenshots/iPhone18-stage08-account-deletion-keyboard-initial.png",
+      "sha256": "75ea9f0b87aca9ef52641b5586408beaaaee7bf4403ee091901997ce84d7e89c",
+      "bytes": 125493
+    },
+    {
+      "path": "screenshots/iPhone18-stage08-account-deletion-keyboard-retry.png",
+      "sha256": "cd46faba08bb0a9721003c4947fd6395af9ee9d3fedc467717fd1b76e1a374b0",
+      "bytes": 137999
+    },
+    {
+      "path": "screenshots/iPhone18-stage08-account-deletion-success.png",
+      "sha256": "41bc00dcd65f4b9c71acadcae15e8f0aa3070ed7b5933e215029ce5175dbbf18",
+      "bytes": 90087
+    },
+    {
+      "path": "screenshots/iPhone18-stage08-account-deletion.png",
+      "sha256": "fba334e0f3c73f018f4578f6614a60b1d2bacf28c204c1aba18cb488a1142196",
+      "bytes": 109653
+    },
+    {
+      "path": "screenshots/iPhone26-stage08-account-deletion-keyboard-initial.png",
+      "sha256": "8a9d71b156910ba02b4eb1528df45ea618106f30cfaffa7602b6da0c191e1791",
+      "bytes": 187289
+    },
+    {
+      "path": "screenshots/iPhone26-stage08-account-deletion-keyboard-retry.png",
+      "sha256": "a4ca9a2fa68173c2223ddb61a3fa38ba628019931dd52f6bf3808a5303a8ec27",
+      "bytes": 202401
+    },
+    {
+      "path": "screenshots/iPhone26-stage08-account-deletion-success.png",
+      "sha256": "a76f1cbfde6baa4e20ebba85610ec4a65977453bf24d4408711b9a1f2ff74085",
+      "bytes": 170032
+    },
+    {
+      "path": "screenshots/iPhone26-stage08-account-deletion.png",
+      "sha256": "cbed90b4b8c0a770e665c1c82fb087d7b7c4336ac0acfdbd781cd4190a54408d",
+      "bytes": 198720
+    }
+  ],
+  "supplementNote": "Two manual visual-review files added after strict collection; all original collected file hashes rechecked unchanged."
+}

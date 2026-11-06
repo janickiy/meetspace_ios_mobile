@@ -1,0 +1,63 @@
+{
+  "date": "2026-11-06",
+  "sourceCommit": "16c702529f70ce675276d58f5d6334f0ba323fa7",
+  "scope": "Local source/configuration checks only; final documentation/evidence worktree dirty",
+  "codeUnchangedFromSourceCommit": true,
+  "commands": [
+    {
+      "command": "python3 scripts/generate_xcode_project.py --check",
+      "exitCode": 0,
+      "result": "PASS reproducible project"
+    },
+    {
+      "command": "python3 scripts/verify_audit.py",
+      "exitCode": 0,
+      "result": "PASS 7 documents,23 feature rows,21 screen rows; source checkout verification NOT RUN by this command"
+    },
+    {
+      "command": "python3 scripts/verify_foundation.py",
+      "exitCode": 0,
+      "result": "PASS module/scheme/resource/copy/TLS configuration integrity"
+    },
+    {
+      "command": "python3 scripts/verify_contrast.py --report artifacts/contrast-verification.json",
+      "exitCode": 0,
+      "result": "40 PASS,0 FAIL"
+    },
+    {
+      "command": "python3 scripts/verify_release.py --report artifacts/source-release-verification.json",
+      "exitCode": 0,
+      "result": "30 source checks PASS; no product supplied to this invocation; distribution approval NOT_GRANTED"
+    }
+  ],
+  "files": {
+    "contrast.json": {
+      "sha256": "0de50da78e1454eea07867f54649a34eade1bb41478a43f8717c7844ae0f2cd0",
+      "bytes": 5997
+    },
+    "release-source.json": {
+      "sha256": "dc093d9d1c1a5b4f52959eaf7a3e8851151bcdc0e83209eb9702407d54a0cf5e",
+      "bytes": 6396
+    }
+  },
+  "limits": [
+    "Source checks do not run Xcode, device tests or real TLS interception",
+    "Unsigned CI16 archive separately verified in ../release-product-final/receipt.json",
+    "No new SwiftPM, full native suite, signing, Instruments metrics or Apple upload claimed by this receipt"
+  ],
+  "finalDocumentationVerification": {
+    "command": "python3 /tmp/meetspace_stage08_final_checks.py",
+    "exitCode": 0,
+    "scope": "Private local final evidence/source/link/limited-secret scan, no new application tests",
+    "worktreeFilesScanned": 1325,
+    "limitedCredentialSignatureMatches": 0,
+    "localMarkdownLinksChecked": 1505,
+    "unchangedSourceHashCounts": {
+      "security": 91,
+      "performance": 17,
+      "api": 30
+    },
+    "gitDiffCheck": "PASS",
+    "limits": "Signature matching is not a comprehensive secret audit; private orchestration path is not a repository command."
+  }
+}

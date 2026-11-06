@@ -1,0 +1,21 @@
+2026-11-06T20:27:46.0057010Z     t =   152.88s Tap Key (First Match)
+2026-11-06T20:27:46.0163560Z     t =   152.88s     Wait for com.meetspace.ios to idle
+2026-11-06T20:27:46.0271300Z     t =   152.89s     Find the Key (First Match)
+2026-11-06T20:27:46.1428440Z     t =   152.99s     Check for interrupting elements affecting "Переключиться с латинских клавиш" Key
+2026-11-06T20:27:46.2594020Z     t =   153.13s         Wait for com.apple.springboard to idle
+2026-11-06T20:27:46.3383520Z     t =   153.20s     Synthesize event
+2026-11-06T20:27:46.7741230Z     t =   153.53s     Wait for com.meetspace.ios to idle
+2026-11-06T20:27:46.8843080Z     t =   153.71s Waiting 5.0s for "f" Key to exist
+2026-11-06T20:27:47.9272640Z     t =   154.75s     Checking `Expect predicate `existsNoRetry == 1` for object "f" Key`
+2026-11-06T20:27:47.9388690Z     t =   154.75s         Checking existence of `"f" Key`
+2026-11-06T20:27:48.0884650Z     t =   154.96s Waiting 5.0s for "f" Key to exist
+2026-11-06T20:27:49.3068450Z     t =   156.03s     Checking `Expect predicate `existsNoRetry == 1` for object "f" Key`
+2026-11-06T20:27:49.3204440Z     t =   156.03s         Checking existence of `"f" Key`
+2026-11-06T20:27:49.9852160Z     t =   156.85s Find the Target Application 'com.meetspace.ios'
+2026-11-06T20:27:50.6442160Z     t =   157.50s Added attachment named 'stage08-account-deletion-keyboard-initial'
+2026-11-06T20:27:50.6561860Z     t =   157.50s Checking existence of `"i" Key`
+2026-11-06T20:27:50.8173920Z     t =   157.69s Waiting 5.0s for "i" Key to exist
+2026-11-06T20:27:51.8373050Z     t =   158.71s     Checking `Expect predicate `existsNoRetry == 1` for object "i" Key`
+2026-11-06T20:27:51.8482040Z     t =   158.71s         Checking existence of `"i" Key`
+2026-11-06T20:27:51.9438510Z     t =   158.78s Tap "i" Key
+2026-11-06T20:27:51.9543520Z     t =   158.79s     Wait for com.meetspace.ios to idle

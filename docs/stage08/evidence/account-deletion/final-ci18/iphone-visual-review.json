@@ -1,0 +1,65 @@
+{
+  "sourceCommit": "16c702529f70ce675276d58f5d6334f0ba323fa7",
+  "runID": 42288899326,
+  "method": "Viewed eight original screenshot files using image viewer; iPhone26 display downscaled from1320x2868 to943x2048, originals unchanged",
+  "items": [
+    {
+      "device": "iPhone18",
+      "file": "screenshots/iPhone18-stage08-account-deletion-keyboard-initial.png",
+      "sha256": "75ea9f0b87aca9ef52641b5586408beaaaee7bf4403ee091901997ce84d7e89c",
+      "observed": "Account-deletion sheet, selected fixture identity/server, full warnings, empty password placeholder and disabled submit are visible."
+    },
+    {
+      "device": "iPhone18",
+      "file": "screenshots/iPhone18-stage08-account-deletion-keyboard-retry.png",
+      "sha256": "cd46faba08bb0a9721003c4947fd6395af9ee9d3fedc467717fd1b76e1a374b0",
+      "observed": "Full wrong-password error, empty password placeholder and disabled submit are visible."
+    },
+    {
+      "device": "iPhone18",
+      "file": "screenshots/iPhone18-stage08-account-deletion.png",
+      "sha256": "fba334e0f3c73f018f4578f6614a60b1d2bacf28c204c1aba18cb488a1142196",
+      "observed": "Submit is enabled. Password content is protected/absent in screenshot; previous wrong-password error remains before the next submit, not a new server response."
+    },
+    {
+      "device": "iPhone18",
+      "file": "screenshots/iPhone18-stage08-account-deletion-success.png",
+      "sha256": "41bc00dcd65f4b9c71acadcae15e8f0aa3070ed7b5933e215029ce5175dbbf18",
+      "observed": "Configured-server login and full green account-deleted message are visible; deletion sheet/workspace absent."
+    },
+    {
+      "device": "iPhone26",
+      "file": "screenshots/iPhone26-stage08-account-deletion-keyboard-initial.png",
+      "sha256": "8a9d71b156910ba02b4eb1528df45ea618106f30cfaffa7602b6da0c191e1791",
+      "observed": "Account-deletion sheet, selected fixture identity/server, full warnings, empty password placeholder and disabled submit are visible."
+    },
+    {
+      "device": "iPhone26",
+      "file": "screenshots/iPhone26-stage08-account-deletion-keyboard-retry.png",
+      "sha256": "a4ca9a2fa68173c2223ddb61a3fa38ba628019931dd52f6bf3808a5303a8ec27",
+      "observed": "Full wrong-password error, empty password placeholder and disabled submit are visible."
+    },
+    {
+      "device": "iPhone26",
+      "file": "screenshots/iPhone26-stage08-account-deletion.png",
+      "sha256": "cbed90b4b8c0a770e665c1c82fb087d7b7c4336ac0acfdbd781cd4190a54408d",
+      "observed": "Submit is enabled. Password content is protected/absent in screenshot; previous wrong-password error remains before the next submit, not a new server response."
+    },
+    {
+      "device": "iPhone26",
+      "file": "screenshots/iPhone26-stage08-account-deletion-success.png",
+      "sha256": "a76f1cbfde6baa4e20ebba85610ec4a65977453bf24d4408711b9a1f2ff74085",
+      "observed": "Configured-server login and full green account-deleted message are visible; deletion sheet/workspace absent."
+    }
+  ],
+  "observations": [
+    "iPhone18 Cancel label fits one line; iPhone26 Cancel wraps inside its native navigation button (Отме/на), a remaining visual issue.",
+    "No blocking overlap or clipped warning/error/success text observed in these eight frames."
+  ],
+  "limits": [
+    "app.screenshot omits keyboard and protected password contents; filenames do not prove keyboard visibility or actual typed bytes.",
+    "No confirmation-alert PNG: cancel/confirm are tested by native assertions, not a visual review of the alert.",
+    "No inference of exact touch sizes, VoiceOver behavior, full design parity or all orientation/theme/Dynamic Type states.",
+    "Successful fixture deletion does not validate enabled/concurrent APNs registration."
+  ]
+}

@@ -1,0 +1,82 @@
+[
+  {
+    "id": 13538062129,
+    "node_id": "MDg6QXJ0aWZhY3QxMzUzODA2MjEyOQ==",
+    "name": "results-iPhone26",
+    "size_in_bytes": 21302726,
+    "url": "https://api.github.com/repos/janickiy/meetspace_ios_mobile/actions/artifacts/13538062129",
+    "archive_download_url": "https://api.github.com/repos/janickiy/meetspace_ios_mobile/actions/artifacts/13538062129/zip",
+    "expired": false,
+    "digest": "sha256:0b0573ce5858bb769872d1c5c655c393a06d4cd3eb4e2da5eca9e4114b2f5f0d",
+    "created_at": "2026-11-06T20:20:29Z",
+    "updated_at": "2026-11-06T20:20:29Z",
+    "expires_at": "2026-11-13T20:20:25Z",
+    "workflow_run": {
+      "id": 42283560617,
+      "repository_id": 1446695117,
+      "head_repository_id": 1446695117,
+      "head_branch": "codex/stage08-regression",
+      "head_sha": "a33a153147d6941874884357134b3fd46de7532c"
+    }
+  },
+  {
+    "id": 13536624578,
+    "node_id": "MDg6QXJ0aWZhY3QxMzUzNjYyNDU3OA==",
+    "name": "results-iPad26",
+    "size_in_bytes": 218153285,
+    "url": "https://api.github.com/repos/janickiy/meetspace_ios_mobile/actions/artifacts/13536624578",
+    "archive_download_url": "https://api.github.com/repos/janickiy/meetspace_ios_mobile/actions/artifacts/13536624578/zip",
+    "expired": false,
+    "digest": "sha256:90420d39b1579ff8c1bcff27fa3b8852332649e8b9a7fefcff538e851a8945ba",
+    "created_at": "2026-11-06T20:11:21Z",
+    "updated_at": "2026-11-06T20:11:21Z",
+    "expires_at": "2026-11-13T20:11:05Z",
+    "workflow_run": {
+      "id": 42283560617,
+      "repository_id": 1446695117,
+      "head_repository_id": 1446695117,
+      "head_branch": "codex/stage08-regression",
+      "head_sha": "a33a153147d6941874884357134b3fd46de7532c"
+    }
+  },
+  {
+    "id": 13538058765,
+    "node_id": "MDg6QXJ0aWZhY3QxMzUzODA1ODc2NQ==",
+    "name": "results-iPhone18",
+    "size_in_bytes": 19356363,
+    "url": "https://api.github.com/repos/janickiy/meetspace_ios_mobile/actions/artifacts/13538058765",
+    "archive_download_url": "https://api.github.com/repos/janickiy/meetspace_ios_mobile/actions/artifacts/13538058765/zip",
+    "expired": false,
+    "digest": "sha256:61cd485e4429ce2ae03e8b70041567c40e02809bb16d8a39325ad4f139851488",
+    "created_at": "2026-11-06T20:30:47Z",
+    "updated_at": "2026-11-06T20:30:47Z",
+    "expires_at": "2026-11-13T20:30:41Z",
+    "workflow_run": {
+      "id": 42283560617,
+      "repository_id": 1446695117,
+      "head_repository_id": 1446695117,
+      "head_branch": "codex/stage08-regression",
+      "head_sha": "a33a153147d6941874884357134b3fd46de7532c"
+    }
+  },
+  {
+    "id": 13539003212,
+    "node_id": "MDg6QXJ0aWZhY3QxMzUzOTAwMzIxMg==",
+    "name": "results-iPad18",
+    "size_in_bytes": 250379120,
+    "url": "https://api.github.com/repos/janickiy/meetspace_ios_mobile/actions/artifacts/13539003212",
+    "archive_download_url": "https://api.github.com/repos/janickiy/meetspace_ios_mobile/actions/artifacts/13539003212/zip",
+    "expired": false,
+    "digest": "sha256:73ce887495ca4946beb1075c9dae90e5ddc758bb9fb70a43f859b2afa1c7105c",
+    "created_at": "2026-11-06T20:40:55Z",
+    "updated_at": "2026-11-06T20:40:55Z",
+    "expires_at": "2026-11-13T20:40:38Z",
+    "workflow_run": {
+      "id": 42283560617,
+      "repository_id": 1446695117,
+      "head_repository_id": 1446695117,
+      "head_branch": "codex/stage08-regression",
+      "head_sha": "a33a153147d6941874884357134b3fd46de7532c"
+    }
+  }
+]

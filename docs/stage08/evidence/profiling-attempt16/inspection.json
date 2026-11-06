@@ -1,0 +1,98 @@
+{
+  "schema": 1,
+  "sourceCommit": "a33a153147d6941874884357134b3fd46de7532c",
+  "result": "FAIL",
+  "elapsedSeconds": 67.293,
+  "reason": "Cannot verify simulator state after boot",
+  "nativeSuite": {
+    "scope": "regression",
+    "passed": 14,
+    "failed": 0,
+    "skipped": 0,
+    "total": 14
+  },
+  "exactSummaryUUIDAndDigestMatch": true,
+  "preflight": {
+    "initialSimulatorState": "Shutdown",
+    "boot": {
+      "name": "simulator-boot",
+      "argv": [
+        "xcrun",
+        "simctl",
+        "boot",
+        "C3630581-519B-49DA-9400-67A78DCD42C8"
+      ],
+      "log": "simulator-boot.log",
+      "exitCode": 0,
+      "timedOut": false,
+      "elapsedSeconds": 1.31
+    },
+    "bootstatus": {
+      "name": "simulator-bootstatus",
+      "argv": [
+        "xcrun",
+        "simctl",
+        "bootstatus",
+        "C3630581-519B-49DA-9400-67A78DCD42C8",
+        "-b"
+      ],
+      "log": "simulator-bootstatus.log",
+      "exitCode": 0,
+      "timedOut": false,
+      "elapsedSeconds": 21.806
+    },
+    "bootstatusLogBoundary": "Returns0 and reports terminalStatus4294967295,Finished. This does not replace the missing subsequent exact Booted-state verification.",
+    "postBootInventory": {
+      "name": "simctl-devices-after-boot",
+      "argv": [
+        "xcrun",
+        "simctl",
+        "list",
+        "devices",
+        "available",
+        "--json"
+      ],
+      "log": "simctl-devices-after-boot.log",
+      "exitCode": -2,
+      "timedOut": true,
+      "reason": "command timeout",
+      "elapsedSeconds": 13.794
+    },
+    "postBootInventoryLogBytes": 0,
+    "exactBootedStateVerified": false
+  },
+  "captures": 0,
+  "traceMembersInArtifact": 0,
+  "commandsNotReached": [
+    "app-container",
+    "fixture-marker verification",
+    "app launch",
+    "PID/executable verification",
+    "xctrace record",
+    "xctrace export"
+  ],
+  "measurements": {
+    "CPU": "NOT_MEASURED",
+    "RSS": "NOT_MEASURED",
+    "allocatedBytes": "NOT_MEASURED",
+    "energy": "NOT_MEASURED",
+    "leaks": "NOT_MEASURED"
+  },
+  "cleanup": {
+    "name": "simulator-cleanup",
+    "argv": [
+      "xcrun",
+      "simctl",
+      "shutdown",
+      "C3630581-519B-49DA-9400-67A78DCD42C8"
+    ],
+    "log": "simulator-cleanup.log",
+    "exitCode": 0,
+    "timedOut": false,
+    "elapsedSeconds": 15.026
+  },
+  "cleanupBoundary": "Shutdown returned0 in15.026s. No PID was acquired; no terminate command or postcleanup state/process inventory saved.",
+  "receiptHashesChecked": 14,
+  "hashMismatches": 0,
+  "noNewExecution": "Read-only artifact/log inspection; simulator/profiler not rerun."
+}

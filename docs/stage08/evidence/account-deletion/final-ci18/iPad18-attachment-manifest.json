@@ -1,0 +1,44 @@
+[
+  {
+    "attachments" : [
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "2A250684-88E3-4EDB-A21E-B7726B4C69F6",
+        "deviceName" : "iPad mini (A17 Pro)",
+        "exportedFileName" : "D7EFA3A7-C123-49F8-8FFA-74F1CFD07A33.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "stage08-account-deletion-success_0_919DC270-69D6-4C47-A8C9-B4A3B7D63628.png",
+        "timestamp" : 1793998401.724
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "2A250684-88E3-4EDB-A21E-B7726B4C69F6",
+        "deviceName" : "iPad mini (A17 Pro)",
+        "exportedFileName" : "33230EB2-ADF7-4A6D-A76D-BCC919C4D3CF.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "stage08-account-deletion_0_0F399675-E755-41B8-B497-4533B9EEB876.png",
+        "timestamp" : 1793998395.624
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "2A250684-88E3-4EDB-A21E-B7726B4C69F6",
+        "deviceName" : "iPad mini (A17 Pro)",
+        "exportedFileName" : "985EEE42-5BD4-4AE7-A540-41FAFAFC0D5B.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "stage08-account-deletion-keyboard-retry_0_B2A4AE44-645F-42A6-BF2F-7F690F5939FA.png",
+        "timestamp" : 1793998389.46
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "2A250684-88E3-4EDB-A21E-B7726B4C69F6",
+        "deviceName" : "iPad mini (A17 Pro)",
+        "exportedFileName" : "FA58E7EB-79D8-414D-A041-1D7B23D5732B.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "stage08-account-deletion-keyboard-initial_0_0D3CCDE6-8D41-41E4-9705-85A5EE1DAA6B.png",
+        "timestamp" : 1793998369.016
+      }
+    ],
+    "testIdentifier" : "FoundationUITests/testStage08AccountDeletionRequiresPasswordAndConfirmation()",
+    "testIdentifierURL" : "test://com.apple.xcode/MeetSpace/MeetSpaceUITests/FoundationUITests/testStage08AccountDeletionRequiresPasswordAndConfirmation"
+  }
+]

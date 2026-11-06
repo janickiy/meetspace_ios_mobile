@@ -1,0 +1,45 @@
+{
+  "status": "RETRIEVED_AND_VERIFIED",
+  "history": [
+    {
+      "status": "DOWNLOAD_BLOCKED",
+      "httpStatus": 503,
+      "message": "Egress is over the account limit.",
+      "source": "Coordinator reported initial downloader response"
+    },
+    {
+      "status": "RETRIEVED",
+      "source": "Coordinator reported one standard retry succeeded; evidence writer performed no network requests"
+    },
+    {
+      "status": "LOCALLY_VERIFIED",
+      "apiSHA256Matched": true,
+      "apiSizeMatched": true,
+      "apiRunSourceMatched": true,
+      "allZIPMembersCRCValid": true
+    }
+  ],
+  "artifact": {
+    "id": 13538178497,
+    "node_id": "MDg6QXJ0aWZhY3QxMzUzODE3ODQ5Nw==",
+    "name": "results-iPad26",
+    "size_in_bytes": 5440753,
+    "url": "https://api.github.com/repos/janickiy/meetspace_ios_mobile/actions/artifacts/13538178497",
+    "archive_download_url": "https://api.github.com/repos/janickiy/meetspace_ios_mobile/actions/artifacts/13538178497/zip",
+    "expired": false,
+    "digest": "sha256:89f843fe3e13999999a84d79c5468637df0ed34df80d706f6825671825052a68",
+    "created_at": "2026-11-06T20:29:51Z",
+    "updated_at": "2026-11-06T20:29:51Z",
+    "expires_at": "2026-11-13T20:29:48Z",
+    "workflow_run": {
+      "id": 42287121804,
+      "repository_id": 1446695117,
+      "head_repository_id": 1446695117,
+      "head_branch": "codex/stage08-keyboard-validation",
+      "head_sha": "163fb79059dbc0d5b2fbdbc206e74e2e3cb92e86"
+    }
+  },
+  "localZipSHA256": "89f843fe3e13999999a84d79c5468637df0ed34df80d706f6825671825052a68",
+  "localZIPBytes": 5440753,
+  "verifiedMembersReadDirectly": true
+}

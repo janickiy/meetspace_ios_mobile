@@ -1,0 +1,33 @@
+{
+  "sourceCommit": "163fb79059dbc0d5b2fbdbc206e74e2e3cb92e86",
+  "sourceFileSHA256": {
+    "Tests/MeetSpaceUITests/FoundationUITests.swift": "5bc692b68e39abc8a79a158069d45ccd61efa4b70a37fcb344faf87e62b05fc2",
+    ".github/workflows/ios.yml": "78a26c4ed1b0203bd55723dc5cc6ea56caf702367aebdc782abcdbf07ebda8de",
+    "scripts/ci_simulators.py": "7ae72e334cccd2d20fcbfabc8ee495f551f712070232d8f7e87cbf85ffaba634"
+  },
+  "productionTrees": {
+    "App": {
+      "55bfcfb1e075224eda9ed7106a669db0b55dd7e5": "4098b55a42e80f71dcc919be18316ae92e3c1110",
+      "a33a153147d6941874884357134b3fd46de7532c": "4098b55a42e80f71dcc919be18316ae92e3c1110",
+      "163fb79059dbc0d5b2fbdbc206e74e2e3cb92e86": "4098b55a42e80f71dcc919be18316ae92e3c1110"
+    },
+    "Packages": {
+      "55bfcfb1e075224eda9ed7106a669db0b55dd7e5": "8d5dba878e0404a181a428736638a5185a01f7c6",
+      "a33a153147d6941874884357134b3fd46de7532c": "8d5dba878e0404a181a428736638a5185a01f7c6",
+      "163fb79059dbc0d5b2fbdbc206e74e2e3cb92e86": "8d5dba878e0404a181a428736638a5185a01f7c6"
+    },
+    "BroadcastExtension": {
+      "55bfcfb1e075224eda9ed7106a669db0b55dd7e5": "4517bbe5a62655b843403b53487fb2f91867d4ce",
+      "a33a153147d6941874884357134b3fd46de7532c": "4517bbe5a62655b843403b53487fb2f91867d4ce",
+      "163fb79059dbc0d5b2fbdbc206e74e2e3cb92e86": "4517bbe5a62655b843403b53487fb2f91867d4ce"
+    }
+  },
+  "productionTreesIdentical": true,
+  "comparedCommits": [
+    "55bfcfb1e075224eda9ed7106a669db0b55dd7e5",
+    "a33a153147d6941874884357134b3fd46de7532c",
+    "163fb79059dbc0d5b2fbdbc206e74e2e3cb92e86"
+  ],
+  "previousFailuresReclassified": false,
+  "limits": "Identical production Git trees do not imply previous CI15/16 failures passed or full-suite coverage on CI17."
+}

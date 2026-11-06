@@ -80,7 +80,7 @@ CI9 iPhone18 и iPad18 завершились каждый с **12 PASS / 3 FAIL
 
 В [CI10 `42263390594`](https://github.com/janickiy/meetspace_ios_mobile/actions/runs/42263390594), source `e0a37748eb865b84dddf3da6339d16e0d8e1a0fe`, iPad18 завершился с **14 PASS / 1 FAIL из15**. Core AX и conference прошли, единственный failure — deletion. Выбор одного mirrored `more` через `.firstMatch` выполнен; затем появился native iPad keyboard tutorial: «Для доступа к альтернативным буквам на клавиатуре\nпотяните вниз на клавише и отпустите.». Он заменил обычные keys, поэтому поиск `-` не завершился. AX содержит один Button label `ОК` (U+041E U+041A) внутри Keyboard, без identifier; дочерний StaticText имеет тот же label. Это не подтверждение другого символа или имени дефиса. [Receipt](evidence/account-deletion/attempt10.json), [точный AX excerpt](evidence/account-deletion/attempt10/iPad18-keyboard-onboarding.txt), [неизменённый кадр видео](evidence/account-deletion/attempt10/iPad18-keyboard-onboarding.png).
 
-Сценарий CI10 iPad18 остановился на первом вводе до submit/confirm/DELETE. Строгая проверка fixture не менялась и не была достигнута. Исправление тестового helper должно распознавать именно наблюдаемый tutorial и нажимать его native `ОК`, затем повторно искать нужную клавишу; успешная проверка пока **PENDING**. Оставшиеся iPhone26/iPad26 jobs CI9 отменены новым запуском через workflow concurrency; общий CI9 conclusion `cancelled`, package SUCCESS. Частичные отменённые результаты не засчитаны как PASS; это не runner-capacity отмена CI7.
+Сценарий CI10 iPad18 остановился на первом вводе до submit/confirm/DELETE. Строгая проверка fixture не менялась и не была достигнута. Исправление тестового helper должно распознавать именно наблюдаемый tutorial и нажимать его native `ОК`, затем повторно искать нужную клавишу; на этом историческом этапе успешной проверки ещё не было. CI13/CI15/CI16 не подтвердили этот guard, текущая замена описана в разделе CI18 ниже. Оставшиеся iPhone26/iPad26 jobs CI9 отменены новым запуском через workflow concurrency; общий CI9 conclusion `cancelled`, package SUCCESS. Частичные отменённые результаты не засчитаны как PASS; это не runner-capacity отмена CI7.
 
 CI10 iPhone18 также имеет исторический итог **14 PASS / 1 FAIL**, но сам
 synthetic deletion flow достиг подтверждённого успеха. После обоих native inputs
@@ -136,7 +136,7 @@ CI14 iPhone26 остановился до ввода пароля: globe-кно�
 элементом Keyboard, а helper искал её внутри Keyboard. В a33a153 исправлена
 область поиска на `app.buttons` при сохранении точного наблюдаемого selector.
 [Receipt и AX evidence](evidence/ci-attempt14/iPhone26-receipt.json).
-Production-код удаления не менялся; новая native приёмка **PENDING**.
+Production-код удаления не менялся; последующие scoped native результаты приведены ниже.
 
 Начиная с `f1eda3a` полностью удалены временные enum diagnostics во view/fixture и пустой `simctl log show` dump в CI runner. Сохранённые traces и mask-count evidence выше — исторические наблюдения только известных synthetic fixtures на одноразовом симуляторе с `-uitesting`; пользовательские пароли не журналировались. CI9 также содержит отдельные AX/layout изменения PageHeader, messages scrolling и записей; успешная общая приёмка ими не объявлена. CI8 на `6b6d1bb` завершился FAIL с прежним input path на iPhone18 и iPad26: обе попытки удаления по-прежнему классифицированы `known-dropped-characters`. [CI8 receipt](evidence/ci-attempt08.json). Это не результат нового native-keyboard сценария CI9 или исправлений CI10.
 
@@ -152,8 +152,8 @@ CI15 iPhone26 и iPad26 завершились34 PASS /1 FAIL из35; CI16 iPad2
 В `163fb79` при отсутствии f helper сначала нажимает эту exact key и ограниченно
 ждёт f. Если f не появился, тест завершается ошибкой. На клавиатурах без этого
 контрола сохранён прежний native language switch. Production ввод и строгие fixture
-пароли не менялись. CI17 `42287121804` проверяет deletion-only на всех4 устройствах;
-результат **PENDING**, package не запускается в этом scope.
+пароли не менялись. CI17 `42287121804` завершил iPad26 **1/1 PASS**259.462с;
+остальные3 jobs отменены автором после CI18. [Single-device receipt](evidence/account-deletion/ci17-ipad26/receipt.json) сохраняет проверенные ZIP/source/digest/CRC и4оригинальных PNG. Package намеренно SKIP; это не полный успешный workflow.
 
 ## Последующий native ввод CI18
 
@@ -171,4 +171,25 @@ Latin f, затем ограниченно ждёт enabled submit и нажим
 assertions проверяют cancel, неверный пароль с очисткой поля/сохранностью аккаунта,
 повтор правильного пароля и возврат к server login. Появление f само по себе не
 доказывает приём текста: пропущенный ввод должен дать обычный FAIL.
-CI18 `42288899326` проверяет этот вариант на всех4 устройствах; результат PENDING.
+CI18 `42288899326`, source `16c702529f70ce675276d58f5d6334f0ba323fa7`,
+завершился **4/4 PASS**, без native FAIL/SKIP. По одному точному deletion testcase:
+
+| Симулятор | Runtime | Длительность testcase |
+| --- | --- | --- |
+| iPhone 17 Pro Max | 26.2 | 101.921с |
+| iPad Pro 13-inch (M5) | 26.2 | 141.060с |
+| iPhone SE (3rd generation) | 18.6 | 145.534с |
+| iPad mini (A17 Pro) | 18.6 | 118.813с |
+
+[проверенный CI18 receipt](evidence/account-deletion/final-ci18/receipt.json) связывает API/source/ZIP hashes, CRC,
+четыре summaries/environments, native assertions и16оригинальных PNG.
+Package намеренно SKIP; archive, Core AX, AX5 и Settings не запускались в CI18.
+Это завершённая целевая проверка ввода/отмены/отказа/повтора/успеха, не новый full suite.
+Просмотр PNG фиксируется отдельно: [iPhone review](evidence/account-deletion/final-ci18/iphone-visual-review.json),
+[iPad review](evidence/account-deletion/final-ci18/ipad-visual-review.json).
+Retry-снимки показывают полный текст неверного пароля и очищенное поле; success —
+login сохранённого сервера с сообщением удаления. Keyboard и защищённое содержимое
+поля не отображаются в app screenshot; отдельного alert PNG нет. Cancel/confirm
+подтверждены native assertions. Перенос «Отме/на» в navigation button iOS26 остаётся
+визуальным недостатком; весь дизайн не объявляется принятым. Push intent по умолчанию
+выключен: concurrent enabled push по-прежнему не проверен этим UI-сценарием.

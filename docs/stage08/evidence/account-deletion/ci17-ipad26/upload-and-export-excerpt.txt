@@ -1,0 +1,7 @@
+2026-11-06T20:29:47.2032610Z iPad26 summary export: PASS (exit=0, timeout=False)
+2026-11-06T20:29:47.4307760Z iPad26 attachments export: PASS (exit=0, timeout=False)
+2026-11-06T20:29:47.6522390Z iPad26 diagnostics export: PASS (exit=0, timeout=False)
+2026-11-06T20:29:50.8548980Z Uploaded bytes 5440753
+2026-11-06T20:29:50.9053590Z SHA256 digest of uploaded artifact zip is 89f843fe3e13999999a84d79c5468637df0ed34df80d706f6825671825052a68
+2026-11-06T20:29:51.8623200Z Artifact results-iPad26.zip successfully finalized. Artifact ID 13538178497
+2026-11-06T20:29:51.8725270Z Artifact results-iPad26 has been successfully uploaded! Final size is 5440753 bytes. Artifact ID is 13538178497

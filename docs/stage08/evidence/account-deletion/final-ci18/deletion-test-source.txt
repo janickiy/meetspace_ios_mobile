@@ -1,0 +1,68 @@
+Source commit: 16c702529f70ce675276d58f5d6334f0ba323fa7
+384:     func testStage08AccountDeletionRequiresPasswordAndConfirmation() {
+385:         let app = launch(); login(app)
+386:         openProfileFeature("openDeleteAccount", in: app)
+387:         let password = app.secureTextFields["deleteAccount.password"]
+388:         let submit = app.buttons["deleteAccount.submit"]
+389:         XCTAssertTrue(password.waitForExistence(timeout: 5))
+390:         XCTAssertFalse(submit.isEnabled)
+391:         func enterPassword(_ value: String) {
+392:             password.tap()
+393:             let keyboard = app.keyboards.firstMatch
+394:             XCTAssertTrue(keyboard.waitForExistence(timeout: 5))
+395:             // The app is Russian, while these fixtures contain Latin letters. CI's
+396:             // Russian secure keyboard silently discarded synthetic Latin typeText
+397:             // events. Select the real Latin keyboard and tap its actual keys.
+398:             let latinLayout = keyboard.keys.matching(NSPredicate(format:
+399:                 "label == %@", "Переключиться с латинских клавиш")).firstMatch
+400:             if !keyboard.keys["f"].exists && latinLayout.exists {
+401:                 // CI15/16 iPad secure keyboards expose a separate visible “abc” key
+402:                 // with this exact AX label; the emoji button only cycled RU/Emoji.
+403:                 latinLayout.tap()
+404:                 XCTAssertTrue(keyboard.keys["f"].waitForExistence(timeout: 5))
+405:             } else {
+406:                 for _ in 0..<4 where !keyboard.keys["f"].exists {
+407:                     // On iOS 26 this system button is a sibling of Keyboard, not its child.
+408:                     let next = app.buttons.matching(NSPredicate(format:
+409:                         "identifier == %@ OR label IN %@", "emoji", ["Следующая клавиатура", "Next keyboard"])).firstMatch
+410:                     XCTAssertTrue(next.waitForExistence(timeout: 5)); next.tap()
+411:                 }
+412:             }
+413:             XCTAssertTrue(keyboard.keys["f"].waitForExistence(timeout: 5))
+414:             capture(app, name: "stage08-account-deletion-keyboard-" + (value == "fixture-password" ? "retry" : "initial"))
+415:             // Use XCTest's native typing only after observing the Latin layout.
+416:             // Manual numeric-mode taps triggered an iPad tutorial whose visible
+417:             // text was absent from optimized AX queries in CI15. This still enters
+418:             // the unchanged password through the real SecureField and strict fixture.
+419:             password.typeText(value)
+420:             let entered = XCTNSPredicateExpectation(predicate: NSPredicate(format: "isEnabled == true"), object: submit)
+421:             XCTAssertEqual(XCTWaiter.wait(for: [entered], timeout: 5), .completed)
+422:             let done = keyboard.buttons.matching(identifier: "Done").firstMatch
+423:             XCTAssertTrue(done.waitForExistence(timeout: 5)); done.tap()
+424:         }
+425:         enterPassword("incorrect-password")
+426:         reveal(submit, in: app); submit.tap()
+427:         // iOS26 exposes nested button nodes for the same confirmation action.
+428:         let confirmation = app.buttons.matching(identifier: "deleteAccount.confirm").firstMatch
+429:         XCTAssertTrue(confirmation.waitForExistence(timeout: 5))
+430:         let cancel = app.buttons.matching(identifier: "deleteAccount.cancelConfirmation").firstMatch
+431:         XCTAssertTrue(cancel.waitForExistence(timeout: 5))
+432:         cancel.tap()
+433:         XCTAssertTrue(password.waitForExistence(timeout: 5)); XCTAssertTrue(submit.isEnabled)
+434:         submit.tap(); XCTAssertTrue(confirmation.waitForExistence(timeout: 5)); confirmation.tap()
+435:         let error = app.staticTexts["deleteAccount.error"]
+436:         XCTAssertTrue(error.waitForExistence(timeout: 5))
+437:         XCTAssertFalse(submit.isEnabled, "Rejected-password input must be cleared before retry")
+438:         XCTAssertFalse(app.buttons["connectServer"].exists, "A wrong password must preserve the account")
+439:         reveal(password, in: app, towardTop: true)
+440:         enterPassword("fixture-password")
+441:         reveal(submit, in: app); capture(app, name: "stage08-account-deletion")
+442:         submit.tap(); XCTAssertTrue(confirmation.waitForExistence(timeout: 5)); confirmation.tap()
+443:         // Ending the session keeps the configured server and returns to its login form.
+444:         XCTAssertTrue(app.buttons["authenticationSubmit"].waitForExistence(timeout: 10))
+445:         XCTAssertTrue(app.staticTexts["Аккаунт удалён на сервере."].waitForExistence(timeout: 5))
+446:         XCTAssertFalse(password.exists)
+447:         XCTAssertFalse(app.buttons["tab.messages"].exists)
+448:         capture(app, name: "stage08-account-deletion-success")
+449:     }
+450: 

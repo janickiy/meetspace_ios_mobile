@@ -32,7 +32,14 @@ Android `b8f289983e60671d415a128734c2e5bb6e93a29d` и макеты
 `04d6a8ecdac75ae568459bbed0f3f6647bf8cbb3` не изменились. Макеты доступны:
 историческая оговорка задания об их пустом репозитории больше не применима.
 
-Полный CI15 завершился97 PASS /3 FAIL из100; failures связаны с helper ввода
-удаления. Native Core/font проверки всех4 платформ прошли. Исправленный helper
-проверяется отдельным CI18; до результата его нельзя считать PASS. Текущие
-scopes/source commits находятся в [TEST_REPORT.md](TEST_REPORT.md).
+Проверки завершены в зафиксированных scopes: SwiftPM **179 PASS /5 opt-in SKIP**,
+реальный backend **2/2 PASS**, unsigned archive **59 packaging PASS**,
+финальный native deletion **4/4 PASS** на iPhone/iPad18.6 и26.2.
+Полный CI15 сохранил97 PASS /3 FAIL из100, CI16 regression —54/56;
+неуспехи helper удаления закрыты отдельным CI18, а прежние результаты не переименованы
+в PASS. Production-код между этими исходниками одинаков. Полный suite финального
+harness не перезапускался; точные scopes/source/evidence — в [TEST_REPORT.md](TEST_REPORT.md).
+
+В проверенном объёме открытых P0/P1 не выявлено; остаются два OPEN P2. Подпись,
+SDK provenance/notices, физические устройства, Instruments и полная visual parity
+остаются BLOCKED. Это результат аудита и подготовки, не разрешение на распространение.

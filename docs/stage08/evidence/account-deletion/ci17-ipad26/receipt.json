@@ -1,0 +1,232 @@
+{
+  "schemaVersion": 1,
+  "observedAtUTC": "2026-11-06T20:46:02.570278+00:00",
+  "runID": 42287121804,
+  "sourceCommit": "163fb79059dbc0d5b2fbdbc206e74e2e3cb92e86",
+  "branch": "codex/stage08-keyboard-validation",
+  "label": "iPad26",
+  "scope": "deletion",
+  "result": "SINGLE_DEVICE_SCOPED_DELETION_PASS",
+  "nativeResult": "PASS",
+  "counts": {
+    "total": 1,
+    "passed": 1,
+    "failed": 0,
+    "skipped": 0,
+    "expectedFailures": 0
+  },
+  "durationSeconds": 259.462,
+  "fullSuitePass": false,
+  "allFourDeletionPlatformsPass": false,
+  "workflowConclusion": "cancelled",
+  "nativeJob": {
+    "id": 128130717774,
+    "run_id": 42287121804,
+    "workflow_name": "iOS release audit",
+    "head_branch": "codex/stage08-keyboard-validation",
+    "run_url": "https://api.github.com/repos/janickiy/meetspace_ios_mobile/actions/runs/42287121804",
+    "run_attempt": 1,
+    "node_id": "CR_kwDOVjrQzc8AAAAd1S-YTg",
+    "head_sha": "163fb79059dbc0d5b2fbdbc206e74e2e3cb92e86",
+    "url": "https://api.github.com/repos/janickiy/meetspace_ios_mobile/actions/jobs/128130717774",
+    "html_url": "https://github.com/janickiy/meetspace_ios_mobile/actions/runs/42287121804/job/128130717774",
+    "status": "completed",
+    "conclusion": "success",
+    "created_at": "2026-11-06T20:17:47Z",
+    "started_at": "2026-11-06T20:20:43Z",
+    "completed_at": "2026-11-06T20:30:05Z",
+    "name": "simulators (iPad, 26, iPad26, full, iPad Pro 13-inch (M5))",
+    "steps": [
+      {
+        "name": "Set up job",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 1,
+        "started_at": "2026-11-06T20:20:44Z",
+        "completed_at": "2026-11-06T20:20:45Z"
+      },
+      {
+        "name": "Run actions/checkout@v4",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 2,
+        "started_at": "2026-11-06T20:20:45Z",
+        "completed_at": "2026-11-06T20:20:51Z"
+      },
+      {
+        "name": "Device inventory",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 3,
+        "started_at": "2026-11-06T20:20:51Z",
+        "completed_at": "2026-11-06T20:21:13Z"
+      },
+      {
+        "name": "App, Keychain and UI tests",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 4,
+        "started_at": "2026-11-06T20:21:13Z",
+        "completed_at": "2026-11-06T20:29:47Z"
+      },
+      {
+        "name": "Diagnostic Instruments baseline (reported separately)",
+        "status": "completed",
+        "conclusion": "skipped",
+        "number": 5,
+        "started_at": "2026-11-06T20:29:47Z",
+        "completed_at": "2026-11-06T20:29:47Z"
+      },
+      {
+        "name": "Upload simulator test results",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 6,
+        "started_at": "2026-11-06T20:29:47Z",
+        "completed_at": "2026-11-06T20:29:51Z"
+      },
+      {
+        "name": "Post Run actions/checkout@v4",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 12,
+        "started_at": "2026-11-06T20:29:51Z",
+        "completed_at": "2026-11-06T20:29:53Z"
+      },
+      {
+        "name": "Complete job",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 13,
+        "started_at": "2026-11-06T20:29:53Z",
+        "completed_at": "2026-11-06T20:30:03Z"
+      }
+    ],
+    "check_run_url": "https://api.github.com/repos/janickiy/meetspace_ios_mobile/check-runs/128130717774",
+    "labels": [
+      "macos-15"
+    ],
+    "runner_id": 1000000570,
+    "runner_name": "GitHub Actions 1000000570",
+    "runner_group_id": 0,
+    "runner_group_name": "GitHub Actions"
+  },
+  "actualEnvironment": {
+    "device": "iPad Pro 13-inch (M5)",
+    "runtime": [
+      26,
+      2
+    ],
+    "udid": "73C19119-B10E-4309-872E-C53EF3F0EF27",
+    "scope": "deletion",
+    "hostArchitecture": "arm64",
+    "hostOS": "macOS-15.8.2-arm64-arm-64bit-Mach-O",
+    "preferredDeviceMatched": true,
+    "xcode": "Xcode 26.3\nBuild version 17C529\n"
+  },
+  "nativeEvidence": "API native job success, exact test log, TEST SUCCEEDED, verified xcresult summary and native exit0",
+  "cancellationContext": {
+    "report": "Coordinator requested cancellation of superseded remaining CI17 work; request accepted HTTP202",
+    "source": "Coordinator action report; raw API outcomes preserved",
+    "cancelledJobsNotReclassifiedAsFailures": true
+  },
+  "otherJobs": [
+    {
+      "id": 128130717508,
+      "name": "simulators (iPhone, 26, iPhone26, full, iPhone 17 Pro Max)",
+      "conclusion": "cancelled",
+      "started_at": "2026-11-06T20:29:03Z",
+      "completed_at": "2026-11-06T20:36:13Z"
+    },
+    {
+      "id": 128130717725,
+      "name": "simulators (iPad, 18, iPad18, compatibility, iPad mini (A17 Pro))",
+      "conclusion": "cancelled",
+      "started_at": "2026-11-06T20:17:47Z",
+      "completed_at": "2026-11-06T20:31:13Z"
+    },
+    {
+      "id": 128130717997,
+      "name": "simulators (iPhone, 18, iPhone18, compatibility, iPhone SE (3rd generation))",
+      "conclusion": "cancelled",
+      "started_at": "2026-11-06T20:30:08Z",
+      "completed_at": "2026-11-06T20:31:34Z"
+    }
+  ],
+  "package": {
+    "status": "skipped",
+    "intentionalDeletionScope": true
+  },
+  "unsignedArchive": "NOT_RUN_IN_CI17",
+  "profiler": "SKIPPED",
+  "artifactVerification": {
+    "status": "RETRIEVED_AND_VERIFIED",
+    "history": [
+      {
+        "status": "DOWNLOAD_BLOCKED",
+        "httpStatus": 503,
+        "message": "Egress is over the account limit.",
+        "source": "Coordinator reported initial downloader response"
+      },
+      {
+        "status": "RETRIEVED",
+        "source": "Coordinator reported one standard retry succeeded; evidence writer performed no network requests"
+      },
+      {
+        "status": "LOCALLY_VERIFIED",
+        "apiSHA256Matched": true,
+        "apiSizeMatched": true,
+        "apiRunSourceMatched": true,
+        "allZIPMembersCRCValid": true
+      }
+    ],
+    "artifact": {
+      "id": 13538178497,
+      "node_id": "MDg6QXJ0aWZhY3QxMzUzODE3ODQ5Nw==",
+      "name": "results-iPad26",
+      "size_in_bytes": 5440753,
+      "url": "https://api.github.com/repos/janickiy/meetspace_ios_mobile/actions/artifacts/13538178497",
+      "archive_download_url": "https://api.github.com/repos/janickiy/meetspace_ios_mobile/actions/artifacts/13538178497/zip",
+      "expired": false,
+      "digest": "sha256:89f843fe3e13999999a84d79c5468637df0ed34df80d706f6825671825052a68",
+      "created_at": "2026-11-06T20:29:51Z",
+      "updated_at": "2026-11-06T20:29:51Z",
+      "expires_at": "2026-11-13T20:29:48Z",
+      "workflow_run": {
+        "id": 42287121804,
+        "repository_id": 1446695117,
+        "head_repository_id": 1446695117,
+        "head_branch": "codex/stage08-keyboard-validation",
+        "head_sha": "163fb79059dbc0d5b2fbdbc206e74e2e3cb92e86"
+      }
+    },
+    "localZipSHA256": "89f843fe3e13999999a84d79c5468637df0ed34df80d706f6825671825052a68",
+    "localZIPBytes": 5440753,
+    "verifiedMembersReadDirectly": true
+  },
+  "sourceProof": "source-proof.json",
+  "nativeLog": {
+    "originalFile": "simulators_iPad_26_iPad26_full_iPad_Pro_13-inch_M5_.log",
+    "sha256": "c6d1e97e0c55e337c155a90757ac2e32ec8093f6a3a5c5459898d52ec34c7ae7",
+    "bytes": 947828,
+    "safeTrace": "native-test-trace.txt"
+  },
+  "abcKeyEvidence": {
+    "log": "abc-key-log-excerpt.txt",
+    "claim": "The log records a tap affecting the exact Latin-layout key, followed by successful f existence checks and a completed deletion test. No pixel claim is made about the absent system keyboard."
+  },
+  "screenshots": [
+    "screenshots/iPad26-stage08-account-deletion-success.png",
+    "screenshots/iPad26-stage08-account-deletion.png",
+    "screenshots/iPad26-stage08-account-deletion-keyboard-retry.png",
+    "screenshots/iPad26-stage08-account-deletion-keyboard-initial.png"
+  ],
+  "visualReview": "visual-review.json",
+  "originalVideoEvidence": {
+    "status": "NOT_EXPORTED_BY_XCRESULT",
+    "records": [],
+    "repositoryVideoCopy": false
+  },
+  "priorFailuresReclassified": false,
+  "limits": "One DEBUG fixture deletion UI test on iPad26 only. Other three jobs are cancelled, not failed. No four-platform/full-suite acceptance, real backend deletion, package/archive rerun or distribution approval."
+}

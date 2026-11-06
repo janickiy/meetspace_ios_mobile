@@ -1,17 +1,21 @@
 # Политика разбора accessibility findings
 
-Документ описывает Core accessibility harness, неизменённый между проверенными `55bfcfb`/`a33a153` и кандидатом `163fb79059dbc0d5b2fbdbc206e74e2e3cb92e86`. Последнее изменение затронуло только helper клавиатуры удаления и workflow; Core-код не менялся. Актуальный общий статус кандидата и запусков — [TEST_REPORT.md](TEST_REPORT.md), история — [CI_HISTORY.md](CI_HISTORY.md). Код: [FoundationUITests.swift](../../Tests/MeetSpaceUITests/FoundationUITests.swift), [TypographyAccessibilityTests.swift](../../Tests/MeetSpaceTests/TypographyAccessibilityTests.swift).
+Документ описывает Core accessibility harness, неизменённый между проверенными `55bfcfb`/`a33a153` и кандидатом `16c702529f70ce675276d58f5d6334f0ba323fa7`. Product-код CI15 совпадает с этим кандидатом; последующие изменения касаются тестового ввода при удалении и CI, а не production UI или Core audit. [Consolidated receipt](evidence/accessibility-ci15-matrix/receipt.json) фиксирует diff и точные исходники. Актуальный общий статус кандидата — [TEST_REPORT.md](TEST_REPORT.md), история — [CI_HISTORY.md](CI_HISTORY.md). Код: [FoundationUITests.swift](../../Tests/MeetSpaceUITests/FoundationUITests.swift), [TypographyAccessibilityTests.swift](../../Tests/MeetSpaceTests/TypographyAccessibilityTests.swift).
 
-Harness сохраняет один immutable snapshot в callback, postprocessing после возврата Apple audit, direction-aware навигацию профиля и различение результатов retest (`targetSeen` / `targetFailed`). Для `elementDetection` допускается максимум один повтор exact engine timeout без callbacks/findings, с отдельными receipts. В следующих завершённых Core-сценариях этот retry не понадобился:
+Harness сохраняет один immutable snapshot в callback, postprocessing после возврата Apple audit, direction-aware навигацию профиля и различение результатов retest (`targetSeen` / `targetFailed`). Для `elementDetection` допускается максимум один повтор exact engine timeout без callbacks/findings, с отдельными receipts. В завершённой четырёхплатформенной матрице CI15 этот retry не понадобился:
 
-| Запуск / scope / source | Core AX | Raw findings | Весь native job |
+| CI15 / source `55bfcfb` | Core AX | Raw findings | Весь native job |
 | --- | --- | --- | --- |
-| CI15 iPhone26, full, `55bfcfb` | 49/49 completed, 0 retry | 22, все reviewed | FAIL: 34 PASS / 1 FAIL из 35, deletion; [receipt](evidence/ci-attempt15/iPhone26-receipt.json) |
-| CI15 iPad26, full, `55bfcfb` | 49/49 completed, 0 retry | 16, все reviewed | FAIL: 34 PASS / 1 FAIL из 35, deletion; [receipt](evidence/ci-attempt15/iPad26-receipt.json) |
-| CI16 iPhone26, targeted regression, `a33a153` | 49/49 completed, 0 retry | 22, все reviewed | PASS: 14/14, 0 SKIP; [receipt](evidence/ci16-iphone26-regression/receipt.json). Это targeted suite, не full 35-case suite |
-| CI16 iPad26, targeted regression, `a33a153` | 49/49 completed, 0 retry | 15, все reviewed | FAIL: 13 PASS / 1 FAIL из 14, deletion; [receipt](evidence/ci-attempt16/iPad26-receipt.json) |
+| iPhone26, full | 49 initial completed, 0 retry | 22 reviewed | FAIL: 34 PASS / 1 FAIL из 35, deletion |
+| iPad26, full | 49 initial completed, 0 retry | 16 reviewed | FAIL: 34 PASS / 1 FAIL из 35, deletion |
+| iPhone18, compatibility | 49 initial + 3 visible contrast retests completed, 0 retry | 24: 16 reviewed, 3 verified, 5 вне retest viewport без измерения | PASS: 15/15, 0 SKIP |
+| iPad18, compatibility | 49 initial completed, 0 retry | 21 reviewed | FAIL: 14 PASS / 1 FAIL из 15, deletion |
 
-49 проходов — семь экранов × семь категорий. Это успешное выполнение Core с documented reviewed cases, не ноль raw findings и не PASS всей полной матрицы. CI16 iPhone26 отдельно прошёл все 14 targeted тестов, включая deletion; font-hosting подтвердил 74 samples × 12 категорий. На срезе 2026-11-06 20:24 UTC оставшиеся iOS18 jobs полного CI15 и targeted CI16 ещё выполняются; CI17 проверяет только deletion, по одному тесту на каждой из четырёх конфигураций, **PENDING**. Он не повторяет Core и не заменяет full suite. Изменения статуса после этого среза учитываются в [TEST_REPORT.md](TEST_REPORT.md).
+[Полный CI15 receipt с 64 оригинальными audit/font JSON](evidence/accessibility-ci15-matrix/receipt.json) подтверждает успешные Core и UIKit font-hosting testcases на всех четырёх конфигурациях. Всего **196 initial screen/category pairs + 3 visible retests = 199 completed passes**, без engine retry. Сохранены **83 raw findings: 75 reviewed, 3 verified и 5 без contrast measurement**; unresolved/deferred нет. Это не ноль findings, не 83 успешных измерения и не PASS всего suite: baseline завершился **97 PASS / 3 FAIL / 0 SKIP из 100**, все три failures — deletion.
+
+На iPhone18 собственный visible contrast retest прошли `addAccount`, суббота `calendar.weekday.5` и статус третьей записи. Пять других records вне retest viewport — Calendar label, вторник, filter hint, retention notice и recording title — **не получили измерения контраста** и не считаются verified. Font-hosting отдельно подтвердил точные **74 size/style/weight samples × 12 категорий на каждом устройстве**, всего 3552 фактических height values; это не визуальная приёмка всех view и не измерение pixel contrast.
+
+[CI16 final](evidence/ci16-final/receipt.json), source `a33a153`, завершён: targeted regression **54 PASS / 2 FAIL / 0 SKIP из 56**. Оба iPhone прошли 14/14; оба iPad — 13/14, единственный failure на каждом — deletion. Core и font testcases прошли на всех четырёх конфигурациях; CI16 остаётся targeted scope, а не повтором полной 100-case матрицы CI15. CI18 на `16c7025` завершил deletion-only **4/4 PASS**, по одному тесту на четырёх конфигурациях; Core AX/AX5/font в этом scope не запускались. Точные результаты — [TEST_REPORT.md](TEST_REPORT.md).
 
 ## Исторические результаты
 

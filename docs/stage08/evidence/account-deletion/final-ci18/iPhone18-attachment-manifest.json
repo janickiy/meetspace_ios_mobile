@@ -1,0 +1,44 @@
+[
+  {
+    "attachments" : [
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "C3630581-519B-49DA-9400-67A78DCD42C8",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "5137DBBC-64B0-4F58-8F51-8A36B1B7F627.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "stage08-account-deletion-success_0_F3BBE78D-9987-4C98-AD4D-462338089E48.png",
+        "timestamp" : 1793998006.629
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "C3630581-519B-49DA-9400-67A78DCD42C8",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "38D7D295-CEA0-476D-A630-E05E85D1AFBB.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "stage08-account-deletion_0_35260F7B-AF7B-4C57-B577-E50F1E0C40F9.png",
+        "timestamp" : 1793998000.745
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "C3630581-519B-49DA-9400-67A78DCD42C8",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "6CDCDA8F-0A19-4B08-8DE3-080675567ED2.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "stage08-account-deletion-keyboard-retry_0_B3AAD624-F3ED-46BD-94C3-5FEE3CAF72DD.png",
+        "timestamp" : 1793997994.321
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "C3630581-519B-49DA-9400-67A78DCD42C8",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "4BD5421D-5458-4852-85E2-2CD62E7B7798.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "stage08-account-deletion-keyboard-initial_0_CBF31ABF-2C92-46A6-AC3F-C60EAD570718.png",
+        "timestamp" : 1793997970.02
+      }
+    ],
+    "testIdentifier" : "FoundationUITests/testStage08AccountDeletionRequiresPasswordAndConfirmation()",
+    "testIdentifierURL" : "test://com.apple.xcode/MeetSpace/MeetSpaceUITests/FoundationUITests/testStage08AccountDeletionRequiresPasswordAndConfirmation"
+  }
+]

@@ -1,0 +1,122 @@
+{
+  "schema": 1,
+  "verifiedAtUTC": "2026-11-06T20:45:40.265200+00:00",
+  "runID": 42283560617,
+  "runURL": "https://github.com/janickiy/meetspace_ios_mobile/actions/runs/42283560617",
+  "sourceCommit": "a33a153147d6941874884357134b3fd46de7532c",
+  "result": "FAIL",
+  "artifact": {
+    "id": 13538058765,
+    "name": "results-iPhone18",
+    "bytes": 19356363,
+    "githubDigest": "sha256:61cd485e4429ce2ae03e8b70041567c40e02809bb16d8a39325ad4f139851488",
+    "downloadedSHA256": "61cd485e4429ce2ae03e8b70041567c40e02809bb16d8a39325ad4f139851488",
+    "sizeAndDigestMatch": true,
+    "zipCRCVerified": true
+  },
+  "originalProfilerFiles": 15,
+  "originalReceiptHashesChecked": 14,
+  "noTraceFiles": true,
+  "files": [
+    {
+      "file": "artifact-metadata.json",
+      "bytes": 807,
+      "sha256": "bd2d88bac4268c8ab87b1029249d154deaf6b7cd00c1cac5962e0f99dde57ebb"
+    },
+    {
+      "file": "developer-directory.log",
+      "bytes": 48,
+      "sha256": "f61dc333807430553f78902403e4cc45b547d508c03963122c5c75c6d27beedb"
+    },
+    {
+      "file": "environment.json",
+      "bytes": 319,
+      "sha256": "9927b65ea28b4584be0568ebe7ee3caa9f44da18db86cd1d3ba28eedb8d3a935"
+    },
+    {
+      "file": "find-xctrace.log",
+      "bytes": 64,
+      "sha256": "fced716e12a27e0cbca2dd5cdb966bd2536657b6a4db58785ae79c210059bfa8"
+    },
+    {
+      "file": "inspection.json",
+      "bytes": 2593,
+      "sha256": "cd05cdc7c95733190c4201a426a5811fa35373b61fb1c130d22f5f22b4c1b05e"
+    },
+    {
+      "file": "native-profiler-step-excerpt.txt",
+      "bytes": 1732,
+      "sha256": "1ab564dbe7a0c885aac5a85d23343ce155fe99216ae35e4ec0e1dfc329df8832"
+    },
+    {
+      "file": "receipt.json",
+      "bytes": 7187,
+      "sha256": "02feae7ed9d807b4c18753068ec79a4ffd872251a97a264c7f1c7209d9164b49"
+    },
+    {
+      "file": "simctl-devices-after-boot.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "simctl-devices.log",
+      "bytes": 71973,
+      "sha256": "46a7a823298b691ca4039723464685a297577d9c3ac9b5eb40fc396dc1ba9232"
+    },
+    {
+      "file": "simctl-launch-help.log",
+      "bytes": 1363,
+      "sha256": "94ae148cf375cb65a0e14daa78230d1cd0520ea6772d75afecba422d96fcc4b2"
+    },
+    {
+      "file": "simulator-boot.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "simulator-bootstatus.log",
+      "bytes": 183,
+      "sha256": "218fa8df4d5caa6266447c946ffc8956efa461c36046854c7180acbce5280cf9"
+    },
+    {
+      "file": "simulator-cleanup.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "summary.json",
+      "bytes": 1011,
+      "sha256": "bd9565d7229df4f85548232e68b631652cac20d4888926f9c5a60ec1c3456201"
+    },
+    {
+      "file": "xcode-version.log",
+      "bytes": 32,
+      "sha256": "bb7fc9a8f5e063e81975b33054b3a526c91bcccff263ad11d5bd8bcdbe8f0973"
+    },
+    {
+      "file": "xctrace-devices.log",
+      "bytes": 10094,
+      "sha256": "93226b749886981aa9ea0c191e6a52ca68ed348cdadf5e9e52f977833f82ba2e"
+    },
+    {
+      "file": "xctrace-export-help.log",
+      "bytes": 1100,
+      "sha256": "953fc6079baaffd9d66b7d0f02aa3cfeed12c728425a9c1584120657cf4d8e9d"
+    },
+    {
+      "file": "xctrace-record-help.log",
+      "bytes": 3113,
+      "sha256": "bf49e4335bbf747b830f7a37d16e848385d3c865591833e0e77123dd29bf4525"
+    },
+    {
+      "file": "xctrace-templates.log",
+      "bytes": 373,
+      "sha256": "93eeae90861c44f3682a086d06ef9644a669bc71dd6350a8aff052f907bebe0a"
+    },
+    {
+      "file": "xctrace-version.log",
+      "bytes": 30,
+      "sha256": "187a4766a4b84a2657d81964ef8409fa5314d6e9fc121dfaa75604076c5a072b"
+    }
+  ]
+}

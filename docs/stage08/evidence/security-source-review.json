@@ -135,5 +135,6 @@
     "App/MeetSpaceAppDelegate.swift": "c8a7782ff6e4f891eafee5e168ebff3c8c208ac13817dfc4216fe8aba5ab45ca",
     "BroadcastExtension/SampleHandler.swift": "fa10d3dfea7686712ec6276522b2933dbdd2ede0f493e377b653e8186492ada8"
   },
-  "credentialScanFiles": 820
+  "credentialScanFiles": 1325,
+  "finalScanDateUTC": "2026-11-06"
 }

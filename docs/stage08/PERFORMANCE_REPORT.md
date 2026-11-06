@@ -8,7 +8,8 @@ preflight; CI10 — **FAIL** на ожидании boot и cleanup. В CI14 по
 превысила timeout, а полученная Allocations trace не предоставила allocation/heap
 schema для экспорта численных метрик. CI15 на ARM runner — **FAIL** до attach:
 обе `simctl launch` команды не вернули PID до timeout. Новые trace и численные
-CPU/RSS/energy метрики не получены.
+CPU/RSS/energy метрики не получены. CI16 — **FAIL** ещё на проверке
+post-boot inventory: запуск приложения и capture не выполнялись.
 Host-метрики ниже не являются приёмкой производительности приложения iOS.
 
 ## Фактически выполнено
@@ -245,6 +246,29 @@ artifact 13539480023, совпавшие SHA-256/size и ZIP CRC; провере
 хешей из receipt, сохранены19 исходных profiler файлов. Анализ не запускал
 симулятор или profiler повторно.
 
+[CI16 / 42283560617](https://github.com/janickiy/meetspace_ios_mobile/actions/runs/42283560617),
+source `a33a153147d6941874884357134b3fd46de7532c`, снова завершил profiler
+**FAIL**, elapsed **67.293 с**, до запуска приложения. Native iPhone18
+targeted regression отдельно прошёл **14/14**, без SKIP; он не является full suite.
+[Receipt](evidence/profiling-attempt16/receipt.json),
+[независимый разбор](evidence/profiling-attempt16/inspection.json),
+[manifest с provenance/hashes](evidence/profiling-attempt16/manifest.json).
+
+- UUID и hash native summary совпали. `simctl boot` вернул0, `bootstatus` —0
+  за **21.806 с**; его log содержит terminal status4294967295/Finished.
+  Следующий `simctl list devices available --json` превысил command timeout:
+  exit **−2**, elapsed **13.794 с**, stdout/stderr пусты. Exact Booted state
+  после boot не подтверждён; reason — `Cannot verify simulator state after boot`.
+- App container/fixture-marker, launch, PID validation, record и export
+  не достигнуты; `captures=[]`. В artifact нет trace. CPU/RSS/allocated bytes,
+  Leaks и energy не измерены; это не доказательство недоступности Instruments.
+- Cleanup shutdown вернул0 за **15.026 с**. Отдельный terminate не вызывался
+  без полученного PID; post-cleanup inventory отсутствует.
+
+API digest/size и ZIP CRC совпали; проверены14 log-хешей исходного receipt,
+сохранены15 исходных profiler файлов. Успешный native regression и
+`continue-on-error` шага не меняют profiler FAIL.
+
 Текущая команда шага после исправления:
 
 ```sh
@@ -265,7 +289,7 @@ cleanup приложения — 5 с, shutdown симулятора — 30 с. 
 задержки отдельно не измерялись. Версия CI10 ещё использовала бюджет 180 с и пределы 45/5 с;
 её сохранённый receipt не изменён. Новый вариант прошёл `py_compile` и пять mock
 проверок ошибок/границ target. Эти mock-проверки не заменяют фактический
-profiler runs CI14/CI15, результаты которых разобраны выше.
+profiler runs CI14/CI15/CI16, результаты которых разобраны выше.
 Скрипт сохраняет версии, templates/devices и справку CLI, проверяет
 точный booted simulator UUID и fixture marker приложения. Для каждого template
 он запускает `com.meetspace.ios -uitesting`, сверяет PID/executable и выполняет:
@@ -291,7 +315,8 @@ Receipt различает `RECORDED`, `BLOCKED` и `FAIL`. Непустая tra
 **BLOCKED**, у CI10 — **FAIL** до capture, у CI14 — **FAIL** после attach:
 Time Profiler не завершил корректную trace, а raw Allocations trace не дала
 экспортируемой таблицы измерений. CI15 — **FAIL** до attach из-за двух
-`simctl launch` timeouts; trace не получены. CPU/RSS/allocated bytes не установлены;
+`simctl launch` timeouts; CI16 — **FAIL** на post-boot inventory, до launch.
+Trace этих попыток не получены. CPU/RSS/allocated bytes не установлены;
 физические устройства и energy остаются **BLOCKED**.
 
 Это короткая запись уже запущенного Debug fixture UI в покое. Она не измеряет

@@ -1,0 +1,53 @@
+[
+  {
+    "attachments" : [
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "17F0E734-D183-4810-AB97-F27FD9968039",
+        "deviceName" : "iPhone 17 Pro Max",
+        "exportedFileName" : "43922D4A-4461-4482-B563-BD2582089BDF.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "stage08-account-deletion-success_0_3831B74C-BC6A-4D9D-90E3-E82CCFEE1DEA.png",
+        "timestamp" : 1793997858.321
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "17F0E734-D183-4810-AB97-F27FD9968039",
+        "deviceName" : "iPhone 17 Pro Max",
+        "exportedFileName" : "573C3409-410D-4D49-BD87-E7C840DD19D2.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "stage08-account-deletion_0_D193BE29-B415-44A6-862B-1038A2916A04.png",
+        "timestamp" : 1793997852.867
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "17F0E734-D183-4810-AB97-F27FD9968039",
+        "deviceName" : "iPhone 17 Pro Max",
+        "exportedFileName" : "F47FE655-A773-420C-A846-B58D1AA541A5.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "stage08-account-deletion-keyboard-retry_0_ECEB7785-CC63-4080-BCD4-CB89410EC0D1.png",
+        "timestamp" : 1793997846.273
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "17F0E734-D183-4810-AB97-F27FD9968039",
+        "deviceName" : "iPhone 17 Pro Max",
+        "exportedFileName" : "CD98E9D2-499C-41B9-B35F-0AB49AF08A33.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "stage08-account-deletion-keyboard-initial_0_86FDD433-ECA8-43D3-9EE9-46AA067A8F9A.png",
+        "timestamp" : 1793997825.517
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "17F0E734-D183-4810-AB97-F27FD9968039",
+        "deviceName" : "iPhone 17 Pro Max",
+        "exportedFileName" : "CAD4312E-1E6E-4BA5-AD65-DCE998128823.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "system-password-prompt-before-decline_0_583E2AF1-6B60-4DF4-B96C-30D1F71C761A.png",
+        "timestamp" : 1793997803.577
+      }
+    ],
+    "testIdentifier" : "FoundationUITests/testStage08AccountDeletionRequiresPasswordAndConfirmation()",
+    "testIdentifierURL" : "test://com.apple.xcode/MeetSpace/MeetSpaceUITests/FoundationUITests/testStage08AccountDeletionRequiresPasswordAndConfirmation"
+  }
+]

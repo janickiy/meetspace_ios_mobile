@@ -1,0 +1,273 @@
+{
+  "schema": 1,
+  "verifiedAtUTC": "2026-11-06T20:45:40.257662+00:00",
+  "runID": 42283560617,
+  "runURL": "https://github.com/janickiy/meetspace_ios_mobile/actions/runs/42283560617",
+  "sourceCommit": "a33a153147d6941874884357134b3fd46de7532c",
+  "scope": "targeted regression;14testcases perdevice,56total",
+  "status": "FAIL",
+  "counts": {
+    "passed": 54,
+    "failed": 2,
+    "skipped": 0,
+    "total": 56
+  },
+  "fullSuitePass": false,
+  "baselineBoundary": "CI15source55fullbaseline97/100FAIL is a different execution. This receipt does not merge runs into one full final-harness PASS.",
+  "verifiedChecks": [
+    "APIartifactsource/runID/SHA256/size/ZIPCRC on all4ZIPs",
+    "Exactnative14testcase set and regression scope on all4jobs",
+    "Environment andxcresult actualdevice/runtime agree",
+    "Only2failedcases,account deletion onbothiPads",
+    "All4diagnosticexports succeeded separately fromnativeFAIL",
+    "Completed GitHub run failure andmatchingnativejob conclusions"
+  ],
+  "validatorContract": {
+    "file": "/tmp/meetspace_stage08_collect_targeted.py",
+    "sha256": "5067f13a325ef4b975047ada2fb72086c7aa3022e7f0d58145156d2a83c6b68f",
+    "used": "EXPECTED_TESTS constant only; collector main not executed"
+  },
+  "matrix": {
+    "iPhone26": {
+      "device": "iPhone 17 Pro Max",
+      "runtime": [
+        26,
+        2
+      ],
+      "scope": "regression",
+      "sourceCommit": "a33a153147d6941874884357134b3fd46de7532c",
+      "result": "PASS",
+      "passed": 14,
+      "failed": 0,
+      "skipped": 0,
+      "total": 14,
+      "exactExpectedTestSetVerified": true,
+      "testScope": "10hosted + Core accessibility + AX5 live flow + Settings + account deletion",
+      "failureTest": null,
+      "nativeJob": {
+        "id": 128118487115,
+        "name": "simulators (iPhone, 26, iPhone26, full, iPhone 17 Pro Max)",
+        "html_url": "https://github.com/janickiy/meetspace_ios_mobile/actions/runs/42283560617/job/128118487115",
+        "conclusion": "success",
+        "started_at": "2026-11-06T20:02:11Z",
+        "completed_at": "2026-11-06T20:20:38Z"
+      },
+      "nativeJobNameBoundary": "Display name retains full/compatibility base-matrix label. Effective environment, logged scope and exact14testcases all prove regression scope.",
+      "exports": "summary/attachments/diagnostics all PASS; native result remains separate",
+      "nativeLogSHA256": "035c9f101e07f4a21fffef2593c1bec6e31d182beb1a2190e46d5e3ba0fe725c",
+      "artifact": {
+        "id": 13538062129,
+        "name": "results-iPhone26",
+        "bytes": 21302726,
+        "githubDigest": "sha256:0b0573ce5858bb769872d1c5c655c393a06d4cd3eb4e2da5eca9e4114b2f5f0d",
+        "downloadedSHA256": "0b0573ce5858bb769872d1c5c655c393a06d4cd3eb4e2da5eca9e4114b2f5f0d",
+        "sizeAndDigestMatch": true,
+        "zipCRCVerified": true
+      }
+    },
+    "iPad26": {
+      "device": "iPad Pro 13-inch (M5)",
+      "runtime": [
+        26,
+        2
+      ],
+      "scope": "regression",
+      "sourceCommit": "a33a153147d6941874884357134b3fd46de7532c",
+      "result": "FAIL",
+      "passed": 13,
+      "failed": 1,
+      "skipped": 0,
+      "total": 14,
+      "exactExpectedTestSetVerified": true,
+      "testScope": "10hosted + Core accessibility + AX5 live flow + Settings + account deletion",
+      "failureTest": "testStage08AccountDeletionRequiresPasswordAndConfirmation",
+      "nativeJob": {
+        "id": 128118487109,
+        "name": "simulators (iPad, 26, iPad26, full, iPad Pro 13-inch (M5))",
+        "html_url": "https://github.com/janickiy/meetspace_ios_mobile/actions/runs/42283560617/job/128118487109",
+        "conclusion": "failure",
+        "started_at": "2026-11-06T19:53:22Z",
+        "completed_at": "2026-11-06T20:11:27Z"
+      },
+      "nativeJobNameBoundary": "Display name retains full/compatibility base-matrix label. Effective environment, logged scope and exact14testcases all prove regression scope.",
+      "exports": "summary/attachments/diagnostics all PASS; native result remains separate",
+      "nativeLogSHA256": "e7776825ced765ac60f680078f821ae015df12d042468617328dcb448824cb45",
+      "artifact": {
+        "id": 13536624578,
+        "name": "results-iPad26",
+        "bytes": 218153285,
+        "githubDigest": "sha256:90420d39b1579ff8c1bcff27fa3b8852332649e8b9a7fefcff538e851a8945ba",
+        "downloadedSHA256": "90420d39b1579ff8c1bcff27fa3b8852332649e8b9a7fefcff538e851a8945ba",
+        "sizeAndDigestMatch": true,
+        "zipCRCVerified": true
+      }
+    },
+    "iPhone18": {
+      "device": "iPhone SE (3rd generation)",
+      "runtime": [
+        18,
+        6
+      ],
+      "scope": "regression",
+      "sourceCommit": "a33a153147d6941874884357134b3fd46de7532c",
+      "result": "PASS",
+      "passed": 14,
+      "failed": 0,
+      "skipped": 0,
+      "total": 14,
+      "exactExpectedTestSetVerified": true,
+      "testScope": "10hosted + Core accessibility + AX5 live flow + Settings + account deletion",
+      "failureTest": null,
+      "nativeJob": {
+        "id": 128118487367,
+        "name": "simulators (iPhone, 18, iPhone18, compatibility, iPhone SE (3rd generation))",
+        "html_url": "https://github.com/janickiy/meetspace_ios_mobile/actions/runs/42283560617/job/128118487367",
+        "conclusion": "success",
+        "started_at": "2026-11-06T20:11:41Z",
+        "completed_at": "2026-11-06T20:30:53Z"
+      },
+      "nativeJobNameBoundary": "Display name retains full/compatibility base-matrix label. Effective environment, logged scope and exact14testcases all prove regression scope.",
+      "exports": "summary/attachments/diagnostics all PASS; native result remains separate",
+      "nativeLogSHA256": "b285ce253a3a12fcd7e3d7e0364d09d7c36119c549eab45d6cedb67705fadd1e",
+      "artifact": {
+        "id": 13538058765,
+        "name": "results-iPhone18",
+        "bytes": 19356363,
+        "githubDigest": "sha256:61cd485e4429ce2ae03e8b70041567c40e02809bb16d8a39325ad4f139851488",
+        "downloadedSHA256": "61cd485e4429ce2ae03e8b70041567c40e02809bb16d8a39325ad4f139851488",
+        "sizeAndDigestMatch": true,
+        "zipCRCVerified": true
+      }
+    },
+    "iPad18": {
+      "device": "iPad mini (A17 Pro)",
+      "runtime": [
+        18,
+        6
+      ],
+      "scope": "regression",
+      "sourceCommit": "a33a153147d6941874884357134b3fd46de7532c",
+      "result": "FAIL",
+      "passed": 13,
+      "failed": 1,
+      "skipped": 0,
+      "total": 14,
+      "exactExpectedTestSetVerified": true,
+      "testScope": "10hosted + Core accessibility + AX5 live flow + Settings + account deletion",
+      "failureTest": "testStage08AccountDeletionRequiresPasswordAndConfirmation",
+      "nativeJob": {
+        "id": 128118487154,
+        "name": "simulators (iPad, 18, iPad18, compatibility, iPad mini (A17 Pro))",
+        "html_url": "https://github.com/janickiy/meetspace_ios_mobile/actions/runs/42283560617/job/128118487154",
+        "conclusion": "failure",
+        "started_at": "2026-11-06T20:25:07Z",
+        "completed_at": "2026-11-06T20:41:00Z"
+      },
+      "nativeJobNameBoundary": "Display name retains full/compatibility base-matrix label. Effective environment, logged scope and exact14testcases all prove regression scope.",
+      "exports": "summary/attachments/diagnostics all PASS; native result remains separate",
+      "nativeLogSHA256": "9e262f93347b459cef7b0d41b09725194116cc81cd839f13428922d6b7e2f47f",
+      "artifact": {
+        "id": 13539003212,
+        "name": "results-iPad18",
+        "bytes": 250379120,
+        "githubDigest": "sha256:73ce887495ca4946beb1075c9dae90e5ddc758bb9fb70a43f859b2afa1c7105c",
+        "downloadedSHA256": "73ce887495ca4946beb1075c9dae90e5ddc758bb9fb70a43f859b2afa1c7105c",
+        "sizeAndDigestMatch": true,
+        "zipCRCVerified": true
+      }
+    }
+  },
+  "profileBoundary": "iPhone18 native14/14PASS; optional profiler is independently FAIL before launch. See ../profiling-attempt16/manifest.json.",
+  "evidence": [
+    {
+      "file": "artifact-metadata.json",
+      "bytes": 3393,
+      "sha256": "bc9879f0ea9ab8adc22d11bff5a400f614f6d8e5a2f8f218b9543ef2f1da5a5f"
+    },
+    {
+      "file": "iPad18/environment.json",
+      "bytes": 312,
+      "sha256": "0523222309b70272fef96a7cf6a33939cb366da9a6bcbe165b6b4962aee56678"
+    },
+    {
+      "file": "iPad18/export-status.json",
+      "bytes": 1436,
+      "sha256": "7ba07eb1855dd77eb586686eef68b731f118fa5ef8ba7efc875eb8fe90c7e7eb"
+    },
+    {
+      "file": "iPad18/native-test-results.txt",
+      "bytes": 2351,
+      "sha256": "73f2e6b967af1b65838ef58bb2c95bf1e3f8345d11753c0d9e0d3ea972bc1cfb"
+    },
+    {
+      "file": "iPad18/summary.json",
+      "bytes": 1474,
+      "sha256": "9593e84fc9512cbc48811f761c388c97787e893e56de2e24101bed55a7b5d991"
+    },
+    {
+      "file": "iPad26/environment.json",
+      "bytes": 314,
+      "sha256": "ee3bf6423def36e2b72b0626195ac0ba1de3c78a825fa6e324be91da9c282eb6"
+    },
+    {
+      "file": "iPad26/export-status.json",
+      "bytes": 1436,
+      "sha256": "0fe2a77901d51e35d3f2e614c64b4a6ffba4045c1d8a1c185cde45306f1cae78"
+    },
+    {
+      "file": "iPad26/native-test-results.txt",
+      "bytes": 2354,
+      "sha256": "a9b7f71ee94e639739b1b3740b6fc1ff0ce8b1be7dfadf1aad6bb2a3531a8d20"
+    },
+    {
+      "file": "iPad26/summary.json",
+      "bytes": 1478,
+      "sha256": "aaec1729f2fb90e6410f01d468def4d78e53e32f2f7973db46e21b1f8413efb2"
+    },
+    {
+      "file": "iPhone18/environment.json",
+      "bytes": 319,
+      "sha256": "9927b65ea28b4584be0568ebe7ee3caa9f44da18db86cd1d3ba28eedb8d3a935"
+    },
+    {
+      "file": "iPhone18/export-status.json",
+      "bytes": 1451,
+      "sha256": "b0d56567c1682448c4c0f82652cd3774473c03b14b02a23545a19b8659c0e2dd"
+    },
+    {
+      "file": "iPhone18/native-test-results.txt",
+      "bytes": 2358,
+      "sha256": "3b45fd58769a7cad1819b1a99856874402b1801ba07b7ab9cc40c401b4884ae5"
+    },
+    {
+      "file": "iPhone18/summary.json",
+      "bytes": 1011,
+      "sha256": "bd9565d7229df4f85548232e68b631652cac20d4888926f9c5a60ec1c3456201"
+    },
+    {
+      "file": "iPhone26/environment.json",
+      "bytes": 310,
+      "sha256": "96fbc87c7702b15e6b53df0966256d086077a2bae8228b9b4aef9f2546917fa3"
+    },
+    {
+      "file": "iPhone26/export-status.json",
+      "bytes": 1451,
+      "sha256": "a5a3514128c8c64293bf8ab9a99cb7aacf4e7fcc319d7a4d7c63b13f916e1b3d"
+    },
+    {
+      "file": "iPhone26/native-test-results.txt",
+      "bytes": 2349,
+      "sha256": "9ff70c88d46fd4435b188e43ff2c8fcbc525b39828c0f99730879d2f1689413a"
+    },
+    {
+      "file": "iPhone26/summary.json",
+      "bytes": 993,
+      "sha256": "38429efa33c19752f523522de2dcfbd03ef093f6d92edf3e001c6f591703511f"
+    },
+    {
+      "file": "run-metadata.json",
+      "bytes": 350,
+      "sha256": "75f5d271d7e51524c9406b666b4a481ac4c7eb179886dc55786f4659cd3b137e"
+    }
+  ]
+}

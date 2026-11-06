@@ -1,0 +1,68 @@
+{
+  "schema": 1,
+  "nativeTestExitCode": 0,
+  "status": "PASS",
+  "expectedExports": [
+    "summary",
+    "attachments",
+    "diagnostics"
+  ],
+  "exports": [
+    {
+      "name": "summary",
+      "argv": [
+        "xcrun",
+        "xcresulttool",
+        "get",
+        "test-results",
+        "summary",
+        "--path",
+        "artifacts/iPhone26.xcresult"
+      ],
+      "timeoutSeconds": 30,
+      "log": "iPhone26-summary-export.log",
+      "exitCode": 0,
+      "timedOut": false,
+      "status": "PASS",
+      "elapsedSeconds": 5.874
+    },
+    {
+      "name": "attachments",
+      "argv": [
+        "xcrun",
+        "xcresulttool",
+        "export",
+        "attachments",
+        "--path",
+        "artifacts/iPhone26.xcresult",
+        "--output-path",
+        "artifacts/iPhone26-screenshots"
+      ],
+      "timeoutSeconds": 120,
+      "log": "iPhone26-attachments-export.log",
+      "exitCode": 0,
+      "timedOut": false,
+      "status": "PASS",
+      "elapsedSeconds": 0.125
+    },
+    {
+      "name": "diagnostics",
+      "argv": [
+        "xcrun",
+        "xcresulttool",
+        "export",
+        "diagnostics",
+        "--path",
+        "artifacts/iPhone26.xcresult",
+        "--output-path",
+        "artifacts/iPhone26-diagnostics"
+      ],
+      "timeoutSeconds": 60,
+      "log": "iPhone26-diagnostics-export.log",
+      "exitCode": 0,
+      "timedOut": false,
+      "status": "PASS",
+      "elapsedSeconds": 0.12
+    }
+  ]
+}

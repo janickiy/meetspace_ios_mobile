@@ -1,0 +1,62 @@
+[
+  {
+    "id": 13538672473,
+    "node_id": "MDg6QXJ0aWZhY3QxMzUzODY3MjQ3Mw==",
+    "name": "results-iPhone18",
+    "size_in_bytes": 806,
+    "url": "https://api.github.com/repos/janickiy/meetspace_ios_mobile/actions/artifacts/13538672473",
+    "archive_download_url": "https://api.github.com/repos/janickiy/meetspace_ios_mobile/actions/artifacts/13538672473/zip",
+    "expired": false,
+    "digest": "sha256:4c740275d81d8c3c9f66d82c22534f00f035e7c2966e8ef5cc197efbbe640a43",
+    "created_at": "2026-11-06T20:31:28Z",
+    "updated_at": "2026-11-06T20:31:28Z",
+    "expires_at": "2026-11-13T20:31:26Z",
+    "workflow_run": {
+      "id": 42287121804,
+      "repository_id": 1446695117,
+      "head_repository_id": 1446695117,
+      "head_branch": "codex/stage08-keyboard-validation",
+      "head_sha": "163fb79059dbc0d5b2fbdbc206e74e2e3cb92e86"
+    }
+  },
+  {
+    "id": 13538258734,
+    "node_id": "MDg6QXJ0aWZhY3QxMzUzODI1ODczNA==",
+    "name": "results-iPhone26",
+    "size_in_bytes": 5801,
+    "url": "https://api.github.com/repos/janickiy/meetspace_ios_mobile/actions/artifacts/13538258734",
+    "archive_download_url": "https://api.github.com/repos/janickiy/meetspace_ios_mobile/actions/artifacts/13538258734/zip",
+    "expired": false,
+    "digest": "sha256:52c67cb50424b64879878497e25c79565464a692d16f31e1146ed1ac9026e557",
+    "created_at": "2026-11-06T20:32:18Z",
+    "updated_at": "2026-11-06T20:32:18Z",
+    "expires_at": "2026-11-13T20:32:14Z",
+    "workflow_run": {
+      "id": 42287121804,
+      "repository_id": 1446695117,
+      "head_repository_id": 1446695117,
+      "head_branch": "codex/stage08-keyboard-validation",
+      "head_sha": "163fb79059dbc0d5b2fbdbc206e74e2e3cb92e86"
+    }
+  },
+  {
+    "id": 13538178497,
+    "node_id": "MDg6QXJ0aWZhY3QxMzUzODE3ODQ5Nw==",
+    "name": "results-iPad26",
+    "size_in_bytes": 5440753,
+    "url": "https://api.github.com/repos/janickiy/meetspace_ios_mobile/actions/artifacts/13538178497",
+    "archive_download_url": "https://api.github.com/repos/janickiy/meetspace_ios_mobile/actions/artifacts/13538178497/zip",
+    "expired": false,
+    "digest": "sha256:89f843fe3e13999999a84d79c5468637df0ed34df80d706f6825671825052a68",
+    "created_at": "2026-11-06T20:29:51Z",
+    "updated_at": "2026-11-06T20:29:51Z",
+    "expires_at": "2026-11-13T20:29:48Z",
+    "workflow_run": {
+      "id": 42287121804,
+      "repository_id": 1446695117,
+      "head_repository_id": 1446695117,
+      "head_branch": "codex/stage08-keyboard-validation",
+      "head_sha": "163fb79059dbc0d5b2fbdbc206e74e2e3cb92e86"
+    }
+  }
+]

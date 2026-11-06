@@ -1,0 +1,10 @@
+{
+  "id": 42283560617,
+  "head_sha": "a33a153147d6941874884357134b3fd46de7532c",
+  "head_branch": "codex/stage08-regression",
+  "html_url": "https://github.com/janickiy/meetspace_ios_mobile/actions/runs/42283560617",
+  "status": "completed",
+  "conclusion": "failure",
+  "created_at": "2026-11-06T19:53:19Z",
+  "updated_at": "2026-11-06T20:41:01Z"
+}

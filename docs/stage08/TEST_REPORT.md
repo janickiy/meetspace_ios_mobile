@@ -1,22 +1,25 @@
 # Тестирование этапа 08
 
-Дата: 2026-11-06. Финальная приёмка текущих изменений ещё **PENDING**.
+Дата: 2026-11-06. Финальная целевая native проверка удаления — **4/4 PASS**.
+Подготовка к распространению остаётся **BLOCKED** перечисленными внешними gates.
 Проверки разделены по фактически выполненному scope:
 
 | Прогон / source | Проверяемый набор | Уже полученный результат |
 | --- | --- | --- |
 | [CI15](https://github.com/janickiy/meetspace_ios_mobile/actions/runs/42281088607), `55bfcfb` | Full35 на iPhone/iPad26, compatibility15 на iPhone/iPad18 | Оба26: **34 PASS /1 FAIL**; iPhone18 **15/15 PASS**, iPad18 **14 PASS /1 FAIL**. Всего97 PASS /3 FAIL из100, без SKIP; все3 failures — helper удаления |
-| [CI16](https://github.com/janickiy/meetspace_ios_mobile/actions/runs/42283560617), `a33a153` | Regression14: 10 hosted + Core AX + AX5 + настройки + удаление на каждом из4 устройств | iPhone26 **14/14 PASS**, iPad26 **13 PASS /1 FAIL**; iPhone18 job SUCCESS, итоговые attachments ожидаются; iPad18 PENDING |
-| [CI17](https://github.com/janickiy/meetspace_ios_mobile/actions/runs/42287121804), `163fb79` | Только deletion UI; package намеренно SKIP | iPad26 job SUCCESS. Остальные3 jobs отменены автором после нового кандидата; workflow CANCELLED, не4×1PASS |
-| [CI18](https://github.com/janickiy/meetspace_ios_mobile/actions/runs/42288899326), `16c7025` | Только deletion UI, 1 тест ×4 устройства; package намеренно SKIP | PENDING; проверяет native typeText после наблюдаемой латинской раскладки |
+| [CI16](https://github.com/janickiy/meetspace_ios_mobile/actions/runs/42283560617), `a33a153` | Regression14: 10 hosted + Core AX + AX5 + настройки + удаление на каждом из4 устройств | Оба iPhone **14/14 PASS**; оба iPad **13 PASS /1 FAIL**. Всего54 PASS /2 FAIL из56,0SKIP; failures только deletion helper |
+| [CI17](https://github.com/janickiy/meetspace_ios_mobile/actions/runs/42287121804), `163fb79` | Только deletion UI; package намеренно SKIP | iPad26 **1/1 PASS**,259.462с. Остальные3 jobs отменены автором после нового кандидата; workflow CANCELLED, не4×1PASS |
+| [CI18](https://github.com/janickiy/meetspace_ios_mobile/actions/runs/42288899326), `16c7025` | Только deletion UI, 1 тест ×4 устройства; package намеренно SKIP | **4/4 PASS,0 FAIL,0 SKIP**; по1 тесту на iPhone/iPad26.2 и iPhone/iPad18.6; [проверенный CI18 receipt](evidence/account-deletion/final-ci18/receipt.json) |
 
 Product-код между этими исходниками не менялся. В a33a153 исправлены два места
 UI-тестов; в163fb79 добавлен выбор наблюдаемой iPad клавиши abc и all4 deletion scope.
 В16c7025 ручной цикл символов/more заменён публичным XCTest `typeText` после
 проверки Latin f. Fixture пароли, native SecureField и assertions отказа/отмены/успеха сохранены.
-Новый целевой прогон не обозначается как полный suite итоговой ревизии.
+Целевой CI18 закрыл наблюдавшиеся failures helper удаления. Полный suite на
+итоговом test harness не перезапускался; CI15/CI16 остаются историческими FAIL,
+результаты приведены отдельно по исходникам и объёму проверки.
 История и исходные failures сохранены в [CI_HISTORY.md](CI_HISTORY.md),
-[CI15 receipts](evidence/ci-attempt15/receipt.json) и [CI16 receipt](evidence/ci-attempt16/receipt.json).
+[CI15 receipts](evidence/ci-attempt15/receipt.json) и [итоговый CI16 receipt](evidence/ci16-final/receipt.json).
 Все четыре CI15 Core AX прошли:196 initial passes +3 visible retests, без retry;
 [единый source-bound receipt](evidence/accessibility-ci15-matrix/receipt.json) сохраняет83 raw findings, включая5 offscreen без contrast measurement.
 [Полный baseline receipt](evidence/baseline-ci15-provenance/receipt.json) сохраняет97/3.
@@ -78,11 +81,11 @@ BLOCKED в [KNOWN_LIMITATIONS.md](KNOWN_LIMITATIONS.md).
 | SwiftPM local, текущий исходник | 179 PASS, 5 opt-in SKIP, 0 FAIL из 184; focused deletion 11/11 | [Push-ordering receipt](evidence/account-deletion/push-ordering/receipt.json); macOS host. Ранее три повтора 176/181 после исправления stress assertion сохранены отдельно |
 | Stress cycles | 18/18 PASS: 6 сценариев × 3 запуска SwiftPM, каждый по 30 циклов | [PERFORMANCE_REPORT.md](PERFORMANCE_REPORT.md), настоящий host CPU/RSS; не iOS energy |
 | Настоящий backend | 2/2 PASS, 0 SKIP; 106 API + 1 version request | [API_CONTRACT.md](API_CONTRACT.md); изолированный backend, не production |
-| Конфигурация/контраст | Project generation, audit/foundation integrity, 30 source release checks, 40 palette pairs PASS | Отдельно проверяется содержимое настоящего архива |
-| CI16 Release, текущий проверяемый исходник | ARCHIVE SUCCEEDED; 59 packaging checks PASS; signing BLOCKED | `a33a153`; [независимая проверка скачанного архива](evidence/release-product-final/receipt.json), хеш ZIP совпадает с GitHub |
-| CI3 hosted tests | 10/10 PASS на каждом из четырёх симуляторов | Настоящий Keychain и 74 комбинации шрифтов × 12 размеров на каждой платформе |
+| Конфигурация/контраст | Project generation, audit/foundation integrity, 30 source release checks, 40 palette pairs PASS | [Финальные локальные проверки](evidence/final-local-checks/receipt.json); архив проверен отдельно |
+| CI16 Release, тот же production-код | ARCHIVE SUCCEEDED; 59 packaging checks PASS; signing BLOCKED | `a33a153`; [независимая проверка скачанного архива](evidence/release-product-final/receipt.json), хеш ZIP совпадает с GitHub |
+| CI15/CI16 hosted tests | 10/10 PASS на каждом из четырёх симуляторов в каждом прогоне | Настоящий Keychain; CI15 сохраняет74 комбинации шрифтов ×12 размеров ×4платформы |
 | CI3 native suite | iPhone26 33/35, iPad26 32/35, iPhone18 11/15, iPad18 13/15 PASS | Неуспешный прогон: новые accessibility/deletion проверки и compact large-text layout; прежние full UI сценарии прошли |
-| Current iPhone/iPad CI | PENDING | Все 4 device/runtime комбинации должны завершиться, без skipped simulator tests |
+| CI18, итоговый deletion helper `16c7025` | 1/1 PASS на каждой из4 device/runtime комбинаций,0 native SKIP | [проверенный CI18 receipt](evidence/account-deletion/final-ci18/receipt.json); это deletion-only, не full suite |
 | Physical devices / Instruments / signed IPA | BLOCKED | [KNOWN_LIMITATIONS.md](KNOWN_LIMITATIONS.md) |
 
 ## Исправления по реальным неуспешным прогонам

@@ -1,0 +1,49 @@
+{
+  "devicesAndConfigurations" : [
+    {
+      "device" : {
+        "architecture" : "arm64",
+        "deviceId" : "2A250684-88E3-4EDB-A21E-B7726B4C69F6",
+        "deviceName" : "iPad mini (A17 Pro)",
+        "modelName" : "iPad mini (A17 Pro)",
+        "osBuildNumber" : "22G86",
+        "osVersion" : "18.6",
+        "platform" : "iOS Simulator"
+      },
+      "expectedFailures" : 0,
+      "failedTests" : 1,
+      "passedTests" : 13,
+      "skippedTests" : 0,
+      "testPlanConfiguration" : {
+        "configurationId" : "1",
+        "configurationName" : "Test Scheme Action"
+      }
+    }
+  ],
+  "environmentDescription" : "MeetSpace-Debug · Built with macOS 15.8.2",
+  "expectedFailures" : 0,
+  "failedTests" : 1,
+  "finishTime" : 1793997614.988,
+  "passedTests" : 13,
+  "result" : "Failed",
+  "skippedTests" : 0,
+  "startTime" : 1793996770.638,
+  "statistics" : [
+
+  ],
+  "testFailures" : [
+    {
+      "failureText" : "XCTAssertTrue failed",
+      "targetName" : "MeetSpaceUITests",
+      "testIdentifier" : 14,
+      "testIdentifierString" : "FoundationUITests/testStage08AccountDeletionRequiresPasswordAndConfirmation()",
+      "testIdentifierURL" : "test://com.apple.xcode/MeetSpace/MeetSpaceUITests/FoundationUITests/testStage08AccountDeletionRequiresPasswordAndConfirmation",
+      "testName" : "testStage08AccountDeletionRequiresPasswordAndConfirmation()"
+    }
+  ],
+  "title" : "Test - MeetSpace-Debug",
+  "topInsights" : [
+
+  ],
+  "totalTestCount" : 14
+}

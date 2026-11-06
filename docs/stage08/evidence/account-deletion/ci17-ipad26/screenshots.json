@@ -1,0 +1,79 @@
+{
+  "runID": 42287121804,
+  "sourceCommit": "163fb79059dbc0d5b2fbdbc206e74e2e3cb92e86",
+  "scope": "deletion",
+  "screenshots": [
+    {
+      "path": "screenshots/iPad26-stage08-account-deletion-success.png",
+      "sha256": "44f4040469faad4978ad9949b3cf1f831e00fc2e5a5162f2ad416df5764d7cc5",
+      "bytes": 265719,
+      "width": 2064,
+      "height": 2752,
+      "zipMember": "iPad26-screenshots/07CAE05F-60AF-4AEE-876D-58449AF07055.png",
+      "testIdentifier": "FoundationUITests/testStage08AccountDeletionRequiresPasswordAndConfirmation()",
+      "attachment": {
+        "configurationName": "Test Scheme Action",
+        "deviceId": "73C19119-B10E-4309-872E-C53EF3F0EF27",
+        "deviceName": "iPad Pro 13-inch (M5)",
+        "exportedFileName": "07CAE05F-60AF-4AEE-876D-58449AF07055.png",
+        "isAssociatedWithFailure": false,
+        "suggestedHumanReadableName": "stage08-account-deletion-success_0_5D41B5B4-D479-4DB7-AE65-59786634A6F3.png",
+        "timestamp": 1793996971.944
+      }
+    },
+    {
+      "path": "screenshots/iPad26-stage08-account-deletion.png",
+      "sha256": "e5a5608164e85e250b698965635654c85a678b9e1bb1c6d35b613b4f77a02c25",
+      "bytes": 361610,
+      "width": 2064,
+      "height": 2752,
+      "zipMember": "iPad26-screenshots/FA03B4C5-9BC0-479A-B553-8A6464568053.png",
+      "testIdentifier": "FoundationUITests/testStage08AccountDeletionRequiresPasswordAndConfirmation()",
+      "attachment": {
+        "configurationName": "Test Scheme Action",
+        "deviceId": "73C19119-B10E-4309-872E-C53EF3F0EF27",
+        "deviceName": "iPad Pro 13-inch (M5)",
+        "exportedFileName": "FA03B4C5-9BC0-479A-B553-8A6464568053.png",
+        "isAssociatedWithFailure": false,
+        "suggestedHumanReadableName": "stage08-account-deletion_0_A3758AC4-D7F2-40B1-8634-296F5AFBE615.png",
+        "timestamp": 1793996965.152
+      }
+    },
+    {
+      "path": "screenshots/iPad26-stage08-account-deletion-keyboard-retry.png",
+      "sha256": "c2b44fa249ee792b64bf18dfae44b1f24ecf8ccc25b326a496a573fa711c6041",
+      "bytes": 319722,
+      "width": 2064,
+      "height": 2752,
+      "zipMember": "iPad26-screenshots/AC012B6C-8A9B-4416-8352-E934AE9AE8A1.png",
+      "testIdentifier": "FoundationUITests/testStage08AccountDeletionRequiresPasswordAndConfirmation()",
+      "attachment": {
+        "configurationName": "Test Scheme Action",
+        "deviceId": "73C19119-B10E-4309-872E-C53EF3F0EF27",
+        "deviceName": "iPad Pro 13-inch (M5)",
+        "exportedFileName": "AC012B6C-8A9B-4416-8352-E934AE9AE8A1.png",
+        "isAssociatedWithFailure": false,
+        "suggestedHumanReadableName": "stage08-account-deletion-keyboard-retry_0_FEECFEEC-26C7-4D05-BF4E-67EE008C20F0.png",
+        "timestamp": 1793996929.377
+      }
+    },
+    {
+      "path": "screenshots/iPad26-stage08-account-deletion-keyboard-initial.png",
+      "sha256": "59c057d92b3366339f3ecb0d1a97ebd227fe898c8bd00fc3c45ab13d8c235799",
+      "bytes": 308771,
+      "width": 2064,
+      "height": 2752,
+      "zipMember": "iPad26-screenshots/3F8AD12F-BBDF-444D-B86F-1F67C89A414C.png",
+      "testIdentifier": "FoundationUITests/testStage08AccountDeletionRequiresPasswordAndConfirmation()",
+      "attachment": {
+        "configurationName": "Test Scheme Action",
+        "deviceId": "73C19119-B10E-4309-872E-C53EF3F0EF27",
+        "deviceName": "iPad Pro 13-inch (M5)",
+        "exportedFileName": "3F8AD12F-BBDF-444D-B86F-1F67C89A414C.png",
+        "isAssociatedWithFailure": false,
+        "suggestedHumanReadableName": "stage08-account-deletion-keyboard-initial_0_C1873D43-1EB6-4428-8EDA-1DFD25CE6C8C.png",
+        "timestamp": 1793996870.623
+      }
+    }
+  ]
+}

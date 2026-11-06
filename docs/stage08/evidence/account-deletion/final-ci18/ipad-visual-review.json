@@ -1,0 +1,250 @@
+{
+  "schemaVersion": 1,
+  "reviewedAt": "2026-11-06T20:57:33.825446+00:00",
+  "runID": 42288899326,
+  "sourceCommit": "16c702529f70ce675276d58f5d6334f0ba323fa7",
+  "scope": "Manual visual inspection of eight original DEBUG fixture account-deletion app screenshots: four states each on iPad18 and iPad26.",
+  "sourceReceipt": {
+    "file": "receipt.json",
+    "sha256": "ac34fa6889e4c26808b5b04e4ffb1e3d886a7fc32328d3a4a8d751548e8308d5",
+    "nativeResult": "SCOPED_DELETION_NATIVE_PASS",
+    "fullSuitePass": false,
+    "nativeCoverage": {
+      "perPlatform": 1,
+      "platforms": 4,
+      "passed": 4,
+      "failed": 0,
+      "skipped": 0,
+      "exactTest": "MeetSpaceUITests.FoundationUITests/testStage08AccountDeletionRequiresPasswordAndConfirmation",
+      "hostedUnitTests": 0,
+      "coreAccessibilityAudit": "NOT_RUN",
+      "AX5": "NOT_RUN",
+      "settings": "NOT_RUN"
+    }
+  },
+  "devices": {
+    "iPad18": {
+      "device": "iPad mini (A17 Pro)",
+      "runtime": [
+        18,
+        6
+      ],
+      "udid": "2A250684-88E3-4EDB-A21E-B7726B4C69F6",
+      "scope": "deletion",
+      "hostArchitecture": "arm64",
+      "hostOS": "macOS-15.8.2-arm64-arm-64bit-Mach-O",
+      "preferredDeviceMatched": true,
+      "xcode": "Xcode 26.3\nBuild version 17C529\n"
+    },
+    "iPad26": {
+      "device": "iPad Pro 13-inch (M5)",
+      "runtime": [
+        26,
+        2
+      ],
+      "udid": "73C19119-B10E-4309-872E-C53EF3F0EF27",
+      "scope": "deletion",
+      "hostArchitecture": "arm64",
+      "hostOS": "macOS-15.8.2-arm64-arm-64bit-Mach-O",
+      "preferredDeviceMatched": true,
+      "xcode": "Xcode 26.3\nBuild version 17C529\n"
+    }
+  },
+  "result": "REVIEWED_WITH_LABEL_WRAP_FINDING_AND_SCOPE_LIMITATIONS",
+  "findings": [
+    {
+      "id": "ipad26-cancel-intraword-wrap",
+      "device": "iPad26",
+      "states": [
+        "initial",
+        "retry",
+        "presubmit"
+      ],
+      "observation": "Отмена wraps into Отме / на within the top-left system pill. All characters remain visible.",
+      "functionalImpact": "No functional failure inferred; native deletion test passed independently.",
+      "resolution": "OPEN_VISUAL_LAYOUT_FINDING"
+    },
+    {
+      "id": "previous-error-persists-before-resubmit",
+      "devices": [
+        "iPad18",
+        "iPad26"
+      ],
+      "state": "presubmit",
+      "observation": "The prior wrong-password error is still displayed inside the sheet and in the dimmed profile before resubmission.",
+      "functionalImpact": "No overlap with sheet controls or new functional failure is established by these captures; the subsequent success state is shown."
+    }
+  ],
+  "images": [
+    {
+      "device": "iPad18",
+      "state": "initial",
+      "file": "screenshots/iPad18-stage08-account-deletion-keyboard-initial.png",
+      "sha256": "efa532a8c4caa876b477f507c2b001fef0ba8a72ef104c8b56530aaa91160238",
+      "sizeBytes": 301258,
+      "dimensionsPixels": {
+        "width": 1488,
+        "height": 2266
+      },
+      "inspection": "Original PNG opened with view_image; display preview may be scaled, original bytes retained unchanged.",
+      "observations": [
+        "Deletion sheet shows fixture account/server, the complete irreversible-deletion warning and the complete preconditions paragraph.",
+        "Secure field displays the account-password placeholder; delete action has pale disabled-looking styling. No error notice is present.",
+        "Cancel label Отмена fits on one line.",
+        "No system keyboard is visible in this app screenshot.",
+        "No clipping or overlap of the main warning, error, success text or form action label is observed in this captured state."
+      ]
+    },
+    {
+      "device": "iPad18",
+      "state": "retry",
+      "file": "screenshots/iPad18-stage08-account-deletion-keyboard-retry.png",
+      "sha256": "375166bb94e43c7815f44bbfd51340319261ed595b7a23435eeb67a542b314e1",
+      "sizeBytes": 310926,
+      "dimensionsPixels": {
+        "width": 1488,
+        "height": 2266
+      },
+      "inspection": "Original PNG opened with view_image; display preview may be scaled, original bytes retained unchanged.",
+      "observations": [
+        "Deletion warning and preconditions remain fully readable.",
+        "Secure field displays the account-password placeholder; delete action has pale disabled-looking styling.",
+        "Complete red error is visible: Неверный пароль аккаунта. Проверьте пароль и повторите.",
+        "Cancel label Отмена fits on one line.",
+        "No system keyboard is visible in this app screenshot.",
+        "No clipping or overlap of the main warning, error, success text or form action label is observed in this captured state."
+      ]
+    },
+    {
+      "device": "iPad18",
+      "state": "presubmit",
+      "file": "screenshots/iPad18-stage08-account-deletion.png",
+      "sha256": "1e5f9c89073d9be2a74495f890c96ef0f5742336134a79f7c6352c5a6034f8c8",
+      "sizeBytes": 346939,
+      "dimensionsPixels": {
+        "width": 1488,
+        "height": 2266
+      },
+      "inspection": "Original PNG opened with view_image; display preview may be scaled, original bytes retained unchanged.",
+      "observations": [
+        "Deletion sheet is vertically recentered relative to initial/retry captures; warnings remain fully readable.",
+        "Delete action has stronger violet active-looking styling.",
+        "Secure-field row has no visible placeholder, text or password bullets. Pixel evidence alone does not establish whether the secure value is empty or correctly entered.",
+        "Previous wrong-password error remains fully visible inside the sheet and also on the dimmed underlying profile; the underlying copy does not overlap sheet controls.",
+        "No confirmation alert is captured.",
+        "Cancel label Отмена fits on one line.",
+        "No system keyboard is visible in this app screenshot.",
+        "No clipping or overlap of the main warning, error, success text or form action label is observed in this captured state."
+      ]
+    },
+    {
+      "device": "iPad18",
+      "state": "success",
+      "file": "screenshots/iPad18-stage08-account-deletion-success.png",
+      "sha256": "6c18e8b99647c234ce60c0bf999452533009187982c1d453badc32d7df7b5ecc",
+      "sizeBytes": 132695,
+      "dimensionsPixels": {
+        "width": 1488,
+        "height": 2266
+      },
+      "inspection": "Original PNG opened with view_image; display preview may be scaled, original bytes retained unchanged.",
+      "observations": [
+        "Deletion sheet and workspace tabs are absent; selected fixture.example server login is visible.",
+        "Complete green success message is visible: Аккаунт удалён на сервере.",
+        "Email/password form and create-account action remain readable; login has disabled-looking styling.",
+        "No system keyboard is visible in this app screenshot.",
+        "No clipping or overlap of the main warning, error, success text or form action label is observed in this captured state."
+      ]
+    },
+    {
+      "device": "iPad26",
+      "state": "initial",
+      "file": "screenshots/iPad26-stage08-account-deletion-keyboard-initial.png",
+      "sha256": "b836a14f3b6bbbbcf8e7b96cf0cc97599e50429c88953d056cbb6211cb7f2faf",
+      "sizeBytes": 308903,
+      "dimensionsPixels": {
+        "width": 2064,
+        "height": 2752
+      },
+      "inspection": "Original PNG opened with view_image; display preview may be scaled, original bytes retained unchanged.",
+      "observations": [
+        "Deletion sheet shows fixture account/server, the complete irreversible-deletion warning and the complete preconditions paragraph.",
+        "Secure field displays the account-password placeholder; delete action has pale disabled-looking styling. No error notice is present.",
+        "Cancel label Отмена is fully present but wraps inside the word into Отме / на in the narrow top-left system pill. This is a visible label-layout issue, not an omitted character or demonstrated inaccessible control.",
+        "No system keyboard is visible in this app screenshot.",
+        "No clipping or overlap of the main warning, error, success text or form action label is observed in this captured state."
+      ]
+    },
+    {
+      "device": "iPad26",
+      "state": "retry",
+      "file": "screenshots/iPad26-stage08-account-deletion-keyboard-retry.png",
+      "sha256": "c275a73dc207b2827d68c69b4c1441529b5b87e049268b2469d94746efbeb3ba",
+      "sizeBytes": 319539,
+      "dimensionsPixels": {
+        "width": 2064,
+        "height": 2752
+      },
+      "inspection": "Original PNG opened with view_image; display preview may be scaled, original bytes retained unchanged.",
+      "observations": [
+        "Deletion warning and preconditions remain fully readable.",
+        "Secure field displays the account-password placeholder; delete action has pale disabled-looking styling.",
+        "Complete red error is visible: Неверный пароль аккаунта. Проверьте пароль и повторите.",
+        "Cancel label Отмена is fully present but wraps inside the word into Отме / на in the narrow top-left system pill. This is a visible label-layout issue, not an omitted character or demonstrated inaccessible control.",
+        "No system keyboard is visible in this app screenshot.",
+        "No clipping or overlap of the main warning, error, success text or form action label is observed in this captured state."
+      ]
+    },
+    {
+      "device": "iPad26",
+      "state": "presubmit",
+      "file": "screenshots/iPad26-stage08-account-deletion.png",
+      "sha256": "9f4509836908e7f57dea035f5d5bee941c72a522f3063ca86120745a4e8adc6b",
+      "sizeBytes": 361410,
+      "dimensionsPixels": {
+        "width": 2064,
+        "height": 2752
+      },
+      "inspection": "Original PNG opened with view_image; display preview may be scaled, original bytes retained unchanged.",
+      "observations": [
+        "Deletion sheet is vertically recentered relative to initial/retry captures; warnings remain fully readable.",
+        "Delete action has stronger violet active-looking styling.",
+        "Secure-field row has no visible placeholder, text or password bullets. Pixel evidence alone does not establish whether the secure value is empty or correctly entered.",
+        "Previous wrong-password error remains fully visible inside the sheet and also on the dimmed underlying profile; the underlying copy does not overlap sheet controls.",
+        "No confirmation alert is captured.",
+        "Cancel label Отмена is fully present but wraps inside the word into Отме / на in the narrow top-left system pill. This is a visible label-layout issue, not an omitted character or demonstrated inaccessible control.",
+        "No system keyboard is visible in this app screenshot.",
+        "No clipping or overlap of the main warning, error, success text or form action label is observed in this captured state."
+      ]
+    },
+    {
+      "device": "iPad26",
+      "state": "success",
+      "file": "screenshots/iPad26-stage08-account-deletion-success.png",
+      "sha256": "268ea791a8f5a146ae3351b14be9c97152ebf5fe18e6859b6253f212977230a6",
+      "sizeBytes": 265495,
+      "dimensionsPixels": {
+        "width": 2064,
+        "height": 2752
+      },
+      "inspection": "Original PNG opened with view_image; display preview may be scaled, original bytes retained unchanged.",
+      "observations": [
+        "Deletion sheet and workspace tabs are absent; selected fixture.example server login is visible.",
+        "Complete green success message is visible: Аккаунт удалён на сервере.",
+        "Email/password form and create-account action remain readable; login has disabled-looking styling.",
+        "Two-column tablet login layout is visible, with brand/illustration at left and complete login form at right.",
+        "No system keyboard is visible in this app screenshot.",
+        "No clipping or overlap of the main warning, error, success text or form action label is observed in this captured state."
+      ]
+    }
+  ],
+  "limitations": [
+    "App screenshot capture does not show the system keyboard, including files named keyboard-initial and keyboard-retry. Keyboard visibility, layout and occlusion are not visually verified.",
+    "The four states contain no confirmation alert screenshot. Native cancellation/confirmation assertions are separate evidence, not visual proof of alert layout.",
+    "Button enabled/disabled semantics and secure-field value are not established from styling or redacted/blank secure content; consult native assertions and the source receipt.",
+    "No numeric contrast or 44-point hit-target measurement is performed by this visual review.",
+    "These portrait simulator states do not cover AX5, landscape, Split View, physical devices or complete 21-state design parity.",
+    "The run executed only one DEBUG fixture deletion test per simulator (4/4 PASS); it is not a full regression suite, real-backend deletion verification, archive rerun or release approval.",
+    "Phone screenshot review is outside this document. No source PNG, raw attachment or existing receipt was modified."
+  ]
+}

@@ -1,0 +1,68 @@
+{
+  "schema": 1,
+  "nativeTestExitCode": 0,
+  "status": "PASS",
+  "expectedExports": [
+    "summary",
+    "attachments",
+    "diagnostics"
+  ],
+  "exports": [
+    {
+      "name": "summary",
+      "argv": [
+        "xcrun",
+        "xcresulttool",
+        "get",
+        "test-results",
+        "summary",
+        "--path",
+        "artifacts/iPhone18.xcresult"
+      ],
+      "timeoutSeconds": 30,
+      "log": "iPhone18-summary-export.log",
+      "exitCode": 0,
+      "timedOut": false,
+      "status": "PASS",
+      "elapsedSeconds": 7.253
+    },
+    {
+      "name": "attachments",
+      "argv": [
+        "xcrun",
+        "xcresulttool",
+        "export",
+        "attachments",
+        "--path",
+        "artifacts/iPhone18.xcresult",
+        "--output-path",
+        "artifacts/iPhone18-screenshots"
+      ],
+      "timeoutSeconds": 120,
+      "log": "iPhone18-attachments-export.log",
+      "exitCode": 0,
+      "timedOut": false,
+      "status": "PASS",
+      "elapsedSeconds": 1.219
+    },
+    {
+      "name": "diagnostics",
+      "argv": [
+        "xcrun",
+        "xcresulttool",
+        "export",
+        "diagnostics",
+        "--path",
+        "artifacts/iPhone18.xcresult",
+        "--output-path",
+        "artifacts/iPhone18-diagnostics"
+      ],
+      "timeoutSeconds": 60,
+      "log": "iPhone18-diagnostics-export.log",
+      "exitCode": 0,
+      "timedOut": false,
+      "status": "PASS",
+      "elapsedSeconds": 0.465
+    }
+  ]
+}

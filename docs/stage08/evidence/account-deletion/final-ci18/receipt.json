@@ -1,0 +1,920 @@
+{
+  "schemaVersion": 1,
+  "runID": 42288899326,
+  "sourceCommit": "16c702529f70ce675276d58f5d6334f0ba323fa7",
+  "branch": "codex/stage08-native-input",
+  "url": "https://github.com/janickiy/meetspace_ios_mobile/actions/runs/42288899326",
+  "createdAt": "2026-11-06T20:30:17Z",
+  "updatedAt": "2026-11-06T20:53:48Z",
+  "scope": "deletion",
+  "result": "SCOPED_DELETION_NATIVE_PASS",
+  "rawRunConclusion": "success",
+  "fullSuitePass": false,
+  "coverage": {
+    "perPlatform": 1,
+    "platforms": 4,
+    "passed": 4,
+    "failed": 0,
+    "skipped": 0,
+    "exactTest": "MeetSpaceUITests.FoundationUITests/testStage08AccountDeletionRequiresPasswordAndConfirmation",
+    "hostedUnitTests": 0,
+    "coreAccessibilityAudit": "NOT_RUN",
+    "AX5": "NOT_RUN",
+    "settings": "NOT_RUN"
+  },
+  "package": {
+    "status": "SKIPPED",
+    "intentional": true,
+    "reason": "workflow package.if: inputs.scope != 'deletion'"
+  },
+  "unsignedArchive": "NOT_RUN_IN_CI18",
+  "profiler": "NOT_RUN_IN_CI18",
+  "jobs": [
+    {
+      "id": 128136858156,
+      "run_id": 42288899326,
+      "workflow_name": "iOS release audit",
+      "head_branch": "codex/stage08-native-input",
+      "run_url": "https://api.github.com/repos/janickiy/meetspace_ios_mobile/actions/runs/42288899326",
+      "run_attempt": 1,
+      "node_id": "CR_kwDOVjrQzc8AAAAd1Y1KLA",
+      "head_sha": "16c702529f70ce675276d58f5d6334f0ba323fa7",
+      "url": "https://api.github.com/repos/janickiy/meetspace_ios_mobile/actions/jobs/128136858156",
+      "html_url": "https://github.com/janickiy/meetspace_ios_mobile/actions/runs/42288899326/job/128136858156",
+      "status": "completed",
+      "conclusion": "success",
+      "created_at": "2026-11-06T20:30:19Z",
+      "started_at": "2026-11-06T20:30:57Z",
+      "completed_at": "2026-11-06T20:44:40Z",
+      "name": "simulators (iPhone, 26, iPhone26, full, iPhone 17 Pro Max)",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1,
+          "started_at": "2026-11-06T20:30:57Z",
+          "completed_at": "2026-11-06T20:30:59Z"
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2,
+          "started_at": "2026-11-06T20:30:59Z",
+          "completed_at": "2026-11-06T20:31:05Z"
+        },
+        {
+          "name": "Device inventory",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3,
+          "started_at": "2026-11-06T20:31:05Z",
+          "completed_at": "2026-11-06T20:31:58Z"
+        },
+        {
+          "name": "App, Keychain and UI tests",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4,
+          "started_at": "2026-11-06T20:31:58Z",
+          "completed_at": "2026-11-06T20:44:31Z"
+        },
+        {
+          "name": "Diagnostic Instruments baseline (reported separately)",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 5,
+          "started_at": "2026-11-06T20:44:31Z",
+          "completed_at": "2026-11-06T20:44:31Z"
+        },
+        {
+          "name": "Upload simulator test results",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6,
+          "started_at": "2026-11-06T20:44:31Z",
+          "completed_at": "2026-11-06T20:44:33Z"
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 12,
+          "started_at": "2026-11-06T20:44:33Z",
+          "completed_at": "2026-11-06T20:44:35Z"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 13,
+          "started_at": "2026-11-06T20:44:35Z",
+          "completed_at": "2026-11-06T20:44:39Z"
+        }
+      ],
+      "check_run_url": "https://api.github.com/repos/janickiy/meetspace_ios_mobile/check-runs/128136858156",
+      "labels": [
+        "macos-15"
+      ],
+      "runner_id": 1000000574,
+      "runner_name": "GitHub Actions 1000000574",
+      "runner_group_id": 0,
+      "runner_group_name": "GitHub Actions"
+    },
+    {
+      "id": 128136858240,
+      "run_id": 42288899326,
+      "workflow_name": "iOS release audit",
+      "head_branch": "codex/stage08-native-input",
+      "run_url": "https://api.github.com/repos/janickiy/meetspace_ios_mobile/actions/runs/42288899326",
+      "run_attempt": 1,
+      "node_id": "CR_kwDOVjrQzc8AAAAd1Y1KgA",
+      "head_sha": "16c702529f70ce675276d58f5d6334f0ba323fa7",
+      "url": "https://api.github.com/repos/janickiy/meetspace_ios_mobile/actions/jobs/128136858240",
+      "html_url": "https://github.com/janickiy/meetspace_ios_mobile/actions/runs/42288899326/job/128136858240",
+      "status": "completed",
+      "conclusion": "success",
+      "created_at": "2026-11-06T20:30:19Z",
+      "started_at": "2026-11-06T20:38:22Z",
+      "completed_at": "2026-11-06T20:47:09Z",
+      "name": "simulators (iPhone, 18, iPhone18, compatibility, iPhone SE (3rd generation))",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1,
+          "started_at": "2026-11-06T20:38:22Z",
+          "completed_at": "2026-11-06T20:38:24Z"
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2,
+          "started_at": "2026-11-06T20:38:24Z",
+          "completed_at": "2026-11-06T20:38:39Z"
+        },
+        {
+          "name": "Device inventory",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3,
+          "started_at": "2026-11-06T20:38:39Z",
+          "completed_at": "2026-11-06T20:39:16Z"
+        },
+        {
+          "name": "App, Keychain and UI tests",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4,
+          "started_at": "2026-11-06T20:39:16Z",
+          "completed_at": "2026-11-06T20:47:00Z"
+        },
+        {
+          "name": "Diagnostic Instruments baseline (reported separately)",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 5,
+          "started_at": "2026-11-06T20:47:00Z",
+          "completed_at": "2026-11-06T20:47:00Z"
+        },
+        {
+          "name": "Upload simulator test results",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6,
+          "started_at": "2026-11-06T20:47:00Z",
+          "completed_at": "2026-11-06T20:47:02Z"
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 12,
+          "started_at": "2026-11-06T20:47:02Z",
+          "completed_at": "2026-11-06T20:47:03Z"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 13,
+          "started_at": "2026-11-06T20:47:03Z",
+          "completed_at": "2026-11-06T20:47:08Z"
+        }
+      ],
+      "check_run_url": "https://api.github.com/repos/janickiy/meetspace_ios_mobile/check-runs/128136858240",
+      "labels": [
+        "macos-15"
+      ],
+      "runner_id": 1000000576,
+      "runner_name": "GitHub Actions 1000000576",
+      "runner_group_id": 0,
+      "runner_group_name": "GitHub Actions"
+    },
+    {
+      "id": 128136858448,
+      "run_id": 42288899326,
+      "workflow_name": "iOS release audit",
+      "head_branch": "codex/stage08-native-input",
+      "run_url": "https://api.github.com/repos/janickiy/meetspace_ios_mobile/actions/runs/42288899326",
+      "run_attempt": 1,
+      "node_id": "CR_kwDOVjrQzc8AAAAd1Y1LUA",
+      "head_sha": "16c702529f70ce675276d58f5d6334f0ba323fa7",
+      "url": "https://api.github.com/repos/janickiy/meetspace_ios_mobile/actions/jobs/128136858448",
+      "html_url": "https://github.com/janickiy/meetspace_ios_mobile/actions/runs/42288899326/job/128136858448",
+      "status": "completed",
+      "conclusion": "success",
+      "created_at": "2026-11-06T20:30:19Z",
+      "started_at": "2026-11-06T20:31:26Z",
+      "completed_at": "2026-11-06T20:38:20Z",
+      "name": "simulators (iPad, 26, iPad26, full, iPad Pro 13-inch (M5))",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1,
+          "started_at": "2026-11-06T20:31:26Z",
+          "completed_at": "2026-11-06T20:31:27Z"
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2,
+          "started_at": "2026-11-06T20:31:27Z",
+          "completed_at": "2026-11-06T20:31:31Z"
+        },
+        {
+          "name": "Device inventory",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3,
+          "started_at": "2026-11-06T20:31:31Z",
+          "completed_at": "2026-11-06T20:31:41Z"
+        },
+        {
+          "name": "App, Keychain and UI tests",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4,
+          "started_at": "2026-11-06T20:31:41Z",
+          "completed_at": "2026-11-06T20:38:11Z"
+        },
+        {
+          "name": "Diagnostic Instruments baseline (reported separately)",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 5,
+          "started_at": "2026-11-06T20:38:11Z",
+          "completed_at": "2026-11-06T20:38:11Z"
+        },
+        {
+          "name": "Upload simulator test results",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6,
+          "started_at": "2026-11-06T20:38:11Z",
+          "completed_at": "2026-11-06T20:38:13Z"
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 12,
+          "started_at": "2026-11-06T20:38:13Z",
+          "completed_at": "2026-11-06T20:38:14Z"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 13,
+          "started_at": "2026-11-06T20:38:14Z",
+          "completed_at": "2026-11-06T20:38:18Z"
+        }
+      ],
+      "check_run_url": "https://api.github.com/repos/janickiy/meetspace_ios_mobile/check-runs/128136858448",
+      "labels": [
+        "macos-15"
+      ],
+      "runner_id": 1000000575,
+      "runner_name": "GitHub Actions 1000000575",
+      "runner_group_id": 0,
+      "runner_group_name": "GitHub Actions"
+    },
+    {
+      "id": 128136858495,
+      "run_id": 42288899326,
+      "workflow_name": "iOS release audit",
+      "head_branch": "codex/stage08-native-input",
+      "run_url": "https://api.github.com/repos/janickiy/meetspace_ios_mobile/actions/runs/42288899326",
+      "run_attempt": 1,
+      "node_id": "CR_kwDOVjrQzc8AAAAd1Y1Lfw",
+      "head_sha": "16c702529f70ce675276d58f5d6334f0ba323fa7",
+      "url": "https://api.github.com/repos/janickiy/meetspace_ios_mobile/actions/jobs/128136858495",
+      "html_url": "https://github.com/janickiy/meetspace_ios_mobile/actions/runs/42288899326/job/128136858495",
+      "status": "completed",
+      "conclusion": "success",
+      "created_at": "2026-11-06T20:30:19Z",
+      "started_at": "2026-11-06T20:44:43Z",
+      "completed_at": "2026-11-06T20:53:48Z",
+      "name": "simulators (iPad, 18, iPad18, compatibility, iPad mini (A17 Pro))",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1,
+          "started_at": "2026-11-06T20:44:43Z",
+          "completed_at": "2026-11-06T20:44:44Z"
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2,
+          "started_at": "2026-11-06T20:44:45Z",
+          "completed_at": "2026-11-06T20:44:49Z"
+        },
+        {
+          "name": "Device inventory",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3,
+          "started_at": "2026-11-06T20:44:49Z",
+          "completed_at": "2026-11-06T20:45:19Z"
+        },
+        {
+          "name": "App, Keychain and UI tests",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4,
+          "started_at": "2026-11-06T20:45:19Z",
+          "completed_at": "2026-11-06T20:53:34Z"
+        },
+        {
+          "name": "Diagnostic Instruments baseline (reported separately)",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 5,
+          "started_at": "2026-11-06T20:53:34Z",
+          "completed_at": "2026-11-06T20:53:34Z"
+        },
+        {
+          "name": "Upload simulator test results",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6,
+          "started_at": "2026-11-06T20:53:34Z",
+          "completed_at": "2026-11-06T20:53:41Z"
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 12,
+          "started_at": "2026-11-06T20:53:41Z",
+          "completed_at": "2026-11-06T20:53:42Z"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 13,
+          "started_at": "2026-11-06T20:53:42Z",
+          "completed_at": "2026-11-06T20:53:45Z"
+        }
+      ],
+      "check_run_url": "https://api.github.com/repos/janickiy/meetspace_ios_mobile/check-runs/128136858495",
+      "labels": [
+        "macos-15"
+      ],
+      "runner_id": 1000000577,
+      "runner_name": "GitHub Actions 1000000577",
+      "runner_group_id": 0,
+      "runner_group_name": "GitHub Actions"
+    },
+    {
+      "id": 128136859948,
+      "run_id": 42288899326,
+      "workflow_name": "iOS release audit",
+      "head_branch": "codex/stage08-native-input",
+      "run_url": "https://api.github.com/repos/janickiy/meetspace_ios_mobile/actions/runs/42288899326",
+      "run_attempt": 1,
+      "node_id": "CR_kwDOVjrQzc8AAAAd1Y1RLA",
+      "head_sha": "16c702529f70ce675276d58f5d6334f0ba323fa7",
+      "url": "https://api.github.com/repos/janickiy/meetspace_ios_mobile/actions/jobs/128136859948",
+      "html_url": "https://github.com/janickiy/meetspace_ios_mobile/actions/runs/42288899326/job/128136859948",
+      "status": "completed",
+      "conclusion": "skipped",
+      "created_at": "2026-11-06T20:30:19Z",
+      "started_at": "2026-11-06T20:30:19Z",
+      "completed_at": "2026-11-06T20:30:19Z",
+      "name": "package",
+      "steps": [],
+      "check_run_url": "https://api.github.com/repos/janickiy/meetspace_ios_mobile/check-runs/128136859948",
+      "labels": [
+        "macos-15-intel"
+      ],
+      "runner_id": null,
+      "runner_name": null,
+      "runner_group_id": null,
+      "runner_group_name": null
+    }
+  ],
+  "artifacts": [
+    {
+      "id": 13540605103,
+      "node_id": "MDg6QXJ0aWZhY3QxMzU0MDYwNTEwMw==",
+      "name": "results-iPhone18",
+      "size_in_bytes": 2825454,
+      "url": "https://api.github.com/repos/janickiy/meetspace_ios_mobile/actions/artifacts/13540605103",
+      "archive_download_url": "https://api.github.com/repos/janickiy/meetspace_ios_mobile/actions/artifacts/13540605103/zip",
+      "expired": false,
+      "digest": "sha256:cfaf17f1ca9f8b56f1c4b0176dce3f61ed0c9f82714676e0e437b0299d00c82d",
+      "created_at": "2026-11-06T20:47:02Z",
+      "updated_at": "2026-11-06T20:47:02Z",
+      "expires_at": "2026-11-13T20:47:00Z",
+      "workflow_run": {
+        "id": 42288899326,
+        "repository_id": 1446695117,
+        "head_repository_id": 1446695117,
+        "head_branch": "codex/stage08-native-input",
+        "head_sha": "16c702529f70ce675276d58f5d6334f0ba323fa7"
+      }
+    },
+    {
+      "id": 13540356710,
+      "node_id": "MDg6QXJ0aWZhY3QxMzU0MDM1NjcxMA==",
+      "name": "results-iPad18",
+      "size_in_bytes": 3881317,
+      "url": "https://api.github.com/repos/janickiy/meetspace_ios_mobile/actions/artifacts/13540356710",
+      "archive_download_url": "https://api.github.com/repos/janickiy/meetspace_ios_mobile/actions/artifacts/13540356710/zip",
+      "expired": false,
+      "digest": "sha256:8e7e12722ae1149d2a6569e5fc48bdaaf6d2a962c52d74db6c8a9331abb62867",
+      "created_at": "2026-11-06T20:53:41Z",
+      "updated_at": "2026-11-06T20:53:41Z",
+      "expires_at": "2026-11-13T20:53:35Z",
+      "workflow_run": {
+        "id": 42288899326,
+        "repository_id": 1446695117,
+        "head_repository_id": 1446695117,
+        "head_branch": "codex/stage08-native-input",
+        "head_sha": "16c702529f70ce675276d58f5d6334f0ba323fa7"
+      }
+    },
+    {
+      "id": 13539860953,
+      "node_id": "MDg6QXJ0aWZhY3QxMzUzOTg2MDk1Mw==",
+      "name": "results-iPad26",
+      "size_in_bytes": 3880980,
+      "url": "https://api.github.com/repos/janickiy/meetspace_ios_mobile/actions/artifacts/13539860953",
+      "archive_download_url": "https://api.github.com/repos/janickiy/meetspace_ios_mobile/actions/artifacts/13539860953/zip",
+      "expired": false,
+      "digest": "sha256:4b30fe9dfd8adb10cabcfe1f64ffac5fd3ccd58c5fc9ab34f8368b7dc18e31c2",
+      "created_at": "2026-11-06T20:38:14Z",
+      "updated_at": "2026-11-06T20:38:14Z",
+      "expires_at": "2026-11-13T20:38:12Z",
+      "workflow_run": {
+        "id": 42288899326,
+        "repository_id": 1446695117,
+        "head_repository_id": 1446695117,
+        "head_branch": "codex/stage08-native-input",
+        "head_sha": "16c702529f70ce675276d58f5d6334f0ba323fa7"
+      }
+    },
+    {
+      "id": 13539307814,
+      "node_id": "MDg6QXJ0aWZhY3QxMzUzOTMwNzgxNA==",
+      "name": "results-iPhone26",
+      "size_in_bytes": 3381236,
+      "url": "https://api.github.com/repos/janickiy/meetspace_ios_mobile/actions/artifacts/13539307814",
+      "archive_download_url": "https://api.github.com/repos/janickiy/meetspace_ios_mobile/actions/artifacts/13539307814/zip",
+      "expired": false,
+      "digest": "sha256:fa620b63ce38dfad63470dcd2a48964434f82ff3dc49d1ea7d659e69bf88d83b",
+      "created_at": "2026-11-06T20:44:33Z",
+      "updated_at": "2026-11-06T20:44:33Z",
+      "expires_at": "2026-11-13T20:44:32Z",
+      "workflow_run": {
+        "id": 42288899326,
+        "repository_id": 1446695117,
+        "head_repository_id": 1446695117,
+        "head_branch": "codex/stage08-native-input",
+        "head_sha": "16c702529f70ce675276d58f5d6334f0ba323fa7"
+      }
+    }
+  ],
+  "artifactVerification": {
+    "apiSHA256": true,
+    "apiSize": true,
+    "apiRunAndSource": true,
+    "allZIPMembersCRC": true,
+    "evidenceReadDirectlyFromZIP": true
+  },
+  "sourceProvenance": {
+    "sourceCommit": "16c702529f70ce675276d58f5d6334f0ba323fa7",
+    "sourceFileSHA256": {
+      "Tests/MeetSpaceUITests/FoundationUITests.swift": "4e2f3ce4ecda1a8473a986a5670491f09530ec33b6695f4cdc35c96cfa4270db",
+      ".github/workflows/ios.yml": "78a26c4ed1b0203bd55723dc5cc6ea56caf702367aebdc782abcdbf07ebda8de",
+      "scripts/ci_simulators.py": "7ae72e334cccd2d20fcbfabc8ee495f551f712070232d8f7e87cbf85ffaba634"
+    },
+    "productionTrees": {
+      "App": {
+        "55bfcfb1e075224eda9ed7106a669db0b55dd7e5": "4098b55a42e80f71dcc919be18316ae92e3c1110",
+        "a33a153147d6941874884357134b3fd46de7532c": "4098b55a42e80f71dcc919be18316ae92e3c1110",
+        "163fb79059dbc0d5b2fbdbc206e74e2e3cb92e86": "4098b55a42e80f71dcc919be18316ae92e3c1110",
+        "16c702529f70ce675276d58f5d6334f0ba323fa7": "4098b55a42e80f71dcc919be18316ae92e3c1110"
+      },
+      "Packages": {
+        "55bfcfb1e075224eda9ed7106a669db0b55dd7e5": "8d5dba878e0404a181a428736638a5185a01f7c6",
+        "a33a153147d6941874884357134b3fd46de7532c": "8d5dba878e0404a181a428736638a5185a01f7c6",
+        "163fb79059dbc0d5b2fbdbc206e74e2e3cb92e86": "8d5dba878e0404a181a428736638a5185a01f7c6",
+        "16c702529f70ce675276d58f5d6334f0ba323fa7": "8d5dba878e0404a181a428736638a5185a01f7c6"
+      },
+      "BroadcastExtension": {
+        "55bfcfb1e075224eda9ed7106a669db0b55dd7e5": "4517bbe5a62655b843403b53487fb2f91867d4ce",
+        "a33a153147d6941874884357134b3fd46de7532c": "4517bbe5a62655b843403b53487fb2f91867d4ce",
+        "163fb79059dbc0d5b2fbdbc206e74e2e3cb92e86": "4517bbe5a62655b843403b53487fb2f91867d4ce",
+        "16c702529f70ce675276d58f5d6334f0ba323fa7": "4517bbe5a62655b843403b53487fb2f91867d4ce"
+      }
+    },
+    "productionTreesIdentical": true,
+    "comparedCommits": [
+      "55bfcfb1e075224eda9ed7106a669db0b55dd7e5",
+      "a33a153147d6941874884357134b3fd46de7532c",
+      "163fb79059dbc0d5b2fbdbc206e74e2e3cb92e86",
+      "16c702529f70ce675276d58f5d6334f0ba323fa7"
+    ],
+    "inputMethod": "Public XCTest SecureTextField.typeText(value) after observed Latin f; bounded submit-enabled wait",
+    "previousFailuresReclassified": false,
+    "limits": "Identical production Git trees do not imply previous CI15/16 failures passed or full-suite coverage on CI18."
+  },
+  "devices": {
+    "iPhone26": {
+      "scope": "deletion",
+      "actualEnvironment": {
+        "device": "iPhone 17 Pro Max",
+        "runtime": [
+          26,
+          2
+        ],
+        "udid": "17F0E734-D183-4810-AB97-F27FD9968039",
+        "scope": "deletion",
+        "hostArchitecture": "arm64",
+        "hostOS": "macOS-15.8.2-arm64-arm-64bit-Mach-O",
+        "preferredDeviceMatched": true,
+        "xcode": "Xcode 26.3\nBuild version 17C529\n"
+      },
+      "nativeSummary": {
+        "devicesAndConfigurations": [
+          {
+            "device": {
+              "architecture": "arm64",
+              "deviceId": "17F0E734-D183-4810-AB97-F27FD9968039",
+              "deviceName": "iPhone 17 Pro Max",
+              "modelName": "iPhone 17 Pro Max",
+              "osBuildNumber": "23C54",
+              "osVersion": "26.2",
+              "platform": "iOS Simulator"
+            },
+            "expectedFailures": 0,
+            "failedTests": 0,
+            "passedTests": 1,
+            "skippedTests": 0,
+            "testPlanConfiguration": {
+              "configurationId": "1",
+              "configurationName": "Test Scheme Action"
+            }
+          }
+        ],
+        "environmentDescription": "MeetSpace-Debug · Built with macOS 15.8.2",
+        "expectedFailures": 0,
+        "failedTests": 0,
+        "finishTime": 1793997860.772,
+        "passedTests": 1,
+        "result": "Passed",
+        "skippedTests": 0,
+        "startTime": 1793997140.311,
+        "statistics": [],
+        "testFailures": [],
+        "title": "Test - MeetSpace-Debug",
+        "topInsights": [],
+        "totalTestCount": 1
+      },
+      "nativeTest": {
+        "identifier": "MeetSpaceUITests.FoundationUITests/testStage08AccountDeletionRequiresPasswordAndConfirmation",
+        "passed": 1,
+        "failed": 0,
+        "skipped": 0,
+        "expectedFailures": 0
+      },
+      "nativeJobID": 128136858156,
+      "nativeJobConclusion": "success",
+      "nativeLogSHA256": "15326084180e0d50bbe1116245aaf3e0cb635460351be480da402752457fedba",
+      "trace": "iPhone26-deletion-trace.txt",
+      "assertionExcerpt": "iPhone26-deletion-assertion-excerpt.txt",
+      "screenshots": [
+        "screenshots/iPhone26-stage08-account-deletion-success.png",
+        "screenshots/iPhone26-stage08-account-deletion.png",
+        "screenshots/iPhone26-stage08-account-deletion-keyboard-retry.png",
+        "screenshots/iPhone26-stage08-account-deletion-keyboard-initial.png"
+      ],
+      "originalVideoEvidence": {
+        "status": "NOT_EXPORTED_BY_XCRESULT",
+        "records": [],
+        "repositoryVideoCopy": false
+      },
+      "wrongPasswordEvidence": {
+        "kind": "Native passing test assertions, source contract and trace",
+        "dedicatedScreenshot": "NOT_CAPTURED_BY_TEST",
+        "screenshotRelabeled": false,
+        "covers": [
+          "confirmation cancellation preserves form",
+          "wrong password displays error",
+          "rejection disables submit before retry",
+          "wrong password preserves account",
+          "correct-password retry reaches success"
+        ]
+      },
+      "inputMethod": "Native XCTest password.typeText(value) after Latin f precondition",
+      "visualReview": "NOT_AUTOMATICALLY_CLAIMED: PNGs preserve original test attachment names"
+    },
+    "iPad26": {
+      "scope": "deletion",
+      "actualEnvironment": {
+        "device": "iPad Pro 13-inch (M5)",
+        "runtime": [
+          26,
+          2
+        ],
+        "udid": "73C19119-B10E-4309-872E-C53EF3F0EF27",
+        "scope": "deletion",
+        "hostArchitecture": "arm64",
+        "hostOS": "macOS-15.8.2-arm64-arm-64bit-Mach-O",
+        "preferredDeviceMatched": true,
+        "xcode": "Xcode 26.3\nBuild version 17C529\n"
+      },
+      "nativeSummary": {
+        "devicesAndConfigurations": [
+          {
+            "device": {
+              "architecture": "arm64",
+              "deviceId": "73C19119-B10E-4309-872E-C53EF3F0EF27",
+              "deviceName": "iPad Pro 13-inch (M5)",
+              "modelName": "iPad Pro 13-inch (M5)",
+              "osBuildNumber": "23C54",
+              "osVersion": "26.2",
+              "platform": "iOS Simulator"
+            },
+            "expectedFailures": 0,
+            "failedTests": 0,
+            "passedTests": 1,
+            "skippedTests": 0,
+            "testPlanConfiguration": {
+              "configurationId": "1",
+              "configurationName": "Test Scheme Action"
+            }
+          }
+        ],
+        "environmentDescription": "MeetSpace-Debug · Built with macOS 15.8.2",
+        "expectedFailures": 0,
+        "failedTests": 0,
+        "finishTime": 1793997481.39,
+        "passedTests": 1,
+        "result": "Passed",
+        "skippedTests": 0,
+        "startTime": 1793997122.212,
+        "statistics": [],
+        "testFailures": [],
+        "title": "Test - MeetSpace-Debug",
+        "topInsights": [],
+        "totalTestCount": 1
+      },
+      "nativeTest": {
+        "identifier": "MeetSpaceUITests.FoundationUITests/testStage08AccountDeletionRequiresPasswordAndConfirmation",
+        "passed": 1,
+        "failed": 0,
+        "skipped": 0,
+        "expectedFailures": 0
+      },
+      "nativeJobID": 128136858448,
+      "nativeJobConclusion": "success",
+      "nativeLogSHA256": "705ec02444080a863949b832af9eac24c5db976927405cc43ee74ef9ec6163d9",
+      "trace": "iPad26-deletion-trace.txt",
+      "assertionExcerpt": "iPad26-deletion-assertion-excerpt.txt",
+      "screenshots": [
+        "screenshots/iPad26-stage08-account-deletion-success.png",
+        "screenshots/iPad26-stage08-account-deletion.png",
+        "screenshots/iPad26-stage08-account-deletion-keyboard-retry.png",
+        "screenshots/iPad26-stage08-account-deletion-keyboard-initial.png"
+      ],
+      "originalVideoEvidence": {
+        "status": "NOT_EXPORTED_BY_XCRESULT",
+        "records": [],
+        "repositoryVideoCopy": false
+      },
+      "wrongPasswordEvidence": {
+        "kind": "Native passing test assertions, source contract and trace",
+        "dedicatedScreenshot": "NOT_CAPTURED_BY_TEST",
+        "screenshotRelabeled": false,
+        "covers": [
+          "confirmation cancellation preserves form",
+          "wrong password displays error",
+          "rejection disables submit before retry",
+          "wrong password preserves account",
+          "correct-password retry reaches success"
+        ]
+      },
+      "inputMethod": "Native XCTest password.typeText(value) after Latin f precondition",
+      "visualReview": "NOT_AUTOMATICALLY_CLAIMED: PNGs preserve original test attachment names"
+    },
+    "iPhone18": {
+      "scope": "deletion",
+      "actualEnvironment": {
+        "device": "iPhone SE (3rd generation)",
+        "runtime": [
+          18,
+          6
+        ],
+        "udid": "C3630581-519B-49DA-9400-67A78DCD42C8",
+        "scope": "deletion",
+        "hostArchitecture": "arm64",
+        "hostOS": "macOS-15.8.2-arm64-arm-64bit-Mach-O",
+        "preferredDeviceMatched": true,
+        "xcode": "Xcode 26.3\nBuild version 17C529\n"
+      },
+      "nativeSummary": {
+        "devicesAndConfigurations": [
+          {
+            "device": {
+              "architecture": "arm64",
+              "deviceId": "C3630581-519B-49DA-9400-67A78DCD42C8",
+              "deviceName": "iPhone SE (3rd generation)",
+              "modelName": "iPhone SE (3rd generation)",
+              "osBuildNumber": "22G86",
+              "osVersion": "18.6",
+              "platform": "iOS Simulator"
+            },
+            "expectedFailures": 0,
+            "failedTests": 0,
+            "passedTests": 1,
+            "skippedTests": 0,
+            "testPlanConfiguration": {
+              "configurationId": "1",
+              "configurationName": "Test Scheme Action"
+            }
+          }
+        ],
+        "environmentDescription": "MeetSpace-Debug · Built with macOS 15.8.2",
+        "expectedFailures": 0,
+        "failedTests": 0,
+        "finishTime": 1793998009.519,
+        "passedTests": 1,
+        "result": "Passed",
+        "skippedTests": 0,
+        "startTime": 1793997585.628,
+        "statistics": [],
+        "testFailures": [],
+        "title": "Test - MeetSpace-Debug",
+        "topInsights": [],
+        "totalTestCount": 1
+      },
+      "nativeTest": {
+        "identifier": "MeetSpaceUITests.FoundationUITests/testStage08AccountDeletionRequiresPasswordAndConfirmation",
+        "passed": 1,
+        "failed": 0,
+        "skipped": 0,
+        "expectedFailures": 0
+      },
+      "nativeJobID": 128136858240,
+      "nativeJobConclusion": "success",
+      "nativeLogSHA256": "0ce5493e3cadd5f247c0918e25468d54103a4554bc99bef32f86fb2630e97781",
+      "trace": "iPhone18-deletion-trace.txt",
+      "assertionExcerpt": "iPhone18-deletion-assertion-excerpt.txt",
+      "screenshots": [
+        "screenshots/iPhone18-stage08-account-deletion-success.png",
+        "screenshots/iPhone18-stage08-account-deletion.png",
+        "screenshots/iPhone18-stage08-account-deletion-keyboard-retry.png",
+        "screenshots/iPhone18-stage08-account-deletion-keyboard-initial.png"
+      ],
+      "originalVideoEvidence": {
+        "status": "NOT_EXPORTED_BY_XCRESULT",
+        "records": [],
+        "repositoryVideoCopy": false
+      },
+      "wrongPasswordEvidence": {
+        "kind": "Native passing test assertions, source contract and trace",
+        "dedicatedScreenshot": "NOT_CAPTURED_BY_TEST",
+        "screenshotRelabeled": false,
+        "covers": [
+          "confirmation cancellation preserves form",
+          "wrong password displays error",
+          "rejection disables submit before retry",
+          "wrong password preserves account",
+          "correct-password retry reaches success"
+        ]
+      },
+      "inputMethod": "Native XCTest password.typeText(value) after Latin f precondition",
+      "visualReview": "NOT_AUTOMATICALLY_CLAIMED: PNGs preserve original test attachment names"
+    },
+    "iPad18": {
+      "scope": "deletion",
+      "actualEnvironment": {
+        "device": "iPad mini (A17 Pro)",
+        "runtime": [
+          18,
+          6
+        ],
+        "udid": "2A250684-88E3-4EDB-A21E-B7726B4C69F6",
+        "scope": "deletion",
+        "hostArchitecture": "arm64",
+        "hostOS": "macOS-15.8.2-arm64-arm-64bit-Mach-O",
+        "preferredDeviceMatched": true,
+        "xcode": "Xcode 26.3\nBuild version 17C529\n"
+      },
+      "nativeSummary": {
+        "devicesAndConfigurations": [
+          {
+            "device": {
+              "architecture": "arm64",
+              "deviceId": "2A250684-88E3-4EDB-A21E-B7726B4C69F6",
+              "deviceName": "iPad mini (A17 Pro)",
+              "modelName": "iPad mini (A17 Pro)",
+              "osBuildNumber": "22G86",
+              "osVersion": "18.6",
+              "platform": "iOS Simulator"
+            },
+            "expectedFailures": 0,
+            "failedTests": 0,
+            "passedTests": 1,
+            "skippedTests": 0,
+            "testPlanConfiguration": {
+              "configurationId": "1",
+              "configurationName": "Test Scheme Action"
+            }
+          }
+        ],
+        "environmentDescription": "MeetSpace-Debug · Built with macOS 15.8.2",
+        "expectedFailures": 0,
+        "failedTests": 0,
+        "finishTime": 1793998404.84,
+        "passedTests": 1,
+        "result": "Passed",
+        "skippedTests": 0,
+        "startTime": 1793997952.572,
+        "statistics": [],
+        "testFailures": [],
+        "title": "Test - MeetSpace-Debug",
+        "topInsights": [],
+        "totalTestCount": 1
+      },
+      "nativeTest": {
+        "identifier": "MeetSpaceUITests.FoundationUITests/testStage08AccountDeletionRequiresPasswordAndConfirmation",
+        "passed": 1,
+        "failed": 0,
+        "skipped": 0,
+        "expectedFailures": 0
+      },
+      "nativeJobID": 128136858495,
+      "nativeJobConclusion": "success",
+      "nativeLogSHA256": "fbe8287a156f393a0445cbffbc84d531c20b3c7a24e7ccc55291fc9c7c48ad28",
+      "trace": "iPad18-deletion-trace.txt",
+      "assertionExcerpt": "iPad18-deletion-assertion-excerpt.txt",
+      "screenshots": [
+        "screenshots/iPad18-stage08-account-deletion-success.png",
+        "screenshots/iPad18-stage08-account-deletion.png",
+        "screenshots/iPad18-stage08-account-deletion-keyboard-retry.png",
+        "screenshots/iPad18-stage08-account-deletion-keyboard-initial.png"
+      ],
+      "originalVideoEvidence": {
+        "status": "NOT_EXPORTED_BY_XCRESULT",
+        "records": [],
+        "repositoryVideoCopy": false
+      },
+      "wrongPasswordEvidence": {
+        "kind": "Native passing test assertions, source contract and trace",
+        "dedicatedScreenshot": "NOT_CAPTURED_BY_TEST",
+        "screenshotRelabeled": false,
+        "covers": [
+          "confirmation cancellation preserves form",
+          "wrong password displays error",
+          "rejection disables submit before retry",
+          "wrong password preserves account",
+          "correct-password retry reaches success"
+        ]
+      },
+      "inputMethod": "Native XCTest password.typeText(value) after Latin f precondition",
+      "visualReview": "NOT_AUTOMATICALLY_CLAIMED: PNGs preserve original test attachment names"
+    }
+  },
+  "previousRuns": {
+    "CI15": "Independent full baseline with recorded failures; not reclassified",
+    "CI16": "Independent regression run with recorded failures; not reclassified",
+    "CI17": "Separate superseded scoped run; operator-requested cancellation is not a native failure. CI18 collection infers no CI17 aggregate outcome."
+  },
+  "limitations": "Only the single account-deletion DEBUG fixture UI test ran on each simulator. No full suite, package/archive rerun, accessibility suite, real backend deletion, physical-device or distribution approval claimed."
+}

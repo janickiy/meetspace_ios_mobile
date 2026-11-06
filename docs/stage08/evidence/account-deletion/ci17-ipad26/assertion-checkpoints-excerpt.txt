@@ -1,0 +1,96 @@
+2026-11-06T20:25:15.9697460Z Test Case '-[MeetSpaceUITests.FoundationUITests testStage08AccountDeletionRequiresPasswordAndConfirmation]' started.
+2026-11-06T20:27:10.2029170Z     t =   116.96s Find the "authenticationSubmit" Button
+2026-11-06T20:27:12.2145970Z     t =   119.06s Find the "authenticationSubmit" Button
+2026-11-06T20:27:12.9040430Z     t =   119.75s Find the "authenticationSubmit" Button
+2026-11-06T20:27:14.0414230Z     t =   120.81s Find the "authenticationSubmit" Button
+2026-11-06T20:27:14.5355990Z     t =   121.34s Tap "authenticationSubmit" Button
+2026-11-06T20:27:14.6395620Z     t =   121.40s     Find the "authenticationSubmit" Button
+2026-11-06T20:27:15.4746370Z     t =   122.19s     Check for interrupting elements affecting "authenticationSubmit" Button
+2026-11-06T20:27:41.9566040Z     t =   148.82s Waiting 5.0s for "deleteAccount.password" SecureTextField to exist
+2026-11-06T20:27:42.9505740Z     t =   149.82s     Checking `Expect predicate `existsNoRetry == 1` for object "deleteAccount.password" SecureTextField`
+2026-11-06T20:27:43.0062510Z     t =   149.82s         Checking existence of `"deleteAccount.password" SecureTextField`
+2026-11-06T20:27:43.1803220Z     t =   150.05s Find the "deleteAccount.submit" Button
+2026-11-06T20:27:43.2856410Z     t =   150.16s Tap "deleteAccount.password" SecureTextField
+2026-11-06T20:27:43.3064550Z     t =   150.16s     Find the "deleteAccount.password" SecureTextField
+2026-11-06T20:27:43.4209650Z     t =   150.30s     Check for interrupting elements affecting "deleteAccount.password" SecureTextField
+2026-11-06T20:27:46.1428440Z     t =   152.99s     Check for interrupting elements affecting "Переключиться с латинских клавиш" Key
+2026-11-06T20:27:50.6442160Z     t =   157.50s Added attachment named 'stage08-account-deletion-keyboard-initial'
+2026-11-06T20:28:29.7299060Z     t =   196.33s Waiting 10.0s for "deleteAccount.submit" Button to exist
+2026-11-06T20:28:30.4883930Z     t =   197.36s     Checking `Expect predicate `existsNoRetry == 1` for object "deleteAccount.submit" Button`
+2026-11-06T20:28:30.5004070Z     t =   197.36s         Checking existence of `"deleteAccount.submit" Button`
+2026-11-06T20:28:30.7020290Z     t =   197.53s Find the "deleteAccount.submit" Button
+2026-11-06T20:28:30.8379330Z     t =   197.72s Find the "deleteAccount.submit" Button
+2026-11-06T20:28:30.9795570Z     t =   197.86s Find the "deleteAccount.submit" Button
+2026-11-06T20:28:31.0850080Z     t =   197.96s Find the "deleteAccount.submit" Button
+2026-11-06T20:28:31.2614370Z     t =   198.13s Find the "deleteAccount.submit" Button
+2026-11-06T20:28:31.3755690Z     t =   198.25s Find the "deleteAccount.submit" Button
+2026-11-06T20:28:31.4853410Z     t =   198.36s Tap "deleteAccount.submit" Button
+2026-11-06T20:28:31.5065250Z     t =   198.36s     Find the "deleteAccount.submit" Button
+2026-11-06T20:28:31.6186710Z     t =   198.46s     Check for interrupting elements affecting "deleteAccount.submit" Button
+2026-11-06T20:28:32.3810410Z     t =   199.18s Waiting 5.0s for "deleteAccount.confirm" Button to exist
+2026-11-06T20:28:33.3647290Z     t =   200.22s     Checking `Expect predicate `existsNoRetry == 1` for object "deleteAccount.confirm" Button`
+2026-11-06T20:28:33.3689370Z     t =   200.22s         Checking existence of `"deleteAccount.confirm" Button`
+2026-11-06T20:28:33.8154980Z     t =   200.66s Waiting 5.0s for "deleteAccount.cancelConfirmation" Button to exist
+2026-11-06T20:28:34.8070540Z     t =   201.67s     Checking `Expect predicate `existsNoRetry == 1` for object "deleteAccount.cancelConfirmation" Button`
+2026-11-06T20:28:34.8179150Z     t =   201.67s         Checking existence of `"deleteAccount.cancelConfirmation" Button`
+2026-11-06T20:28:34.9650770Z     t =   201.83s Tap "deleteAccount.cancelConfirmation" Button
+2026-11-06T20:28:34.9868140Z     t =   201.83s     Find the "deleteAccount.cancelConfirmation" Button
+2026-11-06T20:28:35.1578050Z     t =   202.03s     Check for interrupting elements affecting "deleteAccount.cancelConfirmation" Button
+2026-11-06T20:28:36.0641310Z     t =   202.92s Waiting 5.0s for "deleteAccount.password" SecureTextField to exist
+2026-11-06T20:28:37.1051750Z     t =   203.96s     Checking `Expect predicate `existsNoRetry == 1` for object "deleteAccount.password" SecureTextField`
+2026-11-06T20:28:37.1155200Z     t =   203.96s         Checking existence of `"deleteAccount.password" SecureTextField`
+2026-11-06T20:28:37.2018530Z     t =   204.08s Find the "deleteAccount.submit" Button
+2026-11-06T20:28:37.3368720Z     t =   204.20s Tap "deleteAccount.submit" Button
+2026-11-06T20:28:37.3370340Z     t =   204.21s     Find the "deleteAccount.submit" Button
+2026-11-06T20:28:37.4385770Z     t =   204.31s     Check for interrupting elements affecting "deleteAccount.submit" Button
+2026-11-06T20:28:38.3381830Z     t =   205.12s Waiting 5.0s for "deleteAccount.confirm" Button to exist
+2026-11-06T20:28:39.2960370Z     t =   206.15s     Checking `Expect predicate `existsNoRetry == 1` for object "deleteAccount.confirm" Button`
+2026-11-06T20:28:39.3074580Z     t =   206.15s         Checking existence of `"deleteAccount.confirm" Button`
+2026-11-06T20:28:39.6074600Z     t =   206.47s Tap "deleteAccount.confirm" Button
+2026-11-06T20:28:39.6588090Z     t =   206.47s     Find the "deleteAccount.confirm" Button
+2026-11-06T20:28:40.2154110Z     t =   207.05s     Check for interrupting elements affecting "deleteAccount.confirm" Button
+2026-11-06T20:28:41.7407170Z     t =   208.14s Waiting 5.0s for "deleteAccount.error" StaticText to exist
+2026-11-06T20:28:42.3036510Z     t =   209.17s     Checking `Expect predicate `existsNoRetry == 1` for object "deleteAccount.error" StaticText`
+2026-11-06T20:28:42.3136790Z     t =   209.17s         Checking existence of `"deleteAccount.error" StaticText`
+2026-11-06T20:28:42.4123460Z     t =   209.29s Find the "deleteAccount.submit" Button
+2026-11-06T20:28:42.6276410Z     t =   209.50s Waiting 10.0s for "deleteAccount.password" SecureTextField to exist
+2026-11-06T20:28:43.6905630Z     t =   210.56s     Checking `Expect predicate `existsNoRetry == 1` for object "deleteAccount.password" SecureTextField`
+2026-11-06T20:28:43.7110900Z     t =   210.56s         Checking existence of `"deleteAccount.password" SecureTextField`
+2026-11-06T20:28:43.7721670Z     t =   210.65s Find the "deleteAccount.password" SecureTextField
+2026-11-06T20:28:43.8950670Z     t =   210.76s Find the "deleteAccount.password" SecureTextField
+2026-11-06T20:28:44.0368430Z     t =   210.91s Find the "deleteAccount.password" SecureTextField
+2026-11-06T20:28:44.1560110Z     t =   211.03s Find the "deleteAccount.password" SecureTextField
+2026-11-06T20:28:44.2714410Z     t =   211.14s Find the "deleteAccount.password" SecureTextField
+2026-11-06T20:28:44.3831810Z     t =   211.26s Find the "deleteAccount.password" SecureTextField
+2026-11-06T20:28:44.4969550Z     t =   211.37s Tap "deleteAccount.password" SecureTextField
+2026-11-06T20:28:44.5331220Z     t =   211.37s     Find the "deleteAccount.password" SecureTextField
+2026-11-06T20:28:44.5856160Z     t =   211.46s     Check for interrupting elements affecting "deleteAccount.password" SecureTextField
+2026-11-06T20:28:49.4033050Z     t =   216.26s Added attachment named 'stage08-account-deletion-keyboard-retry'
+2026-11-06T20:29:22.0495040Z     t =   248.92s Waiting 10.0s for "deleteAccount.submit" Button to exist
+2026-11-06T20:29:23.0968990Z     t =   249.96s     Checking `Expect predicate `existsNoRetry == 1` for object "deleteAccount.submit" Button`
+2026-11-06T20:29:23.0971760Z     t =   249.96s         Checking existence of `"deleteAccount.submit" Button`
+2026-11-06T20:29:23.2543040Z     t =   250.13s Find the "deleteAccount.submit" Button
+2026-11-06T20:29:23.4320400Z     t =   250.31s Find the "deleteAccount.submit" Button
+2026-11-06T20:29:23.5744020Z     t =   250.45s Find the "deleteAccount.submit" Button
+2026-11-06T20:29:23.7379540Z     t =   250.61s Find the "deleteAccount.submit" Button
+2026-11-06T20:29:23.8920730Z     t =   250.77s Find the "deleteAccount.submit" Button
+2026-11-06T20:29:23.9986980Z     t =   250.88s Find the "deleteAccount.submit" Button
+2026-11-06T20:29:25.1551800Z     t =   252.03s Added attachment named 'stage08-account-deletion'
+2026-11-06T20:29:25.1669180Z     t =   252.04s Tap "deleteAccount.submit" Button
+2026-11-06T20:29:25.2177880Z     t =   252.05s     Find the "deleteAccount.submit" Button
+2026-11-06T20:29:25.2794380Z     t =   252.15s     Check for interrupting elements affecting "deleteAccount.submit" Button
+2026-11-06T20:29:25.8415770Z     t =   252.64s Waiting 5.0s for "deleteAccount.confirm" Button to exist
+2026-11-06T20:29:26.8429230Z     t =   253.71s     Checking `Expect predicate `existsNoRetry == 1` for object "deleteAccount.confirm" Button`
+2026-11-06T20:29:26.8519210Z     t =   253.71s         Checking existence of `"deleteAccount.confirm" Button`
+2026-11-06T20:29:26.9783690Z     t =   253.86s Tap "deleteAccount.confirm" Button
+2026-11-06T20:29:26.9998450Z     t =   253.86s     Find the "deleteAccount.confirm" Button
+2026-11-06T20:29:27.0884340Z     t =   253.95s     Check for interrupting elements affecting "deleteAccount.confirm" Button
+2026-11-06T20:29:28.3657130Z     t =   255.23s Waiting 10.0s for "authenticationSubmit" Button to exist
+2026-11-06T20:29:29.5282550Z     t =   256.28s     Checking `Expect predicate `existsNoRetry == 1` for object "authenticationSubmit" Button`
+2026-11-06T20:29:29.5704700Z     t =   256.28s         Checking existence of `"authenticationSubmit" Button`
+2026-11-06T20:29:29.9138250Z     t =   256.76s Waiting 5.0s for "Аккаунт удалён на сервере." StaticText to exist
+2026-11-06T20:29:30.9159150Z     t =   257.78s     Checking `Expect predicate `existsNoRetry == 1` for object "Аккаунт удалён на сервере." StaticText`
+2026-11-06T20:29:30.9261910Z     t =   257.78s         Checking existence of `"Аккаунт удалён на сервере." StaticText`
+2026-11-06T20:29:30.9604010Z     t =   257.83s Checking existence of `"deleteAccount.password" SecureTextField`
+2026-11-06T20:29:31.9677940Z     t =   258.83s Added attachment named 'stage08-account-deletion-success'
+2026-11-06T20:29:32.6158260Z Test Case '-[MeetSpaceUITests.FoundationUITests testStage08AccountDeletionRequiresPasswordAndConfirmation]' passed (259.462 seconds).

@@ -1,0 +1,20 @@
+{
+  "id": 13538058765,
+  "node_id": "MDg6QXJ0aWZhY3QxMzUzODA1ODc2NQ==",
+  "name": "results-iPhone18",
+  "size_in_bytes": 19356363,
+  "url": "https://api.github.com/repos/janickiy/meetspace_ios_mobile/actions/artifacts/13538058765",
+  "archive_download_url": "https://api.github.com/repos/janickiy/meetspace_ios_mobile/actions/artifacts/13538058765/zip",
+  "expired": false,
+  "digest": "sha256:61cd485e4429ce2ae03e8b70041567c40e02809bb16d8a39325ad4f139851488",
+  "created_at": "2026-11-06T20:30:47Z",
+  "updated_at": "2026-11-06T20:30:47Z",
+  "expires_at": "2026-11-13T20:30:41Z",
+  "workflow_run": {
+    "id": 42283560617,
+    "repository_id": 1446695117,
+    "head_repository_id": 1446695117,
+    "head_branch": "codex/stage08-regression",
+    "head_sha": "a33a153147d6941874884357134b3fd46de7532c"
+  }
+}

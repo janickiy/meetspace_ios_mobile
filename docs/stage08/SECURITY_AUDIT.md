@@ -1,6 +1,7 @@
 # Аудит безопасности этапа 08
 
-Дата: 2026-11-06. Проверен iOS baseline `42c0295` и изменения этапа 8.
+Дата: 2026-11-06. Проверен iOS baseline `42c0295` и изменения этапа 8;
+текущий production source — `16c702529f70ce675276d58f5d6334f0ba323fa7`.
 Это обзор исходников, контрактов и целевых тестов; не независимый pentest и не
 сертификация безопасности. Production данные и backend не изменялись.
 
@@ -15,7 +16,8 @@ auth middleware/session repository и recording access/library: новый backe
 
 ## Результат и исправление
 
-В проверенных границах не найдено открытых **P0/P1**. Найден и исправлен **P2**:
+В проверенных границах не найдено открытых **P0/P1**. Два **OPEN P2** описаны ниже.
+Найден и исправлен ещё один **P2**:
 ответ сервера на загрузку вложения мог неограниченно накапливаться в памяти.
 `URLSessionRequestTransport` вызывал async `upload(for:fromFile:)` и проверял
 `Data.count` только после полного получения ответа. Пользовательский HTTPS-сервер
@@ -165,12 +167,14 @@ git diff --check
 проверяются. Новые hosted `Stage08SecurityKeychainTests.swift` читают только
 attributes созданных тестовых Keychain items после add/update; секретные данные
 не запрашиваются и не печатаются. Итоговый Xcode/full-suite результат фиксируется
-в `TEST_REPORT.md`: CI3 выполнил оба Keychain-теста на iPhone/iPad с iOS18/26; повтор текущего исходника учитывается отдельно.
+в [TEST_REPORT.md](TEST_REPORT.md): CI15 и CI16 выполнили оба Keychain-теста
+на iPhone/iPad с iOS18/26 с тем же production-кодом, что и16c7025.
 
 [Source-review evidence](evidence/security-source-review.json) фиксирует scan
 production Swift sinks, отсутствие custom trust bypass/process execution, ключи
 entitlements и хеши plist. По ограниченному набору GitHub/AWS/private-key signatures
-в tracked files совпадений не найдено; содержимое credentials в evidence не выводится.
+в tracked и non-ignored untracked worktree files совпадений не найдено;
+содержимое credentials в evidence не выводится.
 
 Существующие тесты дополнительно покрывают cross-origin authenticated download,
 signed download без credentials, malformed cookie, changed account during refresh,

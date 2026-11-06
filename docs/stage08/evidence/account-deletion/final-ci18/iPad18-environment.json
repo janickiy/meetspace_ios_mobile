@@ -1,0 +1,13 @@
+{
+  "device": "iPad mini (A17 Pro)",
+  "runtime": [
+    18,
+    6
+  ],
+  "udid": "2A250684-88E3-4EDB-A21E-B7726B4C69F6",
+  "scope": "deletion",
+  "hostArchitecture": "arm64",
+  "hostOS": "macOS-15.8.2-arm64-arm-64bit-Mach-O",
+  "preferredDeviceMatched": true,
+  "xcode": "Xcode 26.3\nBuild version 17C529\n"
+}
