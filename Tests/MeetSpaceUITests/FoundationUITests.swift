@@ -336,7 +336,7 @@ import UIKit
                 }
                 XCTAssertTrue(key.waitForExistence(timeout: 5)); key.tap()
             }
-            let done = app.keyboards.buttons.matching(NSPredicate(format: "label IN %@", ["Done", "Готово"])).firstMatch
+            let done = keyboard.buttons.matching(identifier: "Done").firstMatch
             XCTAssertTrue(done.waitForExistence(timeout: 5)); done.tap()
         }
         enterPassword("incorrect-password")
