@@ -1,4 +1,6 @@
 import XCTest
+import Vision
+import UIKit
 
 @MainActor final class FoundationUITests: XCTestCase {
     override func setUpWithError() throws {
@@ -257,11 +259,69 @@ import XCTest
             Thread.sleep(forTimeInterval: 0.1)
         }
         XCTAssertTrue(messages.exists || incoming.exists, "Login must reach the workspace or an incoming call")
-        // DEBUG fixture fields exclude the OS Passwords save flow. A successful
-        // login must still reach an actionable workspace (including incoming calls).
-        let target = incoming.exists ? incoming : messages
+        let target = app.launchArguments.contains("-call-incoming") ? incoming : messages
+        // Cold launch of the Passwords remote process can outlive the app's transition.
+        // Stay in the app's embedded hierarchy; never activate SafariViewService separately.
+        let promptDeadline = Date().addingTimeInterval(12)
+        var tappedPrompt = false
+        while Date() < promptDeadline {
+            if let decline = passwordDismissButton(app), decline.isHittable {
+                decline.tap(); tappedPrompt = true
+                // The first tap can arrive while the remote sheet is still animating.
+                // Requery and retry only if that same observed prompt is still actionable.
+                Thread.sleep(forTimeInterval: 1)
+                continue
+            }
+            if !target.isHittable, dismissInaccessiblePasswordPrompt(app) {
+                tappedPrompt = true
+                Thread.sleep(forTimeInterval: 1)
+                continue
+            }
+            if tappedPrompt && target.isHittable { return }
+            Thread.sleep(forTimeInterval: 0.1)
+        }
+        if let decline = passwordDismissButton(app) {
+            XCTAssertFalse(decline.isHittable, "The password prompt must no longer block the workspace")
+        }
         let ready = XCTNSPredicateExpectation(predicate: NSPredicate(format: "hittable == true"), object: target)
         XCTAssertEqual(XCTWaiter.wait(for: [ready], timeout: 10), .completed, "The workspace must be actionable after login")
+    }
+
+    private func passwordDismissButton(_ app: XCUIApplication) -> XCUIElement? {
+        guard app.sheets["Save Password?"].exists || app.sheets["Сохранить пароль?"].exists ||
+                app.alerts["Save Password?"].exists || app.alerts["Сохранить пароль?"].exists ||
+                app.staticTexts["Save Password?"].exists || app.staticTexts["Сохранить пароль?"].exists else { return nil }
+        for label in ["Not Now", "Не сейчас"] {
+            let button = app.buttons[label].firstMatch
+            if button.exists { return button }
+        }
+        return nil
+    }
+
+    private func dismissInaccessiblePasswordPrompt(_ app: XCUIApplication) -> Bool {
+        // iOS 26 can omit the Passwords remote window's children from AX and
+        // interruption monitors. Ground this fallback in the current screenshot;
+        // never guess coordinates or confirm a different system dialog.
+        let screenshot = app.screenshot()
+        guard let image = screenshot.image.cgImage else { return false }
+        let request = VNRecognizeTextRequest()
+        request.recognitionLevel = .accurate
+        request.recognitionLanguages = ["en-US"]
+        request.usesLanguageCorrection = false
+        do { try VNImageRequestHandler(cgImage: image, options: [:]).perform([request]) }
+        catch { return false }
+        let recognized = (request.results ?? []).compactMap { observation -> (String, Float, CGRect)? in
+            guard let text = observation.topCandidates(1).first else { return nil }
+            return (text.string.filter { $0.isLetter }.lowercased(), text.confidence, observation.boundingBox)
+        }
+        guard let title = recognized.first(where: { $0.0 == "savepassword" && $0.1 >= 0.8 }),
+              let decline = recognized.first(where: { $0.0 == "notnow" && $0.1 >= 0.8 }),
+              decline.2.maxY < title.2.minY else { return false }
+        let attachment = XCTAttachment(screenshot: screenshot)
+        attachment.name = "system-password-prompt-before-decline"
+        attachment.lifetime = .keepAlways; add(attachment)
+        app.coordinate(withNormalizedOffset: CGVector(dx: decline.2.midX, dy: 1 - decline.2.midY)).tap()
+        return true
     }
 
     func testAuthenticationErrorIsVisibleAndDoesNotOpenWorkspace() {
