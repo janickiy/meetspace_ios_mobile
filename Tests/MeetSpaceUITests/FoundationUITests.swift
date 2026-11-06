@@ -333,6 +333,21 @@ import UIKit
                     // iPad exposes equivalent number/letter toggles on both sides.
                     let more = keyboard.keys.matching(identifier: "more").firstMatch
                     XCTAssertTrue(more.waitForExistence(timeout: 5)); more.tap()
+                    // A fresh iPad can show its native key-flick tutorial instead of
+                    // switching layouts. Dismiss only the observed system explanation.
+                    let tutorial = keyboard.staticTexts.matching(NSPredicate(format: "label == %@",
+                        "Для доступа к альтернативным буквам на клавиатуре\nпотяните вниз на клавише и отпустите.")).firstMatch
+                    if tutorial.waitForExistence(timeout: 1) {
+                        capture(app, name: "stage08-account-deletion-keyboard-help")
+                        let acknowledge = keyboard.buttons.matching(NSPredicate(format: "label == %@", "ОК")).firstMatch
+                        XCTAssertTrue(acknowledge.waitForExistence(timeout: 5)); acknowledge.tap()
+                        let dismissed = XCTNSPredicateExpectation(predicate: NSPredicate(format: "exists == false"), object: tutorial)
+                        XCTAssertEqual(XCTWaiter.wait(for: [dismissed], timeout: 5), .completed)
+                        // The tutorial can consume the original mode-change tap.
+                        if !key.waitForExistence(timeout: 1) {
+                            XCTAssertTrue(more.waitForExistence(timeout: 5)); more.tap()
+                        }
+                    }
                 }
                 XCTAssertTrue(key.waitForExistence(timeout: 5)); key.tap()
             }
