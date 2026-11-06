@@ -395,11 +395,20 @@ import UIKit
             // The app is Russian, while these fixtures contain Latin letters. CI's
             // Russian secure keyboard silently discarded synthetic Latin typeText
             // events. Select the real Latin keyboard and tap its actual keys.
-            for _ in 0..<4 where !keyboard.keys["f"].exists {
-                // On iOS 26 this system button is a sibling of Keyboard, not its child.
-                let next = app.buttons.matching(NSPredicate(format:
-                    "identifier == %@ OR label IN %@", "emoji", ["Следующая клавиатура", "Next keyboard"])).firstMatch
-                XCTAssertTrue(next.waitForExistence(timeout: 5)); next.tap()
+            let latinLayout = keyboard.keys.matching(NSPredicate(format:
+                "label == %@", "Переключиться с латинских клавиш")).firstMatch
+            if !keyboard.keys["f"].exists && latinLayout.exists {
+                // CI15/16 iPad secure keyboards expose a separate visible “abc” key
+                // with this exact AX label; the emoji button only cycled RU/Emoji.
+                latinLayout.tap()
+                XCTAssertTrue(keyboard.keys["f"].waitForExistence(timeout: 5))
+            } else {
+                for _ in 0..<4 where !keyboard.keys["f"].exists {
+                    // On iOS 26 this system button is a sibling of Keyboard, not its child.
+                    let next = app.buttons.matching(NSPredicate(format:
+                        "identifier == %@ OR label IN %@", "emoji", ["Следующая клавиатура", "Next keyboard"])).firstMatch
+                    XCTAssertTrue(next.waitForExistence(timeout: 5)); next.tap()
+                }
             }
             XCTAssertTrue(keyboard.keys["f"].waitForExistence(timeout: 5))
             capture(app, name: "stage08-account-deletion-keyboard-" + (value == "fixture-password" ? "retry" : "initial"))

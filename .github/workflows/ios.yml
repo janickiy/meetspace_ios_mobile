@@ -69,9 +69,8 @@ jobs:
           xcodebuild -version
           xcrun simctl list devices available
       - name: App, Keychain and UI tests
-        # Focused diagnosis covers the smallest supported phone and a large current iPad.
-        # The default/full run always executes all four device/runtime combinations.
-        if: (inputs.scope != 'audit' && inputs.scope != 'deletion') || matrix.label == 'iPhone18' || matrix.label == 'iPad26'
+        # Audit diagnosis covers two devices; deletion/regression/full use all four.
+        if: inputs.scope != 'audit' || matrix.label == 'iPhone18' || matrix.label == 'iPad26'
         run: python3 scripts/ci_simulators.py --family '${{ matrix.family }}' --runtime-major '${{ matrix.runtime }}' --label '${{ matrix.label }}' --preferred-device '${{ matrix.device }}' --scope '${{ inputs.scope == 'audit' && 'audit' || inputs.scope == 'deletion' && 'deletion' || inputs.scope == 'regression' && 'regression' || matrix.scope }}'
       - name: Diagnostic Instruments baseline (reported separately)
         if: always() && matrix.label == 'iPhone18' && inputs.scope != 'deletion'
