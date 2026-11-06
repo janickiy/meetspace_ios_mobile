@@ -13,12 +13,12 @@ public enum MSTheme {
     public static let surface = adaptive(0xffffff, 0x21232f)
     public static let surfaceSecondary = adaptive(0xf0f1f7, 0x2b2e3e)
     public static let ink = adaptive(0x292b3b, 0xf3f3fa)
-    public static let muted = adaptive(0x727687, 0xb0b3c7)
+    public static let muted = adaptive(0x686c7d, 0xb0b3c7)
     public static let line = adaptive(0xe7e8f0, 0x36394c)
-    public static let accent = adaptive(0x6264d9, 0xaaaaff)
+    public static let accent = adaptive(0x5d5fcd, 0xaaaaff)
     public static let accentSoft = adaptive(0xeeeffe, 0x343452)
-    public static let success = adaptive(0x25836c, 0x83d9bb)
-    public static let danger = adaptive(0xd14857, 0xff8c97)
+    public static let success = adaptive(0x237962, 0x83d9bb)
+    public static let danger = adaptive(0xc03d4c, 0xff8c97)
 
     private static let registerFonts: Void = {
         for name in ["inter_regular", "inter_semibold"] {

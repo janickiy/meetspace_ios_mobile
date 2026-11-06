@@ -25,8 +25,8 @@ struct LiveMessagesView: View {
                     }.font(MSTheme.font(11)).foregroundStyle(MSTheme.muted).padding(.horizontal, 20)
                     SearchBox(text: $model.listSearch, placeholder: "Поиск чатов").padding(.horizontal, 20)
                     HStack(spacing: 12) {
-                        Toggle(tr("Непрочитанные"), isOn: $model.onlyUnread)
-                        Toggle(tr("Группы"), isOn: $model.groupFilter)
+                        Toggle(isOn: $model.onlyUnread) { Text(tr("Непрочитанные")).frame(minHeight: 44) }
+                        Toggle(isOn: $model.groupFilter) { Text(tr("Группы")).frame(minHeight: 44) }
                     }.toggleStyle(.button).font(MSTheme.font(12)).padding(.horizontal, 20)
                     ScrollView {
                         LazyVStack(spacing: 8) {
@@ -69,13 +69,13 @@ struct LiveMessagesView: View {
             Avatar(String(item.title.prefix(2)).uppercased(), size: 44)
             VStack(alignment: .leading, spacing: 5) {
                 HStack {
-                    if item.isGroup { Image(systemName: "person.2").foregroundStyle(MSTheme.accent) }
-                    Text(item.title).font(MSTheme.font(14, weight: .semibold)).lineLimit(1)
+                    if item.isGroup { Image(systemName: "person.2").foregroundStyle(MSTheme.accent).accessibilityHidden(true) }
+                    Text(item.title).font(MSTheme.font(14, weight: .semibold)).lineLimit(typeSize.isAccessibilitySize ? nil : 1)
                     Spacer(minLength: 0)
                     if let time = item.lastMessageAt { Text(time, style: .time).font(MSTheme.font(10)).foregroundStyle(MSTheme.muted) }
                 }
                 HStack {
-                    Text(item.preview.isEmpty ? tr("Пока нет сообщений") : item.preview).font(MSTheme.font(12)).foregroundStyle(MSTheme.muted).lineLimit(2)
+                    Text(item.preview.isEmpty ? tr("Пока нет сообщений") : item.preview).font(MSTheme.font(12)).foregroundStyle(MSTheme.muted).lineLimit(typeSize.isAccessibilitySize ? nil : 2)
                     Spacer(minLength: 0)
                     if item.unreadCount > 0 {
                         Text("\(item.unreadCount)").font(MSTheme.font(11, weight: .semibold)).foregroundStyle(MSTheme.surface)

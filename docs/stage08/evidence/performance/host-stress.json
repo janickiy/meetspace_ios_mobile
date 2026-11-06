@@ -1,0 +1,153 @@
+{
+  "scope": "macOS host debug test process tree including SwiftPM/test runner; not iOS app, native WebRTC, device, Instruments, network throughput, or energy measurements",
+  "method": "Build excluded (--skip-build). time.monotonic wall; macOS /usr/bin/time -l CPU/high-water RSS; ps parent-tree RSS sampled every approximately 50ms. RSS samples sum processes and may double-count shared pages; timing includes the SwiftPM runner.",
+  "environment": {
+    "system": "Darwin",
+    "release": "27.0.0",
+    "machine": "arm64",
+    "logicalCPUs": 10,
+    "swift": "swift-driver version: 1.168.6 Apple Swift version 6.4 (swiftlang-6.4.0.34.1 clang-2100.3.34.1)\nTarget: arm64-apple-macosx27.0.0"
+  },
+  "sourceCommit": "42c02958b4f25296e282fd7efb66c0ac0d83c3a0",
+  "workingTreeDirty": true,
+  "sourceHashes": {
+    "Packages/MeetSpaceKit/Tests/IntegrationTests/ConferenceSessionTests.swift": "499c77e4bb553f8de8c6668a45ff2228da4854228f60a6adf04c05560782e2f2",
+    "Packages/MeetSpaceKit/Tests/IntegrationTests/DirectCallCoordinatorTests.swift": "eb3c74dda779af3a1a45db0762b8d5d7126c2728e1e96a215cc794628f8eb501",
+    "Packages/MeetSpaceKit/Tests/IntegrationTests/RecordingsTests.swift": "467b7cfce905e9df31a99c1d89ce646f8b9ec4c1333307635f14afc231d889a9",
+    "Packages/MeetSpaceKit/Tests/IntegrationTests/RealtimeStressTests.swift": "86d6255aba73354f9c34ede41e113b555ba4a8e09b5b18b21ab93997579dec41",
+    "Packages/MeetSpaceKit/Tests/IntegrationTests/FileTransferStressTests.swift": "097b221dede213f7bd2586145e4e24e5eecc47cb612eff406098f60e1ada39c7",
+    "Packages/MeetSpaceKit/Tests/BroadcastTests/BroadcastLifecycleStressTests.swift": "bafd77cb6dc1fe2b6ef2325387905260a7be460e26f7bda68199a53d78484bf3",
+    "Packages/MeetSpaceKit/Sources/Features/ConferenceSession.swift": "196a039fe97122b2317cd10fc91ca5faf6f7c58b30b1472538d13d678c59425c",
+    "Packages/MeetSpaceKit/Sources/Features/DirectCallCoordinator.swift": "2685b1b57b201c2c27e3c93c83262aaf2c72442faf620e487e94940cda14eb59",
+    "Packages/MeetSpaceKit/Sources/Realtime/UserRealtime.swift": "c5ef424361fc4f67e2c9268ea47400a8f172cbbb601896855fc4e9f3fd8a7110",
+    "Packages/MeetSpaceKit/Sources/Storage/AccountFileStore.swift": "c99f9b689f1a341c1118bdad4ec5417cd1b9b7dede44082599f2ca50298a45dd",
+    "Packages/MeetSpaceKit/Sources/Broadcast/BroadcastHostChannel.swift": "84df2de1d6c5693352e035af5bf3532a6797803f1071fa1349fb7115dd3a634c",
+    "Packages/MeetSpaceKit/Sources/Broadcast/BroadcastUploadConnection.swift": "908a61f0d1cdd14a03d93567676a3046a58c8c2856274a50f8ffede119596e60",
+    "Packages/MeetSpaceKit/Sources/Broadcast/BroadcastWire.swift": "a7adbbabfa97f810444d9f3c59c8c622bcb9f418c6984e3eeb98542992c8a580",
+    "Packages/MeetSpaceKit/Sources/API/RecordingDownloads.swift": "bbfaf2b8e1310039829a0846c17fcc20110b4d453b8d0ca622a5e4abf99960e3",
+    "Packages/MeetSpaceKit/Sources/API/MessagingRepository.swift": "d44d89ebe0acc02674edc3c87b223f0ceda91b9437eac8d7332f969079fcbbda",
+    "Packages/MeetSpaceKit/Sources/API/Authentication.swift": "ab0f8b14cd392b2bdb29062ecde6ef49c0b3cf516a11d4312167a75fbfc67ec4",
+    "scripts/measure_host_stress.py": "dc74e899c56183dadeaa8ef3c43dc64df326c99b7ca0d50a5cbceec61ca910ec"
+  },
+  "command": [
+    "swift",
+    "test",
+    "--package-path",
+    "Packages/MeetSpaceKit",
+    "--skip-build",
+    "--filter",
+    "stage08Thirty",
+    "--sdk",
+    "/Library/Developer/CommandLineTools/SDKs/MacOSX26.4.sdk"
+  ],
+  "cyclesPerStressTestPerRun": 30,
+  "runs": [
+    {
+      "run": 1,
+      "exitCode": 0,
+      "wallMonotonicSec": 3.4562,
+      "timeUserCPUSec": 2.22,
+      "timeSystemCPUSec": 0.63,
+      "timeMaximumRSSBytes": 889405440,
+      "sampledMaximumTreeRSSKiB": 915968,
+      "tests": [
+        {
+          "name": "stage08ThirtyReconnectsUseFreshTicketsWithoutSocketOverlap",
+          "durationSec": 0.087
+        },
+        {
+          "name": "stage08ThirtyMaximumSizeUploadStagingCyclesCleanAccountFiles",
+          "durationSec": 0.433
+        },
+        {
+          "name": "stage08ThirtyDirectCallAnswerEndCyclesReleaseResources",
+          "durationSec": 0.61
+        },
+        {
+          "name": "stage08ThirtyRecordingDownloadAndCancelCyclesCleanFiles",
+          "durationSec": 0.651
+        },
+        {
+          "name": "stage08ThirtyConferenceScreenCyclesReleaseResources",
+          "durationSec": 2.193
+        },
+        {
+          "name": "stage08ThirtyBroadcastSocketLeasesReleaseDescriptorsAndFenceOldFrames",
+          "durationSec": 0.016
+        }
+      ]
+    },
+    {
+      "run": 2,
+      "exitCode": 0,
+      "wallMonotonicSec": 2.7849,
+      "timeUserCPUSec": 1.83,
+      "timeSystemCPUSec": 0.49,
+      "timeMaximumRSSBytes": 990461952,
+      "sampledMaximumTreeRSSKiB": 1038704,
+      "tests": [
+        {
+          "name": "stage08ThirtyReconnectsUseFreshTicketsWithoutSocketOverlap",
+          "durationSec": 0.084
+        },
+        {
+          "name": "stage08ThirtyMaximumSizeUploadStagingCyclesCleanAccountFiles",
+          "durationSec": 0.414
+        },
+        {
+          "name": "stage08ThirtyDirectCallAnswerEndCyclesReleaseResources",
+          "durationSec": 0.609
+        },
+        {
+          "name": "stage08ThirtyRecordingDownloadAndCancelCyclesCleanFiles",
+          "durationSec": 0.653
+        },
+        {
+          "name": "stage08ThirtyConferenceScreenCyclesReleaseResources",
+          "durationSec": 2.197
+        },
+        {
+          "name": "stage08ThirtyBroadcastSocketLeasesReleaseDescriptorsAndFenceOldFrames",
+          "durationSec": 0.016
+        }
+      ]
+    },
+    {
+      "run": 3,
+      "exitCode": 0,
+      "wallMonotonicSec": 2.829,
+      "timeUserCPUSec": 1.81,
+      "timeSystemCPUSec": 0.45,
+      "timeMaximumRSSBytes": 989855744,
+      "sampledMaximumTreeRSSKiB": 1038288,
+      "tests": [
+        {
+          "name": "stage08ThirtyReconnectsUseFreshTicketsWithoutSocketOverlap",
+          "durationSec": 0.145
+        },
+        {
+          "name": "stage08ThirtyMaximumSizeUploadStagingCyclesCleanAccountFiles",
+          "durationSec": 0.417
+        },
+        {
+          "name": "stage08ThirtyDirectCallAnswerEndCyclesReleaseResources",
+          "durationSec": 0.636
+        },
+        {
+          "name": "stage08ThirtyRecordingDownloadAndCancelCyclesCleanFiles",
+          "durationSec": 0.698
+        },
+        {
+          "name": "stage08ThirtyConferenceScreenCyclesReleaseResources",
+          "durationSec": 2.26
+        },
+        {
+          "name": "stage08ThirtyBroadcastSocketLeasesReleaseDescriptorsAndFenceOldFrames",
+          "durationSec": 0.015
+        }
+      ]
+    }
+  ],
+  "medianCommandWallSec": 2.829,
+  "acceptance": "Six functional stress tests pass each run. No performance threshold or energy result is inferred. Weak-release assertions cover selected Swift objects; they are not a process-wide leak detector."
+}

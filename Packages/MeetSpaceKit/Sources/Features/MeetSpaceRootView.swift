@@ -125,16 +125,18 @@ private struct WelcomeView: View {
     private func connectionChoice(_ title: String, subtitle: String, icon: String, primary: Bool, action: @escaping () -> Void) -> some View {
         Button(action: action) {
             HStack(spacing: 14) {
-                Image(systemName: icon).font(.system(size: 22)).frame(width: 30)
+                Image(systemName: icon).font(.system(size: 22)).frame(width: 30).accessibilityHidden(true)
                 VStack(alignment: .leading, spacing: 4) {
                     Text(tr(title)).font(MSTheme.font(14, weight: .semibold))
-                    Text(tr(subtitle)).font(MSTheme.font(11, relativeTo: .caption)).opacity(0.8)
+                    Text(tr(subtitle)).font(MSTheme.font(11, relativeTo: .caption))
+                        .foregroundStyle(primary ? MSTheme.surface : MSTheme.muted)
                 }.fixedSize(horizontal: false, vertical: true)
-                Spacer(minLength: 0); Image(systemName: "arrow.right")
+                Spacer(minLength: 0); Image(systemName: "arrow.right").accessibilityHidden(true)
             }.padding(16).frame(maxWidth: .infinity, minHeight: 66)
                 .foregroundStyle(primary ? MSTheme.surface : MSTheme.ink)
                 .background(primary ? MSTheme.accent : MSTheme.surface, in: RoundedRectangle(cornerRadius: 14))
                 .overlay(RoundedRectangle(cornerRadius: 14).stroke(primary ? Color.clear : MSTheme.line))
+                .contentShape(Rectangle()).accessibilityElement(children: .combine)
         }.buttonStyle(.plain)
     }
     private func feature(_ icon: String, _ title: String) -> some View {

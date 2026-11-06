@@ -19,9 +19,10 @@ private enum AccountSettingsSection: String, CaseIterable, Identifiable {
 struct AccountSettingsView: View {
     @Bindable var model: SettingsModel
     @State private var selection = AccountSettingsSection.profile
+    @Environment(\.dynamicTypeSize) private var typeSize
     var body: some View {
         GeometryReader { geometry in
-            if geometry.size.width >= 700 {
+            if geometry.size.width >= 700 && !typeSize.isAccessibilitySize {
                 HStack(alignment: .top, spacing: 24) {
                     VStack(alignment: .leading, spacing: 8) {
                         HStack(spacing: 12) {
@@ -36,7 +37,9 @@ struct AccountSettingsView: View {
                                 Label(tr(section.rawValue), systemImage: section.icon).frame(maxWidth: .infinity, minHeight: 44, alignment: .leading)
                                     .padding(.horizontal, 10)
                                     .background(selection == section ? MSTheme.accentSoft : Color.clear, in: RoundedRectangle(cornerRadius: 10))
+                                    .contentShape(Rectangle())
                             }.buttonStyle(.plain).foregroundStyle(selection == section ? MSTheme.accent : MSTheme.ink)
+                                .accessibilityAddTraits(selection == section ? .isSelected : [])
                                 .accessibilityIdentifier("settingsSection.\(section)")
                         }
                     }.padding(16).frame(width: 230).msCard()
@@ -50,8 +53,9 @@ struct AccountSettingsView: View {
                                 AccountSettingsContent(model: model, section: section)
                                     .navigationTitle(tr(section.rawValue)).msInlineTitle()
                             } label: {
-                                HStack { Label(tr(section.rawValue), systemImage: section.icon); Spacer(); Image(systemName: "chevron.right") }
-                                    .frame(minHeight: 44).msCard()
+                                HStack { Label(tr(section.rawValue), systemImage: section.icon); Spacer(); Image(systemName: "chevron.right").accessibilityHidden(true) }
+                                    .frame(minHeight: 44).msCard().contentShape(Rectangle())
+                                    .accessibilityElement(children: .combine)
                             }.buttonStyle(.plain).accessibilityIdentifier("settingsSection.\(section)")
                         }
                     }.padding(24)

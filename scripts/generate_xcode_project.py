@@ -62,10 +62,10 @@ def make_project():
     for name, directory, kind, extension, modules in target_names:
         file_ids, sources, resources, frameworks, dependencies, packages = [], [], [], [], [], []
         for path in sorted((ROOT / directory).iterdir()):
-            if not path.is_file():
+            if not path.is_file() and path.suffix != ".xcassets":
                 continue
             relative = path.relative_to(ROOT).as_posix()
-            file_type = {".swift": "sourcecode.swift", ".plist": "text.plist.xml", ".xcprivacy": "text.xml", ".entitlements": "text.plist.entitlements"}[path.suffix]
+            file_type = {".swift": "sourcecode.swift", ".plist": "text.plist.xml", ".xcprivacy": "text.xml", ".entitlements": "text.plist.entitlements", ".xcassets": "folder.assetcatalog"}[path.suffix]
             reference = add(relative, "PBXFileReference", lastKnownFileType=file_type, path=path.name, sourceTree="<group>")
             file_ids.append(reference)
             if path.suffix not in (".plist", ".entitlements"):
@@ -92,7 +92,8 @@ def make_project():
                         SUPPORTED_PLATFORMS="iphoneos iphonesimulator", SUPPORTS_MACCATALYST="NO", SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD="NO")
         if name == "MeetSpace":
             settings.update(CODE_SIGN_ENTITLEMENTS="App/MeetSpace.entitlements", INFOPLIST_FILE="App/Info.plist", GENERATE_INFOPLIST_FILE="NO", MARKETING_VERSION="0.2.0",
-                            CURRENT_PROJECT_VERSION="1", LD_RUNPATH_SEARCH_PATHS=["$(inherited)", "@executable_path/Frameworks"])
+                            CURRENT_PROJECT_VERSION="1", ASSETCATALOG_COMPILER_APPICON_NAME="AppIcon",
+                            LD_RUNPATH_SEARCH_PATHS=["$(inherited)", "@executable_path/Frameworks"])
         elif name == "BroadcastUpload":
             settings.update(CODE_SIGN_ENTITLEMENTS="BroadcastExtension/MeetSpaceBroadcast.entitlements",
                             INFOPLIST_FILE="BroadcastExtension/Info.plist", GENERATE_INFOPLIST_FILE="NO",

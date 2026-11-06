@@ -8,6 +8,43 @@ import MeetSpaceBroadcast
 import MeetSpaceRealtime
 @testable import MeetSpaceFeatures
 
+@MainActor private final class StressSessionReferences {
+    weak var session: ConferenceSession?
+    weak var engine: SessionEngine?
+    weak var broadcast: SessionBroadcast?
+}
+
+/// Real session orchestration; signaling, capture and ReplayKit are explicit doubles.
+@Test @MainActor func stage08ThirtyConferenceScreenCyclesReleaseResources() async throws {
+    func cycle() async throws -> StressSessionReferences {
+        let (session, engine, socket, broadcast) = try await screenSession()
+        let references = StressSessionReferences()
+        references.session = session; references.engine = engine; references.broadcast = broadcast
+        await session.prepareScreenShare()
+        let lease = try #require(broadcast.sessionID)
+        broadcast.event.yield(.started(lease))
+        try await sessionEventually { let offers = await socket.count("media.offer"); return engine.screen && offers > 1 }
+        broadcast.sendFrame(lease)
+        try await sessionEventually { engine.screenFrames == 1 }
+        try await acknowledgeLatestScreenOffer(socket)
+        try await sessionEventually { session.screenSharing }
+        #expect(await session.awaitDeparture())
+        #expect(engine.closeCount == 1 && !engine.microphone && !engine.camera && !engine.screen)
+        #expect(broadcast.sessionID == nil && broadcast.stops == 1)
+        #expect(session.phase == .ended && session.videoTracks.isEmpty && session.participants.isEmpty)
+        #expect(await socket.closes == 1)
+        // Stale queued extension frames cannot revive a detached media engine.
+        broadcast.sendFrame(lease, timestamp: 200_000_001)
+        await Task.yield()
+        #expect(engine.screenFrames == 1)
+        return references
+    }
+    for _ in 0..<30 {
+        let references = try await cycle()
+        try await sessionEventually { references.session == nil && references.engine == nil && references.broadcast == nil }
+    }
+}
+
 private actor SessionPermissionGate {
     private var continuation: CheckedContinuation<Void, Never>?
     var started = false

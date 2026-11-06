@@ -1,0 +1,27 @@
+Build complete! (15,53 с)
+◇ Test run started.
+↳ Testing Library Version: 2084
+↳ Target Platform: arm64e-apple-macos14.0
+◇ Test stage08ThirtyReconnectsUseFreshTicketsWithoutSocketOverlap() started.
+◇ Test stage08ThirtyMaximumSizeUploadStagingCyclesCleanAccountFiles() started.
+◇ Test stage08UploadCancellationAndAccountDrainReleasePendingRequests() started.
+◇ Test stage08UploadRejectsOversizeBeforeResponseFinishes() started.
+◇ Test stage08UploadPreservesBoundedSuccessAndHTTPError() started.
+◇ Test stage08ThirtyRecordingDownloadAndCancelCyclesCleanFiles() started.
+◇ Test stage08ThirtyConferenceScreenCyclesReleaseResources() started.
+◇ Test stage08ThirtyDirectCallAnswerEndCyclesReleaseResources() started.
+✔ Test stage08UploadPreservesBoundedSuccessAndHTTPError() passed after 0.018 seconds.
+✔ Test stage08UploadRejectsOversizeBeforeResponseFinishes() passed after 0.038 seconds.
+✔ Test stage08UploadCancellationAndAccountDrainReleasePendingRequests() passed after 0.058 seconds.
+✔ Test stage08ThirtyReconnectsUseFreshTicketsWithoutSocketOverlap() passed after 0.094 seconds.
+✔ Test stage08ThirtyMaximumSizeUploadStagingCyclesCleanAccountFiles() passed after 0.364 seconds.
+✔ Test stage08ThirtyDirectCallAnswerEndCyclesReleaseResources() passed after 0.571 seconds.
+✔ Test stage08ThirtyRecordingDownloadAndCancelCyclesCleanFiles() passed after 0.643 seconds.
+✔ Test stage08ThirtyConferenceScreenCyclesReleaseResources() passed after 2.229 seconds.
+✔ Test run with 8 tests in 0 suites passed after 2.229 seconds.
+◇ Test run started.
+↳ Testing Library Version: 2084
+↳ Target Platform: arm64e-apple-macos14.0
+◇ Test stage08ThirtyBroadcastSocketLeasesReleaseDescriptorsAndFenceOldFrames() started.
+✔ Test stage08ThirtyBroadcastSocketLeasesReleaseDescriptorsAndFenceOldFrames() passed after 0.017 seconds.
+✔ Test run with 1 test in 0 suites passed after 0.017 seconds.

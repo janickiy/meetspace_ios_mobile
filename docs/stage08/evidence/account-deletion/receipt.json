@@ -1,0 +1,25 @@
+{
+  "recorded_at_utc": "2026-11-06T13:49:59.172488+00:00",
+  "scope": "macOS SwiftPM deterministic tests; not an iOS UI, Keychain entitlement, or real backend measurement",
+  "test_filter": "stage08Account",
+  "passed": 8,
+  "failed": 0,
+  "build_seconds": 12.74,
+  "test_seconds": 0.052,
+  "sdk": "/Library/Developer/CommandLineTools/SDKs/MacOSX26.4.sdk",
+  "command": "SDKROOT=/Library/Developer/CommandLineTools/SDKs/MacOSX26.4.sdk swift test --package-path Packages/MeetSpaceKit --sdk /Library/Developer/CommandLineTools/SDKs/MacOSX26.4.sdk -Xswiftc -load-plugin-library -Xswiftc /Library/Developer/CommandLineTools/usr/lib/swift/host/plugins/testing/libTestingMacros.dylib --filter stage08Account",
+  "source_sha256": {
+    "Packages/MeetSpaceKit/Sources/API/Authentication.swift": "d4c3032821c0fd01cf08ca5f2878cce389d0a9780af69861a43597ddc63a26bf",
+    "Packages/MeetSpaceKit/Sources/Features/IdentityModel.swift": "d6e31e4bc4486a6697d17c27076fcb90913839cfd8a6ecdb2c909b80d6593e8a",
+    "Packages/MeetSpaceKit/Sources/Features/PushRegistrationModel.swift": "c0e2e1302419242bb3b5c086d3e41c51448e558702fc632a34c553c2cf93aed5",
+    "Packages/MeetSpaceKit/Sources/Features/DeleteAccountView.swift": "cc732f96e6f5367a32660682c4c66300237f73450ff0e95161a4618211226e12",
+    "Packages/MeetSpaceKit/Sources/Features/LiveProfileView.swift": "29aa77ffe8b300f4b66d3e117d101ead3646c1d2e86b23b55c0060f4574164b1",
+    "Packages/MeetSpaceKit/Tests/IntegrationTests/AccountDeletionTests.swift": "eb09e429e62cf2819b77ca07f4772ee06199106604ef654fc002c662476a21a5",
+    "Packages/MeetSpaceKit/Tests/IntegrationTests/PushRegistrationLifecycleTests.swift": "da99adb890f3b67e7fa1a93e582bbaf5a3bebbbe2f59e65839f9576fbf9926d6",
+    "App/UITestDependencies.swift": "bd939e4a205ebd96bedfea2f1d626f419f2f56727c0d356e5cad8c4063e569b7"
+  },
+  "boundaries": [
+    "Source hashes identify implementation and focused tests; App/UITestDependencies.swift is recorded for provenance but is not compiled by SwiftPM.",
+    "Actual backend behavior is separately recorded in docs/stage08/API_CONTRACT.md; UI tests are separately owned by release CI."
+  ]
+}

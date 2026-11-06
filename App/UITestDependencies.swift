@@ -249,6 +249,7 @@ enum UITestDependencies {
         private var messages: [String: [[String: Any]]] = [:]
         private var groups: [String: [String: Any]] = [:]
         private var profileNames: [String: String] = [:]
+        private var deletedAccounts: Set<String> = []
         private var folders: [[String: Any]] = []
         private var folderMembers: [String: Set<String>] = [:]
         private func user(_ id: String) -> [String: Any] {
@@ -313,11 +314,20 @@ enum UITestDependencies {
             if path.hasSuffix("/auth/register") { return try response(["status": "ok", "user": user(first)], status: 201) }
             if path.hasSuffix("/auth/login") || path.hasSuffix("/auth/refresh") {
                 if ProcessInfo.processInfo.arguments.contains("-auth-error") { return NetworkResponse(status: 401) }
-                let id = (body?["email"] as? String)?.hasPrefix("second") == true ? second : first
+                let id = (body?["email"] as? String)?.hasPrefix("second") == true || body?["userId"] as? String == second ? second : first
+                if deletedAccounts.contains(id) { return NetworkResponse(status: 401) }
                 return try response(["accessToken": "ui-fixture-\(id)", "tokenType": "Bearer", "expiresIn": 3600, "user": user(id)],
                     headers: ["set-cookie": "meetrix_session=ui-fixture-cookie; Path=/api/v1/auth; HttpOnly; Secure"])
             }
             if path.hasSuffix("/auth/me") {
+                if deletedAccounts.contains(selected) { return NetworkResponse(status: 401) }
+                if request.httpMethod == "DELETE" {
+                    guard body?["password"] as? String == "fixture-password" else { return NetworkResponse(status: 422) }
+                    if ProcessInfo.processInfo.arguments.contains("-delete-account-unconfirmed") { throw APIError.timeout }
+                    if ProcessInfo.processInfo.arguments.contains("-delete-account-conflict") { return NetworkResponse(status: 409) }
+                    deletedAccounts.insert(selected)
+                    return try response(["status": "success"])
+                }
                 if request.httpMethod == "PATCH", let name = body?["displayName"] as? String { profileNames[selected] = name }
                 return try response(["status": "ok", "user": user(selected)])
             }

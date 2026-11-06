@@ -45,6 +45,79 @@ import UIKit
         link.tap()
     }
 
+    func testAccessibilityStage08CoreScreens() throws {
+        let app = launch()
+        var issues: [[String: String]] = []
+        func audit(_ screen: String) throws {
+            capture(app, name: "stage08-accessibility-" + screen)
+            try app.performAccessibilityAudit(for: .all) { issue in
+                issues.append(["screen": screen, "type": String(issue.auditType.rawValue),
+                               "summary": issue.compactDescription, "detail": issue.detailedDescription,
+                               "element": issue.element?.identifier ?? "",
+                               "label": issue.element?.label ?? ""])
+                // Continue gathering all screens. The final assertion fails for every issue.
+                return true
+            }
+        }
+        defer {
+            if let data = try? JSONSerialization.data(withJSONObject: issues, options: [.prettyPrinted, .sortedKeys]) {
+                let attachment = XCTAttachment(data: data, uniformTypeIdentifier: "public.json")
+                attachment.name = "stage08-accessibility-issues"; attachment.lifetime = .keepAlways; add(attachment)
+            }
+        }
+        XCTAssertTrue(app.buttons["connectServer"].waitForExistence(timeout: 10))
+        try audit("welcome")
+        login(app)
+        app.buttons["tab.messages"].tap()
+        XCTAssertTrue(app.buttons["conversation.22222222-2222-4222-8222-222222222222"].waitForExistence(timeout: 10))
+        try audit("messages")
+        app.buttons["tab.profile"].tap()
+        XCTAssertTrue(app.buttons["openAccountSettings"].waitForExistence(timeout: 5))
+        try audit("profile")
+        openProfileFeature("openCalendar", in: app)
+        XCTAssertTrue(app.segmentedControls["calendar.mode"].waitForExistence(timeout: 10))
+        try audit("calendar")
+        app.navigationBars.buttons.firstMatch.tap()
+        openProfileFeature("openRecordings", in: app)
+        XCTAssertTrue(app.buttons["recording.77777777-7777-4777-8777-777777777771"].waitForExistence(timeout: 10))
+        try audit("recordings")
+        app.navigationBars.buttons.firstMatch.tap()
+        openProfileFeature("openFolders", in: app)
+        XCTAssertTrue(app.buttons["createFolder"].waitForExistence(timeout: 5))
+        try audit("folders")
+        app.navigationBars.buttons.firstMatch.tap()
+        openProfileFeature("openAccountSettings", in: app)
+        XCTAssertTrue(app.buttons["settingsSection.profile"].waitForExistence(timeout: 5))
+        try audit("settings")
+        XCTAssertTrue(issues.isEmpty, "Accessibility issues: \(issues)")
+    }
+
+    func testStage08AccountDeletionRequiresPasswordAndConfirmation() {
+        let app = launch(); login(app)
+        openProfileFeature("openDeleteAccount", in: app)
+        let password = app.secureTextFields["deleteAccount.password"]
+        let submit = app.buttons["deleteAccount.submit"]
+        XCTAssertTrue(password.waitForExistence(timeout: 5))
+        XCTAssertFalse(submit.isEnabled)
+        password.tap(); password.typeText("incorrect-password\n")
+        reveal(submit, in: app); submit.tap()
+        let confirmation = app.buttons["deleteAccount.confirm"]
+        XCTAssertTrue(confirmation.waitForExistence(timeout: 5))
+        let cancel = app.buttons.matching(identifier: "Отмена").allElementsBoundByIndex.last!
+        cancel.tap()
+        XCTAssertTrue(password.waitForExistence(timeout: 5)); XCTAssertTrue(submit.isEnabled)
+        submit.tap(); XCTAssertTrue(confirmation.waitForExistence(timeout: 5)); confirmation.tap()
+        let error = app.staticTexts["deleteAccount.error"]
+        XCTAssertTrue(error.waitForExistence(timeout: 5))
+        XCTAssertFalse(app.buttons["connectServer"].exists, "A wrong password must preserve the account")
+        reveal(password, in: app, towardTop: true)
+        password.tap(); password.typeText("fixture-password\n")
+        reveal(submit, in: app); capture(app, name: "stage08-account-deletion")
+        submit.tap(); XCTAssertTrue(confirmation.waitForExistence(timeout: 5)); confirmation.tap()
+        XCTAssertTrue(app.buttons["connectServer"].waitForExistence(timeout: 10))
+        XCTAssertFalse(app.buttons["tab.messages"].exists)
+    }
+
     func testStage07CalendarCreateRescheduleCancelAndViews() {
         let app = launch(); login(app)
         openProfileFeature("openCalendar", in: app)

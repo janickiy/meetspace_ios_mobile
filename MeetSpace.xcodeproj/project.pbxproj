@@ -181,6 +181,16 @@
 			"productReference" = "0862F6FF0A705671BA1748F1";
 			"productType" = "com.apple.product-type.app-extension";
 		};
+		"B16B6325BA8F1CFBCC279108" = {
+			"isa" = "PBXFileReference";
+			"lastKnownFileType" = "folder.assetcatalog";
+			"path" = "Assets.xcassets";
+			"sourceTree" = "<group>";
+		};
+		"03E4F173E0FD05C0242E731C" = {
+			"isa" = "PBXBuildFile";
+			"fileRef" = "B16B6325BA8F1CFBCC279108";
+		};
 		"E22F3D16C14E3CEA667F4ECC" = {
 			"isa" = "PBXFileReference";
 			"lastKnownFileType" = "text.plist.xml";
@@ -246,6 +256,7 @@
 		"082CC8140C5DED09CFE9E4EA" = {
 			"isa" = "PBXGroup";
 			"children" = (
+				"B16B6325BA8F1CFBCC279108",
 				"E22F3D16C14E3CEA667F4ECC",
 				"61A4F0E591C7F41905FA5F24",
 				"8EDA80BE35AF196A9D7E9D5A",
@@ -338,6 +349,7 @@
 			"isa" = "PBXResourcesBuildPhase";
 			"buildActionMask" = 2147483647;
 			"files" = (
+				"03E4F173E0FD05C0242E731C",
 				"41CB30F93E0309227270B55D",
 			);
 			"runOnlyForDeploymentPostprocessing" = 0;
@@ -378,6 +390,7 @@
 				"INFOPLIST_FILE" = "App/Info.plist";
 				"MARKETING_VERSION" = "0.2.0";
 				"CURRENT_PROJECT_VERSION" = "1";
+				"ASSETCATALOG_COMPILER_APPICON_NAME" = "AppIcon";
 				"LD_RUNPATH_SEARCH_PATHS" = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -406,6 +419,7 @@
 				"INFOPLIST_FILE" = "App/Info.plist";
 				"MARKETING_VERSION" = "0.2.0";
 				"CURRENT_PROJECT_VERSION" = "1";
+				"ASSETCATALOG_COMPILER_APPICON_NAME" = "AppIcon";
 				"LD_RUNPATH_SEARCH_PATHS" = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -490,6 +504,16 @@
 			"isa" = "PBXBuildFile";
 			"fileRef" = "ACFABAA63C7524A67107CAA5";
 		};
+		"AF49019344F2432E7364863D" = {
+			"isa" = "PBXFileReference";
+			"lastKnownFileType" = "sourcecode.swift";
+			"path" = "Stage08SecurityKeychainTests.swift";
+			"sourceTree" = "<group>";
+		};
+		"96EC9FD876A43B785F307D1A" = {
+			"isa" = "PBXBuildFile";
+			"fileRef" = "AF49019344F2432E7364863D";
+		};
 		"4D5FC6C0D9725D09B197E0BD" = {
 			"isa" = "PBXGroup";
 			"children" = (
@@ -497,6 +521,7 @@
 				"36FCCF46D3EF87ED4CD4B23C",
 				"DAF62D0CD0BAA30377DD305F",
 				"ACFABAA63C7524A67107CAA5",
+				"AF49019344F2432E7364863D",
 			);
 			"path" = "Tests/MeetSpaceTests";
 			"sourceTree" = "<group>";
@@ -546,6 +571,7 @@
 				"28B9685934AAE2583901699A",
 				"F54DBF57B2E7C10431F60853",
 				"0B40CEF85808E93DB3078940",
+				"96EC9FD876A43B785F307D1A",
 			);
 			"runOnlyForDeploymentPostprocessing" = 0;
 		};

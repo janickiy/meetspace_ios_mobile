@@ -17,6 +17,7 @@ import MeetSpaceCalling
     public private(set) var recordings: RecordingsModel?
     public let notifications: PushRegistrationModel
     public private(set) var busy = false
+    public private(set) var deletingAccount = false
     public var addingAccount = false
     public var error: String?
     public var information: String?
@@ -119,6 +120,48 @@ import MeetSpaceCalling
         } catch { self.error = userMessage(error) }
     }
 
+    public func deleteAccount(_ account: AccountRecord, password: String) async -> Bool {
+        guard !busy, messaging?.account.id == account.id, let client = messaging?.client else { return false }
+        guard calls?.isActive != true, calls?.busy != true, calls?.pendingPeer == nil,
+              conferences?.call == nil, conferences?.busy != true else {
+            error = "Сначала завершите звонок и выйдите из встречи."; return false
+        }
+        busy = true; deletingAccount = true; error = nil; information = nil
+        defer { busy = false; deletingAccount = false }
+        do { try await client.deleteAccount(password: password) }
+        catch {
+            switch error {
+            case AccountDeletionError.passwordRejected, ClientError.invalidInput:
+                self.error = "Неверный пароль аккаунта. Проверьте пароль и повторите."
+            case AccountDeletionError.notAuthorized:
+                self.error = "Удаление отклонено. Проверьте пароль или войдите в аккаунт снова."
+            case AccountDeletionError.conflict:
+                self.error = "Сначала завершите звонки, закройте свои встречи и передайте владение групповыми чатами."
+            case AccountDeletionError.unavailable:
+                self.error = "Этот сервер не поддерживает удаление аккаунта в приложении."
+            default:
+                self.error = "Удаление не подтверждено. Проверьте подключение и состояние аккаунта перед повтором."
+            }
+            return false
+        }
+        // DELETE committed. Subsequent local storage errors cannot turn that into a failed DELETE.
+        epoch = UUID(); sessionEvents?.cancel(); sessionEvents = nil
+        notifications.suspendDelivery()
+        await closeFeatures()
+        await calls?.close(); calls = nil
+        await conferences?.close(); conferences = nil
+        let pushClean = await notifications.accountDeletionConfirmed(origin: account.server, userID: account.user.id)
+        await messaging?.close(); messaging = nil
+        _ = try? await client.close()
+        var localClean = pushClean
+        do { try await dependencies.credentials.delete(account.key) } catch { localClean = false }
+        do { try await AccountFileStore(account: account).clear() } catch { localClean = false }
+        index.remove(account.id)
+        do { try await dependencies.accounts.save(index) } catch { localClean = false }
+        information = localClean ? "Аккаунт удалён на сервере." : "Сервер подтвердил удаление аккаунта. Не удалось полностью очистить локальные данные."
+        return true
+    }
+
     private func activateStored(_ account: AccountRecord, allowOffline: Bool) async throws {
         guard let data = try await dependencies.credentials.read(account.key) else { throw ClientError.missingSession }
         let saved = try WireJSON.decoder().decode(SessionCredentials.self, from: data).validated()
@@ -175,11 +218,11 @@ import MeetSpaceCalling
         }
         conferences = ConferenceWorkspace(repository: ConferenceRepository(client: client),
             sockets: dependencies.conferenceSockets, makeMedia: dependencies.media, makeBroadcast: dependencies.broadcast,
-            canUseMedia: { [weak self] in self?.calls?.isActive != true && self?.calls?.busy != true })
+            canUseMedia: { [weak self] in self?.deletingAccount != true && self?.calls?.isActive != true && self?.calls?.busy != true })
         let calls = DirectCallCoordinator(repository: DirectCallsRepository(client: client),
             conferenceRepository: ConferenceRepository(client: client), system: systemCalling,
             sockets: dependencies.conferenceSockets, makeMedia: dependencies.media, makeBroadcast: dependencies.broadcast,
-            canUseMedia: { [weak self] in self?.conferences?.call == nil && self?.conferences?.busy != true })
+            canUseMedia: { [weak self] in self?.deletingAccount != true && self?.conferences?.call == nil && self?.conferences?.busy != true })
         self.calls = calls
         workspace.onCallUpdate = { [weak calls] call in Task { await calls?.receive(call) } }
         workspace.onRealtimeConnected = { [weak calls] in Task { await calls?.reconcile() } }

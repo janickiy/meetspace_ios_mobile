@@ -37,12 +37,13 @@ struct LiveFoldersView: View {
                                 HStack(spacing: 16) {
                                     Image(systemName: "folder").font(.system(size: 25)).foregroundStyle(MSTheme.accent)
                                         .frame(width: 48, height: 44).background(MSTheme.accentSoft, in: RoundedRectangle(cornerRadius: 12))
+                                        .accessibilityHidden(true)
                                     VStack(alignment: .leading, spacing: 6) {
                                         Text(folder.name).font(MSTheme.font(15, weight: .semibold)).foregroundStyle(MSTheme.ink)
                                         Text("\(folder.conversationCount) \(tr("чатов")) · \(folder.conferenceCount) \(tr("встреч"))")
                                             .font(MSTheme.font(11)).foregroundStyle(MSTheme.muted)
                                     }.frame(maxWidth: .infinity, alignment: .leading)
-                                }.frame(minHeight: 78)
+                                }.frame(minHeight: 78).contentShape(Rectangle()).accessibilityElement(children: .combine)
                             }.buttonStyle(.plain).accessibilityIdentifier("folder.\(folder.id.uuidString.lowercased())")
                             Menu {
                                 Button(tr("Переименовать")) { renaming = folder; name = folder.name; editing = true }
@@ -53,6 +54,7 @@ struct LiveFoldersView: View {
                                 Button(tr("Удалить папку"), role: .destructive) { deleting = folder }
                             } label: { Image(systemName: "ellipsis").frame(width: 44, height: 44) }
                                 .accessibilityLabel(tr("Действия с папкой"))
+                                .accessibilityValue(folder.name)
                                 .accessibilityIdentifier("folderMenu.\(folder.id.uuidString.lowercased())")
                         }.msCard(padding: 16).disabled(model.busy)
                     }
@@ -111,7 +113,7 @@ private struct FolderContentsView: View {
                 ForEach(model.items) { item in
                     HStack(spacing: 12) {
                         Image(systemName: item.kind == .conversation ? "bubble.left.and.bubble.right" : "video")
-                            .foregroundStyle(MSTheme.accent).frame(width: 42, height: 42)
+                            .foregroundStyle(MSTheme.accent).frame(width: 42, height: 42).accessibilityHidden(true)
                         Button {
                             if let conversation = item.conversation { openConversation(conversation.id) }
                             if let conference = item.conference { openConference(conference) }
@@ -120,7 +122,8 @@ private struct FolderContentsView: View {
                                 Text(item.title).foregroundStyle(MSTheme.ink)
                                 Text(tr(item.conference.map { conferenceStatus($0.status) } ?? "Чат"))
                                     .font(MSTheme.font(11)).foregroundStyle(MSTheme.muted)
-                            }.frame(maxWidth: .infinity, alignment: .leading)
+                            }.frame(maxWidth: .infinity, minHeight: 44, alignment: .leading)
+                                .contentShape(Rectangle()).accessibilityElement(children: .combine)
                         }.buttonStyle(.plain).disabled(item.conference?.isClosed == true || model.candidates)
                         Button {
                             Task { await model.toggle(item) }
@@ -128,6 +131,7 @@ private struct FolderContentsView: View {
                             Image(systemName: model.candidates ? (item.inFolder ? "checkmark.circle.fill" : "plus.circle") : "minus.circle")
                                 .frame(width: 44, height: 44)
                         }.accessibilityLabel(tr(model.candidates && !item.inFolder ? "Добавить в папку" : "Убрать из папки"))
+                            .accessibilityValue(item.title)
                             .accessibilityIdentifier("folderItem.\(item.itemID.uuidString.lowercased())")
                     }.msCard(padding: 12)
                 }

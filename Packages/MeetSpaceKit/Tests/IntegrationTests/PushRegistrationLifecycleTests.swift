@@ -256,3 +256,27 @@ private actor FailingPushStore: PushRegistrationStore {
         #expect(await model.detach())
     }
 }
+
+@Test @MainActor func stage08AccountDeletionDrainsLatePushWriteBeforeForgettingConfirmedScope() async throws {
+    let store = MemoryPushRegistrationStore(), platform = PushPlatformFixture()
+    let service = PushServiceFixture(store: store)
+    await service.hold()
+    let model = PushRegistrationModel(platform: platform, store: store)
+    #expect(await model.attach(repository: service)); await model.enable()
+    platform.didRegister(deviceToken: Data(repeating: 0xEF, count: 32))
+    try await waitForPush { await service.registerCount == 1 }
+    // DELETE has already committed on the server; its now-revoked credentials cannot clean
+    // a late registration receipt. Local forgetting must drain that write first.
+    await service.fail(revoke: true)
+    let forgotten = Task { await model.accountDeletionConfirmed(origin: service.origin, userID: service.userID) }
+    try await waitForPush { !model.enabled }
+    #expect(model.busy)
+    await service.release()
+    #expect(await forgotten.value)
+    #expect(try await store.load().entries.isEmpty)
+    #expect(model.error == nil && !model.enabled)
+    platform.didRegister(deviceToken: Data(repeating: 0xFA, count: 32))
+    try await Task.sleep(for: .milliseconds(20))
+    #expect(await service.registerCount == 1)
+    #expect(try await store.load().entries.isEmpty)
+}

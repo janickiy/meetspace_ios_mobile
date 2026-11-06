@@ -1,0 +1,89 @@
+{
+  "verifiedAt": "2026-11-06T13:43:17.880332+00:00",
+  "scope": "Read-only cached pinned SDK metadata; not a production archive or Apple validation",
+  "packageVersion": "156.0.0",
+  "packageRevision": "3cc466ea040e5dcd1344697bf211dc4c079d1a0c",
+  "packageManifestSHA256": "cdf11514d25336948b796a16e7bb2d6db6d644823cd6ce0f74920230b516c995",
+  "binaryTargetURL": "https://github.com/stasel/WebRTC/releases/download/156.0.0/WebRTC-M156.xcframework.zip",
+  "binaryTargetChecksum": "43c2a6f7a650185bbc911d7605a979589671886e8fc0ac283f54fdf3f511dc46",
+  "xcframeworkSignature": {
+    "signed": false,
+    "adHoc": false,
+    "hasTeamIdentifier": false,
+    "signatureDirectoryExists": false
+  },
+  "deviceFrameworkSignature": {
+    "signed": false,
+    "adHoc": false,
+    "hasTeamIdentifier": false,
+    "signatureDirectoryExists": false
+  },
+  "simulatorFrameworkSignature": {
+    "signed": true,
+    "adHoc": true,
+    "hasTeamIdentifier": false,
+    "signatureDirectoryExists": true
+  },
+  "deviceBinarySHA256": "d84819970cc6140789b6c8a73a2dc6ef24179c727c0cd96441ad9ca79dbd3ece",
+  "devicePrivacyManifestSHA256": "eb9337f2dee5992f74ae2b10f78f526d3eec1da8cfde029131081c0b18579614",
+  "devicePrivacyManifest": {
+    "NSPrivacyAccessedAPITypes": [
+      {
+        "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategorySystemBootTime",
+        "NSPrivacyAccessedAPITypeReasons": [
+          "35F9.1",
+          "8FFB.1"
+        ]
+      },
+      {
+        "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategoryFileTimestamp",
+        "NSPrivacyAccessedAPITypeReasons": [
+          "C617.1"
+        ]
+      }
+    ],
+    "NSPrivacyCollectedDataTypes": [],
+    "NSPrivacyTracking": false,
+    "NSPrivacyTrackingDomains": []
+  },
+  "slices": [
+    {
+      "identifier": "ios-arm64",
+      "platform": "ios",
+      "variant": null,
+      "architectures": [
+        "arm64"
+      ]
+    },
+    {
+      "identifier": "ios-x86_64_arm64-simulator",
+      "platform": "ios",
+      "variant": "simulator",
+      "architectures": [
+        "arm64",
+        "x86_64"
+      ]
+    },
+    {
+      "identifier": "macos-x86_64_arm64",
+      "platform": "macos",
+      "variant": null,
+      "architectures": [
+        "x86_64",
+        "arm64"
+      ]
+    },
+    {
+      "identifier": "ios-x86_64_arm64-maccatalyst",
+      "platform": "ios",
+      "variant": "maccatalyst",
+      "architectures": [
+        "x86_64",
+        "arm64"
+      ]
+    }
+  ],
+  "noticeEvidence": "docs/ios/evidence/stage04/webrtc-notices.json",
+  "distributionStatus": "BLOCKED",
+  "remaining": "Vendor SDK signature/provenance, exact binary GN license graph/completeness and real archive validation; see RELEASE.md"
+}

@@ -9,6 +9,38 @@ import MeetSpaceRealtime
 import MeetSpaceCalling
 @testable import MeetSpaceFeatures
 
+@MainActor private final class StressCallReferences {
+    weak var coordinator: DirectCallCoordinator?
+    weak var engine: CallEngine?
+}
+
+/// Exercises the production coordinator and session, not native CallKit/audio hardware.
+@Test @MainActor func stage08ThirtyDirectCallAnswerEndCyclesReleaseResources() async throws {
+    func cycle() async throws -> StressCallReferences {
+        let service = CallService(CallFixture.value(incoming: true)), system = CallSystem()
+        let sockets = CallSockets(), engine = CallEngine()
+        let calls = try coordinator(service, system: system, sockets: sockets, engine: engine)
+        let references = StressCallReferences(); references.coordinator = calls; references.engine = engine
+        await calls.reconcile(); await calls.answer()
+        try await callEventually { await sockets.created.first?.ready != nil }
+        let socket = try #require(await sockets.created.first)
+        try await socket.acknowledge()
+        try await callEventually { calls.mediaSession?.phase == .connected }
+        let action = try #require(system.lastAnswer)
+        #expect(system.completed.filter { $0.0 == action.id && $0.1 }.count == 1)
+        await calls.end()
+        try await callEventually { let ends = await service.ends; return calls.mediaSession == nil && engine.closed && ends == 1 }
+        await calls.close()
+        #expect(!engine.microphone && !engine.camera && !system.invalidated)
+        #expect(await socket.closes == 1)
+        return references
+    }
+    for _ in 0..<30 {
+        let references = try await cycle()
+        try await callEventually { references.coordinator == nil && references.engine == nil }
+    }
+}
+
 private enum CallFixture {
     static let user = UUID(), peer = UUID(), device = UUID(), room = UUID(), member = UUID(), call = UUID(), conversation = UUID()
     static let origin = try! ServerOrigin("https://direct-call.fixture.example")

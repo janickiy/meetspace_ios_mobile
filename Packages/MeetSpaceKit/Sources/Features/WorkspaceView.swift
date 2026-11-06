@@ -114,10 +114,10 @@ struct SearchBox: View {
     let placeholder: String
     var body: some View {
         HStack(spacing: 10) {
-            Image(systemName: "magnifyingglass").foregroundStyle(MSTheme.muted)
-            TextField(tr(placeholder), text: $text).textFieldStyle(.plain).accessibilityLabel(tr(placeholder))
+            Image(systemName: "magnifyingglass").foregroundStyle(MSTheme.muted).accessibilityHidden(true)
+            TextField(tr(placeholder), text: $text).textFieldStyle(.plain).frame(minHeight: 44).accessibilityLabel(tr(placeholder))
             if !text.isEmpty { Button { text = "" } label: { Image(systemName: "xmark.circle.fill") }.accessibilityLabel(tr("Очистить поиск")) }
-        }.padding(12).frame(minHeight: 44).background(MSTheme.surface, in: RoundedRectangle(cornerRadius: 12))
+        }.padding(.horizontal, 12).frame(minHeight: 44).background(MSTheme.surface, in: RoundedRectangle(cornerRadius: 12))
             .overlay(RoundedRectangle(cornerRadius: 12).stroke(MSTheme.line))
     }
 }

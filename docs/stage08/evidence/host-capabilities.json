@@ -1,0 +1,24 @@
+{
+  "xcodeApps": [],
+  "developerDirectory": {
+    "exitCode": 0,
+    "output": "/Library/Developer/CommandLineTools"
+  },
+  "xcodeVersion": {
+    "exitCode": 1,
+    "output": "xcode-select: error: tool 'xcodebuild' requires Xcode, but active developer directory '/Library/Developer/CommandLineTools' is a command line tools instance"
+  },
+  "xctrace": {
+    "exitCode": 72,
+    "output": "xcrun: error: unable to find utility \"xctrace\", not a developer tool or in PATH"
+  },
+  "devicectl": {
+    "exitCode": 72,
+    "output": "xcrun: error: unable to find utility \"devicectl\", not a developer tool or in PATH"
+  },
+  "codesigningIdentitySummary": "0 valid identities found",
+  "provisioningProfileCounts": {
+    "~/Library/MobileDevice/Provisioning Profiles": 0,
+    "~/Library/Developer/Xcode/UserData/Provisioning Profiles": 0
+  }
+}

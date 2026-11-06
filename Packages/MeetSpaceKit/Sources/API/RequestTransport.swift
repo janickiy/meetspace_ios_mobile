@@ -36,6 +36,7 @@ private final class TransferDelegate: NSObject, URLSessionTaskDelegate, Sendable
 /// Separate ephemeral sessions per client. Cookies and credentials are never managed by URLSession.
 public final class URLSessionRequestTransport: RequestTransport, Sendable {
     private let session: URLSession
+    private let uploads = BoundedUploadRegistry()
     public convenience init() { self.init(configuration: .ephemeral) }
     // Internal injection for deterministic URLProtocol tests; shipped composition uses ephemeral sessions.
     init(configuration: URLSessionConfiguration) {
@@ -45,23 +46,25 @@ public final class URLSessionRequestTransport: RequestTransport, Sendable {
         configuration.timeoutIntervalForRequest = 30; configuration.timeoutIntervalForResource = 90
         session = URLSession(configuration: configuration, delegate: TransferDelegate(progress: nil), delegateQueue: nil)
     }
-    deinit { session.invalidateAndCancel() }
+    deinit { session.invalidateAndCancel(); uploads.cancelAll() }
     public func cancelAll() async {
         let tasks = await session.allTasks
         tasks.forEach { $0.cancel() }
+        uploads.cancelAll()
     }
     public func send(_ request: URLRequest, limit: Int = 2_097_152, uploadFile: URL? = nil,
                      progress: TransferProgress? = nil) async throws -> NetworkResponse {
         guard request.url?.scheme == "https", request.url?.user == nil, request.url?.password == nil else { throw APIError.tls }
+        guard limit >= 0 else { throw APIError.invalidResponse }
         try Task.checkCancellation()
         do {
             let response: URLResponse
             let data: Data
             if let uploadFile {
                 // Input is an immutable staged file, limited to 10 MiB before the upload starts.
-                (data, response) = try await session.upload(for: request, fromFile: uploadFile,
-                                                           delegate: TransferDelegate(progress: progress))
-                guard data.count <= limit else { throw APIError.responseTooLarge }
+                let upload = BoundedUpload(limit: limit, progress: progress)
+                uploads.insert(upload); defer { uploads.remove(upload) }
+                (data, response) = try await upload.run(request: request, file: uploadFile, configuration: session.configuration)
             } else {
                 let (bytes, incoming) = try await session.bytes(for: request)
                 defer { bytes.task.cancel() }

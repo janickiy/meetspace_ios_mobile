@@ -55,13 +55,14 @@ struct LiveRecordingsView: View {
                     HStack(spacing: 16) {
                         RoundedRectangle(cornerRadius: 10).fill(MSTheme.accentSoft).frame(width: 90, height: 64)
                             .overlay { Image(systemName: row.recording.mode == "audio_only" ? "waveform" : "play.rectangle").font(.system(size: 26)).foregroundStyle(MSTheme.accent) }
+                            .accessibilityHidden(true)
                         VStack(alignment: .leading, spacing: 6) {
                             Text(row.conference.title).font(MSTheme.font(14, weight: .semibold)).foregroundStyle(MSTheme.ink)
                             Text(row.recording.createdAt, format: .dateTime.day().month().year()).font(MSTheme.font(11)).foregroundStyle(MSTheme.muted)
                             Text(tr(row.recording.statusTitle)).font(MSTheme.font(11)).foregroundStyle(row.recording.ready ? MSTheme.accent : MSTheme.muted)
                         }
-                        Spacer(minLength: 0); Image(systemName: "chevron.right").foregroundStyle(MSTheme.muted)
-                    }.msCard()
+                        Spacer(minLength: 0); Image(systemName: "chevron.right").foregroundStyle(MSTheme.muted).accessibilityHidden(true)
+                    }.msCard().contentShape(Rectangle()).accessibilityElement(children: .combine)
                 }.buttonStyle(.plain).disabled(model.loading).accessibilityIdentifier("recording.\(row.id.uuidString)")
             }
             if model.nextCursor != nil {

@@ -105,6 +105,29 @@ private func downloader(base: URL) throws -> URLSessionRecordingDownloader {
 }
 private func temporaryRecordingDirectory() -> URL { FileManager.default.temporaryDirectory.appendingPathComponent("recording-test-" + UUID().uuidString) }
 
+/// Real ephemeral URLSession/disk/hash cleanup; URLProtocol supplies fixture bytes, not a server.
+@Test func stage08ThirtyRecordingDownloadAndCancelCyclesCleanFiles() async throws {
+    let base = temporaryRecordingDirectory(); defer { try? FileManager.default.removeItem(at: base) }
+    for _ in 0..<30 {
+        let downloads = try downloader(base: base)
+        let local = try await downloads.download(url: URL(string: "https://storage.fixture/media")!, file: RecordingFixture.metadata(), progress: nil)
+        #expect(try Data(contentsOf: local) == RecordingFixture.bytes)
+        await downloads.remove(local)
+        #expect(!FileManager.default.fileExists(atPath: local.path))
+        let url = URL(string: "https://storage.fixture/wait?run=" + UUID().uuidString)!
+        let pending = Task { try await downloads.download(url: url, file: RecordingFixture.metadata(), progress: nil) }
+        for _ in 0..<200 {
+            if RecordingProtocol.requests.contains(url) { break }
+            try await Task.sleep(for: .milliseconds(5))
+        }
+        #expect(RecordingProtocol.requests.contains(url))
+        await downloads.close()
+        await #expect(throws: CancellationError.self) { try await pending.value }
+        let files = FileManager.default.enumerator(at: base, includingPropertiesForKeys: [.isRegularFileKey])?.allObjects as? [URL] ?? []
+        #expect(files.allSatisfy { (try? $0.resourceValues(forKeys: [.isRegularFileKey]).isRegularFile) != true })
+    }
+}
+
 @Test func recordingDownloadStreamsChecksHashAndCleansAccountFiles() async throws {
     let base = temporaryRecordingDirectory(); defer { try? FileManager.default.removeItem(at: base) }
     let downloads = try downloader(base: base)

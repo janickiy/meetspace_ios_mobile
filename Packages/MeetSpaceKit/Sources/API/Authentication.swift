@@ -95,6 +95,10 @@ public struct AuthenticationGateway: Sendable {
 
 public enum SessionEvent: Sendable { case expired }
 
+public enum AccountDeletionError: Error, Equatable, Sendable {
+    case passwordRejected, notAuthorized, conflict, unavailable, unconfirmed
+}
+
 /// One client owns one immutable origin/account scope and one single-flight refresh operation.
 public actor AuthenticatedClient {
     public nonisolated let account: AccountRecord
@@ -116,6 +120,37 @@ public actor AuthenticatedClient {
         let user = try decodeJSON(UserResponse.self, from: await request("GET", path: ["auth", "me"])).user
         guard user.id == account.user.id else { expire(); throw ClientError.accountMismatch }
         return user
+    }
+    /// DELETE has no idempotency key. Reauthenticate before sending, never retry this mutation
+    /// automatically, and do not interpret its password rejection as expiry of a valid session.
+    public func deleteAccount(password: String) async throws {
+        guard !password.isEmpty, password.unicodeScalars.count <= 128 else { throw ClientError.invalidInput }
+        try ensureOpen()
+        if credentials.expiresAt <= Date().addingTimeInterval(30) { try await refresh() }
+        try ensureOpen()
+        struct Body: Encodable { let password: String }
+        var request = URLRequest(url: try EndpointURL.make(account.server, path: ["auth", "me"]))
+        request.httpMethod = "DELETE"; request.httpBody = try WireJSON.encoder().encode(Body(password: password))
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.setValue("application/json", forHTTPHeaderField: "Accept")
+        request.setValue("Bearer \(credentials.accessToken)", forHTTPHeaderField: "Authorization")
+        let response: NetworkResponse
+        do { response = try await transport.send(request, limit: 16_384, uploadFile: nil, progress: nil) }
+        catch { throw AccountDeletionError.unconfirmed }
+        switch response.status {
+        case 400, 422: throw AccountDeletionError.passwordRejected
+        case 401, 403: throw AccountDeletionError.notAuthorized
+        case 409: throw AccountDeletionError.conflict
+        case 404, 405, 501: throw AccountDeletionError.unavailable
+        case 200:
+            struct Confirmation: Decodable { let status: String }
+            guard let confirmation = try? decodeJSON(Confirmation.self, from: response), confirmation.status == "success" else {
+                throw AccountDeletionError.unconfirmed
+            }
+            // A concurrent read can observe server-side revocation before this 200 arrives.
+            // Preserve the affirmative deletion result even if the old session has expired.
+        default: throw AccountDeletionError.unconfirmed
+        }
     }
     public func request(_ method: String, path: [String], query: [URLQueryItem] = [], body: Data? = nil,
                         uploadFile: URL? = nil, contentType: String = "application/json",

@@ -1,0 +1,21 @@
+Build complete! (12,74 с)
+◇ Test run started.
+↳ Testing Library Version: 2084
+↳ Target Platform: arm64e-apple-macos14.0
+◇ Test stage08AccountDeletionRejectionsNeverReplayOrExpireValidSession() started.
+◇ Test stage08AccountDeletionInvalidPasswordNeverSendsRequest() started.
+◇ Test stage08AccountDeletionSendsOneScopedPasswordMutationAfterPreflightRefresh() started.
+◇ Test stage08AccountDeletionRemovesOnlyConfirmedScopeAndFencesIdentityChanges() started.
+◇ Test stage08AccountDeletionFailurePreservesWorkspaceCredentialsAndCachedFiles() started.
+◇ Test stage08AccountDeletionUnknownOutcomeIsNeverReportedAsSuccessOrRetried() started.
+◇ Test stage08AccountDeletionKeepsAffirmativeResultWhenConcurrentReadSeesRevocation() started.
+◇ Test stage08AccountDeletionDrainsLatePushWriteBeforeForgettingConfirmedScope() started.
+✔ Test stage08AccountDeletionInvalidPasswordNeverSendsRequest() passed after 0.008 seconds.
+✔ Test stage08AccountDeletionSendsOneScopedPasswordMutationAfterPreflightRefresh() passed after 0.010 seconds.
+✔ Test stage08AccountDeletionKeepsAffirmativeResultWhenConcurrentReadSeesRevocation() passed after 0.014 seconds.
+✔ Test stage08AccountDeletionUnknownOutcomeIsNeverReportedAsSuccessOrRetried() passed after 0.020 seconds.
+✔ Test stage08AccountDeletionRejectionsNeverReplayOrExpireValidSession() passed after 0.022 seconds.
+✔ Test stage08AccountDeletionRemovesOnlyConfirmedScopeAndFencesIdentityChanges() passed after 0.030 seconds.
+✔ Test stage08AccountDeletionFailurePreservesWorkspaceCredentialsAndCachedFiles() passed after 0.030 seconds.
+✔ Test stage08AccountDeletionDrainsLatePushWriteBeforeForgettingConfirmedScope() passed after 0.052 seconds.
+✔ Test run with 8 tests in 0 suites passed after 0.052 seconds.

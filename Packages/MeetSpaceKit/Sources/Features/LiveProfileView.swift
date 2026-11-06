@@ -7,6 +7,7 @@ struct LiveProfileView: View {
     @Bindable var app: AppModel
     @State private var removing: AccountRecord?
     @State private var licenses = false
+    @State private var deleting: AccountRecord?
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 24) {
@@ -65,8 +66,14 @@ struct LiveProfileView: View {
                 if let error = app.identity.error { Text(tr(error)).foregroundStyle(MSTheme.danger) }
                 if let information = app.identity.information { Text(tr(information)).foregroundStyle(MSTheme.muted) }
                 Button(tr("Лицензии компонентов")) { licenses = true }
+                if let account = app.identity.messaging?.account {
+                    Button(tr("Удалить аккаунт на сервере"), role: .destructive) {
+                        app.identity.error = nil; deleting = account
+                    }.frame(minHeight: 44).accessibilityIdentifier("openDeleteAccount")
+                }
             }.padding(24).frame(maxWidth: 720).frame(maxWidth: .infinity)
         }.background(MSTheme.background).disabled(app.identity.busy)
+            .sheet(item: $deleting) { account in DeleteAccountView(identity: app.identity, account: account) }
             .sheet(isPresented: $licenses) {
                 NavigationStack {
                     ScrollView { Text(WebRTCLibrary.licenseText).font(.system(size: 11, design: .monospaced)).textSelection(.enabled).padding() }

@@ -40,6 +40,24 @@ import MeetSpaceCalling
     /// not confirm server revocation: the owner must still await detach before closing credentials.
     public func suspendDelivery() { invalidate(); enabled = false }
 
+    /// Only after DELETE /auth/me success: the server atomically removed this account's
+    /// push devices. Drain old writes before forgetting that exact scope, without a revoked token.
+    @discardableResult public func accountDeletionConfirmed(origin: ServerOrigin, userID: UUID) async -> Bool {
+        let isCurrent = repository.map { $0.origin == origin && $0.userID == userID } == true
+        if isCurrent { invalidate(); enabled = false }
+        return await serial { [self] in
+            do {
+                try await load()
+                var next = journal
+                next.entries.removeAll { $0.origin == origin && $0.userID == userID }
+                try await store.save(next); journal = next
+                if repository.map({ $0.origin == origin && $0.userID == userID }) == true { repository = nil }
+                if !hasBindings { status = "Уведомления выключены"; error = nil }
+                return true
+            } catch { failedStorage(); return false }
+        }
+    }
+
     /// Call on foreground entry to notice permission changes made in iOS Settings. This never
     /// prompts or registers: revocation uses the same immediate stop and scoped cleanup path.
     public func refreshAuthorization() async {

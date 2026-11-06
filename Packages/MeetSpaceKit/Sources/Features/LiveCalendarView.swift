@@ -173,6 +173,7 @@ struct LiveCalendarView: View {
                 Spacer(minLength: 0)
             }.padding(.trailing, 12).frame(maxWidth: .infinity, minHeight: 65)
                 .background(MSTheme.accentSoft, in: RoundedRectangle(cornerRadius: 13))
+                .contentShape(Rectangle()).accessibilityElement(children: .combine)
         }.buttonStyle(.plain).accessibilityIdentifier("calendar.event.\(meeting.id.uuidString.lowercased())")
     }
     private var sidePanel: some View {
@@ -186,7 +187,7 @@ struct LiveCalendarView: View {
                     VStack(alignment: .leading, spacing: 4) {
                         Text(meeting.title).font(MSTheme.font(12, weight: .semibold))
                         Text(calendarText(MeetingCalendar.timelineDate(meeting), format: "EE, HH:mm", zone: model.zone)).font(MSTheme.font(11)).foregroundStyle(MSTheme.muted)
-                    }.frame(minHeight: 44)
+                    }.frame(minHeight: 44).contentShape(Rectangle()).accessibilityElement(children: .combine)
                 }.buttonStyle(.plain)
             }
         }.msCard(padding: 22)

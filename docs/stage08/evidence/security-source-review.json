@@ -1,0 +1,43 @@
+{
+  "date": "2026-11-06",
+  "kind": "source inspection, not runtime TLS proof",
+  "swiftProductionFiles": 90,
+  "checks": {
+    "applicationLogSinks": [],
+    "customTrustBypass": [],
+    "processExecution": []
+  },
+  "plists": {
+    "App/Info.plist": {
+      "sha256": "3a8efff3b59af6132a23af3ec087c33d269f08622db6f35826e87691429b0c6d",
+      "ATSExceptionPresent": false,
+      "entitlementKeys": []
+    },
+    "BroadcastExtension/Info.plist": {
+      "sha256": "8d9dbd740d0591311ecb3865c3329176682b46c0e9cf605fdba4f3b84277b5a9",
+      "ATSExceptionPresent": false,
+      "entitlementKeys": []
+    },
+    "App/MeetSpace.entitlements": {
+      "sha256": "93d68a3b4536b9a1c5d1848a9c5631d3a8fc73d61f05a46cd367bdb15289311e",
+      "ATSExceptionPresent": false,
+      "entitlementKeys": [
+        "aps-environment",
+        "com.apple.security.application-groups"
+      ]
+    },
+    "BroadcastExtension/MeetSpaceBroadcast.entitlements": {
+      "sha256": "5eead1805d2e1fc7d6497d7204ced4221247f54e948b30095938d479a2df70eb",
+      "ATSExceptionPresent": false,
+      "entitlementKeys": [
+        "com.apple.security.application-groups"
+      ]
+    }
+  },
+  "trackedCredentialSignatureLocations": [],
+  "limits": [
+    "Signature scan is not a complete secret audit",
+    "DEBUG fixtures excluded from production log scan",
+    "TLS chain/locked-device/App Groups provisioning tests require device acceptance"
+  ]
+}
