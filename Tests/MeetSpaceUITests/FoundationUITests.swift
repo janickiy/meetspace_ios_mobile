@@ -132,7 +132,14 @@ import XCTest
     }
 
     private func waitForWorkspaceInteraction(_ app: XCUIApplication) {
-        let target = app.buttons["directCallAnswer"].exists ? app.buttons["directCallAnswer"] : app.buttons["tab.messages"]
+        let incoming = app.buttons["directCallAnswer"].exists
+        let target = incoming ? app.buttons["directCallAnswer"] : app.buttons["tab.messages"]
+        if !target.isHittable {
+            // Some iPad system alerts are visible only to XCTest's interruption handler.
+            // A harmless semantic interaction invokes it; pure AX polling never does.
+            if incoming { app.staticTexts["screen.directCall"].tap() }
+            else { app.buttons["tab.messages"].tap() }
+        }
         let ready = XCTNSPredicateExpectation(predicate: NSPredicate(format: "hittable == true"), object: target)
         XCTAssertEqual(XCTWaiter.wait(for: [ready], timeout: 10), .completed, "The workspace must be actionable after login")
     }
