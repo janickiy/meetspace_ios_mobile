@@ -48,11 +48,15 @@ import Foundation
 
     private func register(_ token: Data) {
         guard isEnabled, let deployment, !token.isEmpty else { return }
-        tokenTask?.cancel(); let operation = generation
+        let previous = tokenTask; previous?.cancel(); let operation = generation
         tokenTask = Task { [weak self] in
+            // Cancellation does not guarantee that a registrar has stopped its network write.
+            // Preserve the chain so rotation and disable's revoke follow every earlier write.
+            await previous?.value
+            guard let self, !Task.isCancelled, generation == operation, isEnabled else { return }
             do { try await deployment.registerVoIPToken(token) }
             catch {
-                guard let self, !Task.isCancelled, generation == operation, isEnabled else { return }
+                guard !Task.isCancelled, generation == operation, isEnabled else { return }
                 continuation.yield(.registrationFailed)
             }
         }
