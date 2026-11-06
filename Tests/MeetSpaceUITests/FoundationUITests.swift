@@ -100,27 +100,35 @@ import XCTest
         XCTAssertTrue(messages.exists || incoming.exists, "Login must reach the workspace or an incoming call")
         // The simulator's Passwords remote view may arrive after the workspace is already in AX.
         // Handle only the observed save-password prompt before screenshots or button assertions.
-        let springboard = XCUIApplication(bundleIdentifier: "com.apple.springboard")
-        let passwordService = XCUIApplication(bundleIdentifier: "com.apple.SafariViewService")
-        let promptDeadline = Date().addingTimeInterval(4)
+        // Cold launch of the Passwords remote process can take longer than the app's transition.
+        let promptDeadline = Date().addingTimeInterval(12)
+        // Query the embedded sheet through the app. Activating SafariViewService as a
+        // separate application races XCTest's default dismissal and disrupts later launches.
+        let surface: XCUIElement = app
         while Date() < promptDeadline {
-            var surfaces: [XCUIElement] = [app, springboard]
-            if passwordService.state != .notRunning { surfaces.append(passwordService) }
-            for surface in surfaces {
-                guard surface.alerts["Save Password?"].exists || surface.alerts["Сохранить пароль?"].exists ||
-                        surface.staticTexts["Save Password?"].exists || surface.staticTexts["Сохранить пароль?"].exists else { continue }
+            if surface.sheets["Save Password?"].exists || surface.sheets["Сохранить пароль?"].exists ||
+                        surface.alerts["Save Password?"].exists || surface.alerts["Сохранить пароль?"].exists ||
+                        surface.staticTexts["Save Password?"].exists || surface.staticTexts["Сохранить пароль?"].exists {
                 for label in ["Not Now", "Не сейчас"] {
                     let decline = surface.buttons[label].firstMatch
                     if decline.exists && decline.isHittable {
                         decline.tap()
                         let removed = XCTNSPredicateExpectation(predicate: NSPredicate(format: "exists == false"), object: decline)
                         XCTAssertEqual(XCTWaiter.wait(for: [removed], timeout: 5), .completed)
+                        waitForWorkspaceInteraction(app)
                         return
                     }
                 }
             }
             Thread.sleep(forTimeInterval: 0.1)
         }
+        waitForWorkspaceInteraction(app)
+    }
+
+    private func waitForWorkspaceInteraction(_ app: XCUIApplication) {
+        let target = app.buttons["directCallAnswer"].exists ? app.buttons["directCallAnswer"] : app.buttons["tab.messages"]
+        let ready = XCTNSPredicateExpectation(predicate: NSPredicate(format: "hittable == true"), object: target)
+        XCTAssertEqual(XCTWaiter.wait(for: [ready], timeout: 10), .completed, "The workspace must be actionable after login")
     }
 
     func testAuthenticationErrorIsVisibleAndDoesNotOpenWorkspace() {
@@ -322,7 +330,13 @@ import XCTest
         let app = launch(); login(app)
         let chat = app.buttons["conversation.22222222-2222-4222-8222-222222222222"]
         XCTAssertTrue(chat.waitForExistence(timeout: 10)); chat.tap()
-        XCTAssertTrue(app.buttons["directCallMenu"].waitForExistence(timeout: 10)); app.buttons["directCallMenu"].tap()
+        let menu = app.buttons["directCallMenu"]
+        XCTAssertTrue(menu.waitForExistence(timeout: 10))
+        // SwiftUI Menu exposes an accessibility wrapper around its native UIButton on this runtime.
+        let menuButton = menu.buttons.firstMatch.exists ? menu.buttons.firstMatch : menu
+        let menuReady = XCTNSPredicateExpectation(predicate: NSPredicate(format: "hittable == true"), object: menuButton)
+        XCTAssertEqual(XCTWaiter.wait(for: [menuReady], timeout: 5), .completed)
+        menuButton.tap()
         XCTAssertTrue(app.buttons["startAudioCall"].waitForExistence(timeout: 5)); app.buttons["startAudioCall"].tap()
         XCTAssertTrue(app.staticTexts["screen.directCall"].waitForExistence(timeout: 10))
         capture(app, name: "stage05-outgoing")
