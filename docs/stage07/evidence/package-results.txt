@@ -1,0 +1,6 @@
+2026-11-06T12:59:39.2361280Z ✘ Test actualBackendConferenceRESTAndGuestScope() skipped.
+2026-11-06T12:59:39.2421320Z ✘ Test actualBackendDirectCallsDevicesAndPrivateSFU() skipped.
+2026-11-06T12:59:39.2459540Z ✘ Test actualBackendTwoClientsAndFiles() skipped.
+2026-11-06T12:59:39.2477240Z ✘ Test actualBackendCalendarFoldersSettingsAndRecordings() skipped.
+2026-11-06T12:59:44.9567060Z ✔ Test run with 163 tests passed after 5.894 seconds.
+2026-11-06T13:02:34.0480420Z ** BUILD SUCCEEDED **

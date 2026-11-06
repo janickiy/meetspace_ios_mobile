@@ -1,0 +1,39 @@
+2026-11-06T13:06:54.3400900Z Test Case '-[MeetSpaceTests.CallAudioIntegrationTests testDirectCallCanNegotiateBeforeCallKitActivatesAudio]' passed (0.478 seconds).
+2026-11-06T13:06:54.3918810Z 	 Executed 1 test, with 0 failures (0 unexpected) in 0.478 (0.479) seconds
+2026-11-06T13:06:54.4217780Z Test Case '-[MeetSpaceTests.KeychainIntegrationTests testKeychainRoundTripUpdateAndScopedDeletion]' passed (0.025 seconds).
+2026-11-06T13:06:54.6438300Z 	 Executed 1 test, with 0 failures (0 unexpected) in 0.025 (0.025) seconds
+2026-11-06T13:06:54.8718220Z Test Case '-[MeetSpaceTests.MediaIntegrationTests testBlockedSourcesNeverRequestPermissionsOrAppearInOffer]' passed (0.156 seconds).
+2026-11-06T13:06:55.3484820Z Test Case '-[MeetSpaceTests.MediaIntegrationTests testNativePeerOfferAndCloseCyclesWithCaptureOff]' passed (0.222 seconds).
+2026-11-06T13:06:55.4356190Z Test Case '-[MeetSpaceTests.MediaIntegrationTests testScreenGenerationRollbackAndPolicyWithCaptureOff]' passed (0.055 seconds).
+2026-11-06T13:06:55.5990260Z Test Case '-[MeetSpaceTests.MediaIntegrationTests testScreenRejectsInvalidAndStaleFrameSession]' passed (0.067 seconds).
+2026-11-06T13:06:55.7641040Z 	 Executed 4 tests, with 0 failures (0 unexpected) in 0.500 (0.502) seconds
+2026-11-06T13:06:57.5896180Z Test Case '-[MeetSpaceTests.RecordingPlaybackTests testActualServerAACArtifactAdvancesNativePlayerTime]' passed (1.331 seconds).
+2026-11-06T13:06:57.8331180Z 	 Executed 1 test, with 0 failures (0 unexpected) in 1.331 (1.333) seconds
+2026-11-06T13:06:58.0806450Z 	 Executed 7 tests, with 0 failures (0 unexpected) in 2.334 (7.396) seconds
+2026-11-06T13:06:58.2422870Z 	 Executed 7 tests, with 0 failures (0 unexpected) in 2.334 (7.400) seconds
+2026-11-06T13:08:09.3070620Z Test Case '-[MeetSpaceUITests.FoundationUITests testAuthenticatedChatSendAndLogout]' passed (50.990 seconds).
+2026-11-06T13:08:30.7001810Z Test Case '-[MeetSpaceUITests.FoundationUITests testAuthenticationErrorIsVisibleAndDoesNotOpenWorkspace]' passed (21.392 seconds).
+2026-11-06T13:09:33.4054910Z Test Case '-[MeetSpaceUITests.FoundationUITests testConferenceCreateMediaControlsChatAndLeave]' passed (62.710 seconds).
+2026-11-06T13:10:20.1441970Z Test Case '-[MeetSpaceUITests.FoundationUITests testConferenceDeniedCameraPermissionKeepsCaptureOffAndCanLeave]' passed (46.703 seconds).
+2026-11-06T13:11:00.9195500Z Test Case '-[MeetSpaceUITests.FoundationUITests testCreateGroupWithSelectedMember]' passed (40.791 seconds).
+2026-11-06T13:11:30.0234070Z Test Case '-[MeetSpaceUITests.FoundationUITests testDirectCallAcceptedOnOtherDeviceHasNoCaptureControls]' passed (29.120 seconds).
+2026-11-06T13:12:22.2926070Z Test Case '-[MeetSpaceUITests.FoundationUITests testDirectIncomingAnswerControlsMinimizeAndEnd]' passed (52.245 seconds).
+2026-11-06T13:12:52.9810660Z Test Case '-[MeetSpaceUITests.FoundationUITests testDirectOutgoingCancelFromConversation]' passed (30.715 seconds).
+2026-11-06T13:13:09.4365030Z Test Case '-[MeetSpaceUITests.FoundationUITests testFirstLaunchDoesNotImplyAuthentication]' passed (16.449 seconds).
+2026-11-06T13:13:20.0116780Z Test Case '-[MeetSpaceUITests.FoundationUITests testInvalidHTTPAddressIsRejected]' passed (10.449 seconds).
+2026-11-06T13:13:39.1689160Z Test Case '-[MeetSpaceUITests.FoundationUITests testLargeTextNavigationAndAppearance]' passed (19.287 seconds).
+2026-11-06T13:13:47.6240220Z Test Case '-[MeetSpaceUITests.FoundationUITests testOfflineStateCanRetryInExplicitDemo]' passed (8.455 seconds).
+2026-11-06T13:14:24.9404410Z Test Case '-[MeetSpaceUITests.FoundationUITests testOrdinaryPushOptInAndDisableWithFixtureToken]' passed (37.286 seconds).
+2026-11-06T13:15:00.8307390Z Test Case '-[MeetSpaceUITests.FoundationUITests testScreenConflictKeepsDirectCallAndMicrophoneWithFixtures]' passed (35.921 seconds).
+2026-11-06T13:15:47.8071090Z Test Case '-[MeetSpaceUITests.FoundationUITests testScreenShareStartStopAndRestartInConferenceWithFixtures]' passed (46.975 seconds).
+2026-11-06T13:16:41.5168720Z Test Case '-[MeetSpaceUITests.FoundationUITests testStage07CalendarCreateRescheduleCancelAndViews]' passed (53.693 seconds).
+2026-11-06T13:17:26.0269190Z Test Case '-[MeetSpaceUITests.FoundationUITests testStage07FolderRemovalPreservesChat]' passed (44.523 seconds).
+2026-11-06T13:17:54.4415430Z Test Case '-[MeetSpaceUITests.FoundationUITests testStage07RecordingAccessDeniedNeverStartsPlayer]' passed (28.416 seconds).
+2026-11-06T13:18:34.8952910Z Test Case '-[MeetSpaceUITests.FoundationUITests testStage07RecordingsStatusAndNativePlayerWithLocalFixture]' passed (40.453 seconds).
+2026-11-06T13:19:16.8341730Z Test Case '-[MeetSpaceUITests.FoundationUITests testStage07SettingsPersistProfilePreferencesAndSSHDisabled]' passed (41.939 seconds).
+2026-11-06T13:19:33.5959000Z Test Case '-[MeetSpaceUITests.FoundationUITests testStateScreensAreReachable]' passed (16.733 seconds).
+2026-11-06T13:19:42.2997780Z Test Case '-[MeetSpaceUITests.FoundationUITests testValidServerAdvancesToAuthenticationWithEmptySubmitDisabled]' passed (8.732 seconds).
+2026-11-06T13:19:42.3017820Z 	 Executed 22 tests, with 0 failures (0 unexpected) in 743.980 (743.992) seconds
+2026-11-06T13:19:42.3106770Z 	 Executed 22 tests, with 0 failures (0 unexpected) in 743.980 (743.993) seconds
+2026-11-06T13:19:42.3108050Z 	 Executed 22 tests, with 0 failures (0 unexpected) in 743.980 (743.999) seconds
+2026-11-06T13:19:43.5960660Z ** TEST SUCCEEDED **

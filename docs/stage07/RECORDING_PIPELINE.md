@@ -41,9 +41,11 @@ SHA-256 actual artifact:
 Backend назвал объект `final.mp4`; локальная копия аудиоконтейнера сохранена как
 `/tmp/meetspace-stage07-recording-pipeline-01/recording.m4a` (4 775 байт).
 Она содержит только синтетическую тишину и может использоваться как DEBUG fixture.
-Передача этих же байт в DEBUG UI fixture — отдельная проверка AVPlayer;
-результаты hosted/UI тестов на момент этого отчёта ещё ожидаются. Этот pipeline
-сам по себе не проверяет iOS playback.
+Передача этих же байт в DEBUG UI fixture проверена отдельно:
+[CI на iPhone/iPad](evidence/ci-run.json) — PASS. Hosted AVPlayer test проверил
+playable, длительность, audio track и продвижение времени; UI открыл тот же AAC.
+Этот результат не означает прохождение production HTTPS end-to-end на устройстве
+и не приписывается самому серверному pipeline.
 
 ## Границы результата
 

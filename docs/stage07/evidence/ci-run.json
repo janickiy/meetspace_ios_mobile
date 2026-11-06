@@ -1,0 +1,144 @@
+{
+  "sourceCommit": "4075edf78b92fb991a341ba057fbf2aaac63bc23",
+  "runID": 42220964006,
+  "url": "https://github.com/janickiy/meetspace_ios_mobile/actions/runs/42220964006",
+  "conclusion": "success",
+  "createdAt": "2026-11-06T12:52:13Z",
+  "updatedAt": "2026-11-06T13:20:01Z",
+  "packageTests": {
+    "passed": 159,
+    "optInSkipped": 4,
+    "total": 163
+  },
+  "releaseBuild": "BUILD SUCCEEDED",
+  "artifactDigestsVerified": true,
+  "toolchains": {
+    "iPhone": {
+      "xcode": "16.4",
+      "build": "16F6"
+    },
+    "iPad": {
+      "xcode": "16.4",
+      "build": "16F6"
+    }
+  },
+  "screenshotGroundedPasswordDeclineAttempts": {
+    "iPhone": 2,
+    "iPad": 2
+  },
+  "jobs": [
+    {
+      "id": 127902596297,
+      "name": "simulators (iPad)",
+      "html_url": "https://github.com/janickiy/meetspace_ios_mobile/actions/runs/42220964006/job/127902596297",
+      "conclusion": "success",
+      "started_at": "2026-11-06T12:57:40Z",
+      "completed_at": "2026-11-06T13:20:01Z"
+    },
+    {
+      "id": 127902596469,
+      "name": "package",
+      "html_url": "https://github.com/janickiy/meetspace_ios_mobile/actions/runs/42220964006/job/127902596469",
+      "conclusion": "success",
+      "started_at": "2026-11-06T12:57:41Z",
+      "completed_at": "2026-11-06T13:02:40Z"
+    },
+    {
+      "id": 127902596491,
+      "name": "simulators (iPhone)",
+      "html_url": "https://github.com/janickiy/meetspace_ios_mobile/actions/runs/42220964006/job/127902596491",
+      "conclusion": "success",
+      "started_at": "2026-11-06T12:57:18Z",
+      "completed_at": "2026-11-06T13:18:48Z"
+    }
+  ],
+  "artifacts": [
+    {
+      "id": 13505101887,
+      "name": "results-iPad",
+      "size_in_bytes": 51102011,
+      "digest": "sha256:b6866d3cfc0e3d44aced6406421a059fd2f0e784759187ddee7bfd81fae951fc"
+    },
+    {
+      "id": 13504752972,
+      "name": "results-iPhone",
+      "size_in_bytes": 22787904,
+      "digest": "sha256:5f12dfa0f4f675c8c27e38efba353c32ba09c0d38b1a567cfb51375ce1206b1d"
+    }
+  ],
+  "simulators": {
+    "iPhone": {
+      "devicesAndConfigurations": [
+        {
+          "device": {
+            "architecture": "arm64",
+            "deviceId": "B220EC43-535F-472F-935A-5B2D0E9F2975",
+            "deviceName": "iPhone SE (3rd generation)",
+            "modelName": "iPhone SE (3rd generation)",
+            "osBuildNumber": "23C54",
+            "osVersion": "26.2",
+            "platform": "iOS Simulator"
+          },
+          "expectedFailures": 0,
+          "failedTests": 0,
+          "passedTests": 29,
+          "skippedTests": 0,
+          "testPlanConfiguration": {
+            "configurationId": "1",
+            "configurationName": "Test Scheme Action"
+          }
+        }
+      ],
+      "environmentDescription": "MeetSpace-Debug · Built with macOS 15.8.2",
+      "expectedFailures": 0,
+      "failedTests": 0,
+      "finishTime": 1793971098.45,
+      "passedTests": 29,
+      "result": "Passed",
+      "skippedTests": 0,
+      "startTime": 1793969892.56,
+      "statistics": [],
+      "testFailures": [],
+      "title": "Test - MeetSpace-Debug",
+      "topInsights": [],
+      "totalTestCount": 29
+    },
+    "iPad": {
+      "devicesAndConfigurations": [
+        {
+          "device": {
+            "architecture": "arm64",
+            "deviceId": "B8FDD452-636F-4559-AF6E-83AC73F482CF",
+            "deviceName": "iPad mini (A17 Pro)",
+            "modelName": "iPad mini (A17 Pro)",
+            "osBuildNumber": "23C54",
+            "osVersion": "26.2",
+            "platform": "iOS Simulator"
+          },
+          "expectedFailures": 0,
+          "failedTests": 0,
+          "passedTests": 29,
+          "skippedTests": 0,
+          "testPlanConfiguration": {
+            "configurationId": "1",
+            "configurationName": "Test Scheme Action"
+          }
+        }
+      ],
+      "environmentDescription": "MeetSpace-Debug · Built with macOS 15.8.2",
+      "expectedFailures": 0,
+      "failedTests": 0,
+      "finishTime": 1793971183.574,
+      "passedTests": 29,
+      "result": "Passed",
+      "skippedTests": 0,
+      "startTime": 1793970004.083,
+      "statistics": [],
+      "testFailures": [],
+      "title": "Test - MeetSpace-Debug",
+      "topInsights": [],
+      "totalTestCount": 29
+    }
+  },
+  "limitations": "UI scenarios use DEBUG REST/signaling/media doubles. The UI harness declines the fixture password save prompt using AX or screenshot-grounded Vision OCR when its AX subtree is missing. OS credential storage and AutoFill are not covered; production password fields are unchanged. Stage07 UI playback uses local H264 MP4 and the exact AAC artifact from a separate real SFU/recorder pipeline. Hosted AVPlayer checks playability, duration, audio track and time advancement of that AAC. Physical-device, production HTTPS end-to-end, Files export, video recorder and long/background playback acceptance remain separate."
+}

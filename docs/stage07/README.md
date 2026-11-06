@@ -40,12 +40,13 @@
 | Настройки сохраняются | PASS — профиль/preferences после нового login; timezone/view отдельно по аккаунтам/серверам |
 | Права и lifecycle записей | PASS — настоящий API starting/stopping/catalogue, 403/409; unit tests URL/metadata/hash/отмена/отзыв прав |
 | Полный Swift package на host | PASS — 159 выполнено, 4 opt-in SKIP, всего 163 |
-| Xcode Release и iPhone/iPad | Результат CI будет добавлен после завершения |
+| Xcode Release | PASS — CI на commit `4075edf`, BUILD SUCCEEDED |
+| iPhone/iPad hosted и UI | PASS — по 29/29 на каждом симуляторе: 7 hosted + 22 UI, без пропусков |
 | Настоящий recorder worker → готовый AAC и signed download | PASS — audio_only, настоящие состояния до ready, размер/hash, FFmpeg decode, запрет доступа постороннего и исключённого участника |
-| Native AVPlayer с файлом настоящего worker | Итог hosted/UI прогона будет добавлен после CI; файл перенесён в DEBUG fixture с тем же SHA-256 |
+| Native AVPlayer с файлом настоящего worker | PASS — на обоих симуляторах проверены playable, audio track, duration и продвижение playback time; UI открывает тот же AAC по SHA-256 |
 | Физические iPhone/iPad, long playback, background/lock, Files export | NOT_RUN — требуется подписанная установка и тестовый HTTPS deployment |
 | SSH-установка | DISABLED / PLAN ONLY — локальный flag false, установка не выполнялась и не считается готовой |
-| Визуальное соответствие | Доступные макеты использованы; результаты screenshot review добавляются после CI. Month/list, native picker/menu/sheets — обозначенные iOS-адаптации |
+| Проверка интерфейса | PASS в описанном объёме — 26 снимков iPhone/iPad. Доступные макеты использованы с перечисленными iOS-адаптациями; полная пиксельная идентичность не заявляется |
 
 Четыре пропуска обычного suite — opt-in реальные backend-прогоны этапов 3, 4, 5 и 7.
 Тест этапа 7 выполнен отдельно: **1 PASS, 0 SKIP**, 80 HTTP-запросов к одноразовому
@@ -113,9 +114,21 @@ membership и при потере сети, проверить большие ф
 системы не отображаются, гарантии удаления при I/O failure нет. Системный звук
 ReplayKit не обещается.
 
+UI suite использует DEBUG API/media fixtures. Системное предложение сохранить
+фиктивный пароль отклоняется; хранение credentials в Passwords и OS AutoFill
+требуют отдельной проверки обычной сборки и не входят в этот UI suite.
+
 Список устройств — push-привязки, не список login-сессий. API смены email/пароля,
 удаления аккаунта на сервере и SSH deployment не выдумываются. Нет автоматически
 включаемого SSH при ответе сервера. Состояние ReplayKit/VoIP device blockers этапов
 5–6 этим этапом не изменяется.
 
-Полный список файлов и проверенные скриншоты будут добавлены с итоговым CI receipt.
+[Список изменённых файлов](CHANGED_FILES.md) включает исходники, тесты, скрипты и
+контракты. [История CI-попыток](evidence/ci-attempts.json) сохраняет обнаруженные
+ошибки и причины исправлений. Итоговый [CI run](https://github.com/janickiy/meetspace_ios_mobile/actions/runs/42220964006)
+прошёл на source commit `4075edf78b92fb991a341ba057fbf2aaac63bc23`.
+[Receipt](evidence/ci-run.json) содержит результаты всех jobs и проверенные SHA-256
+скачанных ZIP-артефактов; [manifest](evidence/screenshots.json) — 26 PNG без редактирования.
+[Визуальный отчёт и галерея](VISUAL_REVIEW.md) описывают условия, адаптации и границы
+проверки. После этого source commit добавлены только отчёты/evidence; код и тесты
+соответствуют успешному запуску. Финальный коммит документации использует `[skip ci]`.

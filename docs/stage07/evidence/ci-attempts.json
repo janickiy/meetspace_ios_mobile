@@ -1,0 +1,319 @@
+{
+  "attempts": [
+    {
+      "runID": 42203536143,
+      "sourceCommit": "1cda36180f08447a9f4335a74e44ac5051943840",
+      "url": "https://github.com/janickiy/meetspace_ios_mobile/actions/runs/42203536143",
+      "conclusion": "failure",
+      "jobs": [
+        {
+          "id": 127844420442,
+          "name": "simulators (iPad)",
+          "conclusion": "failure"
+        },
+        {
+          "id": 127844420795,
+          "name": "package",
+          "conclusion": "success"
+        },
+        {
+          "id": 127844420812,
+          "name": "simulators (iPhone)",
+          "conclusion": "failure"
+        }
+      ],
+      "observedIssues": [
+        "Profile navigation rows had 17-point AX frames; center taps hit the empty spacer and did not navigate (4 new tests on both simulators).",
+        "On iPhone, app-wide upward swipes landed on the open keyboard, leaving the profile Save button offscreen. iPad settings scenario passed."
+      ],
+      "fixes": [
+        "Make the whole 44-point profile navigation row a contentShape and assert its touch target in UI tests.",
+        "Done/focus dismissal for profile and calendar forms; scroll the actual scroll/collection view in UI tests."
+      ],
+      "simulators": {
+        "iPhone": {
+          "passed": 23,
+          "failed": 5,
+          "skipped": 0
+        },
+        "iPad": {
+          "passed": 24,
+          "failed": 4,
+          "skipped": 0
+        }
+      }
+    },
+    {
+      "runID": 42207133113,
+      "sourceCommit": "6b0e3a380a5a16a4a324eeb4819f5b8fc0dd503f",
+      "url": "https://github.com/janickiy/meetspace_ios_mobile/actions/runs/42207133113",
+      "conclusion": "cancelled",
+      "jobs": [
+        {
+          "id": 127856487164,
+          "name": "package",
+          "conclusion": "cancelled"
+        },
+        {
+          "id": 127856487355,
+          "name": "simulators (iPad)",
+          "conclusion": "failure"
+        },
+        {
+          "id": 127856487713,
+          "name": "simulators (iPhone)",
+          "conclusion": "failure"
+        }
+      ],
+      "observedIssues": [
+        "SDK 18.5 marks AVAssetTrack non-Sendable; new MainActor hosted playback test could not await loadTracks across actor boundary. Both simulator jobs failed at compile, before tests."
+      ],
+      "fixes": [
+        "Keep AVURLAsset and tracks inside nonisolated async metadata helper; return Sendable scalar metadata. Keep AVPlayer and playback time assertion on MainActor."
+      ],
+      "cancellation": "After both simulator build failures were confirmed, pushing the fix cancelled the still-running package job under the existing concurrency policy."
+    },
+    {
+      "runID": 42207717240,
+      "sourceCommit": "32d43726802d30b95172a9f299dee449ce571e34",
+      "url": "https://github.com/janickiy/meetspace_ios_mobile/actions/runs/42207717240",
+      "conclusion": "failure",
+      "jobs": [
+        {
+          "id": 127858539174,
+          "name": "package",
+          "conclusion": "success"
+        },
+        {
+          "id": 127858539485,
+          "name": "simulators (iPad)",
+          "conclusion": "failure"
+        },
+        {
+          "id": 127858539587,
+          "name": "simulators (iPhone)",
+          "conclusion": "failure"
+        }
+      ],
+      "observedIssues": [
+        "Calendar confirmation test selected the covered calendar.cancel form button with the same title, instead of the dialog action (both simulators).",
+        "Screenshot review: recording 403 error was below the catalogue viewport; opening the fourth AAC row reused the catalogue scroll offset and hid detail title/back."
+      ],
+      "fixes": [
+        "Select confirmation by label while excluding the underlying calendar.cancel identifier; wait for hittability.",
+        "Pin recording error above scroll content and scroll to top on selected recording change; assert error/title/back visibility in UI tests.",
+        "Capture both week header and scrolled hourly agenda as separate evidence."
+      ],
+      "nativeAACPlayback": "PASS on both simulators; playability, audio track, duration and advancing AVPlayer time verified.",
+      "simulators": {
+        "iPhone": {
+          "passed": 28,
+          "failed": 1,
+          "skipped": 0
+        },
+        "iPad": {
+          "passed": 28,
+          "failed": 1,
+          "skipped": 0
+        }
+      }
+    },
+    {
+      "runID": 42210768370,
+      "sourceCommit": "6c6f7840d3c6a8abfeaa6611f9a3ad66e14b9b3a",
+      "url": "https://github.com/janickiy/meetspace_ios_mobile/actions/runs/42210768370",
+      "conclusion": "failure",
+      "jobs": [
+        {
+          "id": 127868561614,
+          "name": "simulators (iPad)",
+          "conclusion": "success"
+        },
+        {
+          "id": 127868561934,
+          "name": "package",
+          "conclusion": "success"
+        },
+        {
+          "id": 127868562249,
+          "name": "simulators (iPhone)",
+          "conclusion": "failure"
+        }
+      ],
+      "observedIssues": [
+        "On iPhone, the system Passwords Save Password? window blocked 12 workflows after login. Failure videos show Not Now/Save; the app AX snapshot contains only an empty second fullscreen Window, so direct prompt queries return nil. Covered-child taps fail at scroll-to-visible before an event.",
+        "All 29 iPad tests passed; iPhone native AAC, recording detail navigation and profile/settings scenarios passed."
+      ],
+      "fixes": [
+        "Register a narrowly scoped XCTest UI interruption monitor to decline only the known password-saving prompt; when a workspace target is covered, interact with the application surface to invoke interruption handling, then assert target hittability. Product password/autofill behavior is unchanged."
+      ],
+      "primaryReference": "https://developer.apple.com/videos/play/wwdc2020/10220/",
+      "simulators": {
+        "iPhone": {
+          "passed": 17,
+          "failed": 12,
+          "skipped": 0
+        },
+        "iPad": {
+          "passed": 29,
+          "failed": 0,
+          "skipped": 0
+        }
+      }
+    },
+    {
+      "runID": 42213713088,
+      "sourceCommit": "b0d9aaed2fa3c9154d3fae2729dcd631139a62f4",
+      "url": "https://github.com/janickiy/meetspace_ios_mobile/actions/runs/42213713088",
+      "conclusion": "failure",
+      "jobs": [
+        {
+          "id": 127878381757,
+          "name": "package",
+          "conclusion": "success"
+        },
+        {
+          "id": 127878382031,
+          "name": "simulators (iPad)",
+          "conclusion": "failure"
+        },
+        {
+          "id": 127878382313,
+          "name": "simulators (iPhone)",
+          "conclusion": "failure"
+        }
+      ],
+      "observedIssues": [
+        "SDK 18.5 exposes the synchronous XCTest UI interruption monitor callback without a MainActor annotation. Access to MainActor-isolated XCUIElement properties and methods from that callback failed compilation in both simulator jobs, before tests executed."
+      ],
+      "fixes": [
+        "Wrap the interruption callback's XCUIElement access in MainActor.assumeIsolated, checking its executor before reading or interacting with UI elements. Only the XCTest handler changed; product source remains unchanged."
+      ],
+      "fixCommit": "d5f26c1bdac2f3602efb7cc2ab3cbde044aad4e9"
+    },
+    {
+      "runID": 42214768824,
+      "runAttempt": 1,
+      "sourceCommit": "d5f26c1bdac2f3602efb7cc2ab3cbde044aad4e9",
+      "url": "https://github.com/janickiy/meetspace_ios_mobile/actions/runs/42214768824",
+      "status": "completed",
+      "conclusion": "failure",
+      "jobs": [
+        {
+          "name": "package",
+          "conclusion": "success"
+        },
+        {
+          "id": 127881919726,
+          "name": "simulators (iPad)",
+          "conclusion": "failure",
+          "failureStage": "checkout",
+          "testsExecuted": false,
+          "artifactsProduced": false
+        },
+        {
+          "name": "simulators (iPhone)",
+          "status": "completed",
+          "conclusion": "failure"
+        }
+      ],
+      "observedIssues": [
+        "The iPad runner failed during checkout: all three git fetch attempts could not connect to github.com:443, timing out after 75019, 75022 and 75023 ms. Checkout exited 128 before compilation or tests; no test artifacts were produced. This is an infrastructure failure, not an application/test result.",
+        "The iPhone run completed with 23 passed, 6 failed and 0 skipped. All six failures were existing workflows blocked at the login helper assertion that the workspace must be actionable; the narrow interruption handler did not reliably dismiss the system Passwords overlay. All five Stage 7 UI scenarios and hosted native AAC playback passed."
+      ],
+      "retry": {
+        "status": "not_performed",
+        "sourceCommitUnchanged": true,
+        "requestedJobID": 127881919726,
+        "initialRequestHTTPStatus": 403,
+        "reason": "The earlier single-job retry request was rejected while the workflow was running. After iPhone also failed, no iPad retry of this unchanged source was performed; the DEBUG-only fixture input metadata fix is recorded separately by fixCommit."
+      },
+      "simulators": {
+        "iPhone": {
+          "passed": 23,
+          "failed": 6,
+          "skipped": 0
+        }
+      },
+      "fixes": [
+        "Use .oneTimeCode text-content metadata for SecureField only in DEBUG launches with the explicit -uitesting argument, excluding OS Password AutoFill from deterministic fixture scenarios. Production password/autofill behavior is unchanged. Remove the ineffective UI interruption monitor and retain the post-login workspace hittability assertion."
+      ],
+      "fixCommit": "1a38f9ecd0669027cc94c243b69824266f114af2"
+    },
+    {
+      "runID": 42218073422,
+      "sourceCommit": "1a38f9ecd0669027cc94c243b69824266f114af2",
+      "url": "https://github.com/janickiy/meetspace_ios_mobile/actions/runs/42218073422",
+      "status": "completed",
+      "conclusion": "failure",
+      "jobs": [
+        {
+          "id": 127892984599,
+          "name": "simulators (iPad)",
+          "conclusion": "failure"
+        },
+        {
+          "id": 127892985075,
+          "name": "simulators (iPhone)",
+          "conclusion": "failure"
+        },
+        {
+          "id": 127892985094,
+          "name": "package",
+          "conclusion": "success"
+        }
+      ],
+      "package": {
+        "total": 163,
+        "passed": 159,
+        "failed": 0,
+        "skipped": 4,
+        "releaseBuild": "success"
+      },
+      "simulators": {
+        "iPad": {
+          "passed": 15,
+          "failed": 14,
+          "skipped": 0
+        },
+        "iPhone": {
+          "passed": 14,
+          "failed": 15,
+          "skipped": 0
+        }
+      },
+      "observedIssues": [
+        "The OS Passwords Save Password? overlay still appeared: DEBUG .oneTimeCode input metadata did not suppress it. Removing the 12-second login helper also allowed a late overlay to block even the first chat workflow.",
+        "The incoming-call fixture can present after login; choosing the generic workspace target risks a race with the call presentation."
+      ],
+      "fixes": [
+        "Completely revert RootView to its original password input behavior. Restore bounded accessibility-based decline handling in XCTest, with a screenshot-grounded Vision OCR fallback only when the exact Save Password? and Not Now text matches have confidence at least 0.8 and the decline action is below the title.",
+        "Select the known incoming-call target using the explicit launch argument to avoid a late call-presentation race."
+      ],
+      "fixValidation": "The OCR detector passed actual iPhone and iPad positive screenshots and two negative images. This detector check does not predict the next CI workflow outcome.",
+      "fixCommit": "4075edf78b92fb991a341ba057fbf2aaac63bc23"
+    }
+  ],
+  "finalSuccessfulRun": {
+    "runID": 42220964006,
+    "sourceCommit": "4075edf78b92fb991a341ba057fbf2aaac63bc23",
+    "url": "https://github.com/janickiy/meetspace_ios_mobile/actions/runs/42220964006",
+    "receipt": "ci-run.json",
+    "iPhone": {
+      "passed": 29,
+      "failed": 0,
+      "skipped": 0
+    },
+    "iPad": {
+      "passed": 29,
+      "failed": 0,
+      "skipped": 0
+    },
+    "packageTests": {
+      "passed": 159,
+      "optInSkipped": 4,
+      "total": 163
+    },
+    "releaseBuild": "BUILD SUCCEEDED"
+  }
+}

@@ -1,8 +1,8 @@
 # Этап 07 — изменённые файлы
 
 Инвентарь на 2026-11-06 относительно завершённого этапа 6:
-`a9786fbba7b94708a9e7369cc752e3ac18024a52`. Учтены коммиты этапа 7 и текущее
-рабочее дерево, включая новые файлы до их добавления в Git. `A` — новый файл
+`a9786fbba7b94708a9e7369cc752e3ac18024a52`. Учтены исходники и итоговые материалы
+этапа 7. `A` — новый файл
 относительно этой базы, `M` — изменённый. Наличие файла теста не означает его PASS:
 фактические результаты и границы проверки находятся в [отчёте этапа](README.md).
 
@@ -70,7 +70,7 @@
 | A | [IntegrationTests/SettingsTests.swift](../../Packages/MeetSpaceKit/Tests/IntegrationTests/SettingsTests.swift) | Контракты профиля/preferences/capabilities и закрытие модели |
 | A | [IntegrationTests/Stage07IdentityTests.swift](../../Packages/MeetSpaceKit/Tests/IntegrationTests/Stage07IdentityTests.swift) | Свежий профиль после restore/switch и изоляция одинаковых user ID на разных серверах |
 | A | [IntegrationTests/FeaturesLoopbackTests.swift](../../Packages/MeetSpaceKit/Tests/IntegrationTests/FeaturesLoopbackTests.swift) | Opt-in Swift-проверка настоящего backend этапа 7 |
-| M | [FoundationUITests.swift](../../Tests/MeetSpaceUITests/FoundationUITests.swift) | Сценарии новых функций и screenshot attachments для iPhone/iPad |
+| M | [FoundationUITests.swift](../../Tests/MeetSpaceUITests/FoundationUITests.swift) | Сценарии новых функций, screenshot attachments и AX/Vision-обработка системного Passwords в UI suite |
 | A | [RecordingPlaybackTests.swift](../../Tests/MeetSpaceTests/RecordingPlaybackTests.swift) | Native AVPlayer: playable/audio track/duration и продвижение времени настоящего AAC-артефакта |
 | M | [App/UITestDependencies.swift](../../App/UITestDependencies.swift) | Детерминированные DEBUG API fixtures и инъекция downloader |
 | A | [App/UITestRecordingFixture.swift](../../App/UITestRecordingFixture.swift) | Валидный H.264 fixture и AAC-файл настоящего worker для native/UI проверки |
@@ -100,10 +100,11 @@ Runner-скрипты используют закреплённый checkout bac
 | A | [SETTINGS_SSH_CONTRACT.md](SETTINGS_SSH_CONTRACT.md) | Настройки, Android core:ssh/install.sh, disabled flag и план SSH |
 | A | [RUNTIME_CONTRACT.md](RUNTIME_CONTRACT.md) | Настоящий Swift API run и условия воспроизведения |
 | A | [RECORDING_PIPELINE.md](RECORDING_PIPELINE.md) | Настоящая готовая запись и доказательства server pipeline |
+| A | [VISUAL_REVIEW.md](VISUAL_REVIEW.md) | Результат осмотра экранов, границы сравнения с макетами и галерея |
 
-## Evidence и ожидаемые итоговые CI-материалы
+## Evidence и итоговые CI-материалы
 
-Уже подготовлены следующие группы новых файлов; их результаты объясняются в
+Ниже перечислены группы новых файлов; их результаты объясняются в
 соответствующих отчётах, а не выводятся из наличия артефактов:
 
 | Группа | Файлы и назначение |
@@ -111,17 +112,17 @@ Runner-скрипты используют закреплённый checkout bac
 | Локальный Swift suite | [evidence/host-results.txt](evidence/host-results.txt) — сводка фактического host-прогона |
 | Настоящий API contract run | [evidence/runtime/](evidence/runtime/) — `results.txt`, `runtime.json`, `source-review.json`, `cleanup.json` |
 | Настоящий recording pipeline | [evidence/recording-pipeline/](evidence/recording-pipeline/) — `runtime.json`, `artifact.json`, `access-denials.json`, `ffprobe.json`, `decode.txt`, `recording-probe.log`, `sfu-cleanup.json`, `cleanup.json` |
+| CI receipt и история | [ci-run.json](evidence/ci-run.json), [ci-attempts.json](evidence/ci-attempts.json) — source commit, run/jobs, outcomes, проверенные artifact digests и обнаруженные сбои |
+| Пакет и Release | [package-results.txt](evidence/package-results.txt) — результаты Swift package и Xcode Release |
+| iPhone | [iPhone-summary.json](evidence/iPhone-summary.json), [iPhone-results.txt](evidence/iPhone-results.txt) — xcresult summary и результаты hosted/UI тестов |
+| iPad | [iPad-summary.json](evidence/iPad-summary.json), [iPad-results.txt](evidence/iPad-results.txt) — xcresult summary и результаты hosted/UI тестов |
+| Снимки | [screenshots.json](evidence/screenshots.json) и [screenshots/](evidence/screenshots/) — 26 неизменённых PNG, тест-источник и SHA-256 каждого файла |
 
-После завершения CI ожидается отдельное дополнение evidence: receipt с URL, commit,
-jobs и их фактическими outcomes; результаты Swift package и Xcode Release; summary
-и результаты hosted/UI тестов для iPhone и iPad; manifest screenshot attachments
-и выбранные PNG. Снимки покрывают week/month/list, папки и содержимое, профиль,
+Снимки покрывают week/agenda/month/list, папки и содержимое, профиль,
 уведомления/server flags, библиотеку записей, player/server audio и отказ доступа.
-Полные `.xcresult` и диагностика остаются CI artifacts; каждый PNG здесь не перечисляется.
-
-На момент составления этого инвентаря CI PASS и окончательная визуальная приёмка
-**не утверждаются**. После получения результатов актуальным источником их статуса
-служит [README этапа](README.md) с receipt и результатами screenshot review.
+Полные `.xcresult` и диагностика остаются CI artifacts с ограниченным сроком хранения;
+каждый PNG здесь не перечисляется. Фактические статусы приведены в
+[README этапа](README.md), границы осмотра — в [визуальном отчёте](VISUAL_REVIEW.md).
 
 Инвентарь сверяется командами:
 
