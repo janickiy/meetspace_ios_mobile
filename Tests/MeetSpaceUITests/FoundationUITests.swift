@@ -111,9 +111,10 @@ import UIKit
         XCTAssertFalse(submit.isEnabled)
         password.tap(); password.typeText("incorrect-password\n")
         reveal(submit, in: app); submit.tap()
-        let confirmation = app.buttons["deleteAccount.confirm"]
+        // iOS26 exposes nested button nodes for the same confirmation action.
+        let confirmation = app.buttons.matching(identifier: "deleteAccount.confirm").firstMatch
         XCTAssertTrue(confirmation.waitForExistence(timeout: 5))
-        let cancel = app.buttons["deleteAccount.cancelConfirmation"]
+        let cancel = app.buttons.matching(identifier: "deleteAccount.cancelConfirmation").firstMatch
         XCTAssertTrue(cancel.waitForExistence(timeout: 5))
         cancel.tap()
         XCTAssertTrue(password.waitForExistence(timeout: 5)); XCTAssertTrue(submit.isEnabled)
@@ -493,7 +494,10 @@ import UIKit
         let create = app.buttons["createConference"]
         XCTAssertTrue(create.waitForExistence(timeout: 10)); create.tap()
         let name = app.textFields["conferenceTitle"]
-        XCTAssertTrue(name.waitForExistence(timeout: 5)); name.tap(); name.typeText(title)
+        XCTAssertTrue(name.waitForExistence(timeout: 5)); reveal(name, in: app); name.tap()
+        // The iPad sheet can expose its field before the presentation accepts focus.
+        if !app.keyboards.firstMatch.waitForExistence(timeout: 2) { name.tap() }
+        XCTAssertTrue(app.keyboards.firstMatch.waitForExistence(timeout: 5)); name.typeText(title)
         let submit = app.buttons["conferenceCreateSubmit"]
         for _ in 0..<3 where !submit.isHittable { app.swipeUp() }
         XCTAssertTrue(submit.isEnabled); submit.tap()

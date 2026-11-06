@@ -46,6 +46,7 @@ def main():
                      "-only-testing:MeetSpaceUITests/FoundationUITests/testAccessibilityStage08CoreScreens",
                      "-only-testing:MeetSpaceUITests/FoundationUITests/testAccessibilityStage08LargeTextLiveFlow",
                      "-only-testing:MeetSpaceUITests/FoundationUITests/testStage08AccountDeletionRequiresPasswordAndConfirmation",
+                     "-only-testing:MeetSpaceUITests/FoundationUITests/testConferenceCreateMediaControlsChatAndLeave",
                      "-only-testing:MeetSpaceUITests/FoundationUITests/testLargeTextNavigationAndAppearance"]
     try:
         subprocess.run(["xcodebuild", "-project", "MeetSpace.xcodeproj", "-scheme", "MeetSpace-Debug",
