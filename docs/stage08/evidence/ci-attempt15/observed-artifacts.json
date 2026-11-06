@@ -1,0 +1,62 @@
+[
+  {
+    "id": 13537871263,
+    "node_id": "MDg6QXJ0aWZhY3QxMzUzNzg3MTI2Mw==",
+    "name": "results-iPhone26",
+    "size_in_bytes": 354030605,
+    "url": "https://api.github.com/repos/janickiy/meetspace_ios_mobile/actions/artifacts/13537871263",
+    "archive_download_url": "https://api.github.com/repos/janickiy/meetspace_ios_mobile/actions/artifacts/13537871263/zip",
+    "expired": false,
+    "digest": "sha256:00c80fc709628253a82fd6e157b636af2dd68ac5c061ffa9b6064a31216ff025",
+    "created_at": "2026-11-06T20:09:21Z",
+    "updated_at": "2026-11-06T20:09:21Z",
+    "expires_at": "2026-11-13T20:09:00Z",
+    "workflow_run": {
+      "id": 42281088607,
+      "repository_id": 1446695117,
+      "head_repository_id": 1446695117,
+      "head_branch": "codex/stage08-arm-validation",
+      "head_sha": "55bfcfb1e075224eda9ed7106a669db0b55dd7e5"
+    }
+  },
+  {
+    "id": 13536274526,
+    "node_id": "MDg6QXJ0aWZhY3QxMzUzNjI3NDUyNg==",
+    "name": "results-iPad26",
+    "size_in_bytes": 415786963,
+    "url": "https://api.github.com/repos/janickiy/meetspace_ios_mobile/actions/artifacts/13536274526",
+    "archive_download_url": "https://api.github.com/repos/janickiy/meetspace_ios_mobile/actions/artifacts/13536274526/zip",
+    "expired": false,
+    "digest": "sha256:fe1ab5217340c517f01c9794c2820d6a553ab8deef7ac69efbf0b20032cdf6a2",
+    "created_at": "2026-11-06T20:09:27Z",
+    "updated_at": "2026-11-06T20:09:27Z",
+    "expires_at": "2026-11-13T20:08:59Z",
+    "workflow_run": {
+      "id": 42281088607,
+      "repository_id": 1446695117,
+      "head_repository_id": 1446695117,
+      "head_branch": "codex/stage08-arm-validation",
+      "head_sha": "55bfcfb1e075224eda9ed7106a669db0b55dd7e5"
+    }
+  },
+  {
+    "id": 13536061288,
+    "node_id": "MDg6QXJ0aWZhY3QxMzUzNjA2MTI4OA==",
+    "name": "release-unsigned",
+    "size_in_bytes": 18268595,
+    "url": "https://api.github.com/repos/janickiy/meetspace_ios_mobile/actions/artifacts/13536061288",
+    "archive_download_url": "https://api.github.com/repos/janickiy/meetspace_ios_mobile/actions/artifacts/13536061288/zip",
+    "expired": false,
+    "digest": "sha256:8fb29e230616ad319d393a7f07c1195f68aa67369e0239e62205b5bfeffbc714",
+    "created_at": "2026-11-06T19:46:18Z",
+    "updated_at": "2026-11-06T19:46:18Z",
+    "expires_at": "2026-11-13T19:46:11Z",
+    "workflow_run": {
+      "id": 42281088607,
+      "repository_id": 1446695117,
+      "head_repository_id": 1446695117,
+      "head_branch": "codex/stage08-arm-validation",
+      "head_sha": "55bfcfb1e075224eda9ed7106a669db0b55dd7e5"
+    }
+  }
+]

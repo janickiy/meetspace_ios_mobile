@@ -1,0 +1,100 @@
+ZIP member: iPad18.xcresult/Staging/1_Test/Diagnostics/MeetSpaceUITests-A1DF6759-44B9-48E6-B398-E26CCFBD3A30-Configuration-Test Scheme Action-Iteration-1/MeetSpaceUITests-56B4C6D7-E449-4ECD-A3DF-460C55EB579E/Session-MeetSpaceUITests-2026-11-06_190739-pBY5GS.log
+Original SHA256: 26e0ab8f620518ab9f33e7e1d16f76a2f4d807267e62ebc6fcbd257ca49c8a0d
+
+1299: 19:09:43.563 MeetSpaceUITests-Runner[9925:34515] Creating future for 'launching application via Xcode' with timeout 60.00
+1300: 19:09:43.564 xcodebuild[3258:31898] Dispatching!
+1301: 19:09:43.564 xcodebuild[3258:13276] Test runner session received application launch request: <XCTProcessLaunchParameters: 0x6000025406c0> bundleID: com.meetspace.ios, path: /Users/runner/Library/Developer/Xcode/DerivedData/MeetSpace-cwtmbceagoeyddchxldzcnlramqn/Build/Products/Debug-iphonesimulator/MeetSpace.app	Launch arguments: (
+1302:     "-uitesting",
+1303:     "-AppleLanguages",
+1304:     "(ru)",
+1305:     "-AppleLocale",
+1306:     "ru_RU",
+1307:     "-UIPreferredContentSizeCategoryName",
+1308:     UICTContentSizeCategoryAccessibilityXXXL
+1309: )	Launch environment: {
+1310:     "APP_DISTRIBUTOR_ID_OVERRIDE" = "com.apple.AppStore";
+1311:     "DYLD_FRAMEWORK_PATH" = "/Users/runner/Library/Developer/Xcode/DerivedData/MeetSpace-cwtmbceagoeyddchxldzcnlramqn/Build/Products/Debug-iphonesimulator:/Users/runner/Library/Developer/Xcode/DerivedData/MeetSpace-cwtmbceagoeyddchxldzcnlramqn/Build/Products/Debug-iphonesimulator/PackageFrameworks";
+1312:     "DYLD_LIBRARY_PATH" = "/Users/runner/Library/Developer/Xcode/DerivedData/MeetSpace-cwtmbceagoeyddchxldzcnlramqn/Build/Products/Debug-iphonesimulator";
+1313:     "OS_ACTIVITY_MODE" = info;
+1314:     "XCODE_SCHEME_NAME" = "MeetSpace-Debug";
+1315:     "__XCODE_BUILT_PRODUCTS_DIR_PATHS" = "/Users/runner/Library/Developer/Xcode/DerivedData/MeetSpace-cwtmbceagoeyddchxldzcnlramqn/Build/Products/Debug-iphonesimulator";
+1316:     "__XPC_DYLD_FRAMEWORK_PATH" = "/Users/runner/Library/Developer/Xcode/DerivedData/MeetSpace-cwtmbceagoeyddchxldzcnlramqn/Build/Products/Debug-iphonesimulator";
+1317:     "__XPC_DYLD_LIBRARY_PATH" = "/Users/runner/Library/Developer/Xcode/DerivedData/MeetSpace-cwtmbceagoeyddchxldzcnlramqn/Build/Products/Debug-iphonesimulator";
+1318: }
+1319: 19:09:43.571 xcodebuild[3258:13276] Stored token 2 for launch of com.meetspace.ios at /Users/runner/Library/Developer/Xcode/DerivedData/MeetSpace-cwtmbceagoeyddchxldzcnlramqn/Build/Products/Debug-iphonesimulator/MeetSpace.app
+1320: 19:09:43.571 xcodebuild[3258:13276] Appending launch session standard output and standard error to /Users/runner/work/meetspace_ios_mobile/meetspace_ios_mobile/artifacts/iPad18.xcresult/Staging/1_Test/Diagnostics/MeetSpaceUITests-A1DF6759-44B9-48E6-B398-E26CCFBD3A30-Configuration-Test Scheme Action-Iteration-1/MeetSpaceUITests-56B4C6D7-E449-4ECD-A3DF-460C55EB579E/StandardOutputAndStandardError-com.meetspace.ios.txt
+1321: 19:09:43.571 xcodebuild[3258:13276] Invoking receipt with: 2, (null)
+1322: 19:09:43.564 MeetSpaceUITests-Runner[9925:34515] <XCTWaiter: 0x600000cbafa0> entering wait loop for 60.00s with expectations: `launching application via Xcode`
+1323: 19:09:43.572 MeetSpaceUITests-Runner[9925:40193] Got launch request reply from Xcode, token/error: 2
+1324: 19:09:43.572 MeetSpaceUITests-Runner[9925:40193] Got launch request reply from Xcode, token 2, error (null)
+1325: 19:09:43.572 MeetSpaceUITests-Runner[9925:34515] Returning result XCTWaiterResultCompleted for synchronous waiter <XCTWaiter: 0x600000cbafa0>
+1326: 19:09:43.573 MeetSpaceUITests-Runner[9925:34515] Wait <XCTWaiterWait: 0x600001760200> completed after 0.009s
+1327: 19:09:43.573 MeetSpaceUITests-Runner[9925:34515] cleaning up launching application via Xcode
+1328: 19:09:43.573 MeetSpaceUITests-Runner[9925:34515] Waiting for Xcode to confirm launch completion...
+1329: 19:09:43.573 MeetSpaceUITests-Runner[9925:34515] 	Checking status using token 2 for <XCUIApplicationImpl: 0x600000ca94d0 com.meetspace.ios at /Users/runner/Library/Developer/Xcode/DerivedData/MeetSpace-cwtmbceagoeyddchxldzcnlramqn/Build/Products/Debug-iphonesimulator/MeetSpace.app>
+1330: 19:09:43.573 MeetSpaceUITests-Runner[9925:34515] Creating future for 'requesting launch progress' with timeout 60.00
+1331: 19:09:43.607 xcodebuild[3258:13276] Test runner session received request for launch process status with token 2
+1332: 19:09:43.607 xcodebuild[3258:13276] Got status 0 from operation for token 2
+1333: 19:09:43.574 MeetSpaceUITests-Runner[9925:34515] <XCTWaiter: 0x600000d16d30> entering wait loop for 60.00s with expectations: `requesting launch progress`
+1334: 19:09:43.608 MeetSpaceUITests-Runner[9925:34603] Got status/error: 0 for token 2
+1335: 19:09:43.608 MeetSpaceUITests-Runner[9925:34515] Returning result XCTWaiterResultCompleted for synchronous waiter <XCTWaiter: 0x600000d16d30>
+1336: 19:09:43.608 MeetSpaceUITests-Runner[9925:34515] Wait <XCTWaiterWait: 0x6000017404c0> completed after 0.035s
+1337: 19:09:43.608 MeetSpaceUITests-Runner[9925:34515] cleaning up requesting launch progress
+1338: 19:09:43.609 MeetSpaceUITests-Runner[9925:34515] 	Got progress 0 for token 2
+1339: 19:09:43.609 MeetSpaceUITests-Runner[9925:34515] <XCTWaiter: 0x600000cc7060> entering wait loop for 0.16s with expectations: `delay`
+1340: 19:09:43.611 xcodebuild[3258:40561] 📱<DVTiPhoneSimulator (0x7f935b0d8990), iPad mini (A17 Pro), unknown class, 18.6 (22G86), 97EF782D-9317-4024-908C-4F9E8417C2D2> claim LaunchSessionClaim_0x7f935d2951d0 on simulator was issued, 3 claims exist.
+1341: 19:09:43.613 xcodebuild[3258:40448] 📱<DVTiPhoneSimulator (0x7f935b0d8990), iPad mini (A17 Pro), unknown class, 18.6 (22G86), 97EF782D-9317-4024-908C-4F9E8417C2D2> claim LaunchSessionClaim_0x7f935d2951d0 on simulator was issued, 3 claims exist.
+1342: 19:09:43.614 xcodebuild[3258:40448] 97EF782D-9317-4024-908C-4F9E8417C2D2: Registered for sim device notification, got token 21
+1343: 19:09:43.614 xcodebuild[3258:42036] 97EF782D-9317-4024-908C-4F9E8417C2D2: Unregistering for sim device notification with token 21
+
+312398: 20:30:57.119 MeetSpaceUITests-Runner[9925:34515] cleaning up delay
+312399: 20:30:57.119 MeetSpaceUITests-Runner[9925:34515] 	Checking status using token 2 for <XCUIApplicationImpl: 0x600000ca94d0 com.meetspace.ios at /Users/runner/Library/Developer/Xcode/DerivedData/MeetSpace-cwtmbceagoeyddchxldzcnlramqn/Build/Products/Debug-iphonesimulator/MeetSpace.app>
+312400: 20:30:57.119 MeetSpaceUITests-Runner[9925:34515] Creating future for 'requesting launch progress' with timeout 60.00
+312401: 20:30:57.123 xcodebuild[3258:13276] Test runner session received request for launch process status with token 2
+312402: 20:30:57.123 xcodebuild[3258:13276] Got status 0 from operation for token 2
+312403: 20:30:57.119 MeetSpaceUITests-Runner[9925:34515] <XCTWaiter: 0x60000d130690> entering wait loop for 60.00s with expectations: `requesting launch progress`
+312404: 20:30:57.124 MeetSpaceUITests-Runner[9925:42049] Got status/error: 0 for token 2
+312405: 20:30:57.124 MeetSpaceUITests-Runner[9925:34515] Returning result XCTWaiterResultCompleted for synchronous waiter <XCTWaiter: 0x60000d130690>
+312406: 20:30:57.125 MeetSpaceUITests-Runner[9925:34515] Wait <XCTWaiterWait: 0x6000060b1040> completed after 0.005s
+312407: 20:30:57.125 MeetSpaceUITests-Runner[9925:34515] cleaning up requesting launch progress
+312408: 20:30:57.125 MeetSpaceUITests-Runner[9925:34515] <XCTWaiter: 0x60000d130930> entering wait loop for 0.19s with expectations: `delay`
+312409: 20:30:57.320 MeetSpaceUITests-Runner[9925:34515] Returning result XCTWaiterResultCompleted for synchronous waiter <XCTWaiter: 0x60000d130930>
+312410: 20:30:57.320 MeetSpaceUITests-Runner[9925:34515] Wait <XCTWaiterWait: 0x6000060b1040> completed after 0.195s
+312411: 20:30:57.320 MeetSpaceUITests-Runner[9925:34515] cleaning up delay
+312412: 20:30:57.320 MeetSpaceUITests-Runner[9925:34515] 	Checking status using token 2 for <XCUIApplicationImpl: 0x600000ca94d0 com.meetspace.ios at /Users/runner/Library/Developer/Xcode/DerivedData/MeetSpace-cwtmbceagoeyddchxldzcnlramqn/Build/Products/Debug-iphonesimulator/MeetSpace.app>
+312413: 20:30:57.320 MeetSpaceUITests-Runner[9925:34515] Creating future for 'requesting launch progress' with timeout 60.00
+312414: 20:30:57.321 xcodebuild[3258:13276] Test runner session received request for launch process status with token 2
+312415: 20:30:57.322 xcodebuild[3258:13276] Got status 0 from operation for token 2
+312416: 20:30:57.321 MeetSpaceUITests-Runner[9925:34515] <XCTWaiter: 0x60000d12d9b0> entering wait loop for 60.00s with expectations: `requesting launch progress`
+312417: 20:30:57.322 MeetSpaceUITests-Runner[9925:42049] Got status/error: 0 for token 2
+312418: 20:30:57.322 MeetSpaceUITests-Runner[9925:34515] Returning result XCTWaiterResultCompleted for synchronous waiter <XCTWaiter: 0x60000d12d9b0>
+312419: 20:30:57.323 MeetSpaceUITests-Runner[9925:34515] Wait <XCTWaiterWait: 0x6000060b4d80> completed after 0.002s
+312420: 20:30:57.323 MeetSpaceUITests-Runner[9925:34515] cleaning up requesting launch progress
+312421: 20:30:57.323 MeetSpaceUITests-Runner[9925:34515] <XCTWaiter: 0x60000d1265b0> entering wait loop for 0.20s with expectations: `delay`
+312422: 20:30:57.521 MeetSpaceUITests-Runner[9925:34515] Returning result XCTWaiterResultCompleted for synchronous waiter <XCTWaiter: 0x60000d1265b0>
+312423: 20:30:57.521 MeetSpaceUITests-Runner[9925:34515] Wait <XCTWaiterWait: 0x6000060a7900> completed after 0.198s
+312424: 20:30:57.522 MeetSpaceUITests-Runner[9925:34515] cleaning up delay
+312425: 20:30:57.522 MeetSpaceUITests-Runner[9925:34515] 	Checking status using token 2 for <XCUIApplicationImpl: 0x600000ca94d0 com.meetspace.ios at /Users/runner/Library/Developer/Xcode/DerivedData/MeetSpace-cwtmbceagoeyddchxldzcnlramqn/Build/Products/Debug-iphonesimulator/MeetSpace.app>
+312426: 20:30:57.522 MeetSpaceUITests-Runner[9925:34515] Creating future for 'requesting launch progress' with timeout 60.00
+312427: 20:30:57.523 xcodebuild[3258:13276] Test runner session received request for launch process status with token 2
+312428: 20:30:57.523 xcodebuild[3258:13276] Got status 0 from operation for token 2
+312429: 20:30:57.523 MeetSpaceUITests-Runner[9925:34515] <XCTWaiter: 0x60000d130a50> entering wait loop for 60.00s with expectations: `requesting launch progress`
+312430: 20:30:57.524 MeetSpaceUITests-Runner[9925:40192] Got status/error: 0 for token 2
+312431: 20:30:57.524 MeetSpaceUITests-Runner[9925:34515] Returning result XCTWaiterResultCompleted for synchronous waiter <XCTWaiter: 0x60000d130a50>
+312432: 20:30:57.525 MeetSpaceUITests-Runner[9925:34515] Wait <XCTWaiterWait: 0x6000060b1280> completed after 0.002s
+312433: 20:30:57.525 MeetSpaceUITests-Runner[9925:34515] cleaning up requesting launch progress
+312434: 20:30:57.525 MeetSpaceUITests-Runner[9925:34515] <XCTWaiter: 0x60000d128fc0> entering wait loop for 0.20s with expectations: `delay`
+312435: 20:30:57.726 MeetSpaceUITests-Runner[9925:34515] Returning result XCTWaiterResultCompleted for synchronous waiter <XCTWaiter: 0x60000d128fc0>
+312436: 20:30:57.727 MeetSpaceUITests-Runner[9925:34515] Wait <XCTWaiterWait: 0x6000060ad7c0> completed after 0.201s
+312437: 20:30:57.727 MeetSpaceUITests-Runner[9925:34515] cleaning up delay
+312438: 20:30:57.727 MeetSpaceUITests-Runner[9925:34515] 	Checking status using token 2 for <XCUIApplicationImpl: 0x600000ca94d0 com.meetspace.ios at /Users/runner/Library/Developer/Xcode/DerivedData/MeetSpace-cwtmbceagoeyddchxldzcnlramqn/Build/Products/Debug-iphonesimulator/MeetSpace.app>
+312439: 20:30:57.727 MeetSpaceUITests-Runner[9925:34515] Creating future for 'requesting launch progress' with timeout 60.00
+312440: 20:30:57.728 xcodebuild[3258:13276] Test runner session received request for launch process status with token 2
+312441: 20:30:57.728 xcodebuild[3258:13276] Got status 0 from operation for token 2
+312442: 20:30:57.728 MeetSpaceUITests-Runner[9925:34515] <XCTWaiter: 0x60000d126b80> entering wait loop for 60.00s with expectations: `requesting launch progress`
+312443: 20:30:57.729 MeetSpaceUITests-Runner[9925:34603] Got status/error: 0 for token 2
+312444: 20:30:57.729 MeetSpaceUITests-Runner[9925:34515] Returning result XCTWaiterResultCompleted for synchronous waiter <XCTWaiter: 0x60000d126b80>
+312445: 20:30:57.729 MeetSpaceUITests-Runner[9925:34515] Wait <XCTWaiterWait: 0x6000060798c0> completed after 0.002s
+312446: 20:30:57.730 MeetSpaceUITests-Runner[9925:34515] cleaning up requesting launch progress
+312447: 20:30:57.730 MeetSpaceUITests-Runner[9925:34515] <XCTWaiter: 0x60000d130bd0> entering wait loop for 0.20s with expectations: `delay`
+

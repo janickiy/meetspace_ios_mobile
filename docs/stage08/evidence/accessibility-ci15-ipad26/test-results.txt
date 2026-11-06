@@ -1,0 +1,4 @@
+2026-11-06T19:45:40.8848250Z Test Case '-[MeetSpaceUITests.FoundationUITests testAccessibilityStage08CoreScreens]' passed (220.497 seconds).
+2026-11-06T19:47:41.9660630Z Test Case '-[MeetSpaceUITests.FoundationUITests testAccessibilityStage08LargeTextLiveFlow]' passed (121.054 seconds).
+2026-11-06T20:05:13.9907940Z Test Case '-[MeetSpaceUITests.FoundationUITests testStage07SettingsPersistProfilePreferencesAndSSHDisabled]' passed (65.111 seconds).
+2026-11-06T20:06:11.5399580Z Test Case '-[MeetSpaceUITests.FoundationUITests testStage08AccountDeletionRequiresPasswordAndConfirmation]' failed (57.520 seconds).

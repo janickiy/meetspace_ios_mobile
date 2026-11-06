@@ -1,0 +1,44 @@
+{
+  "schema": 1,
+  "runID": 42275177048,
+  "sourceCommit": "04f70a3d80bfd8cd9314c798f0eb3fc7e58b343f",
+  "label": "iPhone26",
+  "result": "FAIL",
+  "testElapsedSeconds": 93.735,
+  "artifact": {
+    "id": 13535881924,
+    "name": "results-iPhone26",
+    "size_in_bytes": 393651486,
+    "digest": "sha256:403aeea5acada19447b75450b3e6eb0d438f39cc2ea2d4d71650e09c0040e118",
+    "downloadedSHA256": "403aeea5acada19447b75450b3e6eb0d438f39cc2ea2d4d71650e09c0040e118",
+    "zipCRCVerified": true
+  },
+  "completedAuditPasses": 7,
+  "engineTimeouts": 0,
+  "coveredScreens": [
+    "welcome"
+  ],
+  "rawFindings": {
+    "welcome": 1,
+    "reviewed": 1
+  },
+  "nextStepFailure": "After app termination/relaunch, connectServer tap did not produce serverURL. The failure AX remains on welcome. No overlay appears in the retained failure AX; the cause of the unapplied tap is not established.",
+  "boundary": "This is a readiness/navigation assertion failure after the completed welcome audit, not an engine timeout or a new raw accessibility finding. Other six screens and their audit categories were not reached. The initial welcome PNG is not a screenshot of the later failure.",
+  "retainedFiles": [
+    {
+      "file": "iPhone26-audit-attempts.json",
+      "bytes": 3046,
+      "sha256": "9f45676ec57ffef3796eaec27aee40dcf32c4c4dd214d3d3957aa7460ab92c7c"
+    },
+    {
+      "file": "iPhone26-welcome-progress.json",
+      "bytes": 472,
+      "sha256": "92f27aef181db1ce03d0f37107caef12e29e4c9e7f53ac65686a89f060b5c563"
+    },
+    {
+      "file": "iPhone26-welcome.png",
+      "bytes": 258679,
+      "sha256": "64cbed09ffb3e6dc02a24ced22ceff672b6ed9e20874d7c12b6fc3f5902b701e"
+    }
+  ]
+}

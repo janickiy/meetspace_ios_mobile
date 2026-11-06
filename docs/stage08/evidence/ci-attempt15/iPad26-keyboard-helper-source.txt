@@ -1,0 +1,18 @@
+Source commit: 55bfcfb1e075224eda9ed7106a669db0b55dd7e5
+391:         func enterPassword(_ value: String) {
+392:             password.tap()
+393:             let keyboard = app.keyboards.firstMatch
+394:             XCTAssertTrue(keyboard.waitForExistence(timeout: 5))
+395:             // The app is Russian, while these fixtures contain Latin letters. CI's
+396:             // Russian secure keyboard silently discarded synthetic Latin typeText
+397:             // events. Select the real Latin keyboard and tap its actual keys.
+398:             for _ in 0..<4 where !keyboard.keys["f"].exists {
+399:                 let next = keyboard.buttons.matching(NSPredicate(format:
+400:                     "identifier == %@ OR label IN %@", "emoji", ["Следующая клавиатура", "Next keyboard"])).firstMatch
+401:                 XCTAssertTrue(next.waitForExistence(timeout: 5)); next.tap()
+402:             }
+403:             XCTAssertTrue(keyboard.keys["f"].waitForExistence(timeout: 5))
+404:             capture(app, name: "stage08-account-deletion-keyboard-" + (value == "fixture-password" ? "retry" : "initial"))
+405:             for character in value {
+406:                 let key = keyboard.keys[String(character)]
+407:                 if !key.exists {

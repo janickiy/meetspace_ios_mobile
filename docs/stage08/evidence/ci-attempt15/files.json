@@ -1,0 +1,356 @@
+{
+  "algorithm": "sha256",
+  "files": [
+    {
+      "path": "iPad26-accessibility-issues.json",
+      "sha256": "cedf714d32170e81c4d11cb19c5b1b5afb203c50567409566a947899d05970f1",
+      "bytes": 6416
+    },
+    {
+      "path": "iPad26-actual-font-scaling.json",
+      "sha256": "9a7810d748877747bacd90d71304dcd279ac2fff8161d43f6dffefc07ae02988",
+      "bytes": 36979
+    },
+    {
+      "path": "iPad26-attachment-manifest.json",
+      "sha256": "cc97ab23fe5c46d8b99bb35605cb754ed83e6014689de4d15664d1481199b7ac",
+      "bytes": 56273
+    },
+    {
+      "path": "iPad26-audit-attachments/05B385BD-D468-4D3A-AE52-804746094C17.json",
+      "sha256": "2f6b3be84b03fc061977f8bb81661770b64a492534e2bab970f01d0e8ff75781",
+      "bytes": 4969
+    },
+    {
+      "path": "iPad26-audit-attachments/0737ACC8-FD25-4CD5-AABD-9C1F1360B0A6.json",
+      "sha256": "9d312c1f73312e6432c9bee47ff7a55a74d411d1a5999f83d77b17c51892d2df",
+      "bytes": 21152
+    },
+    {
+      "path": "iPad26-audit-attachments/08A1212A-D939-4B4B-ABB4-89F2EB490ED1.json",
+      "sha256": "081deafbc98b34e9b431efaaceff05975ad2317065bf66ba3bfa0b14af14466e",
+      "bytes": 5814
+    },
+    {
+      "path": "iPad26-audit-attachments/17FB0378-006F-40D4-A963-91AC2500F03D.json",
+      "sha256": "2e992aa294bcce1f1ed250d193ba3aa3a5a7885b013ef3141a17a17eabb4be0a",
+      "bytes": 12095
+    },
+    {
+      "path": "iPad26-audit-attachments/235686D3-88BE-4AAA-BDF9-94E1C1FF48BB.json",
+      "sha256": "ef44d052bcf41b782db580d991fd00295f483d5cc6f1a259f158be7550050e0b",
+      "bytes": 6066
+    },
+    {
+      "path": "iPad26-audit-attachments/27899FB0-22A5-493A-8C00-AFCB47CCDF4F.json",
+      "sha256": "31a30d93b62af485e5907b75cc2dd7efd3f7456f85a46429d5bcb717ee449f23",
+      "bytes": 2771
+    },
+    {
+      "path": "iPad26-audit-attachments/3AB0FD0A-8240-40A7-B304-1D17CD3A8992.json",
+      "sha256": "7e071874fd3d1b5d69f4d62ba96fe9350d59dfd7880e4edf68a332db172bcb02",
+      "bytes": 15125
+    },
+    {
+      "path": "iPad26-audit-attachments/5D591DEC-933F-4015-981D-569EA82D1E8C.json",
+      "sha256": "be4b3e83f15e2d0d868775d5bd65cd5352ee8b1dc18d3e6ea094a0e88cd7faa8",
+      "bytes": 9078
+    },
+    {
+      "path": "iPad26-audit-attachments/92742058-533D-488C-9395-5B368FD0847D.json",
+      "sha256": "c0e1ba55267840223f88264031713967484982453398544e2cb8f45182579c94",
+      "bytes": 860
+    },
+    {
+      "path": "iPad26-audit-attachments/A9D0DEC1-D451-4D1A-9CD3-F61D5C6AC29C.json",
+      "sha256": "236dde3766c6645e70a64c06e6edb2f444eada3961471a8dfe938b4141225483",
+      "bytes": 1601
+    },
+    {
+      "path": "iPad26-audit-attachments/BA2B4071-FC93-4CDD-AB8D-EAE6BC2213EE.json",
+      "sha256": "b2ca07d7b203a84edc98197f533e5ba5402835feb8820de0f6bec98883ab9197",
+      "bytes": 18136
+    },
+    {
+      "path": "iPad26-audit-attachments/BADEB2F6-10B3-4957-BE68-A3AD5B1F4FD5.json",
+      "sha256": "236dde3766c6645e70a64c06e6edb2f444eada3961471a8dfe938b4141225483",
+      "bytes": 1601
+    },
+    {
+      "path": "iPad26-audit-attachments/C13306C2-AD5E-4DF0-899B-AEC6FB955A2E.json",
+      "sha256": "63be8df7e2d65958e97a315db3db02a6e607b53c2d119a2735983d6bca98c30a",
+      "bytes": 6545
+    },
+    {
+      "path": "iPad26-audit-attachments/F0D79F66-1D73-49C6-8C64-69E57F84B1A2.json",
+      "sha256": "63be8df7e2d65958e97a315db3db02a6e607b53c2d119a2735983d6bca98c30a",
+      "bytes": 6545
+    },
+    {
+      "path": "iPad26-audit-attachments/F5067C54-303A-43F8-A388-B4E88A26C3C9.json",
+      "sha256": "fdc2da8ff97e64ed68c4f419c12fe9f63c4b03285b3018e307bd1f05b0dd8091",
+      "bytes": 3050
+    },
+    {
+      "path": "iPad26-audit-attachments/F74568AD-C351-494B-B7D1-55CB1489802E.json",
+      "sha256": "5d4358d7cba41675258cff65eaee9b6767f793c3a9f524def36258205c534423",
+      "bytes": 37348
+    },
+    {
+      "path": "iPad26-audit-attempts-latest.json",
+      "sha256": "67aa898eff9600b55f5947d843b16940a08d00241b5e4ae9807f7bfeac625201",
+      "bytes": 20482
+    },
+    {
+      "path": "iPad26-deletion-hierarchy.txt",
+      "sha256": "63ff505cceee944ad52bbf01c20f27a9d7da944761c9923b8a17e9d50af4363a",
+      "bytes": 42273
+    },
+    {
+      "path": "iPad26-deletion-log-excerpt.txt",
+      "sha256": "2e7219792e7a2a58c51ad747528125ed4e1c1b1f9daaca7e9b99d99bdecfd995",
+      "bytes": 25518
+    },
+    {
+      "path": "iPad26-environment.json",
+      "sha256": "9d8db8375d906dcac642fd992b089145b3b7b8655a63bdc133bd2b8b6716ea6b",
+      "bytes": 308
+    },
+    {
+      "path": "iPad26-export-status.json",
+      "sha256": "1dc1928c71fa662f8bbfdba0737ee37be5b8fdf358a92424bd25883bea670b9c",
+      "bytes": 1435
+    },
+    {
+      "path": "iPad26-keyboard-AX-excerpt.txt",
+      "sha256": "4af0f517cd2abcba93b9bfb441c1c0afb2a1f69bd5af30a75c0b34342b2ad987",
+      "bytes": 4301
+    },
+    {
+      "path": "iPad26-keyboard-helper-source.txt",
+      "sha256": "c6414efb5dc9579b305de03de7bacc0531b79eea0ddf47b3e7774d9518dafc5f",
+      "bytes": 1268
+    },
+    {
+      "path": "iPad26-native-test-results.txt",
+      "sha256": "e18a9e65871a6a84ea3a0fb38d67bd6c1d72da7d7eead2e7e8b07f281da5ba8f",
+      "bytes": 5391
+    },
+    {
+      "path": "iPad26-raw-attachment-index.json",
+      "sha256": "09ba45ebbc608f02b64c7cf6c03ebdfb87e8379d8bf3313edc8474eb3c41bb69",
+      "bytes": 13319
+    },
+    {
+      "path": "iPad26-receipt.json",
+      "sha256": "5aa8b8e11af1bb699551cbc1e2bb996b230957bb3edf9bdd77359a7c4bab0702",
+      "bytes": 11746
+    },
+    {
+      "path": "iPad26-summary.json",
+      "sha256": "e41514bbbd94cea5e2761111f0b8a97d354660172fffb5df1c53967a77115990",
+      "bytes": 1669
+    },
+    {
+      "path": "iPhone26-accessibility-issues.json",
+      "sha256": "7409ca3b33ebcecfaff58bc292da1a27a5bfdf135fc3a6bbf7c16b09642b2e2a",
+      "bytes": 10086
+    },
+    {
+      "path": "iPhone26-actual-font-scaling.json",
+      "sha256": "76e4a77565f4934de97dd569d74bb53e2237905c357f02bab7d6edd8adaec182",
+      "bytes": 45057
+    },
+    {
+      "path": "iPhone26-attachment-manifest.json",
+      "sha256": "48e2b4f8c6ff422782bbf807a918dad76eee204da8b7368d91592671e3fbde8d",
+      "bytes": 53881
+    },
+    {
+      "path": "iPhone26-audit-attachments/032F11FC-1EC3-4BBD-8A8C-865660AF59E3.json",
+      "sha256": "395120487fe18e6b52829f573f70e08a98dbd38841b5a15579910cf1704e18a3",
+      "bytes": 3050
+    },
+    {
+      "path": "iPhone26-audit-attachments/04216EF4-612F-48A5-ACD0-1C60A023A697.json",
+      "sha256": "e4ef42f7a7e822424264463c44708f93e0459047fe8d129962bf5a76f630c586",
+      "bytes": 12095
+    },
+    {
+      "path": "iPhone26-audit-attachments/1448A8A3-B6DB-4A54-9A82-260C8D07EA02.json",
+      "sha256": "ece3a5a653004ecdd63551e62f26f719e5ac0964fafaeeb4ca1a26772a670f93",
+      "bytes": 9076
+    },
+    {
+      "path": "iPhone26-audit-attachments/2F15DBCF-F06D-4A9F-967D-013D3A6C557C.json",
+      "sha256": "6c4cd6924d034e62013161b71fb5b641c1130a8af7d9117b090ffd69b58f272c",
+      "bytes": 45608
+    },
+    {
+      "path": "iPhone26-audit-attachments/6B6A0B9F-6662-4A27-974C-A06BACF0322A.json",
+      "sha256": "6f77df34f144fd4e19aad6c9dd14f11952b49d0640ba7ac796d611dadb80b935",
+      "bytes": 18139
+    },
+    {
+      "path": "iPhone26-audit-attachments/706289DF-9C16-479B-BF89-65C3A2DE7BD9.json",
+      "sha256": "d8448dff32c641979e73f4a3c9bdbd779564eb56a964c5a21958c8f8e89ed904",
+      "bytes": 10261
+    },
+    {
+      "path": "iPhone26-audit-attachments/767579E4-3254-4517-BEF3-0B98C5765E95.json",
+      "sha256": "15acf92a5b6ed6d4cbba21a3522582b81f2232e1ee645e20984903b0fd1178ce",
+      "bytes": 6065
+    },
+    {
+      "path": "iPhone26-audit-attachments/85D0627C-67B7-42D9-B4B1-8D53F949A608.json",
+      "sha256": "72fb2421654a20a152557d812ba1425c23641de5c68c1afbc1786000ae5b071c",
+      "bytes": 814
+    },
+    {
+      "path": "iPhone26-audit-attachments/A5B38595-8808-44D1-9472-A106E49D708E.json",
+      "sha256": "d8448dff32c641979e73f4a3c9bdbd779564eb56a964c5a21958c8f8e89ed904",
+      "bytes": 10261
+    },
+    {
+      "path": "iPhone26-audit-attachments/B97CDB24-E0E7-4716-824B-F4A1B1127407.json",
+      "sha256": "501bc4084c623f2417e037e0157fe966d18579483670fac132edec46d071c769",
+      "bytes": 9785
+    },
+    {
+      "path": "iPhone26-audit-attachments/C7D1C5C4-862C-4576-BDFB-98FF991518A7.json",
+      "sha256": "08e7422cd76a4b40f1b4f867e6ee2d920698f41cc224794f6ccbaa8a00c94a9c",
+      "bytes": 15128
+    },
+    {
+      "path": "iPhone26-audit-attachments/DAA69B30-249B-40BA-BB1A-347C3F9DCF00.json",
+      "sha256": "7ae0ac44267989b04fcdee63c97577e3609ee93f9e7f9af10d8318be9cde3f44",
+      "bytes": 8203
+    },
+    {
+      "path": "iPhone26-audit-attachments/DE329A23-D444-4882-A9E8-A6DD6D9D9D63.json",
+      "sha256": "d8448dff32c641979e73f4a3c9bdbd779564eb56a964c5a21958c8f8e89ed904",
+      "bytes": 10261
+    },
+    {
+      "path": "iPhone26-audit-attachments/E3D6B449-41A1-4064-AF25-40F4A4075A86.json",
+      "sha256": "91f440f2ff4ebd30e67916970734d95210fc4ced6f9bd485e01ac028394453a0",
+      "bytes": 21157
+    },
+    {
+      "path": "iPhone26-audit-attachments/E8EF28D8-8918-4D17-A317-20487D4EC931.json",
+      "sha256": "92f27aef181db1ce03d0f37107caef12e29e4c9e7f53ac65686a89f060b5c563",
+      "bytes": 472
+    },
+    {
+      "path": "iPhone26-audit-attachments/FA34682C-B3B8-4836-8E6B-80D87D7F0D8D.json",
+      "sha256": "72fb2421654a20a152557d812ba1425c23641de5c68c1afbc1786000ae5b071c",
+      "bytes": 814
+    },
+    {
+      "path": "iPhone26-audit-attempts-latest.json",
+      "sha256": "b04027c75a70c401fcc0552fc51c0287e7c07a95ca8d8669b5a103cd8c76af1e",
+      "bytes": 20480
+    },
+    {
+      "path": "iPhone26-deletion-hierarchy.txt",
+      "sha256": "16b8cfdb5240e06b23b5db5933ce1fcd010438845cc6b0db36cd8f9e9841bc3a",
+      "bytes": 36200
+    },
+    {
+      "path": "iPhone26-deletion-log-excerpt.txt",
+      "sha256": "1bdb7a64bf70ff2f8fc604a4b1122a9329a9b21acce0373786eecbc83f77f305",
+      "bytes": 22871
+    },
+    {
+      "path": "iPhone26-environment.json",
+      "sha256": "a630d04b29f57217aaa3937bd1bc37882937053bfed90ccef02fc329f3bc1f53",
+      "bytes": 304
+    },
+    {
+      "path": "iPhone26-export-status.json",
+      "sha256": "d91f39959ef049b157976d1771f38585090e9ff5940bbe18ee539d18df774fcd",
+      "bytes": 1452
+    },
+    {
+      "path": "iPhone26-keyboard-AX-excerpt.txt",
+      "sha256": "497534b16fb6facccefce39a0a5934f318e75bd10af02e2855105952e937570a",
+      "bytes": 3403
+    },
+    {
+      "path": "iPhone26-keyboard-helper-source.txt",
+      "sha256": "c6414efb5dc9579b305de03de7bacc0531b79eea0ddf47b3e7774d9518dafc5f",
+      "bytes": 1268
+    },
+    {
+      "path": "iPhone26-native-test-results.txt",
+      "sha256": "5e3ef7fa63e9790cddad81fe01809f7687425ae7a67eb1dbb5516c231cb8006c",
+      "bytes": 5389
+    },
+    {
+      "path": "iPhone26-raw-attachment-index.json",
+      "sha256": "c2b347e300f5e160a8399595e73b051655e9173e15badbc688fe4aa39bccdb26",
+      "bytes": 13320
+    },
+    {
+      "path": "iPhone26-receipt.json",
+      "sha256": "b5663df4763cb1fb5c04ce487ccfa213ee981a306782d982bc5357eb0d4594cf",
+      "bytes": 8509
+    },
+    {
+      "path": "iPhone26-summary.json",
+      "sha256": "800a8ee75d762ead68597d7aab354bfcab0236d683f5073b43366a4211d59119",
+      "bytes": 1662
+    },
+    {
+      "path": "observed-artifacts.json",
+      "sha256": "33422ea48a8240f93e168aa6d6280afdc5c29c36d0bfa4e30095f774856adf2b",
+      "bytes": 2558
+    },
+    {
+      "path": "observed-jobs.json",
+      "sha256": "f152b43b0f0c639413087a4528e44c17fb6f7c276cb2f8964a9c6387c3d9ad06",
+      "bytes": 14817
+    },
+    {
+      "path": "observed-run.json",
+      "sha256": "60f735633d47d39fb5034b60aaa3017dc68de5692e68b6aea5f9cae49e5552eb",
+      "bytes": 14241
+    },
+    {
+      "path": "receipt.json",
+      "sha256": "5fe97cdc990c8164cac1c4c363dc0cea9a502f3d3fa3b62129cbb0a4da109cd3",
+      "bytes": 1288
+    },
+    {
+      "path": "video-frames/42281088607-iPad26-contact.png",
+      "sha256": "9657d89bf078cdf227111888affe8d5e0bf8b6801453de0d0ba5f794a2b67b8f",
+      "bytes": 5463041
+    },
+    {
+      "path": "video-frames/42281088607-iPad26-t38.5.png",
+      "sha256": "d608ffa4d26fad2c165fe8073b380dbe4bc958f948e5291cbb7a584a48623429",
+      "bytes": 649254
+    },
+    {
+      "path": "video-frames/42281088607-iPad26-t41.5.png",
+      "sha256": "37c776791e7d76dc87869f58126246d7b6af83465f58f946c7da307f125daad8",
+      "bytes": 1620060
+    },
+    {
+      "path": "video-frames/42281088607-iPad26-t44.8.png",
+      "sha256": "0b6238790ebc4e820f47924a8e8621900d218811bd157350d696ea2069650460",
+      "bytes": 668624
+    },
+    {
+      "path": "video-frames/42281088607-iPad26-t47.8.png",
+      "sha256": "df7fdea21f825a718e75972cb17b0613bea8813f7c491b867ccf1a2d6264774d",
+      "bytes": 1611166
+    },
+    {
+      "path": "video-frames/42281088607-iPad26-t50.8.png",
+      "sha256": "cf67537eb046f2636dbe628d0db3c4987a397f2a3a94d463654f05f4a57ac369",
+      "bytes": 658970
+    }
+  ],
+  "excludesSelf": true
+}

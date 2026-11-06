@@ -1,0 +1,12 @@
+[
+  {
+    "detail" : "Text of this element may be clipped at larger Dynamic Type sizes.",
+    "element" : "welcome.heading",
+    "frame" : "(24.0, 146.5, 265.5, 82.5)",
+    "label" : "Команда ближе.\nИдей больше.",
+    "resolution" : "reviewed: welcome heading; complete AX5 text in ACCESSIBILITY_REVIEW.md",
+    "screen" : "welcome",
+    "summary" : "Text clipped",
+    "type" : "131072"
+  }
+]

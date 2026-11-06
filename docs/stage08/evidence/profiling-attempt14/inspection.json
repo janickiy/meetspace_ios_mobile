@@ -1,0 +1,820 @@
+{
+  "sourceCommit": "04f70a3d80bfd8cd9314c798f0eb3fc7e58b343f",
+  "receiptStatus": "FAIL",
+  "reason": "At least one requested launch/attach/record/export failed; inspect exact logs",
+  "elapsedSeconds": 174.383,
+  "scope": "Debug iOS Simulator app, early post-launch/idle welcome UI, -uitesting fixtures; 15s Time Profiler plus 15s Allocations by default. Not app launch latency, 30 calls, network throughput, physical-device CPU/memory/energy, or absence of leaks.",
+  "nativeTestResultIndependent": true,
+  "cpuPercent": null,
+  "rssBytes": null,
+  "energy": null,
+  "performanceAcceptance": "NOT_ESTABLISHED",
+  "files": [
+    {
+      "file": "allocations-launch.log",
+      "bytes": 25,
+      "sha256": "b703f9928b5929550cb653cee57c4fb6c2b07e7272b609505f3718b64c3329d5"
+    },
+    {
+      "file": "allocations-process-identity.log",
+      "bytes": 187,
+      "sha256": "a938fc4070f82a2f28cd302e777d9749b97923d6153c3fcd33083aa835354b7d"
+    },
+    {
+      "file": "allocations-record.log",
+      "bytes": 264,
+      "sha256": "acfd89df62df52d4403aae282a6dc3a0bae5c183754c9d37142e82a1acddc40e"
+    },
+    {
+      "file": "allocations-toc-export.log",
+      "bytes": 139,
+      "sha256": "500a0b0812f097e6c1150f40bc8aa94b95583d1cff5fafec131fcacec0e7eee5"
+    },
+    {
+      "file": "allocations-toc.xml",
+      "bytes": 4256,
+      "sha256": "963558bdf1319faf6a4d2c69c515d3916314d6d6a28e2205c3bd476ca78b3d30"
+    },
+    {
+      "file": "allocations.trace/Trace1.run/RunIssues.storedata",
+      "bytes": 53248,
+      "sha256": "143b8ff69191f6a0f4baef2892339e0c6e1cee4431ddf326fe801e3cdaf52abf"
+    },
+    {
+      "file": "allocations.trace/Trace1.run/event_data_46601.oa",
+      "bytes": 2756608,
+      "sha256": "b7ddf70cde1a8a306e66bde4281c1fa538bcc8f1e0824a74bcd097b8b0f5ae25"
+    },
+    {
+      "file": "allocations.trace/UI_state_metadata.bin",
+      "bytes": 261,
+      "sha256": "fd5203df946d9c459b37b215289e2a2f6db0d1abd53bc63264c3fae0f95e736d"
+    },
+    {
+      "file": "allocations.trace/corespace/MANIFEST.plist",
+      "bytes": 2339,
+      "sha256": "ade47cb47e46197774001f7c2355ab690c1704a880e8ab94302ff8afa3356cb6"
+    },
+    {
+      "file": "allocations.trace/corespace/currentRun/core/uniquing/arrayUniquer/integeruniquer.data",
+      "bytes": 101947,
+      "sha256": "7ec09fb365c9a3c7455ab6cf59fb45b1ebf7d6dc9962114d87341f38700af6d6"
+    },
+    {
+      "file": "allocations.trace/corespace/currentRun/core/uniquing/arrayUniquer/integeruniquer.index",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "allocations.trace/corespace/currentRun/core/uniquing/typedArrayUniquer/integeruniquer.data",
+      "bytes": 101947,
+      "sha256": "7ec09fb365c9a3c7455ab6cf59fb45b1ebf7d6dc9962114d87341f38700af6d6"
+    },
+    {
+      "file": "allocations.trace/corespace/currentRun/core/uniquing/typedArrayUniquer/integeruniquer.index",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "allocations.trace/corespace/run1/core/core-config/exposedTableInfo.plist",
+      "bytes": 2657,
+      "sha256": "23c759cb21528cc088428315c28f903adaa20f8022a03c71e16cf3b106a7257d"
+    },
+    {
+      "file": "allocations.trace/corespace/run1/core/stores/indexed-store-0/bulkstore",
+      "bytes": 51,
+      "sha256": "54d8e8639af546cdd6d5fe03933d5177fa226a0ed5b442d8fbb558da068955fc"
+    },
+    {
+      "file": "allocations.trace/corespace/run1/core/stores/indexed-store-0/bulkstore_descriptor",
+      "bytes": 2028,
+      "sha256": "5c887b851a393e8a963486d8b55a90c3bea4d255691fe1d559a4a7c7ea50762c"
+    },
+    {
+      "file": "allocations.trace/corespace/run1/core/stores/indexed-store-0/schema.xml",
+      "bytes": 412,
+      "sha256": "771e47f9820358edd2caa2b87693e988886419db00562dfb0106876c1171460f"
+    },
+    {
+      "file": "allocations.trace/corespace/run1/core/stores/indexed-store-0/spec.plist",
+      "bytes": 574,
+      "sha256": "134ebd38d55c2aab21b61d1e36c592884fda2b841571fef48484fe668c7aafa3"
+    },
+    {
+      "file": "allocations.trace/corespace/run1/core/stores/indexed-store-1/bulkstore",
+      "bytes": 51,
+      "sha256": "54d8e8639af546cdd6d5fe03933d5177fa226a0ed5b442d8fbb558da068955fc"
+    },
+    {
+      "file": "allocations.trace/corespace/run1/core/stores/indexed-store-1/bulkstore_descriptor",
+      "bytes": 2028,
+      "sha256": "5c887b851a393e8a963486d8b55a90c3bea4d255691fe1d559a4a7c7ea50762c"
+    },
+    {
+      "file": "allocations.trace/corespace/run1/core/stores/indexed-store-1/schema.xml",
+      "bytes": 412,
+      "sha256": "771e47f9820358edd2caa2b87693e988886419db00562dfb0106876c1171460f"
+    },
+    {
+      "file": "allocations.trace/corespace/run1/core/stores/indexed-store-1/spec.plist",
+      "bytes": 575,
+      "sha256": "d9ee6cea19ad36e2f99c4a710def567849d8d4617d456dfa36e8f13547b8557c"
+    },
+    {
+      "file": "allocations.trace/corespace/run1/core/stores/indexed-store-10/bulkstore",
+      "bytes": 48,
+      "sha256": "1df960e616df6500c3ca820e3743a6949d9a2d857486e593400b146f57f33224"
+    },
+    {
+      "file": "allocations.trace/corespace/run1/core/stores/indexed-store-10/bulkstore_descriptor",
+      "bytes": 1736,
+      "sha256": "9d7d9b9f134013f185c8462f581eb208ce7c2b4dcf311ada3c557c9dec2363f2"
+    },
+    {
+      "file": "allocations.trace/corespace/run1/core/stores/indexed-store-10/schema.xml",
+      "bytes": 336,
+      "sha256": "b77bd0a2fa409b3d29289ddad249eeff5b6259437c9318b04cb6ed46d3ef1b76"
+    },
+    {
+      "file": "allocations.trace/corespace/run1/core/stores/indexed-store-10/spec.plist",
+      "bytes": 461,
+      "sha256": "67a2311e441c4dca036743119c663ecfcf477edbb4a2a8a2cf2e08211a1ca6a0"
+    },
+    {
+      "file": "allocations.trace/corespace/run1/core/stores/indexed-store-11/bulkstore",
+      "bytes": 50,
+      "sha256": "14d20c33c17e0fa60936863f48150d9e68849b4517452dce8f80b463d918b116"
+    },
+    {
+      "file": "allocations.trace/corespace/run1/core/stores/indexed-store-11/bulkstore_descriptor",
+      "bytes": 1979,
+      "sha256": "9d94d35bfd6a40433b4eb87fe29102ccc5449f1f5d94de26e287411a78e5dc96"
+    },
+    {
+      "file": "allocations.trace/corespace/run1/core/stores/indexed-store-11/schema.xml",
+      "bytes": 439,
+      "sha256": "d12b590090a202031c45c5d0e6e11672643d2158fc38bdea8b0da99c0e90b0ad"
+    },
+    {
+      "file": "allocations.trace/corespace/run1/core/stores/indexed-store-11/spec.plist",
+      "bytes": 578,
+      "sha256": "b7d015a4575f4b04e97224cff7719275ccc5c0b18843e799622a65a4f98a49e9"
+    },
+    {
+      "file": "allocations.trace/corespace/run1/core/stores/indexed-store-12/bulkstore",
+      "bytes": 49,
+      "sha256": "f12b9a6bb64d69a7aa3ca6a1b7c8a4d497ac08ab81fbd37269eff7b660913881"
+    },
+    {
+      "file": "allocations.trace/corespace/run1/core/stores/indexed-store-12/bulkstore_descriptor",
+      "bytes": 1757,
+      "sha256": "697d2bab1edb9030f8b1d691dc4ff1e4a55071196445c9d8366e6ece66f58d46"
+    },
+    {
+      "file": "allocations.trace/corespace/run1/core/stores/indexed-store-12/schema.xml",
+      "bytes": 376,
+      "sha256": "415ec05d9bf89e55fd44f7b44fe49b257d53b2d58a76f0472d94ff4dc6e03d6b"
+    },
+    {
+      "file": "allocations.trace/corespace/run1/core/stores/indexed-store-12/spec.plist",
+      "bytes": 459,
+      "sha256": "c437f87e370f5ab9aec326b3f9c0505861b410c8f556cc4f048d7606ebb8cff1"
+    },
+    {
+      "file": "allocations.trace/corespace/run1/core/stores/indexed-store-13/bulkstore",
+      "bytes": 52,
+      "sha256": "41e5a5eabeeab56bc36214588100a3d3d458868bd807a87c8cbaa6647c5699d1"
+    },
+    {
+      "file": "allocations.trace/corespace/run1/core/stores/indexed-store-13/bulkstore_descriptor",
+      "bytes": 2489,
+      "sha256": "ac9e943799e10658f32e3a1e529d54ca09a704e799b9f500bd95904b28ed6379"
+    },
+    {
+      "file": "allocations.trace/corespace/run1/core/stores/indexed-store-13/schema.xml",
+      "bytes": 534,
+      "sha256": "de492fdd915d96831d3fbcdd14b5a642e8deb7d89cfe1316f1856209b0a8e383"
+    },
+    {
+      "file": "allocations.trace/corespace/run1/core/stores/indexed-store-13/spec.plist",
+      "bytes": 493,
+      "sha256": "1282c1f85538cf638d42539d794659bb7f23e3755fabe74d13af0acf4f6b915a"
+    },
+    {
+      "file": "allocations.trace/corespace/run1/core/stores/indexed-store-14/bulkstore",
+      "bytes": 8954,
+      "sha256": "d5039d95e6215e243ce447b49c22d2fbe06a6d26d1d7115476e07c58bbbf8b25"
+    },
+    {
+      "file": "allocations.trace/corespace/run1/core/stores/indexed-store-14/bulkstore_descriptor",
+      "bytes": 1287,
+      "sha256": "e2bc9dcb64f87325636697b5714317547cce3567bb4d025d290f8ea5c091ef30"
+    },
+    {
+      "file": "allocations.trace/corespace/run1/core/stores/indexed-store-14/schema.xml",
+      "bytes": 282,
+      "sha256": "fb22943f54b10c8381601dfaca8959e9e1ca02b0c3756627c9ef10fc7337aeda"
+    },
+    {
+      "file": "allocations.trace/corespace/run1/core/stores/indexed-store-14/spec.plist",
+      "bytes": 390,
+      "sha256": "70516c68fae18cace10236faa456c1175658858c72889c184432c9479d2eecfe"
+    },
+    {
+      "file": "allocations.trace/corespace/run1/core/stores/indexed-store-14/spindex.0",
+      "bytes": 10327,
+      "sha256": "626316e813f596ba9ff4e6a8c45311f62964fa543600ce00ff5a6e0dc8b05ca6"
+    },
+    {
+      "file": "allocations.trace/corespace/run1/core/stores/indexed-store-2/bulkstore",
+      "bytes": 51,
+      "sha256": "54d8e8639af546cdd6d5fe03933d5177fa226a0ed5b442d8fbb558da068955fc"
+    },
+    {
+      "file": "allocations.trace/corespace/run1/core/stores/indexed-store-2/bulkstore_descriptor",
+      "bytes": 2028,
+      "sha256": "5c887b851a393e8a963486d8b55a90c3bea4d255691fe1d559a4a7c7ea50762c"
+    },
+    {
+      "file": "allocations.trace/corespace/run1/core/stores/indexed-store-2/schema.xml",
+      "bytes": 412,
+      "sha256": "771e47f9820358edd2caa2b87693e988886419db00562dfb0106876c1171460f"
+    },
+    {
+      "file": "allocations.trace/corespace/run1/core/stores/indexed-store-2/spec.plist",
+      "bytes": 561,
+      "sha256": "0d6935216c7e87df4bfdd0bdcc53ab8b972303812c80065e8a7e75836d79a67b"
+    },
+    {
+      "file": "allocations.trace/corespace/run1/core/stores/indexed-store-3/bulkstore",
+      "bytes": 50,
+      "sha256": "50b67ff898cf95f858266ed8b2742bb0e128f5ea30ae3f4cf046ecab0f19542d"
+    },
+    {
+      "file": "allocations.trace/corespace/run1/core/stores/indexed-store-3/bulkstore_descriptor",
+      "bytes": 1673,
+      "sha256": "449e6406168c53a7db94b0210c9ccc1ac68a8531084e1c867fa34cce5787c2e5"
+    },
+    {
+      "file": "allocations.trace/corespace/run1/core/stores/indexed-store-3/schema.xml",
+      "bytes": 360,
+      "sha256": "5203764c4d1da3c4dcad89677f51cead796e103d8094495aa6b8c8d9c5da0fa1"
+    },
+    {
+      "file": "allocations.trace/corespace/run1/core/stores/indexed-store-3/spec.plist",
+      "bytes": 465,
+      "sha256": "a7877ed85cb7984255b3e18e04b921fe5c8dc7a2ab56b14d0b9541616a776780"
+    },
+    {
+      "file": "allocations.trace/corespace/run1/core/stores/indexed-store-4/bulkstore",
+      "bytes": 48,
+      "sha256": "1323254a748e65f1c31bfe5a250e72dc48f70526e63bc2465f3481d04bd5d200"
+    },
+    {
+      "file": "allocations.trace/corespace/run1/core/stores/indexed-store-4/bulkstore_descriptor",
+      "bytes": 1353,
+      "sha256": "4e2a2afb61f4dd3defa8bdab845bc070347fe4c8a2fcdb07058fb85b1e4bf312"
+    },
+    {
+      "file": "allocations.trace/corespace/run1/core/stores/indexed-store-4/schema.xml",
+      "bytes": 351,
+      "sha256": "4a11be5384ba3ee7f5c8d2523d809f24c3dc3073f82ceef4013e3243f15afa2e"
+    },
+    {
+      "file": "allocations.trace/corespace/run1/core/stores/indexed-store-4/spec.plist",
+      "bytes": 462,
+      "sha256": "7953be7a4d528a61aed476a40e0db2d16317d3181fb4ab03d906597447b9dca9"
+    },
+    {
+      "file": "allocations.trace/corespace/run1/core/stores/indexed-store-5/bulkstore",
+      "bytes": 51,
+      "sha256": "3004469a57b2c7048ef8a314c3c28e5226de35767d84c36bed70ada76ae1577d"
+    },
+    {
+      "file": "allocations.trace/corespace/run1/core/stores/indexed-store-5/bulkstore_descriptor",
+      "bytes": 1407,
+      "sha256": "9b2314407c76abe7abdd1340bf9e8ed942248118b98d3ef1b0813bdfc8d96b32"
+    },
+    {
+      "file": "allocations.trace/corespace/run1/core/stores/indexed-store-5/schema.xml",
+      "bytes": 318,
+      "sha256": "9cab03c865bbe28d261ace33741be4286705130d48ce454fa1506c5f858ed767"
+    },
+    {
+      "file": "allocations.trace/corespace/run1/core/stores/indexed-store-5/spec.plist",
+      "bytes": 463,
+      "sha256": "947bba70d5bd4a1a182f50989464d090ebc6c912ee3d9f85cf5768a85d5fd073"
+    },
+    {
+      "file": "allocations.trace/corespace/run1/core/stores/indexed-store-6/bulkstore",
+      "bytes": 31442,
+      "sha256": "3f305c49fac173f95cf266446e4cdec3a753ba553f9f67cfee5e6316849b0334"
+    },
+    {
+      "file": "allocations.trace/corespace/run1/core/stores/indexed-store-6/bulkstore_descriptor",
+      "bytes": 1414,
+      "sha256": "27df5f595e97cba0a0005fc8294b62814d5206e59d512be7e2618b8ec131c183"
+    },
+    {
+      "file": "allocations.trace/corespace/run1/core/stores/indexed-store-6/schema.xml",
+      "bytes": 294,
+      "sha256": "4b01602c123e5cc846bca8e0726b547595869a6162834f009dd5787e3a45d4d8"
+    },
+    {
+      "file": "allocations.trace/corespace/run1/core/stores/indexed-store-6/spec.plist",
+      "bytes": 391,
+      "sha256": "e1603925a708bb07ed70ba45f5264bc8c0f6481fffcf220d2acf7c10a813e0cb"
+    },
+    {
+      "file": "allocations.trace/corespace/run1/core/stores/indexed-store-6/spindex.0",
+      "bytes": 30343,
+      "sha256": "085e7c4e7244287c534de10921e807eabdd1ea7d9ff4dc01efa5d1305d5dce5a"
+    },
+    {
+      "file": "allocations.trace/corespace/run1/core/stores/indexed-store-7/bulkstore",
+      "bytes": 51,
+      "sha256": "9b750f4cc1d8073013a3097231b6172582dfc9a7616e57f87f7c883c2c781b67"
+    },
+    {
+      "file": "allocations.trace/corespace/run1/core/stores/indexed-store-7/bulkstore_descriptor",
+      "bytes": 1347,
+      "sha256": "4d3fc820667ee058857d8093371cb73efb527a4de6d86cedf0babdcbeba19028"
+    },
+    {
+      "file": "allocations.trace/corespace/run1/core/stores/indexed-store-7/schema.xml",
+      "bytes": 313,
+      "sha256": "c03ab56484ef25106951aa0fac6636f638e6a31ca1d280700e2b048aca03b28f"
+    },
+    {
+      "file": "allocations.trace/corespace/run1/core/stores/indexed-store-7/spec.plist",
+      "bytes": 495,
+      "sha256": "ab674f089ed751aacb20c25682063654d1c2987bd8e53a569446d5bbd335b17a"
+    },
+    {
+      "file": "allocations.trace/corespace/run1/core/stores/indexed-store-8/bulkstore",
+      "bytes": 48,
+      "sha256": "1323254a748e65f1c31bfe5a250e72dc48f70526e63bc2465f3481d04bd5d200"
+    },
+    {
+      "file": "allocations.trace/corespace/run1/core/stores/indexed-store-8/bulkstore_descriptor",
+      "bytes": 1595,
+      "sha256": "3e0734139f3fc99eef3a6ffbaae639201a25cf76a9ed4cfa959fb3bb4afd58bb"
+    },
+    {
+      "file": "allocations.trace/corespace/run1/core/stores/indexed-store-8/schema.xml",
+      "bytes": 343,
+      "sha256": "caa8c2b42a1243e20c055a0240fa4beaba7acf0eb61cdfe02b67a13d96c2e8d1"
+    },
+    {
+      "file": "allocations.trace/corespace/run1/core/stores/indexed-store-8/spec.plist",
+      "bytes": 489,
+      "sha256": "733563679a1fffebff094ffa358da52afb2e912e17788c3d74e5546b3fdecaca"
+    },
+    {
+      "file": "allocations.trace/corespace/run1/core/stores/indexed-store-9/bulkstore",
+      "bytes": 51,
+      "sha256": "18c1996be5017a68993f14132c0d66e97979fc035cdb453e2557203efd5812b3"
+    },
+    {
+      "file": "allocations.trace/corespace/run1/core/stores/indexed-store-9/bulkstore_descriptor",
+      "bytes": 1912,
+      "sha256": "ce04f4c97b7a7942e253dcf7225239f31644827275bab286686fa38001c5d974"
+    },
+    {
+      "file": "allocations.trace/corespace/run1/core/stores/indexed-store-9/schema.xml",
+      "bytes": 429,
+      "sha256": "61ca331e9aac791e583c88e904c9a4881816cd21a45efb69d33a4b43baa11f54"
+    },
+    {
+      "file": "allocations.trace/corespace/run1/core/stores/indexed-store-9/spec.plist",
+      "bytes": 460,
+      "sha256": "37752a19e7404e3f87a0603d1ed371dd824e4e4325d44504b2f888c0df7450d2"
+    },
+    {
+      "file": "allocations.trace/corespace/run1/core/table-manager/tables.plist",
+      "bytes": 4352,
+      "sha256": "ddcf668ef3e3345a999d68e635b0aff41dff971c4cbc8a8f492a56d719dd725f"
+    },
+    {
+      "file": "allocations.trace/corespace/run1/core/uniquing/EngineeringTypes.etypes",
+      "bytes": 7443,
+      "sha256": "594567ea04a0303506b64bfefb1fc72008c5f779729ae14196d78a36cd219f45"
+    },
+    {
+      "file": "allocations.trace/corespace/run1/core/uniquing/TOC",
+      "bytes": 344,
+      "sha256": "28bb5344b4c59bce7a3535796580fa23c79eb51ac6edbbbc6576069075596ee9"
+    },
+    {
+      "file": "allocations.trace/corespace/run1/core/uniquing/arrayUniquer/integeruniquer.data",
+      "bytes": 19499,
+      "sha256": "c10624efce03455853d143107812784d14e39b431b0f33a5a15f8fbc662a9fc5"
+    },
+    {
+      "file": "allocations.trace/corespace/run1/core/uniquing/arrayUniquer/integeruniquer.index",
+      "bytes": 6579,
+      "sha256": "aa9c5a96b5a140e35242e48f9cca418a538b7fb5154832a40e26bd467982d5c2"
+    },
+    {
+      "file": "allocations.trace/corespace/run1/core/uniquing/strings",
+      "bytes": 5441,
+      "sha256": "e3bdf7463184e63f1ea4f75998e3738356ec01cf1a9a46bb4e26352b99b42f31"
+    },
+    {
+      "file": "allocations.trace/corespace/run1/core/uniquing/typedArrayUniquer/integeruniquer.data",
+      "bytes": 1056,
+      "sha256": "8b57a198919eec5d5173a70b47ff50b524997432bf462c5c2c469b66819f7112"
+    },
+    {
+      "file": "allocations.trace/corespace/run1/core/uniquing/typedArrayUniquer/integeruniquer.index",
+      "bytes": 27,
+      "sha256": "84cdbda55ee7964dd19ba24465ac5fa51f886bfdc23672b8fa1efe2a7078c795"
+    },
+    {
+      "file": "allocations.trace/form.template",
+      "bytes": 3955996,
+      "sha256": "e61505ee67197a9a70f588f0b7769830547bba48722b3aea6b8da7a2ce910e4e"
+    },
+    {
+      "file": "allocations.trace/instrument_data/B23B28C8-D76B-4F7D-8F3B-BE8B0393A7F1/run_data/1.run.zip",
+      "bytes": 9368,
+      "sha256": "25832bf677c93eb405fa4409ef76b67149dcec355072dee03e2f0d0c4bea23bd"
+    },
+    {
+      "file": "allocations.trace/instrument_data/C907F37C-D485-4419-BF88-E23E8671A102/run_data/1.run.zip",
+      "bytes": 1269,
+      "sha256": "6595404f28ba0166a8f903a2df8807e22b7e3cbce04c8a677780e29551dc3e8a"
+    },
+    {
+      "file": "allocations.trace/instrument_data/EF4DC038-8A17-421A-8050-39DD0980C06F/run_data/1.run.zip",
+      "bytes": 5007,
+      "sha256": "5400fa2bb83f3e7526c54a8611dc94b2677878593a4c441ed772ded18a8574df"
+    },
+    {
+      "file": "allocations.trace/open.creq",
+      "bytes": 8338,
+      "sha256": "8d5e8f7eb44d0bf0c4d0fb140646f467724818f7d5286c01ca6479d0c76f5139"
+    },
+    {
+      "file": "allocations.trace/shared_data/1.run/1A2CDDC6-019A-4EED-B416-F9C76C10A9D9.zip",
+      "bytes": 148735,
+      "sha256": "5edcf089c5ab716d6052e862a7a1524460133fc683671c36dec96aa619bf448d"
+    },
+    {
+      "file": "allocations.trace/symbols/MANIFEST.plist",
+      "bytes": 290,
+      "sha256": "35365bc545a73b5662fa33a5933919dc76c024b737002465a1449b9ac30a94fb"
+    },
+    {
+      "file": "allocations.trace/symbols/stores/48D29814-F48E-39C6-82AA-AD09C92C5E7A.symbolsarchive",
+      "bytes": 1898,
+      "sha256": "8509d0237c56490ec75808c2249440758db32ffccf0a31ddb44d6ef9d2a452a5"
+    },
+    {
+      "file": "allocations.trace/symbols/stores/7E438D0A-AC23-3ADA-BAE3-99FB51F2D898.symbolsarchive",
+      "bytes": 1194,
+      "sha256": "0f527a7da9dffdc65ffca2e1e1eae1667f609e375a6762ff98e07e1dcc33ac2e"
+    },
+    {
+      "file": "allocations.trace/symbols/stores/7E916F8B-A190-379B-8025-3D1D6DC68833.symbolsarchive",
+      "bytes": 811,
+      "sha256": "83823ccb7e1d16d03d7471cfdfc059e15e8911ed95548a2ccabbc4244a9c485e"
+    },
+    {
+      "file": "allocations.trace/symbols/stores/C7ECA29B-BA0B-3778-8425-D8C6A89E153F.symbolsarchive",
+      "bytes": 2434,
+      "sha256": "18338a79617f2cc34b1d9b8b4fd11af1569bf3fbaab7473baf7b0dba0e50d481"
+    },
+    {
+      "file": "allocations.trace/symbols/stores/C931E5B2-B3D5-38CF-8132-4DD6E5FFF3A6.symbolsarchive",
+      "bytes": 2587,
+      "sha256": "2651e99abfc6b5f40030d4f764767832695d401c494401153db29ff9fbae1783"
+    },
+    {
+      "file": "allocations.trace/symbols/stores/E2365646-F221-354E-B599-A7FF5367C8E6.symbolsarchive",
+      "bytes": 1429,
+      "sha256": "1ef8bcbb31a93e8d4f9feda3a91572bab5e7ce6d95cdd3ee597020c203e7ef4a"
+    },
+    {
+      "file": "allocations.trace/symbols/stores/FA0539B0-B910-38EC-9406-18F7FB96AB75.symbolsarchive",
+      "bytes": 1403,
+      "sha256": "bc19e8523d3c607735ed9f1f53cb263c4e6221a76819c79b63693539c9bd58ce"
+    },
+    {
+      "file": "allocations.trace/symbols/stores/FAC6FA96-6B35-3B2D-A24A-D5EC8BF21BB2.symbolsarchive",
+      "bytes": 1176,
+      "sha256": "c594cc423d543b5cff7b0c3dd7c60d03e696939c2047b7ce852e1ca286063b1d"
+    },
+    {
+      "file": "app-container.log",
+      "bytes": 177,
+      "sha256": "05d83d5b547f1a40565332235ce4c6cd43b0a5b1dd84f31ef96f2b8837383c63"
+    },
+    {
+      "file": "cpu-launch.log",
+      "bytes": 25,
+      "sha256": "9f2ae08ad3a9cb87f838e52dffe3a5e3dabd6e0d7276bedf57b3adb4cd2a7d43"
+    },
+    {
+      "file": "cpu-process-identity.log",
+      "bytes": 187,
+      "sha256": "a938fc4070f82a2f28cd302e777d9749b97923d6153c3fcd33083aa835354b7d"
+    },
+    {
+      "file": "cpu-record.log",
+      "bytes": 205,
+      "sha256": "82652375cd369f00462c1542aca42cfdc7ee513b95c6918a5cfe4336c25e2fdc"
+    },
+    {
+      "file": "cpu.trace/Trace1.run/RunIssues.storedata",
+      "bytes": 53248,
+      "sha256": "3162b758a14a7bed8e0ac5168e9b8529fc0599661d64898e5e53a81726666eae"
+    },
+    {
+      "file": "developer-directory.log",
+      "bytes": 48,
+      "sha256": "f61dc333807430553f78902403e4cc45b547d508c03963122c5c75c6d27beedb"
+    },
+    {
+      "file": "find-xctrace.log",
+      "bytes": 64,
+      "sha256": "fced716e12a27e0cbca2dd5cdb966bd2536657b6a4db58785ae79c210059bfa8"
+    },
+    {
+      "file": "fixture-cleanup.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "receipt.json",
+      "bytes": 14185,
+      "sha256": "cee851c8133f28f7a3ec495e4848ac27fa0cd0fdea8aefe10ddc08de378160ad"
+    },
+    {
+      "file": "simctl-devices-after-boot.log",
+      "bytes": 69028,
+      "sha256": "576395799faca489046438141eeb255aeb52762dcca385c6346ceedbf199d272"
+    },
+    {
+      "file": "simctl-devices.log",
+      "bytes": 69030,
+      "sha256": "6b51329b27757608cc3c749389ac93cbf61952b7cd2399fa61038ef22e81f349"
+    },
+    {
+      "file": "simctl-launch-help.log",
+      "bytes": 1363,
+      "sha256": "94ae148cf375cb65a0e14daa78230d1cd0520ea6772d75afecba422d96fcc4b2"
+    },
+    {
+      "file": "simulator-boot.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "simulator-bootstatus.log",
+      "bytes": 1156,
+      "sha256": "8d08bda2db8cca0193fc30072d5fe850c044c3916057b83065fa8f5e40bfd6c0"
+    },
+    {
+      "file": "simulator-cleanup.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "xcode-version.log",
+      "bytes": 32,
+      "sha256": "bb7fc9a8f5e063e81975b33054b3a526c91bcccff263ad11d5bd8bcdbe8f0973"
+    },
+    {
+      "file": "xctrace-devices-after-boot.log",
+      "bytes": 9762,
+      "sha256": "0cb192e61dc6eec679b0ef9c1a4a4b6f6b512045ed6f137b6f2c20e19cf5880e"
+    },
+    {
+      "file": "xctrace-devices.log",
+      "bytes": 9762,
+      "sha256": "0cb192e61dc6eec679b0ef9c1a4a4b6f6b512045ed6f137b6f2c20e19cf5880e"
+    },
+    {
+      "file": "xctrace-export-help.log",
+      "bytes": 1100,
+      "sha256": "953fc6079baaffd9d66b7d0f02aa3cfeed12c728425a9c1584120657cf4d8e9d"
+    },
+    {
+      "file": "xctrace-record-help.log",
+      "bytes": 3113,
+      "sha256": "bf49e4335bbf747b830f7a37d16e848385d3c865591833e0e77123dd29bf4525"
+    },
+    {
+      "file": "xctrace-templates.log",
+      "bytes": 373,
+      "sha256": "93eeae90861c44f3682a086d06ef9644a669bc71dd6350a8aff052f907bebe0a"
+    },
+    {
+      "file": "xctrace-version.log",
+      "bytes": 30,
+      "sha256": "187a4766a4b84a2657d81964ef8409fa5314d6e9fc121dfaa75604076c5a072b"
+    }
+  ],
+  "receiptHashChecks": [
+    {
+      "file": "allocations-launch.log",
+      "matches": true
+    },
+    {
+      "file": "allocations-process-identity.log",
+      "matches": true
+    },
+    {
+      "file": "allocations-record.log",
+      "matches": true
+    },
+    {
+      "file": "allocations-toc-export.log",
+      "matches": true
+    },
+    {
+      "file": "allocations-toc.xml",
+      "matches": true
+    },
+    {
+      "file": "app-container.log",
+      "matches": true
+    },
+    {
+      "file": "cpu-launch.log",
+      "matches": true
+    },
+    {
+      "file": "cpu-process-identity.log",
+      "matches": true
+    },
+    {
+      "file": "cpu-record.log",
+      "matches": true
+    },
+    {
+      "file": "developer-directory.log",
+      "matches": true
+    },
+    {
+      "file": "find-xctrace.log",
+      "matches": true
+    },
+    {
+      "file": "fixture-cleanup.log",
+      "matches": true
+    },
+    {
+      "file": "simctl-devices-after-boot.log",
+      "matches": true
+    },
+    {
+      "file": "simctl-devices.log",
+      "matches": true
+    },
+    {
+      "file": "simctl-launch-help.log",
+      "matches": true
+    },
+    {
+      "file": "simulator-boot.log",
+      "matches": true
+    },
+    {
+      "file": "simulator-bootstatus.log",
+      "matches": true
+    },
+    {
+      "file": "simulator-cleanup.log",
+      "matches": true
+    },
+    {
+      "file": "xcode-version.log",
+      "matches": true
+    },
+    {
+      "file": "xctrace-devices-after-boot.log",
+      "matches": true
+    },
+    {
+      "file": "xctrace-devices.log",
+      "matches": true
+    },
+    {
+      "file": "xctrace-export-help.log",
+      "matches": true
+    },
+    {
+      "file": "xctrace-record-help.log",
+      "matches": true
+    },
+    {
+      "file": "xctrace-templates.log",
+      "matches": true
+    },
+    {
+      "file": "xctrace-version.log",
+      "matches": true
+    }
+  ],
+  "captures": [
+    {
+      "template": "Time Profiler",
+      "status": "FAIL",
+      "target": "exact simulator PID",
+      "pid": 44698,
+      "recordExitCode": 1,
+      "trace": "cpu.trace",
+      "traceBytes": 53248,
+      "reason": "Attach/record failed or empty trace; see record log (no success inferred)",
+      "measurementGate": "NO_VALID_TRACE",
+      "tableInspection": []
+    },
+    {
+      "template": "Allocations",
+      "status": "BLOCKED",
+      "target": "exact simulator PID",
+      "pid": 46601,
+      "recordExitCode": 0,
+      "trace": "allocations.trace",
+      "traceBytes": 7326360,
+      "traceAcquired": true,
+      "toc": "allocations-toc.xml",
+      "tables": [
+        "gcd-perf-event",
+        "global-poi-layout",
+        "global-roi-layout",
+        "kdebug",
+        "kdebug-signpost",
+        "os-log",
+        "os-log-arg",
+        "os-signpost",
+        "os-signpost-arg",
+        "process-info",
+        "region-of-interest",
+        "roi-metadata",
+        "thread-info"
+      ],
+      "targetPIDMentionedInTOC": true,
+      "tableExports": [],
+      "reason": "Trace acquired but no recognized CPU/allocation schema; measurement not established",
+      "measurementGate": "NO_RECOGNIZED_SCHEMA",
+      "analysisRequired": true,
+      "tocProcessAttributes": [
+        {
+          "type": "attached",
+          "return-exit-status": "0",
+          "name": "MeetSpace",
+          "pid": "46601",
+          "termination-reason": "exit(0)"
+        },
+        {
+          "name": "MeetSpace",
+          "pid": "46601",
+          "path": "/Users/runner/Library/Developer/CoreSimulator/Devices/4E62D48E-A75F-4AF3-BDC2-1C74916B5810/data/Containers/Bundle/Application/A5D2F475-92F2-4081-93E2-1DB3C4CF110E/MeetSpace.app/MeetSpace"
+        },
+        {
+          "name": "kernel",
+          "pid": "0",
+          "path": "/System/Library/Kernels/kernel"
+        }
+      ],
+      "tocRunAttributes": [
+        {
+          "number": "1"
+        }
+      ],
+      "tableInspection": []
+    }
+  ],
+  "cleanupCommands": [
+    {
+      "name": "fixture-cleanup",
+      "argv": [
+        "xcrun",
+        "simctl",
+        "terminate",
+        "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "com.meetspace.ios"
+      ],
+      "log": "fixture-cleanup.log",
+      "exitCode": 0,
+      "timedOut": false,
+      "elapsedSeconds": 0.448
+    },
+    {
+      "name": "simulator-cleanup",
+      "argv": [
+        "xcrun",
+        "simctl",
+        "shutdown",
+        "4E62D48E-A75F-4AF3-BDC2-1C74916B5810"
+      ],
+      "log": "simulator-cleanup.log",
+      "exitCode": 0,
+      "timedOut": false,
+      "elapsedSeconds": 1.249
+    }
+  ]
+}

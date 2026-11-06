@@ -1,0 +1,17 @@
+Source commit: 04f70a3d80bfd8cd9314c798f0eb3fc7e58b343f
+50:   simulators:
+51:     runs-on: macos-15-intel
+52:     # CI10 iPad26 reached the 55m limit with eight tests remaining; preserve the full matrix.
+53:     timeout-minutes: 90
+54:     strategy:
+55:       fail-fast: false
+56:       matrix:
+57:         include:
+58:           - {family: iPhone, runtime: 26, label: iPhone26, scope: full, device: 'iPhone 17 Pro Max'}
+59:           - {family: iPad, runtime: 26, label: iPad26, scope: full, device: 'iPad Pro 13-inch (M5)'}
+60:           - {family: iPhone, runtime: 18, label: iPhone18, scope: compatibility, device: 'iPhone SE (3rd generation)'}
+61:           - {family: iPad, runtime: 18, label: iPad18, scope: compatibility, device: 'iPad mini (A17 Pro)'}
+62:     steps:
+63:       - uses: actions/checkout@v4
+64:       - name: Device inventory
+65:         run: |

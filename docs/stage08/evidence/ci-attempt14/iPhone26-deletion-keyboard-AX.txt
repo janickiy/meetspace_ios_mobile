@@ -1,0 +1,16 @@
+Source: D8270EA3-4929-4598-91FA-A1AEFC222EDF.txt
+Source SHA256: 82f538e1c917a73a21bbacc771f61efe6cbcafc13ae57c08e6cdd5fc10c5e36a
+Selected original AX lines; unrelated nodes omitted. The next-keyboard value is keyboard-language metadata, not entered password text.
+
+137:                                     SecureTextField, 0x10ae23b70, {{40.0, 489.7}, {360.0, 17.0}}, identifier: 'deleteAccount.password', placeholderValue: 'Пароль аккаунта', Keyboard Focused <AX element pid: 83036, elementOrHash.elementID: 4390487552.457>
+144:                                     Button, 0x10ae24350, {{20.0, 524.0}, {400.0, 74.0}}, identifier: 'deleteAccount.submit', label: 'Удалить аккаунт на сервере', Disabled <AX element pid: 83036, elementOrHash.elementID: 4358626960.458>
+157:   Window, 0x10ae251f0, {{0.0, 0.0}, {440.0, 956.0}} <AX element pid: 83036, elementOrHash.elementID: 4378904064.459>
+158:     Other, 0x10ae25310, {{0.0, 0.0}, {440.0, 956.0}} <AX element pid: 83036, elementOrHash.elementID: 4728049904.460>
+159:       Other, 0x10ae25430, {{0.0, 611.0}, {440.0, 345.0}} <AX element pid: 83036, elementOrHash.elementID: 4358535424.461>
+174:         Other, 0x10ae26510, {{0.0, 655.0}, {440.0, 243.0}} <AX element pid: 83036, elementOrHash.elementID: 4356360864.64>
+175:           Keyboard, 0x10ae26630, {{0.0, 655.0}, {440.0, 243.0}} <AX element pid: 83036, elementOrHash.elementID: 4356359712.67>
+176:             Other, 0x10ae26750, {{0.0, 655.0}, {440.0, 243.0}} <AX element pid: 83036, elementOrHash.elementID: 4358330592.71>
+218:         Other, 0x10ae299e0, {{0.0, 655.0}, {440.0, 301.0}} <AX element pid: 83036, elementOrHash.elementID: 4356718352.464>
+219:           Button, 0x10ae29b00, {{2.5, 887.7}, {80.1, 68.7}}, label: 'Следующая клавиатура', value: English (UK) <AX element pid: 83036, elementOrHash.elementID: 4357554480.466>
+220:             StaticText, 0x10ae29c20, {{2.5, 887.7}, {0.0, 0.0}} <AX element pid: 83036, elementOrHash.elementID: 4357542736.469>
+221:           Button, 0x10ae29d40, {{357.4, 887.4}, {80.1, 68.7}}, identifier: 'dictation', label: 'Диктовать', Disabled <AX element pid: 83036, elementOrHash.elementID: 4357545088.467>

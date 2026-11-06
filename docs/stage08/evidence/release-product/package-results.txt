@@ -1,0 +1,7 @@
+2026-11-06T19:00:45.4816390Z ➜ Test stage08ActualBackendAccountDeletion() skipped.
+2026-11-06T19:00:46.2592190Z ➜ Test actualBackendConferenceRESTAndGuestScope() skipped.
+2026-11-06T19:00:48.1739550Z ➜ Test actualBackendTwoClientsAndFiles() skipped.
+2026-11-06T19:00:48.6404920Z ➜ Test actualBackendCalendarFoldersSettingsAndRecordings() skipped.
+2026-11-06T19:00:48.8431830Z ➜ Test actualBackendDirectCallsDevicesAndPrivateSFU() skipped.
+2026-11-06T19:00:52.1985630Z ✔ Test run with 184 tests in 2 suites passed after 8.272 seconds.
+2026-11-06T19:06:15.2385400Z ** ARCHIVE SUCCEEDED **

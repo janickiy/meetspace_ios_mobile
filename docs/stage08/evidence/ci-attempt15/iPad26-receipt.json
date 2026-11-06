@@ -1,0 +1,271 @@
+{
+  "schemaVersion": 1,
+  "runID": 42281088607,
+  "sourceCommit": "55bfcfb1e075224eda9ed7106a669db0b55dd7e5",
+  "ciAttempt": 15,
+  "label": "iPad26",
+  "scope": "full",
+  "result": "FAIL",
+  "nativeResult": "Failed",
+  "fullSuitePass": false,
+  "collectionScope": "One completed failed native job; not a whole-run certification",
+  "counts": {
+    "totalTestCount": 35,
+    "passedTests": 34,
+    "failedTests": 1,
+    "skippedTests": 0,
+    "expectedFailures": 0
+  },
+  "failedTests": [
+    {
+      "failureText": "XCTAssertTrue failed",
+      "targetName": "MeetSpaceUITests",
+      "testIdentifier": 33,
+      "testIdentifierString": "FoundationUITests/testStage08AccountDeletionRequiresPasswordAndConfirmation()",
+      "testIdentifierURL": "test://com.apple.xcode/MeetSpace/MeetSpaceUITests/FoundationUITests/testStage08AccountDeletionRequiresPasswordAndConfirmation",
+      "testName": "testStage08AccountDeletionRequiresPasswordAndConfirmation()"
+    }
+  ],
+  "exactFailureLogLines": [
+    "2026-11-06T20:06:11.2442410Z /Users/runner/work/meetspace_ios_mobile/meetspace_ios_mobile/Tests/MeetSpaceUITests/FoundationUITests.swift:403: error: -[MeetSpaceUITests.FoundationUITests testStage08AccountDeletionRequiresPasswordAndConfirmation] : XCTAssertTrue failed"
+  ],
+  "nativeJob": {
+    "id": 128109914600,
+    "run_id": 42281088607,
+    "workflow_name": "iOS release audit",
+    "head_branch": "codex/stage08-arm-validation",
+    "run_url": "https://api.github.com/repos/janickiy/meetspace_ios_mobile/actions/runs/42281088607",
+    "run_attempt": 1,
+    "node_id": "CR_kwDOVjrQzc8AAAAd0_Ip6A",
+    "head_sha": "55bfcfb1e075224eda9ed7106a669db0b55dd7e5",
+    "url": "https://api.github.com/repos/janickiy/meetspace_ios_mobile/actions/jobs/128109914600",
+    "html_url": "https://github.com/janickiy/meetspace_ios_mobile/actions/runs/42281088607/job/128109914600",
+    "status": "completed",
+    "conclusion": "failure",
+    "created_at": "2026-11-06T19:36:17Z",
+    "started_at": "2026-11-06T19:36:20Z",
+    "completed_at": "2026-11-06T20:09:38Z",
+    "name": "simulators (iPad, 26, iPad26, full, iPad Pro 13-inch (M5))",
+    "steps": [
+      {
+        "name": "Set up job",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 1,
+        "started_at": "2026-11-06T19:36:20Z",
+        "completed_at": "2026-11-06T19:36:21Z"
+      },
+      {
+        "name": "Run actions/checkout@v4",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 2,
+        "started_at": "2026-11-06T19:36:21Z",
+        "completed_at": "2026-11-06T19:36:25Z"
+      },
+      {
+        "name": "Device inventory",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 3,
+        "started_at": "2026-11-06T19:36:25Z",
+        "completed_at": "2026-11-06T19:36:44Z"
+      },
+      {
+        "name": "App, Keychain and UI tests",
+        "status": "completed",
+        "conclusion": "failure",
+        "number": 4,
+        "started_at": "2026-11-06T19:36:44Z",
+        "completed_at": "2026-11-06T20:08:57Z"
+      },
+      {
+        "name": "Diagnostic Instruments baseline (reported separately)",
+        "status": "completed",
+        "conclusion": "skipped",
+        "number": 5,
+        "started_at": "2026-11-06T20:08:58Z",
+        "completed_at": "2026-11-06T20:08:58Z"
+      },
+      {
+        "name": "Upload simulator test results",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 6,
+        "started_at": "2026-11-06T20:08:58Z",
+        "completed_at": "2026-11-06T20:09:26Z"
+      },
+      {
+        "name": "Post Run actions/checkout@v4",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 12,
+        "started_at": "2026-11-06T20:09:26Z",
+        "completed_at": "2026-11-06T20:09:27Z"
+      },
+      {
+        "name": "Complete job",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 13,
+        "started_at": "2026-11-06T20:09:27Z",
+        "completed_at": "2026-11-06T20:09:35Z"
+      }
+    ],
+    "check_run_url": "https://api.github.com/repos/janickiy/meetspace_ios_mobile/check-runs/128109914600",
+    "labels": [
+      "macos-15"
+    ],
+    "runner_id": 1000000561,
+    "runner_name": "GitHub Actions 1000000561",
+    "runner_group_id": 0,
+    "runner_group_name": "GitHub Actions"
+  },
+  "actualEnvironment": {
+    "device": "iPad Pro 13-inch (M5)",
+    "runtime": [
+      26,
+      2
+    ],
+    "udid": "73C19119-B10E-4309-872E-C53EF3F0EF27",
+    "scope": "full",
+    "hostArchitecture": "arm64",
+    "hostOS": "macOS-15.8.2-arm64-arm-64bit-Mach-O",
+    "preferredDeviceMatched": true,
+    "xcode": "Xcode 26.3\nBuild version 17C529\n"
+  },
+  "artifact": {
+    "id": 13536274526,
+    "node_id": "MDg6QXJ0aWZhY3QxMzUzNjI3NDUyNg==",
+    "name": "results-iPad26",
+    "size_in_bytes": 415786963,
+    "url": "https://api.github.com/repos/janickiy/meetspace_ios_mobile/actions/artifacts/13536274526",
+    "archive_download_url": "https://api.github.com/repos/janickiy/meetspace_ios_mobile/actions/artifacts/13536274526/zip",
+    "expired": false,
+    "digest": "sha256:fe1ab5217340c517f01c9794c2820d6a553ab8deef7ac69efbf0b20032cdf6a2",
+    "created_at": "2026-11-06T20:09:27Z",
+    "updated_at": "2026-11-06T20:09:27Z",
+    "expires_at": "2026-11-13T20:08:59Z",
+    "workflow_run": {
+      "id": 42281088607,
+      "repository_id": 1446695117,
+      "head_repository_id": 1446695117,
+      "head_branch": "codex/stage08-arm-validation",
+      "head_sha": "55bfcfb1e075224eda9ed7106a669db0b55dd7e5"
+    }
+  },
+  "verifiedZip": {
+    "sha256": "fe1ab5217340c517f01c9794c2820d6a553ab8deef7ac69efbf0b20032cdf6a2",
+    "bytes": 415786963,
+    "apiDigestMatched": true,
+    "apiRunSourceMatched": true,
+    "payloadReadDirectlyFromZIP": true
+  },
+  "nativeLog": {
+    "originalFile": "simulators_iPad_26_iPad26_full_iPad_Pro_13-inch_M5_.log",
+    "sha256": "030b823819203fe4b14648d2fdf9e1bed8b2b92bd6b0ad124435febac0338fcc",
+    "bytes": 1465206,
+    "testResults": "iPad26-native-test-results.txt",
+    "deletionExcerpt": "iPad26-deletion-log-excerpt.txt"
+  },
+  "audit": {
+    "engineAttempts": 49,
+    "auditPasses": 49,
+    "recoveredElementDetectionTimeouts": 0,
+    "initialScreenCategoryPairs": 49,
+    "snapshotCount": 7,
+    "rawIssues": 16,
+    "rawResolutions": {
+      "reviewed: opaque glyph cores exceed 4.5:1 in actual PNG; ACCESSIBILITY_IPAD_CONTRAST.md": 7,
+      "reviewed: welcome heading; complete AX5 text in ACCESSIBILITY_REVIEW.md": 1,
+      "reviewed: native empty-state node groups decorative icon with high-contrast title": 1,
+      "reviewed: decorative avatar initials; accessible row has the full name": 1,
+      "reviewed: actual opaque glyph/background pixels; ACCESSIBILITY_CONTRAST_REVIEW.md": 2,
+      "reviewed: measured custom-font scaling; separate AX5 layout coverage": 2,
+      "reviewed: decorative initials duplicate full account name; actual PNG ratio 4.62:1": 1,
+      "reviewed: unchanged profile; disabled save action (inactive-control contrast exemption)": 1
+    },
+    "offscreenRetestNotMeasured": 0,
+    "fontSamples": 74,
+    "fontCategoriesPerSample": 12,
+    "nativeSuiteStillFailed": true
+  },
+  "rawAuditIndex": "iPad26-raw-attachment-index.json",
+  "deletionVideo": {
+    "zipMember": "iPad26-screenshots/95C48435-DE14-4C3D-882F-7C86ED828CB0.mp4",
+    "sha256": "e996b1007cc0b31108fc19215e6c16f0bf3444ec50e1c4179022efb29f55f16b",
+    "bytes": 15236509,
+    "attachment": {
+      "configurationName": "Test Scheme Action",
+      "deviceId": "73C19119-B10E-4309-872E-C53EF3F0EF27",
+      "deviceName": "iPad Pro 13-inch (M5)",
+      "exportedFileName": "95C48435-DE14-4C3D-882F-7C86ED828CB0.mp4",
+      "isAssociatedWithFailure": false,
+      "suggestedHumanReadableName": "Screen Recording 2026-11-06 at 08.05.14 PM.mp4",
+      "timestamp": 1793995514.08
+    },
+    "originalPreservedIn": "API-digest-verified results-iPad26.zip; video not duplicated in repository"
+  },
+  "videoFrames": [
+    {
+      "path": "video-frames/42281088607-iPad26-t38.5.png",
+      "sha256": "d608ffa4d26fad2c165fe8073b380dbe4bc958f948e5291cbb7a584a48623429",
+      "requestedVideoSeconds": 38.5,
+      "actualVideoSeconds": 38.41,
+      "transformation": "AVAssetImageGenerator, preferred track transform, full uncropped frame",
+      "width": 2064,
+      "height": 2752
+    },
+    {
+      "path": "video-frames/42281088607-iPad26-t41.5.png",
+      "sha256": "37c776791e7d76dc87869f58126246d7b6af83465f58f946c7da307f125daad8",
+      "requestedVideoSeconds": 41.5,
+      "actualVideoSeconds": 41.49333333333333,
+      "transformation": "AVAssetImageGenerator, preferred track transform, full uncropped frame",
+      "width": 2064,
+      "height": 2752
+    },
+    {
+      "path": "video-frames/42281088607-iPad26-t44.8.png",
+      "sha256": "0b6238790ebc4e820f47924a8e8621900d218811bd157350d696ea2069650460",
+      "requestedVideoSeconds": 44.8,
+      "actualVideoSeconds": 44.795,
+      "transformation": "AVAssetImageGenerator, preferred track transform, full uncropped frame",
+      "width": 2064,
+      "height": 2752
+    },
+    {
+      "path": "video-frames/42281088607-iPad26-t47.8.png",
+      "sha256": "df7fdea21f825a718e75972cb17b0613bea8813f7c491b867ccf1a2d6264774d",
+      "requestedVideoSeconds": 47.8,
+      "actualVideoSeconds": 47.79666666666667,
+      "transformation": "AVAssetImageGenerator, preferred track transform, full uncropped frame",
+      "width": 2064,
+      "height": 2752
+    },
+    {
+      "path": "video-frames/42281088607-iPad26-t50.8.png",
+      "sha256": "cf67537eb046f2636dbe628d0db3c4987a397f2a3a94d463654f05f4a57ac369",
+      "requestedVideoSeconds": 50.8,
+      "actualVideoSeconds": 50.79666666666667,
+      "transformation": "AVAssetImageGenerator, preferred track transform, full uncropped frame",
+      "width": 2064,
+      "height": 2752
+    },
+    {
+      "path": "video-frames/42281088607-iPad26-contact.png",
+      "sha256": "9657d89bf078cdf227111888affe8d5e0bf8b6801453de0d0ba5f794a2b67b8f",
+      "transformation": "Derived contact sheet: bottom 36% crop of five full frames, scaled, labeled with requested/actual video timestamps; not an original screenshot"
+    }
+  ],
+  "findings": {
+    "observed": "Both CI15 and CI16 videos show Russian letters -> Emoji -> Russian -> Emoji -> Russian across four switch taps; f never appears.",
+    "finalAX": "One matching emoji Button inside Keyboard, identifier emoji, label Эмодзи, frame {{0.5,1290.0},{151.0,68.0}}; no Next keyboard/Следующая клавиатура in final hierarchy.",
+    "latinControl": "Separate Key visually labeled abc; AX label Переключиться с латинских клавиш; frame {{0.5,1153.5},{125.5,68.0}}; full hierarchy line 226. This key was not tapped.",
+    "unknown": "Installed keyboard list/system language menu was not opened. The evidence does not establish whether English is installed or the result of tapping abc.",
+    "minimalNextExperiment": "While f is absent, target the observed exact Key once, then bounded wait for f. Retain failure if f does not appear. No success inferred before a native run.",
+    "sourceComparison": "a33 changes keyboard.buttons to app.buttons but retains the same OR predicate/firstMatch. CI16 reproduces the iPad cycle, so wider query scope alone did not fix it.",
+    "reached": "Stopped before first password character; final password field focused and submit disabled. Wrong-password/cancel/retry/server deletion flow not reached."
+  },
+  "limitations": "Observed simulator DEBUG fixture run. Passed individual tests do not change native suite failure. Video frames do not establish installed input modes or prove the proposed helper change."
+}

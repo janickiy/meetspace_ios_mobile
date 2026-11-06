@@ -1,0 +1,49 @@
+Original line numbers; full hierarchy SHA256 30e8f18d6f6e95bba6201e927d6d5bc59d097e2e612ab398172feb1e5dacdb9e
+136:                                         SecureTextField, 0x110a8c290, {{98.0, 407.5}, {548.0, 44.0}}, identifier: 'deleteAccount.password', placeholderValue: 'Пароль аккаунта', value: •••••••••, Keyboard Focused, Focused <AX element pid: 24151, elementOrHash.elementID: 4404493824.494>
+143:                                         Button, 0x110a8ca70, {{98.0, 451.5}, {548.0, 66.0}}, identifier: 'deleteAccount.submit', label: 'Удалить аккаунт на сервере' <AX element pid: 24151, elementOrHash.elementID: 105553169856096.495>
+155:     Other, 0x110a8d7f0, {{0.0, 0.0}, {744.0, 1133.0}} <AX element pid: 24151, elementOrHash.elementID: 4360708432.326>
+156:   Window, 0x110a8d910, {{0.0, 0.0}, {744.0, 1133.0}} <AX element pid: 24151, elementOrHash.elementID: 4398355968.496>
+157:     Other, 0x110a8da30, {{0.0, 0.0}, {744.0, 1133.0}} <AX element pid: 24151, elementOrHash.elementID: 4360855152.497>
+158:       Other, 0x110a8db50, {{0.0, 793.0}, {744.0, 340.0}} <AX element pid: 24151, elementOrHash.elementID: 4360369600.498>
+159:         Other, 0x110a8dc70, {{0.0, 793.0}, {744.0, 55.0}} <AX element pid: 24151, elementOrHash.elementID: 4360168944.500>
+160:           Other, 0x110a8dd90, {{0.0, 793.0}, {744.0, 55.0}} <AX element pid: 24151, elementOrHash.elementID: 4360287328.502>
+161:           Other, 0x110a8deb0, {{0.0, 793.0}, {744.0, 55.0}} <AX element pid: 24151, elementOrHash.elementID: 4713541856.503>
+162:             Other, 0x110a8dfd0, {{0.0, 793.0}, {744.0, 55.0}} <AX element pid: 24151, elementOrHash.elementID: 4360818176.505>
+163:         Other, 0x110a8e0f0, {{0.0, 793.0}, {744.0, 55.0}}, identifier: 'SystemInputAssistantView' <AX element pid: 24151, elementOrHash.elementID: 4360324240.65>
+164:           Other, 0x110a8e210, {{0.0, 793.0}, {744.0, 55.0}} <AX element pid: 24151, elementOrHash.elementID: 4360326528.70>
+165:             Other, 0x110a8e330, {{0.0, 793.0}, {152.0, 55.0}}, identifier: 'LeftButtonBar' <AX element pid: 24151, elementOrHash.elementID: 4361661280.74>
+166:               Other, 0x110a8e450, {{15.0, 793.0}, {137.0, 55.0}} <AX element pid: 24151, elementOrHash.elementID: 4361323424.79>
+167:                 Other, 0x110a8e570, {{15.0, 793.0}, {130.0, 55.0}} <AX element pid: 24151, elementOrHash.elementID: 4703336304.556>
+168:                   Other, 0x110a8e690, {{15.0, 793.0}, {40.0, 55.0}} <AX element pid: 24151, elementOrHash.elementID: 4703039904.557>
+169:                     Button, 0x110a8e7b0, {{15.0, 793.0}, {40.0, 55.0}}, identifier: 'assistantUndo', label: 'Не применять' <AX element pid: 24151, elementOrHash.elementID: 4704009392.560>
+170:                   Other, 0x110a8e8d0, {{60.0, 793.0}, {40.0, 55.0}} <AX element pid: 24151, elementOrHash.elementID: 4703048544.558>
+171:                     Button, 0x110a8e9f0, {{60.0, 793.0}, {40.0, 55.0}}, identifier: 'assistantRedo', label: 'Повторить', Disabled <AX element pid: 24151, elementOrHash.elementID: 4703931328.561>
+172:                   Other, 0x110a8eb10, {{105.0, 793.0}, {40.0, 55.0}} <AX element pid: 24151, elementOrHash.elementID: 4703116224.559>
+173:                     Button, 0x110a8ec30, {{105.0, 793.0}, {40.0, 55.0}}, identifier: 'assistantPaste:forEvent:', label: 'Вставить', Disabled <AX element pid: 24151, elementOrHash.elementID: 4704063728.562>
+174:             Other, 0x110a8ed50, {{152.0, 793.0}, {440.0, 55.0}}, identifier: 'CenterPageView' <AX element pid: 24151, elementOrHash.elementID: 4360326912.167>
+175:               Other, 0x110a8ee70, {{152.0, 193.0}, {440.0, 1255.0}} <AX element pid: 24151, elementOrHash.elementID: 4360327888.170>
+176:                 ScrollView, 0x110a8ef90, {{152.0, 793.0}, {440.0, 55.0}} <AX element pid: 24151, elementOrHash.elementID: 4388595200.174>
+177:               Other, 0x110a8f0b0, {{152.0, 793.0}, {440.0, 55.0}} <AX element pid: 24151, elementOrHash.elementID: 4360331824.171>
+178:                 Other, 0x110a8f1d0, {{152.0, 793.0}, {440.0, 55.0}}, label: 'Варианты ввода' <AX element pid: 24151, elementOrHash.elementID: 4360457216.175>
+179:                   Other, 0x110a8f2f0, {{152.0, 793.0}, {440.0, 55.0}} <AX element pid: 24151, elementOrHash.elementID: 4360458240.218>
+180:                     Other, 0x110a8f410, {{182.0, 793.0}, {380.0, 55.0}} <AX element pid: 24151, elementOrHash.elementID: 4360364560.222>
+181:                       Button, 0x110a8f530, {{182.0, 793.0}, {380.0, 55.0}}, label: 'Passwords' <AX element pid: 24151, elementOrHash.elementID: 4361618064.223>
+182:                         Image, 0x110a8f650, {{321.5, 809.0}, {13.0, 23.0}}, identifier: 'kb-autofill-key' <AX element pid: 24151, elementOrHash.elementID: 4362364576.565>
+183:             Other, 0x110a8f770, {{592.0, 793.0}, {152.0, 55.0}}, identifier: 'RightButtonBar' <AX element pid: 24151, elementOrHash.elementID: 4361666736.75>
+184:               Other, 0x110a8f890, {{592.0, 793.0}, {137.0, 55.0}} <AX element pid: 24151, elementOrHash.elementID: 4361665072.80>
+185:         Other, 0x110a8f9b0, {{0.0, 848.0}, {744.0, 282.0}} <AX element pid: 24151, elementOrHash.elementID: 4360748176.501>
+186:           Other, 0x110a8fad0, {{0.0, 848.0}, {744.0, 285.0}} <AX element pid: 24151, elementOrHash.elementID: 4363097040.504>
+187:             Other, 0x110a8fbf0, {{0.0, 848.0}, {744.0, 285.0}} <AX element pid: 24151, elementOrHash.elementID: 4702927936.506>
+188:             Other, 0x110a8fd10, {{0.0, 848.0}, {744.0, 285.0}} <AX element pid: 24151, elementOrHash.elementID: 4703222688.507>
+189:               Other, 0x110a8fe30, {{0.0, 848.0}, {744.0, 285.0}} <AX element pid: 24151, elementOrHash.elementID: 4362831152.508>
+190:         Other, 0x110a8ff50, {{0.0, 848.0}, {744.0, 282.0}} <AX element pid: 24151, elementOrHash.elementID: 4360466304.67>
+191:           Keyboard, 0x110a90070, {{0.0, 848.0}, {744.0, 282.0}} <AX element pid: 24151, elementOrHash.elementID: 4360484544.72>
+192:             Other, 0x110a90190, {{0.0, 848.0}, {744.0, 282.0}} <AX element pid: 24151, elementOrHash.elementID: 4703973392.566>
+193:               StaticText, 0x110a902b0, {{0.0, 888.5}, {744.0, 60.0}}, label: 'Для доступа к альтернативным буквам на клавиатуре
+194: потяните вниз на клавише и отпустите.' <AX element pid: 24151, elementOrHash.elementID: 4360521504.567>
+195:               Other, 0x110a903d0, {{307.0, 959.0}, {61.0, 60.0}} <AX element pid: 24151, elementOrHash.elementID: 4361819152.568>
+196:               Button, 0x110a904f0, {{307.0, 959.0}, {61.0, 60.0}}, label: 'f, &' <AX element pid: 24151, elementOrHash.elementID: 4363079840.569>
+197:               Other, 0x110a90610, {{376.0, 958.0}, {61.5, 62.0}} <AX element pid: 24151, elementOrHash.elementID: 4703124528.570>
+198:               Button, 0x110a90730, {{376.0, 958.0}, {61.5, 62.0}}, label: 'f, &' <AX element pid: 24151, elementOrHash.elementID: 4360562432.571>
+199:               Button, 0x110a90850, {{279.0, 1084.8}, {186.0, 20.0}}, label: 'ОК' <AX element pid: 24151, elementOrHash.elementID: 4360761248.572>
+200:                 StaticText, 0x110a90970, {{360.0, 1084.2}, {24.0, 21.0}}, label: 'ОК' <AX element pid: 24151, elementOrHash.elementID: 4360200992.573>

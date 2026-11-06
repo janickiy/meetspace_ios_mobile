@@ -1,6 +1,6 @@
 # История CI этапа 08
 
-Срез: **2026-11-06 19:04 UTC**. CI1–CI10 завершены без успешной полной приёмки. В CI10 оба iOS18 jobs имеют по 14 PASS / 1 FAIL; iPhone26 — 30 PASS / 5 FAIL; iPad26 остановлен лимитом времени после 27 завершённых тестов (26 PASS / 1 FAIL). CI11 отменён CI12 после package SUCCESS; отменённые native jobs не засчитаны как coverage. В CI13 завершён iPad18: 13 PASS / 2 FAIL; в 18:57 UTC запрошена и затем подтверждена отмена оставшейся работы для освобождения runners следующему кандидату. Новый CI14 на `04f70a3d80bfd8cd9314c798f0eb3fc7e58b343f` запущен с уточнённой обработкой наблюдаемых системных состояний; результат **PENDING**. Результаты относятся только к указанным исходникам и выбранному scope. Успешный package job, unsigned archive или диагностический сценарий не заменяют полный simulator suite.
+Срез: **2026-11-06 20:20 UTC**. CI1–CI14 не дали успешной полной приёмки; последняя iPad18 job CI14 ещё выполняется. CI15 (`55bfcfb`) завершил оба full26 suite с34 PASS /1 FAIL: только deletion keyboard helper; оба18 PENDING. CI16 (`a33a153`) завершил iPad26 с13 PASS /1 FAIL в regression14, остальные PENDING. CI17 (`163fb79`) проверяет только deletion на всех4 устройствах, package намеренно SKIP; результат PENDING. Product-код этих трёх ревизий одинаков. Targeted проверки не выдаются за один полный успешный suite итогового harness.
 
 ## Прогоны
 
@@ -21,9 +21,83 @@
 | [CI11 — 42266911539](https://github.com/janickiy/meetspace_ios_mobile/actions/runs/42266911539) | `0216c9979a5e3763fa7453fb3878de39b7df3311`, ветка `codex/stage08-final` | Package SUCCESS; отдельный локальный host suite: 179 PASS / 5 opt-in SKIP из184 | Native jobs отменены при вытеснении CI12 через workflow concurrency; они не засчитаны как coverage. Source включает локальный push-ordering patch. CI10 продолжает прежний source на другой ветке. |
 | [CI12 — 42269703023](https://github.com/janickiy/meetspace_ios_mobile/actions/runs/42269703023) | `082cef8002c4c591dc594f2a13b6477d7113bda5` | Отменён; все пять jobs CANCELLED | Full workflow с guard по точному iPad tutorial text, native `ОК` dismissal и повторным поиском нужной клавиши. Вытеснен следующим кандидатом с исправленным post-deletion login assertion; успешная native проверка здесь не объявлена. |
 | [CI13 — 42270899385](https://github.com/janickiy/meetspace_ios_mobile/actions/runs/42270899385) | `a052abdacaf49d05a68b17725dda0e4b096bb86e`, ветка `codex/stage08-final` | Package SUCCESS | iPad18: 13 PASS / 2 FAIL из15, 0 SKIP — core AX `-56` (186.434с) и deletion helper (119.643с), пропустивший keyboard tutorial после `more`. DELETE не достигнут. В 18:57 UTC запрошена авторская отмена superseded workflow (HTTP202) ради CI14; остальные три native jobs завершились CANCELLED; [итоговый receipt](evidence/ci-attempt13.json). Это не timeout и не runner-capacity отмена; частичные тесты не засчитаны как PASS. |
-| [CI14 — 42275177048](https://github.com/janickiy/meetspace_ios_mobile/actions/runs/42275177048) | `04f70a3d80bfd8cd9314c798f0eb3fc7e58b343f` | PENDING | Full workflow запущен 18:56 UTC. Candidate включает bounded recovery после позднего Passwords prompt и десятисекундное ожидание нужной клавиши **или** точного observed tutorial. Strict fixture guard сохранён; native результат PENDING. |
+| [CI14 — 42275177048](https://github.com/janickiy/meetspace_ios_mobile/actions/runs/42275177048) | `04f70a3d80bfd8cd9314c798f0eb3fc7e58b343f` | Package SUCCESS; 179 PASS / 5 opt-in SKIP из184; unsigned archive59checksPASS | iPhone18: 14 PASS /1 FAIL из15; deletion PASS186.676с, единственный failure — core AX. Profile elementDetection: −56 → повтор завершён; profile dynamicType: −56 → повтор получил XCTFuture1000/65с. iPad26: 10 hosted PASS; UI runner не инициализировался, 0 UI testcases. Summary synthetic failure не считается выполненным UI-тестом. iPhone26: 32 PASS /3 FAIL — после семи успешных welcome audits переход connectServer→serverURL не состоялся (причина не установлена); settings остановились под поздним Passwords sheet; deletion — на неверном scope keyboard selector до ввода пароля. iPad18 ещё не включён в этот срез. |
+| [CI15 — 42281088607](https://github.com/janickiy/meetspace_ios_mobile/actions/runs/42281088607) | `55bfcfb1e075224eda9ed7106a669db0b55dd7e5` | Package/unsigned archive SUCCESS | Оба26:34 PASS /1 FAIL из35,0SKIP; Core AX/AX5/Settings PASS, только deletion keyboard helper FAIL. Оба18 PENDING. [Receipts](evidence/ci-attempt15/receipt.json). |
+| [CI16 — 42283560617](https://github.com/janickiy/meetspace_ios_mobile/actions/runs/42283560617) | `a33a153147d6941874884357134b3fd46de7532c` | 179 PASS /5 opt-in SKIP из184; archive SUCCESS,59 packaging PASS | Regression14/device, не full. iPad26:13 PASS /1 FAIL,0SKIP; отдельная abc клавиша не использована. Остальные PENDING. [Receipt](evidence/ci-attempt16/receipt.json). |
+| [CI17 — 42287121804](https://github.com/janickiy/meetspace_ios_mobile/actions/runs/42287121804) | `163fb79059dbc0d5b2fbdbc206e74e2e3cb92e86` | Намеренный SKIP, source/product не менялись | Deletion-only на всех4 устройствах, по1 test; PENDING. Выбор exact iPad abc key — проверяемая правка, не заранее засчитанный PASS. |
 
 Все simulator проверки используют DEBUG fixture dependencies. Hosted tests исполняют настоящие framework-компоненты в симуляторе. Подписанная сборка, физические устройства, APNs, системный ReplayKit и Instruments этим не подтверждены: [TEST_REPORT.md](TEST_REPORT.md), [KNOWN_LIMITATIONS.md](KNOWN_LIMITATIONS.md).
+
+## CI14: выполненный deletion flow и сбои XCTest
+
+[iPhone18 deletion receipt](evidence/account-deletion/attempt14-iphone18.json)
+сохраняет native PASS186.676с и четыре оригинальных PNG. Success screen — login
+на сохранённый сервер с сообщением «Аккаунт удалён на сервере.»; форма/workspace
+отсутствуют. Cancel/confirmation подтверждены test assertions и event log, отдельного
+alert PNG нет. Default push intent выключен: это не проверка конкурентной регистрации.
+
+[iPhone18 audit receipt](evidence/accessibility-attempt14/iPhone18-receipt.json),
+[все22 attempt records](evidence/accessibility-attempt14/iPhone18-audit-attempts.json)
+и [raw issues](evidence/accessibility-attempt14/iPhone18-raw-issues.json) показывают:
+
+- Profile / elementDetection: attempt1 engine −56 за15.019с, 0 callbacks/findings;
+  attempt2 завершился за13.062с, тоже без findings. Первый timeout не скрыт.
+- Profile / dynamicType: attempt1 engine −56 за15.012с; attempt2 после2с ожидания
+  получил `com.apple.dt.XCTest.XCTFuture` code1000 за65.023с, 0 callbacks/findings.
+  Ошибка проброшена, testcase FAIL240.911с. Этот результат не доказывает, что
+  двухсекундное ожидание восстанавливает состояние audit engine.
+- Из трёх raw findings два ранее reviewed; `addAccount` contrast отложен из-за
+  положения вне viewport, его собственный retest не достигнут. Только welcome/messages
+  завершили все семь категорий. Profile textClipped и следующие четыре экрана не
+  исполнены до результата; их доступность этим тестом не подтверждена.
+
+[iPad26 receipt](evidence/ci-attempt14/iPad26-receipt.json) и
+[исходный event excerpt](evidence/ci-attempt14/iPad26-init-events.txt) фиксируют
+10/10 hosted PASS, затем `XCTDaemonErrorDomain Code=18` / `Timed out waiting for AX loaded notification`.
+UI runner не инициализировался, ни один `FoundationUITests` testcase не начался.
+Summary показывает10 PASS +1 synthetic infrastructure failure =11 entries;
+это **0 выполненных UI testcases**, а не один неуспешный прикладной UI-сценарий.
+Summary/attachments/diagnostics exports завершились, не заменяя native FAIL.
+Artifact hashes и ZIP CRC обоих завершённых jobs проверены.
+
+### CI14 iPhone26: три разных остановки UI-сценариев
+
+[Сводный receipt](evidence/ci-attempt14/iPhone26-receipt.json),
+[ограниченный native event excerpt](evidence/ci-attempt14/iPhone26-failure-events.txt)
+и исходный summary подтверждают **32 PASS /3 FAIL из35**,0 SKIP.
+
+- **Core accessibility / readiness — FAIL93.735с.** Все семь welcome categories
+  завершились с первой попытки; raw progress содержит один reviewed heading finding.
+  После terminate/relaunch нажатие `connectServer` не привело к появлению `serverURL`.
+  Failure AX остаётся на welcome, overlay в нём не виден. Причина неприменённого
+  нажатия не установлена; это не наблюдённый audit-engine timeout или новый finding.
+  [Audit/readiness receipt](evidence/accessibility-attempt14/iPhone26-readiness-receipt.json),
+  [семь attempt records](evidence/accessibility-attempt14/iPhone26-audit-attempts.json),
+  [welcome raw progress](evidence/accessibility-attempt14/iPhone26-welcome-progress.json),
+  [failure AX excerpt](evidence/ci-attempt14/iPhone26-core-readiness-AX.txt).
+  Остальные шесть audit screens не достигнуты; их readiness/доступность не подтверждены.
+- **Settings — FAIL115.786с.** Прямое нажатие `tab.profile` ожидало animation idle
+  около60с; затем `openAccountSettings` не найден. Failure AX показывает выбранный
+  Messages и системный `Save Password?` с `Not Now`/`Save`.
+  [AX excerpt](evidence/ci-attempt14/iPhone26-settings-passwords-AX.txt).
+  Persistence assertions не достигнуты. В CI16 этот testcase использует уже
+  существующий bounded navigation helper; результат исправления пока PENDING.
+- **Deletion — FAIL72.245с до ввода пароля.** Поле показывает placeholder без value,
+  submit отключён. Реальный Button `Следующая клавиатура` находится в контейнере,
+  соседнем с контейнером `Keyboard`, а lookup ограничен descendants Keyboard.
+  [Точная иерархия](evidence/ci-attempt14/iPhone26-deletion-keyboard-AX.txt),
+  [неуспешный query chain](evidence/ci-attempt14/iPhone26-deletion-keyboard-query.txt).
+  CI16 ищет этот native button через `app.buttons`; пароль/fixture guard/production
+  ввод не меняются. Это не API-отказ или подтверждённое удаление.
+
+CI16 целенаправленно запускает **14 тестов на каждой платформе**, включая четыре
+названных UI-сценария, после двух test-only исправлений. Он не подменяет полный
+CI15 и не объявлен полным regression suite35/15. Исторические FAIL остаются в evidence;
+неустановленная причина Core readiness не приписывается Passwords без свидетельств.
+
+CI15 проверяет другой поддерживаемый runner pool и прекращает немедленные повторы
+Dynamic Type после engine timeout. Это сохраняет fail-closed поведение; неизвестный
+результат, raw finding или ошибка движка не превращаются в PASS из-за смены окружения.
 
 ## Инфраструктурная отмена CI7 и переход CI8 на Intel
 
@@ -178,6 +252,9 @@ receipt записан до commit и честно сохраняет `workingTr
 - CI11: full dispatch `42266911539` на `0216c9979a5e3763fa7453fb3878de39b7df3311` в `codex/stage08-final`; package SUCCESS, native jobs отменены CI12 и не засчитаны как coverage. Локальный [push-ordering receipt](evidence/account-deletion/push-ordering/receipt.json) также не заменяет native CI.
 - CI12: full dispatch `42269703023` на `082cef8002c4c591dc594f2a13b6477d7113bda5`; исправляет observed iPad keyboard tutorial. Вытеснение CI13 ещё завершается на момент среза и не считается успешным тестовым результатом.
 - CI13: full dispatch `42270899385` на `a052abdacaf49d05a68b17725dda0e4b096bb86e`; [iPad18 receipt](evidence/account-deletion/attempt13-ipad18.json) сохраняет13 PASS /2 FAIL и keyboard evidence. Package SUCCESS; в18:57 UTC запрошена отмена оставшихся jobs, без предположения их результатов.
-- CI14: full dispatch `42275177048` на `04f70a3d80bfd8cd9314c798f0eb3fc7e58b343f`,18:56 UTC; новый native результат PENDING.
+- CI14: full dispatch `42275177048` на `04f70a3d80bfd8cd9314c798f0eb3fc7e58b343f`,18:56 UTC; iPhone18 14 PASS /1 FAIL (deletion PASS), iPhone26 32 PASS /3 FAIL; iPad26 10 hosted PASS /0 UI executed и runner initialization failure. iPad18 ещё не включён в этот срез.
+- CI15: full dispatch `42281088607` на `55bfcfb1e075224eda9ed7106a669db0b55dd7e5`,19:36 UTC; ARM simulator pool/max-parallel2, нативный результат PENDING.
 
 Полная текущая визуальная приёмка также не объявляется завершённой: [VISUAL_REVIEW.md](VISUAL_REVIEW.md).
+
+- CI16: regression dispatch `42283560617` на `a33a153147d6941874884357134b3fd46de7532c`, ветка `codex/stage08-regression`; план14 тестов ×4платформы, не full. Результат PENDING.

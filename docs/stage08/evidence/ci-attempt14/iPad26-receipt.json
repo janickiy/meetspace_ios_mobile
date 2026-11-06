@@ -1,0 +1,48 @@
+{
+  "schema": 1,
+  "runID": 42275177048,
+  "sourceCommit": "04f70a3d80bfd8cd9314c798f0eb3fc7e58b343f",
+  "label": "iPad26",
+  "result": "FAIL",
+  "artifact": {
+    "id": 13534702666,
+    "name": "results-iPad26",
+    "size_in_bytes": 167297216,
+    "digest": "sha256:f3d518413694b22e1c68321d0d2c5cef312a8308678b00cacc2cf5458adbb316",
+    "downloadedSHA256": "f3d518413694b22e1c68321d0d2c5cef312a8308678b00cacc2cf5458adbb316",
+    "zipCRCVerified": true
+  },
+  "hostedTestsPassed": 10,
+  "uiTestcasesExecuted": 0,
+  "summaryCounts": {
+    "passedTests": 10,
+    "failedTests": 1,
+    "skippedTests": 0,
+    "totalTestCount": 11
+  },
+  "failedEntryIsInfrastructureError": true,
+  "error": "The test runner failed to initialize for UI testing. (Underlying Error: Timed out waiting for AX loaded notification)",
+  "boundary": "The summary synthetic failed entry is not one of the requested 25 UI testcases. No UI scenario, accessibility result, screenshot or device behavior is inferred from this job. All three diagnostic exports completed; they do not replace the failed native result.",
+  "retainedFiles": [
+    {
+      "file": "iPad26-environment.json",
+      "bytes": 311,
+      "sha256": "8ce9752311d76e58e1ed84db5108a7d26a445f12ba2cce3e81a0624d89bde8f5"
+    },
+    {
+      "file": "iPad26-export-status.json",
+      "bytes": 1436,
+      "sha256": "616fd7422d59fc67e090b37aa8b4a38876127c9822c26d377113e5a95430cfcf"
+    },
+    {
+      "file": "iPad26-init-events.txt",
+      "bytes": 2893,
+      "sha256": "fece59af8260b003786615bee983fa807f5582d3a43befd3bc55e7207698d621"
+    },
+    {
+      "file": "iPad26-summary.json",
+      "bytes": 1385,
+      "sha256": "9639516577fdb09f88f132dd8db9eaa1309f23b186dbc80612b4865d69b2f52e"
+    }
+  ]
+}

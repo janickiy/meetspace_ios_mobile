@@ -1,0 +1,6 @@
+Query chain:
+ →Find: Target Application 'com.meetspace.ios'
+  ↪︎Find: Descendants matching type Keyboard
+    ↪︎Find: First Match
+      ↪︎Find: Descendants matching type Key
+        ↪︎Find: Elements matching predicate '"-" IN identifiers'

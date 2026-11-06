@@ -1,0 +1,148 @@
+{
+  "schema": 1,
+  "inspectedAtUTC": "2026-11-06T20:32:44.001259+00:00",
+  "sourceCommit": "55bfcfb1e075224eda9ed7106a669db0b55dd7e5",
+  "status": "FAIL",
+  "elapsedSeconds": 94.038,
+  "nativeSuite": {
+    "passed": 15,
+    "failed": 0,
+    "skipped": 0,
+    "total": 15,
+    "scope": "compatibility",
+    "boundary": "Native suite PASS does not turn continue-on-error profiler step into PASS."
+  },
+  "identity": {
+    "deviceName": "iPhone SE (3rd generation)",
+    "runtime": "com.apple.CoreSimulator.SimRuntime.iOS-18-6",
+    "simulatorUDID": "C3630581-519B-49DA-9400-67A78DCD42C8",
+    "hostArchitecture": "arm64",
+    "summaryDigestMatchesReceipt": true,
+    "summaryAndEnvironmentUDIDMatchReceipt": true,
+    "bootedExactSimulatorObserved": true,
+    "fixtureMarkerPresent": true
+  },
+  "commands": {
+    "simulator-boot": {
+      "name": "simulator-boot",
+      "argv": [
+        "xcrun",
+        "simctl",
+        "boot",
+        "C3630581-519B-49DA-9400-67A78DCD42C8"
+      ],
+      "log": "simulator-boot.log",
+      "exitCode": 0,
+      "timedOut": false,
+      "elapsedSeconds": 1.446
+    },
+    "simulator-bootstatus": {
+      "name": "simulator-bootstatus",
+      "argv": [
+        "xcrun",
+        "simctl",
+        "bootstatus",
+        "C3630581-519B-49DA-9400-67A78DCD42C8",
+        "-b"
+      ],
+      "log": "simulator-bootstatus.log",
+      "exitCode": 0,
+      "timedOut": false,
+      "elapsedSeconds": 34.903
+    },
+    "app-container": {
+      "name": "app-container",
+      "argv": [
+        "xcrun",
+        "simctl",
+        "get_app_container",
+        "C3630581-519B-49DA-9400-67A78DCD42C8",
+        "com.meetspace.ios",
+        "app"
+      ],
+      "log": "app-container.log",
+      "exitCode": 0,
+      "timedOut": false,
+      "elapsedSeconds": 0.526
+    },
+    "cpu-launch": {
+      "name": "cpu-launch",
+      "argv": [
+        "xcrun",
+        "simctl",
+        "launch",
+        "--terminate-running-process",
+        "C3630581-519B-49DA-9400-67A78DCD42C8",
+        "com.meetspace.ios",
+        "-uitesting"
+      ],
+      "log": "cpu-launch.log",
+      "exitCode": -2,
+      "timedOut": true,
+      "reason": "command timeout",
+      "elapsedSeconds": 12.043
+    },
+    "allocations-launch": {
+      "name": "allocations-launch",
+      "argv": [
+        "xcrun",
+        "simctl",
+        "launch",
+        "--terminate-running-process",
+        "C3630581-519B-49DA-9400-67A78DCD42C8",
+        "com.meetspace.ios",
+        "-uitesting"
+      ],
+      "log": "allocations-launch.log",
+      "exitCode": -2,
+      "timedOut": true,
+      "reason": "command timeout",
+      "elapsedSeconds": 12.034
+    },
+    "simulator-cleanup": {
+      "name": "simulator-cleanup",
+      "argv": [
+        "xcrun",
+        "simctl",
+        "shutdown",
+        "C3630581-519B-49DA-9400-67A78DCD42C8"
+      ],
+      "log": "simulator-cleanup.log",
+      "exitCode": 0,
+      "timedOut": false,
+      "elapsedSeconds": 4.158
+    }
+  },
+  "launchBoundary": "Both simctl launch commands timed out with exit -2 and empty stdout/stderr. No PID/executable verification command was reached. This does not establish whether a process started asynchronously or remained running before shutdown.",
+  "captures": [
+    {
+      "template": "Time Profiler",
+      "status": "FAIL",
+      "target": "exact simulator PID",
+      "reason": "simctl fixture launch failed"
+    },
+    {
+      "template": "Allocations",
+      "status": "FAIL",
+      "target": "exact simulator PID",
+      "reason": "simctl fixture launch failed"
+    }
+  ],
+  "traceMembersInArtifact": 0,
+  "recordCommands": 0,
+  "exportCommands": 0,
+  "PIDValidationCommands": 0,
+  "measurements": {
+    "CPU": "NOT_MEASURED",
+    "RSS": "NOT_MEASURED",
+    "allocatedBytes": "NOT_MEASURED",
+    "energy": "NOT_MEASURED",
+    "leaks": "NOT_MEASURED"
+  },
+  "cleanupBoundary": "simctl shutdown returned0 after4.158s. No terminate command was attempted because no PID was acquired; no post-cleanup process/state inventory was saved.",
+  "receiptEvidenceHashVerification": {
+    "checked": 18,
+    "mismatches": 0
+  },
+  "noNewExecution": "Independent read-only artifact/log analysis; no profiler or simulator commands were rerun."
+}

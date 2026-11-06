@@ -40,7 +40,7 @@
     "DEBUG fixtures excluded from production log scan",
     "TLS chain/locked-device/App Groups provisioning tests require device acceptance"
   ],
-  "sourceCommit": "04f70a3d80bfd8cd9314c798f0eb3fc7e58b343f",
+  "sourceCommit": "16c702529f70ce675276d58f5d6334f0ba323fa7",
   "credentialScanScope": "Current tracked and untracked non-ignored worktree files; limited GitHub/AWS/private-key signatures, no secret values emitted",
   "sourceFiles": {
     "Packages/MeetSpaceKit/Sources/API/Authentication.swift": "d4c3032821c0fd01cf08ca5f2878cce389d0a9780af69861a43597ddc63a26bf",
@@ -135,5 +135,5 @@
     "App/MeetSpaceAppDelegate.swift": "c8a7782ff6e4f891eafee5e168ebff3c8c208ac13817dfc4216fe8aba5ab45ca",
     "BroadcastExtension/SampleHandler.swift": "fa10d3dfea7686712ec6276522b2933dbdd2ede0f493e377b653e8186492ada8"
   },
-  "credentialScanFiles": 738
+  "credentialScanFiles": 820
 }

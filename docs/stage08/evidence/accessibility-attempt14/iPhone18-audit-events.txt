@@ -1,0 +1,39 @@
+Source: simulators_iPhone_18_iPhone18_compatibility_iPhone_SE_3rd_generation_.log
+Source SHA256: 97e78009ecbc680210c91f324b3b8fb96163a39697b013120e36cc3be90427ef
+
+3457: 2026-11-06T19:08:57.4530220Z Test Case '-[MeetSpaceUITests.FoundationUITests testAccessibilityStage08CoreScreens]' started.
+3468: 2026-11-06T19:09:11.4996790Z     t =    15.11s Added attachment named 'stage08-accessibility-welcome'
+3469: 2026-11-06T19:09:11.6882160Z     t =    15.11s Audit welcome contrast attempt 1
+3470: 2026-11-06T19:09:12.4388670Z     t =    16.10s Audit welcome elementDetection attempt 1
+3471: 2026-11-06T19:09:15.5224750Z     t =    19.09s Audit welcome hitRegion attempt 1
+3472: 2026-11-06T19:09:16.3244100Z     t =    19.82s Audit welcome sufficientElementDescription attempt 1
+3473: 2026-11-06T19:09:17.1308310Z     t =    20.73s Audit welcome trait attempt 1
+3474: 2026-11-06T19:09:17.9795850Z     t =    21.48s Audit welcome dynamicType attempt 1
+3475: 2026-11-06T19:09:21.2156040Z     t =    24.80s Audit welcome textClipped attempt 1
+3478: 2026-11-06T19:09:24.3628140Z     t =    28.00s Added attachment named 'stage08-audit-progress-welcome'
+3479: 2026-11-06T19:09:24.4685040Z     t =    28.00s Added attachment named 'stage08-audit-attempts'
+3708: 2026-11-06T19:10:28.7089010Z     t =    92.30s Added attachment named 'stage08-accessibility-messages'
+3709: 2026-11-06T19:10:28.8244620Z     t =    92.31s Audit messages contrast attempt 1
+3724: 2026-11-06T19:10:32.7465150Z     t =    96.35s Audit messages elementDetection attempt 1
+3725: 2026-11-06T19:10:34.1357160Z     t =    97.77s Audit messages hitRegion attempt 1
+3726: 2026-11-06T19:10:34.8728450Z     t =    98.52s Audit messages sufficientElementDescription attempt 1
+3727: 2026-11-06T19:10:35.6754470Z     t =    99.31s Audit messages trait attempt 1
+3728: 2026-11-06T19:10:36.3770590Z     t =   100.03s Audit messages dynamicType attempt 1
+3729: 2026-11-06T19:10:40.3114820Z     t =   103.97s Audit messages textClipped attempt 1
+3730: 2026-11-06T19:10:43.7117520Z     t =   107.34s Added attachment named 'stage08-audit-progress-messages'
+3731: 2026-11-06T19:10:43.8121690Z     t =   107.34s Added attachment named 'stage08-audit-attempts'
+3748: 2026-11-06T19:10:48.6421180Z     t =   112.24s Added attachment named 'stage08-accessibility-profile'
+3749: 2026-11-06T19:10:48.7420090Z     t =   112.24s Audit profile contrast attempt 1
+3761: 2026-11-06T19:10:50.8548540Z     t =   114.43s Audit profile elementDetection attempt 1
+3762: 2026-11-06T19:11:05.8047210Z     t =   129.45s Added attachment named 'stage08-audit-attempts'
+3763: 2026-11-06T19:11:07.8227570Z     t =   131.45s Audit profile elementDetection attempt 2
+3764: 2026-11-06T19:11:21.4071840Z     t =   145.02s Audit profile hitRegion attempt 1
+3765: 2026-11-06T19:11:22.1242580Z     t =   145.79s Audit profile sufficientElementDescription attempt 1
+3766: 2026-11-06T19:11:23.0142430Z     t =   146.61s Audit profile trait attempt 1
+3767: 2026-11-06T19:11:23.7454730Z     t =   147.39s Audit profile dynamicType attempt 1
+3768: 2026-11-06T19:11:38.7998650Z     t =   162.41s Added attachment named 'stage08-audit-attempts'
+3769: 2026-11-06T19:11:40.8050380Z     t =   164.41s Audit profile dynamicType attempt 2
+3770: 2026-11-06T19:12:45.8296140Z     t =   229.43s Added attachment named 'stage08-audit-attempts'
+3771: 2026-11-06T19:12:45.9307680Z     t =   229.43s Added attachment named 'stage08-accessibility-issues'
+3772: 2026-11-06T19:12:50.4439510Z /Users/runner/work/meetspace_ios_mobile/meetspace_ios_mobile/Tests/MeetSpaceUITests/FoundationUITests.swift:282: error: -[MeetSpaceUITests.FoundationUITests testAccessibilityStage08CoreScreens] : failed: caught error: "Error Domain=com.apple.dt.XCTest.XCTFuture Code=1000 "Timed out while running accessibility audit with config: <XCAXAuditConfiguration: 0x6000002e2280>." UserInfo={NSLocalizedDescription=Timed out while running accessibility audit with config: <XCAXAuditConfiguration: 0x6000002e2280>.}"
+3774: 2026-11-06T19:12:57.2489890Z Test Case '-[MeetSpaceUITests.FoundationUITests testAccessibilityStage08CoreScreens]' failed (240.911 seconds).

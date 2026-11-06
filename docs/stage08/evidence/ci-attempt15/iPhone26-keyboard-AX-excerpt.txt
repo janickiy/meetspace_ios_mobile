@@ -1,0 +1,20 @@
+135:                                 Other, 0x115f54720, {{20.0, 472.0}, {400.0, 52.0}} <AX element pid: 66090, elementOrHash.elementID: 4406338048.448>
+136:                                   Other, 0x115f54840, {{20.0, 472.0}, {400.0, 52.0}} <AX element pid: 66090, elementOrHash.elementID: 4366233264.455>
+137:                                     SecureTextField, 0x115f54960, {{40.0, 489.7}, {360.0, 17.0}}, identifier: 'deleteAccount.password', placeholderValue: 'Пароль аккаунта', Keyboard Focused <AX element pid: 66090, elementOrHash.elementID: 4406339584.461>
+138:                             Cell, 0x115f54a80, {{20.0, 524.0}, {400.0, 74.0}} <AX element pid: 66090, elementOrHash.elementID: 4406391296.423>
+139:                               Other, 0x115f54ba0, {{20.0, 524.0}, {400.0, 74.0}} <AX element pid: 66090, elementOrHash.elementID: 4712358576.436>
+142:                                 Other, 0x115f54f00, {{20.0, 524.0}, {400.0, 74.0}} <AX element pid: 66090, elementOrHash.elementID: 4406392832.450>
+143:                                   Other, 0x115f55020, {{20.0, 524.0}, {400.0, 74.0}} <AX element pid: 66090, elementOrHash.elementID: 4365927104.456>
+144:                                     Button, 0x115f55140, {{20.0, 524.0}, {400.0, 74.0}}, identifier: 'deleteAccount.submit', label: 'Удалить аккаунт на сервере', Disabled <AX element pid: 66090, elementOrHash.elementID: 4365926208.462>
+145:                             Other, 0x115f55260, {{40.0, 523.0}, {360.0, 1.0}} <AX element pid: 66090, elementOrHash.elementID: 4712444400.424>
+146:                             Other, 0x115f55380, {{407.0, 136.0}, {30.0, 475.0}}, label: 'Вертикальная полоса прокрутки, 2 страницы', value: 0 % <AX element pid: 66090, elementOrHash.elementID: 4366086960.425>
+173:             Other, 0x115f571e0, {{0.0, 611.0}, {440.0, 345.0}} <AX element pid: 66090, elementOrHash.elementID: 4712567616.472>
+174:         Other, 0x115f57300, {{0.0, 655.0}, {440.0, 243.0}} <AX element pid: 66090, elementOrHash.elementID: 4365611552.64>
+175:           Keyboard, 0x115f57420, {{0.0, 655.0}, {440.0, 243.0}} <AX element pid: 66090, elementOrHash.elementID: 4365610912.67>
+176:             Other, 0x115f57540, {{0.0, 655.0}, {440.0, 243.0}} <AX element pid: 66090, elementOrHash.elementID: 4364746928.71>
+177:               Other, 0x115f57660, {{0.0, 655.0}, {440.0, 243.0}}, identifier: 'UIKeyboardLayoutStar Preview' <AX element pid: 66090, elementOrHash.elementID: 4404820992.74>
+217:                 Button, 0x1020d1370, {{329.3, 830.0}, {108.3, 56.0}}, identifier: 'Done', label: 'Готово' <AX element pid: 66090, elementOrHash.elementID: 105553151351040.278>
+218:         Other, 0x1020d1690, {{0.0, 655.0}, {440.0, 301.0}} <AX element pid: 66090, elementOrHash.elementID: 4363967664.468>
+219:           Button, 0x1020d17b0, {{2.5, 887.7}, {80.1, 68.7}}, label: 'Следующая клавиатура', value: English (UK) <AX element pid: 66090, elementOrHash.elementID: 4363451536.470>
+220:             StaticText, 0x1020d18d0, {{2.5, 887.7}, {0.0, 0.0}} <AX element pid: 66090, elementOrHash.elementID: 4363775952.473>
+221:           Button, 0x1020d19f0, {{357.4, 887.4}, {80.1, 68.7}}, identifier: 'dictation', label: 'Диктовать', Disabled <AX element pid: 66090, elementOrHash.elementID: 4363702240.471>

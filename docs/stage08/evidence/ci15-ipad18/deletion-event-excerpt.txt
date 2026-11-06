@@ -1,0 +1,95 @@
+2026-11-06T20:23:01.0853380Z     t =    72.10s     Synthesize event
+2026-11-06T20:23:01.4158110Z     t =    72.40s     Wait for com.meetspace.ios to idle
+2026-11-06T20:23:01.4265680Z     t =    72.41s Checking existence of `"-" Key`
+2026-11-06T20:23:01.4803170Z     t =    72.49s Waiting 5.0s for "more" Key to exist
+2026-11-06T20:23:02.5107970Z     t =    73.52s     Checking `Expect predicate `existsNoRetry == 1` for object "more" Key`
+2026-11-06T20:23:02.5240980Z     t =    73.52s         Checking existence of `"more" Key`
+2026-11-06T20:23:02.7268850Z     t =    73.73s Tap "more" Key
+2026-11-06T20:23:02.7370690Z     t =    73.73s     Wait for com.meetspace.ios to idle
+2026-11-06T20:23:02.7417950Z     t =    73.74s     Find the "more" Key
+2026-11-06T20:23:02.9230170Z     t =    73.93s     Check for interrupting elements affecting "more" Key
+2026-11-06T20:23:02.9995770Z     t =    74.01s     Synthesize event
+2026-11-06T20:23:03.3047790Z     t =    74.31s     Wait for com.meetspace.ios to idle
+2026-11-06T20:23:03.3057600Z     t =    74.32s Checking existence of `"-" Key`
+2026-11-06T20:23:03.3409190Z     t =    74.35s Checking existence of `StaticText (First Match)`
+2026-11-06T20:23:03.6048780Z     t =    74.61s Checking existence of `"-" Key`
+2026-11-06T20:23:03.6440940Z     t =    74.65s Checking existence of `StaticText (First Match)`
+2026-11-06T20:23:03.9011520Z     t =    74.91s Checking existence of `"-" Key`
+2026-11-06T20:23:03.9588160Z     t =    74.96s Checking existence of `StaticText (First Match)`
+2026-11-06T20:23:04.2673340Z     t =    75.28s Checking existence of `"-" Key`
+2026-11-06T20:23:04.2985150Z     t =    75.31s Checking existence of `StaticText (First Match)`
+2026-11-06T20:23:04.5916920Z     t =    75.60s Checking existence of `"-" Key`
+2026-11-06T20:23:04.6355830Z     t =    75.64s Checking existence of `StaticText (First Match)`
+2026-11-06T20:23:04.8860850Z     t =    75.89s Checking existence of `"-" Key`
+2026-11-06T20:23:04.9450440Z     t =    75.95s Checking existence of `StaticText (First Match)`
+2026-11-06T20:23:05.3236540Z     t =    76.33s Checking existence of `"-" Key`
+2026-11-06T20:23:05.3783370Z     t =    76.39s Checking existence of `StaticText (First Match)`
+2026-11-06T20:23:05.6293220Z     t =    76.64s Checking existence of `"-" Key`
+2026-11-06T20:23:05.6730740Z     t =    76.68s Checking existence of `StaticText (First Match)`
+2026-11-06T20:23:05.9207850Z     t =    76.93s Checking existence of `"-" Key`
+2026-11-06T20:23:05.9556190Z     t =    76.97s Checking existence of `StaticText (First Match)`
+2026-11-06T20:23:06.2017790Z     t =    77.21s Checking existence of `"-" Key`
+2026-11-06T20:23:06.2723750Z     t =    77.28s Checking existence of `StaticText (First Match)`
+2026-11-06T20:23:06.5117710Z     t =    77.52s Checking existence of `"-" Key`
+2026-11-06T20:23:06.5777210Z     t =    77.59s Checking existence of `StaticText (First Match)`
+2026-11-06T20:23:06.8282680Z     t =    77.84s Checking existence of `"-" Key`
+2026-11-06T20:23:06.8620710Z     t =    77.87s Checking existence of `StaticText (First Match)`
+2026-11-06T20:23:07.1575160Z     t =    78.17s Checking existence of `"-" Key`
+2026-11-06T20:23:07.2309650Z     t =    78.23s Checking existence of `StaticText (First Match)`
+2026-11-06T20:23:07.5025610Z     t =    78.51s Checking existence of `"-" Key`
+2026-11-06T20:23:07.5720740Z     t =    78.56s Checking existence of `StaticText (First Match)`
+2026-11-06T20:23:07.8107990Z     t =    78.82s Checking existence of `"-" Key`
+2026-11-06T20:23:07.8527690Z     t =    78.86s Checking existence of `StaticText (First Match)`
+2026-11-06T20:23:08.1296270Z     t =    79.14s Checking existence of `"-" Key`
+2026-11-06T20:23:08.1809010Z     t =    79.19s Checking existence of `StaticText (First Match)`
+2026-11-06T20:23:08.4500060Z     t =    79.45s Checking existence of `"-" Key`
+2026-11-06T20:23:08.5053610Z     t =    79.51s Checking existence of `StaticText (First Match)`
+2026-11-06T20:23:08.8058460Z     t =    79.81s Checking existence of `"-" Key`
+2026-11-06T20:23:08.9110100Z     t =    79.91s Checking existence of `StaticText (First Match)`
+2026-11-06T20:23:09.1898340Z     t =    80.18s Checking existence of `"-" Key`
+2026-11-06T20:23:09.2302000Z     t =    80.24s Checking existence of `StaticText (First Match)`
+2026-11-06T20:23:09.4958770Z     t =    80.49s Checking existence of `"-" Key`
+2026-11-06T20:23:09.5376580Z     t =    80.54s Checking existence of `StaticText (First Match)`
+2026-11-06T20:23:09.8211240Z     t =    80.79s Checking existence of `"-" Key`
+2026-11-06T20:23:09.9004590Z     t =    80.90s Checking existence of `StaticText (First Match)`
+2026-11-06T20:23:10.1716610Z     t =    81.17s Checking existence of `"-" Key`
+2026-11-06T20:23:10.2158770Z     t =    81.21s Checking existence of `StaticText (First Match)`
+2026-11-06T20:23:10.4945950Z     t =    81.50s Checking existence of `"-" Key`
+2026-11-06T20:23:10.5589030Z     t =    81.55s Checking existence of `StaticText (First Match)`
+2026-11-06T20:23:10.7949510Z     t =    81.80s Checking existence of `"-" Key`
+2026-11-06T20:23:10.8468760Z     t =    81.85s Checking existence of `StaticText (First Match)`
+2026-11-06T20:23:11.1126850Z     t =    82.12s Checking existence of `"-" Key`
+2026-11-06T20:23:11.1551960Z     t =    82.17s Checking existence of `StaticText (First Match)`
+2026-11-06T20:23:11.4301570Z     t =    82.43s Checking existence of `"-" Key`
+2026-11-06T20:23:11.4734700Z     t =    82.48s Checking existence of `StaticText (First Match)`
+2026-11-06T20:23:11.7427290Z     t =    82.73s Checking existence of `"-" Key`
+2026-11-06T20:23:11.8187410Z     t =    82.83s Checking existence of `StaticText (First Match)`
+2026-11-06T20:23:12.1283010Z     t =    83.13s Checking existence of `"-" Key`
+2026-11-06T20:23:12.2710420Z     t =    83.26s Checking existence of `StaticText (First Match)`
+2026-11-06T20:23:12.5688940Z     t =    83.58s Checking existence of `"-" Key`
+2026-11-06T20:23:12.6304310Z     t =    83.64s Checking existence of `StaticText (First Match)`
+2026-11-06T20:23:12.9174560Z     t =    83.91s Checking existence of `"-" Key`
+2026-11-06T20:23:12.9934420Z     t =    83.99s Checking existence of `StaticText (First Match)`
+2026-11-06T20:23:13.3557170Z     t =    84.35s Checking existence of `StaticText (First Match)`
+2026-11-06T20:23:13.4461510Z     t =    84.45s Waiting 5.0s for "-" Key to exist
+2026-11-06T20:23:14.5101140Z     t =    85.49s     Checking `Expect predicate `existsNoRetry == 1` for object "-" Key`
+2026-11-06T20:23:14.5210630Z     t =    85.49s         Checking existence of `"-" Key`
+2026-11-06T20:23:14.5751850Z     t =    85.59s         Capturing element debug description
+2026-11-06T20:23:15.5359130Z     t =    86.52s     Checking `Expect predicate `existsNoRetry == 1` for object "-" Key`
+2026-11-06T20:23:15.5624320Z     t =    86.53s         Checking existence of `"-" Key`
+2026-11-06T20:23:15.6282850Z     t =    86.62s         Capturing element debug description
+2026-11-06T20:23:16.4442220Z     t =    87.45s     Checking `Expect predicate `existsNoRetry == 1` for object "-" Key`
+2026-11-06T20:23:16.4447490Z     t =    87.45s         Checking existence of `"-" Key`
+2026-11-06T20:23:16.5477710Z     t =    87.56s         Capturing element debug description
+2026-11-06T20:23:17.4956340Z     t =    88.49s     Checking `Expect predicate `existsNoRetry == 1` for object "-" Key`
+2026-11-06T20:23:17.5064490Z     t =    88.49s         Checking existence of `"-" Key`
+2026-11-06T20:23:17.5562940Z     t =    88.56s         Capturing element debug description
+2026-11-06T20:23:18.4495200Z     t =    89.46s     Checking `Expect predicate `existsNoRetry == 1` for object "-" Key`
+2026-11-06T20:23:18.4605330Z     t =    89.46s         Checking existence of `"-" Key`
+2026-11-06T20:23:18.4812140Z     t =    89.49s         Capturing element debug description
+2026-11-06T20:23:18.4917070Z     t =    89.49s     Checking existence of `"-" Key`
+2026-11-06T20:23:18.5222140Z     t =    89.53s Collecting debug information to assist test failure triage
+2026-11-06T20:23:18.5324500Z     t =    89.53s     Requesting snapshot of accessibility hierarchy for app with pid 24151
+2026-11-06T20:23:19.6059290Z /Users/runner/work/meetspace_ios_mobile/meetspace_ios_mobile/Tests/MeetSpaceUITests/FoundationUITests.swift:433: error: -[MeetSpaceUITests.FoundationUITests testStage08AccountDeletionRequiresPasswordAndConfirmation] : XCTAssertTrue failed
+2026-11-06T20:23:19.6159150Z     t =    90.62s Tear Down
+2026-11-06T20:23:19.9874890Z Test Case '-[MeetSpaceUITests.FoundationUITests testStage08AccountDeletionRequiresPasswordAndConfirmation]' failed (90.919 seconds).

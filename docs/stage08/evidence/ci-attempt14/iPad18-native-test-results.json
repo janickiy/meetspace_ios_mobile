@@ -1,0 +1,94 @@
+{
+  "source": "Parsed completed testcase lines, not an xcresult summary",
+  "completed": [
+    {
+      "identifier": "MeetSpaceTests.CallAudioIntegrationTests/testDirectCallCanNegotiateBeforeCallKitActivatesAudio",
+      "outcome": "passed",
+      "durationSeconds": 0.325,
+      "logLine": 3394,
+      "raw": "2026-11-06T19:07:32.4618650Z Test Case '-[MeetSpaceTests.CallAudioIntegrationTests testDirectCallCanNegotiateBeforeCallKitActivatesAudio]' passed (0.325 seconds)."
+    },
+    {
+      "identifier": "MeetSpaceTests.KeychainIntegrationTests/testKeychainRoundTripUpdateAndScopedDeletion",
+      "outcome": "passed",
+      "durationSeconds": 0.689,
+      "logLine": 3399,
+      "raw": "2026-11-06T19:07:33.1969900Z Test Case '-[MeetSpaceTests.KeychainIntegrationTests testKeychainRoundTripUpdateAndScopedDeletion]' passed (0.689 seconds)."
+    },
+    {
+      "identifier": "MeetSpaceTests.MediaIntegrationTests/testBlockedSourcesNeverRequestPermissionsOrAppearInOffer",
+      "outcome": "passed",
+      "durationSeconds": 0.327,
+      "logLine": 3404,
+      "raw": "2026-11-06T19:07:33.8538560Z Test Case '-[MeetSpaceTests.MediaIntegrationTests testBlockedSourcesNeverRequestPermissionsOrAppearInOffer]' passed (0.327 seconds)."
+    },
+    {
+      "identifier": "MeetSpaceTests.MediaIntegrationTests/testNativePeerOfferAndCloseCyclesWithCaptureOff",
+      "outcome": "passed",
+      "durationSeconds": 1.236,
+      "logLine": 3406,
+      "raw": "2026-11-06T19:07:34.0587350Z Test Case '-[MeetSpaceTests.MediaIntegrationTests testNativePeerOfferAndCloseCyclesWithCaptureOff]' passed (1.236 seconds)."
+    },
+    {
+      "identifier": "MeetSpaceTests.MediaIntegrationTests/testScreenGenerationRollbackAndPolicyWithCaptureOff",
+      "outcome": "passed",
+      "durationSeconds": 1.589,
+      "logLine": 3408,
+      "raw": "2026-11-06T19:07:34.3072140Z Test Case '-[MeetSpaceTests.MediaIntegrationTests testScreenGenerationRollbackAndPolicyWithCaptureOff]' passed (1.589 seconds)."
+    },
+    {
+      "identifier": "MeetSpaceTests.MediaIntegrationTests/testScreenRejectsInvalidAndStaleFrameSession",
+      "outcome": "passed",
+      "durationSeconds": 0.288,
+      "logLine": 3410,
+      "raw": "2026-11-06T19:07:34.5885400Z Test Case '-[MeetSpaceTests.MediaIntegrationTests testScreenRejectsInvalidAndStaleFrameSession]' passed (0.288 seconds)."
+    },
+    {
+      "identifier": "MeetSpaceTests.RecordingPlaybackTests/testActualServerAACArtifactAdvancesNativePlayerTime",
+      "outcome": "passed",
+      "durationSeconds": 1.633,
+      "logLine": 3416,
+      "raw": "2026-11-06T19:07:35.3585210Z Test Case '-[MeetSpaceTests.RecordingPlaybackTests testActualServerAACArtifactAdvancesNativePlayerTime]' passed (1.633 seconds)."
+    },
+    {
+      "identifier": "MeetSpaceTests.Stage08SecurityKeychainTests/testCredentialsRemainDeviceOnlyAndUnsynchronizedAfterUpdate",
+      "outcome": "passed",
+      "durationSeconds": 0.02,
+      "logLine": 3421,
+      "raw": "2026-11-06T19:07:36.0000830Z Test Case '-[MeetSpaceTests.Stage08SecurityKeychainTests testCredentialsRemainDeviceOnlyAndUnsynchronizedAfterUpdate]' passed (0.020 seconds)."
+    },
+    {
+      "identifier": "MeetSpaceTests.Stage08SecurityKeychainTests/testPushCleanupJournalUsesTheSameDeviceOnlyProtection",
+      "outcome": "passed",
+      "durationSeconds": 0.032,
+      "logLine": 3423,
+      "raw": "2026-11-06T19:07:36.2028380Z Test Case '-[MeetSpaceTests.Stage08SecurityKeychainTests testPushCleanupJournalUsesTheSameDeviceOnlyProtection]' passed (0.032 seconds)."
+    },
+    {
+      "identifier": "MeetSpaceTests.TypographyAccessibilityTests/testBundledFontsScaleInActualUIKitHostingAtAllDynamicTypeSizes",
+      "outcome": "passed",
+      "durationSeconds": 3.173,
+      "logLine": 3429,
+      "raw": "2026-11-06T19:07:37.0692080Z Test Case '-[MeetSpaceTests.TypographyAccessibilityTests testBundledFontsScaleInActualUIKitHostingAtAllDynamicTypeSizes]' passed (3.173 seconds)."
+    },
+    {
+      "identifier": "MeetSpaceUITests.FoundationUITests/testAccessibilityStage08CoreScreens",
+      "outcome": "failed",
+      "durationSeconds": 76.494,
+      "logLine": 3454,
+      "raw": "2026-11-06T19:09:23.7848260Z Test Case '-[MeetSpaceUITests.FoundationUITests testAccessibilityStage08CoreScreens]' failed (76.494 seconds)."
+    }
+  ],
+  "startedWithoutCompletion": [
+    {
+      "identifier": "MeetSpaceUITests.FoundationUITests/testAccessibilityStage08LargeTextLiveFlow",
+      "logLine": 3455,
+      "raw": "2026-11-06T19:09:23.8419920Z Test Case '-[MeetSpaceUITests.FoundationUITests testAccessibilityStage08LargeTextLiveFlow]' started."
+    }
+  ],
+  "notObservedStarted": [
+    "MeetSpaceUITests.FoundationUITests/testConferenceCreateMediaControlsChatAndLeave",
+    "MeetSpaceUITests.FoundationUITests/testLargeTextNavigationAndAppearance",
+    "MeetSpaceUITests.FoundationUITests/testStage08AccountDeletionRequiresPasswordAndConfirmation"
+  ]
+}

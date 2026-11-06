@@ -3,13 +3,17 @@
 Дата: 2026-11-06. **PASS** для описанных host stress assertions. **BLOCKED** для
 Instruments на физическом устройстве, device CPU/memory/energy, длительного реального
 звонка и физического ReplayKit. Simulator profiling CI8 — **BLOCKED** на Shutdown
-preflight; CI10 — **FAIL** на ожидании boot и cleanup. Новый вариант с увеличенными
-ограниченными ожиданиями — **PENDING**; записи и измерения пока не получены.
+preflight; CI10 — **FAIL** на ожидании boot и cleanup. В CI14 подготовка и cleanup
+завершились успешно, но общий profiler result — **FAIL**: запись Time Profiler
+превысила timeout, а полученная Allocations trace не предоставила allocation/heap
+schema для экспорта численных метрик. CI15 на ARM runner — **FAIL** до attach:
+обе `simctl launch` команды не вернули PID до timeout. Новые trace и численные
+CPU/RSS/energy метрики не получены.
 Host-метрики ниже не являются приёмкой производительности приложения iOS.
 
 ## Фактически выполнено
 
-Зафиксированный host baseline: 6 stress tests выполнены в трёх отдельных процессах: **18/18 PASS**,
+Зафиксированный host baseline: 6 stress tests выполнены в трёх отдельных запусках SwiftPM: **18/18 PASS**,
 по 30 циклов каждого сценария на запуск (90 в трёх измеренных запусках run03).
 После исправления проверки CallKit completion дополнительно прошли один целевой
 30-cycle тест и три полных suite: **176 passed / 5 opt-in skipped из 181** каждый.
@@ -105,7 +109,7 @@ Stress-сценарии удаление аккаунта не вызывают.
   соответствующих этапов, включая [готовый AAC pipeline](../stage07/RECORDING_PIPELINE.md).
   Они не переименованы в iOS device performance или текущие 30-cycle network tests.
 
-## Instruments: device acceptance — BLOCKED, simulator CI10 — FAIL, повтор — PENDING
+## Instruments: device acceptance — BLOCKED, simulator CI14 — FAIL
 
 Локально `xcode-select -p` вернул `/Library/Developer/CommandLineTools`,
 `xcrun --find xctrace` завершился 72 (`unable to find utility xctrace`). Полного Xcode и подписанной установки нет; доступный путь запуска на физическом
@@ -173,9 +177,73 @@ Instruments на этом runner им не установлена. Нативн�
 [inspection](evidence/profiling-attempt10/inspection.json): 14 исходных profiler
 файлов, 0 несовпадений их receipt-хешей, 0 captures. SHA-256 ZIP совпал с digest
 GitHub artifact. Новый вариант ожиданий ниже подготовлен по наблюдённым 58 с boot;
-его реальная проверка пока **PENDING**. Кандидат `a052abdacaf49d05a68b17725dda0e4b096bb86e` включает новые пределы;
+его реальная проверка в CI14 приведена далее. Кандидат `a052abdacaf49d05a68b17725dda0e4b096bb86e` включает новые пределы;
 исторические CI11/CI12 не подтверждают этот вариант и не переименовываются
 в успешное profiling.
+
+[CI14 / 42275177048](https://github.com/janickiy/meetspace_ios_mobile/actions/runs/42275177048),
+source `04f70a3d80bfd8cd9314c798f0eb3fc7e58b343f`, дошёл до настоящего attach
+двух инструментов на том же iPhone SE / iOS 18.6. [Receipt](evidence/profiling-attempt14/receipt.json)
+сохраняет общий **FAIL**, elapsed **174.383 с**. `bootstatus` завершился 0 за
+45.402 с; проверены установленный Debug fixture marker, bundle ID, PID и executable.
+Это подтверждает подготовку конкретного simulator app; длительность подготовки
+не является launch latency, а fixture idle UI не является сценарием звонка.
+
+- **Time Profiler — FAIL.** PID 44698, requested recording 15 с, command timeout
+  40 с. Команда превысила timeout: observed 43.14 с, exit 1, `timedOut=true`.
+  [Лог](evidence/profiling-attempt14/cpu-record.log) заканчивается `Stopping recording…`;
+  `cpu.trace` содержит только RunIssues store размером 53 248 bytes. Завершённой
+  CPU trace, TOC или численных CPU метрик нет. Причина незавершённого stop отдельно
+  не установлена; завершение по timeout не переименовано в успешную запись.
+- **Allocations — raw trace получена, численная приёмка BLOCKED.** PID 46601,
+  record exit 0 за 34.635 с, trace 7 326 360 bytes. [TOC](evidence/profiling-attempt14/allocations-toc.xml)
+  подтверждает точный simulator/PID, duration 16.526096 с, завершение по time limit
+  и tracks `Allocations` (Statistics / Allocations List), `VM Tracker` (Regions Map).
+  Однако доступные CLI data schemas не включают allocation/heap table:
+  `tableExports=[]`, `measurementGate=NO_RECOGNIZED_SCHEMA`. Это ограничение
+  полученного экспорта, а не доказательство отсутствия allocation data в raw trace.
+  Allocation bytes, peak memory и RSS не вычислялись и не подменялись размером trace.
+- **Cleanup commands завершились успешно:** `simctl terminate` — exit 0 за
+  0.448 с, `simctl shutdown` — exit 0 за 1.249 с, оба без timeout. Отдельного
+  process/state inventory после cleanup нет; подтверждён результат команд.
+
+[Manifest](evidence/profiling-attempt14/manifest.json) связывает результат с artifact
+13534592310: SHA-256 ZIP совпал с GitHub API digest, ZIP CRC проверен. Все 25
+receipt-хешей совпали. [Воспроизводимый анализ](evidence/profiling-attempt14/inspection.json)
+включает хеши 95 raw trace files; исходные бинарные traces находятся в CI artifact
+и частном временном каталоге, а в репозитории сохранены неизменённые логи/TOC/receipt
+и анализ. Native tests этой job завершились FAIL и ведутся отдельно; ни
+`continue-on-error`, ни успешная запись Allocations не делают их или performance gate
+успешными. Physical-device Instruments и energy по-прежнему **BLOCKED**.
+
+[CI15 / 42281088607](https://github.com/janickiy/meetspace_ios_mobile/actions/runs/42281088607),
+source `55bfcfb1e075224eda9ed7106a669db0b55dd7e5`, проверен отдельно на ARM runner,
+iPhone SE (3rd generation) / iOS18.6, Xcode26.3/17C529. Native compatibility suite
+завершился **15 PASS / 0 FAIL / 0 SKIP**, но profiler step — **FAIL**, exit1,
+elapsed **94.038 с** ([неизменённый receipt](evidence/profiling-attempt15/receipt.json),
+[независимый разбор](evidence/profiling-attempt15/inspection.json),
+[step excerpt](evidence/profiling-attempt15/native-profiler-step-excerpt.txt)).
+
+- Exact UUID совпал с native summary/environment, `bootstatus` завершился0 за
+  **34.903 с**, последующий simctl inventory показал этот simulator Booted.
+  App container найден, fixture marker подтверждён preflight.
+- `cpu-launch` и `allocations-launch` (`simctl launch --terminate-running-process … -uitesting`)
+  оба превысили свой command deadline: exit **−2**, `timedOut=true`, elapsed
+  **12.043 с** и **12.034 с**. Оба stdout/stderr пусты. PID не получен;
+  PID/executable validation, `xctrace record` и `xctrace export` не были вызваны.
+  Это failure команды запуска, не измерение launch latency и не доказательство
+  отсутствия позднего асинхронно запущенного процесса.
+- В скачанном artifact нет `.trace`/TOC/экспортированных таблиц. CPU, RSS,
+  allocated bytes, Leaks и energy не измерены. Успешный native suite не заменяет
+  отсутствующие результаты Instruments.
+- Cleanup `simctl shutdown` завершился0 за **4.158 с**, без timeout.
+  Отдельного `terminate` нет, поскольку PID не был получен; post-cleanup
+  process/state inventory не сохранён.
+
+[Manifest CI15](evidence/profiling-attempt15/manifest.json) сохраняет происхождение
+artifact 13539480023, совпавшие SHA-256/size и ZIP CRC; проверены все18
+хешей из receipt, сохранены19 исходных profiler файлов. Анализ не запускал
+симулятор или profiler повторно.
 
 Текущая команда шага после исправления:
 
@@ -196,7 +264,8 @@ cleanup приложения — 5 с, shutdown симулятора — 30 с. 
 а не гарантия точного wall time: CI10 показал превышение; причины дополнительной
 задержки отдельно не измерялись. Версия CI10 ещё использовала бюджет 180 с и пределы 45/5 с;
 её сохранённый receipt не изменён. Новый вариант прошёл `py_compile` и пять mock
-проверок ошибок/границ target; это не native profiler run.
+проверок ошибок/границ target. Эти mock-проверки не заменяют фактический
+profiler runs CI14/CI15, результаты которых разобраны выше.
 Скрипт сохраняет версии, templates/devices и справку CLI, проверяет
 точный booted simulator UUID и fixture marker приложения. Для каждого template
 он запускает `com.meetspace.ios -uitesting`, сверяет PID/executable и выполняет:
@@ -219,8 +288,11 @@ Receipt различает `RECORDED`, `BLOCKED` и `FAIL`. Непустая tra
 либо `NO_RECORDS`; неуспешные record/export сохраняют ошибку. Даже `RECORDED` с
 `measurementGate=NONEMPTY_TABLES_REVIEW_REQUIRED` означает только получение данных,
 которые ещё нужно изучить, а не performance PASS. У CI8 фактический итог —
-**BLOCKED**, у CI10 — **FAIL** до capture, у нового варианта — **PENDING**;
-CPU/RSS числа не заявлены.
+**BLOCKED**, у CI10 — **FAIL** до capture, у CI14 — **FAIL** после attach:
+Time Profiler не завершил корректную trace, а raw Allocations trace не дала
+экспортируемой таблицы измерений. CI15 — **FAIL** до attach из-за двух
+`simctl launch` timeouts; trace не получены. CPU/RSS/allocated bytes не установлены;
+физические устройства и energy остаются **BLOCKED**.
 
 Это короткая запись уже запущенного Debug fixture UI в покое. Она не измеряет
 launch latency, 30 звонков, непрерывный звонок, ReplayKit, reconnect, transfer,

@@ -1,0 +1,107 @@
+{
+  "schema": 1,
+  "runID": 42275177048,
+  "sourceCommit": "04f70a3d80bfd8cd9314c798f0eb3fc7e58b343f",
+  "label": "iPhone26",
+  "result": "FAIL",
+  "summaryCounts": {
+    "passedTests": 32,
+    "failedTests": 3,
+    "skippedTests": 0,
+    "totalTestCount": 35
+  },
+  "artifact": {
+    "id": 13535881924,
+    "name": "results-iPhone26",
+    "size_in_bytes": 393651486,
+    "digest": "sha256:403aeea5acada19447b75450b3e6eb0d438f39cc2ea2d4d71650e09c0040e118",
+    "downloadedSHA256": "403aeea5acada19447b75450b3e6eb0d438f39cc2ea2d4d71650e09c0040e118",
+    "zipCRCVerified": true
+  },
+  "failedTests": [
+    {
+      "test": "testAccessibilityStage08CoreScreens",
+      "elapsedSeconds": 93.735,
+      "stage": "post-welcome audit authentication navigation",
+      "cause": "Unestablished; connectServer tap did not reach serverURL. Seven welcome audit passes completed first."
+    },
+    {
+      "test": "testStage07SettingsPersistProfilePreferencesAndSSHDisabled",
+      "elapsedSeconds": 115.786,
+      "stage": "profile navigation",
+      "cause": "Late Save Password sheet is present; Messages remains selected. Direct tab tap bypassed the bounded helper; settings persistence assertions were not reached."
+    },
+    {
+      "test": "testStage08AccountDeletionRequiresPasswordAndConfirmation",
+      "stage": "initial secure-keyboard layout selection",
+      "cause": "Next-keyboard Button is exposed outside Keyboard subtree. Scoped lookup fails before any password input or DELETE.",
+      "elapsedSeconds": 72.245,
+      "hierarchy": "Keyboard under Other line174; Next keyboard Button under separate Other line218; both wrappers share Other line159. The button is not a descendant of Keyboard.",
+      "fieldState": "Failure AX retains password placeholder with no value and disabled submit; the test stops before character input."
+    }
+  ],
+  "knownFixCandidate": {
+    "runID": 42283560617,
+    "sourceCommit": "a33a153147d6941874884357134b3fd46de7532c",
+    "scope": "regression",
+    "plannedPerDevice": {
+      "hosted": 10,
+      "ui": 4,
+      "total": 14
+    },
+    "uiCases": [
+      "FoundationUITests/testAccessibilityStage08CoreScreens",
+      "FoundationUITests/testAccessibilityStage08LargeTextLiveFlow",
+      "FoundationUITests/testStage07SettingsPersistProfilePreferencesAndSSHDisabled",
+      "FoundationUITests/testStage08AccountDeletionRequiresPasswordAndConfirmation"
+    ],
+    "result": "PENDING",
+    "changes": "Tests only: settings navigation uses openProfileFeature; next-keyboard button lookup uses app.buttons. No production change. The Core navigation cause is not claimed fixed."
+  },
+  "boundaries": [
+    "CI14 is failed despite32passes. No settings persistence or server deletion success is inferred from the two interrupted scenarios.",
+    "CI16 is a targeted regression matrix, not the full35/15 suite; CI15 full baseline continues separately."
+  ],
+  "retainedFiles": [
+    {
+      "file": "iPhone26-core-readiness-AX.txt",
+      "bytes": 1191,
+      "sha256": "8d207a4ef8d64e89defd094d66b8c85bacd5cb411f6b060f8e6fe03a120de4b4"
+    },
+    {
+      "file": "iPhone26-deletion-keyboard-AX.txt",
+      "bytes": 2228,
+      "sha256": "837a861bd3238fe1b087eb9c00d772398043be169022989621167c03fecd221a"
+    },
+    {
+      "file": "iPhone26-deletion-keyboard-query.txt",
+      "bytes": 369,
+      "sha256": "bb3a91b918a87c20d919b6754a898f2e9a37fb7f6413fb09bf745644f18b5dbf"
+    },
+    {
+      "file": "iPhone26-environment.json",
+      "bytes": 307,
+      "sha256": "42f477b68c1f487eafb7b8ef197cea83b3bfc5c8d734c3bdc1d73b019c9b6943"
+    },
+    {
+      "file": "iPhone26-export-status.json",
+      "bytes": 1452,
+      "sha256": "830f3a8f6a452c1dce77e910c57a02daa4f4d95bdef2af1b07ac244796c74525"
+    },
+    {
+      "file": "iPhone26-failure-events.txt",
+      "bytes": 15702,
+      "sha256": "43ea4020cf79665d12027cb4f12cfe3c51bfdb45fdd62ff80eb831b89e46e894"
+    },
+    {
+      "file": "iPhone26-settings-passwords-AX.txt",
+      "bytes": 1361,
+      "sha256": "05d03e988a7228a19c5ad0a0436b08d02580cc99e79c45801249fc999d7a6d89"
+    },
+    {
+      "file": "iPhone26-summary.json",
+      "bytes": 2748,
+      "sha256": "b5e46e9e40d05231f26deafde5dd36cce58fb31f41d67ed987f18e7073da1892"
+    }
+  ]
+}

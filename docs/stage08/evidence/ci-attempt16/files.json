@@ -1,0 +1,206 @@
+{
+  "algorithm": "sha256",
+  "files": [
+    {
+      "path": "iPad26-accessibility-issues.json",
+      "sha256": "5bb5d8395635bd2208dab132bb294bd08442502608db35999fda184201361524",
+      "bytes": 5975
+    },
+    {
+      "path": "iPad26-actual-font-scaling.json",
+      "sha256": "9a7810d748877747bacd90d71304dcd279ac2fff8161d43f6dffefc07ae02988",
+      "bytes": 36979
+    },
+    {
+      "path": "iPad26-attachment-manifest.json",
+      "sha256": "d460805d50bda07d842ee31713249c0ee0064ea9d105bda027e37ec753e11089",
+      "bytes": 34478
+    },
+    {
+      "path": "iPad26-audit-attachments/082C7D74-21C8-4A2E-A648-06F785382E1F.json",
+      "sha256": "e19cb39fda1259d605ee248398612283265fcad48cd48a10de3feebae091e9b0",
+      "bytes": 6062
+    },
+    {
+      "path": "iPad26-audit-attachments/14A4747F-107D-4762-BF00-1A93E97EE57C.json",
+      "sha256": "b113936c85c72dcc2eac151d748d6cda21ca0376c9079ac35f2ae97e722a9222",
+      "bytes": 6096
+    },
+    {
+      "path": "iPad26-audit-attachments/15EAED49-1A4E-4B96-894F-C4FE5B3FD2FC.json",
+      "sha256": "d2742259aaa9a48b557578b3543794c15b29091322e9099646205f05c3e52e20",
+      "bytes": 12084
+    },
+    {
+      "path": "iPad26-audit-attachments/251545EF-1BE5-4DEA-9C89-2C5201A66D80.json",
+      "sha256": "3423c13508c2f9811d3e92b1794f6eec3855882655e676c4150ca12c6d335fab",
+      "bytes": 9067
+    },
+    {
+      "path": "iPad26-audit-attachments/3C6A00D6-8A61-4434-BE22-5AA645CD3EC8.json",
+      "sha256": "b113936c85c72dcc2eac151d748d6cda21ca0376c9079ac35f2ae97e722a9222",
+      "bytes": 6096
+    },
+    {
+      "path": "iPad26-audit-attachments/4812840F-027E-410E-AFF0-EC2C77E60A98.json",
+      "sha256": "230c3b90275d31bfd5a215c06b3fd39ee4046682c271565b228292427327ca70",
+      "bytes": 3048
+    },
+    {
+      "path": "iPad26-audit-attachments/49909095-2B7D-4EE7-8586-431CABF1C481.json",
+      "sha256": "6fc556057f3122ca5ad3ab85d4b1b25cce8c27b4ee25f51dcd7b2be9930dd4d7",
+      "bytes": 5365
+    },
+    {
+      "path": "iPad26-audit-attachments/5D4FF4CE-4095-486A-8EC6-628131DCB981.json",
+      "sha256": "cf099d59781e316a66e8acb98ae6d3ed84e1d12dc2a7619709d3229a07ddf894",
+      "bytes": 18123
+    },
+    {
+      "path": "iPad26-audit-attachments/8A6BA07C-AB96-42B4-9717-64180BC130CF.json",
+      "sha256": "236dde3766c6645e70a64c06e6edb2f444eada3961471a8dfe938b4141225483",
+      "bytes": 1601
+    },
+    {
+      "path": "iPad26-audit-attachments/9EC95CE5-046D-4C55-A078-2AD5F25520A9.json",
+      "sha256": "5d4358d7cba41675258cff65eaee9b6767f793c3a9f524def36258205c534423",
+      "bytes": 37348
+    },
+    {
+      "path": "iPad26-audit-attachments/A3B1F021-BC4F-47A5-9757-C6742C99D2DE.json",
+      "sha256": "692f5cd83d084053a807c601d019d29e2141e8ec1c920d39f7175c4c1933c0b9",
+      "bytes": 15114
+    },
+    {
+      "path": "iPad26-audit-attachments/BEB009BC-1537-4D0E-8CFB-FE413D21375D.json",
+      "sha256": "c0e1ba55267840223f88264031713967484982453398544e2cb8f45182579c94",
+      "bytes": 860
+    },
+    {
+      "path": "iPad26-audit-attachments/CA395B5D-7945-4F02-9A4C-096CEBB1BB47.json",
+      "sha256": "2f6b3be84b03fc061977f8bb81661770b64a492534e2bab970f01d0e8ff75781",
+      "bytes": 4969
+    },
+    {
+      "path": "iPad26-audit-attachments/EDDB3485-B8D9-4649-8D5E-0D1B53C1633F.json",
+      "sha256": "236dde3766c6645e70a64c06e6edb2f444eada3961471a8dfe938b4141225483",
+      "bytes": 1601
+    },
+    {
+      "path": "iPad26-audit-attachments/FF1DC675-8650-41EC-B2EC-2A87E5881AE6.json",
+      "sha256": "31a30d93b62af485e5907b75cc2dd7efd3f7456f85a46429d5bcb717ee449f23",
+      "bytes": 2771
+    },
+    {
+      "path": "iPad26-audit-attachments/FFB0FBD7-DDB7-4D90-B719-7BE0DBC122FD.json",
+      "sha256": "0382538a2a13c01cfcfa8855294b42f2a36103ecd4f25a91e8414420e10f9b23",
+      "bytes": 21139
+    },
+    {
+      "path": "iPad26-audit-attempts-latest.json",
+      "sha256": "d561709d11c9cdf17cbbdbb8790fe2f051c74539a69f007e153e0ccb2b88c6ee",
+      "bytes": 20469
+    },
+    {
+      "path": "iPad26-deletion-hierarchy.txt",
+      "sha256": "c2820b47306da64bf7e7389c5186218b04eeb82fa4cf0a38e022e8ccb3b03eaa",
+      "bytes": 42273
+    },
+    {
+      "path": "iPad26-deletion-log-excerpt.txt",
+      "sha256": "9721c054859abd8bcee8226320060ab2dfe19aecba3cda37bd5f2027bc5f14b5",
+      "bytes": 25518
+    },
+    {
+      "path": "iPad26-environment.json",
+      "sha256": "ee3bf6423def36e2b72b0626195ac0ba1de3c78a825fa6e324be91da9c282eb6",
+      "bytes": 314
+    },
+    {
+      "path": "iPad26-export-status.json",
+      "sha256": "0fe2a77901d51e35d3f2e614c64b4a6ffba4045c1d8a1c185cde45306f1cae78",
+      "bytes": 1436
+    },
+    {
+      "path": "iPad26-keyboard-AX-excerpt.txt",
+      "sha256": "21032ec823fb2f510c441c6f6088272848ce62fe3d2cd1abb2fbe92c9afd997a",
+      "bytes": 4301
+    },
+    {
+      "path": "iPad26-keyboard-helper-source.txt",
+      "sha256": "e3ee64380d89f268acc865981474ee0627d28229469e8b7615268b9468a3df8c",
+      "bytes": 1319
+    },
+    {
+      "path": "iPad26-native-test-results.txt",
+      "sha256": "51dcd0e7a87827f4e6ef54e59a4fdb278fcd7e87525e175c83fe983752fd2889",
+      "bytes": 2224
+    },
+    {
+      "path": "iPad26-raw-attachment-index.json",
+      "sha256": "f5e48982498cd6e8a62cf342cef670d9c31fc5d0fdf4dccd07107606a9b121ed",
+      "bytes": 13318
+    },
+    {
+      "path": "iPad26-receipt.json",
+      "sha256": "29a4b1d981310796a2b1ee92f5803aaf8d64a24e5d62dec24c28c58fbd6cbbbb",
+      "bytes": 11763
+    },
+    {
+      "path": "iPad26-summary.json",
+      "sha256": "aaec1729f2fb90e6410f01d468def4d78e53e32f2f7973db46e21b1f8413efb2",
+      "bytes": 1478
+    },
+    {
+      "path": "observed-artifacts.json",
+      "sha256": "84c3335442af90e80a9045e4cfcb5c6778bc3bba87a4e03337a57ddf4155fb81",
+      "bytes": 1697
+    },
+    {
+      "path": "observed-jobs.json",
+      "sha256": "2e32df8018111732f70ca3368ae38af009efce988837bb019b5df70a2194cc78",
+      "bytes": 12810
+    },
+    {
+      "path": "observed-run.json",
+      "sha256": "6382631dca3aded889ef34c8b895f56831fea4fac54715d291ff1cad4da00260",
+      "bytes": 14234
+    },
+    {
+      "path": "receipt.json",
+      "sha256": "a1281cd2135122385d4c4eb88fe1c3b5951e299da393e1f6be3db4a0829eb38f",
+      "bytes": 984
+    },
+    {
+      "path": "video-frames/42283560617-iPad26-contact.png",
+      "sha256": "1dfbc05d895472cf6891eeaa9aacc56a59ae9c8aef1da771ebd0d974f7c946e2",
+      "bytes": 5429401
+    },
+    {
+      "path": "video-frames/42283560617-iPad26-t41.8.png",
+      "sha256": "676005bf7e37e669e0fd8e6a9eb3542c4454ba66153fbd5a626e757acb40950a",
+      "bytes": 655626
+    },
+    {
+      "path": "video-frames/42283560617-iPad26-t44.9.png",
+      "sha256": "c5187347b8a940985cc7b7570b6b4826407b5da8396b234af40dcc2796449303",
+      "bytes": 1576446
+    },
+    {
+      "path": "video-frames/42283560617-iPad26-t47.7.png",
+      "sha256": "222ed5fbb6e7e61fc10cfbdff9de9646927f94b5d80cb79ac7c76ba6960e4960",
+      "bytes": 666216
+    },
+    {
+      "path": "video-frames/42283560617-iPad26-t50.8.png",
+      "sha256": "6dfaf764d346e0f35dff32ae2517c77c2e8a5c02c9d08147f68f1a5702571808",
+      "bytes": 1560514
+    },
+    {
+      "path": "video-frames/42283560617-iPad26-t54.0.png",
+      "sha256": "03473432e1602ff49428fe0796691756947e5cad7a89344df3e78018f5cecff2",
+      "bytes": 697930
+    }
+  ],
+  "excludesSelf": true
+}

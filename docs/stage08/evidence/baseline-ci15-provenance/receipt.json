@@ -1,0 +1,1749 @@
+{
+  "schemaVersion": 1,
+  "purpose": "Independent CI15 baseline provenance; raw actual results only",
+  "runID": 42281088607,
+  "sourceCommit": "55bfcfb1e075224eda9ed7106a669db0b55dd7e5",
+  "workflowScope": "full (matrix full/compatibility)",
+  "fullSuiteGate": "FAIL",
+  "rawRunConclusion": "failure",
+  "rawRunStatus": "completed",
+  "rawJobs": [
+    {
+      "id": 128109913935,
+      "run_id": 42281088607,
+      "workflow_name": "iOS release audit",
+      "head_branch": "codex/stage08-arm-validation",
+      "run_url": "https://api.github.com/repos/janickiy/meetspace_ios_mobile/actions/runs/42281088607",
+      "run_attempt": 1,
+      "node_id": "CR_kwDOVjrQzc8AAAAd0_InTw",
+      "head_sha": "55bfcfb1e075224eda9ed7106a669db0b55dd7e5",
+      "url": "https://api.github.com/repos/janickiy/meetspace_ios_mobile/actions/jobs/128109913935",
+      "html_url": "https://github.com/janickiy/meetspace_ios_mobile/actions/runs/42281088607/job/128109913935",
+      "status": "completed",
+      "conclusion": "failure",
+      "created_at": "2026-11-06T19:36:17Z",
+      "started_at": "2026-11-06T20:09:39Z",
+      "completed_at": "2026-11-06T20:25:05Z",
+      "name": "simulators (iPad, 18, iPad18, compatibility, iPad mini (A17 Pro))",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1,
+          "started_at": "2026-11-06T20:09:40Z",
+          "completed_at": "2026-11-06T20:09:41Z"
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2,
+          "started_at": "2026-11-06T20:09:41Z",
+          "completed_at": "2026-11-06T20:09:45Z"
+        },
+        {
+          "name": "Device inventory",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3,
+          "started_at": "2026-11-06T20:09:45Z",
+          "completed_at": "2026-11-06T20:10:40Z"
+        },
+        {
+          "name": "App, Keychain and UI tests",
+          "status": "completed",
+          "conclusion": "failure",
+          "number": 4,
+          "started_at": "2026-11-06T20:10:40Z",
+          "completed_at": "2026-11-06T20:24:42Z"
+        },
+        {
+          "name": "Diagnostic Instruments baseline (reported separately)",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 5,
+          "started_at": "2026-11-06T20:24:42Z",
+          "completed_at": "2026-11-06T20:24:42Z"
+        },
+        {
+          "name": "Upload simulator test results",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6,
+          "started_at": "2026-11-06T20:24:42Z",
+          "completed_at": "2026-11-06T20:24:59Z"
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 12,
+          "started_at": "2026-11-06T20:24:59Z",
+          "completed_at": "2026-11-06T20:25:00Z"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 13,
+          "started_at": "2026-11-06T20:25:00Z",
+          "completed_at": "2026-11-06T20:25:03Z"
+        }
+      ],
+      "check_run_url": "https://api.github.com/repos/janickiy/meetspace_ios_mobile/check-runs/128109913935",
+      "labels": [
+        "macos-15"
+      ],
+      "runner_id": 1000000568,
+      "runner_name": "GitHub Actions 1000000568",
+      "runner_group_id": 0,
+      "runner_group_name": "GitHub Actions"
+    },
+    {
+      "id": 128109914366,
+      "run_id": 42281088607,
+      "workflow_name": "iOS release audit",
+      "head_branch": "codex/stage08-arm-validation",
+      "run_url": "https://api.github.com/repos/janickiy/meetspace_ios_mobile/actions/runs/42281088607",
+      "run_attempt": 1,
+      "node_id": "CR_kwDOVjrQzc8AAAAd0_Io_g",
+      "head_sha": "55bfcfb1e075224eda9ed7106a669db0b55dd7e5",
+      "url": "https://api.github.com/repos/janickiy/meetspace_ios_mobile/actions/jobs/128109914366",
+      "html_url": "https://github.com/janickiy/meetspace_ios_mobile/actions/runs/42281088607/job/128109914366",
+      "status": "completed",
+      "conclusion": "success",
+      "created_at": "2026-11-06T19:36:17Z",
+      "started_at": "2026-11-06T20:09:30Z",
+      "completed_at": "2026-11-06T20:29:01Z",
+      "name": "simulators (iPhone, 18, iPhone18, compatibility, iPhone SE (3rd generation))",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1,
+          "started_at": "2026-11-06T20:09:31Z",
+          "completed_at": "2026-11-06T20:09:33Z"
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2,
+          "started_at": "2026-11-06T20:09:33Z",
+          "completed_at": "2026-11-06T20:09:38Z"
+        },
+        {
+          "name": "Device inventory",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3,
+          "started_at": "2026-11-06T20:09:38Z",
+          "completed_at": "2026-11-06T20:10:38Z"
+        },
+        {
+          "name": "App, Keychain and UI tests",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4,
+          "started_at": "2026-11-06T20:10:38Z",
+          "completed_at": "2026-11-06T20:27:14Z"
+        },
+        {
+          "name": "Diagnostic Instruments baseline (reported separately)",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5,
+          "started_at": "2026-11-06T20:27:14Z",
+          "completed_at": "2026-11-06T20:28:49Z"
+        },
+        {
+          "name": "Upload simulator test results",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6,
+          "started_at": "2026-11-06T20:28:49Z",
+          "completed_at": "2026-11-06T20:28:55Z"
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 12,
+          "started_at": "2026-11-06T20:28:55Z",
+          "completed_at": "2026-11-06T20:28:56Z"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 13,
+          "started_at": "2026-11-06T20:28:56Z",
+          "completed_at": "2026-11-06T20:28:58Z"
+        }
+      ],
+      "check_run_url": "https://api.github.com/repos/janickiy/meetspace_ios_mobile/check-runs/128109914366",
+      "labels": [
+        "macos-15"
+      ],
+      "runner_id": 1000000567,
+      "runner_name": "GitHub Actions 1000000567",
+      "runner_group_id": 0,
+      "runner_group_name": "GitHub Actions"
+    },
+    {
+      "id": 128109914600,
+      "run_id": 42281088607,
+      "workflow_name": "iOS release audit",
+      "head_branch": "codex/stage08-arm-validation",
+      "run_url": "https://api.github.com/repos/janickiy/meetspace_ios_mobile/actions/runs/42281088607",
+      "run_attempt": 1,
+      "node_id": "CR_kwDOVjrQzc8AAAAd0_Ip6A",
+      "head_sha": "55bfcfb1e075224eda9ed7106a669db0b55dd7e5",
+      "url": "https://api.github.com/repos/janickiy/meetspace_ios_mobile/actions/jobs/128109914600",
+      "html_url": "https://github.com/janickiy/meetspace_ios_mobile/actions/runs/42281088607/job/128109914600",
+      "status": "completed",
+      "conclusion": "failure",
+      "created_at": "2026-11-06T19:36:17Z",
+      "started_at": "2026-11-06T19:36:20Z",
+      "completed_at": "2026-11-06T20:09:38Z",
+      "name": "simulators (iPad, 26, iPad26, full, iPad Pro 13-inch (M5))",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1,
+          "started_at": "2026-11-06T19:36:20Z",
+          "completed_at": "2026-11-06T19:36:21Z"
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2,
+          "started_at": "2026-11-06T19:36:21Z",
+          "completed_at": "2026-11-06T19:36:25Z"
+        },
+        {
+          "name": "Device inventory",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3,
+          "started_at": "2026-11-06T19:36:25Z",
+          "completed_at": "2026-11-06T19:36:44Z"
+        },
+        {
+          "name": "App, Keychain and UI tests",
+          "status": "completed",
+          "conclusion": "failure",
+          "number": 4,
+          "started_at": "2026-11-06T19:36:44Z",
+          "completed_at": "2026-11-06T20:08:57Z"
+        },
+        {
+          "name": "Diagnostic Instruments baseline (reported separately)",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 5,
+          "started_at": "2026-11-06T20:08:58Z",
+          "completed_at": "2026-11-06T20:08:58Z"
+        },
+        {
+          "name": "Upload simulator test results",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6,
+          "started_at": "2026-11-06T20:08:58Z",
+          "completed_at": "2026-11-06T20:09:26Z"
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 12,
+          "started_at": "2026-11-06T20:09:26Z",
+          "completed_at": "2026-11-06T20:09:27Z"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 13,
+          "started_at": "2026-11-06T20:09:27Z",
+          "completed_at": "2026-11-06T20:09:35Z"
+        }
+      ],
+      "check_run_url": "https://api.github.com/repos/janickiy/meetspace_ios_mobile/check-runs/128109914600",
+      "labels": [
+        "macos-15"
+      ],
+      "runner_id": 1000000561,
+      "runner_name": "GitHub Actions 1000000561",
+      "runner_group_id": 0,
+      "runner_group_name": "GitHub Actions"
+    },
+    {
+      "id": 128109914695,
+      "run_id": 42281088607,
+      "workflow_name": "iOS release audit",
+      "head_branch": "codex/stage08-arm-validation",
+      "run_url": "https://api.github.com/repos/janickiy/meetspace_ios_mobile/actions/runs/42281088607",
+      "run_attempt": 1,
+      "node_id": "CR_kwDOVjrQzc8AAAAd0_IqRw",
+      "head_sha": "55bfcfb1e075224eda9ed7106a669db0b55dd7e5",
+      "url": "https://api.github.com/repos/janickiy/meetspace_ios_mobile/actions/jobs/128109914695",
+      "html_url": "https://github.com/janickiy/meetspace_ios_mobile/actions/runs/42281088607/job/128109914695",
+      "status": "completed",
+      "conclusion": "success",
+      "created_at": "2026-11-06T19:36:17Z",
+      "started_at": "2026-11-06T19:36:23Z",
+      "completed_at": "2026-11-06T19:46:23Z",
+      "name": "package",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1,
+          "started_at": "2026-11-06T19:36:25Z",
+          "completed_at": "2026-11-06T19:36:27Z"
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2,
+          "started_at": "2026-11-06T19:36:27Z",
+          "completed_at": "2026-11-06T19:36:34Z"
+        },
+        {
+          "name": "Verify generated project and audit",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3,
+          "started_at": "2026-11-06T19:36:34Z",
+          "completed_at": "2026-11-06T19:36:35Z"
+        },
+        {
+          "name": "Unit tests on host",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4,
+          "started_at": "2026-11-06T19:36:35Z",
+          "completed_at": "2026-11-06T19:41:01Z"
+        },
+        {
+          "name": "Unsigned device Release archive",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5,
+          "started_at": "2026-11-06T19:41:01Z",
+          "completed_at": "2026-11-06T19:46:09Z"
+        },
+        {
+          "name": "Verify actual device product",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6,
+          "started_at": "2026-11-06T19:46:09Z",
+          "completed_at": "2026-11-06T19:46:10Z"
+        },
+        {
+          "name": "Upload archive and verification",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 7,
+          "started_at": "2026-11-06T19:46:10Z",
+          "completed_at": "2026-11-06T19:46:18Z"
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 14,
+          "started_at": "2026-11-06T19:46:18Z",
+          "completed_at": "2026-11-06T19:46:20Z"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 15,
+          "started_at": "2026-11-06T19:46:20Z",
+          "completed_at": "2026-11-06T19:46:21Z"
+        }
+      ],
+      "check_run_url": "https://api.github.com/repos/janickiy/meetspace_ios_mobile/check-runs/128109914695",
+      "labels": [
+        "macos-15-intel"
+      ],
+      "runner_id": 1000000563,
+      "runner_name": "GitHub Actions 1000000563",
+      "runner_group_id": 0,
+      "runner_group_name": "GitHub Actions"
+    },
+    {
+      "id": 128109914747,
+      "run_id": 42281088607,
+      "workflow_name": "iOS release audit",
+      "head_branch": "codex/stage08-arm-validation",
+      "run_url": "https://api.github.com/repos/janickiy/meetspace_ios_mobile/actions/runs/42281088607",
+      "run_attempt": 1,
+      "node_id": "CR_kwDOVjrQzc8AAAAd0_Iqew",
+      "head_sha": "55bfcfb1e075224eda9ed7106a669db0b55dd7e5",
+      "url": "https://api.github.com/repos/janickiy/meetspace_ios_mobile/actions/jobs/128109914747",
+      "html_url": "https://github.com/janickiy/meetspace_ios_mobile/actions/runs/42281088607/job/128109914747",
+      "status": "completed",
+      "conclusion": "failure",
+      "created_at": "2026-11-06T19:36:17Z",
+      "started_at": "2026-11-06T19:36:19Z",
+      "completed_at": "2026-11-06T20:09:27Z",
+      "name": "simulators (iPhone, 26, iPhone26, full, iPhone 17 Pro Max)",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1,
+          "started_at": "2026-11-06T19:36:20Z",
+          "completed_at": "2026-11-06T19:36:22Z"
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2,
+          "started_at": "2026-11-06T19:36:22Z",
+          "completed_at": "2026-11-06T19:36:27Z"
+        },
+        {
+          "name": "Device inventory",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3,
+          "started_at": "2026-11-06T19:36:27Z",
+          "completed_at": "2026-11-06T19:37:27Z"
+        },
+        {
+          "name": "App, Keychain and UI tests",
+          "status": "completed",
+          "conclusion": "failure",
+          "number": 4,
+          "started_at": "2026-11-06T19:37:27Z",
+          "completed_at": "2026-11-06T20:08:58Z"
+        },
+        {
+          "name": "Diagnostic Instruments baseline (reported separately)",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 5,
+          "started_at": "2026-11-06T20:08:58Z",
+          "completed_at": "2026-11-06T20:08:58Z"
+        },
+        {
+          "name": "Upload simulator test results",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6,
+          "started_at": "2026-11-06T20:08:58Z",
+          "completed_at": "2026-11-06T20:09:21Z"
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 12,
+          "started_at": "2026-11-06T20:09:21Z",
+          "completed_at": "2026-11-06T20:09:22Z"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 13,
+          "started_at": "2026-11-06T20:09:22Z",
+          "completed_at": "2026-11-06T20:09:25Z"
+        }
+      ],
+      "check_run_url": "https://api.github.com/repos/janickiy/meetspace_ios_mobile/check-runs/128109914747",
+      "labels": [
+        "macos-15"
+      ],
+      "runner_id": 1000000562,
+      "runner_name": "GitHub Actions 1000000562",
+      "runner_group_id": 0,
+      "runner_group_name": "GitHub Actions"
+    }
+  ],
+  "simulators": {
+    "iPhone26": {
+      "expectedScope": "full",
+      "expectedTotal": 35,
+      "environment": {
+        "device": "iPhone 17 Pro Max",
+        "runtime": [
+          26,
+          2
+        ],
+        "udid": "17F0E734-D183-4810-AB97-F27FD9968039",
+        "scope": "full",
+        "hostArchitecture": "arm64",
+        "hostOS": "macOS-15.8.2-arm64-arm-64bit-Mach-O",
+        "preferredDeviceMatched": true,
+        "xcode": "Xcode 26.3\nBuild version 17C529\n"
+      },
+      "summary": {
+        "devicesAndConfigurations": [
+          {
+            "device": {
+              "architecture": "arm64",
+              "deviceId": "17F0E734-D183-4810-AB97-F27FD9968039",
+              "deviceName": "iPhone 17 Pro Max",
+              "modelName": "iPhone 17 Pro Max",
+              "osBuildNumber": "23C54",
+              "osVersion": "26.2",
+              "platform": "iOS Simulator"
+            },
+            "expectedFailures": 0,
+            "failedTests": 1,
+            "passedTests": 34,
+            "skippedTests": 0,
+            "testPlanConfiguration": {
+              "configurationId": "1",
+              "configurationName": "Test Scheme Action"
+            }
+          }
+        ],
+        "environmentDescription": "MeetSpace-Debug · Built with macOS 15.8.2",
+        "expectedFailures": 0,
+        "failedTests": 1,
+        "finishTime": 1793995711.187,
+        "passedTests": 34,
+        "result": "Failed",
+        "skippedTests": 0,
+        "startTime": 1793993877.172,
+        "statistics": [],
+        "testFailures": [
+          {
+            "failureText": "XCTAssertTrue failed",
+            "targetName": "MeetSpaceUITests",
+            "testIdentifier": 33,
+            "testIdentifierString": "FoundationUITests/testStage08AccountDeletionRequiresPasswordAndConfirmation()",
+            "testIdentifierURL": "test://com.apple.xcode/MeetSpace/MeetSpaceUITests/FoundationUITests/testStage08AccountDeletionRequiresPasswordAndConfirmation",
+            "testName": "testStage08AccountDeletionRequiresPasswordAndConfirmation()"
+          }
+        ],
+        "title": "Test - MeetSpace-Debug",
+        "topInsights": [
+          {
+            "category": "Longest Test Runs",
+            "impact": "15% of duration",
+            "text": "1 longest test run with outlier durations exceeding 190.81s (three standard deviations)"
+          }
+        ],
+        "totalTestCount": 35
+      },
+      "nativeStepConclusion": "failure",
+      "jobConclusion": "failure",
+      "export-status": {
+        "schema": 1,
+        "nativeTestExitCode": 65,
+        "status": "PASS",
+        "expectedExports": [
+          "summary",
+          "attachments",
+          "diagnostics"
+        ],
+        "exports": [
+          {
+            "name": "summary",
+            "argv": [
+              "xcrun",
+              "xcresulttool",
+              "get",
+              "test-results",
+              "summary",
+              "--path",
+              "artifacts/iPhone26.xcresult"
+            ],
+            "timeoutSeconds": 30,
+            "log": "iPhone26-summary-export.log",
+            "exitCode": 0,
+            "timedOut": false,
+            "status": "PASS",
+            "elapsedSeconds": 7.011
+          },
+          {
+            "name": "attachments",
+            "argv": [
+              "xcrun",
+              "xcresulttool",
+              "export",
+              "attachments",
+              "--path",
+              "artifacts/iPhone26.xcresult",
+              "--output-path",
+              "artifacts/iPhone26-screenshots"
+            ],
+            "timeoutSeconds": 120,
+            "log": "iPhone26-attachments-export.log",
+            "exitCode": 0,
+            "timedOut": false,
+            "status": "PASS",
+            "elapsedSeconds": 2.879
+          },
+          {
+            "name": "diagnostics",
+            "argv": [
+              "xcrun",
+              "xcresulttool",
+              "export",
+              "diagnostics",
+              "--path",
+              "artifacts/iPhone26.xcresult",
+              "--output-path",
+              "artifacts/iPhone26-diagnostics"
+            ],
+            "timeoutSeconds": 60,
+            "log": "iPhone26-diagnostics-export.log",
+            "exitCode": 0,
+            "timedOut": false,
+            "status": "PASS",
+            "elapsedSeconds": 1.553
+          }
+        ]
+      }
+    },
+    "iPad26": {
+      "expectedScope": "full",
+      "expectedTotal": 35,
+      "environment": {
+        "device": "iPad Pro 13-inch (M5)",
+        "runtime": [
+          26,
+          2
+        ],
+        "udid": "73C19119-B10E-4309-872E-C53EF3F0EF27",
+        "scope": "full",
+        "hostArchitecture": "arm64",
+        "hostOS": "macOS-15.8.2-arm64-arm-64bit-Mach-O",
+        "preferredDeviceMatched": true,
+        "xcode": "Xcode 26.3\nBuild version 17C529\n"
+      },
+      "summary": {
+        "devicesAndConfigurations": [
+          {
+            "device": {
+              "architecture": "arm64",
+              "deviceId": "73C19119-B10E-4309-872E-C53EF3F0EF27",
+              "deviceName": "iPad Pro 13-inch (M5)",
+              "modelName": "iPad Pro 13-inch (M5)",
+              "osBuildNumber": "23C54",
+              "osVersion": "26.2",
+              "platform": "iOS Simulator"
+            },
+            "expectedFailures": 0,
+            "failedTests": 1,
+            "passedTests": 34,
+            "skippedTests": 0,
+            "testPlanConfiguration": {
+              "configurationId": "1",
+              "configurationName": "Test Scheme Action"
+            }
+          }
+        ],
+        "environmentDescription": "MeetSpace-Debug · Built with macOS 15.8.2",
+        "expectedFailures": 0,
+        "failedTests": 1,
+        "finishTime": 1793995713.754,
+        "passedTests": 34,
+        "result": "Failed",
+        "skippedTests": 0,
+        "startTime": 1793993822.68,
+        "statistics": [],
+        "testFailures": [
+          {
+            "failureText": "XCTAssertTrue failed",
+            "targetName": "MeetSpaceUITests",
+            "testIdentifier": 33,
+            "testIdentifierString": "FoundationUITests/testStage08AccountDeletionRequiresPasswordAndConfirmation()",
+            "testIdentifierURL": "test://com.apple.xcode/MeetSpace/MeetSpaceUITests/FoundationUITests/testStage08AccountDeletionRequiresPasswordAndConfirmation",
+            "testName": "testStage08AccountDeletionRequiresPasswordAndConfirmation()"
+          }
+        ],
+        "title": "Test - MeetSpace-Debug",
+        "topInsights": [
+          {
+            "category": "Longest Test Runs",
+            "impact": "14% of duration",
+            "text": "1 longest test run with outlier durations exceeding 186.38s (three standard deviations)"
+          }
+        ],
+        "totalTestCount": 35
+      },
+      "nativeStepConclusion": "failure",
+      "jobConclusion": "failure",
+      "export-status": {
+        "schema": 1,
+        "nativeTestExitCode": 65,
+        "status": "PASS",
+        "expectedExports": [
+          "summary",
+          "attachments",
+          "diagnostics"
+        ],
+        "exports": [
+          {
+            "name": "summary",
+            "argv": [
+              "xcrun",
+              "xcresulttool",
+              "get",
+              "test-results",
+              "summary",
+              "--path",
+              "artifacts/iPad26.xcresult"
+            ],
+            "timeoutSeconds": 30,
+            "log": "iPad26-summary-export.log",
+            "exitCode": 0,
+            "timedOut": false,
+            "status": "PASS",
+            "elapsedSeconds": 4.97
+          },
+          {
+            "name": "attachments",
+            "argv": [
+              "xcrun",
+              "xcresulttool",
+              "export",
+              "attachments",
+              "--path",
+              "artifacts/iPad26.xcresult",
+              "--output-path",
+              "artifacts/iPad26-screenshots"
+            ],
+            "timeoutSeconds": 120,
+            "log": "iPad26-attachments-export.log",
+            "exitCode": 0,
+            "timedOut": false,
+            "status": "PASS",
+            "elapsedSeconds": 2.599
+          },
+          {
+            "name": "diagnostics",
+            "argv": [
+              "xcrun",
+              "xcresulttool",
+              "export",
+              "diagnostics",
+              "--path",
+              "artifacts/iPad26.xcresult",
+              "--output-path",
+              "artifacts/iPad26-diagnostics"
+            ],
+            "timeoutSeconds": 60,
+            "log": "iPad26-diagnostics-export.log",
+            "exitCode": 0,
+            "timedOut": false,
+            "status": "PASS",
+            "elapsedSeconds": 2.047
+          }
+        ]
+      }
+    },
+    "iPhone18": {
+      "expectedScope": "compatibility",
+      "expectedTotal": 15,
+      "environment": {
+        "device": "iPhone SE (3rd generation)",
+        "runtime": [
+          18,
+          6
+        ],
+        "udid": "C3630581-519B-49DA-9400-67A78DCD42C8",
+        "scope": "compatibility",
+        "hostArchitecture": "arm64",
+        "hostOS": "macOS-15.8.2-arm64-arm-64bit-Mach-O",
+        "preferredDeviceMatched": true,
+        "xcode": "Xcode 26.3\nBuild version 17C529\n"
+      },
+      "summary": {
+        "devicesAndConfigurations": [
+          {
+            "device": {
+              "architecture": "arm64",
+              "deviceId": "C3630581-519B-49DA-9400-67A78DCD42C8",
+              "deviceName": "iPhone SE (3rd generation)",
+              "modelName": "iPhone SE (3rd generation)",
+              "osBuildNumber": "22G86",
+              "osVersion": "18.6",
+              "platform": "iOS Simulator"
+            },
+            "expectedFailures": 0,
+            "failedTests": 0,
+            "passedTests": 15,
+            "skippedTests": 0,
+            "testPlanConfiguration": {
+              "configurationId": "1",
+              "configurationName": "Test Scheme Action"
+            }
+          }
+        ],
+        "environmentDescription": "MeetSpace-Debug · Built with macOS 15.8.2",
+        "expectedFailures": 0,
+        "failedTests": 0,
+        "finishTime": 1793996820.681,
+        "passedTests": 15,
+        "result": "Passed",
+        "skippedTests": 0,
+        "startTime": 1793995870.057,
+        "statistics": [],
+        "testFailures": [],
+        "title": "Test - MeetSpace-Debug",
+        "topInsights": [],
+        "totalTestCount": 15
+      },
+      "nativeStepConclusion": "success",
+      "jobConclusion": "success",
+      "export-status": {
+        "schema": 1,
+        "nativeTestExitCode": 0,
+        "status": "PASS",
+        "expectedExports": [
+          "summary",
+          "attachments",
+          "diagnostics"
+        ],
+        "exports": [
+          {
+            "name": "summary",
+            "argv": [
+              "xcrun",
+              "xcresulttool",
+              "get",
+              "test-results",
+              "summary",
+              "--path",
+              "artifacts/iPhone18.xcresult"
+            ],
+            "timeoutSeconds": 30,
+            "log": "iPhone18-summary-export.log",
+            "exitCode": 0,
+            "timedOut": false,
+            "status": "PASS",
+            "elapsedSeconds": 6.467
+          },
+          {
+            "name": "attachments",
+            "argv": [
+              "xcrun",
+              "xcresulttool",
+              "export",
+              "attachments",
+              "--path",
+              "artifacts/iPhone18.xcresult",
+              "--output-path",
+              "artifacts/iPhone18-screenshots"
+            ],
+            "timeoutSeconds": 120,
+            "log": "iPhone18-attachments-export.log",
+            "exitCode": 0,
+            "timedOut": false,
+            "status": "PASS",
+            "elapsedSeconds": 0.826
+          },
+          {
+            "name": "diagnostics",
+            "argv": [
+              "xcrun",
+              "xcresulttool",
+              "export",
+              "diagnostics",
+              "--path",
+              "artifacts/iPhone18.xcresult",
+              "--output-path",
+              "artifacts/iPhone18-diagnostics"
+            ],
+            "timeoutSeconds": 60,
+            "log": "iPhone18-diagnostics-export.log",
+            "exitCode": 0,
+            "timedOut": false,
+            "status": "PASS",
+            "elapsedSeconds": 0.296
+          }
+        ]
+      }
+    },
+    "iPad18": {
+      "expectedScope": "compatibility",
+      "expectedTotal": 15,
+      "environment": {
+        "device": "iPad mini (A17 Pro)",
+        "runtime": [
+          18,
+          6
+        ],
+        "udid": "2A250684-88E3-4EDB-A21E-B7726B4C69F6",
+        "scope": "compatibility",
+        "hostArchitecture": "arm64",
+        "hostOS": "macOS-15.8.2-arm64-arm-64bit-Mach-O",
+        "preferredDeviceMatched": true,
+        "xcode": "Xcode 26.3\nBuild version 17C529\n"
+      },
+      "summary": {
+        "devicesAndConfigurations": [
+          {
+            "device": {
+              "architecture": "arm64",
+              "deviceId": "2A250684-88E3-4EDB-A21E-B7726B4C69F6",
+              "deviceName": "iPad mini (A17 Pro)",
+              "modelName": "iPad mini (A17 Pro)",
+              "osBuildNumber": "22G86",
+              "osVersion": "18.6",
+              "platform": "iOS Simulator"
+            },
+            "expectedFailures": 0,
+            "failedTests": 1,
+            "passedTests": 14,
+            "skippedTests": 0,
+            "testPlanConfiguration": {
+              "configurationId": "1",
+              "configurationName": "Test Scheme Action"
+            }
+          }
+        ],
+        "environmentDescription": "MeetSpace-Debug · Built with macOS 15.8.2",
+        "expectedFailures": 0,
+        "failedTests": 1,
+        "finishTime": 1793996663.917,
+        "passedTests": 14,
+        "result": "Failed",
+        "skippedTests": 0,
+        "startTime": 1793995865.651,
+        "statistics": [],
+        "testFailures": [
+          {
+            "failureText": "XCTAssertTrue failed",
+            "targetName": "MeetSpaceUITests",
+            "testIdentifier": 15,
+            "testIdentifierString": "FoundationUITests/testStage08AccountDeletionRequiresPasswordAndConfirmation()",
+            "testIdentifierURL": "test://com.apple.xcode/MeetSpace/MeetSpaceUITests/FoundationUITests/testStage08AccountDeletionRequiresPasswordAndConfirmation",
+            "testName": "testStage08AccountDeletionRequiresPasswordAndConfirmation()"
+          }
+        ],
+        "title": "Test - MeetSpace-Debug",
+        "topInsights": [],
+        "totalTestCount": 15
+      },
+      "nativeStepConclusion": "failure",
+      "jobConclusion": "failure",
+      "export-status": {
+        "schema": 1,
+        "nativeTestExitCode": 65,
+        "status": "PASS",
+        "expectedExports": [
+          "summary",
+          "attachments",
+          "diagnostics"
+        ],
+        "exports": [
+          {
+            "name": "summary",
+            "argv": [
+              "xcrun",
+              "xcresulttool",
+              "get",
+              "test-results",
+              "summary",
+              "--path",
+              "artifacts/iPad18.xcresult"
+            ],
+            "timeoutSeconds": 30,
+            "log": "iPad18-summary-export.log",
+            "exitCode": 0,
+            "timedOut": false,
+            "status": "PASS",
+            "elapsedSeconds": 4.746
+          },
+          {
+            "name": "attachments",
+            "argv": [
+              "xcrun",
+              "xcresulttool",
+              "export",
+              "attachments",
+              "--path",
+              "artifacts/iPad18.xcresult",
+              "--output-path",
+              "artifacts/iPad18-screenshots"
+            ],
+            "timeoutSeconds": 120,
+            "log": "iPad18-attachments-export.log",
+            "exitCode": 0,
+            "timedOut": false,
+            "status": "PASS",
+            "elapsedSeconds": 0.899
+          },
+          {
+            "name": "diagnostics",
+            "argv": [
+              "xcrun",
+              "xcresulttool",
+              "export",
+              "diagnostics",
+              "--path",
+              "artifacts/iPad18.xcresult",
+              "--output-path",
+              "artifacts/iPad18-diagnostics"
+            ],
+            "timeoutSeconds": 60,
+            "log": "iPad18-diagnostics-export.log",
+            "exitCode": 0,
+            "timedOut": false,
+            "status": "PASS",
+            "elapsedSeconds": 2.073
+          }
+        ]
+      }
+    }
+  },
+  "package": {
+    "logAvailable": true,
+    "registered": 184,
+    "optInSkipped": 5,
+    "inferredPassed": null,
+    "rawSummaryLines": [
+      "2026-11-06T19:40:53.5391020Z ➜ Test stage08ActualBackendAccountDeletion() skipped.",
+      "2026-11-06T19:40:53.5666440Z ➜ Test actualBackendConferenceRESTAndGuestScope() skipped.",
+      "2026-11-06T19:40:53.6206770Z ➜ Test actualBackendDirectCallsDevicesAndPrivateSFU() skipped.",
+      "2026-11-06T19:40:53.6228490Z ➜ Test actualBackendTwoClientsAndFiles() skipped.",
+      "2026-11-06T19:40:53.6271530Z ➜ Test actualBackendCalendarFoldersSettingsAndRecordings() skipped.",
+      "2026-11-06T19:41:01.0934930Z ✔ Test run with 184 tests in 2 suites passed after 8.844 seconds.",
+      "2026-11-06T19:46:09.0822770Z ** ARCHIVE SUCCEEDED **"
+    ],
+    "archiveSuccessMarkerPresent": true,
+    "rawReleaseReport": {
+      "schema": 1,
+      "checkedAt": "2026-11-06T19:46:10.125809+00:00",
+      "sourceCommit": "55bfcfb1e075224eda9ed7106a669db0b55dd7e5",
+      "workingTreeModified": false,
+      "sourceInputSHA256": {
+        "App/Info.plist": "3a8efff3b59af6132a23af3ec087c33d269f08622db6f35826e87691429b0c6d",
+        "App/MeetSpace.entitlements": "93d68a3b4536b9a1c5d1848a9c5631d3a8fc73d61f05a46cd367bdb15289311e",
+        "App/PrivacyInfo.xcprivacy": "86957e3db44cec97b14ac9f75c27db587bbcb5a340527a97a01fa08d61b42b94",
+        "BroadcastExtension/Info.plist": "8d9dbd740d0591311ecb3865c3329176682b46c0e9cf605fdba4f3b84277b5a9",
+        "BroadcastExtension/MeetSpaceBroadcast.entitlements": "5eead1805d2e1fc7d6497d7204ced4221247f54e948b30095938d479a2df70eb",
+        "BroadcastExtension/PrivacyInfo.xcprivacy": "b10fbeb0cb363b7be2f5887a2abf11628ded6ff4aa5639624627e15e6c882fef",
+        "MeetSpace.xcodeproj/project.pbxproj": "07517ee3822130ae452a49b976e4530b91d0ecf7c704464609b54419d527046e",
+        "Packages/MeetSpaceKit/Package.swift": "ac030863f2872a863eef7a4eede62525c25421e60dd3f318f0f467eabc0518f0",
+        "Packages/MeetSpaceKit/Package.resolved": "0c6498db740964e2b94c742a1fbcacb681e97364e04bd999a3aa20ff90fb17df",
+        "scripts/generate_xcode_project.py": "aca1504b4238d4c91e9f22a387143b27421250e2794406d117d5fa4cd88aab92",
+        "scripts/verify_release.py": "2efa55c4d63329f592c2983d3fc5c0de06bf363409dc9a9b80f2139e0c432ba3"
+      },
+      "requirementsVerifiedAt": "2026-11-06",
+      "minimumXcode": 26,
+      "minimumSDK": 26,
+      "buildMetadata": {
+        "CFBundleShortVersionString": "0.2.0",
+        "CFBundleVersion": "1",
+        "DTXcode": "2630",
+        "DTXcodeBuild": "17C529",
+        "DTSDKName": "iphoneos26.2",
+        "DTPlatformName": "iphoneos",
+        "MinimumOSVersion": "18.0"
+      },
+      "checks": [
+        {
+          "check": "source.generated_project",
+          "status": "PASS",
+          "detail": "Project matches deterministic generator"
+        },
+        {
+          "check": "source.platform",
+          "status": "PASS",
+          "detail": "iOS18 deployment, Swift6 complete concurrency, no project-level DEBUG"
+        },
+        {
+          "check": "source.app.release",
+          "status": "PASS",
+          "detail": "Optimized Release, no DEBUG fixtures, dSYM generation enabled"
+        },
+        {
+          "check": "source.extension.release",
+          "status": "PASS",
+          "detail": "Optimized Release, no DEBUG fixtures, dSYM generation enabled"
+        },
+        {
+          "check": "source.apns",
+          "status": "PASS",
+          "detail": "Release APNs environment is production"
+        },
+        {
+          "check": "source.extension_safety",
+          "status": "PASS",
+          "detail": "Extension-safe APIs and embedded archive product"
+        },
+        {
+          "check": "source.versions",
+          "status": "PASS",
+          "detail": "App and extension marketing/build versions agree"
+        },
+        {
+          "check": "source.archive_scheme",
+          "status": "PASS",
+          "detail": "Archive uses Release"
+        },
+        {
+          "check": "source.ats",
+          "status": "PASS",
+          "detail": "Default strict ATS; no exceptions"
+        },
+        {
+          "check": "source.permissions",
+          "status": "PASS",
+          "detail": "Camera/microphone purpose strings present"
+        },
+        {
+          "check": "source.extension_id",
+          "status": "PASS",
+          "detail": "ReplayKit identifier matches embedded target"
+        },
+        {
+          "check": "source.background_modes",
+          "status": "PASS",
+          "detail": "Declared call background modes only"
+        },
+        {
+          "check": "source.replaykit",
+          "status": "PASS",
+          "detail": "ReplayKit upload extension point"
+        },
+        {
+          "check": "source.entitlements",
+          "status": "PASS",
+          "detail": "Minimal entitlements with matching configurable App Group"
+        },
+        {
+          "check": "source.app.tracking",
+          "status": "PASS",
+          "detail": "No tracking or tracking domains declared"
+        },
+        {
+          "check": "source.app.timers",
+          "status": "PASS",
+          "detail": "Elapsed-time deadlines require SystemBootTime/35F9.1"
+        },
+        {
+          "check": "source.app.preferences",
+          "status": "PASS",
+          "detail": "Private app preferences require UserDefaults/CA92.1"
+        },
+        {
+          "check": "source.app.data.Name",
+          "status": "PASS",
+          "detail": "Account-linked server data; app functionality only"
+        },
+        {
+          "check": "source.app.data.EmailAddress",
+          "status": "PASS",
+          "detail": "Account-linked server data; app functionality only"
+        },
+        {
+          "check": "source.app.data.UserID",
+          "status": "PASS",
+          "detail": "Account-linked server data; app functionality only"
+        },
+        {
+          "check": "source.app.data.DeviceID",
+          "status": "PASS",
+          "detail": "Account-linked server data; app functionality only"
+        },
+        {
+          "check": "source.app.data.EmailsOrTextMessages",
+          "status": "PASS",
+          "detail": "Account-linked server data; app functionality only"
+        },
+        {
+          "check": "source.app.data.PhotosorVideos",
+          "status": "PASS",
+          "detail": "Account-linked server data; app functionality only"
+        },
+        {
+          "check": "source.app.data.AudioData",
+          "status": "PASS",
+          "detail": "Account-linked server data; app functionality only"
+        },
+        {
+          "check": "source.app.data.OtherUserContent",
+          "status": "PASS",
+          "detail": "Account-linked server data; app functionality only"
+        },
+        {
+          "check": "source.extension.tracking",
+          "status": "PASS",
+          "detail": "No tracking or tracking domains declared"
+        },
+        {
+          "check": "source.extension.timers",
+          "status": "PASS",
+          "detail": "Elapsed-time deadlines require SystemBootTime/35F9.1"
+        },
+        {
+          "check": "source.app_icon",
+          "status": "PASS",
+          "detail": "AppIcon catalog contains a 1024-pixel icon and is selected for compilation"
+        },
+        {
+          "check": "source.dependency_pin",
+          "status": "PASS",
+          "detail": "WebRTC source resolution is pinned to audited revision/version"
+        },
+        {
+          "check": "source.binary_checksum",
+          "status": "PASS",
+          "detail": "Audited M156 binary checksum recorded; SPM verifies downloaded artifact"
+        },
+        {
+          "check": "archive.application_count",
+          "status": "PASS",
+          "detail": "Exactly one app in archive"
+        },
+        {
+          "check": "archive.dsym",
+          "status": "PASS",
+          "detail": "Archive includes app dSYM"
+        },
+        {
+          "check": "product.device_sdk",
+          "status": "PASS",
+          "detail": "Actual device product uses Xcode26+/iOS26+ SDK (Apple requirement since 2026-04-28)"
+        },
+        {
+          "check": "product.minimum_os",
+          "status": "PASS",
+          "detail": "iOS18+ deployment target"
+        },
+        {
+          "check": "product.identity",
+          "status": "PASS",
+          "detail": "Resolved application bundle identity"
+        },
+        {
+          "check": "product.app_icon",
+          "status": "PASS",
+          "detail": "Compiled asset catalog and primary icon metadata"
+        },
+        {
+          "check": "product.app.tracking",
+          "status": "PASS",
+          "detail": "No tracking or tracking domains declared"
+        },
+        {
+          "check": "product.app.timers",
+          "status": "PASS",
+          "detail": "Elapsed-time deadlines require SystemBootTime/35F9.1"
+        },
+        {
+          "check": "product.app.preferences",
+          "status": "PASS",
+          "detail": "Private app preferences require UserDefaults/CA92.1"
+        },
+        {
+          "check": "product.app.data.Name",
+          "status": "PASS",
+          "detail": "Account-linked server data; app functionality only"
+        },
+        {
+          "check": "product.app.data.EmailAddress",
+          "status": "PASS",
+          "detail": "Account-linked server data; app functionality only"
+        },
+        {
+          "check": "product.app.data.UserID",
+          "status": "PASS",
+          "detail": "Account-linked server data; app functionality only"
+        },
+        {
+          "check": "product.app.data.DeviceID",
+          "status": "PASS",
+          "detail": "Account-linked server data; app functionality only"
+        },
+        {
+          "check": "product.app.data.EmailsOrTextMessages",
+          "status": "PASS",
+          "detail": "Account-linked server data; app functionality only"
+        },
+        {
+          "check": "product.app.data.PhotosorVideos",
+          "status": "PASS",
+          "detail": "Account-linked server data; app functionality only"
+        },
+        {
+          "check": "product.app.data.AudioData",
+          "status": "PASS",
+          "detail": "Account-linked server data; app functionality only"
+        },
+        {
+          "check": "product.app.data.OtherUserContent",
+          "status": "PASS",
+          "detail": "Account-linked server data; app functionality only"
+        },
+        {
+          "check": "product.extension_count",
+          "status": "PASS",
+          "detail": "Exactly one ReplayKit extension embedded"
+        },
+        {
+          "check": "product.extension_metadata",
+          "status": "PASS",
+          "detail": "Compiled app/extension identifiers, App Group and versions agree"
+        },
+        {
+          "check": "product.extension_sdk",
+          "status": "PASS",
+          "detail": "Extension and app use the same Xcode, device SDK and deployment target"
+        },
+        {
+          "check": "product.extension.tracking",
+          "status": "PASS",
+          "detail": "No tracking or tracking domains declared"
+        },
+        {
+          "check": "product.extension.timers",
+          "status": "PASS",
+          "detail": "Elapsed-time deadlines require SystemBootTime/35F9.1"
+        },
+        {
+          "check": "product.webrtc",
+          "status": "PASS",
+          "detail": "Native WebRTC binary and its own privacy manifest embedded"
+        },
+        {
+          "check": "product.notice.WebRTC-LICENSE.txt",
+          "status": "PASS",
+          "detail": "Bundled dependency notice: WebRTC-LICENSE.txt"
+        },
+        {
+          "check": "product.notice.WebRTC-PATENTS.txt",
+          "status": "PASS",
+          "detail": "Bundled dependency notice: WebRTC-PATENTS.txt"
+        },
+        {
+          "check": "product.notice.WebRTC-THIRD-PARTY-NOTICES.txt",
+          "status": "PASS",
+          "detail": "Bundled dependency notice: WebRTC-THIRD-PARTY-NOTICES.txt"
+        },
+        {
+          "check": "product.notice.WebRTC-Distribution-LICENSE.txt",
+          "status": "PASS",
+          "detail": "Bundled dependency notice: WebRTC-Distribution-LICENSE.txt"
+        },
+        {
+          "check": "product.notice.Inter-OFL.txt",
+          "status": "PASS",
+          "detail": "Bundled dependency notice: Inter-OFL.txt"
+        },
+        {
+          "check": "product.no_test_payload",
+          "status": "PASS",
+          "detail": "No test bundles in distribution product"
+        },
+        {
+          "check": "signing.distribution",
+          "status": "BLOCKED",
+          "detail": "Not requested; an unsigned device build does not prove archive/export/signing readiness"
+        }
+      ],
+      "result": "PASS",
+      "distributionApproval": "NOT_GRANTED",
+      "externalGates": [
+        "Apple credentials and real archive/export validation",
+        "SDK provenance/signature and complete native dependency notices",
+        "Physical-device performance/calls/APNs/ReplayKit checks",
+        "Publisher privacy policy, disclosures, export compliance and App Store review"
+      ]
+    },
+    "rawSourceReleaseReport": {
+      "schema": 1,
+      "checkedAt": "2026-11-06T19:36:35.857908+00:00",
+      "sourceCommit": "55bfcfb1e075224eda9ed7106a669db0b55dd7e5",
+      "workingTreeModified": false,
+      "sourceInputSHA256": {
+        "App/Info.plist": "3a8efff3b59af6132a23af3ec087c33d269f08622db6f35826e87691429b0c6d",
+        "App/MeetSpace.entitlements": "93d68a3b4536b9a1c5d1848a9c5631d3a8fc73d61f05a46cd367bdb15289311e",
+        "App/PrivacyInfo.xcprivacy": "86957e3db44cec97b14ac9f75c27db587bbcb5a340527a97a01fa08d61b42b94",
+        "BroadcastExtension/Info.plist": "8d9dbd740d0591311ecb3865c3329176682b46c0e9cf605fdba4f3b84277b5a9",
+        "BroadcastExtension/MeetSpaceBroadcast.entitlements": "5eead1805d2e1fc7d6497d7204ced4221247f54e948b30095938d479a2df70eb",
+        "BroadcastExtension/PrivacyInfo.xcprivacy": "b10fbeb0cb363b7be2f5887a2abf11628ded6ff4aa5639624627e15e6c882fef",
+        "MeetSpace.xcodeproj/project.pbxproj": "07517ee3822130ae452a49b976e4530b91d0ecf7c704464609b54419d527046e",
+        "Packages/MeetSpaceKit/Package.swift": "ac030863f2872a863eef7a4eede62525c25421e60dd3f318f0f467eabc0518f0",
+        "Packages/MeetSpaceKit/Package.resolved": "0c6498db740964e2b94c742a1fbcacb681e97364e04bd999a3aa20ff90fb17df",
+        "scripts/generate_xcode_project.py": "aca1504b4238d4c91e9f22a387143b27421250e2794406d117d5fa4cd88aab92",
+        "scripts/verify_release.py": "2efa55c4d63329f592c2983d3fc5c0de06bf363409dc9a9b80f2139e0c432ba3"
+      },
+      "requirementsVerifiedAt": "2026-11-06",
+      "minimumXcode": 26,
+      "minimumSDK": 26,
+      "buildMetadata": null,
+      "checks": [
+        {
+          "check": "source.generated_project",
+          "status": "PASS",
+          "detail": "Project matches deterministic generator"
+        },
+        {
+          "check": "source.platform",
+          "status": "PASS",
+          "detail": "iOS18 deployment, Swift6 complete concurrency, no project-level DEBUG"
+        },
+        {
+          "check": "source.app.release",
+          "status": "PASS",
+          "detail": "Optimized Release, no DEBUG fixtures, dSYM generation enabled"
+        },
+        {
+          "check": "source.extension.release",
+          "status": "PASS",
+          "detail": "Optimized Release, no DEBUG fixtures, dSYM generation enabled"
+        },
+        {
+          "check": "source.apns",
+          "status": "PASS",
+          "detail": "Release APNs environment is production"
+        },
+        {
+          "check": "source.extension_safety",
+          "status": "PASS",
+          "detail": "Extension-safe APIs and embedded archive product"
+        },
+        {
+          "check": "source.versions",
+          "status": "PASS",
+          "detail": "App and extension marketing/build versions agree"
+        },
+        {
+          "check": "source.archive_scheme",
+          "status": "PASS",
+          "detail": "Archive uses Release"
+        },
+        {
+          "check": "source.ats",
+          "status": "PASS",
+          "detail": "Default strict ATS; no exceptions"
+        },
+        {
+          "check": "source.permissions",
+          "status": "PASS",
+          "detail": "Camera/microphone purpose strings present"
+        },
+        {
+          "check": "source.extension_id",
+          "status": "PASS",
+          "detail": "ReplayKit identifier matches embedded target"
+        },
+        {
+          "check": "source.background_modes",
+          "status": "PASS",
+          "detail": "Declared call background modes only"
+        },
+        {
+          "check": "source.replaykit",
+          "status": "PASS",
+          "detail": "ReplayKit upload extension point"
+        },
+        {
+          "check": "source.entitlements",
+          "status": "PASS",
+          "detail": "Minimal entitlements with matching configurable App Group"
+        },
+        {
+          "check": "source.app.tracking",
+          "status": "PASS",
+          "detail": "No tracking or tracking domains declared"
+        },
+        {
+          "check": "source.app.timers",
+          "status": "PASS",
+          "detail": "Elapsed-time deadlines require SystemBootTime/35F9.1"
+        },
+        {
+          "check": "source.app.preferences",
+          "status": "PASS",
+          "detail": "Private app preferences require UserDefaults/CA92.1"
+        },
+        {
+          "check": "source.app.data.Name",
+          "status": "PASS",
+          "detail": "Account-linked server data; app functionality only"
+        },
+        {
+          "check": "source.app.data.EmailAddress",
+          "status": "PASS",
+          "detail": "Account-linked server data; app functionality only"
+        },
+        {
+          "check": "source.app.data.UserID",
+          "status": "PASS",
+          "detail": "Account-linked server data; app functionality only"
+        },
+        {
+          "check": "source.app.data.DeviceID",
+          "status": "PASS",
+          "detail": "Account-linked server data; app functionality only"
+        },
+        {
+          "check": "source.app.data.EmailsOrTextMessages",
+          "status": "PASS",
+          "detail": "Account-linked server data; app functionality only"
+        },
+        {
+          "check": "source.app.data.PhotosorVideos",
+          "status": "PASS",
+          "detail": "Account-linked server data; app functionality only"
+        },
+        {
+          "check": "source.app.data.AudioData",
+          "status": "PASS",
+          "detail": "Account-linked server data; app functionality only"
+        },
+        {
+          "check": "source.app.data.OtherUserContent",
+          "status": "PASS",
+          "detail": "Account-linked server data; app functionality only"
+        },
+        {
+          "check": "source.extension.tracking",
+          "status": "PASS",
+          "detail": "No tracking or tracking domains declared"
+        },
+        {
+          "check": "source.extension.timers",
+          "status": "PASS",
+          "detail": "Elapsed-time deadlines require SystemBootTime/35F9.1"
+        },
+        {
+          "check": "source.app_icon",
+          "status": "PASS",
+          "detail": "AppIcon catalog contains a 1024-pixel icon and is selected for compilation"
+        },
+        {
+          "check": "source.dependency_pin",
+          "status": "PASS",
+          "detail": "WebRTC source resolution is pinned to audited revision/version"
+        },
+        {
+          "check": "source.binary_checksum",
+          "status": "PASS",
+          "detail": "Audited M156 binary checksum recorded; SPM verifies downloaded artifact"
+        },
+        {
+          "check": "product.device_release",
+          "status": "BLOCKED",
+          "detail": "No actual device product supplied; SDK, archive and signing not verified"
+        }
+      ],
+      "result": "PASS",
+      "distributionApproval": "NOT_GRANTED",
+      "externalGates": [
+        "Apple credentials and real archive/export validation",
+        "SDK provenance/signature and complete native dependency notices",
+        "Physical-device performance/calls/APNs/ReplayKit checks",
+        "Publisher privacy policy, disclosures, export compliance and App Store review"
+      ]
+    },
+    "skippedTests": [
+      "stage08ActualBackendAccountDeletion()",
+      "actualBackendConferenceRESTAndGuestScope()",
+      "actualBackendDirectCallsDevicesAndPrivateSFU()",
+      "actualBackendTwoClientsAndFiles()",
+      "actualBackendCalendarFoldersSettingsAndRecordings()"
+    ],
+    "validatedCounts": {
+      "registered": 184,
+      "passed": 179,
+      "optInSkipped": 5,
+      "skippedTests": [
+        "stage08ActualBackendAccountDeletion()",
+        "actualBackendConferenceRESTAndGuestScope()",
+        "actualBackendDirectCallsDevicesAndPrivateSFU()",
+        "actualBackendTwoClientsAndFiles()",
+        "actualBackendCalendarFoldersSettingsAndRecordings()"
+      ],
+      "passedFromIndividualResultLines": 179
+    }
+  },
+  "rawArtifactMetadata": [
+    {
+      "id": 13539480023,
+      "node_id": "MDg6QXJ0aWZhY3QxMzUzOTQ4MDAyMw==",
+      "name": "results-iPhone18",
+      "size_in_bytes": 19267808,
+      "url": "https://api.github.com/repos/janickiy/meetspace_ios_mobile/actions/artifacts/13539480023",
+      "archive_download_url": "https://api.github.com/repos/janickiy/meetspace_ios_mobile/actions/artifacts/13539480023/zip",
+      "expired": false,
+      "digest": "sha256:004b30cea44585000e7f50379b06cba127f9f8b7bf24f90326612823fda86fad",
+      "created_at": "2026-11-06T20:28:55Z",
+      "updated_at": "2026-11-06T20:28:55Z",
+      "expires_at": "2026-11-13T20:28:50Z",
+      "workflow_run": {
+        "id": 42281088607,
+        "repository_id": 1446695117,
+        "head_repository_id": 1446695117,
+        "head_branch": "codex/stage08-arm-validation",
+        "head_sha": "55bfcfb1e075224eda9ed7106a669db0b55dd7e5"
+      }
+    },
+    {
+      "id": 13538397031,
+      "node_id": "MDg6QXJ0aWZhY3QxMzUzODM5NzAzMQ==",
+      "name": "results-iPad18",
+      "size_in_bytes": 228994409,
+      "url": "https://api.github.com/repos/janickiy/meetspace_ios_mobile/actions/artifacts/13538397031",
+      "archive_download_url": "https://api.github.com/repos/janickiy/meetspace_ios_mobile/actions/artifacts/13538397031/zip",
+      "expired": false,
+      "digest": "sha256:9e957038127e2d317fe783691b448c87210541c49f3ab92cdd3417f417b5ac41",
+      "created_at": "2026-11-06T20:24:59Z",
+      "updated_at": "2026-11-06T20:24:59Z",
+      "expires_at": "2026-11-13T20:24:44Z",
+      "workflow_run": {
+        "id": 42281088607,
+        "repository_id": 1446695117,
+        "head_repository_id": 1446695117,
+        "head_branch": "codex/stage08-arm-validation",
+        "head_sha": "55bfcfb1e075224eda9ed7106a669db0b55dd7e5"
+      }
+    },
+    {
+      "id": 13537871263,
+      "node_id": "MDg6QXJ0aWZhY3QxMzUzNzg3MTI2Mw==",
+      "name": "results-iPhone26",
+      "size_in_bytes": 354030605,
+      "url": "https://api.github.com/repos/janickiy/meetspace_ios_mobile/actions/artifacts/13537871263",
+      "archive_download_url": "https://api.github.com/repos/janickiy/meetspace_ios_mobile/actions/artifacts/13537871263/zip",
+      "expired": false,
+      "digest": "sha256:00c80fc709628253a82fd6e157b636af2dd68ac5c061ffa9b6064a31216ff025",
+      "created_at": "2026-11-06T20:09:21Z",
+      "updated_at": "2026-11-06T20:09:21Z",
+      "expires_at": "2026-11-13T20:09:00Z",
+      "workflow_run": {
+        "id": 42281088607,
+        "repository_id": 1446695117,
+        "head_repository_id": 1446695117,
+        "head_branch": "codex/stage08-arm-validation",
+        "head_sha": "55bfcfb1e075224eda9ed7106a669db0b55dd7e5"
+      }
+    },
+    {
+      "id": 13536274526,
+      "node_id": "MDg6QXJ0aWZhY3QxMzUzNjI3NDUyNg==",
+      "name": "results-iPad26",
+      "size_in_bytes": 415786963,
+      "url": "https://api.github.com/repos/janickiy/meetspace_ios_mobile/actions/artifacts/13536274526",
+      "archive_download_url": "https://api.github.com/repos/janickiy/meetspace_ios_mobile/actions/artifacts/13536274526/zip",
+      "expired": false,
+      "digest": "sha256:fe1ab5217340c517f01c9794c2820d6a553ab8deef7ac69efbf0b20032cdf6a2",
+      "created_at": "2026-11-06T20:09:27Z",
+      "updated_at": "2026-11-06T20:09:27Z",
+      "expires_at": "2026-11-13T20:08:59Z",
+      "workflow_run": {
+        "id": 42281088607,
+        "repository_id": 1446695117,
+        "head_repository_id": 1446695117,
+        "head_branch": "codex/stage08-arm-validation",
+        "head_sha": "55bfcfb1e075224eda9ed7106a669db0b55dd7e5"
+      }
+    },
+    {
+      "id": 13536061288,
+      "node_id": "MDg6QXJ0aWZhY3QxMzUzNjA2MTI4OA==",
+      "name": "release-unsigned",
+      "size_in_bytes": 18268595,
+      "url": "https://api.github.com/repos/janickiy/meetspace_ios_mobile/actions/artifacts/13536061288",
+      "archive_download_url": "https://api.github.com/repos/janickiy/meetspace_ios_mobile/actions/artifacts/13536061288/zip",
+      "expired": false,
+      "digest": "sha256:8fb29e230616ad319d393a7f07c1195f68aa67369e0239e62205b5bfeffbc714",
+      "created_at": "2026-11-06T19:46:18Z",
+      "updated_at": "2026-11-06T19:46:18Z",
+      "expires_at": "2026-11-13T19:46:11Z",
+      "workflow_run": {
+        "id": 42281088607,
+        "repository_id": 1446695117,
+        "head_repository_id": 1446695117,
+        "head_branch": "codex/stage08-arm-validation",
+        "head_sha": "55bfcfb1e075224eda9ed7106a669db0b55dd7e5"
+      }
+    }
+  ],
+  "verifiedAvailableArtifactNames": [
+    "release-unsigned",
+    "results-iPad18",
+    "results-iPad26",
+    "results-iPhone18",
+    "results-iPhone26"
+  ],
+  "missingEvidence": [],
+  "validationErrors": [
+    "iPhone26: iPhone26: native count/result mismatch",
+    "iPad26: iPad26: native count/result mismatch",
+    "iPad18: iPad18: native count/result mismatch"
+  ],
+  "productionProvenance": {
+    "baselineCommit": "55bfcfb1e075224eda9ed7106a669db0b55dd7e5",
+    "regressionCommit": "a33a153147d6941874884357134b3fd46de7532c",
+    "productionTrees": {
+      "App": {
+        "baselineGitTree": "4098b55a42e80f71dcc919be18316ae92e3c1110",
+        "regressionGitTree": "4098b55a42e80f71dcc919be18316ae92e3c1110",
+        "identical": true
+      },
+      "Packages": {
+        "baselineGitTree": "8d5dba878e0404a181a428736638a5185a01f7c6",
+        "regressionGitTree": "8d5dba878e0404a181a428736638a5185a01f7c6",
+        "identical": true
+      },
+      "BroadcastExtension": {
+        "baselineGitTree": "4517bbe5a62655b843403b53487fb2f91867d4ce",
+        "regressionGitTree": "4517bbe5a62655b843403b53487fb2f91867d4ce",
+        "identical": true
+      }
+    },
+    "changedPaths": [
+      ".github/workflows/ios.yml",
+      "Tests/MeetSpaceUITests/FoundationUITests.swift",
+      "scripts/ci_simulators.py"
+    ],
+    "comparison": "read-only git object tree IDs; no product equivalence claim beyond these paths"
+  },
+  "conclusion": "Baseline is independent. Targeted regression never supplies missing baseline coverage.",
+  "verifiedNativeLogCounts": {
+    "iPhone26": {
+      "passed": 34,
+      "failed": 1,
+      "skipped": 0
+    },
+    "iPad26": {
+      "passed": 34,
+      "failed": 1,
+      "skipped": 0
+    },
+    "iPhone18": {
+      "passed": 15,
+      "failed": 0,
+      "skipped": 0
+    },
+    "iPad18": {
+      "passed": 14,
+      "failed": 1,
+      "skipped": 0
+    }
+  },
+  "aggregateNativeExecutions": {
+    "passed": 97,
+    "failed": 3,
+    "skipped": 0
+  },
+  "failedTestBoundary": "Three deletion helpers; full suite gate remains FAIL, no substitution by targeted results"
+}

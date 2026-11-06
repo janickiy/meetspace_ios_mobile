@@ -1,0 +1,71 @@
+{
+  "algorithm": "sha256",
+  "excludesSelf": true,
+  "files": [
+    {
+      "path": "iPad18-artifact-observation.json",
+      "sha256": "03550a83cc77451f7d47728783da5a79fd0b3b744e7742118c1d15d3a8eb5161",
+      "bytes": 807
+    },
+    {
+      "path": "iPad18-environment.json",
+      "sha256": "e6a5da8043cab961b415905e2a1d7a43044e965aeb6f03a5870dc5ece04b98fb",
+      "bytes": 318
+    },
+    {
+      "path": "iPad18-job-observation.json",
+      "sha256": "f9725213ec1176121175c952ef8486873c7a4b5addf82ed77720f656b758e8c3",
+      "bytes": 2911
+    },
+    {
+      "path": "iPad18-launch-progress-diagnostic-excerpt.txt",
+      "sha256": "290737680a78c0b71ae4c3d909a6a1065ae7ad489d7c2d575731552121719243",
+      "bytes": 12660
+    },
+    {
+      "path": "iPad18-native-progress-excerpt.txt",
+      "sha256": "d566ad6b1f02811931765447b518f91966dde7321b3cdfc49ab16d5e7de171e2",
+      "bytes": 13847
+    },
+    {
+      "path": "iPad18-native-test-results.json",
+      "sha256": "884acb1b0dee43720c5e14ce12fa201073189cebbcbd64768ed33540aa0f8623",
+      "bytes": 4922
+    },
+    {
+      "path": "iPad18-native.log",
+      "sha256": "58eb992e6b9704ac8a8b741c7eb966bf9b96a1958224cded79a5b08de85946a4",
+      "bytes": 891594
+    },
+    {
+      "path": "iPad18-receipt.json",
+      "sha256": "b2ec0da5e134c64d95fa5f6fd355acc1cb5325df216617669e3625269e18b18f",
+      "bytes": 6060
+    },
+    {
+      "path": "iPad18-results.zip",
+      "sha256": "20ca8fcb8dc4ed4094b73fa40752e8146917b67c5cfb4d2deeca110e137b8f3b",
+      "bytes": 2136003
+    },
+    {
+      "path": "iPad18-run-observation.json",
+      "sha256": "15ee5a66def844f7f4e0fa9c166ee3821a0230bf6e1049b57f1f86eb6c241027",
+      "bytes": 14243
+    },
+    {
+      "path": "iPad18-timeout-workflow-source.txt",
+      "sha256": "639b8fa66767ec5a23e5d0a280ac7fd4033b4bc4466abfbf30214fb3c2cb4659",
+      "bytes": 868
+    },
+    {
+      "path": "iPad18-uitest-standard-output.txt",
+      "sha256": "9a36ee754162c6f99cda2da7955e29db3ba063e9d757565c9e5006bf9d51141b",
+      "bytes": 1781
+    },
+    {
+      "path": "iPad18-zip-members.json",
+      "sha256": "8f44850801243ba67db08a4ae03fe2a6dd9412f03d697067c355faaf9ee1373e",
+      "bytes": 8389
+    }
+  ]
+}

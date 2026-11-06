@@ -1,0 +1,40 @@
+{
+  "videoAttachment": "23ECDB89-A845-4D0C-90F7-D0F6CC065ECA.mp4",
+  "videoSHA256": "dfe7ba9cb8a6dc06e18ae68efd46f08cc940da1999d649e9d62af8c2655a1ac9",
+  "videoAttachmentStartUTC": "2026-11-06T20:21:49.019Z",
+  "testStartUTC": "2026-11-06T20:21:48.988Z",
+  "alignmentBoundary": "Attachment start differs from XCTest start by31ms; using this as approximate video/test alignment, tutorial is visually present inside10s query window. No independent presentation-clock calibration performed.",
+  "method": "AVFoundation appliesPreferredTrackTransform; requestedTimeToleranceBefore/After=.zero; actual decoded PTS retained, not replaced by requested seek. Script samples5frames; only3fullymasked tutorial frames retained.",
+  "frames": [
+    {
+      "actualVideoPTSSeconds": 75.975,
+      "file": "tutorial-request-76s.png",
+      "heightPixels": 2266,
+      "requestedSeconds": 76,
+      "widthPixels": 1488,
+      "sha256": "38da493819df341b083e27539596506a2c7b8636f05a60a2a4de77f439bbae1a",
+      "bytes": 508307,
+      "visualObservation": "Tutorial sentence and native OK are visible; password field is fully masked. No image editing/redaction/resizing performed."
+    },
+    {
+      "actualVideoPTSSeconds": 82.805,
+      "file": "tutorial-request-83s.png",
+      "heightPixels": 2266,
+      "requestedSeconds": 83,
+      "widthPixels": 1488,
+      "sha256": "4fda25653d387228bbbe7af4b6f8975643ebc3ab8d67b67980150e70b25aad3e",
+      "bytes": 507947,
+      "visualObservation": "Tutorial sentence and native OK are visible; password field is fully masked. No image editing/redaction/resizing performed."
+    },
+    {
+      "actualVideoPTSSeconds": 88.80666666666667,
+      "file": "tutorial-request-89s.png",
+      "heightPixels": 2266,
+      "requestedSeconds": 89,
+      "widthPixels": 1488,
+      "sha256": "6f07c680a9cec30b658121f8ea7a35a6f760f71b52982d096c91130e0c31ef24",
+      "bytes": 508022,
+      "visualObservation": "Tutorial sentence and native OK are visible; password field is fully masked. No image editing/redaction/resizing performed."
+    }
+  ]
+}

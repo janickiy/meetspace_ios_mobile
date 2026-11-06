@@ -1,0 +1,21 @@
+Source: simulators_iPad_26_iPad26_full_iPad_Pro_13-inch_M5_.log
+Source SHA256: bf50962b7b626ccaf26ee054f387a0c61bd6d5b4f5045f8b5e566f713a9a9d16
+
+3395: 2026-11-06T19:18:37.8676270Z Test Case '-[MeetSpaceTests.CallAudioIntegrationTests testDirectCallCanNegotiateBeforeCallKitActivatesAudio]' passed (0.677 seconds).
+3400: 2026-11-06T19:18:39.9285170Z Test Case '-[MeetSpaceTests.KeychainIntegrationTests testKeychainRoundTripUpdateAndScopedDeletion]' passed (0.404 seconds).
+3405: 2026-11-06T19:18:41.3302180Z Test Case '-[MeetSpaceTests.MediaIntegrationTests testBlockedSourcesNeverRequestPermissionsOrAppearInOffer]' passed (0.874 seconds).
+3407: 2026-11-06T19:18:42.1541400Z Test Case '-[MeetSpaceTests.MediaIntegrationTests testNativePeerOfferAndCloseCyclesWithCaptureOff]' passed (1.681 seconds).
+3409: 2026-11-06T19:18:47.5148890Z Test Case '-[MeetSpaceTests.MediaIntegrationTests testScreenGenerationRollbackAndPolicyWithCaptureOff]' passed (1.100 seconds).
+3411: 2026-11-06T19:18:47.9133780Z Test Case '-[MeetSpaceTests.MediaIntegrationTests testScreenRejectsInvalidAndStaleFrameSession]' passed (0.440 seconds).
+3431: 2026-11-06T19:18:50.9015140Z Test Case '-[MeetSpaceTests.RecordingPlaybackTests testActualServerAACArtifactAdvancesNativePlayerTime]' passed (10.212 seconds).
+3439: 2026-11-06T19:18:51.8113980Z Test Case '-[MeetSpaceTests.Stage08SecurityKeychainTests testCredentialsRemainDeviceOnlyAndUnsynchronizedAfterUpdate]' passed (0.173 seconds).
+3441: 2026-11-06T19:18:52.1516450Z Test Case '-[MeetSpaceTests.Stage08SecurityKeychainTests testPushCleanupJournalUsesTheSameDeviceOnlyProtection]' passed (0.032 seconds).
+3449: 2026-11-06T19:18:53.9332310Z Test Case '-[MeetSpaceTests.TypographyAccessibilityTests testBundledFontsScaleInActualUIKitHostingAtAllDynamicTypeSizes]' passed (5.816 seconds).
+3453: 2026-11-06T19:18:55.6001330Z 	 Executed 10 tests, with 0 failures (0 unexpected) in 21.409 (21.441) seconds
+3455: 2026-11-06T19:18:55.8534410Z 	 Executed 10 tests, with 0 failures (0 unexpected) in 21.409 (21.449) seconds
+3462: 2026-11-06T19:22:53.5740610Z 2026-11-06 19:22:53.494031+0000 MeetSpaceUITests-Runner[18367:57124] [Default] Failed to initialize for UI testing: Error Domain=XCTDaemonErrorDomain Code=18 "Timed out waiting for AX loaded notification" UserInfo={NSLocalizedDescription=Timed out waiting for AX loaded notification}
+3475: 2026-11-06T19:27:35.1363990Z 	MeetSpaceUITests-Runner (18367) encountered an error (The test runner failed to initialize for UI testing. (Underlying Error: Timed out waiting for AX loaded notification))
+3477: 2026-11-06T19:27:35.1372640Z ** TEST FAILED **
+3480: 2026-11-06T19:27:56.8629910Z iPad26 summary export: PASS (exit=0, timeout=False)
+3481: 2026-11-06T19:27:57.1057400Z iPad26 attachments export: PASS (exit=0, timeout=False)
+3482: 2026-11-06T19:28:06.6923290Z iPad26 diagnostics export: PASS (exit=0, timeout=False)

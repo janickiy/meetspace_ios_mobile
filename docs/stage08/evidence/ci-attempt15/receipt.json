@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "ciAttempt": 15,
+  "runID": 42281088607,
+  "sourceCommit": "55bfcfb1e075224eda9ed7106a669db0b55dd7e5",
+  "result": "FAILURES_RECORDED",
+  "fullSuitePass": false,
+  "allDevicesCollected": false,
+  "rawRunStatusAtObservation": "in_progress",
+  "rawRunConclusionAtObservation": null,
+  "devices": [
+    {
+      "label": "iPad26",
+      "scope": "full",
+      "result": "FAIL",
+      "counts": {
+        "totalTestCount": 35,
+        "passedTests": 34,
+        "failedTests": 1,
+        "skippedTests": 0,
+        "expectedFailures": 0
+      },
+      "receipt": "iPad26-receipt.json"
+    },
+    {
+      "label": "iPhone26",
+      "scope": "full",
+      "result": "FAIL",
+      "counts": {
+        "totalTestCount": 35,
+        "passedTests": 34,
+        "failedTests": 1,
+        "skippedTests": 0,
+        "expectedFailures": 0
+      },
+      "receipt": "iPhone26-receipt.json"
+    }
+  ],
+  "collectionScope": "Only ready artifacts explicitly requested: iPad26, iPhone26",
+  "omittedDevices": "No result inferred for any simulator not listed above; package/release evidence remains separate.",
+  "notACertificate": "CI15 full baseline has native failures; CI16 regression iPad26 has native failure. Neither receipt declares a full or regression acceptance PASS."
+}

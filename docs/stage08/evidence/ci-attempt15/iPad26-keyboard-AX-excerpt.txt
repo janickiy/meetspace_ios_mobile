@@ -1,0 +1,25 @@
+141:                                     Other, 0x112a63440, {{246.0, 539.5}, {540.0, 52.0}} <AX element pid: 65742, elementOrHash.elementID: 4365279744.577>
+142:                                       Other, 0x112a63560, {{246.0, 539.5}, {540.0, 52.0}} <AX element pid: 65742, elementOrHash.elementID: 4686549232.584>
+143:                                         SecureTextField, 0x112a63680, {{266.0, 557.0}, {500.0, 17.0}}, identifier: 'deleteAccount.password', placeholderValue: 'Пароль аккаунта', Keyboard Focused, Focused <AX element pid: 65742, elementOrHash.elementID: 4365281280.590>
+144:                                 Cell, 0x112a637a0, {{246.0, 591.5}, {540.0, 74.0}} <AX element pid: 65742, elementOrHash.elementID: 4380848128.552>
+145:                                   Other, 0x112a638c0, {{246.0, 591.5}, {540.0, 74.0}} <AX element pid: 65742, elementOrHash.elementID: 4319936496.565>
+148:                                     Other, 0x112a63c20, {{246.0, 591.5}, {540.0, 74.0}} <AX element pid: 65742, elementOrHash.elementID: 4380841472.579>
+149:                                       Other, 0x112a63d40, {{246.0, 591.5}, {540.0, 74.0}} <AX element pid: 65742, elementOrHash.elementID: 4686551760.585>
+150:                                         Button, 0x112a63e60, {{246.0, 591.5}, {540.0, 74.0}}, identifier: 'deleteAccount.submit', label: 'Удалить аккаунт на сервере', Disabled <AX element pid: 65742, elementOrHash.elementID: 4686550864.591>
+151:                                 Other, 0x112a63f80, {{266.0, 590.5}, {500.0, 1.0}} <AX element pid: 65742, elementOrHash.elementID: 4320004512.553>
+152:                                 Other, 0x112a640a0, {{773.0, 220.5}, {30.0, 554.0}}, label: 'Вертикальная полоса прокрутки, 1 страница', value: 0 % <AX element pid: 65742, elementOrHash.elementID: 4686398208.554>
+190:             Other, 0x1021b7590, {{0.0, 973.0}, {1032.0, 403.0}} <AX element pid: 65742, elementOrHash.elementID: 4319389200.598>
+191:         Other, 0x1021b76b0, {{0.0, 1028.0}, {1032.0, 345.0}} <AX element pid: 65742, elementOrHash.elementID: 4336614224.73>
+192:           Keyboard, 0x112a66380, {{0.0, 1028.0}, {1032.0, 345.0}} <AX element pid: 65742, elementOrHash.elementID: 4336620864.76>
+193:             Other, 0x112a664a0, {{0.0, 1028.0}, {1032.0, 345.0}} <AX element pid: 65742, elementOrHash.elementID: 4319509504.80>
+194:               Other, 0x112a665c0, {{0.0, 1028.0}, {1032.0, 345.0}}, identifier: 'UIKeyboardLayoutStar Preview' <AX element pid: 65742, elementOrHash.elementID: 4371817984.83>
+224:                 Key, 0x1021b88e0, {{819.5, 1085.5}, {71.0, 68.0}}, label: 'х' <AX element pid: 65742, elementOrHash.elementID: 105553152238256.1360>
+225:                 Key, 0x1021b8a00, {{890.5, 1085.5}, {71.0, 68.0}}, label: 'ъ' <AX element pid: 65742, elementOrHash.elementID: 105553152242656.1361>
+226:                 Key, 0x1021b8b20, {{0.5, 1153.5}, {125.5, 68.0}}, label: 'Переключиться с латинских клавиш' <AX element pid: 65742, elementOrHash.elementID: 105553152234096.1362>
+227:                 Key, 0x112a676a0, {{126.0, 1153.5}, {71.0, 68.0}}, label: 'ф' <AX element pid: 65742, elementOrHash.elementID: 105553152233536.1363>
+228:                 Key, 0x112a677c0, {{197.0, 1153.5}, {71.0, 68.0}}, label: 'ы' <AX element pid: 65742, elementOrHash.elementID: 105553152233136.1364>
+250:                 Key, 0x1021ba2a0, {{800.5, 1221.5}, {71.0, 68.5}}, label: '/' <AX element pid: 65742, elementOrHash.elementID: 105553152232016.1386>
+251:                 Key, 0x1021ba3c0, {{871.5, 1221.5}, {161.0, 68.5}}, label: 'сдвиг' <AX element pid: 65742, elementOrHash.elementID: 105553152239776.1387>
+252:                 Button, 0x11294fa10, {{0.5, 1290.0}, {151.0, 68.0}}, identifier: 'emoji', label: 'Эмодзи' <AX element pid: 65742, elementOrHash.elementID: 105553152231536.1388>
+253:                 Key, 0x102088b60, {{151.5, 1290.0}, {151.0, 68.0}}, identifier: 'more', label: 'цифры' <AX element pid: 65742, elementOrHash.elementID: 105553152232416.1389>
+254:                 Key, 0x10208b480, {{302.5, 1290.0}, {426.5, 68.0}}, label: ' ' <AX element pid: 65742, elementOrHash.elementID: 105553152232096.1390>

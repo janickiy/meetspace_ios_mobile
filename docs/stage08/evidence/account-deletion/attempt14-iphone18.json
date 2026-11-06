@@ -1,0 +1,144 @@
+{
+  "schema": 1,
+  "runID": 42275177048,
+  "sourceCommit": "04f70a3d80bfd8cd9314c798f0eb3fc7e58b343f",
+  "runURL": "https://github.com/janickiy/meetspace_ios_mobile/actions/runs/42275177048",
+  "label": "iPhone18",
+  "testIdentifier": "FoundationUITests/testStage08AccountDeletionRequiresPasswordAndConfirmation()",
+  "result": "PASS",
+  "elapsedSeconds": 186.676,
+  "nativeSuite": {
+    "passed": 14,
+    "failed": 1,
+    "skipped": 0,
+    "total": 15,
+    "failedTest": "testAccessibilityStage08CoreScreens"
+  },
+  "artifact": {
+    "id": 13534592310,
+    "name": "results-iPhone18",
+    "size_in_bytes": 257514161,
+    "digest": "sha256:22f94581f5843089c60871448f9781f0537ce4162f5e2b96d241ff7d19c62b69",
+    "downloadedSHA256": "22f94581f5843089c60871448f9781f0537ce4162f5e2b96d241ff7d19c62b69",
+    "zipCRCVerified": true
+  },
+  "sourceFileSHA256": {
+    "Tests/MeetSpaceUITests/FoundationUITests.swift": "9e196a715d8894dae3004f68f774e1c39daf32712e0b6bde81a5886323d35463",
+    "App/UITestDependencies.swift": "bd939e4a205ebd96bedfea2f1d626f419f2f56727c0d356e5cad8c4063e569b7",
+    "Packages/MeetSpaceKit/Sources/Features/IdentityModel.swift": "8d47cc0fd7b3861d5356c14f8d348c9bc3f8d15bcfee37eab617d348331a3ec3",
+    "Packages/MeetSpaceKit/Sources/Features/PushRegistrationModel.swift": "14511498a17d0373d2bbf07afe80db17bff64aa8c37e22f8d565106f269b763a",
+    "Packages/MeetSpaceKit/Sources/API/Authentication.swift": "d4c3032821c0fd01cf08ca5f2878cce389d0a9780af69861a43597ddc63a26bf"
+  },
+  "screenshots": [
+    {
+      "file": "iPhone18-stage08-account-deletion-success.png",
+      "attachment": {
+        "configurationName": "Test Scheme Action",
+        "deviceId": "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName": "iPhone SE (3rd generation)",
+        "exportedFileName": "9DF86E42-4527-413E-A063-ACE54C665E21.png",
+        "isAssociatedWithFailure": false,
+        "suggestedHumanReadableName": "stage08-account-deletion-success_0_A180D722-394B-4180-B724-82E6DA4BB411.png",
+        "timestamp": 1793992876.361
+      },
+      "width": 750,
+      "height": 1334,
+      "sha256": "ec6c3e857e2edb6da8a3e8a5c56db21633124cc68edb805d706b91008f251d90"
+    },
+    {
+      "file": "iPhone18-stage08-account-deletion.png",
+      "attachment": {
+        "configurationName": "Test Scheme Action",
+        "deviceId": "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName": "iPhone SE (3rd generation)",
+        "exportedFileName": "C8664221-24FC-451F-BB66-B9D8B399519B.png",
+        "isAssociatedWithFailure": false,
+        "suggestedHumanReadableName": "stage08-account-deletion_0_35EE6E29-0DE3-43DE-9759-5A6508FA08FE.png",
+        "timestamp": 1793992869.554
+      },
+      "width": 750,
+      "height": 1334,
+      "sha256": "97666c5bd02f1eeb8144bb04a5235ed629ec975ee7fe91f2a64f301366ee6c61"
+    },
+    {
+      "file": "iPhone18-stage08-account-deletion-keyboard-retry.png",
+      "attachment": {
+        "configurationName": "Test Scheme Action",
+        "deviceId": "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName": "iPhone SE (3rd generation)",
+        "exportedFileName": "2CC98C88-5C1E-4E54-A30B-982DFEB97929.png",
+        "isAssociatedWithFailure": false,
+        "suggestedHumanReadableName": "stage08-account-deletion-keyboard-retry_0_3C721CC3-98D3-4DAC-ACDE-1A09DE76BC16.png",
+        "timestamp": 1793992825.606
+      },
+      "width": 750,
+      "height": 1334,
+      "sha256": "1b977e9d9526b949d1b9cd053743cbde772b000cf49df7bc1721e7396bf464ad"
+    },
+    {
+      "file": "iPhone18-stage08-account-deletion-keyboard-initial.png",
+      "attachment": {
+        "configurationName": "Test Scheme Action",
+        "deviceId": "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+        "deviceName": "iPhone SE (3rd generation)",
+        "exportedFileName": "3F5DFCAE-3A93-4A9A-9D2E-7A614FEC1707.png",
+        "isAssociatedWithFailure": false,
+        "suggestedHumanReadableName": "stage08-account-deletion-keyboard-initial_0_634D40AB-1DC5-42F5-BF85-DDF0EEDB2177.png",
+        "timestamp": 1793992756.876
+      },
+      "width": 750,
+      "height": 1334,
+      "sha256": "8afc427e10945cb2011612aa54fb24bdc289481c9a882142f7eb83c0ce4fb1e7"
+    }
+  ],
+  "observations": [
+    "Initial screenshot shows the warnings, empty password field and disabled submit.",
+    "Retry screenshot shows the wrong-password error, cleared field and disabled submit; visible text is not clipped.",
+    "Pre-submit screenshot shows enabled submit after native secure-keyboard input; it does not reveal or prove the password bytes visually.",
+    "Success screenshot shows server login, the exact confirmation text Аккаунт удалён на сервере., and no deletion form or workspace tabs.",
+    "Cancellation and subsequent confirmation are evidenced by the test assertions and native event log; no separate confirmation-alert PNG was retained."
+  ],
+  "boundaries": [
+    "DEBUG fixtures; strict fixture password guard unchanged. This is native UI integration, not a production-server deletion or TLS test.",
+    "Default push intent is disabled. This UI result does not exercise delayed POST/revoke ordering or the backend multi-client race.",
+    "No separate alert visual acceptance, device push delivery or physical-device validation.",
+    "The one unrelated accessibility engine failure makes the complete iPhone18 job FAIL."
+  ],
+  "retainedFiles": [
+    {
+      "file": "iPhone18-environment.json",
+      "bytes": 325,
+      "sha256": "991bd980714ef8c683af28db22389922e459ef94ddb81e5e8cbdc1ed11953136"
+    },
+    {
+      "file": "iPhone18-events.txt",
+      "bytes": 13252,
+      "sha256": "3174447347d154857df32296ba398698a63962397dfcfcace2a5ee37479f7e51"
+    },
+    {
+      "file": "iPhone18-stage08-account-deletion-keyboard-initial.png",
+      "bytes": 124096,
+      "sha256": "8afc427e10945cb2011612aa54fb24bdc289481c9a882142f7eb83c0ce4fb1e7"
+    },
+    {
+      "file": "iPhone18-stage08-account-deletion-keyboard-retry.png",
+      "bytes": 137423,
+      "sha256": "1b977e9d9526b949d1b9cd053743cbde772b000cf49df7bc1721e7396bf464ad"
+    },
+    {
+      "file": "iPhone18-stage08-account-deletion-success.png",
+      "bytes": 89742,
+      "sha256": "ec6c3e857e2edb6da8a3e8a5c56db21633124cc68edb805d706b91008f251d90"
+    },
+    {
+      "file": "iPhone18-stage08-account-deletion.png",
+      "bytes": 109292,
+      "sha256": "97666c5bd02f1eeb8144bb04a5235ed629ec975ee7fe91f2a64f301366ee6c61"
+    },
+    {
+      "file": "iPhone18-summary.json",
+      "bytes": 1716,
+      "sha256": "94177f482ae207dd511a9d69a03a774c02c17dcbce1b984bf39d9f5819bea43f"
+    }
+  ]
+}

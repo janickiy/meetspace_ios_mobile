@@ -1,0 +1,25 @@
+2026-11-06 19:07:50.770926+0000 MeetSpaceUITests-Runner[9925:34515] [Default] Running tests...
+    t =      nans Interface orientation changed to Portrait
+Test Suite 'Selected tests' started at 2026-11-06 19:08:07.207.
+Test Suite 'MeetSpaceUITests.xctest' started at 2026-11-06 19:08:07.208.
+Test Suite 'FoundationUITests' started at 2026-11-06 19:08:07.209.
+Test Case '-[MeetSpaceUITests.FoundationUITests testAccessibilityStage08CoreScreens]' started.
+    t =     0.00s Start Test at 2026-11-06 19:08:07.212
+    t =     7.30s Set Up
+    t =     7.32s Open com.meetspace.ios
+    t =     7.32s     Launch com.meetspace.ios
+    t =     8.58s         Setting up automation session
+    t =    11.91s         Wait for com.meetspace.ios to idle
+    t =    14.09s Waiting 10.0s for "connectServer" Button to exist
+    t =    15.12s     Checking `Expect predicate `existsNoRetry == 1` for object "connectServer" Button`
+    t =    15.13s         Checking existence of `"connectServer" Button`
+    t =    15.95s Find the Target Application 'com.meetspace.ios'
+/Users/runner/work/meetspace_ios_mobile/meetspace_ios_mobile/Tests/MeetSpaceUITests/FoundationUITests.swift:20: error: -[MeetSpaceUITests.FoundationUITests testAccessibilityStage08CoreScreens] : Failed to get screenshot: Timed out while requesting screenshot.
+    t =    63.58s Tear Down
+Test Case '-[MeetSpaceUITests.FoundationUITests testAccessibilityStage08CoreScreens]' failed (76.494 seconds).
+Test Case '-[MeetSpaceUITests.FoundationUITests testAccessibilityStage08LargeTextLiveFlow]' started.
+    t =     0.00s Start Test at 2026-11-06 19:09:23.707
+    t =    18.83s Set Up
+    t =    18.84s Open com.meetspace.ios
+    t =    18.84s     Launch com.meetspace.ios
+    t =    18.84s         Terminate com.meetspace.ios:10923

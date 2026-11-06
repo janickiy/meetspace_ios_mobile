@@ -1,0 +1,9 @@
+Source attachment: 23570728-B6FB-4ECC-A845-80B8A576624D.txt
+Source SHA256: d1e5eb3b66cea16d49a90db98adeda1ef1cc336a679eeaca732af117ffa957c0
+Scope: selected hierarchy lines only; no entered values retained.
+
+1: Application, 0x102a4ad50, pid: 12708, label: 'MeetSpace' <App element pid: 12708>
+11:                 StaticText, 0x102a5ec00, {{24.0, 188.3}, {265.3, 82.3}}, identifier: 'welcome.heading', label: 'Команда ближе.
+24:                 Button, 0x102a5f740, {{24.0, 527.7}, {392.0, 66.3}}, identifier: 'connectServer', label: 'Подключиться к серверу, У меня уже есть адрес MeetSpace' <AX element pid: 12708, elementOrHash.elementID: 4592039136.16>
+29:                 Button, 0x102a5ff60, {{24.0, 614.0}, {392.0, 66.3}}, identifier: 'deployServer', label: 'Развернуть свой сервер, Создать пространство на своём VPS' <AX element pid: 12708, elementOrHash.elementID: 4592043504.17>
+43:                 Button, 0x102a61090, {{24.0, 765.0}, {392.0, 44.0}}, identifier: 'openDemo', label: 'Посмотреть интерфейс' <AX element pid: 12708, elementOrHash.elementID: 4592049632.21>

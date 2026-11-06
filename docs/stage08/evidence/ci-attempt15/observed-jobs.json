@@ -1,0 +1,454 @@
+[
+  {
+    "id": 128109913935,
+    "run_id": 42281088607,
+    "workflow_name": "iOS release audit",
+    "head_branch": "codex/stage08-arm-validation",
+    "run_url": "https://api.github.com/repos/janickiy/meetspace_ios_mobile/actions/runs/42281088607",
+    "run_attempt": 1,
+    "node_id": "CR_kwDOVjrQzc8AAAAd0_InTw",
+    "head_sha": "55bfcfb1e075224eda9ed7106a669db0b55dd7e5",
+    "url": "https://api.github.com/repos/janickiy/meetspace_ios_mobile/actions/jobs/128109913935",
+    "html_url": "https://github.com/janickiy/meetspace_ios_mobile/actions/runs/42281088607/job/128109913935",
+    "status": "in_progress",
+    "conclusion": null,
+    "created_at": "2026-11-06T19:36:17Z",
+    "started_at": "2026-11-06T20:09:39Z",
+    "completed_at": null,
+    "name": "simulators (iPad, 18, iPad18, compatibility, iPad mini (A17 Pro))",
+    "steps": [
+      {
+        "name": "Set up job",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 1,
+        "started_at": "2026-11-06T20:09:40Z",
+        "completed_at": "2026-11-06T20:09:41Z"
+      },
+      {
+        "name": "Run actions/checkout@v4",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 2,
+        "started_at": "2026-11-06T20:09:41Z",
+        "completed_at": "2026-11-06T20:09:45Z"
+      },
+      {
+        "name": "Device inventory",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 3,
+        "started_at": "2026-11-06T20:09:45Z",
+        "completed_at": "2026-11-06T20:10:40Z"
+      },
+      {
+        "name": "App, Keychain and UI tests",
+        "status": "in_progress",
+        "conclusion": null,
+        "number": 4,
+        "started_at": "2026-11-06T20:10:40Z",
+        "completed_at": null
+      },
+      {
+        "name": "Diagnostic Instruments baseline (reported separately)",
+        "status": "pending",
+        "conclusion": null,
+        "number": 5,
+        "started_at": null,
+        "completed_at": null
+      },
+      {
+        "name": "Upload simulator test results",
+        "status": "pending",
+        "conclusion": null,
+        "number": 6,
+        "started_at": null,
+        "completed_at": null
+      },
+      {
+        "name": "Post Run actions/checkout@v4",
+        "status": "pending",
+        "conclusion": null,
+        "number": 12,
+        "started_at": null,
+        "completed_at": null
+      }
+    ],
+    "check_run_url": "https://api.github.com/repos/janickiy/meetspace_ios_mobile/check-runs/128109913935",
+    "labels": [
+      "macos-15"
+    ],
+    "runner_id": 1000000568,
+    "runner_name": "GitHub Actions 1000000568",
+    "runner_group_id": 0,
+    "runner_group_name": "GitHub Actions"
+  },
+  {
+    "id": 128109914366,
+    "run_id": 42281088607,
+    "workflow_name": "iOS release audit",
+    "head_branch": "codex/stage08-arm-validation",
+    "run_url": "https://api.github.com/repos/janickiy/meetspace_ios_mobile/actions/runs/42281088607",
+    "run_attempt": 1,
+    "node_id": "CR_kwDOVjrQzc8AAAAd0_Io_g",
+    "head_sha": "55bfcfb1e075224eda9ed7106a669db0b55dd7e5",
+    "url": "https://api.github.com/repos/janickiy/meetspace_ios_mobile/actions/jobs/128109914366",
+    "html_url": "https://github.com/janickiy/meetspace_ios_mobile/actions/runs/42281088607/job/128109914366",
+    "status": "in_progress",
+    "conclusion": null,
+    "created_at": "2026-11-06T19:36:17Z",
+    "started_at": "2026-11-06T20:09:30Z",
+    "completed_at": null,
+    "name": "simulators (iPhone, 18, iPhone18, compatibility, iPhone SE (3rd generation))",
+    "steps": [
+      {
+        "name": "Set up job",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 1,
+        "started_at": "2026-11-06T20:09:31Z",
+        "completed_at": "2026-11-06T20:09:33Z"
+      },
+      {
+        "name": "Run actions/checkout@v4",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 2,
+        "started_at": "2026-11-06T20:09:33Z",
+        "completed_at": "2026-11-06T20:09:38Z"
+      },
+      {
+        "name": "Device inventory",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 3,
+        "started_at": "2026-11-06T20:09:38Z",
+        "completed_at": "2026-11-06T20:10:38Z"
+      },
+      {
+        "name": "App, Keychain and UI tests",
+        "status": "in_progress",
+        "conclusion": null,
+        "number": 4,
+        "started_at": "2026-11-06T20:10:38Z",
+        "completed_at": null
+      },
+      {
+        "name": "Diagnostic Instruments baseline (reported separately)",
+        "status": "pending",
+        "conclusion": null,
+        "number": 5,
+        "started_at": null,
+        "completed_at": null
+      },
+      {
+        "name": "Upload simulator test results",
+        "status": "pending",
+        "conclusion": null,
+        "number": 6,
+        "started_at": null,
+        "completed_at": null
+      },
+      {
+        "name": "Post Run actions/checkout@v4",
+        "status": "pending",
+        "conclusion": null,
+        "number": 12,
+        "started_at": null,
+        "completed_at": null
+      }
+    ],
+    "check_run_url": "https://api.github.com/repos/janickiy/meetspace_ios_mobile/check-runs/128109914366",
+    "labels": [
+      "macos-15"
+    ],
+    "runner_id": 1000000567,
+    "runner_name": "GitHub Actions 1000000567",
+    "runner_group_id": 0,
+    "runner_group_name": "GitHub Actions"
+  },
+  {
+    "id": 128109914600,
+    "run_id": 42281088607,
+    "workflow_name": "iOS release audit",
+    "head_branch": "codex/stage08-arm-validation",
+    "run_url": "https://api.github.com/repos/janickiy/meetspace_ios_mobile/actions/runs/42281088607",
+    "run_attempt": 1,
+    "node_id": "CR_kwDOVjrQzc8AAAAd0_Ip6A",
+    "head_sha": "55bfcfb1e075224eda9ed7106a669db0b55dd7e5",
+    "url": "https://api.github.com/repos/janickiy/meetspace_ios_mobile/actions/jobs/128109914600",
+    "html_url": "https://github.com/janickiy/meetspace_ios_mobile/actions/runs/42281088607/job/128109914600",
+    "status": "completed",
+    "conclusion": "failure",
+    "created_at": "2026-11-06T19:36:17Z",
+    "started_at": "2026-11-06T19:36:20Z",
+    "completed_at": "2026-11-06T20:09:38Z",
+    "name": "simulators (iPad, 26, iPad26, full, iPad Pro 13-inch (M5))",
+    "steps": [
+      {
+        "name": "Set up job",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 1,
+        "started_at": "2026-11-06T19:36:20Z",
+        "completed_at": "2026-11-06T19:36:21Z"
+      },
+      {
+        "name": "Run actions/checkout@v4",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 2,
+        "started_at": "2026-11-06T19:36:21Z",
+        "completed_at": "2026-11-06T19:36:25Z"
+      },
+      {
+        "name": "Device inventory",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 3,
+        "started_at": "2026-11-06T19:36:25Z",
+        "completed_at": "2026-11-06T19:36:44Z"
+      },
+      {
+        "name": "App, Keychain and UI tests",
+        "status": "completed",
+        "conclusion": "failure",
+        "number": 4,
+        "started_at": "2026-11-06T19:36:44Z",
+        "completed_at": "2026-11-06T20:08:57Z"
+      },
+      {
+        "name": "Diagnostic Instruments baseline (reported separately)",
+        "status": "completed",
+        "conclusion": "skipped",
+        "number": 5,
+        "started_at": "2026-11-06T20:08:58Z",
+        "completed_at": "2026-11-06T20:08:58Z"
+      },
+      {
+        "name": "Upload simulator test results",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 6,
+        "started_at": "2026-11-06T20:08:58Z",
+        "completed_at": "2026-11-06T20:09:26Z"
+      },
+      {
+        "name": "Post Run actions/checkout@v4",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 12,
+        "started_at": "2026-11-06T20:09:26Z",
+        "completed_at": "2026-11-06T20:09:27Z"
+      },
+      {
+        "name": "Complete job",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 13,
+        "started_at": "2026-11-06T20:09:27Z",
+        "completed_at": "2026-11-06T20:09:35Z"
+      }
+    ],
+    "check_run_url": "https://api.github.com/repos/janickiy/meetspace_ios_mobile/check-runs/128109914600",
+    "labels": [
+      "macos-15"
+    ],
+    "runner_id": 1000000561,
+    "runner_name": "GitHub Actions 1000000561",
+    "runner_group_id": 0,
+    "runner_group_name": "GitHub Actions"
+  },
+  {
+    "id": 128109914695,
+    "run_id": 42281088607,
+    "workflow_name": "iOS release audit",
+    "head_branch": "codex/stage08-arm-validation",
+    "run_url": "https://api.github.com/repos/janickiy/meetspace_ios_mobile/actions/runs/42281088607",
+    "run_attempt": 1,
+    "node_id": "CR_kwDOVjrQzc8AAAAd0_IqRw",
+    "head_sha": "55bfcfb1e075224eda9ed7106a669db0b55dd7e5",
+    "url": "https://api.github.com/repos/janickiy/meetspace_ios_mobile/actions/jobs/128109914695",
+    "html_url": "https://github.com/janickiy/meetspace_ios_mobile/actions/runs/42281088607/job/128109914695",
+    "status": "completed",
+    "conclusion": "success",
+    "created_at": "2026-11-06T19:36:17Z",
+    "started_at": "2026-11-06T19:36:23Z",
+    "completed_at": "2026-11-06T19:46:23Z",
+    "name": "package",
+    "steps": [
+      {
+        "name": "Set up job",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 1,
+        "started_at": "2026-11-06T19:36:25Z",
+        "completed_at": "2026-11-06T19:36:27Z"
+      },
+      {
+        "name": "Run actions/checkout@v4",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 2,
+        "started_at": "2026-11-06T19:36:27Z",
+        "completed_at": "2026-11-06T19:36:34Z"
+      },
+      {
+        "name": "Verify generated project and audit",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 3,
+        "started_at": "2026-11-06T19:36:34Z",
+        "completed_at": "2026-11-06T19:36:35Z"
+      },
+      {
+        "name": "Unit tests on host",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 4,
+        "started_at": "2026-11-06T19:36:35Z",
+        "completed_at": "2026-11-06T19:41:01Z"
+      },
+      {
+        "name": "Unsigned device Release archive",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 5,
+        "started_at": "2026-11-06T19:41:01Z",
+        "completed_at": "2026-11-06T19:46:09Z"
+      },
+      {
+        "name": "Verify actual device product",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 6,
+        "started_at": "2026-11-06T19:46:09Z",
+        "completed_at": "2026-11-06T19:46:10Z"
+      },
+      {
+        "name": "Upload archive and verification",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 7,
+        "started_at": "2026-11-06T19:46:10Z",
+        "completed_at": "2026-11-06T19:46:18Z"
+      },
+      {
+        "name": "Post Run actions/checkout@v4",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 14,
+        "started_at": "2026-11-06T19:46:18Z",
+        "completed_at": "2026-11-06T19:46:20Z"
+      },
+      {
+        "name": "Complete job",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 15,
+        "started_at": "2026-11-06T19:46:20Z",
+        "completed_at": "2026-11-06T19:46:21Z"
+      }
+    ],
+    "check_run_url": "https://api.github.com/repos/janickiy/meetspace_ios_mobile/check-runs/128109914695",
+    "labels": [
+      "macos-15-intel"
+    ],
+    "runner_id": 1000000563,
+    "runner_name": "GitHub Actions 1000000563",
+    "runner_group_id": 0,
+    "runner_group_name": "GitHub Actions"
+  },
+  {
+    "id": 128109914747,
+    "run_id": 42281088607,
+    "workflow_name": "iOS release audit",
+    "head_branch": "codex/stage08-arm-validation",
+    "run_url": "https://api.github.com/repos/janickiy/meetspace_ios_mobile/actions/runs/42281088607",
+    "run_attempt": 1,
+    "node_id": "CR_kwDOVjrQzc8AAAAd0_Iqew",
+    "head_sha": "55bfcfb1e075224eda9ed7106a669db0b55dd7e5",
+    "url": "https://api.github.com/repos/janickiy/meetspace_ios_mobile/actions/jobs/128109914747",
+    "html_url": "https://github.com/janickiy/meetspace_ios_mobile/actions/runs/42281088607/job/128109914747",
+    "status": "completed",
+    "conclusion": "failure",
+    "created_at": "2026-11-06T19:36:17Z",
+    "started_at": "2026-11-06T19:36:19Z",
+    "completed_at": "2026-11-06T20:09:27Z",
+    "name": "simulators (iPhone, 26, iPhone26, full, iPhone 17 Pro Max)",
+    "steps": [
+      {
+        "name": "Set up job",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 1,
+        "started_at": "2026-11-06T19:36:20Z",
+        "completed_at": "2026-11-06T19:36:22Z"
+      },
+      {
+        "name": "Run actions/checkout@v4",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 2,
+        "started_at": "2026-11-06T19:36:22Z",
+        "completed_at": "2026-11-06T19:36:27Z"
+      },
+      {
+        "name": "Device inventory",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 3,
+        "started_at": "2026-11-06T19:36:27Z",
+        "completed_at": "2026-11-06T19:37:27Z"
+      },
+      {
+        "name": "App, Keychain and UI tests",
+        "status": "completed",
+        "conclusion": "failure",
+        "number": 4,
+        "started_at": "2026-11-06T19:37:27Z",
+        "completed_at": "2026-11-06T20:08:58Z"
+      },
+      {
+        "name": "Diagnostic Instruments baseline (reported separately)",
+        "status": "completed",
+        "conclusion": "skipped",
+        "number": 5,
+        "started_at": "2026-11-06T20:08:58Z",
+        "completed_at": "2026-11-06T20:08:58Z"
+      },
+      {
+        "name": "Upload simulator test results",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 6,
+        "started_at": "2026-11-06T20:08:58Z",
+        "completed_at": "2026-11-06T20:09:21Z"
+      },
+      {
+        "name": "Post Run actions/checkout@v4",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 12,
+        "started_at": "2026-11-06T20:09:21Z",
+        "completed_at": "2026-11-06T20:09:22Z"
+      },
+      {
+        "name": "Complete job",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 13,
+        "started_at": "2026-11-06T20:09:22Z",
+        "completed_at": "2026-11-06T20:09:25Z"
+      }
+    ],
+    "check_run_url": "https://api.github.com/repos/janickiy/meetspace_ios_mobile/check-runs/128109914747",
+    "labels": [
+      "macos-15"
+    ],
+    "runner_id": 1000000562,
+    "runner_name": "GitHub Actions 1000000562",
+    "runner_group_id": 0,
+    "runner_group_name": "GitHub Actions"
+  }
+]

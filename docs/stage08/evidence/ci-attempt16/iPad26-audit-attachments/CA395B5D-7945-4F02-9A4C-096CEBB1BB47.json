@@ -1,0 +1,122 @@
+[
+  {
+    "detail" : "Contrast failed for SwiftUI.AccessibilityNode",
+    "element" : "welcome.deploySubtitle",
+    "frame" : "(623.0, 459.5, 200.5, 13.5)",
+    "label" : "Создать пространство на своём VPS",
+    "resolution" : "reviewed: opaque glyph cores exceed 4.5:1 in actual PNG; ACCESSIBILITY_IPAD_CONTRAST.md",
+    "screen" : "welcome",
+    "summary" : "Contrast failed",
+    "type" : "1"
+  },
+  {
+    "detail" : "Text of this SwiftUI.AccessibilityNode may be clipped at larger Dynamic Type sizes.",
+    "element" : "welcome.heading",
+    "frame" : "(563.0, 196.5, 265.5, 82.5)",
+    "label" : "Команда ближе.\nИдей больше.",
+    "resolution" : "reviewed: welcome heading; complete AX5 text in ACCESSIBILITY_REVIEW.md",
+    "screen" : "welcome",
+    "summary" : "Text clipped",
+    "type" : "131072"
+  },
+  {
+    "detail" : "Contrast failed for SwiftUI.AccessibilityNode",
+    "element" : "",
+    "frame" : "(611.75, 641.0, 149.0, 98.75)",
+    "label" : "Выберите чат",
+    "resolution" : "reviewed: native empty-state node groups decorative icon with high-contrast title",
+    "screen" : "messages",
+    "summary" : "Contrast failed",
+    "type" : "1"
+  },
+  {
+    "detail" : "Contrast is not high enough for SwiftUI.AccessibilityNode unless font size is larger.",
+    "element" : "",
+    "frame" : "(30.0, 317.5, 44.0, 44.0)",
+    "label" : "ТЕ",
+    "resolution" : "reviewed: decorative avatar initials; accessible row has the full name",
+    "screen" : "messages",
+    "summary" : "Contrast nearly passed",
+    "type" : "1"
+  },
+  {
+    "detail" : "Contrast failed for SwiftUI.AccessibilityNode",
+    "element" : "calendar.weekSummaryHeading",
+    "frame" : "(794.25, 395.0, 83.5, 13.5)",
+    "label" : "На этой неделе",
+    "resolution" : "reviewed: opaque glyph cores exceed 4.5:1 in actual PNG; ACCESSIBILITY_IPAD_CONTRAST.md",
+    "screen" : "calendar",
+    "summary" : "Contrast failed",
+    "type" : "1"
+  },
+  {
+    "detail" : "Contrast is not high enough for SwiftUI.AccessibilityNode unless font size is larger.",
+    "element" : "calendar.weekday.0",
+    "frame" : "(49.25, 391.25, 13.5, 12.5)",
+    "label" : "Пн",
+    "resolution" : "reviewed: actual opaque glyph\/background pixels; ACCESSIBILITY_CONTRAST_REVIEW.md",
+    "screen" : "calendar",
+    "summary" : "Contrast nearly passed",
+    "type" : "1"
+  },
+  {
+    "detail" : "Contrast failed for SwiftUI.AccessibilityNode",
+    "element" : "calendar.weekday.4",
+    "frame" : "(285.75, 391.25, 12.5, 12.5)",
+    "label" : "Пт",
+    "resolution" : "reviewed: actual opaque glyph\/background pixels; ACCESSIBILITY_CONTRAST_REVIEW.md",
+    "screen" : "calendar",
+    "summary" : "Contrast failed",
+    "type" : "1"
+  },
+  {
+    "detail" : "Contrast failed for SwiftUI.AccessibilityNode",
+    "element" : "recording.status.77777777-7777-4777-8777-777777777771",
+    "frame" : "(146.0, 369.5, 36.5, 13.5)",
+    "label" : "Готова",
+    "resolution" : "reviewed: opaque glyph cores exceed 4.5:1 in actual PNG; ACCESSIBILITY_IPAD_CONTRAST.md",
+    "screen" : "recordings",
+    "summary" : "Contrast failed",
+    "type" : "1"
+  },
+  {
+    "detail" : "Contrast failed for SwiftUI.AccessibilityNode",
+    "element" : "recording.status.77777777-7777-4777-8777-777777777772",
+    "frame" : "(146.0, 481.5, 90.5, 13.5)",
+    "label" : "Обрабатывается",
+    "resolution" : "reviewed: opaque glyph cores exceed 4.5:1 in actual PNG; ACCESSIBILITY_IPAD_CONTRAST.md",
+    "screen" : "recordings",
+    "summary" : "Contrast failed",
+    "type" : "1"
+  },
+  {
+    "detail" : "Contrast failed for SwiftUI.AccessibilityNode",
+    "element" : "recording.status.77777777-7777-4777-8777-777777777773",
+    "frame" : "(146.0, 593.5, 113.5, 13.5)",
+    "label" : "Не удалось записать",
+    "resolution" : "reviewed: opaque glyph cores exceed 4.5:1 in actual PNG; ACCESSIBILITY_IPAD_CONTRAST.md",
+    "screen" : "recordings",
+    "summary" : "Contrast failed",
+    "type" : "1"
+  },
+  {
+    "detail" : "Contrast failed for SwiftUI.AccessibilityNode",
+    "element" : "recording.status.77777777-7777-4777-8777-777777777774",
+    "frame" : "(146.0, 705.5, 36.5, 13.5)",
+    "label" : "Готова",
+    "resolution" : "reviewed: opaque glyph cores exceed 4.5:1 in actual PNG; ACCESSIBILITY_IPAD_CONTRAST.md",
+    "screen" : "recordings",
+    "summary" : "Contrast failed",
+    "type" : "1"
+  },
+  {
+    "detail" : "User will not be able to change the font size of this SwiftUI.AccessibilityNode",
+    "element" : "recordings.filterHint",
+    "frame" : "(24.0, 277.5, 307.5, 13.5)",
+    "label" : "Поиск и фильтры применяются к загруженным записям.",
+    "resolution" : "reviewed: measured custom-font scaling; separate AX5 layout coverage",
+    "screen" : "recordings",
+    "summary" : "Dynamic Type font sizes are partially unsupported",
+    "type" : "65536"
+  }
+]

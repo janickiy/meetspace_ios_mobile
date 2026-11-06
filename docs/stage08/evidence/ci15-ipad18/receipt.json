@@ -1,0 +1,186 @@
+{
+  "schema": 1,
+  "collectedAtUTC": "2026-11-06T20:30:41.257088+00:00",
+  "runID": 42281088607,
+  "runURL": "https://github.com/janickiy/meetspace_ios_mobile/actions/runs/42281088607",
+  "sourceCommit": "55bfcfb1e075224eda9ed7106a669db0b55dd7e5",
+  "scope": "compatibility",
+  "device": "iPad mini (A17 Pro)",
+  "runtime": "18.6 (22G86)",
+  "suite": {
+    "passed": 14,
+    "failed": 1,
+    "skipped": 0,
+    "total": 15,
+    "result": "FAIL",
+    "failureTest": "testStage08AccountDeletionRequiresPasswordAndConfirmation",
+    "failureLine": 433
+  },
+  "audit": {
+    "result": "PASS",
+    "seconds": 168.084,
+    "engineAttempts": 49,
+    "completed": 49,
+    "retries": 0,
+    "screenCategoryPairs": 49,
+    "rawIssues": 21,
+    "resolutions": {
+      "reviewed: welcome heading; complete AX5 text in ACCESSIBILITY_REVIEW.md": 1,
+      "reviewed: decorative avatar initials; accessible row has the full name": 1,
+      "reviewed: actual opaque glyph/background pixels; ACCESSIBILITY_CONTRAST_REVIEW.md": 2,
+      "reviewed: measured custom-font scaling; separate AX5 layout coverage": 16,
+      "reviewed: unchanged profile; disabled save action (inactive-control contrast exemption)": 1
+    },
+    "unresolved": 0,
+    "deferred": 0,
+    "zeroRawFindings": false
+  },
+  "otherUITests": {
+    "AX5LiveFlow": {
+      "result": "PASS",
+      "seconds": 117.186
+    },
+    "conference": {
+      "result": "PASS",
+      "seconds": 83.297
+    },
+    "demoLargeText": {
+      "result": "PASS",
+      "seconds": 13.872
+    }
+  },
+  "deletion": {
+    "result": "FAIL",
+    "seconds": 90.919,
+    "reached": "Latin key entry began;9masks at finalsnapshot. Failed at first hyphen after more. No submit, confirmation, cancel/retry, or DELETE reached.",
+    "moreTapLogUTC": "2026-11-06T20:23:02.726885Z",
+    "modeWaitRelativeSeconds": [
+      74.32,
+      84.35
+    ],
+    "hyphenWaitRelativeSeconds": [
+      84.45,
+      89.49
+    ],
+    "finalHierarchyKeyboardCount": 1,
+    "tutorialNodeType": "StaticText",
+    "tutorialAncestry": "sole Keyboard(line191) > Other(line192) > StaticText(lines193–194)",
+    "expectedTutorialLabel": "Для доступа к альтернативным буквам на клавиатуре\nпотяните вниз на клавише и отпустите.",
+    "observedTutorialLabel": "Для доступа к альтернативным буквам на клавиатуре\nпотяните вниз на клавише и отпустите.",
+    "exactLabelEqual": true,
+    "labelUnicodeCodePointCount": 87,
+    "newlineCodePoint": "U+000A at zero-based49",
+    "confirmationNode": "Keyboard descendant Button line199, label ОК, U+041E U+041A; child StaticText line200. No app confirmation alert.",
+    "liveQueryOutcome": "Repeated keyboard.staticTexts exact-label predicate did not recognize tutorial during10s window. Final hierarchy shows matching node. Underlying query/snapshot discrepancy not established.",
+    "videoObservation": "Tutorial visible by actual PTS75.975 and still visible at82.805/88.806667, approximately inside mode-wait using attachment start timestamp. Delay beyond10s not supported by these frames.",
+    "hypothesesNotEstablished": [
+      "wrong label/newline/type",
+      "multiple keyboards and wrong firstMatch",
+      "late visual appearance after10s",
+      "exact reason live query failed"
+    ],
+    "minimalNextExperiment": "Keep bounded wait; recognize unique native Keyboard Button with observed Cyrillic label ОК together with exact tutorial phrase read from fresh snapshot/Swift label comparison; native tap, assert disappearance, then re-resolve expected key or more. Do not change product password path or infer success before a run. Global app query can be a fallback experiment but wrong ancestry is not proved.",
+    "CI17Boundary": "The abc-layout change acts before Latin input. It does not change this tutorial/hyphen branch; no CI17 fix is established for this failure."
+  },
+  "artifact": {
+    "id": 13538397031,
+    "name": "results-iPad18",
+    "bytes": 228994409,
+    "digest": "sha256:9e957038127e2d317fe783691b448c87210541c49f3ab92cdd3417f417b5ac41",
+    "downloadedSHA256": "9e957038127e2d317fe783691b448c87210541c49f3ab92cdd3417f417b5ac41",
+    "digestAndSizeMatch": true,
+    "zipCRCVerified": true
+  },
+  "sourceOriginalHashes": {
+    "fullAX": "30e8f18d6f6e95bba6201e927d6d5bc59d097e2e612ab398172feb1e5dacdb9e",
+    "nativeLog": "e0dbea28e41224ee7a0b198e064d8c9c1853eaca9553cf51df1958612bf85727",
+    "exportManifest": "22f5c72f6dff6f8b78094c039ee9d7a0a70080a450448ff0e59389862a70cd05",
+    "testedUITestsSource": "71963a8716389fb5aa8454e7ef762d7f7471bd6b80888791e5e45244a440e4f5"
+  },
+  "videoAttachment": {
+    "configurationName": "Test Scheme Action",
+    "deviceId": "2A250684-88E3-4EDB-A21E-B7726B4C69F6",
+    "deviceName": "iPad mini (A17 Pro)",
+    "exportedFileName": "23ECDB89-A845-4D0C-90F7-D0F6CC065ECA.mp4",
+    "isAssociatedWithFailure": false,
+    "suggestedHumanReadableName": "Screen Recording 2026-11-06 at 08.21.49 PM.mp4",
+    "timestamp": 1793996509.019
+  },
+  "files": [
+    {
+      "file": "accessibility-issues.json",
+      "bytes": 8420,
+      "sha256": "074fc7f0de0d2ddbd97baca9a04819ddff37dca7f43a5e7e8a894c01034eb82f"
+    },
+    {
+      "file": "audit-attempts.json",
+      "bytes": 21159,
+      "sha256": "a4efd635bfad079cc129c26bdea270279fc3af4ada06c52a00e611b77b4c4a1b"
+    },
+    {
+      "file": "deletion-event-excerpt.txt",
+      "bytes": 8715,
+      "sha256": "394be869ca6faf2cc748bfb32a626cdc62798f462fd50976000fad5e49daa680"
+    },
+    {
+      "file": "environment.json",
+      "bytes": 315,
+      "sha256": "25a73e4d3dd6cac4b67d8cf220bd0c0d3c02aeacf3a7fc08d9ac626b25cbfe32"
+    },
+    {
+      "file": "export-status.json",
+      "bytes": 1436,
+      "sha256": "9e473f708a7172abf1e3c73094814725ab2832d9906520b3c9feac4b88816747"
+    },
+    {
+      "file": "extract-frames.swift",
+      "bytes": 1261,
+      "sha256": "04a70639a9ab24b80228242f39cba3267e73bad10b9675ea9fc8d2cc0a891093"
+    },
+    {
+      "file": "frames.json",
+      "bytes": 2066,
+      "sha256": "ba1c6a594d8952c06f09a83fc1017b5bec2944b8e7a051f0745433b051183806"
+    },
+    {
+      "file": "hyphen-query.txt",
+      "bytes": 256,
+      "sha256": "22c9a3b310f02c6c9fe4d9f2e805ee74a408266f6d324532b5ab53c27bcc90c8"
+    },
+    {
+      "file": "keyboard-AX-excerpt.txt",
+      "bytes": 7420,
+      "sha256": "44ae3df59f7a61ebbd694e148e8d907f64960646d31c635fb3ffd5e073417184"
+    },
+    {
+      "file": "native-test-results.txt",
+      "bytes": 741,
+      "sha256": "bbf307aa62139c5beb0468d365473b9cb0452373fc38e73357a2ca118c59acd8"
+    },
+    {
+      "file": "summary.json",
+      "bytes": 1474,
+      "sha256": "94ba9a3752c06a72134dac97cc24d92a8d56f6a25411f1675b47292c5a2dbd08"
+    },
+    {
+      "file": "tested-helper-excerpt.txt",
+      "bytes": 2436,
+      "sha256": "3aeb0b18a4f8978a28535a909e8b826c84a3fc514be3936f5168bd68a76f10ef"
+    },
+    {
+      "file": "tutorial-request-76s.png",
+      "bytes": 508307,
+      "sha256": "38da493819df341b083e27539596506a2c7b8636f05a60a2a4de77f439bbae1a"
+    },
+    {
+      "file": "tutorial-request-83s.png",
+      "bytes": 507947,
+      "sha256": "4fda25653d387228bbbe7af4b6f8975643ebc3ab8d67b67980150e70b25aad3e"
+    },
+    {
+      "file": "tutorial-request-89s.png",
+      "bytes": 508022,
+      "sha256": "6f07c680a9cec30b658121f8ea7a35a6f760f71b52982d096c91130e0c31ef24"
+    }
+  ]
+}

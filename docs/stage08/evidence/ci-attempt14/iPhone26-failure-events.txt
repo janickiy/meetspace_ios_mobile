@@ -1,0 +1,148 @@
+Source: simulators_iPhone_26_iPhone26_full_iPhone_17_Pro_Max_.log
+Source SHA256: cbe374cb2e33c84616f3a093a2d2d964e7cdbe22e5c95fa842cd8f48460113de
+
+
+TEST testAccessibilityStage08CoreScreens
+3466: 2026-11-06T19:05:29.7020780Z Test Case '-[MeetSpaceUITests.FoundationUITests testAccessibilityStage08CoreScreens]' started.
+3470: 2026-11-06T19:05:30.1419050Z     t =     0.91s     Launch com.meetspace.ios
+3473: 2026-11-06T19:05:39.0674280Z     t =    10.61s Waiting 10.0s for "connectServer" Button to exist
+3474: 2026-11-06T19:05:40.7345630Z     t =    11.61s     Checking `Expect predicate `existsNoRetry == 1` for object "connectServer" Button`
+3475: 2026-11-06T19:05:40.8817440Z     t =    11.61s         Checking existence of `"connectServer" Button`
+3478: 2026-11-06T19:05:42.4197790Z     t =    13.79s Audit welcome contrast attempt 1
+3479: 2026-11-06T19:05:45.0979810Z     t =    16.61s Audit welcome elementDetection attempt 1
+3480: 2026-11-06T19:05:50.4477630Z     t =    21.96s Audit welcome hitRegion attempt 1
+3481: 2026-11-06T19:05:52.0676970Z     t =    23.57s Audit welcome sufficientElementDescription attempt 1
+3482: 2026-11-06T19:05:53.7000100Z     t =    25.25s Audit welcome trait attempt 1
+3483: 2026-11-06T19:05:55.1587160Z     t =    26.66s Audit welcome dynamicType attempt 1
+3484: 2026-11-06T19:06:01.3939670Z     t =    32.91s Audit welcome textClipped attempt 1
+3489: 2026-11-06T19:06:07.4768610Z     t =    38.72s Terminate com.meetspace.ios:11720
+3491: 2026-11-06T19:06:08.4063500Z     t =    39.73s     Launch com.meetspace.ios
+3494: 2026-11-06T19:06:19.9040530Z     t =    51.44s Waiting 10.0s for "connectServer" Button to exist
+3495: 2026-11-06T19:06:20.9119210Z     t =    52.46s     Checking `Expect predicate `existsNoRetry == 1` for object "connectServer" Button`
+3496: 2026-11-06T19:06:21.0128580Z     t =    52.47s         Checking existence of `"connectServer" Button`
+3497: 2026-11-06T19:06:21.3760800Z     t =    52.88s Waiting 10.0s for "connectServer" Button to exist
+3498: 2026-11-06T19:06:22.3787060Z     t =    53.92s     Checking `Expect predicate `existsNoRetry == 1` for object "connectServer" Button`
+3499: 2026-11-06T19:06:22.4799320Z     t =    53.93s         Checking existence of `"connectServer" Button`
+3500: 2026-11-06T19:06:22.5807900Z     t =    54.02s Find the "connectServer" Button
+3501: 2026-11-06T19:06:22.6983980Z     t =    54.18s Find the "connectServer" Button
+3502: 2026-11-06T19:06:22.7998160Z     t =    54.35s Find the "connectServer" Button
+3503: 2026-11-06T19:06:23.0013920Z     t =    54.52s Find the "connectServer" Button
+3504: 2026-11-06T19:06:23.3907580Z     t =    54.89s Find the "connectServer" Button
+3505: 2026-11-06T19:06:23.5918630Z     t =    55.09s Find the "connectServer" Button
+3506: 2026-11-06T19:06:23.6923920Z     t =    55.22s Tap "connectServer" Button
+3508: 2026-11-06T19:06:23.9962070Z     t =    55.23s     Find the "connectServer" Button
+3509: 2026-11-06T19:06:24.0962520Z     t =    55.36s     Check for interrupting elements affecting "connectServer" Button
+3512: 2026-11-06T19:06:29.5156630Z     t =    60.91s Waiting 5.0s for "serverURL" TextField to exist
+3513: 2026-11-06T19:06:30.4489910Z     t =    61.92s     Checking `Expect predicate `existsNoRetry == 1` for object "serverURL" TextField`
+3514: 2026-11-06T19:06:30.5496080Z     t =    61.93s         Checking existence of `"serverURL" TextField`
+3516: 2026-11-06T19:06:31.3831430Z     t =    62.92s     Checking `Expect predicate `existsNoRetry == 1` for object "serverURL" TextField`
+3517: 2026-11-06T19:06:31.4872180Z     t =    62.93s         Checking existence of `"serverURL" TextField`
+3519: 2026-11-06T19:06:32.3920490Z     t =    63.92s     Checking `Expect predicate `existsNoRetry == 1` for object "serverURL" TextField`
+3520: 2026-11-06T19:06:32.4934260Z     t =    63.93s         Checking existence of `"serverURL" TextField`
+3522: 2026-11-06T19:06:33.4185890Z     t =    64.92s     Checking `Expect predicate `existsNoRetry == 1` for object "serverURL" TextField`
+3523: 2026-11-06T19:06:33.5188230Z     t =    64.93s         Checking existence of `"serverURL" TextField`
+3525: 2026-11-06T19:06:34.4578580Z     t =    65.91s     Checking `Expect predicate `existsNoRetry == 1` for object "serverURL" TextField`
+3526: 2026-11-06T19:06:34.5601610Z     t =    65.91s         Checking existence of `"serverURL" TextField`
+3528: 2026-11-06T19:06:34.7831460Z     t =    66.01s     Checking existence of `"serverURL" TextField`
+3531: 2026-11-06T19:07:01.5410880Z /Users/runner/work/meetspace_ios_mobile/meetspace_ios_mobile/Tests/MeetSpaceUITests/FoundationUITests.swift:684: error: -[MeetSpaceUITests.FoundationUITests testAccessibilityStage08CoreScreens] : XCTAssertTrue failed
+3532: 2026-11-06T19:07:01.6533160Z     t =    93.11s Tear Down
+3533: 2026-11-06T19:07:02.2654880Z Test Case '-[MeetSpaceUITests.FoundationUITests testAccessibilityStage08CoreScreens]' failed (93.735 seconds).
+
+TEST testStage07SettingsPersistProfilePreferencesAndSSHDisabled
+8094: 2026-11-06T19:37:09.8423850Z Test Case '-[MeetSpaceUITests.FoundationUITests testStage07SettingsPersistProfilePreferencesAndSSHDisabled]' started.
+8098: 2026-11-06T19:37:10.3870020Z     t =     0.04s     Launch com.meetspace.ios
+8099: 2026-11-06T19:37:10.4873750Z     t =     0.04s         Terminate com.meetspace.ios:73874
+8102: 2026-11-06T19:37:19.9534380Z     t =    10.21s Waiting 10.0s for "connectServer" Button to exist
+8103: 2026-11-06T19:37:21.0558780Z     t =    11.24s     Checking `Expect predicate `existsNoRetry == 1` for object "connectServer" Button`
+8104: 2026-11-06T19:37:21.1626900Z     t =    11.25s         Checking existence of `"connectServer" Button`
+8105: 2026-11-06T19:37:21.2630480Z     t =    11.54s Waiting 10.0s for "connectServer" Button to exist
+8106: 2026-11-06T19:37:22.2905250Z     t =    12.54s     Checking `Expect predicate `existsNoRetry == 1` for object "connectServer" Button`
+8107: 2026-11-06T19:37:22.3924200Z     t =    12.54s         Checking existence of `"connectServer" Button`
+8108: 2026-11-06T19:37:22.4937410Z     t =    12.62s Find the "connectServer" Button
+8109: 2026-11-06T19:37:22.5955420Z     t =    12.77s Find the "connectServer" Button
+8110: 2026-11-06T19:37:22.6005350Z     t =    12.86s Find the "connectServer" Button
+8111: 2026-11-06T19:37:22.7073340Z     t =    12.95s Find the "connectServer" Button
+8112: 2026-11-06T19:37:22.7633640Z     t =    13.03s Find the "connectServer" Button
+8113: 2026-11-06T19:37:22.8677000Z     t =    13.12s Find the "connectServer" Button
+8114: 2026-11-06T19:37:22.9610370Z     t =    13.20s Tap "connectServer" Button
+8116: 2026-11-06T19:37:23.0047820Z     t =    13.21s     Find the "connectServer" Button
+8117: 2026-11-06T19:37:23.0075060Z     t =    13.27s     Check for interrupting elements affecting "connectServer" Button
+8120: 2026-11-06T19:37:23.3976360Z     t =    13.67s Waiting 5.0s for "serverURL" TextField to exist
+8121: 2026-11-06T19:37:24.4099100Z     t =    14.68s     Checking `Expect predicate `existsNoRetry == 1` for object "serverURL" TextField`
+8122: 2026-11-06T19:37:24.5163040Z     t =    14.68s         Checking existence of `"serverURL" TextField`
+8123: 2026-11-06T19:37:24.5335840Z     t =    14.73s Tap "serverURL" TextField
+8125: 2026-11-06T19:37:24.5351530Z     t =    14.74s     Find the "serverURL" TextField
+8126: 2026-11-06T19:37:24.5352390Z     t =    14.77s     Check for interrupting elements affecting "serverURL" TextField
+8129: 2026-11-06T19:37:26.4418370Z     t =    16.39s Type 'https://fixture.ex...' into "serverURL" TextField
+8131: 2026-11-06T19:37:26.6544480Z     t =    16.60s     Find the "serverURL" TextField
+8132: 2026-11-06T19:37:26.8808720Z     t =    16.88s     Check for interrupting elements affecting "serverURL" TextField
+8347: 2026-11-06T19:38:01.3358400Z     t =    51.61s Tap "tab.profile" Button
+8349: 2026-11-06T19:39:01.3708170Z     t =   111.65s App animations complete notification not received, will attempt to continue.
+8354: 2026-11-06T19:39:02.0560060Z     t =   112.18s Tap "openAccountSettings" Button
+8356: 2026-11-06T19:39:02.4166640Z     t =   112.20s     Find the "openAccountSettings" Button
+8357: 2026-11-06T19:39:03.4257410Z     t =   113.70s         Find the "openAccountSettings" Button (retry 1)
+8358: 2026-11-06T19:39:04.5545690Z     t =   114.83s         Find the "openAccountSettings" Button (retry 2)
+8360: 2026-11-06T19:39:04.8735040Z /Users/runner/work/meetspace_ios_mobile/meetspace_ios_mobile/Tests/MeetSpaceUITests/FoundationUITests.swift:562: error: -[MeetSpaceUITests.FoundationUITests testStage07SettingsPersistProfilePreferencesAndSSHDisabled] : Failed to tap "openAccountSettings" Button: No matches found for Elements matching predicate '"openAccountSettings" IN identifiers' from input {(
+8361: 2026-11-06T19:39:05.0084500Z     Button, label: 'Not Now',
+8362: 2026-11-06T19:39:05.1506520Z     Button, label: 'Save'
+8364: 2026-11-06T19:39:05.1907340Z     t =   115.15s Tear Down
+8365: 2026-11-06T19:39:05.5816550Z Test Case '-[MeetSpaceUITests.FoundationUITests testStage07SettingsPersistProfilePreferencesAndSSHDisabled]' failed (115.786 seconds).
+
+TEST testStage08AccountDeletionRequiresPasswordAndConfirmation
+8366: 2026-11-06T19:39:05.5819870Z Test Case '-[MeetSpaceUITests.FoundationUITests testStage08AccountDeletionRequiresPasswordAndConfirmation]' started.
+8370: 2026-11-06T19:39:06.0913880Z     t =     0.04s     Launch com.meetspace.ios
+8371: 2026-11-06T19:39:06.1918410Z     t =     0.04s         Terminate com.meetspace.ios:77573
+8374: 2026-11-06T19:39:13.1102650Z     t =     7.60s Waiting 10.0s for "connectServer" Button to exist
+8375: 2026-11-06T19:39:14.1543330Z     t =     8.64s     Checking `Expect predicate `existsNoRetry == 1` for object "connectServer" Button`
+8376: 2026-11-06T19:39:14.1548070Z     t =     8.64s         Checking existence of `"connectServer" Button`
+8377: 2026-11-06T19:39:14.3429980Z     t =     8.79s Waiting 10.0s for "connectServer" Button to exist
+8378: 2026-11-06T19:39:15.3059350Z     t =     9.79s     Checking `Expect predicate `existsNoRetry == 1` for object "connectServer" Button`
+8379: 2026-11-06T19:39:15.3071740Z     t =     9.79s         Checking existence of `"connectServer" Button`
+8380: 2026-11-06T19:39:15.3677540Z     t =     9.86s Find the "connectServer" Button
+8381: 2026-11-06T19:39:15.5308090Z     t =    10.02s Find the "connectServer" Button
+8382: 2026-11-06T19:39:15.6346660Z     t =    10.12s Find the "connectServer" Button
+8383: 2026-11-06T19:39:15.7462000Z     t =    10.23s Find the "connectServer" Button
+8384: 2026-11-06T19:39:15.8279780Z     t =    10.32s Find the "connectServer" Button
+8385: 2026-11-06T19:39:15.9229110Z     t =    10.41s Find the "connectServer" Button
+8386: 2026-11-06T19:39:16.0168900Z     t =    10.50s Tap "connectServer" Button
+8388: 2026-11-06T19:39:16.0292500Z     t =    10.51s     Find the "connectServer" Button
+8389: 2026-11-06T19:39:16.1254660Z     t =    10.59s     Check for interrupting elements affecting "connectServer" Button
+8392: 2026-11-06T19:39:16.5004360Z     t =    10.96s Waiting 5.0s for "serverURL" TextField to exist
+8393: 2026-11-06T19:39:17.4852030Z     t =    11.97s     Checking `Expect predicate `existsNoRetry == 1` for object "serverURL" TextField`
+8394: 2026-11-06T19:39:17.4858910Z     t =    11.97s         Checking existence of `"serverURL" TextField`
+8395: 2026-11-06T19:39:17.5335850Z     t =    12.02s Tap "serverURL" TextField
+8397: 2026-11-06T19:39:17.5476120Z     t =    12.03s     Find the "serverURL" TextField
+8398: 2026-11-06T19:39:17.5841190Z     t =    12.07s     Check for interrupting elements affecting "serverURL" TextField
+8401: 2026-11-06T19:39:19.4203690Z     t =    13.28s Type 'https://fixture.ex...' into "serverURL" TextField
+8403: 2026-11-06T19:39:19.5679130Z     t =    13.76s     Find the "serverURL" TextField
+8404: 2026-11-06T19:39:19.7841370Z     t =    14.01s     Check for interrupting elements affecting "serverURL" TextField
+8503: 2026-11-06T19:39:48.7402140Z     t =    43.20s Tap "tab.profile" Button
+8509: 2026-11-06T19:39:50.5843290Z     t =    45.01s Waiting 10.0s for "openAccountSettings" Button to exist
+8510: 2026-11-06T19:39:51.5817220Z     t =    46.02s     Checking `Expect predicate `existsNoRetry == 1` for object "openAccountSettings" Button`
+8511: 2026-11-06T19:39:51.6972380Z     t =    46.02s         Checking existence of `"openAccountSettings" Button`
+8518: 2026-11-06T19:39:53.2368120Z     t =    47.72s Checking existence of `NavigationBar (First Match)`
+8541: 2026-11-06T19:40:00.4756710Z     t =    54.94s Checking existence of `NavigationBar (First Match)`
+8557: 2026-11-06T19:40:03.9139440Z     t =    58.31s Waiting 5.0s for "deleteAccount.password" SecureTextField to exist
+8558: 2026-11-06T19:40:04.8405660Z     t =    59.32s     Checking `Expect predicate `existsNoRetry == 1` for object "deleteAccount.password" SecureTextField`
+8559: 2026-11-06T19:40:04.9409630Z     t =    59.33s         Checking existence of `"deleteAccount.password" SecureTextField`
+8561: 2026-11-06T19:40:05.5439920Z     t =    60.01s Tap "deleteAccount.password" SecureTextField
+8563: 2026-11-06T19:40:05.7446500Z     t =    60.02s     Find the "deleteAccount.password" SecureTextField
+8564: 2026-11-06T19:40:05.9451660Z     t =    60.37s     Check for interrupting elements affecting "deleteAccount.password" SecureTextField
+8567: 2026-11-06T19:40:08.1121980Z     t =    62.48s Waiting 5.0s for Keyboard (First Match) to exist
+8568: 2026-11-06T19:40:09.0789960Z     t =    63.51s     Checking `Expect predicate `existsNoRetry == 1` for object Keyboard (First Match)`
+8569: 2026-11-06T19:40:09.1794020Z     t =    63.51s         Checking existence of `Keyboard (First Match)`
+8571: 2026-11-06T19:40:09.4857810Z     t =    63.93s Waiting 5.0s for Button (First Match) to exist
+8572: 2026-11-06T19:40:10.5009140Z     t =    64.98s     Checking `Expect predicate `existsNoRetry == 1` for object Button (First Match)`
+8573: 2026-11-06T19:40:10.6017690Z     t =    64.98s         Checking existence of `Button (First Match)`
+8575: 2026-11-06T19:40:11.5553130Z     t =    65.99s     Checking `Expect predicate `existsNoRetry == 1` for object Button (First Match)`
+8576: 2026-11-06T19:40:11.6617490Z     t =    65.99s         Checking existence of `Button (First Match)`
+8578: 2026-11-06T19:40:12.4745320Z     t =    66.93s     Checking `Expect predicate `existsNoRetry == 1` for object Button (First Match)`
+8579: 2026-11-06T19:40:12.5827590Z     t =    66.93s         Checking existence of `Button (First Match)`
+8581: 2026-11-06T19:40:13.5138520Z     t =    67.97s     Checking `Expect predicate `existsNoRetry == 1` for object Button (First Match)`
+8582: 2026-11-06T19:40:13.6139910Z     t =    67.97s         Checking existence of `Button (First Match)`
+8584: 2026-11-06T19:40:14.4765260Z     t =    68.93s     Checking `Expect predicate `existsNoRetry == 1` for object Button (First Match)`
+8585: 2026-11-06T19:40:14.5823650Z     t =    68.94s         Checking existence of `Button (First Match)`
+8587: 2026-11-06T19:40:14.9409790Z     t =    69.26s     Checking existence of `Button (First Match)`
+8590: 2026-11-06T19:40:17.0144650Z /Users/runner/work/meetspace_ios_mobile/meetspace_ios_mobile/Tests/MeetSpaceUITests/FoundationUITests.swift:399: error: -[MeetSpaceUITests.FoundationUITests testStage08AccountDeletionRequiresPasswordAndConfirmation] : XCTAssertTrue failed
+8591: 2026-11-06T19:40:17.1188480Z     t =    71.49s Tear Down
+8592: 2026-11-06T19:40:17.8511180Z Test Case '-[MeetSpaceUITests.FoundationUITests testStage08AccountDeletionRequiresPasswordAndConfirmation]' failed (72.245 seconds).

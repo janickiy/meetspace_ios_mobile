@@ -1,0 +1,13 @@
+{
+  "device": "iPhone 17 Pro Max",
+  "runtime": [
+    26,
+    2
+  ],
+  "udid": "17F0E734-D183-4810-AB97-F27FD9968039",
+  "scope": "regression",
+  "hostArchitecture": "arm64",
+  "hostOS": "macOS-15.8.2-arm64-arm-64bit-Mach-O",
+  "preferredDeviceMatched": true,
+  "xcode": "Xcode 26.3\nBuild version 17C529\n"
+}

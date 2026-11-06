@@ -1,0 +1,24 @@
+2026-11-06T20:26:56.4736340Z Test Case '-[MeetSpaceUITests.FoundationUITests testStage08AccountDeletionRequiresPasswordAndConfirmation]' passed (165.008 seconds).
+2026-11-06T20:27:14.1647560Z iPhone18 attachments export: PASS (exit=0, timeout=False)
+2026-11-06T20:27:14.4620810Z iPhone18 diagnostics export: PASS (exit=0, timeout=False)
+2026-11-06T20:27:14.5455520Z ##[group]Run meetspace_profile_udid=$(python3 -c 'import json; print(json.load(open("artifacts/iPhone18-environment.json"))["udid"])')
+2026-11-06T20:27:14.5458570Z meetspace_profile_udid=$(python3 -c 'import json; print(json.load(open("artifacts/iPhone18-environment.json"))["udid"])')
+2026-11-06T20:27:14.5461560Z python3 scripts/profile_simulator.py --simulator "$meetspace_profile_udid" --test-summary artifacts/iPhone18-summary.json --boot-if-needed --output artifacts/iPhone18-profiling
+2026-11-06T20:27:14.8547230Z shell: /bin/bash -e {0}
+2026-11-06T20:27:14.8547590Z env:
+2026-11-06T20:27:14.8547930Z   DEVELOPER_DIR: /Applications/Xcode_26.3.app/Contents/Developer
+2026-11-06T20:27:14.8548260Z ##[endgroup]
+2026-11-06T20:28:49.3290260Z FAIL: receipt=/Users/runner/work/meetspace_ios_mobile/meetspace_ios_mobile/artifacts/iPhone18-profiling/receipt.json
+2026-11-06T20:28:49.3949490Z ##[error]Process completed with exit code 1.
+2026-11-06T20:28:49.4551760Z ##[group]Run actions/upload-artifact@v4
+2026-11-06T20:28:49.4552260Z with:
+2026-11-06T20:28:49.4552960Z   name: results-iPhone18
+2026-11-06T20:28:49.4553260Z   path: artifacts/
+2026-11-06T20:28:49.4553730Z   retention-days: 7
+2026-11-06T20:28:49.4554030Z   if-no-files-found: warn
+2026-11-06T20:28:49.4554510Z   compression-level: 6
+2026-11-06T20:28:49.4555120Z   overwrite: false
+2026-11-06T20:28:49.4556010Z   include-hidden-files: false
+2026-11-06T20:28:49.4557020Z env:
+2026-11-06T20:28:49.4557430Z   DEVELOPER_DIR: /Applications/Xcode_26.3.app/Contents/Developer
+2026-11-06T20:28:49.4558100Z ##[endgroup]

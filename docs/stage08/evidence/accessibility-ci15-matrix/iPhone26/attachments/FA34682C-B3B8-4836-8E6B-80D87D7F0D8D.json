@@ -1,0 +1,22 @@
+[
+  {
+    "detail" : "Text of this SwiftUI.AccessibilityNode may be clipped at larger Dynamic Type sizes.",
+    "element" : "welcome.heading",
+    "frame" : "(24.0, 188.33333333333337, 265.3333333333333, 82.33333333333337)",
+    "label" : "Команда ближе.\nИдей больше.",
+    "resolution" : "reviewed: welcome heading; complete AX5 text in ACCESSIBILITY_REVIEW.md",
+    "screen" : "welcome",
+    "summary" : "Text clipped",
+    "type" : "131072"
+  },
+  {
+    "detail" : "Contrast failed for SwiftUI.AccessibilityNode",
+    "element" : "",
+    "frame" : "(30.0, 293.3333333333333, 44.0, 44.0)",
+    "label" : "ТЕ",
+    "resolution" : "reviewed: decorative avatar initials; accessible row has the full name",
+    "screen" : "messages",
+    "summary" : "Contrast failed",
+    "type" : "1"
+  }
+]

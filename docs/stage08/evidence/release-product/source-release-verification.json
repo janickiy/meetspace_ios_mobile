@@ -1,0 +1,188 @@
+{
+  "schema": 1,
+  "checkedAt": "2026-11-06T18:56:29.053163+00:00",
+  "sourceCommit": "04f70a3d80bfd8cd9314c798f0eb3fc7e58b343f",
+  "workingTreeModified": false,
+  "sourceInputSHA256": {
+    "App/Info.plist": "3a8efff3b59af6132a23af3ec087c33d269f08622db6f35826e87691429b0c6d",
+    "App/MeetSpace.entitlements": "93d68a3b4536b9a1c5d1848a9c5631d3a8fc73d61f05a46cd367bdb15289311e",
+    "App/PrivacyInfo.xcprivacy": "86957e3db44cec97b14ac9f75c27db587bbcb5a340527a97a01fa08d61b42b94",
+    "BroadcastExtension/Info.plist": "8d9dbd740d0591311ecb3865c3329176682b46c0e9cf605fdba4f3b84277b5a9",
+    "BroadcastExtension/MeetSpaceBroadcast.entitlements": "5eead1805d2e1fc7d6497d7204ced4221247f54e948b30095938d479a2df70eb",
+    "BroadcastExtension/PrivacyInfo.xcprivacy": "b10fbeb0cb363b7be2f5887a2abf11628ded6ff4aa5639624627e15e6c882fef",
+    "MeetSpace.xcodeproj/project.pbxproj": "07517ee3822130ae452a49b976e4530b91d0ecf7c704464609b54419d527046e",
+    "Packages/MeetSpaceKit/Package.swift": "ac030863f2872a863eef7a4eede62525c25421e60dd3f318f0f467eabc0518f0",
+    "Packages/MeetSpaceKit/Package.resolved": "0c6498db740964e2b94c742a1fbcacb681e97364e04bd999a3aa20ff90fb17df",
+    "scripts/generate_xcode_project.py": "aca1504b4238d4c91e9f22a387143b27421250e2794406d117d5fa4cd88aab92",
+    "scripts/verify_release.py": "2efa55c4d63329f592c2983d3fc5c0de06bf363409dc9a9b80f2139e0c432ba3"
+  },
+  "requirementsVerifiedAt": "2026-11-06",
+  "minimumXcode": 26,
+  "minimumSDK": 26,
+  "buildMetadata": null,
+  "checks": [
+    {
+      "check": "source.generated_project",
+      "status": "PASS",
+      "detail": "Project matches deterministic generator"
+    },
+    {
+      "check": "source.platform",
+      "status": "PASS",
+      "detail": "iOS18 deployment, Swift6 complete concurrency, no project-level DEBUG"
+    },
+    {
+      "check": "source.app.release",
+      "status": "PASS",
+      "detail": "Optimized Release, no DEBUG fixtures, dSYM generation enabled"
+    },
+    {
+      "check": "source.extension.release",
+      "status": "PASS",
+      "detail": "Optimized Release, no DEBUG fixtures, dSYM generation enabled"
+    },
+    {
+      "check": "source.apns",
+      "status": "PASS",
+      "detail": "Release APNs environment is production"
+    },
+    {
+      "check": "source.extension_safety",
+      "status": "PASS",
+      "detail": "Extension-safe APIs and embedded archive product"
+    },
+    {
+      "check": "source.versions",
+      "status": "PASS",
+      "detail": "App and extension marketing/build versions agree"
+    },
+    {
+      "check": "source.archive_scheme",
+      "status": "PASS",
+      "detail": "Archive uses Release"
+    },
+    {
+      "check": "source.ats",
+      "status": "PASS",
+      "detail": "Default strict ATS; no exceptions"
+    },
+    {
+      "check": "source.permissions",
+      "status": "PASS",
+      "detail": "Camera/microphone purpose strings present"
+    },
+    {
+      "check": "source.extension_id",
+      "status": "PASS",
+      "detail": "ReplayKit identifier matches embedded target"
+    },
+    {
+      "check": "source.background_modes",
+      "status": "PASS",
+      "detail": "Declared call background modes only"
+    },
+    {
+      "check": "source.replaykit",
+      "status": "PASS",
+      "detail": "ReplayKit upload extension point"
+    },
+    {
+      "check": "source.entitlements",
+      "status": "PASS",
+      "detail": "Minimal entitlements with matching configurable App Group"
+    },
+    {
+      "check": "source.app.tracking",
+      "status": "PASS",
+      "detail": "No tracking or tracking domains declared"
+    },
+    {
+      "check": "source.app.timers",
+      "status": "PASS",
+      "detail": "Elapsed-time deadlines require SystemBootTime/35F9.1"
+    },
+    {
+      "check": "source.app.preferences",
+      "status": "PASS",
+      "detail": "Private app preferences require UserDefaults/CA92.1"
+    },
+    {
+      "check": "source.app.data.Name",
+      "status": "PASS",
+      "detail": "Account-linked server data; app functionality only"
+    },
+    {
+      "check": "source.app.data.EmailAddress",
+      "status": "PASS",
+      "detail": "Account-linked server data; app functionality only"
+    },
+    {
+      "check": "source.app.data.UserID",
+      "status": "PASS",
+      "detail": "Account-linked server data; app functionality only"
+    },
+    {
+      "check": "source.app.data.DeviceID",
+      "status": "PASS",
+      "detail": "Account-linked server data; app functionality only"
+    },
+    {
+      "check": "source.app.data.EmailsOrTextMessages",
+      "status": "PASS",
+      "detail": "Account-linked server data; app functionality only"
+    },
+    {
+      "check": "source.app.data.PhotosorVideos",
+      "status": "PASS",
+      "detail": "Account-linked server data; app functionality only"
+    },
+    {
+      "check": "source.app.data.AudioData",
+      "status": "PASS",
+      "detail": "Account-linked server data; app functionality only"
+    },
+    {
+      "check": "source.app.data.OtherUserContent",
+      "status": "PASS",
+      "detail": "Account-linked server data; app functionality only"
+    },
+    {
+      "check": "source.extension.tracking",
+      "status": "PASS",
+      "detail": "No tracking or tracking domains declared"
+    },
+    {
+      "check": "source.extension.timers",
+      "status": "PASS",
+      "detail": "Elapsed-time deadlines require SystemBootTime/35F9.1"
+    },
+    {
+      "check": "source.app_icon",
+      "status": "PASS",
+      "detail": "AppIcon catalog contains a 1024-pixel icon and is selected for compilation"
+    },
+    {
+      "check": "source.dependency_pin",
+      "status": "PASS",
+      "detail": "WebRTC source resolution is pinned to audited revision/version"
+    },
+    {
+      "check": "source.binary_checksum",
+      "status": "PASS",
+      "detail": "Audited M156 binary checksum recorded; SPM verifies downloaded artifact"
+    },
+    {
+      "check": "product.device_release",
+      "status": "BLOCKED",
+      "detail": "No actual device product supplied; SDK, archive and signing not verified"
+    }
+  ],
+  "result": "PASS",
+  "distributionApproval": "NOT_GRANTED",
+  "externalGates": [
+    "Apple credentials and real archive/export validation",
+    "SDK provenance/signature and complete native dependency notices",
+    "Physical-device performance/calls/APNs/ReplayKit checks",
+    "Publisher privacy policy, disclosures, export compliance and App Store review"
+  ]
+}

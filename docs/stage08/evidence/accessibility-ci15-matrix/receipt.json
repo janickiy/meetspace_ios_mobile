@@ -1,0 +1,1915 @@
+{
+  "schema": 1,
+  "validatedAtUTC": "2026-11-06T20:37:12.789671+00:00",
+  "runID": 42281088607,
+  "runURL": "https://github.com/janickiy/meetspace_ios_mobile/actions/runs/42281088607",
+  "sourceCommit": "55bfcfb1e075224eda9ed7106a669db0b55dd7e5",
+  "baselineResult": {
+    "status": "FAIL",
+    "passed": 97,
+    "failed": 3,
+    "skipped": 0,
+    "total": 100,
+    "failureScope": "Exactly3account-deletion UI failures: iPhone26,iPad26,iPad18. iPhone18 compatibility suite passed15/15. No whole-run PASS is claimed."
+  },
+  "individualAccessibilityResult": "SCOPED_PASS: Core audit and actual UIKit font-hosting test passed on all4device/runtime configurations with documented narrow reviewed cases and explicit unmeasured offscreen findings. Not manual/physical-device/WCAG/visual-parity acceptance.",
+  "aggregateAudit": {
+    "initialScreenCategoryPairs": 196,
+    "completedEnginePasses": 199,
+    "visibleContrastRetestPasses": 3,
+    "engineRetries": 0,
+    "rawFindings": 83,
+    "reviewedFindings": 75,
+    "verifiedVisibleRetestTargets": 3,
+    "outsideRetestViewportWithoutContrastMeasurement": 5,
+    "unresolved": 0,
+    "deferred": 0
+  },
+  "fontsAcrossFourConfigurations": {
+    "samplesPerDevice": 74,
+    "categoriesPerSample": 12,
+    "actualHeightValues": 3552,
+    "testcases": 4
+  },
+  "validator": {
+    "localPath": "/tmp/meetspace_stage08_collect_targeted.py",
+    "sha256": "5067f13a325ef4b975047ada2fb72086c7aa3022e7f0d58145156d2a83c6b68f",
+    "functionsCalledReadOnly": [
+      "validate_attempts",
+      "validate_issues",
+      "validate_fonts"
+    ],
+    "collectorMainCalled": false,
+    "allowedNarrowResolutionStrings": [
+      "outside retest viewport: no contrast measurement",
+      "reviewed: actual opaque glyph/background pixels; ACCESSIBILITY_CONTRAST_REVIEW.md",
+      "reviewed: decorative avatar initials; accessible row has the full name",
+      "reviewed: decorative initials duplicate full account name; actual PNG ratio 4.62:1",
+      "reviewed: fully visible retest produced a reviewed finding",
+      "reviewed: measured custom-font scaling; separate AX5 layout coverage",
+      "reviewed: measured custom-font scaling; uncapped multiline tab label",
+      "reviewed: menu title inside exact control; measured font scaling and AX5 multiline layout",
+      "reviewed: native empty-state node groups decorative icon with high-contrast title",
+      "reviewed: opaque glyph cores exceed 4.5:1 in actual PNG; ACCESSIBILITY_IPAD_CONTRAST.md",
+      "reviewed: unchanged profile; disabled save action (inactive-control contrast exemption)",
+      "reviewed: welcome heading; complete AX5 text in ACCESSIBILITY_REVIEW.md",
+      "verified: fully visible contrast retest produced no target finding"
+    ],
+    "additionalChecks": [
+      "All4APIartifactdigests/sizes/source/runIDs/ZIPCRC",
+      "Exactnativecompletedtestcasecountsand3deletion-onlyfailures",
+      "SuccessfulCore/fontlinesineachdevicejob",
+      "Cumulativeattemptprefixesand49initialscreen/categorypairs",
+      "Everyprogressattachmentpreservedandfrozenfindingprefixmatchesfinal",
+      "Sumcompletedcallbackfindingsmatchesfinalrawissues",
+      "Exact74size/style/weight×12fontheights",
+      "Attachmentdevice/testownershipandnotfailureassociated",
+      "Noproductiondiffbetween55and16c7025;harnessresultsnotpromoted"
+    ]
+  },
+  "productionScopeComparison": {
+    "testedCommit": "55bfcfb1e075224eda9ed7106a669db0b55dd7e5",
+    "comparisonCommit": "16c702529f70ce675276d58f5d6334f0ba323fa7",
+    "changedFiles": [
+      ".github/workflows/ios.yml",
+      "Tests/MeetSpaceUITests/FoundationUITests.swift",
+      "scripts/ci_simulators.py"
+    ],
+    "productionChanged": false,
+    "boundary": "This proves the tested product source is unchanged at the comparison commit. CI15 does not execute the newer test harness or deletion keyboard change; no final-harness full-suite PASS inferred."
+  },
+  "matrix": {
+    "iPhone26": {
+      "device": "iPhone 17 Pro Max",
+      "runtime": [
+        26,
+        2
+      ],
+      "scope": "full",
+      "sourceCommit": "55bfcfb1e075224eda9ed7106a669db0b55dd7e5",
+      "simulatorUDID": "17F0E734-D183-4810-AB97-F27FD9968039",
+      "nativeSuite": {
+        "result": "FAIL",
+        "passed": 34,
+        "failed": 1,
+        "skipped": 0,
+        "total": 35
+      },
+      "individualAccessibilityTests": {
+        "testAccessibilityStage08CoreScreens": {
+          "status": "PASS",
+          "seconds": 222.135,
+          "class": "MeetSpaceUITests.FoundationUITests"
+        },
+        "testBundledFontsScaleInActualUIKitHostingAtAllDynamicTypeSizes": {
+          "status": "PASS",
+          "seconds": 0.948,
+          "class": "MeetSpaceTests.TypographyAccessibilityTests"
+        }
+      },
+      "audit": {
+        "engineAttempts": 49,
+        "auditPasses": 49,
+        "recoveredElementDetectionTimeouts": 0,
+        "initialScreenCategoryPairs": 49,
+        "completedPasses": 49,
+        "visibleContrastRetestPasses": 0,
+        "cumulativeAttemptAttachments": 7,
+        "progressAttachments": 7,
+        "rawFindings": 22,
+        "resolutionCounts": {
+          "reviewed: welcome heading; complete AX5 text in ACCESSIBILITY_REVIEW.md": 1,
+          "reviewed: decorative avatar initials; accessible row has the full name": 1,
+          "reviewed: measured custom-font scaling; separate AX5 layout coverage": 16,
+          "reviewed: menu title inside exact control; measured font scaling and AX5 multiline layout": 4
+        },
+        "reviewedFindings": 22,
+        "verifiedTargets": [],
+        "outsideRetestViewportNoMeasurement": [],
+        "outsideRetestViewportCount": 0,
+        "unresolved": 0,
+        "deferred": 0,
+        "zeroRawFindings": false,
+        "noMeasurementBoundary": "outside retest viewport records have no contrast measurement and never count as successful measurements or verified targets."
+      },
+      "fonts": {
+        "samples": 74,
+        "categoriesPerSample": 12,
+        "actualHeightsValidated": 888,
+        "exactSizeStyleWeightMatrixValidated": true,
+        "monotonicPositiveHeightsValidated": true,
+        "lastCategoryExceeds1_5TimesLargeValidated": true,
+        "strictAccessibilityCategoryGrowthValidated": true,
+        "notPixelContrastOrWholeAppLayoutAcceptance": true
+      },
+      "artifact": {
+        "id": 13537871263,
+        "name": "results-iPhone26",
+        "bytes": 354030605,
+        "githubDigest": "sha256:00c80fc709628253a82fd6e157b636af2dd68ac5c061ffa9b6064a31216ff025",
+        "downloadedSHA256": "00c80fc709628253a82fd6e157b636af2dd68ac5c061ffa9b6064a31216ff025",
+        "digestMatchesGitHub": true,
+        "sizeMatchesGitHub": true,
+        "zipCRCVerified": true
+      },
+      "nativeLogSHA256": "1e0450f9afb17ae78d887266a9d47150fde9665aac12614721139a58b04372e6",
+      "attachments": [
+        {
+          "file": "iPhone26/attachments/2F15DBCF-F06D-4A9F-967D-013D3A6C557C.json",
+          "testIdentifier": "TypographyAccessibilityTests/testBundledFontsScaleInActualUIKitHostingAtAllDynamicTypeSizes()",
+          "attachment": {
+            "configurationName": "Test Scheme Action",
+            "deviceId": "17F0E734-D183-4810-AB97-F27FD9968039",
+            "deviceName": "iPhone 17 Pro Max",
+            "exportedFileName": "2F15DBCF-F06D-4A9F-967D-013D3A6C557C.json",
+            "isAssociatedWithFailure": false,
+            "suggestedHumanReadableName": "stage08-actual-font-scaling_0_E6B58727-4F8C-49D2-A93A-3FA4B3A90675.json",
+            "timestamp": 1793994185.687
+          },
+          "semanticName": "stage08-actual-font-scaling",
+          "bytes": 45608,
+          "sha256": "6c4cd6924d034e62013161b71fb5b641c1130a8af7d9117b090ffd69b58f272c"
+        },
+        {
+          "file": "iPhone26/attachments/E8EF28D8-8918-4D17-A317-20487D4EC931.json",
+          "testIdentifier": "FoundationUITests/testAccessibilityStage08CoreScreens()",
+          "attachment": {
+            "configurationName": "Test Scheme Action",
+            "deviceId": "17F0E734-D183-4810-AB97-F27FD9968039",
+            "deviceName": "iPhone 17 Pro Max",
+            "exportedFileName": "E8EF28D8-8918-4D17-A317-20487D4EC931.json",
+            "isAssociatedWithFailure": false,
+            "suggestedHumanReadableName": "stage08-audit-progress-welcome_0_45A0F04C-1CEB-4C6D-A69C-948B9135EAD9.json",
+            "timestamp": 1793994241.978
+          },
+          "semanticName": "stage08-audit-progress-welcome",
+          "bytes": 472,
+          "sha256": "92f27aef181db1ce03d0f37107caef12e29e4c9e7f53ac65686a89f060b5c563"
+        },
+        {
+          "file": "iPhone26/attachments/032F11FC-1EC3-4BBD-8A8C-865660AF59E3.json",
+          "testIdentifier": "FoundationUITests/testAccessibilityStage08CoreScreens()",
+          "attachment": {
+            "configurationName": "Test Scheme Action",
+            "deviceId": "17F0E734-D183-4810-AB97-F27FD9968039",
+            "deviceName": "iPhone 17 Pro Max",
+            "exportedFileName": "032F11FC-1EC3-4BBD-8A8C-865660AF59E3.json",
+            "isAssociatedWithFailure": false,
+            "suggestedHumanReadableName": "stage08-audit-attempts_0_3BCAA437-8D81-48D7-B0C6-4957CA48A3C5.json",
+            "timestamp": 1793994241.98
+          },
+          "semanticName": "stage08-audit-attempts",
+          "bytes": 3050,
+          "sha256": "395120487fe18e6b52829f573f70e08a98dbd38841b5a15579910cf1704e18a3"
+        },
+        {
+          "file": "iPhone26/attachments/FA34682C-B3B8-4836-8E6B-80D87D7F0D8D.json",
+          "testIdentifier": "FoundationUITests/testAccessibilityStage08CoreScreens()",
+          "attachment": {
+            "configurationName": "Test Scheme Action",
+            "deviceId": "17F0E734-D183-4810-AB97-F27FD9968039",
+            "deviceName": "iPhone 17 Pro Max",
+            "exportedFileName": "FA34682C-B3B8-4836-8E6B-80D87D7F0D8D.json",
+            "isAssociatedWithFailure": false,
+            "suggestedHumanReadableName": "stage08-audit-progress-messages_0_26BC3334-DA16-4789-89C0-2D4487A2E78F.json",
+            "timestamp": 1793994320.853
+          },
+          "semanticName": "stage08-audit-progress-messages",
+          "bytes": 814,
+          "sha256": "72fb2421654a20a152557d812ba1425c23641de5c68c1afbc1786000ae5b071c"
+        },
+        {
+          "file": "iPhone26/attachments/767579E4-3254-4517-BEF3-0B98C5765E95.json",
+          "testIdentifier": "FoundationUITests/testAccessibilityStage08CoreScreens()",
+          "attachment": {
+            "configurationName": "Test Scheme Action",
+            "deviceId": "17F0E734-D183-4810-AB97-F27FD9968039",
+            "deviceName": "iPhone 17 Pro Max",
+            "exportedFileName": "767579E4-3254-4517-BEF3-0B98C5765E95.json",
+            "isAssociatedWithFailure": false,
+            "suggestedHumanReadableName": "stage08-audit-attempts_0_AA005A8B-E124-4FCE-99B7-A00AEBCEC55C.json",
+            "timestamp": 1793994320.857
+          },
+          "semanticName": "stage08-audit-attempts",
+          "bytes": 6065,
+          "sha256": "15acf92a5b6ed6d4cbba21a3522582b81f2232e1ee645e20984903b0fd1178ce"
+        },
+        {
+          "file": "iPhone26/attachments/85D0627C-67B7-42D9-B4B1-8D53F949A608.json",
+          "testIdentifier": "FoundationUITests/testAccessibilityStage08CoreScreens()",
+          "attachment": {
+            "configurationName": "Test Scheme Action",
+            "deviceId": "17F0E734-D183-4810-AB97-F27FD9968039",
+            "deviceName": "iPhone 17 Pro Max",
+            "exportedFileName": "85D0627C-67B7-42D9-B4B1-8D53F949A608.json",
+            "isAssociatedWithFailure": false,
+            "suggestedHumanReadableName": "stage08-audit-progress-profile_0_D04F5B6A-56BE-47D6-9AEC-7651CAC4675F.json",
+            "timestamp": 1793994339.766
+          },
+          "semanticName": "stage08-audit-progress-profile",
+          "bytes": 814,
+          "sha256": "72fb2421654a20a152557d812ba1425c23641de5c68c1afbc1786000ae5b071c"
+        },
+        {
+          "file": "iPhone26/attachments/1448A8A3-B6DB-4A54-9A82-260C8D07EA02.json",
+          "testIdentifier": "FoundationUITests/testAccessibilityStage08CoreScreens()",
+          "attachment": {
+            "configurationName": "Test Scheme Action",
+            "deviceId": "17F0E734-D183-4810-AB97-F27FD9968039",
+            "deviceName": "iPhone 17 Pro Max",
+            "exportedFileName": "1448A8A3-B6DB-4A54-9A82-260C8D07EA02.json",
+            "isAssociatedWithFailure": false,
+            "suggestedHumanReadableName": "stage08-audit-attempts_0_4FF5F9BB-44E9-43CA-BFC0-72BA6B2A4BA0.json",
+            "timestamp": 1793994339.768
+          },
+          "semanticName": "stage08-audit-attempts",
+          "bytes": 9076,
+          "sha256": "ece3a5a653004ecdd63551e62f26f719e5ac0964fafaeeb4ca1a26772a670f93"
+        },
+        {
+          "file": "iPhone26/attachments/DAA69B30-249B-40BA-BB1A-347C3F9DCF00.json",
+          "testIdentifier": "FoundationUITests/testAccessibilityStage08CoreScreens()",
+          "attachment": {
+            "configurationName": "Test Scheme Action",
+            "deviceId": "17F0E734-D183-4810-AB97-F27FD9968039",
+            "deviceName": "iPhone 17 Pro Max",
+            "exportedFileName": "DAA69B30-249B-40BA-BB1A-347C3F9DCF00.json",
+            "isAssociatedWithFailure": false,
+            "suggestedHumanReadableName": "stage08-audit-progress-calendar_0_B3FE7C85-697C-4A2D-8239-C3A3AE2C58E6.json",
+            "timestamp": 1793994367.055
+          },
+          "semanticName": "stage08-audit-progress-calendar",
+          "bytes": 8203,
+          "sha256": "7ae0ac44267989b04fcdee63c97577e3609ee93f9e7f9af10d8318be9cde3f44"
+        },
+        {
+          "file": "iPhone26/attachments/04216EF4-612F-48A5-ACD0-1C60A023A697.json",
+          "testIdentifier": "FoundationUITests/testAccessibilityStage08CoreScreens()",
+          "attachment": {
+            "configurationName": "Test Scheme Action",
+            "deviceId": "17F0E734-D183-4810-AB97-F27FD9968039",
+            "deviceName": "iPhone 17 Pro Max",
+            "exportedFileName": "04216EF4-612F-48A5-ACD0-1C60A023A697.json",
+            "isAssociatedWithFailure": false,
+            "suggestedHumanReadableName": "stage08-audit-attempts_0_AFC0FC50-FC3C-4BF0-A804-2219C6413587.json",
+            "timestamp": 1793994367.059
+          },
+          "semanticName": "stage08-audit-attempts",
+          "bytes": 12095,
+          "sha256": "e4ef42f7a7e822424264463c44708f93e0459047fe8d129962bf5a76f630c586"
+        },
+        {
+          "file": "iPhone26/attachments/B97CDB24-E0E7-4716-824B-F4A1B1127407.json",
+          "testIdentifier": "FoundationUITests/testAccessibilityStage08CoreScreens()",
+          "attachment": {
+            "configurationName": "Test Scheme Action",
+            "deviceId": "17F0E734-D183-4810-AB97-F27FD9968039",
+            "deviceName": "iPhone 17 Pro Max",
+            "exportedFileName": "B97CDB24-E0E7-4716-824B-F4A1B1127407.json",
+            "isAssociatedWithFailure": false,
+            "suggestedHumanReadableName": "stage08-audit-progress-recordings_0_3EB5BEA2-AA47-4CD0-824F-15C17EAF1165.json",
+            "timestamp": 1793994392.778
+          },
+          "semanticName": "stage08-audit-progress-recordings",
+          "bytes": 9785,
+          "sha256": "501bc4084c623f2417e037e0157fe966d18579483670fac132edec46d071c769"
+        },
+        {
+          "file": "iPhone26/attachments/C7D1C5C4-862C-4576-BDFB-98FF991518A7.json",
+          "testIdentifier": "FoundationUITests/testAccessibilityStage08CoreScreens()",
+          "attachment": {
+            "configurationName": "Test Scheme Action",
+            "deviceId": "17F0E734-D183-4810-AB97-F27FD9968039",
+            "deviceName": "iPhone 17 Pro Max",
+            "exportedFileName": "C7D1C5C4-862C-4576-BDFB-98FF991518A7.json",
+            "isAssociatedWithFailure": false,
+            "suggestedHumanReadableName": "stage08-audit-attempts_0_51B91291-03B5-4F6E-80E2-A6E2EB1B0813.json",
+            "timestamp": 1793994392.78
+          },
+          "semanticName": "stage08-audit-attempts",
+          "bytes": 15128,
+          "sha256": "08e7422cd76a4b40f1b4f867e6ee2d920698f41cc224794f6ccbaa8a00c94a9c"
+        },
+        {
+          "file": "iPhone26/attachments/DE329A23-D444-4882-A9E8-A6DD6D9D9D63.json",
+          "testIdentifier": "FoundationUITests/testAccessibilityStage08CoreScreens()",
+          "attachment": {
+            "configurationName": "Test Scheme Action",
+            "deviceId": "17F0E734-D183-4810-AB97-F27FD9968039",
+            "deviceName": "iPhone 17 Pro Max",
+            "exportedFileName": "DE329A23-D444-4882-A9E8-A6DD6D9D9D63.json",
+            "isAssociatedWithFailure": false,
+            "suggestedHumanReadableName": "stage08-audit-progress-folders_0_075F2165-9154-40E8-A9FB-224713535FC9.json",
+            "timestamp": 1793994415.952
+          },
+          "semanticName": "stage08-audit-progress-folders",
+          "bytes": 10261,
+          "sha256": "d8448dff32c641979e73f4a3c9bdbd779564eb56a964c5a21958c8f8e89ed904"
+        },
+        {
+          "file": "iPhone26/attachments/6B6A0B9F-6662-4A27-974C-A06BACF0322A.json",
+          "testIdentifier": "FoundationUITests/testAccessibilityStage08CoreScreens()",
+          "attachment": {
+            "configurationName": "Test Scheme Action",
+            "deviceId": "17F0E734-D183-4810-AB97-F27FD9968039",
+            "deviceName": "iPhone 17 Pro Max",
+            "exportedFileName": "6B6A0B9F-6662-4A27-974C-A06BACF0322A.json",
+            "isAssociatedWithFailure": false,
+            "suggestedHumanReadableName": "stage08-audit-attempts_0_10B424E5-CFF0-40B0-A4DE-FCF2F6729CDA.json",
+            "timestamp": 1793994415.954
+          },
+          "semanticName": "stage08-audit-attempts",
+          "bytes": 18139,
+          "sha256": "6f77df34f144fd4e19aad6c9dd14f11952b49d0640ba7ac796d611dadb80b935"
+        },
+        {
+          "file": "iPhone26/attachments/706289DF-9C16-479B-BF89-65C3A2DE7BD9.json",
+          "testIdentifier": "FoundationUITests/testAccessibilityStage08CoreScreens()",
+          "attachment": {
+            "configurationName": "Test Scheme Action",
+            "deviceId": "17F0E734-D183-4810-AB97-F27FD9968039",
+            "deviceName": "iPhone 17 Pro Max",
+            "exportedFileName": "706289DF-9C16-479B-BF89-65C3A2DE7BD9.json",
+            "isAssociatedWithFailure": false,
+            "suggestedHumanReadableName": "stage08-audit-progress-settings_0_2DD558EE-E217-4C18-B8B9-E9F869E09973.json",
+            "timestamp": 1793994436.288
+          },
+          "semanticName": "stage08-audit-progress-settings",
+          "bytes": 10261,
+          "sha256": "d8448dff32c641979e73f4a3c9bdbd779564eb56a964c5a21958c8f8e89ed904"
+        },
+        {
+          "file": "iPhone26/attachments/A5B38595-8808-44D1-9472-A106E49D708E.json",
+          "testIdentifier": "FoundationUITests/testAccessibilityStage08CoreScreens()",
+          "attachment": {
+            "configurationName": "Test Scheme Action",
+            "deviceId": "17F0E734-D183-4810-AB97-F27FD9968039",
+            "deviceName": "iPhone 17 Pro Max",
+            "exportedFileName": "A5B38595-8808-44D1-9472-A106E49D708E.json",
+            "isAssociatedWithFailure": false,
+            "suggestedHumanReadableName": "stage08-accessibility-issues_0_377DEFE2-2C18-410E-A7FB-F3D1A2DB9843.json",
+            "timestamp": 1793994436.291
+          },
+          "semanticName": "stage08-accessibility-issues",
+          "bytes": 10261,
+          "sha256": "d8448dff32c641979e73f4a3c9bdbd779564eb56a964c5a21958c8f8e89ed904"
+        },
+        {
+          "file": "iPhone26/attachments/E3D6B449-41A1-4064-AF25-40F4A4075A86.json",
+          "testIdentifier": "FoundationUITests/testAccessibilityStage08CoreScreens()",
+          "attachment": {
+            "configurationName": "Test Scheme Action",
+            "deviceId": "17F0E734-D183-4810-AB97-F27FD9968039",
+            "deviceName": "iPhone 17 Pro Max",
+            "exportedFileName": "E3D6B449-41A1-4064-AF25-40F4A4075A86.json",
+            "isAssociatedWithFailure": false,
+            "suggestedHumanReadableName": "stage08-audit-attempts_0_1876920F-33C2-4E1E-BA67-AEC03DF46338.json",
+            "timestamp": 1793994436.291
+          },
+          "semanticName": "stage08-audit-attempts",
+          "bytes": 21157,
+          "sha256": "91f440f2ff4ebd30e67916970734d95210fc4ced6f9bd485e01ac028394453a0"
+        }
+      ],
+      "originalExportManifestBoundary": "Complete original exporter catalog retained; only selected audit/font JSON attachments are copied, no PNG/video duplication."
+    },
+    "iPad26": {
+      "device": "iPad Pro 13-inch (M5)",
+      "runtime": [
+        26,
+        2
+      ],
+      "scope": "full",
+      "sourceCommit": "55bfcfb1e075224eda9ed7106a669db0b55dd7e5",
+      "simulatorUDID": "73C19119-B10E-4309-872E-C53EF3F0EF27",
+      "nativeSuite": {
+        "result": "FAIL",
+        "passed": 34,
+        "failed": 1,
+        "skipped": 0,
+        "total": 35
+      },
+      "individualAccessibilityTests": {
+        "testAccessibilityStage08CoreScreens": {
+          "status": "PASS",
+          "seconds": 220.497,
+          "class": "MeetSpaceUITests.FoundationUITests"
+        },
+        "testBundledFontsScaleInActualUIKitHostingAtAllDynamicTypeSizes": {
+          "status": "PASS",
+          "seconds": 1.112,
+          "class": "MeetSpaceTests.TypographyAccessibilityTests"
+        }
+      },
+      "audit": {
+        "engineAttempts": 49,
+        "auditPasses": 49,
+        "recoveredElementDetectionTimeouts": 0,
+        "initialScreenCategoryPairs": 49,
+        "completedPasses": 49,
+        "visibleContrastRetestPasses": 0,
+        "cumulativeAttemptAttachments": 7,
+        "progressAttachments": 7,
+        "rawFindings": 16,
+        "resolutionCounts": {
+          "reviewed: opaque glyph cores exceed 4.5:1 in actual PNG; ACCESSIBILITY_IPAD_CONTRAST.md": 7,
+          "reviewed: welcome heading; complete AX5 text in ACCESSIBILITY_REVIEW.md": 1,
+          "reviewed: native empty-state node groups decorative icon with high-contrast title": 1,
+          "reviewed: decorative avatar initials; accessible row has the full name": 1,
+          "reviewed: actual opaque glyph/background pixels; ACCESSIBILITY_CONTRAST_REVIEW.md": 2,
+          "reviewed: measured custom-font scaling; separate AX5 layout coverage": 2,
+          "reviewed: decorative initials duplicate full account name; actual PNG ratio 4.62:1": 1,
+          "reviewed: unchanged profile; disabled save action (inactive-control contrast exemption)": 1
+        },
+        "reviewedFindings": 16,
+        "verifiedTargets": [],
+        "outsideRetestViewportNoMeasurement": [],
+        "outsideRetestViewportCount": 0,
+        "unresolved": 0,
+        "deferred": 0,
+        "zeroRawFindings": false,
+        "noMeasurementBoundary": "outside retest viewport records have no contrast measurement and never count as successful measurements or verified targets."
+      },
+      "fonts": {
+        "samples": 74,
+        "categoriesPerSample": 12,
+        "actualHeightsValidated": 888,
+        "exactSizeStyleWeightMatrixValidated": true,
+        "monotonicPositiveHeightsValidated": true,
+        "lastCategoryExceeds1_5TimesLargeValidated": true,
+        "strictAccessibilityCategoryGrowthValidated": true,
+        "notPixelContrastOrWholeAppLayoutAcceptance": true
+      },
+      "artifact": {
+        "id": 13536274526,
+        "name": "results-iPad26",
+        "bytes": 415786963,
+        "githubDigest": "sha256:fe1ab5217340c517f01c9794c2820d6a553ab8deef7ac69efbf0b20032cdf6a2",
+        "downloadedSHA256": "fe1ab5217340c517f01c9794c2820d6a553ab8deef7ac69efbf0b20032cdf6a2",
+        "digestMatchesGitHub": true,
+        "sizeMatchesGitHub": true,
+        "zipCRCVerified": true
+      },
+      "nativeLogSHA256": "030b823819203fe4b14648d2fdf9e1bed8b2b92bd6b0ad124435febac0338fcc",
+      "attachments": [
+        {
+          "file": "iPad26/attachments/F74568AD-C351-494B-B7D1-55CB1489802E.json",
+          "testIdentifier": "TypographyAccessibilityTests/testBundledFontsScaleInActualUIKitHostingAtAllDynamicTypeSizes()",
+          "attachment": {
+            "configurationName": "Test Scheme Action",
+            "deviceId": "73C19119-B10E-4309-872E-C53EF3F0EF27",
+            "deviceName": "iPad Pro 13-inch (M5)",
+            "exportedFileName": "F74568AD-C351-494B-B7D1-55CB1489802E.json",
+            "isAssociatedWithFailure": false,
+            "suggestedHumanReadableName": "stage08-actual-font-scaling_0_D6BEA46D-9042-41C9-B238-B6F2E77CC9CE.json",
+            "timestamp": 1793994039.492
+          },
+          "semanticName": "stage08-actual-font-scaling",
+          "bytes": 37348,
+          "sha256": "5d4358d7cba41675258cff65eaee9b6767f793c3a9f524def36258205c534423"
+        },
+        {
+          "file": "iPad26/attachments/92742058-533D-488C-9395-5B368FD0847D.json",
+          "testIdentifier": "FoundationUITests/testAccessibilityStage08CoreScreens()",
+          "attachment": {
+            "configurationName": "Test Scheme Action",
+            "deviceId": "73C19119-B10E-4309-872E-C53EF3F0EF27",
+            "deviceName": "iPad Pro 13-inch (M5)",
+            "exportedFileName": "92742058-533D-488C-9395-5B368FD0847D.json",
+            "isAssociatedWithFailure": false,
+            "suggestedHumanReadableName": "stage08-audit-progress-welcome_0_8CD3FB14-8617-44E2-812A-BB7703B1D3F7.json",
+            "timestamp": 1793994146.673
+          },
+          "semanticName": "stage08-audit-progress-welcome",
+          "bytes": 860,
+          "sha256": "c0e1ba55267840223f88264031713967484982453398544e2cb8f45182579c94"
+        },
+        {
+          "file": "iPad26/attachments/F5067C54-303A-43F8-A388-B4E88A26C3C9.json",
+          "testIdentifier": "FoundationUITests/testAccessibilityStage08CoreScreens()",
+          "attachment": {
+            "configurationName": "Test Scheme Action",
+            "deviceId": "73C19119-B10E-4309-872E-C53EF3F0EF27",
+            "deviceName": "iPad Pro 13-inch (M5)",
+            "exportedFileName": "F5067C54-303A-43F8-A388-B4E88A26C3C9.json",
+            "isAssociatedWithFailure": false,
+            "suggestedHumanReadableName": "stage08-audit-attempts_0_1880B877-6682-4644-8E19-A2D90B7866AD.json",
+            "timestamp": 1793994146.678
+          },
+          "semanticName": "stage08-audit-attempts",
+          "bytes": 3050,
+          "sha256": "fdc2da8ff97e64ed68c4f419c12fe9f63c4b03285b3018e307bd1f05b0dd8091"
+        },
+        {
+          "file": "iPad26/attachments/A9D0DEC1-D451-4D1A-9CD3-F61D5C6AC29C.json",
+          "testIdentifier": "FoundationUITests/testAccessibilityStage08CoreScreens()",
+          "attachment": {
+            "configurationName": "Test Scheme Action",
+            "deviceId": "73C19119-B10E-4309-872E-C53EF3F0EF27",
+            "deviceName": "iPad Pro 13-inch (M5)",
+            "exportedFileName": "A9D0DEC1-D451-4D1A-9CD3-F61D5C6AC29C.json",
+            "isAssociatedWithFailure": false,
+            "suggestedHumanReadableName": "stage08-audit-progress-messages_0_B8E94A6F-A6B7-4135-B1DE-3990954EE433.json",
+            "timestamp": 1793994220.754
+          },
+          "semanticName": "stage08-audit-progress-messages",
+          "bytes": 1601,
+          "sha256": "236dde3766c6645e70a64c06e6edb2f444eada3961471a8dfe938b4141225483"
+        },
+        {
+          "file": "iPad26/attachments/235686D3-88BE-4AAA-BDF9-94E1C1FF48BB.json",
+          "testIdentifier": "FoundationUITests/testAccessibilityStage08CoreScreens()",
+          "attachment": {
+            "configurationName": "Test Scheme Action",
+            "deviceId": "73C19119-B10E-4309-872E-C53EF3F0EF27",
+            "deviceName": "iPad Pro 13-inch (M5)",
+            "exportedFileName": "235686D3-88BE-4AAA-BDF9-94E1C1FF48BB.json",
+            "isAssociatedWithFailure": false,
+            "suggestedHumanReadableName": "stage08-audit-attempts_0_53DD7C8E-E9E7-464A-B372-AA6624824169.json",
+            "timestamp": 1793994220.756
+          },
+          "semanticName": "stage08-audit-attempts",
+          "bytes": 6066,
+          "sha256": "ef44d052bcf41b782db580d991fd00295f483d5cc6f1a259f158be7550050e0b"
+        },
+        {
+          "file": "iPad26/attachments/BADEB2F6-10B3-4957-BE68-A3AD5B1F4FD5.json",
+          "testIdentifier": "FoundationUITests/testAccessibilityStage08CoreScreens()",
+          "attachment": {
+            "configurationName": "Test Scheme Action",
+            "deviceId": "73C19119-B10E-4309-872E-C53EF3F0EF27",
+            "deviceName": "iPad Pro 13-inch (M5)",
+            "exportedFileName": "BADEB2F6-10B3-4957-BE68-A3AD5B1F4FD5.json",
+            "isAssociatedWithFailure": false,
+            "suggestedHumanReadableName": "stage08-audit-progress-profile_0_07DE7EEB-4FE1-4DE6-95A0-F4F1F248D024.json",
+            "timestamp": 1793994239.003
+          },
+          "semanticName": "stage08-audit-progress-profile",
+          "bytes": 1601,
+          "sha256": "236dde3766c6645e70a64c06e6edb2f444eada3961471a8dfe938b4141225483"
+        },
+        {
+          "file": "iPad26/attachments/5D591DEC-933F-4015-981D-569EA82D1E8C.json",
+          "testIdentifier": "FoundationUITests/testAccessibilityStage08CoreScreens()",
+          "attachment": {
+            "configurationName": "Test Scheme Action",
+            "deviceId": "73C19119-B10E-4309-872E-C53EF3F0EF27",
+            "deviceName": "iPad Pro 13-inch (M5)",
+            "exportedFileName": "5D591DEC-933F-4015-981D-569EA82D1E8C.json",
+            "isAssociatedWithFailure": false,
+            "suggestedHumanReadableName": "stage08-audit-attempts_0_5FAC584C-BD69-4629-A71A-68C5B3D40896.json",
+            "timestamp": 1793994239.004
+          },
+          "semanticName": "stage08-audit-attempts",
+          "bytes": 9078,
+          "sha256": "be4b3e83f15e2d0d868775d5bd65cd5352ee8b1dc18d3e6ea094a0e88cd7faa8"
+        },
+        {
+          "file": "iPad26/attachments/27899FB0-22A5-493A-8C00-AFCB47CCDF4F.json",
+          "testIdentifier": "FoundationUITests/testAccessibilityStage08CoreScreens()",
+          "attachment": {
+            "configurationName": "Test Scheme Action",
+            "deviceId": "73C19119-B10E-4309-872E-C53EF3F0EF27",
+            "deviceName": "iPad Pro 13-inch (M5)",
+            "exportedFileName": "27899FB0-22A5-493A-8C00-AFCB47CCDF4F.json",
+            "isAssociatedWithFailure": false,
+            "suggestedHumanReadableName": "stage08-audit-progress-calendar_0_1012AD4D-EC6A-4625-B65A-AEAD9CCFA64A.json",
+            "timestamp": 1793994264.765
+          },
+          "semanticName": "stage08-audit-progress-calendar",
+          "bytes": 2771,
+          "sha256": "31a30d93b62af485e5907b75cc2dd7efd3f7456f85a46429d5bcb717ee449f23"
+        },
+        {
+          "file": "iPad26/attachments/17FB0378-006F-40D4-A963-91AC2500F03D.json",
+          "testIdentifier": "FoundationUITests/testAccessibilityStage08CoreScreens()",
+          "attachment": {
+            "configurationName": "Test Scheme Action",
+            "deviceId": "73C19119-B10E-4309-872E-C53EF3F0EF27",
+            "deviceName": "iPad Pro 13-inch (M5)",
+            "exportedFileName": "17FB0378-006F-40D4-A963-91AC2500F03D.json",
+            "isAssociatedWithFailure": false,
+            "suggestedHumanReadableName": "stage08-audit-attempts_0_3973BD0A-4B01-4DA0-8862-96205EB55971.json",
+            "timestamp": 1793994264.767
+          },
+          "semanticName": "stage08-audit-attempts",
+          "bytes": 12095,
+          "sha256": "2e992aa294bcce1f1ed250d193ba3aa3a5a7885b013ef3141a17a17eabb4be0a"
+        },
+        {
+          "file": "iPad26/attachments/05B385BD-D468-4D3A-AE52-804746094C17.json",
+          "testIdentifier": "FoundationUITests/testAccessibilityStage08CoreScreens()",
+          "attachment": {
+            "configurationName": "Test Scheme Action",
+            "deviceId": "73C19119-B10E-4309-872E-C53EF3F0EF27",
+            "deviceName": "iPad Pro 13-inch (M5)",
+            "exportedFileName": "05B385BD-D468-4D3A-AE52-804746094C17.json",
+            "isAssociatedWithFailure": false,
+            "suggestedHumanReadableName": "stage08-audit-progress-recordings_0_D59AA319-0DA8-4709-9A78-219ED654659D.json",
+            "timestamp": 1793994290.764
+          },
+          "semanticName": "stage08-audit-progress-recordings",
+          "bytes": 4969,
+          "sha256": "2f6b3be84b03fc061977f8bb81661770b64a492534e2bab970f01d0e8ff75781"
+        },
+        {
+          "file": "iPad26/attachments/3AB0FD0A-8240-40A7-B304-1D17CD3A8992.json",
+          "testIdentifier": "FoundationUITests/testAccessibilityStage08CoreScreens()",
+          "attachment": {
+            "configurationName": "Test Scheme Action",
+            "deviceId": "73C19119-B10E-4309-872E-C53EF3F0EF27",
+            "deviceName": "iPad Pro 13-inch (M5)",
+            "exportedFileName": "3AB0FD0A-8240-40A7-B304-1D17CD3A8992.json",
+            "isAssociatedWithFailure": false,
+            "suggestedHumanReadableName": "stage08-audit-attempts_0_974E4034-A638-4F87-9C28-DF5BE5F6EA6C.json",
+            "timestamp": 1793994290.767
+          },
+          "semanticName": "stage08-audit-attempts",
+          "bytes": 15125,
+          "sha256": "7e071874fd3d1b5d69f4d62ba96fe9350d59dfd7880e4edf68a332db172bcb02"
+        },
+        {
+          "file": "iPad26/attachments/08A1212A-D939-4B4B-ABB4-89F2EB490ED1.json",
+          "testIdentifier": "FoundationUITests/testAccessibilityStage08CoreScreens()",
+          "attachment": {
+            "configurationName": "Test Scheme Action",
+            "deviceId": "73C19119-B10E-4309-872E-C53EF3F0EF27",
+            "deviceName": "iPad Pro 13-inch (M5)",
+            "exportedFileName": "08A1212A-D939-4B4B-ABB4-89F2EB490ED1.json",
+            "isAssociatedWithFailure": false,
+            "suggestedHumanReadableName": "stage08-audit-progress-folders_0_B2CD95A0-4AF0-401E-BB34-AB3233DB4C92.json",
+            "timestamp": 1793994316.63
+          },
+          "semanticName": "stage08-audit-progress-folders",
+          "bytes": 5814,
+          "sha256": "081deafbc98b34e9b431efaaceff05975ad2317065bf66ba3bfa0b14af14466e"
+        },
+        {
+          "file": "iPad26/attachments/BA2B4071-FC93-4CDD-AB8D-EAE6BC2213EE.json",
+          "testIdentifier": "FoundationUITests/testAccessibilityStage08CoreScreens()",
+          "attachment": {
+            "configurationName": "Test Scheme Action",
+            "deviceId": "73C19119-B10E-4309-872E-C53EF3F0EF27",
+            "deviceName": "iPad Pro 13-inch (M5)",
+            "exportedFileName": "BA2B4071-FC93-4CDD-AB8D-EAE6BC2213EE.json",
+            "isAssociatedWithFailure": false,
+            "suggestedHumanReadableName": "stage08-audit-attempts_0_25B2F083-194A-4DB5-AE3F-11F1BAC77A14.json",
+            "timestamp": 1793994316.632
+          },
+          "semanticName": "stage08-audit-attempts",
+          "bytes": 18136,
+          "sha256": "b2ca07d7b203a84edc98197f533e5ba5402835feb8820de0f6bec98883ab9197"
+        },
+        {
+          "file": "iPad26/attachments/C13306C2-AD5E-4DF0-899B-AEC6FB955A2E.json",
+          "testIdentifier": "FoundationUITests/testAccessibilityStage08CoreScreens()",
+          "attachment": {
+            "configurationName": "Test Scheme Action",
+            "deviceId": "73C19119-B10E-4309-872E-C53EF3F0EF27",
+            "deviceName": "iPad Pro 13-inch (M5)",
+            "exportedFileName": "C13306C2-AD5E-4DF0-899B-AEC6FB955A2E.json",
+            "isAssociatedWithFailure": false,
+            "suggestedHumanReadableName": "stage08-audit-progress-settings_0_5BAF8619-F89D-4245-8B23-8B436A5391D5.json",
+            "timestamp": 1793994340.31
+          },
+          "semanticName": "stage08-audit-progress-settings",
+          "bytes": 6545,
+          "sha256": "63be8df7e2d65958e97a315db3db02a6e607b53c2d119a2735983d6bca98c30a"
+        },
+        {
+          "file": "iPad26/attachments/0737ACC8-FD25-4CD5-AABD-9C1F1360B0A6.json",
+          "testIdentifier": "FoundationUITests/testAccessibilityStage08CoreScreens()",
+          "attachment": {
+            "configurationName": "Test Scheme Action",
+            "deviceId": "73C19119-B10E-4309-872E-C53EF3F0EF27",
+            "deviceName": "iPad Pro 13-inch (M5)",
+            "exportedFileName": "0737ACC8-FD25-4CD5-AABD-9C1F1360B0A6.json",
+            "isAssociatedWithFailure": false,
+            "suggestedHumanReadableName": "stage08-audit-attempts_0_0D77E845-2EDF-434E-A868-A1A091C4BEB0.json",
+            "timestamp": 1793994340.313
+          },
+          "semanticName": "stage08-audit-attempts",
+          "bytes": 21152,
+          "sha256": "9d312c1f73312e6432c9bee47ff7a55a74d411d1a5999f83d77b17c51892d2df"
+        },
+        {
+          "file": "iPad26/attachments/F0D79F66-1D73-49C6-8C64-69E57F84B1A2.json",
+          "testIdentifier": "FoundationUITests/testAccessibilityStage08CoreScreens()",
+          "attachment": {
+            "configurationName": "Test Scheme Action",
+            "deviceId": "73C19119-B10E-4309-872E-C53EF3F0EF27",
+            "deviceName": "iPad Pro 13-inch (M5)",
+            "exportedFileName": "F0D79F66-1D73-49C6-8C64-69E57F84B1A2.json",
+            "isAssociatedWithFailure": false,
+            "suggestedHumanReadableName": "stage08-accessibility-issues_0_D9CE9602-7FD3-47D1-8B96-2C90390AF7DF.json",
+            "timestamp": 1793994340.314
+          },
+          "semanticName": "stage08-accessibility-issues",
+          "bytes": 6545,
+          "sha256": "63be8df7e2d65958e97a315db3db02a6e607b53c2d119a2735983d6bca98c30a"
+        }
+      ],
+      "originalExportManifestBoundary": "Complete original exporter catalog retained; only selected audit/font JSON attachments are copied, no PNG/video duplication."
+    },
+    "iPhone18": {
+      "device": "iPhone SE (3rd generation)",
+      "runtime": [
+        18,
+        6
+      ],
+      "scope": "compatibility",
+      "sourceCommit": "55bfcfb1e075224eda9ed7106a669db0b55dd7e5",
+      "simulatorUDID": "C3630581-519B-49DA-9400-67A78DCD42C8",
+      "nativeSuite": {
+        "result": "PASS",
+        "passed": 15,
+        "failed": 0,
+        "skipped": 0,
+        "total": 15
+      },
+      "individualAccessibilityTests": {
+        "testAccessibilityStage08CoreScreens": {
+          "status": "PASS",
+          "seconds": 237.909,
+          "class": "MeetSpaceUITests.FoundationUITests"
+        },
+        "testBundledFontsScaleInActualUIKitHostingAtAllDynamicTypeSizes": {
+          "status": "PASS",
+          "seconds": 0.747,
+          "class": "MeetSpaceTests.TypographyAccessibilityTests"
+        }
+      },
+      "audit": {
+        "engineAttempts": 52,
+        "auditPasses": 52,
+        "recoveredElementDetectionTimeouts": 0,
+        "initialScreenCategoryPairs": 49,
+        "completedPasses": 52,
+        "visibleContrastRetestPasses": 3,
+        "cumulativeAttemptAttachments": 7,
+        "progressAttachments": 7,
+        "rawFindings": 24,
+        "resolutionCounts": {
+          "reviewed: welcome heading; complete AX5 text in ACCESSIBILITY_REVIEW.md": 1,
+          "reviewed: decorative avatar initials; accessible row has the full name": 1,
+          "verified: fully visible contrast retest produced no target finding": 3,
+          "outside retest viewport: no contrast measurement": 5,
+          "reviewed: measured custom-font scaling; separate AX5 layout coverage": 12,
+          "reviewed: menu title inside exact control; measured font scaling and AX5 multiline layout": 2
+        },
+        "reviewedFindings": 16,
+        "verifiedTargets": [
+          {
+            "detail": "Contrast failed for element",
+            "element": "addAccount",
+            "frame": "(24.0, 654.0, 327.0, 44.0)",
+            "label": "Добавить аккаунт",
+            "resolution": "verified: fully visible contrast retest produced no target finding",
+            "screen": "profile",
+            "summary": "Contrast failed",
+            "type": "1"
+          },
+          {
+            "detail": "Contrast failed for element",
+            "element": "calendar.weekday.5",
+            "frame": "(344.25, 369.25, 13.5, 12.5)",
+            "label": "Сб",
+            "resolution": "verified: fully visible contrast retest produced no target finding",
+            "screen": "calendar",
+            "summary": "Contrast failed",
+            "type": "1"
+          },
+          {
+            "detail": "Contrast failed for element",
+            "element": "recording.status.77777777-7777-4777-8777-777777777773",
+            "frame": "(146.0, 602.5, 113.5, 13.5)",
+            "label": "Не удалось записать",
+            "resolution": "verified: fully visible contrast retest produced no target finding",
+            "screen": "recordings",
+            "summary": "Contrast failed",
+            "type": "1"
+          }
+        ],
+        "outsideRetestViewportNoMeasurement": [
+          {
+            "detail": "Contrast failed for element",
+            "element": "",
+            "frame": "(41.5, -14.0, 98.5, 17.0)",
+            "label": "Календарь",
+            "resolution": "outside retest viewport: no contrast measurement",
+            "screen": "profile-visible-retest",
+            "summary": "Contrast failed",
+            "type": "1"
+          },
+          {
+            "detail": "Contrast failed for element",
+            "element": "calendar.weekday.1",
+            "frame": "(18.25, 369.25, 11.5, 12.5)",
+            "label": "Вт",
+            "resolution": "outside retest viewport: no contrast measurement",
+            "screen": "calendar-visible-retest",
+            "summary": "Contrast failed",
+            "type": "1"
+          },
+          {
+            "detail": "Contrast failed for element",
+            "element": "recordings.filterHint",
+            "frame": "(24.0, -9.5, 307.5, 13.5)",
+            "label": "Поиск и фильтры применяются к загруженным записям.",
+            "resolution": "outside retest viewport: no contrast measurement",
+            "screen": "recordings-visible-retest",
+            "summary": "Contrast failed",
+            "type": "1"
+          },
+          {
+            "detail": "Contrast failed for element",
+            "element": "recordings.retentionNotice",
+            "frame": "(24.0, 564.0, 327.0, 72.0)",
+            "label": "Срок хранения записей задаётся сервером. Доступ проверяется перед воспроизведением и скачиванием.",
+            "resolution": "outside retest viewport: no contrast measurement",
+            "screen": "recordings-visible-retest",
+            "summary": "Contrast failed",
+            "type": "1"
+          },
+          {
+            "detail": "Contrast failed for element",
+            "element": "",
+            "frame": "(146.0, 36.0, 93.5, 34.0)",
+            "label": "Обсуждение проекта",
+            "resolution": "outside retest viewport: no contrast measurement",
+            "screen": "recordings-visible-retest",
+            "summary": "Contrast failed",
+            "type": "1"
+          }
+        ],
+        "outsideRetestViewportCount": 5,
+        "unresolved": 0,
+        "deferred": 0,
+        "zeroRawFindings": false,
+        "noMeasurementBoundary": "outside retest viewport records have no contrast measurement and never count as successful measurements or verified targets."
+      },
+      "fonts": {
+        "samples": 74,
+        "categoriesPerSample": 12,
+        "actualHeightsValidated": 888,
+        "exactSizeStyleWeightMatrixValidated": true,
+        "monotonicPositiveHeightsValidated": true,
+        "lastCategoryExceeds1_5TimesLargeValidated": true,
+        "strictAccessibilityCategoryGrowthValidated": true,
+        "notPixelContrastOrWholeAppLayoutAcceptance": true
+      },
+      "artifact": {
+        "id": 13539480023,
+        "name": "results-iPhone18",
+        "bytes": 19267808,
+        "githubDigest": "sha256:004b30cea44585000e7f50379b06cba127f9f8b7bf24f90326612823fda86fad",
+        "downloadedSHA256": "004b30cea44585000e7f50379b06cba127f9f8b7bf24f90326612823fda86fad",
+        "digestMatchesGitHub": true,
+        "sizeMatchesGitHub": true,
+        "zipCRCVerified": true
+      },
+      "nativeLogSHA256": "bd97392e6195da68012c3fa70f81b79d817264d61347be9048a7720f0f1efe2f",
+      "attachments": [
+        {
+          "file": "iPhone18/attachments/C6D6F8F9-ECE0-4338-8DAB-B162D5245A72.json",
+          "testIdentifier": "TypographyAccessibilityTests/testBundledFontsScaleInActualUIKitHostingAtAllDynamicTypeSizes()",
+          "attachment": {
+            "configurationName": "Test Scheme Action",
+            "deviceId": "C3630581-519B-49DA-9400-67A78DCD42C8",
+            "deviceName": "iPhone SE (3rd generation)",
+            "exportedFileName": "C6D6F8F9-ECE0-4338-8DAB-B162D5245A72.json",
+            "isAssociatedWithFailure": false,
+            "suggestedHumanReadableName": "stage08-actual-font-scaling_0_481E8BC0-48E8-4491-A23D-D4387D42C378.json",
+            "timestamp": 1793996117.212
+          },
+          "semanticName": "stage08-actual-font-scaling",
+          "bytes": 37348,
+          "sha256": "5d4358d7cba41675258cff65eaee9b6767f793c3a9f524def36258205c534423"
+        },
+        {
+          "file": "iPhone18/attachments/8D6E8455-4971-4CCD-B783-D2A468D2C040.json",
+          "testIdentifier": "FoundationUITests/testAccessibilityStage08CoreScreens()",
+          "attachment": {
+            "configurationName": "Test Scheme Action",
+            "deviceId": "C3630581-519B-49DA-9400-67A78DCD42C8",
+            "deviceName": "iPhone SE (3rd generation)",
+            "exportedFileName": "8D6E8455-4971-4CCD-B783-D2A468D2C040.json",
+            "isAssociatedWithFailure": false,
+            "suggestedHumanReadableName": "stage08-audit-progress-welcome_0_F6DD68E6-801C-49A3-921B-9B2E2B27C554.json",
+            "timestamp": 1793996171.531
+          },
+          "semanticName": "stage08-audit-progress-welcome",
+          "bytes": 416,
+          "sha256": "728400914f877e53b58070b9633dc1e9c318f6cdf603e4ab85da1f6a23bd3df9"
+        },
+        {
+          "file": "iPhone18/attachments/F14AEA7F-49DB-4690-90BE-EE14530BEA4B.json",
+          "testIdentifier": "FoundationUITests/testAccessibilityStage08CoreScreens()",
+          "attachment": {
+            "configurationName": "Test Scheme Action",
+            "deviceId": "C3630581-519B-49DA-9400-67A78DCD42C8",
+            "deviceName": "iPhone SE (3rd generation)",
+            "exportedFileName": "F14AEA7F-49DB-4690-90BE-EE14530BEA4B.json",
+            "isAssociatedWithFailure": false,
+            "suggestedHumanReadableName": "stage08-audit-attempts_0_1ADA0F49-766E-4722-A80A-927DDB3C9DD6.json",
+            "timestamp": 1793996171.532
+          },
+          "semanticName": "stage08-audit-attempts",
+          "bytes": 3050,
+          "sha256": "463e29661af85efe0c9a3101219e88495fd4ec846c07bf6c782640ef3a6bc311"
+        },
+        {
+          "file": "iPhone18/attachments/101BF7B0-2D65-4C06-AFB2-88DB2C010B36.json",
+          "testIdentifier": "FoundationUITests/testAccessibilityStage08CoreScreens()",
+          "attachment": {
+            "configurationName": "Test Scheme Action",
+            "deviceId": "C3630581-519B-49DA-9400-67A78DCD42C8",
+            "deviceName": "iPhone SE (3rd generation)",
+            "exportedFileName": "101BF7B0-2D65-4C06-AFB2-88DB2C010B36.json",
+            "isAssociatedWithFailure": false,
+            "suggestedHumanReadableName": "stage08-audit-progress-messages_0_43076DCC-DBFE-40EE-8467-FD64AC81B2BE.json",
+            "timestamp": 1793996248.85
+          },
+          "semanticName": "stage08-audit-progress-messages",
+          "bytes": 775,
+          "sha256": "470ccac084d42e57ab5e88387049f92b4af34a371dc9dc655939714c3fc5b77a"
+        },
+        {
+          "file": "iPhone18/attachments/92296087-D322-4E8D-84B6-FCE93AD6E5EA.json",
+          "testIdentifier": "FoundationUITests/testAccessibilityStage08CoreScreens()",
+          "attachment": {
+            "configurationName": "Test Scheme Action",
+            "deviceId": "C3630581-519B-49DA-9400-67A78DCD42C8",
+            "deviceName": "iPhone SE (3rd generation)",
+            "exportedFileName": "92296087-D322-4E8D-84B6-FCE93AD6E5EA.json",
+            "isAssociatedWithFailure": false,
+            "suggestedHumanReadableName": "stage08-audit-attempts_0_4854F31F-BCC4-48D3-8DD8-2BAAECA26664.json",
+            "timestamp": 1793996248.852
+          },
+          "semanticName": "stage08-audit-attempts",
+          "bytes": 6067,
+          "sha256": "546231aa9007b993ff1bfe3ff490e94c315ab2f454db0952a88de6fc7a0baca2"
+        },
+        {
+          "file": "iPhone18/attachments/8CF95D85-C9BE-466F-BAF5-51E79212486B.json",
+          "testIdentifier": "FoundationUITests/testAccessibilityStage08CoreScreens()",
+          "attachment": {
+            "configurationName": "Test Scheme Action",
+            "deviceId": "C3630581-519B-49DA-9400-67A78DCD42C8",
+            "deviceName": "iPhone SE (3rd generation)",
+            "exportedFileName": "8CF95D85-C9BE-466F-BAF5-51E79212486B.json",
+            "isAssociatedWithFailure": false,
+            "suggestedHumanReadableName": "stage08-audit-progress-profile_0_2C9A53C0-5DE8-4F5E-A087-920A017A82D4.json",
+            "timestamp": 1793996273.387
+          },
+          "semanticName": "stage08-audit-progress-profile",
+          "bytes": 1438,
+          "sha256": "019c836035c7b38195f603693c32dd8502a655cb98c137434db809c41af720ef"
+        },
+        {
+          "file": "iPhone18/attachments/7EB44420-8741-4509-93D7-2DC9184B2347.json",
+          "testIdentifier": "FoundationUITests/testAccessibilityStage08CoreScreens()",
+          "attachment": {
+            "configurationName": "Test Scheme Action",
+            "deviceId": "C3630581-519B-49DA-9400-67A78DCD42C8",
+            "deviceName": "iPhone SE (3rd generation)",
+            "exportedFileName": "7EB44420-8741-4509-93D7-2DC9184B2347.json",
+            "isAssociatedWithFailure": false,
+            "suggestedHumanReadableName": "stage08-audit-attempts_0_ADCAE3B3-854F-443B-829E-601D83C6ED2C.json",
+            "timestamp": 1793996273.388
+          },
+          "semanticName": "stage08-audit-attempts",
+          "bytes": 9524,
+          "sha256": "c98200253f19e287ab6c1a88b686b3223cf2a0dfd077ff4b35e892edb34618a7"
+        },
+        {
+          "file": "iPhone18/attachments/406C1259-DC90-4C28-9969-9911C8311980.json",
+          "testIdentifier": "FoundationUITests/testAccessibilityStage08CoreScreens()",
+          "attachment": {
+            "configurationName": "Test Scheme Action",
+            "deviceId": "C3630581-519B-49DA-9400-67A78DCD42C8",
+            "deviceName": "iPhone SE (3rd generation)",
+            "exportedFileName": "406C1259-DC90-4C28-9969-9911C8311980.json",
+            "isAssociatedWithFailure": false,
+            "suggestedHumanReadableName": "stage08-audit-progress-calendar_0_59C49D45-EAE8-4DF3-9F37-CAD346EABAE5.json",
+            "timestamp": 1793996313.328
+          },
+          "semanticName": "stage08-audit-progress-calendar",
+          "bytes": 7007,
+          "sha256": "0ecff4c4b0da9f1b8dfcf8d6500382dd866091c9af41d314b5c1e87ecdb07199"
+        },
+        {
+          "file": "iPhone18/attachments/D3E96395-71F0-4312-9FDD-BF95B20E9472.json",
+          "testIdentifier": "FoundationUITests/testAccessibilityStage08CoreScreens()",
+          "attachment": {
+            "configurationName": "Test Scheme Action",
+            "deviceId": "C3630581-519B-49DA-9400-67A78DCD42C8",
+            "deviceName": "iPhone SE (3rd generation)",
+            "exportedFileName": "D3E96395-71F0-4312-9FDD-BF95B20E9472.json",
+            "isAssociatedWithFailure": false,
+            "suggestedHumanReadableName": "stage08-audit-attempts_0_20A44C9D-BD55-4375-A7F9-CA284DA22781.json",
+            "timestamp": 1793996313.329
+          },
+          "semanticName": "stage08-audit-attempts",
+          "bytes": 12991,
+          "sha256": "651fc9ed32d7236e5d6a88e5480b1be5cf2fdd129e851e53d4624e0d254e9711"
+        },
+        {
+          "file": "iPhone18/attachments/F6770EB4-E7ED-4F09-BF64-285C1C2CAED5.json",
+          "testIdentifier": "FoundationUITests/testAccessibilityStage08CoreScreens()",
+          "attachment": {
+            "configurationName": "Test Scheme Action",
+            "deviceId": "C3630581-519B-49DA-9400-67A78DCD42C8",
+            "deviceName": "iPhone SE (3rd generation)",
+            "exportedFileName": "F6770EB4-E7ED-4F09-BF64-285C1C2CAED5.json",
+            "isAssociatedWithFailure": false,
+            "suggestedHumanReadableName": "stage08-audit-progress-recordings_0_83BDE39A-D7D1-458F-864E-60E21D6D8298.json",
+            "timestamp": 1793996348.439
+          },
+          "semanticName": "stage08-audit-progress-recordings",
+          "bytes": 9166,
+          "sha256": "7a2924ac7416b22a07feaf97662b21cc3f2429f28044121c05c4a339f67bb4f2"
+        },
+        {
+          "file": "iPhone18/attachments/A9AE48E2-1EA0-4A51-AA2A-3B16EC50EBBF.json",
+          "testIdentifier": "FoundationUITests/testAccessibilityStage08CoreScreens()",
+          "attachment": {
+            "configurationName": "Test Scheme Action",
+            "deviceId": "C3630581-519B-49DA-9400-67A78DCD42C8",
+            "deviceName": "iPhone SE (3rd generation)",
+            "exportedFileName": "A9AE48E2-1EA0-4A51-AA2A-3B16EC50EBBF.json",
+            "isAssociatedWithFailure": false,
+            "suggestedHumanReadableName": "stage08-audit-attempts_0_18E516AC-60DE-415A-988A-8F5BE86C21F0.json",
+            "timestamp": 1793996348.443
+          },
+          "semanticName": "stage08-audit-attempts",
+          "bytes": 16472,
+          "sha256": "6d2460c967b70528789acb24c9ceaae7f286f3b142bc998de326ed199d014a56"
+        },
+        {
+          "file": "iPhone18/attachments/19906251-2D58-4F1C-A896-F76E54CA91A0.json",
+          "testIdentifier": "FoundationUITests/testAccessibilityStage08CoreScreens()",
+          "attachment": {
+            "configurationName": "Test Scheme Action",
+            "deviceId": "C3630581-519B-49DA-9400-67A78DCD42C8",
+            "deviceName": "iPhone SE (3rd generation)",
+            "exportedFileName": "19906251-2D58-4F1C-A896-F76E54CA91A0.json",
+            "isAssociatedWithFailure": false,
+            "suggestedHumanReadableName": "stage08-audit-progress-folders_0_9428D627-46A2-44FC-A37C-47B8CC271D63.json",
+            "timestamp": 1793996365.306
+          },
+          "semanticName": "stage08-audit-progress-folders",
+          "bytes": 9596,
+          "sha256": "cd689666a9a44e941da79760ec75e48e1ae45037f77cacd1ef07bc85733cae98"
+        },
+        {
+          "file": "iPhone18/attachments/4581F00E-C002-40AF-9834-3908AEF91421.json",
+          "testIdentifier": "FoundationUITests/testAccessibilityStage08CoreScreens()",
+          "attachment": {
+            "configurationName": "Test Scheme Action",
+            "deviceId": "C3630581-519B-49DA-9400-67A78DCD42C8",
+            "deviceName": "iPhone SE (3rd generation)",
+            "exportedFileName": "4581F00E-C002-40AF-9834-3908AEF91421.json",
+            "isAssociatedWithFailure": false,
+            "suggestedHumanReadableName": "stage08-audit-attempts_0_A5EE2F18-DFEB-4F48-8A68-032449449BF2.json",
+            "timestamp": 1793996365.308
+          },
+          "semanticName": "stage08-audit-attempts",
+          "bytes": 19483,
+          "sha256": "83d6ceadeecb488b517e9b6009c2ed9064cbb206bf26fe77b8aab71438e927ad"
+        },
+        {
+          "file": "iPhone18/attachments/7CE2507D-5E6F-4520-B931-6B750C79B0C9.json",
+          "testIdentifier": "FoundationUITests/testAccessibilityStage08CoreScreens()",
+          "attachment": {
+            "configurationName": "Test Scheme Action",
+            "deviceId": "C3630581-519B-49DA-9400-67A78DCD42C8",
+            "deviceName": "iPhone SE (3rd generation)",
+            "exportedFileName": "7CE2507D-5E6F-4520-B931-6B750C79B0C9.json",
+            "isAssociatedWithFailure": false,
+            "suggestedHumanReadableName": "stage08-audit-progress-settings_0_1ACA1D71-B6A6-489A-8EEC-6ED429EE49B5.json",
+            "timestamp": 1793996382.741
+          },
+          "semanticName": "stage08-audit-progress-settings",
+          "bytes": 9596,
+          "sha256": "cd689666a9a44e941da79760ec75e48e1ae45037f77cacd1ef07bc85733cae98"
+        },
+        {
+          "file": "iPhone18/attachments/5ADC9C92-05A7-4422-AB61-EEDD9EDF44CC.json",
+          "testIdentifier": "FoundationUITests/testAccessibilityStage08CoreScreens()",
+          "attachment": {
+            "configurationName": "Test Scheme Action",
+            "deviceId": "C3630581-519B-49DA-9400-67A78DCD42C8",
+            "deviceName": "iPhone SE (3rd generation)",
+            "exportedFileName": "5ADC9C92-05A7-4422-AB61-EEDD9EDF44CC.json",
+            "isAssociatedWithFailure": false,
+            "suggestedHumanReadableName": "stage08-audit-attempts_0_C3B13D08-AE42-44F3-97CB-04E09A7273DB.json",
+            "timestamp": 1793996382.743
+          },
+          "semanticName": "stage08-audit-attempts",
+          "bytes": 22500,
+          "sha256": "8b5986aec5e8d2207caff98886b5ed96a985e8d1cda05a282bcf3d1369760f5a"
+        },
+        {
+          "file": "iPhone18/attachments/23587661-D79E-41A6-BF41-5F8E4192679C.json",
+          "testIdentifier": "FoundationUITests/testAccessibilityStage08CoreScreens()",
+          "attachment": {
+            "configurationName": "Test Scheme Action",
+            "deviceId": "C3630581-519B-49DA-9400-67A78DCD42C8",
+            "deviceName": "iPhone SE (3rd generation)",
+            "exportedFileName": "23587661-D79E-41A6-BF41-5F8E4192679C.json",
+            "isAssociatedWithFailure": false,
+            "suggestedHumanReadableName": "stage08-accessibility-issues_0_5391882F-2F52-407A-AE5E-25289EE534E3.json",
+            "timestamp": 1793996382.744
+          },
+          "semanticName": "stage08-accessibility-issues",
+          "bytes": 9596,
+          "sha256": "cd689666a9a44e941da79760ec75e48e1ae45037f77cacd1ef07bc85733cae98"
+        }
+      ],
+      "originalExportManifestBoundary": "Complete original exporter catalog retained; only selected audit/font JSON attachments are copied, no PNG/video duplication."
+    },
+    "iPad18": {
+      "device": "iPad mini (A17 Pro)",
+      "runtime": [
+        18,
+        6
+      ],
+      "scope": "compatibility",
+      "sourceCommit": "55bfcfb1e075224eda9ed7106a669db0b55dd7e5",
+      "simulatorUDID": "2A250684-88E3-4EDB-A21E-B7726B4C69F6",
+      "nativeSuite": {
+        "result": "FAIL",
+        "passed": 14,
+        "failed": 1,
+        "skipped": 0,
+        "total": 15
+      },
+      "individualAccessibilityTests": {
+        "testAccessibilityStage08CoreScreens": {
+          "status": "PASS",
+          "seconds": 168.084,
+          "class": "MeetSpaceUITests.FoundationUITests"
+        },
+        "testBundledFontsScaleInActualUIKitHostingAtAllDynamicTypeSizes": {
+          "status": "PASS",
+          "seconds": 0.638,
+          "class": "MeetSpaceTests.TypographyAccessibilityTests"
+        }
+      },
+      "audit": {
+        "engineAttempts": 49,
+        "auditPasses": 49,
+        "recoveredElementDetectionTimeouts": 0,
+        "initialScreenCategoryPairs": 49,
+        "completedPasses": 49,
+        "visibleContrastRetestPasses": 0,
+        "cumulativeAttemptAttachments": 7,
+        "progressAttachments": 7,
+        "rawFindings": 21,
+        "resolutionCounts": {
+          "reviewed: welcome heading; complete AX5 text in ACCESSIBILITY_REVIEW.md": 1,
+          "reviewed: decorative avatar initials; accessible row has the full name": 1,
+          "reviewed: actual opaque glyph/background pixels; ACCESSIBILITY_CONTRAST_REVIEW.md": 2,
+          "reviewed: measured custom-font scaling; separate AX5 layout coverage": 16,
+          "reviewed: unchanged profile; disabled save action (inactive-control contrast exemption)": 1
+        },
+        "reviewedFindings": 21,
+        "verifiedTargets": [],
+        "outsideRetestViewportNoMeasurement": [],
+        "outsideRetestViewportCount": 0,
+        "unresolved": 0,
+        "deferred": 0,
+        "zeroRawFindings": false,
+        "noMeasurementBoundary": "outside retest viewport records have no contrast measurement and never count as successful measurements or verified targets."
+      },
+      "fonts": {
+        "samples": 74,
+        "categoriesPerSample": 12,
+        "actualHeightsValidated": 888,
+        "exactSizeStyleWeightMatrixValidated": true,
+        "monotonicPositiveHeightsValidated": true,
+        "lastCategoryExceeds1_5TimesLargeValidated": true,
+        "strictAccessibilityCategoryGrowthValidated": true,
+        "notPixelContrastOrWholeAppLayoutAcceptance": true
+      },
+      "artifact": {
+        "id": 13538397031,
+        "name": "results-iPad18",
+        "bytes": 228994409,
+        "githubDigest": "sha256:9e957038127e2d317fe783691b448c87210541c49f3ab92cdd3417f417b5ac41",
+        "downloadedSHA256": "9e957038127e2d317fe783691b448c87210541c49f3ab92cdd3417f417b5ac41",
+        "digestMatchesGitHub": true,
+        "sizeMatchesGitHub": true,
+        "zipCRCVerified": true
+      },
+      "nativeLogSHA256": "e0dbea28e41224ee7a0b198e064d8c9c1853eaca9553cf51df1958612bf85727",
+      "attachments": [
+        {
+          "file": "iPad18/attachments/8A9A2290-7D48-455F-889A-74E1E6A19F0F.json",
+          "testIdentifier": "TypographyAccessibilityTests/testBundledFontsScaleInActualUIKitHostingAtAllDynamicTypeSizes()",
+          "attachment": {
+            "configurationName": "Test Scheme Action",
+            "deviceId": "2A250684-88E3-4EDB-A21E-B7726B4C69F6",
+            "deviceName": "iPad mini (A17 Pro)",
+            "exportedFileName": "8A9A2290-7D48-455F-889A-74E1E6A19F0F.json",
+            "isAssociatedWithFailure": false,
+            "suggestedHumanReadableName": "stage08-actual-font-scaling_0_87406737-353D-472B-92E7-3D7D3C4A634A.json",
+            "timestamp": 1793996083.53
+          },
+          "semanticName": "stage08-actual-font-scaling",
+          "bytes": 37348,
+          "sha256": "5d4358d7cba41675258cff65eaee9b6767f793c3a9f524def36258205c534423"
+        },
+        {
+          "file": "iPad18/attachments/6A655CB0-A4CC-4B9B-8C4C-1209C8A2BB78.json",
+          "testIdentifier": "FoundationUITests/testAccessibilityStage08CoreScreens()",
+          "attachment": {
+            "configurationName": "Test Scheme Action",
+            "deviceId": "2A250684-88E3-4EDB-A21E-B7726B4C69F6",
+            "deviceName": "iPad mini (A17 Pro)",
+            "exportedFileName": "6A655CB0-A4CC-4B9B-8C4C-1209C8A2BB78.json",
+            "isAssociatedWithFailure": false,
+            "suggestedHumanReadableName": "stage08-audit-progress-welcome_0_1C4FA6D7-A8CE-4A96-A530-9EC7F4EEB9C9.json",
+            "timestamp": 1793996145.673
+          },
+          "semanticName": "stage08-audit-progress-welcome",
+          "bytes": 417,
+          "sha256": "808c8a8a6f6abf244c9b95465604ca8c8b83484b6d144a1137382cacd8cac9ce"
+        },
+        {
+          "file": "iPad18/attachments/C914DE65-D191-4824-8363-A0CDC60712E5.json",
+          "testIdentifier": "FoundationUITests/testAccessibilityStage08CoreScreens()",
+          "attachment": {
+            "configurationName": "Test Scheme Action",
+            "deviceId": "2A250684-88E3-4EDB-A21E-B7726B4C69F6",
+            "deviceName": "iPad mini (A17 Pro)",
+            "exportedFileName": "C914DE65-D191-4824-8363-A0CDC60712E5.json",
+            "isAssociatedWithFailure": false,
+            "suggestedHumanReadableName": "stage08-audit-attempts_0_0CA59236-C24C-4C9C-81EA-DA25F147D7E7.json",
+            "timestamp": 1793996145.674
+          },
+          "semanticName": "stage08-audit-attempts",
+          "bytes": 3050,
+          "sha256": "07a443d617f7db19a1ebae7644445a0648e607cc412bf81bb992ca8c2c52cb87"
+        },
+        {
+          "file": "iPad18/attachments/1BA0BFAE-721F-48F2-9939-B67E416EB41D.json",
+          "testIdentifier": "FoundationUITests/testAccessibilityStage08CoreScreens()",
+          "attachment": {
+            "configurationName": "Test Scheme Action",
+            "deviceId": "2A250684-88E3-4EDB-A21E-B7726B4C69F6",
+            "deviceName": "iPad mini (A17 Pro)",
+            "exportedFileName": "1BA0BFAE-721F-48F2-9939-B67E416EB41D.json",
+            "isAssociatedWithFailure": false,
+            "suggestedHumanReadableName": "stage08-audit-progress-messages_0_75A974F6-7EE9-47A0-964C-00F417645A1F.json",
+            "timestamp": 1793996199.751
+          },
+          "semanticName": "stage08-audit-progress-messages",
+          "bytes": 776,
+          "sha256": "63a2d211f0d41de07b563adabb22fbc5a5dae35447b3fe1a79b94e53caa2131f"
+        },
+        {
+          "file": "iPad18/attachments/FA7FFA7C-30D2-4327-9C3E-D7A33CA590B9.json",
+          "testIdentifier": "FoundationUITests/testAccessibilityStage08CoreScreens()",
+          "attachment": {
+            "configurationName": "Test Scheme Action",
+            "deviceId": "2A250684-88E3-4EDB-A21E-B7726B4C69F6",
+            "deviceName": "iPad mini (A17 Pro)",
+            "exportedFileName": "FA7FFA7C-30D2-4327-9C3E-D7A33CA590B9.json",
+            "isAssociatedWithFailure": false,
+            "suggestedHumanReadableName": "stage08-audit-attempts_0_3414B732-1981-4017-9AE9-C9C2CC98FCB2.json",
+            "timestamp": 1793996199.752
+          },
+          "semanticName": "stage08-audit-attempts",
+          "bytes": 6065,
+          "sha256": "c8d20ad476cf376085fe9350197b864805956302005102f0f839f81571ee2fbc"
+        },
+        {
+          "file": "iPad18/attachments/99AF88E6-11BB-40ED-B72E-A9DEF7718A18.json",
+          "testIdentifier": "FoundationUITests/testAccessibilityStage08CoreScreens()",
+          "attachment": {
+            "configurationName": "Test Scheme Action",
+            "deviceId": "2A250684-88E3-4EDB-A21E-B7726B4C69F6",
+            "deviceName": "iPad mini (A17 Pro)",
+            "exportedFileName": "99AF88E6-11BB-40ED-B72E-A9DEF7718A18.json",
+            "isAssociatedWithFailure": false,
+            "suggestedHumanReadableName": "stage08-audit-progress-profile_0_CA8E1048-24D5-4796-9A9C-90ABBB2616F0.json",
+            "timestamp": 1793996214.665
+          },
+          "semanticName": "stage08-audit-progress-profile",
+          "bytes": 776,
+          "sha256": "63a2d211f0d41de07b563adabb22fbc5a5dae35447b3fe1a79b94e53caa2131f"
+        },
+        {
+          "file": "iPad18/attachments/D0CB2F0C-B5BD-4061-9866-5AF1B4587B49.json",
+          "testIdentifier": "FoundationUITests/testAccessibilityStage08CoreScreens()",
+          "attachment": {
+            "configurationName": "Test Scheme Action",
+            "deviceId": "2A250684-88E3-4EDB-A21E-B7726B4C69F6",
+            "deviceName": "iPad mini (A17 Pro)",
+            "exportedFileName": "D0CB2F0C-B5BD-4061-9866-5AF1B4587B49.json",
+            "isAssociatedWithFailure": false,
+            "suggestedHumanReadableName": "stage08-audit-attempts_0_5F5130EF-F7E7-49AE-99C9-8F30A8F07405.json",
+            "timestamp": 1793996214.667
+          },
+          "semanticName": "stage08-audit-attempts",
+          "bytes": 9076,
+          "sha256": "98deeb7bb4bb19c34af1c7cdb18622631d6bb7aae8de641b7b354656ff2702cd"
+        },
+        {
+          "file": "iPad18/attachments/CE3C5F67-AA24-4E4C-A941-C9EE72A1AA27.json",
+          "testIdentifier": "FoundationUITests/testAccessibilityStage08CoreScreens()",
+          "attachment": {
+            "configurationName": "Test Scheme Action",
+            "deviceId": "2A250684-88E3-4EDB-A21E-B7726B4C69F6",
+            "deviceName": "iPad mini (A17 Pro)",
+            "exportedFileName": "CE3C5F67-AA24-4E4C-A941-C9EE72A1AA27.json",
+            "isAssociatedWithFailure": false,
+            "suggestedHumanReadableName": "stage08-audit-progress-calendar_0_840FDA55-6FAD-41B8-8B66-2E38DB1458A0.json",
+            "timestamp": 1793996237.332
+          },
+          "semanticName": "stage08-audit-progress-calendar",
+          "bytes": 7124,
+          "sha256": "9124e6429b540ee5ee13ef13193f4628753976ccb825900c9af6da762e1c64b8"
+        },
+        {
+          "file": "iPad18/attachments/87511026-0EA6-4720-915C-3D2457B7036B.json",
+          "testIdentifier": "FoundationUITests/testAccessibilityStage08CoreScreens()",
+          "attachment": {
+            "configurationName": "Test Scheme Action",
+            "deviceId": "2A250684-88E3-4EDB-A21E-B7726B4C69F6",
+            "deviceName": "iPad mini (A17 Pro)",
+            "exportedFileName": "87511026-0EA6-4720-915C-3D2457B7036B.json",
+            "isAssociatedWithFailure": false,
+            "suggestedHumanReadableName": "stage08-audit-attempts_0_FA0F8B59-F3CA-4A1F-8DFD-CD796EE0028C.json",
+            "timestamp": 1793996237.333
+          },
+          "semanticName": "stage08-audit-attempts",
+          "bytes": 12097,
+          "sha256": "0e154aca86bb54cf302a664b2c98242ffc8b0e67fad34a322620e2fff0671bd6"
+        },
+        {
+          "file": "iPad18/attachments/9C8B69A0-C8DF-4FCA-8503-91A1C33C3449.json",
+          "testIdentifier": "FoundationUITests/testAccessibilityStage08CoreScreens()",
+          "attachment": {
+            "configurationName": "Test Scheme Action",
+            "deviceId": "2A250684-88E3-4EDB-A21E-B7726B4C69F6",
+            "deviceName": "iPad mini (A17 Pro)",
+            "exportedFileName": "9C8B69A0-C8DF-4FCA-8503-91A1C33C3449.json",
+            "isAssociatedWithFailure": false,
+            "suggestedHumanReadableName": "stage08-audit-progress-recordings_0_420D29B6-2EBD-4F3B-9DD3-0CBBB88F8379.json",
+            "timestamp": 1793996256.352
+          },
+          "semanticName": "stage08-audit-progress-recordings",
+          "bytes": 7619,
+          "sha256": "0abab835c68af571b39751322a856c728b4072bc7239034d96a18d6e59f40631"
+        },
+        {
+          "file": "iPad18/attachments/CF1CFCD9-EDAF-4EB1-92C1-29BEED628E99.json",
+          "testIdentifier": "FoundationUITests/testAccessibilityStage08CoreScreens()",
+          "attachment": {
+            "configurationName": "Test Scheme Action",
+            "deviceId": "2A250684-88E3-4EDB-A21E-B7726B4C69F6",
+            "deviceName": "iPad mini (A17 Pro)",
+            "exportedFileName": "CF1CFCD9-EDAF-4EB1-92C1-29BEED628E99.json",
+            "isAssociatedWithFailure": false,
+            "suggestedHumanReadableName": "stage08-audit-attempts_0_2B35478E-AC4B-45B6-BB74-850D42ED4634.json",
+            "timestamp": 1793996256.354
+          },
+          "semanticName": "stage08-audit-attempts",
+          "bytes": 15130,
+          "sha256": "8e61208ebf8ea77f7b4ba0afd07e382886dea25e68f1aebf941014d2cd221b5f"
+        },
+        {
+          "file": "iPad18/attachments/6A513336-2930-40E0-A39D-6B50E7277882.json",
+          "testIdentifier": "FoundationUITests/testAccessibilityStage08CoreScreens()",
+          "attachment": {
+            "configurationName": "Test Scheme Action",
+            "deviceId": "2A250684-88E3-4EDB-A21E-B7726B4C69F6",
+            "deviceName": "iPad mini (A17 Pro)",
+            "exportedFileName": "6A513336-2930-40E0-A39D-6B50E7277882.json",
+            "isAssociatedWithFailure": false,
+            "suggestedHumanReadableName": "stage08-audit-progress-folders_0_765E8D42-D462-4767-9F60-F2488D68DAF8.json",
+            "timestamp": 1793996274.961
+          },
+          "semanticName": "stage08-audit-progress-folders",
+          "bytes": 8049,
+          "sha256": "25097e5d3bfb419cc6bc124d979faa9619c2f0912a28e7bb0b311cea3b4e0bdd"
+        },
+        {
+          "file": "iPad18/attachments/51EFFEAA-1C33-4111-8801-C756C7CDE43A.json",
+          "testIdentifier": "FoundationUITests/testAccessibilityStage08CoreScreens()",
+          "attachment": {
+            "configurationName": "Test Scheme Action",
+            "deviceId": "2A250684-88E3-4EDB-A21E-B7726B4C69F6",
+            "deviceName": "iPad mini (A17 Pro)",
+            "exportedFileName": "51EFFEAA-1C33-4111-8801-C756C7CDE43A.json",
+            "isAssociatedWithFailure": false,
+            "suggestedHumanReadableName": "stage08-audit-attempts_0_6B4E5DE8-1FA0-4EEF-B551-EA9B81E7A3DF.json",
+            "timestamp": 1793996274.962
+          },
+          "semanticName": "stage08-audit-attempts",
+          "bytes": 18141,
+          "sha256": "0d265d7c5ddba7bde506254d5af24884899522f6086ff002f2406f4c7ad849b4"
+        },
+        {
+          "file": "iPad18/attachments/7A1E20DB-5E11-430E-A627-E7703F94AACB.json",
+          "testIdentifier": "FoundationUITests/testAccessibilityStage08CoreScreens()",
+          "attachment": {
+            "configurationName": "Test Scheme Action",
+            "deviceId": "2A250684-88E3-4EDB-A21E-B7726B4C69F6",
+            "deviceName": "iPad mini (A17 Pro)",
+            "exportedFileName": "7A1E20DB-5E11-430E-A627-E7703F94AACB.json",
+            "isAssociatedWithFailure": false,
+            "suggestedHumanReadableName": "stage08-audit-progress-settings_0_AE6A4FC1-3C66-45D9-9A2E-C872C6DC66DB.json",
+            "timestamp": 1793996294.179
+          },
+          "semanticName": "stage08-audit-progress-settings",
+          "bytes": 8420,
+          "sha256": "074fc7f0de0d2ddbd97baca9a04819ddff37dca7f43a5e7e8a894c01034eb82f"
+        },
+        {
+          "file": "iPad18/attachments/DA7317AD-9908-49DF-B73D-A8E94F997B7A.json",
+          "testIdentifier": "FoundationUITests/testAccessibilityStage08CoreScreens()",
+          "attachment": {
+            "configurationName": "Test Scheme Action",
+            "deviceId": "2A250684-88E3-4EDB-A21E-B7726B4C69F6",
+            "deviceName": "iPad mini (A17 Pro)",
+            "exportedFileName": "DA7317AD-9908-49DF-B73D-A8E94F997B7A.json",
+            "isAssociatedWithFailure": false,
+            "suggestedHumanReadableName": "stage08-audit-attempts_0_41A3CC18-4715-4D9C-9A30-8E3B4BD4D564.json",
+            "timestamp": 1793996294.182
+          },
+          "semanticName": "stage08-audit-attempts",
+          "bytes": 21159,
+          "sha256": "a4efd635bfad079cc129c26bdea270279fc3af4ada06c52a00e611b77b4c4a1b"
+        },
+        {
+          "file": "iPad18/attachments/140F9757-A51B-4742-8F30-6DBDDDA1B9F9.json",
+          "testIdentifier": "FoundationUITests/testAccessibilityStage08CoreScreens()",
+          "attachment": {
+            "configurationName": "Test Scheme Action",
+            "deviceId": "2A250684-88E3-4EDB-A21E-B7726B4C69F6",
+            "deviceName": "iPad mini (A17 Pro)",
+            "exportedFileName": "140F9757-A51B-4742-8F30-6DBDDDA1B9F9.json",
+            "isAssociatedWithFailure": false,
+            "suggestedHumanReadableName": "stage08-accessibility-issues_0_902A9705-FB41-4234-B865-9A0023A0E1E5.json",
+            "timestamp": 1793996294.183
+          },
+          "semanticName": "stage08-accessibility-issues",
+          "bytes": 8420,
+          "sha256": "074fc7f0de0d2ddbd97baca9a04819ddff37dca7f43a5e7e8a894c01034eb82f"
+        }
+      ],
+      "originalExportManifestBoundary": "Complete original exporter catalog retained; only selected audit/font JSON attachments are copied, no PNG/video duplication."
+    }
+  },
+  "files": [
+    {
+      "file": "artifact-metadata.json",
+      "bytes": 3410,
+      "sha256": "d764d4f8e6acbe8e0dd040950e9b04d29e3aea477dac173eef3f8887a65caba4"
+    },
+    {
+      "file": "iPad18/attachments/140F9757-A51B-4742-8F30-6DBDDDA1B9F9.json",
+      "bytes": 8420,
+      "sha256": "074fc7f0de0d2ddbd97baca9a04819ddff37dca7f43a5e7e8a894c01034eb82f"
+    },
+    {
+      "file": "iPad18/attachments/1BA0BFAE-721F-48F2-9939-B67E416EB41D.json",
+      "bytes": 776,
+      "sha256": "63a2d211f0d41de07b563adabb22fbc5a5dae35447b3fe1a79b94e53caa2131f"
+    },
+    {
+      "file": "iPad18/attachments/51EFFEAA-1C33-4111-8801-C756C7CDE43A.json",
+      "bytes": 18141,
+      "sha256": "0d265d7c5ddba7bde506254d5af24884899522f6086ff002f2406f4c7ad849b4"
+    },
+    {
+      "file": "iPad18/attachments/6A513336-2930-40E0-A39D-6B50E7277882.json",
+      "bytes": 8049,
+      "sha256": "25097e5d3bfb419cc6bc124d979faa9619c2f0912a28e7bb0b311cea3b4e0bdd"
+    },
+    {
+      "file": "iPad18/attachments/6A655CB0-A4CC-4B9B-8C4C-1209C8A2BB78.json",
+      "bytes": 417,
+      "sha256": "808c8a8a6f6abf244c9b95465604ca8c8b83484b6d144a1137382cacd8cac9ce"
+    },
+    {
+      "file": "iPad18/attachments/7A1E20DB-5E11-430E-A627-E7703F94AACB.json",
+      "bytes": 8420,
+      "sha256": "074fc7f0de0d2ddbd97baca9a04819ddff37dca7f43a5e7e8a894c01034eb82f"
+    },
+    {
+      "file": "iPad18/attachments/87511026-0EA6-4720-915C-3D2457B7036B.json",
+      "bytes": 12097,
+      "sha256": "0e154aca86bb54cf302a664b2c98242ffc8b0e67fad34a322620e2fff0671bd6"
+    },
+    {
+      "file": "iPad18/attachments/8A9A2290-7D48-455F-889A-74E1E6A19F0F.json",
+      "bytes": 37348,
+      "sha256": "5d4358d7cba41675258cff65eaee9b6767f793c3a9f524def36258205c534423"
+    },
+    {
+      "file": "iPad18/attachments/99AF88E6-11BB-40ED-B72E-A9DEF7718A18.json",
+      "bytes": 776,
+      "sha256": "63a2d211f0d41de07b563adabb22fbc5a5dae35447b3fe1a79b94e53caa2131f"
+    },
+    {
+      "file": "iPad18/attachments/9C8B69A0-C8DF-4FCA-8503-91A1C33C3449.json",
+      "bytes": 7619,
+      "sha256": "0abab835c68af571b39751322a856c728b4072bc7239034d96a18d6e59f40631"
+    },
+    {
+      "file": "iPad18/attachments/C914DE65-D191-4824-8363-A0CDC60712E5.json",
+      "bytes": 3050,
+      "sha256": "07a443d617f7db19a1ebae7644445a0648e607cc412bf81bb992ca8c2c52cb87"
+    },
+    {
+      "file": "iPad18/attachments/CE3C5F67-AA24-4E4C-A941-C9EE72A1AA27.json",
+      "bytes": 7124,
+      "sha256": "9124e6429b540ee5ee13ef13193f4628753976ccb825900c9af6da762e1c64b8"
+    },
+    {
+      "file": "iPad18/attachments/CF1CFCD9-EDAF-4EB1-92C1-29BEED628E99.json",
+      "bytes": 15130,
+      "sha256": "8e61208ebf8ea77f7b4ba0afd07e382886dea25e68f1aebf941014d2cd221b5f"
+    },
+    {
+      "file": "iPad18/attachments/D0CB2F0C-B5BD-4061-9866-5AF1B4587B49.json",
+      "bytes": 9076,
+      "sha256": "98deeb7bb4bb19c34af1c7cdb18622631d6bb7aae8de641b7b354656ff2702cd"
+    },
+    {
+      "file": "iPad18/attachments/DA7317AD-9908-49DF-B73D-A8E94F997B7A.json",
+      "bytes": 21159,
+      "sha256": "a4efd635bfad079cc129c26bdea270279fc3af4ada06c52a00e611b77b4c4a1b"
+    },
+    {
+      "file": "iPad18/attachments/FA7FFA7C-30D2-4327-9C3E-D7A33CA590B9.json",
+      "bytes": 6065,
+      "sha256": "c8d20ad476cf376085fe9350197b864805956302005102f0f839f81571ee2fbc"
+    },
+    {
+      "file": "iPad18/environment.json",
+      "bytes": 315,
+      "sha256": "25a73e4d3dd6cac4b67d8cf220bd0c0d3c02aeacf3a7fc08d9ac626b25cbfe32"
+    },
+    {
+      "file": "iPad18/native-test-results.txt",
+      "bytes": 2350,
+      "sha256": "88a9013fcfc033f1542c050a35aa7a4ae3b5d0071f3ca29863e9724dcc37a341"
+    },
+    {
+      "file": "iPad18/summary.json",
+      "bytes": 1474,
+      "sha256": "94ba9a3752c06a72134dac97cc24d92a8d56f6a25411f1675b47292c5a2dbd08"
+    },
+    {
+      "file": "iPad18/xcresult-export-manifest.json",
+      "bytes": 41080,
+      "sha256": "22f5c72f6dff6f8b78094c039ee9d7a0a70080a450448ff0e59389862a70cd05"
+    },
+    {
+      "file": "iPad26/attachments/05B385BD-D468-4D3A-AE52-804746094C17.json",
+      "bytes": 4969,
+      "sha256": "2f6b3be84b03fc061977f8bb81661770b64a492534e2bab970f01d0e8ff75781"
+    },
+    {
+      "file": "iPad26/attachments/0737ACC8-FD25-4CD5-AABD-9C1F1360B0A6.json",
+      "bytes": 21152,
+      "sha256": "9d312c1f73312e6432c9bee47ff7a55a74d411d1a5999f83d77b17c51892d2df"
+    },
+    {
+      "file": "iPad26/attachments/08A1212A-D939-4B4B-ABB4-89F2EB490ED1.json",
+      "bytes": 5814,
+      "sha256": "081deafbc98b34e9b431efaaceff05975ad2317065bf66ba3bfa0b14af14466e"
+    },
+    {
+      "file": "iPad26/attachments/17FB0378-006F-40D4-A963-91AC2500F03D.json",
+      "bytes": 12095,
+      "sha256": "2e992aa294bcce1f1ed250d193ba3aa3a5a7885b013ef3141a17a17eabb4be0a"
+    },
+    {
+      "file": "iPad26/attachments/235686D3-88BE-4AAA-BDF9-94E1C1FF48BB.json",
+      "bytes": 6066,
+      "sha256": "ef44d052bcf41b782db580d991fd00295f483d5cc6f1a259f158be7550050e0b"
+    },
+    {
+      "file": "iPad26/attachments/27899FB0-22A5-493A-8C00-AFCB47CCDF4F.json",
+      "bytes": 2771,
+      "sha256": "31a30d93b62af485e5907b75cc2dd7efd3f7456f85a46429d5bcb717ee449f23"
+    },
+    {
+      "file": "iPad26/attachments/3AB0FD0A-8240-40A7-B304-1D17CD3A8992.json",
+      "bytes": 15125,
+      "sha256": "7e071874fd3d1b5d69f4d62ba96fe9350d59dfd7880e4edf68a332db172bcb02"
+    },
+    {
+      "file": "iPad26/attachments/5D591DEC-933F-4015-981D-569EA82D1E8C.json",
+      "bytes": 9078,
+      "sha256": "be4b3e83f15e2d0d868775d5bd65cd5352ee8b1dc18d3e6ea094a0e88cd7faa8"
+    },
+    {
+      "file": "iPad26/attachments/92742058-533D-488C-9395-5B368FD0847D.json",
+      "bytes": 860,
+      "sha256": "c0e1ba55267840223f88264031713967484982453398544e2cb8f45182579c94"
+    },
+    {
+      "file": "iPad26/attachments/A9D0DEC1-D451-4D1A-9CD3-F61D5C6AC29C.json",
+      "bytes": 1601,
+      "sha256": "236dde3766c6645e70a64c06e6edb2f444eada3961471a8dfe938b4141225483"
+    },
+    {
+      "file": "iPad26/attachments/BA2B4071-FC93-4CDD-AB8D-EAE6BC2213EE.json",
+      "bytes": 18136,
+      "sha256": "b2ca07d7b203a84edc98197f533e5ba5402835feb8820de0f6bec98883ab9197"
+    },
+    {
+      "file": "iPad26/attachments/BADEB2F6-10B3-4957-BE68-A3AD5B1F4FD5.json",
+      "bytes": 1601,
+      "sha256": "236dde3766c6645e70a64c06e6edb2f444eada3961471a8dfe938b4141225483"
+    },
+    {
+      "file": "iPad26/attachments/C13306C2-AD5E-4DF0-899B-AEC6FB955A2E.json",
+      "bytes": 6545,
+      "sha256": "63be8df7e2d65958e97a315db3db02a6e607b53c2d119a2735983d6bca98c30a"
+    },
+    {
+      "file": "iPad26/attachments/F0D79F66-1D73-49C6-8C64-69E57F84B1A2.json",
+      "bytes": 6545,
+      "sha256": "63be8df7e2d65958e97a315db3db02a6e607b53c2d119a2735983d6bca98c30a"
+    },
+    {
+      "file": "iPad26/attachments/F5067C54-303A-43F8-A388-B4E88A26C3C9.json",
+      "bytes": 3050,
+      "sha256": "fdc2da8ff97e64ed68c4f419c12fe9f63c4b03285b3018e307bd1f05b0dd8091"
+    },
+    {
+      "file": "iPad26/attachments/F74568AD-C351-494B-B7D1-55CB1489802E.json",
+      "bytes": 37348,
+      "sha256": "5d4358d7cba41675258cff65eaee9b6767f793c3a9f524def36258205c534423"
+    },
+    {
+      "file": "iPad26/environment.json",
+      "bytes": 308,
+      "sha256": "9d8db8375d906dcac642fd992b089145b3b7b8655a63bdc133bd2b8b6716ea6b"
+    },
+    {
+      "file": "iPad26/native-test-results.txt",
+      "bytes": 5391,
+      "sha256": "e18a9e65871a6a84ea3a0fb38d67bd6c1d72da7d7eead2e7e8b07f281da5ba8f"
+    },
+    {
+      "file": "iPad26/summary.json",
+      "bytes": 1669,
+      "sha256": "e41514bbbd94cea5e2761111f0b8a97d354660172fffb5df1c53967a77115990"
+    },
+    {
+      "file": "iPad26/xcresult-export-manifest.json",
+      "bytes": 56273,
+      "sha256": "cc97ab23fe5c46d8b99bb35605cb754ed83e6014689de4d15664d1481199b7ac"
+    },
+    {
+      "file": "iPhone18/attachments/101BF7B0-2D65-4C06-AFB2-88DB2C010B36.json",
+      "bytes": 775,
+      "sha256": "470ccac084d42e57ab5e88387049f92b4af34a371dc9dc655939714c3fc5b77a"
+    },
+    {
+      "file": "iPhone18/attachments/19906251-2D58-4F1C-A896-F76E54CA91A0.json",
+      "bytes": 9596,
+      "sha256": "cd689666a9a44e941da79760ec75e48e1ae45037f77cacd1ef07bc85733cae98"
+    },
+    {
+      "file": "iPhone18/attachments/23587661-D79E-41A6-BF41-5F8E4192679C.json",
+      "bytes": 9596,
+      "sha256": "cd689666a9a44e941da79760ec75e48e1ae45037f77cacd1ef07bc85733cae98"
+    },
+    {
+      "file": "iPhone18/attachments/406C1259-DC90-4C28-9969-9911C8311980.json",
+      "bytes": 7007,
+      "sha256": "0ecff4c4b0da9f1b8dfcf8d6500382dd866091c9af41d314b5c1e87ecdb07199"
+    },
+    {
+      "file": "iPhone18/attachments/4581F00E-C002-40AF-9834-3908AEF91421.json",
+      "bytes": 19483,
+      "sha256": "83d6ceadeecb488b517e9b6009c2ed9064cbb206bf26fe77b8aab71438e927ad"
+    },
+    {
+      "file": "iPhone18/attachments/5ADC9C92-05A7-4422-AB61-EEDD9EDF44CC.json",
+      "bytes": 22500,
+      "sha256": "8b5986aec5e8d2207caff98886b5ed96a985e8d1cda05a282bcf3d1369760f5a"
+    },
+    {
+      "file": "iPhone18/attachments/7CE2507D-5E6F-4520-B931-6B750C79B0C9.json",
+      "bytes": 9596,
+      "sha256": "cd689666a9a44e941da79760ec75e48e1ae45037f77cacd1ef07bc85733cae98"
+    },
+    {
+      "file": "iPhone18/attachments/7EB44420-8741-4509-93D7-2DC9184B2347.json",
+      "bytes": 9524,
+      "sha256": "c98200253f19e287ab6c1a88b686b3223cf2a0dfd077ff4b35e892edb34618a7"
+    },
+    {
+      "file": "iPhone18/attachments/8CF95D85-C9BE-466F-BAF5-51E79212486B.json",
+      "bytes": 1438,
+      "sha256": "019c836035c7b38195f603693c32dd8502a655cb98c137434db809c41af720ef"
+    },
+    {
+      "file": "iPhone18/attachments/8D6E8455-4971-4CCD-B783-D2A468D2C040.json",
+      "bytes": 416,
+      "sha256": "728400914f877e53b58070b9633dc1e9c318f6cdf603e4ab85da1f6a23bd3df9"
+    },
+    {
+      "file": "iPhone18/attachments/92296087-D322-4E8D-84B6-FCE93AD6E5EA.json",
+      "bytes": 6067,
+      "sha256": "546231aa9007b993ff1bfe3ff490e94c315ab2f454db0952a88de6fc7a0baca2"
+    },
+    {
+      "file": "iPhone18/attachments/A9AE48E2-1EA0-4A51-AA2A-3B16EC50EBBF.json",
+      "bytes": 16472,
+      "sha256": "6d2460c967b70528789acb24c9ceaae7f286f3b142bc998de326ed199d014a56"
+    },
+    {
+      "file": "iPhone18/attachments/C6D6F8F9-ECE0-4338-8DAB-B162D5245A72.json",
+      "bytes": 37348,
+      "sha256": "5d4358d7cba41675258cff65eaee9b6767f793c3a9f524def36258205c534423"
+    },
+    {
+      "file": "iPhone18/attachments/D3E96395-71F0-4312-9FDD-BF95B20E9472.json",
+      "bytes": 12991,
+      "sha256": "651fc9ed32d7236e5d6a88e5480b1be5cf2fdd129e851e53d4624e0d254e9711"
+    },
+    {
+      "file": "iPhone18/attachments/F14AEA7F-49DB-4690-90BE-EE14530BEA4B.json",
+      "bytes": 3050,
+      "sha256": "463e29661af85efe0c9a3101219e88495fd4ec846c07bf6c782640ef3a6bc311"
+    },
+    {
+      "file": "iPhone18/attachments/F6770EB4-E7ED-4F09-BF64-285C1C2CAED5.json",
+      "bytes": 9166,
+      "sha256": "7a2924ac7416b22a07feaf97662b21cc3f2429f28044121c05c4a339f67bb4f2"
+    },
+    {
+      "file": "iPhone18/environment.json",
+      "bytes": 322,
+      "sha256": "75b962242c73cb54ee99b1440a16eabcce13f9168c1d7c7241ace57139e39d7a"
+    },
+    {
+      "file": "iPhone18/native-test-results.txt",
+      "bytes": 2351,
+      "sha256": "4c562298a8a11d7d081a8085ad6fb2c968e259c5653f8ae3f6c391642f766b3c"
+    },
+    {
+      "file": "iPhone18/summary.json",
+      "bytes": 1011,
+      "sha256": "fd7bb7f407d87f2a7bbb92e5ebbc1f5ee7ddf4adead23f890112f4cee1c33f65"
+    },
+    {
+      "file": "iPhone18/xcresult-export-manifest.json",
+      "bytes": 24760,
+      "sha256": "5164928ccfff3633f00085a2d2ef78d65ca680bb921fcebf212882820c91ad1e"
+    },
+    {
+      "file": "iPhone26/attachments/032F11FC-1EC3-4BBD-8A8C-865660AF59E3.json",
+      "bytes": 3050,
+      "sha256": "395120487fe18e6b52829f573f70e08a98dbd38841b5a15579910cf1704e18a3"
+    },
+    {
+      "file": "iPhone26/attachments/04216EF4-612F-48A5-ACD0-1C60A023A697.json",
+      "bytes": 12095,
+      "sha256": "e4ef42f7a7e822424264463c44708f93e0459047fe8d129962bf5a76f630c586"
+    },
+    {
+      "file": "iPhone26/attachments/1448A8A3-B6DB-4A54-9A82-260C8D07EA02.json",
+      "bytes": 9076,
+      "sha256": "ece3a5a653004ecdd63551e62f26f719e5ac0964fafaeeb4ca1a26772a670f93"
+    },
+    {
+      "file": "iPhone26/attachments/2F15DBCF-F06D-4A9F-967D-013D3A6C557C.json",
+      "bytes": 45608,
+      "sha256": "6c4cd6924d034e62013161b71fb5b641c1130a8af7d9117b090ffd69b58f272c"
+    },
+    {
+      "file": "iPhone26/attachments/6B6A0B9F-6662-4A27-974C-A06BACF0322A.json",
+      "bytes": 18139,
+      "sha256": "6f77df34f144fd4e19aad6c9dd14f11952b49d0640ba7ac796d611dadb80b935"
+    },
+    {
+      "file": "iPhone26/attachments/706289DF-9C16-479B-BF89-65C3A2DE7BD9.json",
+      "bytes": 10261,
+      "sha256": "d8448dff32c641979e73f4a3c9bdbd779564eb56a964c5a21958c8f8e89ed904"
+    },
+    {
+      "file": "iPhone26/attachments/767579E4-3254-4517-BEF3-0B98C5765E95.json",
+      "bytes": 6065,
+      "sha256": "15acf92a5b6ed6d4cbba21a3522582b81f2232e1ee645e20984903b0fd1178ce"
+    },
+    {
+      "file": "iPhone26/attachments/85D0627C-67B7-42D9-B4B1-8D53F949A608.json",
+      "bytes": 814,
+      "sha256": "72fb2421654a20a152557d812ba1425c23641de5c68c1afbc1786000ae5b071c"
+    },
+    {
+      "file": "iPhone26/attachments/A5B38595-8808-44D1-9472-A106E49D708E.json",
+      "bytes": 10261,
+      "sha256": "d8448dff32c641979e73f4a3c9bdbd779564eb56a964c5a21958c8f8e89ed904"
+    },
+    {
+      "file": "iPhone26/attachments/B97CDB24-E0E7-4716-824B-F4A1B1127407.json",
+      "bytes": 9785,
+      "sha256": "501bc4084c623f2417e037e0157fe966d18579483670fac132edec46d071c769"
+    },
+    {
+      "file": "iPhone26/attachments/C7D1C5C4-862C-4576-BDFB-98FF991518A7.json",
+      "bytes": 15128,
+      "sha256": "08e7422cd76a4b40f1b4f867e6ee2d920698f41cc224794f6ccbaa8a00c94a9c"
+    },
+    {
+      "file": "iPhone26/attachments/DAA69B30-249B-40BA-BB1A-347C3F9DCF00.json",
+      "bytes": 8203,
+      "sha256": "7ae0ac44267989b04fcdee63c97577e3609ee93f9e7f9af10d8318be9cde3f44"
+    },
+    {
+      "file": "iPhone26/attachments/DE329A23-D444-4882-A9E8-A6DD6D9D9D63.json",
+      "bytes": 10261,
+      "sha256": "d8448dff32c641979e73f4a3c9bdbd779564eb56a964c5a21958c8f8e89ed904"
+    },
+    {
+      "file": "iPhone26/attachments/E3D6B449-41A1-4064-AF25-40F4A4075A86.json",
+      "bytes": 21157,
+      "sha256": "91f440f2ff4ebd30e67916970734d95210fc4ced6f9bd485e01ac028394453a0"
+    },
+    {
+      "file": "iPhone26/attachments/E8EF28D8-8918-4D17-A317-20487D4EC931.json",
+      "bytes": 472,
+      "sha256": "92f27aef181db1ce03d0f37107caef12e29e4c9e7f53ac65686a89f060b5c563"
+    },
+    {
+      "file": "iPhone26/attachments/FA34682C-B3B8-4836-8E6B-80D87D7F0D8D.json",
+      "bytes": 814,
+      "sha256": "72fb2421654a20a152557d812ba1425c23641de5c68c1afbc1786000ae5b071c"
+    },
+    {
+      "file": "iPhone26/environment.json",
+      "bytes": 304,
+      "sha256": "a630d04b29f57217aaa3937bd1bc37882937053bfed90ccef02fc329f3bc1f53"
+    },
+    {
+      "file": "iPhone26/native-test-results.txt",
+      "bytes": 5389,
+      "sha256": "5e3ef7fa63e9790cddad81fe01809f7687425ae7a67eb1dbb5516c231cb8006c"
+    },
+    {
+      "file": "iPhone26/summary.json",
+      "bytes": 1662,
+      "sha256": "800a8ee75d762ead68597d7aab354bfcab0236d683f5073b43366a4211d59119"
+    },
+    {
+      "file": "iPhone26/xcresult-export-manifest.json",
+      "bytes": 53881,
+      "sha256": "48e2b4f8c6ff422782bbf807a918dad76eee204da8b7368d91592671e3fbde8d"
+    }
+  ]
+}

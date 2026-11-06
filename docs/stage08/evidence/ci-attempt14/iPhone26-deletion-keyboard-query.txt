@@ -1,0 +1,7 @@
+Query chain:
+ →Find: Target Application 'com.meetspace.ios'
+  ↪︎Find: Descendants matching type Keyboard
+    ↪︎Find: First Match
+      ↪︎Find: Descendants matching type Button
+        ↪︎Find: Elements matching predicate 'identifier == "emoji" OR label IN {"Следующая клавиатура", "Next keyboard"}'
+          ↪︎Find: First Match

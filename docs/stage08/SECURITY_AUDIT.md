@@ -37,7 +37,7 @@ auth middleware/session repository и recording access/library: новый backe
 
 Дополнительный source review backend `9e6058c31cc07bff0f48d8f7f6a40106c55c4881`
 подтвердил окно гонки очистки push-привязок. Локальное исправление порядка операций
-iOS прошло **host regression PASS**, его нативный прогон пока **PENDING**; серверная межклиентская гонка
+iOS прошло **host regression PASS**. Native deletion UI на iPhone18 CI14 также PASS, но enabled/concurrent push-ветви этот сценарий не включает; серверная межклиентская гонка
 остаётся **OPEN P2**. Backend в рамках этой работы не изменяется. Это отдельное
 наблюдение и не закрывается успешным upload-response regression выше.
 
@@ -90,7 +90,7 @@ token после disable/scope switch: **11/11 focused PASS**, полный па
 179 PASS / 5 opt-in SKIP**. [Receipt, команды и source hashes](evidence/account-deletion/push-ordering/receipt.json)
 фиксируют рабочий снимок поверх `e0a37748eb865b84dddf3da6339d16e0d8e1a0fe`;
 использованы production lifecycle/API с controlled transport/platform doubles.
-Нативная проверка нового patch ещё **PENDING**; CI10 начат до него. Локальная
+Native deletion UI CI14 проверяет обычный путь при выключенном push; он не заменяет controlled-transport regression очереди и не подтверждает APNs или конкурентную регистрацию на устройстве. CI10 начат до patch. Локальная
 очередь не сериализует другой клиент и не гарантирует завершение серверного
 запроса, ответ которого потерян. Полное закрытие требует серверной проверки
 действующего аккаунта под общим с DELETE механизмом транзакционной блокировки

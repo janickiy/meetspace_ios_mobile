@@ -1,0 +1,212 @@
+[
+  {
+    "detail" : "Text of this element may be clipped at larger Dynamic Type sizes.",
+    "element" : "welcome.heading",
+    "frame" : "(141.0, 150.5, 265.5, 82.5)",
+    "label" : "Команда ближе.\nИдей больше.",
+    "resolution" : "reviewed: welcome heading; complete AX5 text in ACCESSIBILITY_REVIEW.md",
+    "screen" : "welcome",
+    "summary" : "Text clipped",
+    "type" : "131072"
+  },
+  {
+    "detail" : "Contrast is not high enough for element unless font size is larger.",
+    "element" : "",
+    "frame" : "(30.0, 305.5, 44.0, 44.0)",
+    "label" : "ТЕ",
+    "resolution" : "reviewed: decorative avatar initials; accessible row has the full name",
+    "screen" : "messages",
+    "summary" : "Contrast nearly passed",
+    "type" : "1"
+  },
+  {
+    "detail" : "Contrast is not high enough for element unless font size is larger.",
+    "element" : "calendar.weekday.0",
+    "frame" : "(49.25, 379.25, 13.5, 12.5)",
+    "label" : "Пн",
+    "resolution" : "reviewed: actual opaque glyph\/background pixels; ACCESSIBILITY_CONTRAST_REVIEW.md",
+    "screen" : "calendar",
+    "summary" : "Contrast nearly passed",
+    "type" : "1"
+  },
+  {
+    "detail" : "Contrast failed for element",
+    "element" : "calendar.weekday.4",
+    "frame" : "(285.75, 379.25, 12.5, 12.5)",
+    "label" : "Пт",
+    "resolution" : "reviewed: actual opaque glyph\/background pixels; ACCESSIBILITY_CONTRAST_REVIEW.md",
+    "screen" : "calendar",
+    "summary" : "Contrast failed",
+    "type" : "1"
+  },
+  {
+    "detail" : "User will not be able to change the font size of this element",
+    "element" : "calendar.weekday.0",
+    "frame" : "(49.25, 379.25, 13.5, 12.5)",
+    "label" : "Пн",
+    "resolution" : "reviewed: measured custom-font scaling; separate AX5 layout coverage",
+    "screen" : "calendar",
+    "summary" : "Dynamic Type font sizes are partially unsupported",
+    "type" : "65536"
+  },
+  {
+    "detail" : "User will not be able to change the font size of this element",
+    "element" : "calendar.hour.10",
+    "frame" : "(20.0, 619.5, 26.0, 12.5)",
+    "label" : "10:00",
+    "resolution" : "reviewed: measured custom-font scaling; separate AX5 layout coverage",
+    "screen" : "calendar",
+    "summary" : "Dynamic Type font sizes are partially unsupported",
+    "type" : "65536"
+  },
+  {
+    "detail" : "User will not be able to change the font size of this element",
+    "element" : "calendar.hour.13",
+    "frame" : "(20.0, 853.5, 26.0, 12.5)",
+    "label" : "13:00",
+    "resolution" : "reviewed: measured custom-font scaling; separate AX5 layout coverage",
+    "screen" : "calendar",
+    "summary" : "Dynamic Type font sizes are partially unsupported",
+    "type" : "65536"
+  },
+  {
+    "detail" : "User will not be able to change the font size of this element",
+    "element" : "calendar.weekday.2",
+    "frame" : "(167.25, 379.25, 13.5, 12.5)",
+    "label" : "Ср",
+    "resolution" : "reviewed: measured custom-font scaling; separate AX5 layout coverage",
+    "screen" : "calendar",
+    "summary" : "Dynamic Type font sizes are partially unsupported",
+    "type" : "65536"
+  },
+  {
+    "detail" : "User will not be able to change the font size of this element",
+    "element" : "calendar.hour.12",
+    "frame" : "(20.0, 775.5, 26.0, 12.5)",
+    "label" : "12:00",
+    "resolution" : "reviewed: measured custom-font scaling; separate AX5 layout coverage",
+    "screen" : "calendar",
+    "summary" : "Dynamic Type font sizes are partially unsupported",
+    "type" : "65536"
+  },
+  {
+    "detail" : "User will not be able to change the font size of this element",
+    "element" : "calendar.hour.11",
+    "frame" : "(20.0, 697.5, 24.0, 12.5)",
+    "label" : "11:00",
+    "resolution" : "reviewed: measured custom-font scaling; separate AX5 layout coverage",
+    "screen" : "calendar",
+    "summary" : "Dynamic Type font sizes are partially unsupported",
+    "type" : "65536"
+  },
+  {
+    "detail" : "User will not be able to change the font size of this element",
+    "element" : "calendar.weekday.3",
+    "frame" : "(227.0, 379.25, 12.0, 12.5)",
+    "label" : "Чт",
+    "resolution" : "reviewed: measured custom-font scaling; separate AX5 layout coverage",
+    "screen" : "calendar",
+    "summary" : "Dynamic Type font sizes are partially unsupported",
+    "type" : "65536"
+  },
+  {
+    "detail" : "User will not be able to change the font size of this element",
+    "element" : "calendar.weekday.1",
+    "frame" : "(109.25, 379.25, 11.5, 12.5)",
+    "label" : "Вт",
+    "resolution" : "reviewed: measured custom-font scaling; separate AX5 layout coverage",
+    "screen" : "calendar",
+    "summary" : "Dynamic Type font sizes are partially unsupported",
+    "type" : "65536"
+  },
+  {
+    "detail" : "User will not be able to change the font size of this element",
+    "element" : "calendar.weekday.5",
+    "frame" : "(344.25, 379.25, 13.5, 12.5)",
+    "label" : "Сб",
+    "resolution" : "reviewed: measured custom-font scaling; separate AX5 layout coverage",
+    "screen" : "calendar",
+    "summary" : "Dynamic Type font sizes are partially unsupported",
+    "type" : "65536"
+  },
+  {
+    "detail" : "User will not be able to change the font size of this element",
+    "element" : "calendar.hour.15",
+    "frame" : "(20.0, 1009.5, 25.5, 12.5)",
+    "label" : "15:00",
+    "resolution" : "reviewed: measured custom-font scaling; separate AX5 layout coverage",
+    "screen" : "calendar",
+    "summary" : "Dynamic Type font sizes are partially unsupported",
+    "type" : "65536"
+  },
+  {
+    "detail" : "User will not be able to change the font size of this element",
+    "element" : "calendar.hour.9",
+    "frame" : "(20.0, 541.5, 28.5, 12.5)",
+    "label" : "09:00",
+    "resolution" : "reviewed: measured custom-font scaling; separate AX5 layout coverage",
+    "screen" : "calendar",
+    "summary" : "Dynamic Type font sizes are partially unsupported",
+    "type" : "65536"
+  },
+  {
+    "detail" : "User will not be able to change the font size of this element",
+    "element" : "calendar.weekday.4",
+    "frame" : "(285.75, 379.25, 12.5, 12.5)",
+    "label" : "Пт",
+    "resolution" : "reviewed: measured custom-font scaling; separate AX5 layout coverage",
+    "screen" : "calendar",
+    "summary" : "Dynamic Type font sizes are partially unsupported",
+    "type" : "65536"
+  },
+  {
+    "detail" : "User will not be able to change the font size of this element",
+    "element" : "calendar.weekday.6",
+    "frame" : "(403.75, 379.25, 12.5, 12.5)",
+    "label" : "Вс",
+    "resolution" : "reviewed: measured custom-font scaling; separate AX5 layout coverage",
+    "screen" : "calendar",
+    "summary" : "Dynamic Type font sizes are partially unsupported",
+    "type" : "65536"
+  },
+  {
+    "detail" : "User will not be able to change the font size of this element",
+    "element" : "calendar.hour.14",
+    "frame" : "(20.0, 931.5, 26.5, 12.5)",
+    "label" : "14:00",
+    "resolution" : "reviewed: measured custom-font scaling; separate AX5 layout coverage",
+    "screen" : "calendar",
+    "summary" : "Dynamic Type font sizes are partially unsupported",
+    "type" : "65536"
+  },
+  {
+    "detail" : "User will not be able to change the font size of this element",
+    "element" : "recordings.filterHint",
+    "frame" : "(24.0, 265.5, 307.5, 13.5)",
+    "label" : "Поиск и фильтры применяются к загруженным записям.",
+    "resolution" : "reviewed: measured custom-font scaling; separate AX5 layout coverage",
+    "screen" : "recordings",
+    "summary" : "Dynamic Type font sizes are partially unsupported",
+    "type" : "65536"
+  },
+  {
+    "detail" : "User will not be able to change the font size of this element",
+    "element" : "folders.subtitle",
+    "frame" : "(20.0, 94.0, 121.5, 13.5)",
+    "label" : "Личное пространство",
+    "resolution" : "reviewed: measured custom-font scaling; separate AX5 layout coverage",
+    "screen" : "folders",
+    "summary" : "Dynamic Type font sizes are partially unsupported",
+    "type" : "65536"
+  },
+  {
+    "detail" : "Contrast failed for element",
+    "element" : "saveProfile",
+    "frame" : "(334.0, 509.5, 362.0, 44.0)",
+    "label" : "Сохранить профиль",
+    "resolution" : "reviewed: unchanged profile; disabled save action (inactive-control contrast exemption)",
+    "screen" : "settings",
+    "summary" : "Contrast failed",
+    "type" : "1"
+  }
+]

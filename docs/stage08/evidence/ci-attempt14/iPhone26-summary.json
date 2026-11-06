@@ -1,0 +1,69 @@
+{
+  "devicesAndConfigurations" : [
+    {
+      "device" : {
+        "architecture" : "x86_64",
+        "deviceId" : "8F28AB82-E741-43D2-8CA2-7E1A1C0FD514",
+        "deviceName" : "iPhone 17 Pro Max",
+        "modelName" : "iPhone 17 Pro Max",
+        "osBuildNumber" : "23C54",
+        "osVersion" : "26.2",
+        "platform" : "iOS Simulator"
+      },
+      "expectedFailures" : 0,
+      "failedTests" : 3,
+      "passedTests" : 32,
+      "skippedTests" : 0,
+      "testPlanConfiguration" : {
+        "configurationId" : "1",
+        "configurationName" : "Test Scheme Action"
+      }
+    }
+  ],
+  "environmentDescription" : "MeetSpace-Debug · Built with macOS 15.7.9",
+  "expectedFailures" : 0,
+  "failedTests" : 3,
+  "finishTime" : 1793994151.68,
+  "passedTests" : 32,
+  "result" : "Failed",
+  "skippedTests" : 0,
+  "startTime" : 1793991461.752,
+  "statistics" : [
+
+  ],
+  "testFailures" : [
+    {
+      "failureText" : "XCTAssertTrue failed",
+      "targetName" : "MeetSpaceUITests",
+      "testIdentifier" : 11,
+      "testIdentifierString" : "FoundationUITests/testAccessibilityStage08CoreScreens()",
+      "testIdentifierURL" : "test://com.apple.xcode/MeetSpace/MeetSpaceUITests/FoundationUITests/testAccessibilityStage08CoreScreens",
+      "testName" : "testAccessibilityStage08CoreScreens()"
+    },
+    {
+      "failureText" : "Failed to tap \"openAccountSettings\" Button: No matches found for Elements matching predicate '\"openAccountSettings\" IN identifiers' from input {(\n    Button, label: 'Not Now',\n    Button, label: 'Save'\n)}",
+      "targetName" : "MeetSpaceUITests",
+      "testIdentifier" : 32,
+      "testIdentifierString" : "FoundationUITests/testStage07SettingsPersistProfilePreferencesAndSSHDisabled()",
+      "testIdentifierURL" : "test://com.apple.xcode/MeetSpace/MeetSpaceUITests/FoundationUITests/testStage07SettingsPersistProfilePreferencesAndSSHDisabled",
+      "testName" : "testStage07SettingsPersistProfilePreferencesAndSSHDisabled()"
+    },
+    {
+      "failureText" : "XCTAssertTrue failed",
+      "targetName" : "MeetSpaceUITests",
+      "testIdentifier" : 33,
+      "testIdentifierString" : "FoundationUITests/testStage08AccountDeletionRequiresPasswordAndConfirmation()",
+      "testIdentifierURL" : "test://com.apple.xcode/MeetSpace/MeetSpaceUITests/FoundationUITests/testStage08AccountDeletionRequiresPasswordAndConfirmation",
+      "testName" : "testStage08AccountDeletionRequiresPasswordAndConfirmation()"
+    }
+  ],
+  "title" : "Test - MeetSpace-Debug",
+  "topInsights" : [
+    {
+      "category" : "Longest Test Runs",
+      "impact" : "15% of duration",
+      "text" : "1 longest test run with outlier durations exceeding 271.32s (three standard deviations)"
+    }
+  ],
+  "totalTestCount" : 35
+}

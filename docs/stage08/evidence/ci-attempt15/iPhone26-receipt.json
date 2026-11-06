@@ -1,0 +1,213 @@
+{
+  "schemaVersion": 1,
+  "runID": 42281088607,
+  "sourceCommit": "55bfcfb1e075224eda9ed7106a669db0b55dd7e5",
+  "ciAttempt": 15,
+  "label": "iPhone26",
+  "scope": "full",
+  "result": "FAIL",
+  "nativeResult": "Failed",
+  "fullSuitePass": false,
+  "collectionScope": "One completed failed native job; not a whole-run certification",
+  "counts": {
+    "totalTestCount": 35,
+    "passedTests": 34,
+    "failedTests": 1,
+    "skippedTests": 0,
+    "expectedFailures": 0
+  },
+  "failedTests": [
+    {
+      "failureText": "XCTAssertTrue failed",
+      "targetName": "MeetSpaceUITests",
+      "testIdentifier": 33,
+      "testIdentifierString": "FoundationUITests/testStage08AccountDeletionRequiresPasswordAndConfirmation()",
+      "testIdentifierURL": "test://com.apple.xcode/MeetSpace/MeetSpaceUITests/FoundationUITests/testStage08AccountDeletionRequiresPasswordAndConfirmation",
+      "testName": "testStage08AccountDeletionRequiresPasswordAndConfirmation()"
+    }
+  ],
+  "exactFailureLogLines": [
+    "2026-11-06T20:06:52.9208430Z /Users/runner/work/meetspace_ios_mobile/meetspace_ios_mobile/Tests/MeetSpaceUITests/FoundationUITests.swift:401: error: -[MeetSpaceUITests.FoundationUITests testStage08AccountDeletionRequiresPasswordAndConfirmation] : XCTAssertTrue failed"
+  ],
+  "nativeJob": {
+    "id": 128109914747,
+    "run_id": 42281088607,
+    "workflow_name": "iOS release audit",
+    "head_branch": "codex/stage08-arm-validation",
+    "run_url": "https://api.github.com/repos/janickiy/meetspace_ios_mobile/actions/runs/42281088607",
+    "run_attempt": 1,
+    "node_id": "CR_kwDOVjrQzc8AAAAd0_Iqew",
+    "head_sha": "55bfcfb1e075224eda9ed7106a669db0b55dd7e5",
+    "url": "https://api.github.com/repos/janickiy/meetspace_ios_mobile/actions/jobs/128109914747",
+    "html_url": "https://github.com/janickiy/meetspace_ios_mobile/actions/runs/42281088607/job/128109914747",
+    "status": "completed",
+    "conclusion": "failure",
+    "created_at": "2026-11-06T19:36:17Z",
+    "started_at": "2026-11-06T19:36:19Z",
+    "completed_at": "2026-11-06T20:09:27Z",
+    "name": "simulators (iPhone, 26, iPhone26, full, iPhone 17 Pro Max)",
+    "steps": [
+      {
+        "name": "Set up job",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 1,
+        "started_at": "2026-11-06T19:36:20Z",
+        "completed_at": "2026-11-06T19:36:22Z"
+      },
+      {
+        "name": "Run actions/checkout@v4",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 2,
+        "started_at": "2026-11-06T19:36:22Z",
+        "completed_at": "2026-11-06T19:36:27Z"
+      },
+      {
+        "name": "Device inventory",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 3,
+        "started_at": "2026-11-06T19:36:27Z",
+        "completed_at": "2026-11-06T19:37:27Z"
+      },
+      {
+        "name": "App, Keychain and UI tests",
+        "status": "completed",
+        "conclusion": "failure",
+        "number": 4,
+        "started_at": "2026-11-06T19:37:27Z",
+        "completed_at": "2026-11-06T20:08:58Z"
+      },
+      {
+        "name": "Diagnostic Instruments baseline (reported separately)",
+        "status": "completed",
+        "conclusion": "skipped",
+        "number": 5,
+        "started_at": "2026-11-06T20:08:58Z",
+        "completed_at": "2026-11-06T20:08:58Z"
+      },
+      {
+        "name": "Upload simulator test results",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 6,
+        "started_at": "2026-11-06T20:08:58Z",
+        "completed_at": "2026-11-06T20:09:21Z"
+      },
+      {
+        "name": "Post Run actions/checkout@v4",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 12,
+        "started_at": "2026-11-06T20:09:21Z",
+        "completed_at": "2026-11-06T20:09:22Z"
+      },
+      {
+        "name": "Complete job",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 13,
+        "started_at": "2026-11-06T20:09:22Z",
+        "completed_at": "2026-11-06T20:09:25Z"
+      }
+    ],
+    "check_run_url": "https://api.github.com/repos/janickiy/meetspace_ios_mobile/check-runs/128109914747",
+    "labels": [
+      "macos-15"
+    ],
+    "runner_id": 1000000562,
+    "runner_name": "GitHub Actions 1000000562",
+    "runner_group_id": 0,
+    "runner_group_name": "GitHub Actions"
+  },
+  "actualEnvironment": {
+    "device": "iPhone 17 Pro Max",
+    "runtime": [
+      26,
+      2
+    ],
+    "udid": "17F0E734-D183-4810-AB97-F27FD9968039",
+    "scope": "full",
+    "hostArchitecture": "arm64",
+    "hostOS": "macOS-15.8.2-arm64-arm-64bit-Mach-O",
+    "preferredDeviceMatched": true,
+    "xcode": "Xcode 26.3\nBuild version 17C529\n"
+  },
+  "artifact": {
+    "id": 13537871263,
+    "node_id": "MDg6QXJ0aWZhY3QxMzUzNzg3MTI2Mw==",
+    "name": "results-iPhone26",
+    "size_in_bytes": 354030605,
+    "url": "https://api.github.com/repos/janickiy/meetspace_ios_mobile/actions/artifacts/13537871263",
+    "archive_download_url": "https://api.github.com/repos/janickiy/meetspace_ios_mobile/actions/artifacts/13537871263/zip",
+    "expired": false,
+    "digest": "sha256:00c80fc709628253a82fd6e157b636af2dd68ac5c061ffa9b6064a31216ff025",
+    "created_at": "2026-11-06T20:09:21Z",
+    "updated_at": "2026-11-06T20:09:21Z",
+    "expires_at": "2026-11-13T20:09:00Z",
+    "workflow_run": {
+      "id": 42281088607,
+      "repository_id": 1446695117,
+      "head_repository_id": 1446695117,
+      "head_branch": "codex/stage08-arm-validation",
+      "head_sha": "55bfcfb1e075224eda9ed7106a669db0b55dd7e5"
+    }
+  },
+  "verifiedZip": {
+    "sha256": "00c80fc709628253a82fd6e157b636af2dd68ac5c061ffa9b6064a31216ff025",
+    "bytes": 354030605,
+    "apiDigestMatched": true,
+    "apiRunSourceMatched": true,
+    "payloadReadDirectlyFromZIP": true
+  },
+  "nativeLog": {
+    "originalFile": "simulators_iPhone_26_iPhone26_full_iPhone_17_Pro_Max_.log",
+    "sha256": "1e0450f9afb17ae78d887266a9d47150fde9665aac12614721139a58b04372e6",
+    "bytes": 1423483,
+    "testResults": "iPhone26-native-test-results.txt",
+    "deletionExcerpt": "iPhone26-deletion-log-excerpt.txt"
+  },
+  "audit": {
+    "engineAttempts": 49,
+    "auditPasses": 49,
+    "recoveredElementDetectionTimeouts": 0,
+    "initialScreenCategoryPairs": 49,
+    "snapshotCount": 7,
+    "rawIssues": 22,
+    "rawResolutions": {
+      "reviewed: welcome heading; complete AX5 text in ACCESSIBILITY_REVIEW.md": 1,
+      "reviewed: decorative avatar initials; accessible row has the full name": 1,
+      "reviewed: measured custom-font scaling; separate AX5 layout coverage": 16,
+      "reviewed: menu title inside exact control; measured font scaling and AX5 multiline layout": 4
+    },
+    "offscreenRetestNotMeasured": 0,
+    "fontSamples": 74,
+    "fontCategoriesPerSample": 12,
+    "nativeSuiteStillFailed": true
+  },
+  "rawAuditIndex": "iPhone26-raw-attachment-index.json",
+  "deletionVideo": {
+    "zipMember": "iPhone26-screenshots/1D71A4EF-0234-426A-8562-83A980CC01C3.mp4",
+    "sha256": "057397c6e2ce2ae10140a05bbce97517cc3493dae65c4a9a56ddb28268207c0e",
+    "bytes": 11259923,
+    "attachment": {
+      "configurationName": "Test Scheme Action",
+      "deviceId": "17F0E734-D183-4810-AB97-F27FD9968039",
+      "deviceName": "iPhone 17 Pro Max",
+      "exportedFileName": "1D71A4EF-0234-426A-8562-83A980CC01C3.mp4",
+      "isAssociatedWithFailure": false,
+      "suggestedHumanReadableName": "Screen Recording 2026-11-06 at 08.05.42 PM.mp4",
+      "timestamp": 1793995542.733
+    },
+    "originalPreservedIn": "API-digest-verified results-iPhone26.zip; video not duplicated in repository"
+  },
+  "videoFrames": [],
+  "findings": {
+    "observed": "CI15 iPhone26 failed waiting for the keyboard-descendant next button at source line 401.",
+    "finalAX": "Next keyboard Button labeled Следующая клавиатура, value English (UK), frame {{2.5,887.7},{80.1,68.7}}, is a child of sibling Other outside Keyboard; full hierarchy line219.",
+    "sourceComparison": "The source55 query searches keyboard.buttons. a33 expands it to app.buttons; effect on iPhone26 is not established by this CI15 failure receipt.",
+    "reached": "Stopped before first password character; final password field focused and submit disabled. Deletion behavior was not exercised."
+  },
+  "limitations": "Observed simulator DEBUG fixture run. Passed individual tests do not change native suite failure. Video frames do not establish installed input modes or prove the proposed helper change."
+}

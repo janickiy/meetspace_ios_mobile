@@ -2,7 +2,7 @@
 
 Проверено 2026-11-06 по [CI10 42263390594](https://github.com/janickiy/meetspace_ios_mobile/actions/runs/42263390594), source **`e0a37748eb865b84dddf3da6339d16e0d8e1a0fe`**. Устройство — iPad mini (A17 Pro), simulator iOS 18.6, Xcode 26.3 (17C529), scope `compatibility`, portrait **744×1133 pt / 1488×2266 pixels**. [Environment](evidence/accessibility-attempt10/iPad18-environment.json), [summary](evidence/accessibility-attempt10/iPad18-summary.json), [точные строки лога](evidence/accessibility-attempt10/iPad18-review-test-results.txt).
 
-**CoreAX PASS — 434.632 s; AX5 live flow PASS — 195.451 s; conference PASS — 134.474 s. Весь job — FAIL, 14 PASS / 1 FAIL из 15:** тест удаления аккаунта завершился ошибкой. Эти результаты не являются PASS всего CI10, текущего кандидата `0216c99` или всех device/runtime combinations.
+**CoreAX PASS — 434.632 s; AX5 live flow PASS — 195.451 s; conference PASS — 134.474 s. Весь job — FAIL, 14 PASS / 1 FAIL из 15:** тест удаления аккаунта завершился ошибкой. Эти результаты не являются PASS всего CI10, последующего на момент исторического review кандидата `0216c99` или всех device/runtime combinations. Актуальный кандидат и общий статус — [TEST_REPORT.md](TEST_REPORT.md).
 
 ## Raw findings сохранены
 

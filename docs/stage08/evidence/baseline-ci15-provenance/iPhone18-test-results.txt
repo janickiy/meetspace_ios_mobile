@@ -1,0 +1,16 @@
+2026-11-06T20:15:15.4092930Z Test Case '-[MeetSpaceTests.CallAudioIntegrationTests testDirectCallCanNegotiateBeforeCallKitActivatesAudio]' passed (0.539 seconds).
+2026-11-06T20:15:15.5424240Z Test Case '-[MeetSpaceTests.KeychainIntegrationTests testKeychainRoundTripUpdateAndScopedDeletion]' passed (0.025 seconds).
+2026-11-06T20:15:16.7729890Z Test Case '-[MeetSpaceTests.MediaIntegrationTests testBlockedSourcesNeverRequestPermissionsOrAppearInOffer]' passed (0.391 seconds).
+2026-11-06T20:15:16.9378290Z Test Case '-[MeetSpaceTests.MediaIntegrationTests testNativePeerOfferAndCloseCyclesWithCaptureOff]' passed (0.380 seconds).
+2026-11-06T20:15:17.2741710Z Test Case '-[MeetSpaceTests.MediaIntegrationTests testScreenGenerationRollbackAndPolicyWithCaptureOff]' passed (0.132 seconds).
+2026-11-06T20:15:17.6017760Z Test Case '-[MeetSpaceTests.MediaIntegrationTests testScreenRejectsInvalidAndStaleFrameSession]' passed (0.089 seconds).
+2026-11-06T20:15:18.0901620Z Test Case '-[MeetSpaceTests.RecordingPlaybackTests testActualServerAACArtifactAdvancesNativePlayerTime]' passed (0.943 seconds).
+2026-11-06T20:15:18.5024350Z Test Case '-[MeetSpaceTests.Stage08SecurityKeychainTests testCredentialsRemainDeviceOnlyAndUnsynchronizedAfterUpdate]' passed (0.009 seconds).
+2026-11-06T20:15:18.6643520Z Test Case '-[MeetSpaceTests.Stage08SecurityKeychainTests testPushCleanupJournalUsesTheSameDeviceOnlyProtection]' passed (0.006 seconds).
+2026-11-06T20:15:19.2823320Z Test Case '-[MeetSpaceTests.TypographyAccessibilityTests testBundledFontsScaleInActualUIKitHostingAtAllDynamicTypeSizes]' passed (0.747 seconds).
+2026-11-06T20:19:43.2492620Z Test Case '-[MeetSpaceUITests.FoundationUITests testAccessibilityStage08CoreScreens]' passed (237.909 seconds).
+2026-11-06T20:22:15.6594470Z Test Case '-[MeetSpaceUITests.FoundationUITests testAccessibilityStage08LargeTextLiveFlow]' passed (152.398 seconds).
+2026-11-06T20:23:51.5133180Z Test Case '-[MeetSpaceUITests.FoundationUITests testConferenceCreateMediaControlsChatAndLeave]' passed (95.859 seconds).
+2026-11-06T20:24:11.4683520Z Test Case '-[MeetSpaceUITests.FoundationUITests testLargeTextNavigationAndAppearance]' passed (19.946 seconds).
+2026-11-06T20:26:56.4736340Z Test Case '-[MeetSpaceUITests.FoundationUITests testStage08AccountDeletionRequiresPasswordAndConfirmation]' passed (165.008 seconds).
+2026-11-06T20:27:00.8620110Z ** TEST SUCCEEDED **

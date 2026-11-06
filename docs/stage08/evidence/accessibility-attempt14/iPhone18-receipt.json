@@ -1,0 +1,106 @@
+{
+  "schema": 1,
+  "runID": 42275177048,
+  "sourceCommit": "04f70a3d80bfd8cd9314c798f0eb3fc7e58b343f",
+  "label": "iPhone18",
+  "result": "FAIL",
+  "testElapsedSeconds": 240.911,
+  "artifact": {
+    "id": 13534592310,
+    "name": "results-iPhone18",
+    "size_in_bytes": 257514161,
+    "digest": "sha256:22f94581f5843089c60871448f9781f0537ce4162f5e2b96d241ff7d19c62b69",
+    "downloadedSHA256": "22f94581f5843089c60871448f9781f0537ce4162f5e2b96d241ff7d19c62b69",
+    "zipCRCVerified": true
+  },
+  "attemptAttachment": {
+    "configurationName": "Test Scheme Action",
+    "deviceId": "4E62D48E-A75F-4AF3-BDC2-1C74916B5810",
+    "deviceName": "iPhone SE (3rd generation)",
+    "exportedFileName": "3877741E-C3E1-4EDC-8C29-B3AF9938B364.json",
+    "isAssociatedWithFailure": false,
+    "suggestedHumanReadableName": "stage08-audit-attempts_0_0E8C6AB9-22CA-4B30-840A-CBBC4A028380.json",
+    "timestamp": 1793992365.755
+  },
+  "attempts": 22,
+  "completedPasses": 19,
+  "failedPass": {
+    "passID": 20,
+    "screen": "profile",
+    "categoryName": "dynamicType",
+    "attempt1": {
+      "domain": "com.apple.xcode.xctest.accessibilityAudit",
+      "code": -56,
+      "elapsedSeconds": 15.012255420999963,
+      "callbackCount": 0,
+      "findingsCount": 0
+    },
+    "attempt2": {
+      "domain": "com.apple.dt.XCTest.XCTFuture",
+      "code": 1000,
+      "elapsedSeconds": 65.02288396600011,
+      "callbackCount": 0,
+      "findingsCount": 0
+    }
+  },
+  "recoveredPass": {
+    "passID": 16,
+    "screen": "profile",
+    "categoryName": "elementDetection",
+    "firstErrorCode": -56,
+    "firstElapsedSeconds": 15.01925048999999,
+    "secondElapsedSeconds": 13.062357750000047,
+    "secondResult": "completed",
+    "callbackCount": 0,
+    "findingsCount": 0
+  },
+  "rawFindings": {
+    "total": 3,
+    "reviewed": 2,
+    "deferredNotRetested": 1,
+    "deferredIdentifier": "addAccount"
+  },
+  "boundary": "Only welcome/messages completed all seven categories. Profile stopped before textClipped and the queued addAccount contrast retest. Calendar/recordings/folders/settings were not reached. Zero callbacks during the failed passes do not establish accessibility conformance. No blanket suppression or successful full audit is claimed.",
+  "retainedFiles": [
+    {
+      "file": "iPhone18-audit-attempts.json",
+      "bytes": 10105,
+      "sha256": "994bd9adab4496a6523b04f08c85377c3cf1f8c38d715c63e75419c12b0cd6f5"
+    },
+    {
+      "file": "iPhone18-audit-events.txt",
+      "bytes": 4141,
+      "sha256": "757e91ce6e8dca80a012de96e27145e0c5b150ec95541be42261fb798b510593"
+    },
+    {
+      "file": "iPhone18-environment.json",
+      "bytes": 325,
+      "sha256": "991bd980714ef8c683af28db22389922e459ef94ddb81e5e8cbdc1ed11953136"
+    },
+    {
+      "file": "iPhone18-raw-issues.json",
+      "bytes": 1118,
+      "sha256": "ef7e0d1d0bdcb58529e436bde4a1be862095ee946339153b94789bc67ed37b63"
+    },
+    {
+      "file": "iPhone18-stage08-accessibility-messages.png",
+      "bytes": 67123,
+      "sha256": "2be32ba04319782728db95cea0d4597d9db7d7c7f5e6323a8c688efec970000f"
+    },
+    {
+      "file": "iPhone18-stage08-accessibility-profile.png",
+      "bytes": 89654,
+      "sha256": "068221965bd677efc9cf1d797cab5e8b4fc8209ecd4dbdaf31f903e959c37991"
+    },
+    {
+      "file": "iPhone18-stage08-accessibility-welcome.png",
+      "bytes": 126185,
+      "sha256": "a89b4bacc8bb3eec7909368deb3491f9941122f36d86aa9bc397b09e8bcda2e8"
+    },
+    {
+      "file": "iPhone18-summary.json",
+      "bytes": 1716,
+      "sha256": "94177f482ae207dd511a9d69a03a774c02c17dcbce1b984bf39d9f5819bea43f"
+    }
+  ]
+}

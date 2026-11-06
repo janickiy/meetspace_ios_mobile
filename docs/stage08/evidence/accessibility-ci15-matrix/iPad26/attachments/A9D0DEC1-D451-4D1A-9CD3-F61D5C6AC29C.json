@@ -1,0 +1,42 @@
+[
+  {
+    "detail" : "Contrast failed for SwiftUI.AccessibilityNode",
+    "element" : "welcome.deploySubtitle",
+    "frame" : "(623.0, 459.5, 200.5, 13.5)",
+    "label" : "Создать пространство на своём VPS",
+    "resolution" : "reviewed: opaque glyph cores exceed 4.5:1 in actual PNG; ACCESSIBILITY_IPAD_CONTRAST.md",
+    "screen" : "welcome",
+    "summary" : "Contrast failed",
+    "type" : "1"
+  },
+  {
+    "detail" : "Text of this SwiftUI.AccessibilityNode may be clipped at larger Dynamic Type sizes.",
+    "element" : "welcome.heading",
+    "frame" : "(563.0, 196.5, 265.5, 82.5)",
+    "label" : "Команда ближе.\nИдей больше.",
+    "resolution" : "reviewed: welcome heading; complete AX5 text in ACCESSIBILITY_REVIEW.md",
+    "screen" : "welcome",
+    "summary" : "Text clipped",
+    "type" : "131072"
+  },
+  {
+    "detail" : "Contrast failed for SwiftUI.AccessibilityNode",
+    "element" : "",
+    "frame" : "(611.75, 641.0, 149.0, 98.75)",
+    "label" : "Выберите чат",
+    "resolution" : "reviewed: native empty-state node groups decorative icon with high-contrast title",
+    "screen" : "messages",
+    "summary" : "Contrast failed",
+    "type" : "1"
+  },
+  {
+    "detail" : "Contrast is not high enough for SwiftUI.AccessibilityNode unless font size is larger.",
+    "element" : "",
+    "frame" : "(30.0, 317.5, 44.0, 44.0)",
+    "label" : "ТЕ",
+    "resolution" : "reviewed: decorative avatar initials; accessible row has the full name",
+    "screen" : "messages",
+    "summary" : "Contrast nearly passed",
+    "type" : "1"
+  }
+]

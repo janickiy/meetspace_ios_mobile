@@ -1,0 +1,256 @@
+Application, 0x10216e240, pid: 65742, label: 'MeetSpace' <App element pid: 65742>
+  Window (Main), 0x1021d0cf0, {{0.0, 0.0}, {1032.0, 1376.0}} <AX element pid: 65742, elementOrHash.elementID: 4337052560.4>
+    Other, 0x1021d28c0, {{0.0, 0.0}, {1032.0, 1376.0}} <AX element pid: 65742, elementOrHash.elementID: 4336331744.5>
+      Other, 0x1021d29e0, {{0.0, 0.0}, {1032.0, 1376.0}} <AX element pid: 65742, elementOrHash.elementID: 4319110784.6>
+        Other, 0x1021d2620, {{0.0, 0.0}, {1032.0, 1376.0}} <AX element pid: 65742, elementOrHash.elementID: 4319217744.7>
+          Other, 0x1021d2740, {{-1032.0, -1376.0}, {3096.0, 4128.0}}, identifier: 'PopoverDismissRegion', label: 'закрыть всплывающее меню' <AX element pid: 65742, elementOrHash.elementID: 4688745344.521>
+          Other, 0x102170ea0, {{0.0, 0.0}, {1032.0, 1376.0}} <AX element pid: 65742, elementOrHash.elementID: 4319279232.8>
+            Other, 0x102170fc0, {{0.0, 0.0}, {1032.0, 1376.0}} <AX element pid: 65742, elementOrHash.elementID: 4319458496.9>
+              Other, 0x1021710e0, {{0.0, 0.0}, {1032.0, 911.0}} <AX element pid: 65742, elementOrHash.elementID: 4337913376.403>
+                Other, 0x102171200, {{0.0, 0.0}, {1032.0, 911.0}} <AX element pid: 65742, elementOrHash.elementID: 4319999904.407>
+                Other, 0x102171320, {{0.0, 0.0}, {1032.0, 911.0}} <AX element pid: 65742, elementOrHash.elementID: 4319983184.408>
+                  Other, 0x102171440, {{0.0, 0.0}, {1032.0, 911.0}} <AX element pid: 65742, elementOrHash.elementID: 4686203728.415>
+                    Other, 0x102171560, {{0.0, 0.0}, {1032.0, 911.0}} <AX element pid: 65742, elementOrHash.elementID: 4319628432.458>
+                      Other, 0x102171680, {{0.0, 0.0}, {1032.0, 911.0}} <AX element pid: 65742, elementOrHash.elementID: 4336779152.459>
+                        Other, 0x1021717a0, {{0.0, 0.0}, {1032.0, 911.0}} <AX element pid: 65742, elementOrHash.elementID: 4336672112.460>
+                          Other, 0x1021718c0, {{0.0, 0.0}, {1032.0, 911.0}} <AX element pid: 65742, elementOrHash.elementID: 4336379648.461>
+                            NavigationBar, 0x112a5f1f0, {{0.0, 32.0}, {1032.0, 54.0}}, identifier: '_TtGC7SwiftUI29PresentationHosting' <AX element pid: 65742, elementOrHash.elementID: 4688294736.462>
+                            Other, 0x112a600b0, {{0.0, 0.0}, {1032.0, 911.0}} <AX element pid: 65742, elementOrHash.elementID: 4688382032.463>
+                              Other, 0x112a601d0, {{0.0, 0.0}, {1032.0, 911.0}} <AX element pid: 65742, elementOrHash.elementID: 4688663328.465>
+                                Other, 0x112a602f0, {{0.0, 0.0}, {1032.0, 911.0}} <AX element pid: 65742, elementOrHash.elementID: 4336504080.467>
+                                  Other, 0x112a60410, {{0.0, 0.0}, {1032.0, 911.0}} <AX element pid: 65742, elementOrHash.elementID: 4688754320.468>
+                                    ScrollView, 0x112a60530, {{0.0, 0.0}, {1032.0, 911.0}} <AX element pid: 65742, elementOrHash.elementID: 4363943424.469>
+                                      Other, 0x112a60650, {{0.0, 0.0}, {1032.0, 911.0}} <AX element pid: 65742, elementOrHash.elementID: 4686209680.470>
+                                        Other, 0x112a60770, {{0.0, 0.0}, {1032.0, 140.8}} <AX element pid: 65742, elementOrHash.elementID: 4721819600.474>
+                                      Other, 0x112a60890, {{0.0, 0.0}, {1032.0, 911.0}} <AX element pid: 65742, elementOrHash.elementID: 4686223904.471>
+                                      Other, 0x112a609b0, {{0.0, 86.0}, {1032.0, 1118.5}} <AX element pid: 65742, elementOrHash.elementID: 4686222880.472>
+                                        StaticText, 0x112a60ad0, {{180.0, 110.0}, {126.5, 34.0}}, label: 'Профиль' <AX element pid: 65742, elementOrHash.elementID: 4336788544.475>
+                                        StaticText, 0x112a60bf0, {{268.0, 184.0}, {147.0, 22.0}}, label: 'Первый аккаунт' <AX element pid: 65742, elementOrHash.elementID: 4336901936.476>
+                                        StaticText, 0x112a60d10, {{268.0, 211.0}, {121.5, 15.0}}, label: 'Электронная почта', value: first@fixture.exam... <AX element pid: 65742, elementOrHash.elementID: 4688295424.477>
+                                        StaticText, 0x1021719e0, {{268.0, 231.0}, {88.0, 15.0}}, label: 'Адрес сервера', value: fixture.example <AX element pid: 65742, elementOrHash.elementID: 4688592624.478>
+                                        Button, 0x102171b00, {{179.5, 285.5}, {673.0, 77.0}}, identifier: 'openAccountSettings', label: 'Настройки аккаунта' <AX element pid: 65742, elementOrHash.elementID: 4688507296.479>
+                                          Image, 0x102171c20, {{197.0, 317.0}, {14.0, 14.0}}, identifier: 'person.crop.circle', label: 'Учетная Запись' <AX element pid: 65742, elementOrHash.elementID: 4688266256.496>
+                                          StaticText, 0x102171d40, {{197.0, 315.5}, {162.5, 17.0}}, label: 'Настройки аккаунта' <AX element pid: 65742, elementOrHash.elementID: 4688805440.497>
+                                        Button, 0x102171e60, {{196.0, 402.0}, {640.0, 44.0}}, identifier: 'openCalendar', label: 'Календарь' <AX element pid: 65742, elementOrHash.elementID: 4336725360.480>
+                                          Image, 0x102171f80, {{197.5, 417.5}, {14.0, 13.0}}, identifier: 'calendar', label: 'Календарь' <AX element pid: 65742, elementOrHash.elementID: 4688401120.498>
+                                          StaticText, 0x1021720a0, {{197.5, 415.5}, {98.5, 17.0}}, label: 'Календарь' <AX element pid: 65742, elementOrHash.elementID: 4688665568.499>
+                                          Image, 0x112a60e30, {{828.0, 418.0}, {7.0, 12.0}}, identifier: 'chevron.right', label: 'Вперед' <AX element pid: 65742, elementOrHash.elementID: 4688364352.500>
+                                        Button, 0x112a60f50, {{196.0, 446.0}, {640.0, 44.0}}, identifier: 'openRecordings', label: 'Записи встреч' <AX element pid: 65742, elementOrHash.elementID: 4688351776.481>
+                                          Image, 0x112a61070, {{197.5, 461.5}, {16.5, 13.0}}, identifier: 'play.rectangle', label: 'Слайд-Шоу' <AX element pid: 65742, elementOrHash.elementID: 4688657936.501>
+                                          StaticText, 0x1021721c0, {{197.5, 459.5}, {127.0, 17.0}}, label: 'Записи встреч' <AX element pid: 65742, elementOrHash.elementID: 4688768832.502>
+                                          Image, 0x1021722e0, {{828.0, 462.0}, {7.0, 12.0}}, identifier: 'chevron.right', label: 'Вперед' <AX element pid: 65742, elementOrHash.elementID: 4688491936.503>
+                                        Button, 0x102172400, {{196.0, 490.0}, {640.0, 44.0}}, identifier: 'openFolders', label: 'Личные папки' <AX element pid: 65742, elementOrHash.elementID: 4688241536.482>
+                                          Image, 0x102172520, {{197.5, 505.5}, {16.0, 13.0}}, identifier: 'folder', label: 'Переместить' <AX element pid: 65742, elementOrHash.elementID: 4688228448.504>
+                                          StaticText, 0x102172640, {{197.5, 503.5}, {123.5, 17.0}}, label: 'Личные папки' <AX element pid: 65742, elementOrHash.elementID: 4688324240.505>
+                                          Image, 0x102172760, {{828.0, 506.0}, {7.0, 12.0}}, identifier: 'chevron.right', label: 'Вперед' <AX element pid: 65742, elementOrHash.elementID: 4688238144.506>
+                                        StaticText, 0x102172880, {{180.0, 574.0}, {88.5, 22.0}}, label: 'Аккаунты' <AX element pid: 65742, elementOrHash.elementID: 4336644848.483>
+                                        Button, 0x1021729a0, {{196.0, 636.0}, {588.0, 44.0}}, label: 'Первый аккаунт, Адрес сервера', value: fixture.example, Selected <AX element pid: 65742, elementOrHash.elementID: 4688620992.484>
+                                          StaticText, 0x102172ac0, {{196.0, 640.2}, {111.0, 17.0}}, label: 'Первый аккаунт' <AX element pid: 65742, elementOrHash.elementID: 4336462624.507>
+                                          StaticText, 0x102172be0, {{196.0, 662.2}, {80.5, 13.5}}, label: 'Адрес сервера', value: fixture.example <AX element pid: 65742, elementOrHash.elementID: 4688753456.508>
+                                          Image, 0x102172d00, {{769.0, 651.0}, {14.0, 14.0}}, identifier: 'checkmark.circle.fill', label: 'Выбрано', Selected <AX element pid: 65742, elementOrHash.elementID: 4688753888.509>
+                                        Button, 0x102172e20, {{792.0, 636.0}, {44.0, 44.0}}, identifier: 'rectangle.portrait.and.arrow.right', label: 'Выйти из аккаунта' <AX element pid: 65742, elementOrHash.elementID: 4688621424.485>
+                                        Button, 0x102172f40, {{180.0, 720.0}, {672.0, 44.0}}, identifier: 'addAccount', label: 'Добавить аккаунт' <AX element pid: 65742, elementOrHash.elementID: 4688622320.486>
+                                        StaticText, 0x102173060, {{180.0, 788.0}, {214.0, 15.0}}, label: 'До 5 аккаунтов на каждом сервере.' <AX element pid: 65742, elementOrHash.elementID: 4688323056.487>
+                                        StaticText, 0x102173180, {{196.0, 843.0}, {305.5, 22.0}}, label: 'Уведомления на этом устройстве' <AX element pid: 65742, elementOrHash.elementID: 4688321920.488>
+                                        Switch, 0x1021732a0, {{196.0, 877.0}, {640.0, 28.0}}, identifier: 'pushNotificationsToggle', label: 'Уведомления о встречах', value: 0 <AX element pid: 65742, elementOrHash.elementID: 4688640080.489>
+                                          StaticText, 0x1021733c0, {{196.0, 882.5}, {171.5, 17.0}}, label: 'Уведомления о встречах' <AX element pid: 65742, elementOrHash.elementID: 4688634672.510>
+                                          Switch, 0x1021734e0, {{775.0, 877.0}, {63.0, 28.0}}, value: 0 <AX element pid: 65742, elementOrHash.elementID: 4686338080.511>
+                                        StaticText, 0x102173600, {{196.0, 917.0}, {151.5, 15.0}}, identifier: 'pushNotificationsStatus', label: 'Уведомления выключены' <AX element pid: 65742, elementOrHash.elementID: 4688220912.490>
+                                        StaticText, 0x102173720, {{196.0, 944.0}, {588.0, 29.5}}, label: 'Входящие звонки доступны, пока приложение открыто. Вызовы при закрытом приложении ещё не настроены на сервере.' <AX element pid: 65742, elementOrHash.elementID: 4688222016.491>
+                                        SegmentedControl, 0x102173840, {{180.0, 1013.5}, {672.0, 31.0}} <AX element pid: 65742, elementOrHash.elementID: 4337272224.492>
+                                          Button, 0x102173960, {{180.0, 1013.5}, {224.0, 32.0}}, label: 'Как в системе', Selected <AX element pid: 65742, elementOrHash.elementID: 4337691264.512>
+                                          Button, 0x102173a80, {{404.0, 1013.5}, {224.0, 32.0}}, label: 'Светлая' <AX element pid: 65742, elementOrHash.elementID: 4336378320.513>
+                                          Button, 0x102173ba0, {{628.0, 1013.5}, {224.0, 32.0}}, label: 'Тёмная' <AX element pid: 65742, elementOrHash.elementID: 4336547872.514>
+                                        Button, 0x102173cc0, {{180.0, 1068.5}, {161.5, 44.0}}, label: 'Лицензии компонентов' <AX element pid: 65742, elementOrHash.elementID: 4336330208.493>
+                                        Button, 0x102173de0, {{180.0, 1136.5}, {195.0, 44.0}}, identifier: 'openDeleteAccount', label: 'Удалить аккаунт на сервере' <AX element pid: 65742, elementOrHash.elementID: 4688756560.494>
+                                      Other, 0x102173f00, {{999.0, 86.0}, {30.0, 825.0}}, label: 'Вертикальная полоса прокрутки, 2 страницы', value: 0 % <AX element pid: 65742, elementOrHash.elementID: 4688750704.473>
+                                        Other, 0x102174020, {{1026.0, 178.5}, {3.0, 1112.5}} <AX element pid: 65742, elementOrHash.elementID: 4336540496.495>
+                                      Other, 0x102174140, {{999.0, 86.0}, {30.0, 825.0}}, label: 'Вертикальная полоса прокрутки, 2 страницы', value: 0 % <AX element pid: 65742, elementOrHash.elementID: 4688750704.473>
+                                        Other, 0x102174260, {{1026.0, 178.5}, {3.0, 1112.5}} <AX element pid: 65742, elementOrHash.elementID: 4336540496.495>
+                            Other, 0x102174380, {{0.0, 0.0}, {1032.0, 911.0}} <AX element pid: 65742, elementOrHash.elementID: 4688365888.464>
+                              Other, 0x1021744a0, {{0.0, 0.0}, {1032.0, 911.0}} <AX element pid: 65742, elementOrHash.elementID: 4688317568.466>
+              Button, 0x1021745c0, {{0.0, 916.0}, {344.0, 57.0}}, identifier: 'tab.meetings', label: 'Встречи' <AX element pid: 65742, elementOrHash.elementID: 4688287040.404>
+                Image, 0x1021746e0, {{160.0, 926.0}, {25.5, 17.0}}, identifier: 'video', label: 'Видео' <AX element pid: 65742, elementOrHash.elementID: 4688495616.409>
+                StaticText, 0x102174800, {{0.0, 916.0}, {344.0, 57.0}}, label: 'Встречи' <AX element pid: 65742, elementOrHash.elementID: 4688502544.410>
+              Button, 0x102174920, {{344.0, 916.0}, {344.0, 57.0}}, identifier: 'tab.messages', label: 'Чаты' <AX element pid: 65742, elementOrHash.elementID: 4688530896.405>
+                Image, 0x102174a40, {{501.5, 922.5}, {29.5, 23.5}}, identifier: 'bubble.left.and.bubble.right', label: 'Разговор' <AX element pid: 65742, elementOrHash.elementID: 4688371712.411>
+                StaticText, 0x102174b60, {{344.0, 916.0}, {344.0, 57.0}}, label: 'Чаты' <AX element pid: 65742, elementOrHash.elementID: 4688290560.412>
+              Button, 0x102174c80, {{688.0, 916.0}, {344.0, 57.0}}, identifier: 'tab.profile', label: 'Профиль', Selected <AX element pid: 65742, elementOrHash.elementID: 4336700704.406>
+                Image, 0x102174da0, {{849.5, 924.0}, {21.0, 21.0}}, identifier: 'person.crop.circle', label: 'Учетная Запись' <AX element pid: 65742, elementOrHash.elementID: 4336724112.413>
+                StaticText, 0x1021e2650, {{688.0, 916.0}, {344.0, 57.0}}, label: 'Профиль' <AX element pid: 65742, elementOrHash.elementID: 4336695136.414>
+    Other, 0x1021e2770, {{0.0, 0.0}, {1032.0, 1376.0}} <AX element pid: 65742, elementOrHash.elementID: 4686384752.516>
+      Other, 0x1021e2890, {{-1032.0, -1376.0}, {3096.0, 4128.0}}, identifier: 'PopoverDismissRegion', label: 'закрыть всплывающее меню' <AX element pid: 65742, elementOrHash.elementID: 4688338000.517>
+      Other, 0x1021e29b0, {{226.0, 156.5}, {580.0, 650.0}} <AX element pid: 65742, elementOrHash.elementID: 4319903568.518>
+        Image, 0x1021e2ad0, {{76.0, 6.5}, {880.0, 950.0}} <AX element pid: 65742, elementOrHash.elementID: 4319316640.519>
+        Other, 0x1021e2bf0, {{226.0, 156.5}, {580.0, 650.0}} <AX element pid: 65742, elementOrHash.elementID: 4721825216.520>
+          Other, 0x1021e2d10, {{226.0, 156.5}, {580.0, 650.0}} <AX element pid: 65742, elementOrHash.elementID: 4319508656.522>
+            Other, 0x1021e2e30, {{226.0, 156.5}, {580.0, 650.0}} <AX element pid: 65742, elementOrHash.elementID: 4319795552.523>
+              Other, 0x1021e2f50, {{226.0, 156.5}, {580.0, 650.0}} <AX element pid: 65742, elementOrHash.elementID: 4319740032.524>
+                Other, 0x1021e3070, {{226.0, 156.5}, {580.0, 650.0}} <AX element pid: 65742, elementOrHash.elementID: 4319362032.525>
+                  Other, 0x1021e3190, {{226.0, 156.5}, {580.0, 650.0}} <AX element pid: 65742, elementOrHash.elementID: 4686241840.526>
+                    Other, 0x1021e32b0, {{226.0, 156.5}, {580.0, 650.0}} <AX element pid: 65742, elementOrHash.elementID: 4686354640.527>
+                      NavigationBar, 0x1021e33d0, {{226.0, 166.5}, {580.0, 54.0}}, identifier: 'Удаление аккаунта' <AX element pid: 65742, elementOrHash.elementID: 4686328800.528>
+                        Other, 0x1021e34f0, {{240.0, 170.5}, {44.0, 36.0}}, label: 'Отмена' <AX element pid: 65742, elementOrHash.elementID: 4374762496.531>
+                          Other, 0x1021e3610, {{240.0, 170.5}, {44.0, 36.0}} <AX element pid: 65742, elementOrHash.elementID: 4686380256.535>
+                            Button, 0x1021e3730, {{240.0, 166.5}, {44.0, 44.0}}, label: 'Отмена' <AX element pid: 65742, elementOrHash.elementID: 4686356000.537>
+                        StaticText, 0x1021e3850, {{436.0, 178.0}, {159.5, 21.0}}, label: 'Удаление аккаунта' <AX element pid: 65742, elementOrHash.elementID: 4320128896.532>
+                      Other, 0x1021e3970, {{226.0, 156.5}, {580.0, 650.0}} <AX element pid: 65742, elementOrHash.elementID: 4686359776.529>
+                        Other, 0x1021e3a90, {{226.0, 156.5}, {580.0, 650.0}} <AX element pid: 65742, elementOrHash.elementID: 4688259248.533>
+                          Other, 0x1021e3bb0, {{226.0, 156.5}, {580.0, 650.0}} <AX element pid: 65742, elementOrHash.elementID: 4686341568.536>
+                            Other, 0x1021e3cd0, {{226.0, 156.5}, {580.0, 650.0}} <AX element pid: 65742, elementOrHash.elementID: 4686304160.538>
+                              CollectionView, 0x1021e3df0, {{226.0, 156.5}, {580.0, 650.0}} <AX element pid: 65742, elementOrHash.elementID: 4380349440.539>
+                                Other, 0x1021e3f10, {{206.0, -1079.5}, {620.0, 1601.5}} <AX element pid: 65742, elementOrHash.elementID: 4319636288.540>
+                                Other, 0x1021e4030, {{226.0, 156.5}, {580.0, 650.0}} <AX element pid: 65742, elementOrHash.elementID: 4721951856.541>
+                                Other, 0x1021e4150, {{226.0, 156.5}, {580.0, 650.0}} <AX element pid: 65742, elementOrHash.elementID: 4319755056.542>
+                                Cell, 0x1021e4270, {{246.0, 255.5}, {540.0, 52.0}} <AX element pid: 65742, elementOrHash.elementID: 4374689792.543>
+                                  Other, 0x1021e4390, {{246.0, 255.5}, {540.0, 52.0}} <AX element pid: 65742, elementOrHash.elementID: 4686409984.555>
+                                    Other, 0x1021e44b0, {{246.0, 255.5}, {540.0, 52.0}} <AX element pid: 65742, elementOrHash.elementID: 4686415856.568>
+                                  Other, 0x1021e45d0, {{246.0, 255.5}, {540.0, 52.0}} <AX element pid: 65742, elementOrHash.elementID: 4688902704.556>
+                                    Other, 0x1021b6a50, {{246.0, 255.5}, {540.0, 52.0}} <AX element pid: 65742, elementOrHash.elementID: 4374799872.569>
+                                      Other, 0x1021b6b70, {{246.0, 255.5}, {540.0, 52.0}} <AX element pid: 65742, elementOrHash.elementID: 4337757008.580>
+                                        StaticText, 0x1021b6c90, {{246.0, 255.5}, {540.0, 52.0}}, label: 'first@fixture.example' <AX element pid: 65742, elementOrHash.elementID: 4686431264.586>
+                                Cell, 0x112a61190, {{246.0, 307.5}, {540.0, 52.0}} <AX element pid: 65742, elementOrHash.elementID: 4365133824.544>
+                                  Other, 0x112a612b0, {{246.0, 307.5}, {540.0, 52.0}} <AX element pid: 65742, elementOrHash.elementID: 4686428464.557>
+                                    Other, 0x112a613d0, {{246.0, 307.5}, {540.0, 52.0}} <AX element pid: 65742, elementOrHash.elementID: 4686447920.570>
+                                  Other, 0x112a614f0, {{246.0, 307.5}, {540.0, 52.0}} <AX element pid: 65742, elementOrHash.elementID: 4686413920.558>
+                                    Other, 0x112a61610, {{246.0, 307.5}, {540.0, 52.0}} <AX element pid: 65742, elementOrHash.elementID: 4363589632.571>
+                                      Other, 0x112a61730, {{246.0, 307.5}, {540.0, 52.0}} <AX element pid: 65742, elementOrHash.elementID: 4686471440.581>
+                                        StaticText, 0x112a61850, {{246.0, 307.5}, {540.0, 52.0}}, label: 'fixture.example' <AX element pid: 65742, elementOrHash.elementID: 4686471008.587>
+                                Other, 0x112a61970, {{266.0, 306.5}, {500.0, 1.0}} <AX element pid: 65742, elementOrHash.elementID: 4320081872.545>
+                                Cell, 0x112a61a90, {{246.0, 359.5}, {540.0, 81.0}} <AX element pid: 65742, elementOrHash.elementID: 4362200576.546>
+                                  Other, 0x112a61bb0, {{246.0, 359.5}, {540.0, 81.0}} <AX element pid: 65742, elementOrHash.elementID: 4686449920.559>
+                                    Other, 0x112a61cd0, {{246.0, 359.5}, {540.0, 81.0}} <AX element pid: 65742, elementOrHash.elementID: 4686468304.572>
+                                  Other, 0x112a61df0, {{246.0, 359.5}, {540.0, 81.0}} <AX element pid: 65742, elementOrHash.elementID: 4686456144.560>
+                                    Other, 0x112a61f10, {{246.0, 359.5}, {540.0, 81.0}} <AX element pid: 65742, elementOrHash.elementID: 4362202112.573>
+                                      Other, 0x112a62030, {{246.0, 359.5}, {540.0, 81.0}} <AX element pid: 65742, elementOrHash.elementID: 4686525776.582>
+                                        StaticText, 0x112a62150, {{246.0, 359.5}, {540.0, 81.0}}, label: 'Удаление аккаунта необратимо. Сервер удалит данные входа и личные настройки. Общая история переписки может сохраниться с анонимным автором.' <AX element pid: 65742, elementOrHash.elementID: 4686525344.588>
+                                Other, 0x112a62480, {{266.0, 358.5}, {500.0, 1.0}} <AX element pid: 65742, elementOrHash.elementID: 4319441376.547>
+                                Cell, 0x112a625a0, {{246.0, 440.5}, {540.0, 64.0}} <AX element pid: 65742, elementOrHash.elementID: 4364317184.548>
+                                  Other, 0x112a626c0, {{246.0, 440.5}, {540.0, 64.0}} <AX element pid: 65742, elementOrHash.elementID: 4686496352.561>
+                                    Other, 0x112a627e0, {{246.0, 440.5}, {540.0, 64.0}} <AX element pid: 65742, elementOrHash.elementID: 4686501712.574>
+                                  Other, 0x112a62900, {{246.0, 440.5}, {540.0, 64.0}} <AX element pid: 65742, elementOrHash.elementID: 4686495424.562>
+                                    Other, 0x112a62a20, {{246.0, 440.5}, {540.0, 64.0}} <AX element pid: 65742, elementOrHash.elementID: 4364318720.575>
+                                      Other, 0x112a62b40, {{246.0, 440.5}, {540.0, 64.0}} <AX element pid: 65742, elementOrHash.elementID: 4686547152.583>
+                                        StaticText, 0x112a62c60, {{246.0, 440.5}, {540.0, 64.0}}, label: 'Перед удалением завершите звонки, закройте свои встречи и передайте владение групповыми чатами.' <AX element pid: 65742, elementOrHash.elementID: 4686545696.589>
+                                Other, 0x112a62d80, {{266.0, 439.5}, {500.0, 1.0}} <AX element pid: 65742, elementOrHash.elementID: 4319766592.549>
+                                Other, 0x112a62ea0, {{206.0, 522.0}, {620.0, 1463.5}} <AX element pid: 65742, elementOrHash.elementID: 4320001152.550>
+                                Cell, 0x112a62fc0, {{246.0, 539.5}, {540.0, 52.0}} <AX element pid: 65742, elementOrHash.elementID: 4365278208.551>
+                                  Other, 0x112a630e0, {{246.0, 539.5}, {540.0, 52.0}} <AX element pid: 65742, elementOrHash.elementID: 4686492256.563>
+                                    Other, 0x112a63200, {{246.0, 539.5}, {540.0, 52.0}} <AX element pid: 65742, elementOrHash.elementID: 4686521408.576>
+                                  Other, 0x112a63320, {{246.0, 539.5}, {540.0, 52.0}} <AX element pid: 65742, elementOrHash.elementID: 4686502832.564>
+                                    Other, 0x112a63440, {{246.0, 539.5}, {540.0, 52.0}} <AX element pid: 65742, elementOrHash.elementID: 4365279744.577>
+                                      Other, 0x112a63560, {{246.0, 539.5}, {540.0, 52.0}} <AX element pid: 65742, elementOrHash.elementID: 4686549232.584>
+                                        SecureTextField, 0x112a63680, {{266.0, 557.0}, {500.0, 17.0}}, identifier: 'deleteAccount.password', placeholderValue: 'Пароль аккаунта', Keyboard Focused, Focused <AX element pid: 65742, elementOrHash.elementID: 4365281280.590>
+                                Cell, 0x112a637a0, {{246.0, 591.5}, {540.0, 74.0}} <AX element pid: 65742, elementOrHash.elementID: 4380848128.552>
+                                  Other, 0x112a638c0, {{246.0, 591.5}, {540.0, 74.0}} <AX element pid: 65742, elementOrHash.elementID: 4319936496.565>
+                                    Other, 0x112a639e0, {{246.0, 591.5}, {540.0, 74.0}} <AX element pid: 65742, elementOrHash.elementID: 4319638224.578>
+                                  Other, 0x112a63b00, {{246.0, 591.5}, {540.0, 74.0}} <AX element pid: 65742, elementOrHash.elementID: 4319944592.566>
+                                    Other, 0x112a63c20, {{246.0, 591.5}, {540.0, 74.0}} <AX element pid: 65742, elementOrHash.elementID: 4380841472.579>
+                                      Other, 0x112a63d40, {{246.0, 591.5}, {540.0, 74.0}} <AX element pid: 65742, elementOrHash.elementID: 4686551760.585>
+                                        Button, 0x112a63e60, {{246.0, 591.5}, {540.0, 74.0}}, identifier: 'deleteAccount.submit', label: 'Удалить аккаунт на сервере', Disabled <AX element pid: 65742, elementOrHash.elementID: 4686550864.591>
+                                Other, 0x112a63f80, {{266.0, 590.5}, {500.0, 1.0}} <AX element pid: 65742, elementOrHash.elementID: 4320004512.553>
+                                Other, 0x112a640a0, {{773.0, 220.5}, {30.0, 554.0}}, label: 'Вертикальная полоса прокрутки, 1 страница', value: 0 % <AX element pid: 65742, elementOrHash.elementID: 4686398208.554>
+                                  Other, 0x112a641c0, {{800.0, 344.5}, {3.0, 427.0}} <AX element pid: 65742, elementOrHash.elementID: 4686402560.567>
+                                Other, 0x112a642e0, {{773.0, 220.5}, {30.0, 554.0}}, label: 'Вертикальная полоса прокрутки, 1 страница', value: 0 % <AX element pid: 65742, elementOrHash.elementID: 4686398208.554>
+                                  Other, 0x112a64400, {{800.0, 344.5}, {3.0, 427.0}} <AX element pid: 65742, elementOrHash.elementID: 4686402560.567>
+                      Other, 0x112a64520, {{226.0, 156.5}, {580.0, 650.0}} <AX element pid: 65742, elementOrHash.elementID: 4686364560.530>
+                        Other, 0x112a64640, {{226.0, 156.5}, {580.0, 650.0}} <AX element pid: 65742, elementOrHash.elementID: 4686366832.534>
+  Window, 0x112a64760, {{0.0, 0.0}, {1032.0, 1376.0}} <AX element pid: 65742, elementOrHash.elementID: 4370500608.63>
+    Other, 0x112a64880, {{0.0, 0.0}, {1032.0, 1376.0}} <AX element pid: 65742, elementOrHash.elementID: 4336530896.65>
+      Other, 0x112a649a0, {{0.0, 0.0}, {1032.0, 1376.0}} <AX element pid: 65742, elementOrHash.elementID: 4319448816.67>
+      Other, 0x112a64ac0, {{0.0, 973.0}, {1032.0, 403.0}} <AX element pid: 65742, elementOrHash.elementID: 4319334416.68>
+        Other, 0x112a64be0, {{0.0, 973.0}, {1032.0, 403.0}}, identifier: 'inputView' <AX element pid: 65742, elementOrHash.elementID: 4319496192.595>
+  Window, 0x112a64d00, {{0.0, 0.0}, {1032.0, 1376.0}} <AX element pid: 65742, elementOrHash.elementID: 4365316608.592>
+    Other, 0x112a64e20, {{0.0, 0.0}, {1032.0, 1376.0}} <AX element pid: 65742, elementOrHash.elementID: 4336433376.593>
+      Other, 0x112a64f40, {{0.0, 973.0}, {1032.0, 403.0}} <AX element pid: 65742, elementOrHash.elementID: 4335913888.594>
+        Other, 0x112a65060, {{0.0, 973.0}, {1032.0, 55.0}}, identifier: 'SystemInputAssistantView' <AX element pid: 65742, elementOrHash.elementID: 4319486944.71>
+          Other, 0x112a65180, {{0.0, 973.0}, {1032.0, 55.0}} <AX element pid: 65742, elementOrHash.elementID: 4319332992.74>
+            Other, 0x112a652a0, {{0.0, 973.0}, {283.0, 49.0}}, identifier: 'LeftButtonBar' <AX element pid: 65742, elementOrHash.elementID: 4336568720.77>
+              Other, 0x112a653c0, {{28.0, 973.0}, {255.0, 49.0}} <AX element pid: 65742, elementOrHash.elementID: 4336571872.81>
+                Other, 0x112a654e0, {{28.0, 974.0}, {114.0, 49.0}} <AX element pid: 65742, elementOrHash.elementID: 4689197152.1393>
+                  Other, 0x112a65600, {{28.0, 974.0}, {22.0, 49.0}} <AX element pid: 65742, elementOrHash.elementID: 4337185152.1394>
+                    Button, 0x112a65720, {{28.0, 974.0}, {22.0, 49.0}}, identifier: 'assistantUndo', label: 'отменить', Disabled <AX element pid: 65742, elementOrHash.elementID: 4337268992.1397>
+                  Other, 0x112a65840, {{74.0, 974.0}, {22.0, 49.0}} <AX element pid: 65742, elementOrHash.elementID: 4337624656.1395>
+                    Button, 0x112a65960, {{74.0, 974.0}, {22.0, 49.0}}, identifier: 'assistantRedo', label: 'Повторить', Disabled <AX element pid: 65742, elementOrHash.elementID: 4686217856.1398>
+                  Other, 0x112a65a80, {{120.0, 974.0}, {22.0, 49.0}} <AX element pid: 65742, elementOrHash.elementID: 4686613072.1396>
+                    Button, 0x112a65ba0, {{120.0, 974.0}, {22.0, 49.0}}, identifier: 'assistantPaste:forEvent:', label: 'Вставить', Disabled <AX element pid: 65742, elementOrHash.elementID: 4319689664.1399>
+            Other, 0x112a65cc0, {{283.0, 979.0}, {466.0, 49.0}}, identifier: 'CenterPageView' <AX element pid: 65742, elementOrHash.elementID: 4319510464.181>
+              Other, 0x112a65de0, {{283.0, 379.0}, {466.0, 1249.0}} <AX element pid: 65742, elementOrHash.elementID: 4319511456.183>
+                ScrollView, 0x112a65f00, {{283.0, 979.0}, {466.0, 49.0}} <AX element pid: 65742, elementOrHash.elementID: 4379215872.186>
+              Other, 0x112a66020, {{283.0, 979.0}, {466.0, 49.0}} <AX element pid: 65742, elementOrHash.elementID: 4319519216.184>
+                Other, 0x112a66140, {{283.0, 979.0}, {466.0, 49.0}}, label: 'Варианты ввода' <AX element pid: 65742, elementOrHash.elementID: 4337665136.187>
+                  Other, 0x112a66260, {{283.0, 979.0}, {466.0, 49.0}} <AX element pid: 65742, elementOrHash.elementID: 4337666192.253>
+                    Other, 0x1021b6db0, {{313.0, 979.0}, {406.0, 49.0}} <AX element pid: 65742, elementOrHash.elementID: 4337604000.257>
+                      Button, 0x1021b6ed0, {{313.0, 979.0}, {406.0, 49.0}}, label: 'Passwords' <AX element pid: 65742, elementOrHash.elementID: 4319574800.258>
+                        Image, 0x1021b6ff0, {{465.5, 992.0}, {13.0, 23.0}}, identifier: 'kb-autofill-key' <AX element pid: 65742, elementOrHash.elementID: 4688267888.1400>
+            Other, 0x1021b7110, {{749.0, 973.0}, {283.0, 49.0}}, identifier: 'RightButtonBar' <AX element pid: 65742, elementOrHash.elementID: 4336611792.78>
+              Other, 0x1021b7230, {{749.0, 973.0}, {255.0, 49.0}} <AX element pid: 65742, elementOrHash.elementID: 4336553872.82>
+        Other, 0x1021b7350, {{0.0, 973.0}, {1032.0, 403.0}} <AX element pid: 65742, elementOrHash.elementID: 4319389760.596>
+          Other, 0x1021b7470, {{0.0, 973.0}, {1032.0, 403.0}} <AX element pid: 65742, elementOrHash.elementID: 4319388544.597>
+            Other, 0x1021b7590, {{0.0, 973.0}, {1032.0, 403.0}} <AX element pid: 65742, elementOrHash.elementID: 4319389200.598>
+        Other, 0x1021b76b0, {{0.0, 1028.0}, {1032.0, 345.0}} <AX element pid: 65742, elementOrHash.elementID: 4336614224.73>
+          Keyboard, 0x112a66380, {{0.0, 1028.0}, {1032.0, 345.0}} <AX element pid: 65742, elementOrHash.elementID: 4336620864.76>
+            Other, 0x112a664a0, {{0.0, 1028.0}, {1032.0, 345.0}} <AX element pid: 65742, elementOrHash.elementID: 4319509504.80>
+              Other, 0x112a665c0, {{0.0, 1028.0}, {1032.0, 345.0}}, identifier: 'UIKeyboardLayoutStar Preview' <AX element pid: 65742, elementOrHash.elementID: 4371817984.83>
+                Key, 0x112a666e0, {{0.0, 1028.0}, {0.0, 0.0}}, label: 'Padding-Left' <AX element pid: 65742, elementOrHash.elementID: 105553152233776.1332>
+                Key, 0x112a66800, {{0.5, 1033.0}, {71.0, 52.5}}, label: '>' <AX element pid: 65742, elementOrHash.elementID: 105553152232736.1333>
+                Key, 0x112a66920, {{71.5, 1033.0}, {71.0, 52.5}}, label: '1' <AX element pid: 65742, elementOrHash.elementID: 105553152230976.1334>
+                Key, 0x112a66a40, {{142.5, 1033.0}, {71.0, 52.5}}, label: '2' <AX element pid: 65742, elementOrHash.elementID: 105553152234496.1335>
+                Key, 0x112a66b60, {{213.5, 1033.0}, {71.0, 52.5}}, label: '3' <AX element pid: 65742, elementOrHash.elementID: 105553152231936.1336>
+                Key, 0x112a66c80, {{284.5, 1033.0}, {71.0, 52.5}}, label: '4' <AX element pid: 65742, elementOrHash.elementID: 105553152244256.1337>
+                Key, 0x112a66da0, {{355.5, 1033.0}, {71.0, 52.5}}, label: '5' <AX element pid: 65742, elementOrHash.elementID: 105553152231616.1338>
+                Key, 0x112a66ec0, {{426.5, 1033.0}, {71.0, 52.5}}, label: '6' <AX element pid: 65742, elementOrHash.elementID: 105553152230176.1339>
+                Key, 0x112a66fe0, {{497.5, 1033.0}, {71.0, 52.5}}, label: '7' <AX element pid: 65742, elementOrHash.elementID: 105553152240016.1340>
+                Key, 0x112a67100, {{568.5, 1033.0}, {71.0, 52.5}}, label: '8' <AX element pid: 65742, elementOrHash.elementID: 105553152236336.1341>
+                Key, 0x112a67220, {{639.5, 1033.0}, {71.0, 52.5}}, label: '9' <AX element pid: 65742, elementOrHash.elementID: 105553152232976.1342>
+                Key, 0x112a67340, {{710.5, 1033.0}, {70.5, 52.5}}, label: '0' <AX element pid: 65742, elementOrHash.elementID: 105553152234176.1343>
+                Key, 0x112a67460, {{781.0, 1033.0}, {71.0, 52.5}}, label: '-' <AX element pid: 65742, elementOrHash.elementID: 105553152244096.1344>
+                Key, 0x112a67580, {{852.0, 1033.0}, {71.0, 52.5}}, label: '=' <AX element pid: 65742, elementOrHash.elementID: 105553152234576.1345>
+                Key, 0x1021b77d0, {{923.0, 1033.0}, {109.5, 52.5}}, identifier: 'delete', label: 'Удалить' <AX element pid: 65742, elementOrHash.elementID: 105553152242016.1346>
+                Key, 0x1021b78f0, {{961.0, 1080.5}, {71.0, 136.0}}, label: '
+' <AX element pid: 65742, elementOrHash.elementID: 105553152232576.1347>
+                Button, 0x1021b7a10, {{961.0, 1080.5}, {71.0, 136.0}}, identifier: 'Done', label: 'Готово' <AX element pid: 65742, elementOrHash.elementID: 105553152234416.1348>
+                Button, 0x1021b7b30, {{0.5, 1085.5}, {109.5, 68.0}}, identifier: 'tab', label: 'Клавиша Tab' <AX element pid: 65742, elementOrHash.elementID: 105553152234816.1349>
+                Key, 0x1021b7c50, {{110.0, 1085.5}, {71.0, 68.0}}, label: 'й' <AX element pid: 65742, elementOrHash.elementID: 105553152236496.1350>
+                Key, 0x1021b7d70, {{181.0, 1085.5}, {71.0, 68.0}}, label: 'ц' <AX element pid: 65742, elementOrHash.elementID: 105553152235296.1351>
+                Key, 0x1021b7e90, {{252.0, 1085.5}, {70.5, 68.0}}, label: 'у' <AX element pid: 65742, elementOrHash.elementID: 105553152229936.1352>
+                Key, 0x1021b7fb0, {{322.5, 1085.5}, {71.0, 68.0}}, label: 'к' <AX element pid: 65742, elementOrHash.elementID: 105553152244816.1353>
+                Key, 0x1021b80d0, {{393.5, 1085.5}, {71.0, 68.0}}, label: 'е' <AX element pid: 65742, elementOrHash.elementID: 105553152242496.1354>
+                Key, 0x1021b81f0, {{464.5, 1085.5}, {71.0, 68.0}}, label: 'н' <AX element pid: 65742, elementOrHash.elementID: 105553152230816.1355>
+                Key, 0x1021b8310, {{535.5, 1085.5}, {71.0, 68.0}}, label: 'г' <AX element pid: 65742, elementOrHash.elementID: 105553152233856.1356>
+                Key, 0x1021b8430, {{606.5, 1085.5}, {71.0, 68.0}}, label: 'ш' <AX element pid: 65742, elementOrHash.elementID: 105553152239456.1357>
+                Key, 0x1021b8550, {{677.5, 1085.5}, {71.0, 68.0}}, label: 'щ' <AX element pid: 65742, elementOrHash.elementID: 105553152230256.1358>
+                Key, 0x1021b87c0, {{748.5, 1085.5}, {71.0, 68.0}}, label: 'з' <AX element pid: 65742, elementOrHash.elementID: 105553152233696.1359>
+                Key, 0x1021b88e0, {{819.5, 1085.5}, {71.0, 68.0}}, label: 'х' <AX element pid: 65742, elementOrHash.elementID: 105553152238256.1360>
+                Key, 0x1021b8a00, {{890.5, 1085.5}, {71.0, 68.0}}, label: 'ъ' <AX element pid: 65742, elementOrHash.elementID: 105553152242656.1361>
+                Key, 0x1021b8b20, {{0.5, 1153.5}, {125.5, 68.0}}, label: 'Переключиться с латинских клавиш' <AX element pid: 65742, elementOrHash.elementID: 105553152234096.1362>
+                Key, 0x112a676a0, {{126.0, 1153.5}, {71.0, 68.0}}, label: 'ф' <AX element pid: 65742, elementOrHash.elementID: 105553152233536.1363>
+                Key, 0x112a677c0, {{197.0, 1153.5}, {71.0, 68.0}}, label: 'ы' <AX element pid: 65742, elementOrHash.elementID: 105553152233136.1364>
+                Key, 0x112a678e0, {{268.0, 1153.5}, {71.0, 68.0}}, label: 'в' <AX element pid: 65742, elementOrHash.elementID: 105553152233216.1365>
+                Key, 0x112a67a00, {{339.0, 1153.5}, {71.0, 68.0}}, label: 'а' <AX element pid: 65742, elementOrHash.elementID: 105553152234656.1366>
+                Key, 0x1021b8c40, {{410.0, 1153.5}, {71.0, 68.0}}, label: 'п' <AX element pid: 65742, elementOrHash.elementID: 105553152233056.1367>
+                Key, 0x1021b8d60, {{481.0, 1153.5}, {71.0, 68.0}}, label: 'р' <AX element pid: 65742, elementOrHash.elementID: 105553152245616.1368>
+                Key, 0x1021b8e80, {{552.0, 1153.5}, {71.0, 68.0}}, label: 'о' <AX element pid: 65742, elementOrHash.elementID: 105553152230336.1369>
+                Key, 0x1021b8fa0, {{623.0, 1153.5}, {71.0, 68.0}}, label: 'л' <AX element pid: 65742, elementOrHash.elementID: 105553152230496.1370>
+                Key, 0x1021b90c0, {{694.0, 1153.5}, {71.0, 68.0}}, label: 'д' <AX element pid: 65742, elementOrHash.elementID: 105553152232656.1371>
+                Key, 0x1021b91e0, {{765.0, 1153.5}, {71.0, 68.0}}, label: 'ж' <AX element pid: 65742, elementOrHash.elementID: 105553152232256.1372>
+                Key, 0x1021b9300, {{836.0, 1153.5}, {71.0, 68.0}}, label: 'э' <AX element pid: 65742, elementOrHash.elementID: 105553152237376.1373>
+                Key, 0x1021b9420, {{907.0, 1153.5}, {71.0, 68.0}}, label: 'ё' <AX element pid: 65742, elementOrHash.elementID: 105553152235456.1374>
+                Button, 0x1021b8670, {{0.5, 1221.5}, {90.0, 68.5}}, identifier: 'shift', label: 'сдвиг' <AX element pid: 65742, elementOrHash.elementID: 105553152229456.1375>
+                Key, 0x1021b9760, {{90.5, 1221.5}, {71.0, 68.5}}, label: ']' <AX element pid: 65742, elementOrHash.elementID: 105553152232496.1376>
+                Key, 0x1021b9880, {{161.5, 1221.5}, {71.0, 68.5}}, label: 'я' <AX element pid: 65742, elementOrHash.elementID: 105553152243696.1377>
+                Key, 0x1021b99a0, {{232.5, 1221.5}, {71.0, 68.5}}, label: 'ч' <AX element pid: 65742, elementOrHash.elementID: 105553152233936.1378>
+                Key, 0x1021b9ac0, {{303.5, 1221.5}, {71.0, 68.5}}, label: 'с' <AX element pid: 65742, elementOrHash.elementID: 105553152230016.1379>
+                Key, 0x1021b9be0, {{374.5, 1221.5}, {71.0, 68.5}}, label: 'м' <AX element pid: 65742, elementOrHash.elementID: 105553152234896.1380>
+                Key, 0x1021b9d00, {{445.5, 1221.5}, {71.0, 68.5}}, label: 'и' <AX element pid: 65742, elementOrHash.elementID: 105553152232336.1381>
+                Key, 0x1021b9e20, {{516.5, 1221.5}, {71.0, 68.5}}, label: 'т' <AX element pid: 65742, elementOrHash.elementID: 105553152234016.1382>
+                Key, 0x1021b9f40, {{587.5, 1221.5}, {71.0, 68.5}}, label: 'ь' <AX element pid: 65742, elementOrHash.elementID: 105553152233456.1383>
+                Key, 0x1021ba060, {{658.5, 1221.5}, {71.0, 68.5}}, label: 'б' <AX element pid: 65742, elementOrHash.elementID: 105553152237856.1384>
+                Key, 0x1021ba180, {{729.5, 1221.5}, {71.0, 68.5}}, label: 'ю' <AX element pid: 65742, elementOrHash.elementID: 105553152230096.1385>
+                Key, 0x1021ba2a0, {{800.5, 1221.5}, {71.0, 68.5}}, label: '/' <AX element pid: 65742, elementOrHash.elementID: 105553152232016.1386>
+                Key, 0x1021ba3c0, {{871.5, 1221.5}, {161.0, 68.5}}, label: 'сдвиг' <AX element pid: 65742, elementOrHash.elementID: 105553152239776.1387>
+                Button, 0x11294fa10, {{0.5, 1290.0}, {151.0, 68.0}}, identifier: 'emoji', label: 'Эмодзи' <AX element pid: 65742, elementOrHash.elementID: 105553152231536.1388>
+                Key, 0x102088b60, {{151.5, 1290.0}, {151.0, 68.0}}, identifier: 'more', label: 'цифры' <AX element pid: 65742, elementOrHash.elementID: 105553152232416.1389>
+                Key, 0x10208b480, {{302.5, 1290.0}, {426.5, 68.0}}, label: ' ' <AX element pid: 65742, elementOrHash.elementID: 105553152232096.1390>
+                Key, 0x102082140, {{729.0, 1290.0}, {152.0, 68.0}}, identifier: 'more', label: 'цифры' <AX element pid: 65742, elementOrHash.elementID: 105553152235616.1391>
+                Button, 0x10207e5c0, {{881.0, 1290.0}, {151.5, 68.0}}, label: 'Скрыть клавиатуру' <AX element pid: 65742, elementOrHash.elementID: 105553152239376.1392>

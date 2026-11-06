@@ -1,0 +1,117 @@
+3392: 2026-11-06T19:07:31.4776970Z Test Case '-[MeetSpaceTests.CallAudioIntegrationTests testDirectCallCanNegotiateBeforeCallKitActivatesAudio]' started.
+3393: 2026-11-06T19:07:31.7061760Z 2026-11-06 19:07:26.307730+0000 MeetSpace[9478:31965] [plugin] AddInstanceForFactory: No factory registered for id <CFUUID 0x6000004fd1c0> F8BB1C28-BAE8-11D6-9C31-00039315CD46
+3394: 2026-11-06T19:07:32.4618650Z Test Case '-[MeetSpaceTests.CallAudioIntegrationTests testDirectCallCanNegotiateBeforeCallKitActivatesAudio]' passed (0.325 seconds).
+3395: 2026-11-06T19:07:32.6997080Z Test Suite 'CallAudioIntegrationTests' passed at 2026-11-06 19:07:26.545.
+3396: 2026-11-06T19:07:32.9015070Z 	 Executed 1 test, with 0 failures (0 unexpected) in 0.325 (0.326) seconds
+3397: 2026-11-06T19:07:32.9736590Z Test Suite 'KeychainIntegrationTests' started at 2026-11-06 19:07:26.545.
+3398: 2026-11-06T19:07:33.0965630Z Test Case '-[MeetSpaceTests.KeychainIntegrationTests testKeychainRoundTripUpdateAndScopedDeletion]' started.
+3399: 2026-11-06T19:07:33.1969900Z Test Case '-[MeetSpaceTests.KeychainIntegrationTests testKeychainRoundTripUpdateAndScopedDeletion]' passed (0.689 seconds).
+3400: 2026-11-06T19:07:33.3517880Z Test Suite 'KeychainIntegrationTests' passed at 2026-11-06 19:07:27.236.
+3401: 2026-11-06T19:07:33.4529100Z 	 Executed 1 test, with 0 failures (0 unexpected) in 0.689 (0.691) seconds
+3402: 2026-11-06T19:07:33.6032460Z Test Suite 'MediaIntegrationTests' started at 2026-11-06 19:07:27.237.
+3403: 2026-11-06T19:07:33.7065890Z Test Case '-[MeetSpaceTests.MediaIntegrationTests testBlockedSourcesNeverRequestPermissionsOrAppearInOffer]' started.
+3404: 2026-11-06T19:07:33.8538560Z Test Case '-[MeetSpaceTests.MediaIntegrationTests testBlockedSourcesNeverRequestPermissionsOrAppearInOffer]' passed (0.327 seconds).
+3405: 2026-11-06T19:07:33.9560850Z Test Case '-[MeetSpaceTests.MediaIntegrationTests testNativePeerOfferAndCloseCyclesWithCaptureOff]' started.
+3406: 2026-11-06T19:07:34.0587350Z Test Case '-[MeetSpaceTests.MediaIntegrationTests testNativePeerOfferAndCloseCyclesWithCaptureOff]' passed (1.236 seconds).
+3407: 2026-11-06T19:07:34.2069370Z Test Case '-[MeetSpaceTests.MediaIntegrationTests testScreenGenerationRollbackAndPolicyWithCaptureOff]' started.
+3408: 2026-11-06T19:07:34.3072140Z Test Case '-[MeetSpaceTests.MediaIntegrationTests testScreenGenerationRollbackAndPolicyWithCaptureOff]' passed (1.589 seconds).
+3409: 2026-11-06T19:07:34.4878640Z Test Case '-[MeetSpaceTests.MediaIntegrationTests testScreenRejectsInvalidAndStaleFrameSession]' started.
+3410: 2026-11-06T19:07:34.5885400Z Test Case '-[MeetSpaceTests.MediaIntegrationTests testScreenRejectsInvalidAndStaleFrameSession]' passed (0.288 seconds).
+3411: 2026-11-06T19:07:34.6957560Z Test Suite 'MediaIntegrationTests' passed at 2026-11-06 19:07:30.684.
+3412: 2026-11-06T19:07:34.8039930Z 	 Executed 4 tests, with 0 failures (0 unexpected) in 3.439 (3.448) seconds
+3413: 2026-11-06T19:07:34.9123350Z Test Suite 'RecordingPlaybackTests' started at 2026-11-06 19:07:30.685.
+3414: 2026-11-06T19:07:35.0182570Z Test Case '-[MeetSpaceTests.RecordingPlaybackTests testActualServerAACArtifactAdvancesNativePlayerTime]' started.
+3415: 2026-11-06T19:07:35.2138010Z 2026-11-06 19:07:31.891118+0000 MeetSpace[9478:33332] [aqme]        LoudnessManager.mm:721   unable to open stream for LoudnessManager plist
+3416: 2026-11-06T19:07:35.3585210Z Test Case '-[MeetSpaceTests.RecordingPlaybackTests testActualServerAACArtifactAdvancesNativePlayerTime]' passed (1.633 seconds).
+3417: 2026-11-06T19:07:35.4589850Z Test Suite 'RecordingPlaybackTests' passed at 2026-11-06 19:07:32.320.
+3418: 2026-11-06T19:07:35.6424870Z 	 Executed 1 test, with 0 failures (0 unexpected) in 1.633 (1.635) seconds
+3419: 2026-11-06T19:07:35.7432240Z Test Suite 'Stage08SecurityKeychainTests' started at 2026-11-06 19:07:32.320.
+3420: 2026-11-06T19:07:35.8476660Z Test Case '-[MeetSpaceTests.Stage08SecurityKeychainTests testCredentialsRemainDeviceOnlyAndUnsynchronizedAfterUpdate]' started.
+3421: 2026-11-06T19:07:36.0000830Z Test Case '-[MeetSpaceTests.Stage08SecurityKeychainTests testCredentialsRemainDeviceOnlyAndUnsynchronizedAfterUpdate]' passed (0.020 seconds).
+3422: 2026-11-06T19:07:36.1006580Z Test Case '-[MeetSpaceTests.Stage08SecurityKeychainTests testPushCleanupJournalUsesTheSameDeviceOnlyProtection]' started.
+3423: 2026-11-06T19:07:36.2028380Z Test Case '-[MeetSpaceTests.Stage08SecurityKeychainTests testPushCleanupJournalUsesTheSameDeviceOnlyProtection]' passed (0.032 seconds).
+3424: 2026-11-06T19:07:36.3670000Z Test Suite 'Stage08SecurityKeychainTests' passed at 2026-11-06 19:07:33.701.
+3425: 2026-11-06T19:07:36.4677800Z 	 Executed 2 tests, with 0 failures (0 unexpected) in 0.052 (1.381) seconds
+3426: 2026-11-06T19:07:36.6353990Z Test Suite 'TypographyAccessibilityTests' started at 2026-11-06 19:07:33.702.
+3427: 2026-11-06T19:07:36.8476990Z Test Case '-[MeetSpaceTests.TypographyAccessibilityTests testBundledFontsScaleInActualUIKitHostingAtAllDynamicTypeSizes]' started.
+3428: 2026-11-06T19:07:36.9494950Z 2026-11-06 19:07:33.111989+0000 MeetSpace[9478:33236] [AMCP]  79875          HALC_ProxyIOContext.cpp:1622  HALC_ProxyIOContext::IOWorkLoop: skipping cycle due to overload
+3429: 2026-11-06T19:07:37.0692080Z Test Case '-[MeetSpaceTests.TypographyAccessibilityTests testBundledFontsScaleInActualUIKitHostingAtAllDynamicTypeSizes]' passed (3.173 seconds).
+3430: 2026-11-06T19:07:37.1933380Z Test Suite 'TypographyAccessibilityTests' passed at 2026-11-06 19:07:36.876.
+3431: 2026-11-06T19:07:37.3166890Z 	 Executed 1 test, with 0 failures (0 unexpected) in 3.173 (3.174) seconds
+3432: 2026-11-06T19:07:37.5779730Z Test Suite 'MeetSpaceTests.xctest' passed at 2026-11-06 19:07:36.877.
+3433: 2026-11-06T19:07:37.6879340Z 	 Executed 10 tests, with 0 failures (0 unexpected) in 9.311 (10.659) seconds
+3434: 2026-11-06T19:07:37.8489300Z Test Suite 'All tests' passed at 2026-11-06 19:07:36.879.
+3435: 2026-11-06T19:07:37.9511090Z 	 Executed 10 tests, with 0 failures (0 unexpected) in 9.311 (10.663) seconds
+3436: 2026-11-06T19:07:50.8696460Z 2026-11-06 19:07:50.770926+0000 MeetSpaceUITests-Runner[9925:34515] [Default] Running tests...
+3437: 2026-11-06T19:08:07.1944120Z     t =      nans Interface orientation changed to Portrait
+3438: 2026-11-06T19:08:07.2950810Z Test Suite 'Selected tests' started at 2026-11-06 19:08:07.207.
+3439: 2026-11-06T19:08:07.4083820Z Test Suite 'MeetSpaceUITests.xctest' started at 2026-11-06 19:08:07.208.
+3440: 2026-11-06T19:08:07.5097580Z Test Suite 'FoundationUITests' started at 2026-11-06 19:08:07.209.
+3441: 2026-11-06T19:08:07.6105290Z Test Case '-[MeetSpaceUITests.FoundationUITests testAccessibilityStage08CoreScreens]' started.
+3442: 2026-11-06T19:08:07.7109620Z     t =     0.00s Start Test at 2026-11-06 19:08:07.212
+3443: 2026-11-06T19:08:14.6110380Z     t =     7.30s Set Up
+3444: 2026-11-06T19:08:14.7114940Z     t =     7.32s Open com.meetspace.ios
+3445: 2026-11-06T19:08:14.8137520Z     t =     7.32s     Launch com.meetspace.ios
+3446: 2026-11-06T19:08:15.9230420Z     t =     8.58s         Setting up automation session
+3447: 2026-11-06T19:08:19.1807130Z     t =    11.91s         Wait for com.meetspace.ios to idle
+3448: 2026-11-06T19:08:21.3289040Z     t =    14.09s Waiting 10.0s for "connectServer" Button to exist
+3449: 2026-11-06T19:08:22.3725030Z     t =    15.12s     Checking `Expect predicate `existsNoRetry == 1` for object "connectServer" Button`
+3450: 2026-11-06T19:08:22.4930620Z     t =    15.13s         Checking existence of `"connectServer" Button`
+3451: 2026-11-06T19:08:23.2114500Z     t =    15.95s Find the Target Application 'com.meetspace.ios'
+3452: 2026-11-06T19:09:10.8585280Z /Users/runner/work/meetspace_ios_mobile/meetspace_ios_mobile/Tests/MeetSpaceUITests/FoundationUITests.swift:20: error: -[MeetSpaceUITests.FoundationUITests testAccessibilityStage08CoreScreens] : Failed to get screenshot: Timed out while requesting screenshot.
+3453: 2026-11-06T19:09:10.9923410Z     t =    63.58s Tear Down
+3454: 2026-11-06T19:09:23.7848260Z Test Case '-[MeetSpaceUITests.FoundationUITests testAccessibilityStage08CoreScreens]' failed (76.494 seconds).
+3455: 2026-11-06T19:09:23.8419920Z Test Case '-[MeetSpaceUITests.FoundationUITests testAccessibilityStage08LargeTextLiveFlow]' started.
+3456: 2026-11-06T19:09:23.9238140Z     t =     0.00s Start Test at 2026-11-06 19:09:23.707
+3457: 2026-11-06T19:09:42.6054510Z     t =    18.83s Set Up
+3458: 2026-11-06T19:09:42.7153380Z     t =    18.84s Open com.meetspace.ios
+3459: 2026-11-06T19:09:42.8175670Z     t =    18.84s     Launch com.meetspace.ios
+3460: 2026-11-06T19:09:42.9179340Z     t =    18.84s         Terminate com.meetspace.ios:10923
+3461: 2026-11-06T20:30:49.8571860Z ##[error]The operation was canceled.
+3462: 2026-11-06T20:30:49.9509910Z ##[group]Run actions/upload-artifact@v4
+3463: 2026-11-06T20:30:49.9511490Z with:
+3464: 2026-11-06T20:30:49.9522250Z   name: results-iPad18
+3465: 2026-11-06T20:30:49.9522980Z   path: artifacts/
+3466: 2026-11-06T20:30:49.9523610Z   retention-days: 7
+3467: 2026-11-06T20:30:49.9524250Z   if-no-files-found: warn
+3468: 2026-11-06T20:30:49.9524940Z   compression-level: 6
+3469: 2026-11-06T20:30:49.9525600Z   overwrite: false
+3470: 2026-11-06T20:30:49.9526240Z   include-hidden-files: false
+3471: 2026-11-06T20:30:49.9526960Z env:
+3472: 2026-11-06T20:30:49.9527810Z   DEVELOPER_DIR: /Applications/Xcode_26.3.app/Contents/Developer
+3473: 2026-11-06T20:30:49.9528880Z ##[endgroup]
+3474: 2026-11-06T20:30:54.3011140Z (node:28197) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+3475: 2026-11-06T20:30:54.4032200Z (Use `node --trace-deprecation ...` to show where the warning was created)
+3476: 2026-11-06T20:30:58.2652440Z (node:28197) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+3477: 2026-11-06T20:30:58.4745040Z With the provided path, there will be 35 files uploaded
+3478: 2026-11-06T20:30:58.4752380Z Artifact name is valid!
+3479: 2026-11-06T20:30:58.4753300Z Root directory input is valid!
+3480: 2026-11-06T20:30:59.3646360Z Beginning upload of artifact content to blob storage
+3481: 2026-11-06T20:30:59.3690460Z Uploaded bytes 2136003
+3482: 2026-11-06T20:30:59.3769130Z Finished uploading artifact content to blob storage!
+3483: 2026-11-06T20:30:59.3793810Z SHA256 digest of uploaded artifact zip is 20ca8fcb8dc4ed4094b73fa40752e8146917b67c5cfb4d2deeca110e137b8f3b
+3484: 2026-11-06T20:30:59.4797860Z Finalizing artifact upload
+3485: 2026-11-06T20:30:59.8358030Z Artifact results-iPad18.zip successfully finalized. Artifact ID 13538592701
+3486: 2026-11-06T20:30:59.8436920Z Artifact results-iPad18 has been successfully uploaded! Final size is 2136003 bytes. Artifact ID is 13538592701
+3487: 2026-11-06T20:30:59.9395260Z Artifact download URL: https://github.com/janickiy/meetspace_ios_mobile/actions/runs/42275177048/artifacts/13538592701
+3488: 2026-11-06T20:30:59.9914370Z Post job cleanup.
+3489: 2026-11-06T20:31:00.7594430Z [command]/usr/local/bin/git version
+3490: 2026-11-06T20:31:00.8606190Z git version 2.55.0
+3491: 2026-11-06T20:31:00.9275360Z Copying '/Users/runner/.gitconfig' to '/Users/runner/work/_temp/7a717255-f58d-49dc-b694-c08842c9036c/.gitconfig'
+3492: 2026-11-06T20:31:00.9301690Z Temporarily overriding HOME='/Users/runner/work/_temp/7a717255-f58d-49dc-b694-c08842c9036c' before making global git config changes
+3493: 2026-11-06T20:31:00.9319200Z Adding repository directory to the temporary git global config as a safe directory
+3494: 2026-11-06T20:31:00.9322620Z [command]/usr/local/bin/git config --global --add safe.directory /Users/runner/work/meetspace_ios_mobile/meetspace_ios_mobile
+3495: 2026-11-06T20:31:00.9469940Z [command]/usr/local/bin/git config --local --name-only --get-regexp core\.sshCommand
+3496: 2026-11-06T20:31:01.0375670Z [command]/usr/local/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+3497: 2026-11-06T20:31:01.1769950Z [command]/usr/local/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+3498: 2026-11-06T20:31:01.2775610Z http.https://github.com/.extraheader
+3499: 2026-11-06T20:31:01.2801480Z [command]/usr/local/bin/git config --local --unset-all http.https://github.com/.extraheader
+3500: 2026-11-06T20:31:01.2811730Z [command]/usr/local/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+3501: 2026-11-06T20:31:01.6128310Z [command]/usr/local/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+3502: 2026-11-06T20:31:01.6902090Z [command]/usr/local/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+3503: 2026-11-06T20:31:01.9769550Z Cleaning up orphan processes
+3504: 2026-11-06T20:31:05.6380330Z Terminate orphan process: pid (9517) (DTServiceHub)
+3505: 2026-11-06T20:31:20.1947930Z Terminate orphan process: pid (3805) (SWBBuildService)
+3506: 2026-11-06T20:31:20.4269160Z Terminate orphan process: pid (3258) (xcodebuild)
+3507: 2026-11-06T20:31:20.9793580Z Terminate orphan process: pid (3143) (Python)
+3508: 2026-11-06T20:31:22.5255130Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/upload-artifact@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/

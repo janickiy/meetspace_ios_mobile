@@ -1,0 +1,49 @@
+{
+  "devicesAndConfigurations" : [
+    {
+      "device" : {
+        "architecture" : "arm64",
+        "deviceId" : "73C19119-B10E-4309-872E-C53EF3F0EF27",
+        "deviceName" : "iPad Pro 13-inch (M5)",
+        "modelName" : "iPad Pro 13-inch (M5)",
+        "osBuildNumber" : "23C54",
+        "osVersion" : "26.2",
+        "platform" : "iOS Simulator"
+      },
+      "expectedFailures" : 0,
+      "failedTests" : 1,
+      "passedTests" : 13,
+      "skippedTests" : 0,
+      "testPlanConfiguration" : {
+        "configurationId" : "1",
+        "configurationName" : "Test Scheme Action"
+      }
+    }
+  ],
+  "environmentDescription" : "MeetSpace-Debug · Built with macOS 15.8.2",
+  "expectedFailures" : 0,
+  "failedTests" : 1,
+  "finishTime" : 1793995845.172,
+  "passedTests" : 13,
+  "result" : "Failed",
+  "skippedTests" : 0,
+  "startTime" : 1793994871.898,
+  "statistics" : [
+
+  ],
+  "testFailures" : [
+    {
+      "failureText" : "XCTAssertTrue failed",
+      "targetName" : "MeetSpaceUITests",
+      "testIdentifier" : 14,
+      "testIdentifierString" : "FoundationUITests/testStage08AccountDeletionRequiresPasswordAndConfirmation()",
+      "testIdentifierURL" : "test://com.apple.xcode/MeetSpace/MeetSpaceUITests/FoundationUITests/testStage08AccountDeletionRequiresPasswordAndConfirmation",
+      "testName" : "testStage08AccountDeletionRequiresPasswordAndConfirmation()"
+    }
+  ],
+  "title" : "Test - MeetSpace-Debug",
+  "topInsights" : [
+
+  ],
+  "totalTestCount" : 14
+}

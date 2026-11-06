@@ -5,7 +5,7 @@
 ## Текущее состояние и ограничения
 
 - Проект рассчитан на iPhone/iPad, iOS 18+. Release использует оптимизацию `-O`, dSYM, отдельный ReplayKit Upload Extension, production APNs entitlement и общий App Group.
-- Для `a052abdacaf49d05a68b17725dda0e4b096bb86e` CI13 собрал настоящий неподписанный device archive: версия `0.2.0 (1)`, Xcode `26.3 (17C529)`, SDK `iphoneos26.2`, minimum `18.0`. Скачанный архив независимо прошёл 59 packaging checks; [receipt и хеши](evidence/release-product-attempt13/receipt.json). Это результат сборки; native suite и signing учитываются отдельно.
+- Для `a33a153147d6941874884357134b3fd46de7532c` CI16 собрал настоящий неподписанный device archive: версия `0.2.0 (1)`, Xcode `26.3 (17C529)`, SDK `iphoneos26.2`, minimum `18.0`. Скачанный архив независимо прошёл 59 packaging checks; [receipt и хеши](evidence/release-product-final/receipt.json). Это результат сборки; native suite и signing учитываются отдельно.
 - На локальном хосте выбран Command Line Tools, полного Xcode нет; валидных code-signing identities — 0, provisioning profiles — 0. Проверялись только наличие и количество, без экспорта ключей, сертификатов или содержимого профилей. Подключение/возможности физических устройств этим не доказаны.
 - Архив с Apple Distribution, экспорт `.ipa`, TestFlight, реальный APNs и физические device gates остаются **BLOCKED** до доступности необходимых ресурсов. Эта работа не выполняет отправку в Apple.
 - WebRTC M156 закреплён по версии, Git revision и checksum; его device framework поставляется без подписи дистрибьютора. Подписание/происхождение SDK и полнота notices требуют закрытия перед распространением. Подробнее ниже.

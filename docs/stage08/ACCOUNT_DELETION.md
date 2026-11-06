@@ -34,13 +34,39 @@
 
 Первый сфокусированный прогон SwiftPM (снимок исходников указан в receipt): **8/8 PASS**, сборка 12.74с, тесты 0.052с. [Receipt и source hashes](evidence/account-deletion/receipt.json), [вывод тестов](evidence/account-deletion/focused-tests.txt). Проверены одиночный запрос и предшествующий refresh; 400/422/401/403/409/405 без replay; неизвестные результаты; пустой/слишком длинный пароль; подтверждённый результат при параллельном отзыве сессии; сохранение второго аккаунта с тем же UUID на другом сервере; удаление своего временного файла при сохранении чужого; закрытие моделей/загрузок; блокировка конкурентных identity mutations; завершение опоздавшей push-регистрации до очистки scoped journal.
 
-Дополнительное исправление push-порядка проверено на рабочем снимке поверх `e0a37748eb865b84dddf3da6339d16e0d8e1a0fe`: **11/11 focused PASS**; полный пакет **184 tests: 179 PASS / 5 opt-in SKIP**. [Новый receipt, команды и source hashes](evidence/account-deletion/push-ordering/receipt.json), [focused excerpt](evidence/account-deletion/push-ordering/focused-tests.txt), [full-suite excerpt](evidence/account-deletion/push-ordering/full-suite.txt). Три новых теста проверяют delayed POST → revoke → DELETE через production IdentityModel/API; failed revoke с сохранением journal до200; enabled/off × 422/409/503/timeout с восстановлением без prompt/replay; отклонение чужого origin и устаревшего pause token после disable/switch. В тестах controlled transport и platform doubles; это не воспроизведение серверной транзакционной гонки. Нативный прогон **этого** production patch пока **PENDING**: CI10 ниже был запущен до него.
+Дополнительное исправление push-порядка проверено на рабочем снимке поверх `e0a37748eb865b84dddf3da6339d16e0d8e1a0fe`: **11/11 focused PASS**; полный пакет **184 tests: 179 PASS / 5 opt-in SKIP**. [Новый receipt, команды и source hashes](evidence/account-deletion/push-ordering/receipt.json), [focused excerpt](evidence/account-deletion/push-ordering/focused-tests.txt), [full-suite excerpt](evidence/account-deletion/push-ordering/full-suite.txt). Три новых теста проверяют delayed POST → revoke → DELETE через production IdentityModel/API; failed revoke с сохранением journal до200; enabled/off × 422/409/503/timeout с восстановлением без prompt/replay; отклонение чужого origin и устаревшего pause token после disable/switch. В тестах controlled transport и platform doubles; это не воспроизведение серверной транзакционной гонки. CI14 ниже подтвердил native iPhone18 UI-поток на исходнике с этим исправлением. Его push intent по умолчанию выключен, поэтому успешный UI-сценарий не выдаётся за нативную проверку конкурентных push-ветвей.
 
 Отдельный настоящий backend-прогон подтвердил 422 неверного пароля с сохранением сессии, 409 владельца запланированной встречи, 200 после отмены встречи, отзыв двух bearer/двух refresh cookies и отказ нового входа, сохранение другого аккаунта, папок и notification preferences. Подробные сетевые evidence принадлежат [API_CONTRACT.md](API_CONTRACT.md).
 
 UI IDs: `openDeleteAccount`, `deleteAccount.password`, `deleteAccount.submit`, `deleteAccount.confirm`, `deleteAccount.cancelConfirmation`, `deleteAccount.error`. DEBUG fixture использует `fixture-password`; предусмотрены явные сценарии `-delete-account-conflict` и `-delete-account-unconfirmed`. Эти doubles не проверяют production TLS или серверное хранение. Итог iPhone/iPad UI и hosted Keychain-проверок учитывается отдельно в общем отчёте CI; локальный SwiftPM не заменяет их.
 
-## Незавершённая native UI-проверка ввода
+## CI14: подтверждённый native iPhone18 UI-поток
+
+В [CI14 `42275177048`](https://github.com/janickiy/meetspace_ios_mobile/actions/runs/42275177048),
+source `04f70a3d80bfd8cd9314c798f0eb3fc7e58b343f`,
+`testStage08AccountDeletionRequiresPasswordAndConfirmation` прошёл за **186.676 с**
+на iPhone SE, iOS 18.6. [Receipt](evidence/account-deletion/attempt14-iphone18.json)
+связывает source hashes, GitHub artifact digest, четыре оригинальных PNG и
+[native event excerpt](evidence/account-deletion/attempt14/iPhone18-events.txt).
+
+Проверены пустое поле/disabled submit, отмена подтверждения, отказ неверного
+пароля с очисткой поля и повторный native ввод правильного fixture-пароля.
+[Retry PNG](evidence/account-deletion/attempt14/iPhone18-stage08-account-deletion-keyboard-retry.png)
+показывает читаемую ошибку и пустое поле. После повторного подтверждения
+[success PNG](evidence/account-deletion/attempt14/iPhone18-stage08-account-deletion-success.png)
+показывает вход на сохранённый сервер и точное сообщение «Аккаунт удалён на сервере.»;
+формы удаления и workspace tabs нет. Строгий fixture guard сохранён.
+Отдельного alert PNG в успешном тесте нет: cancellation/confirmation подтверждены
+assertions и event log, но отдельная визуальная приёмка alert не заявляется.
+
+Вся iPhone18 job при этом **FAIL: 14 PASS / 1 FAIL из15** — единственная ошибка
+относится к движку core accessibility audit. UI-проверка использует DEBUG doubles,
+не подтверждает production TLS, настоящий DELETE на сервере, APNs delivery или
+задержанную регистрацию push. Реальный API проверен отдельно выше.
+У CI14 iPad26 UI runner не инициализировался: **0 UI testcases выполнено**;
+успех удаления на iPad из этого job не выводится.
+
+## История native UI-проверки ввода
 
 CI7 `42252310226`, source `c88fe5adebe7395b4f43ab51b6c6369aa95d09f5`: iPhone18 audit завершился **13 PASS / 2 FAIL из 15**. Сценарий удаления снова не дошёл до welcome после правильного requested input. Cancel, обработка отказа и очистка поля после подтверждения прошли; весь сценарий удаления **не считается успешным**. Отдельный core accessibility failure и runner-capacity отмены других jobs описаны в [CI_HISTORY.md](CI_HISTORY.md).
 
@@ -67,7 +93,7 @@ failure — ожидание welcome `connectServer`: существующий
 [неизменённый final video frame](evidence/account-deletion/attempt10/iPhone18-deletion-confirmed-login.png).
 Пред-confirm PNG с прежним сообщением неверного пароля был снят до второго submit
 и не является его итогом. Исправление теста проверяет login, точное сообщение
-успеха и отсутствие формы/workspace; собственный native результат ещё **PENDING**.
+успеха и отсутствие формы/workspace; собственный native результат получен в CI14 выше.
 Исторический suite остаётся FAIL, production TLS/реальный сервер этим UI не проверены.
 
 CI10 iPhone26 завершился с **30 PASS / 5 FAIL из35**. Deletion-сценарий здесь
@@ -93,12 +119,56 @@ label; задержка визуального появления и точны�
 [keyboard-only AX](evidence/account-deletion/attempt13/iPad18-keyboard-tutorial.txt),
 [кадр видео](evidence/account-deletion/attempt13/iPad18-keyboard-tutorial.png).
 
-Текущий candidate CI14 `42275177048` на
+Исторический candidate CI14 `42275177048` на
 `04f70a3d80bfd8cd9314c798f0eb3fc7e58b343f` запущен18:56 UTC. XCTest ждёт
 нужную клавишу **или** точный observed tutorial до10с и учитывает позднее системное
 Passwords окно после невыполненного UI-перехода. Строгий пароль fixture и
-production ввод не меняются. Native результат **PENDING**. В18:57 UTC запрошена
+production ввод не меняются. iPhone18 deletion PASS описан выше; общий job FAIL
+из-за accessibility engine. В18:57 UTC запрошена
 авторская отмена оставшейся CI13 работы ради нового кандидата; такие незавершённые
 результаты не являются timeout приложения или successful coverage.
 
+Полный CI15 `42281088607`, source `55bfcfb1e075224eda9ed7106a669db0b55dd7e5`,
+повторяет матрицу на ARM simulator runners с максимум двумя параллельными jobs.
+Отдельный CI16 `42283560617` проверяет `a33a153147d6941874884357134b3fd46de7532c`
+в scope regression (14 тестов на каждом из четырёх устройств), не full.
+CI14 iPhone26 остановился до ввода пароля: globe-кнопка оказалась соседним
+элементом Keyboard, а helper искал её внутри Keyboard. В a33a153 исправлена
+область поиска на `app.buttons` при сохранении точного наблюдаемого selector.
+[Receipt и AX evidence](evidence/ci-attempt14/iPhone26-receipt.json).
+Production-код удаления не менялся; новая native приёмка **PENDING**.
+
 Начиная с `f1eda3a` полностью удалены временные enum diagnostics во view/fixture и пустой `simctl log show` dump в CI runner. Сохранённые traces и mask-count evidence выше — исторические наблюдения только известных synthetic fixtures на одноразовом симуляторе с `-uitesting`; пользовательские пароли не журналировались. CI9 также содержит отдельные AX/layout изменения PageHeader, messages scrolling и записей; успешная общая приёмка ими не объявлена. CI8 на `6b6d1bb` завершился FAIL с прежним input path на iPhone18 и iPad26: обе попытки удаления по-прежнему классифицированы `known-dropped-characters`. [CI8 receipt](evidence/ci-attempt08.json). Это не результат нового native-keyboard сценария CI9 или исправлений CI10.
+
+## CI15–CI17: отдельная клавиша iPad abc
+
+CI15 iPhone26 и iPad26 завершились34 PASS /1 FAIL из35; CI16 iPad26 —13/14.
+В обоих iPad видео виден цикл RU → Emoji → RU → Emoji → RU. Final AX содержит
+отдельную видимую клавишу abc с label `Переключиться с латинских клавиш`; она не
+нажималась. Это не доказательство отсутствия установленной английской клавиатуры:
+меню языков и Settings не открывались. [CI15 receipt](evidence/ci-attempt15/receipt.json),
+[CI16 AX](evidence/ci-attempt16/iPad26-keyboard-AX-excerpt.txt).
+
+В `163fb79` при отсутствии f helper сначала нажимает эту exact key и ограниченно
+ждёт f. Если f не появился, тест завершается ошибкой. На клавиатурах без этого
+контрола сохранён прежний native language switch. Production ввод и строгие fixture
+пароли не менялись. CI17 `42287121804` проверяет deletion-only на всех4 устройствах;
+результат **PENDING**, package не запускается в этом scope.
+
+## Последующий native ввод CI18
+
+CI17 iPad26 job прошёл: выбор наблюдаемой abc клавиши позволил завершить сценарий.
+Остальные jobs superseded CI17 отменены автором; их отсутствие не считается PASS.
+В полном CI15 iPad18 Latin letters уже вводились; после `more` tutorial был виден
+на видео внутри10с ожидания, но exact StaticText query его не нашёл. Final AX имеет
+ровно один Keyboard, ожидаемый StaticText с полностью совпадающим87-символьным
+label и один native ОК. Поэтому wrong label/ancestry или простая нехватка timeout
+не заявлены доказанной причиной. [Сохранённый разбор](evidence/ci15-ipad18/receipt.json).
+
+`16c7025` использует стандартный `password.typeText(value)` после подтверждения
+Latin f, затем ограниченно ждёт enabled submit и нажимает native Done. Это ввод
+через настоящий SecureField; injection в binding/fixture отсутствует. Неизменные
+assertions проверяют cancel, неверный пароль с очисткой поля/сохранностью аккаунта,
+повтор правильного пароля и возврат к server login. Появление f само по себе не
+доказывает приём текста: пропущенный ввод должен дать обычный FAIL.
+CI18 `42288899326` проверяет этот вариант на всех4 устройствах; результат PENDING.

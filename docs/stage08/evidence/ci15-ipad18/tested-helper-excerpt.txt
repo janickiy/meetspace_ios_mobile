@@ -1,0 +1,30 @@
+Source 55bfcfb1e075224eda9ed7106a669db0b55dd7e5; FoundationUITests.swift
+405:             for character in value {
+406:                 let key = keyboard.keys[String(character)]
+407:                 if !key.exists {
+408:                     // iPad exposes equivalent number/letter toggles on both sides.
+409:                     let more = keyboard.keys.matching(identifier: "more").firstMatch
+410:                     XCTAssertTrue(more.waitForExistence(timeout: 5)); more.tap()
+411:                     // A fresh iPad can show its native key-flick tutorial instead of
+412:                     // switching layouts. Dismiss only the observed system explanation.
+413:                     let tutorial = keyboard.staticTexts.matching(NSPredicate(format: "label == %@",
+414:                         "Для доступа к альтернативным буквам на клавиатуре\nпотяните вниз на клавише и отпустите.")).firstMatch
+415:                     // CI13 exposes this native tutorial after the first second. Wait
+416:                     // for either outcome of the mode tap, not just the requested key.
+417:                     let modeDeadline = Date().addingTimeInterval(10)
+418:                     while Date() < modeDeadline && !key.exists && !tutorial.exists {
+419:                         Thread.sleep(forTimeInterval: 0.2)
+420:                     }
+421:                     if tutorial.exists {
+422:                         capture(app, name: "stage08-account-deletion-keyboard-help")
+423:                         let acknowledge = keyboard.buttons.matching(NSPredicate(format: "label == %@", "ОК")).firstMatch
+424:                         XCTAssertTrue(acknowledge.waitForExistence(timeout: 5)); acknowledge.tap()
+425:                         let dismissed = XCTNSPredicateExpectation(predicate: NSPredicate(format: "exists == false"), object: tutorial)
+426:                         XCTAssertEqual(XCTWaiter.wait(for: [dismissed], timeout: 5), .completed)
+427:                         // The tutorial can consume the original mode-change tap.
+428:                         if !key.waitForExistence(timeout: 1) {
+429:                             XCTAssertTrue(more.waitForExistence(timeout: 5)); more.tap()
+430:                         }
+431:                     }
+432:                 }
+433:                 XCTAssertTrue(key.waitForExistence(timeout: 5)); key.tap()

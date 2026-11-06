@@ -1,0 +1,48 @@
+{
+  "devicesAndConfigurations" : [
+    {
+      "device" : {
+        "architecture" : "x86_64",
+        "deviceId" : "CAAA601F-5038-46D8-BBF8-CA5E3BE47EC1",
+        "deviceName" : "iPad Pro 13-inch (M5)",
+        "modelName" : "iPad Pro 13-inch (M5)",
+        "osBuildNumber" : "23C54",
+        "osVersion" : "26.2",
+        "platform" : "iOS Simulator"
+      },
+      "expectedFailures" : 0,
+      "failedTests" : 1,
+      "passedTests" : 10,
+      "skippedTests" : 0,
+      "testPlanConfiguration" : {
+        "configurationId" : "1",
+        "configurationName" : "Test Scheme Action"
+      }
+    }
+  ],
+  "environmentDescription" : "MeetSpace-Debug · Built with macOS 15.7.9",
+  "expectedFailures" : 0,
+  "failedTests" : 1,
+  "finishTime" : 1793993254.8,
+  "passedTests" : 10,
+  "result" : "Failed",
+  "skippedTests" : 0,
+  "startTime" : 1793991711.058,
+  "statistics" : [
+
+  ],
+  "testFailures" : [
+    {
+      "failureText" : "The test runner failed to initialize for UI testing. (Underlying Error: Timed out waiting for AX loaded notification)",
+      "targetName" : "MeetSpaceUITests",
+      "testIdentifier" : 11,
+      "testIdentifierString" : "MeetSpaceUITests-Runner (18367) encountered an error",
+      "testName" : "MeetSpaceUITests-Runner (18367) encountered an error"
+    }
+  ],
+  "title" : "Test - MeetSpace-Debug",
+  "topInsights" : [
+
+  ],
+  "totalTestCount" : 11
+}

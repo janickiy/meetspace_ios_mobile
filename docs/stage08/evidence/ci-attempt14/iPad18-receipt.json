@@ -1,0 +1,130 @@
+{
+  "schemaVersion": 1,
+  "runID": 42275177048,
+  "sourceCommit": "04f70a3d80bfd8cd9314c798f0eb3fc7e58b343f",
+  "label": "iPad18",
+  "scope": "compatibility",
+  "result": "CANCELLED_PARTIAL",
+  "nativeJobConclusion": "cancelled",
+  "workflowConclusion": "failure",
+  "fullSuitePass": false,
+  "observation": "Final job/run metadata; partial native execution preserved independently. No aggregate receipt or other device evidence changed.",
+  "actualEnvironment": {
+    "device": "iPad mini (A17 Pro)",
+    "runtime": [
+      18,
+      6
+    ],
+    "udid": "97EF782D-9317-4024-908C-4F9E8417C2D2",
+    "scope": "compatibility",
+    "hostArchitecture": "x86_64",
+    "hostOS": "macOS-15.7.9-x86_64-i386-64bit-Mach-O",
+    "preferredDeviceMatched": true,
+    "xcode": "Xcode 26.3\nBuild version 17C529\n"
+  },
+  "plannedTests": 15,
+  "observedCompletedTests": {
+    "total": 11,
+    "passed": 10,
+    "failed": 1,
+    "skipped": 0,
+    "source": "Native XCTest testcase completion lines only"
+  },
+  "observedStartedTests": 12,
+  "startedWithoutCompletion": [
+    {
+      "identifier": "MeetSpaceUITests.FoundationUITests/testAccessibilityStage08LargeTextLiveFlow",
+      "logLine": 3455,
+      "raw": "2026-11-06T19:09:23.8419920Z Test Case '-[MeetSpaceUITests.FoundationUITests testAccessibilityStage08LargeTextLiveFlow]' started."
+    }
+  ],
+  "notObservedStarted": [
+    "MeetSpaceUITests.FoundationUITests/testConferenceCreateMediaControlsChatAndLeave",
+    "MeetSpaceUITests.FoundationUITests/testLargeTextNavigationAndAppearance",
+    "MeetSpaceUITests.FoundationUITests/testStage08AccountDeletionRequiresPasswordAndConfirmation"
+  ],
+  "firstNativeFailure": {
+    "test": "MeetSpaceUITests.FoundationUITests/testAccessibilityStage08CoreScreens",
+    "durationSeconds": 76.494,
+    "reason": "Failed to get screenshot: Timed out while requesting screenshot.",
+    "sourceLine": "Tests/MeetSpaceUITests/FoundationUITests.swift:20",
+    "context": "CoreScreens failed during capture(app.screenshot()) before its first audit pass; this is not a completed accessibility audit result."
+  },
+  "finalObservedStage": {
+    "consoleLastActivity": "2026-11-06T19:09:42.9179340Z     t =    18.84s         Terminate com.meetspace.ios:10923",
+    "startedTest": "MeetSpaceUITests.FoundationUITests/testAccessibilityStage08LargeTextLiveFlow",
+    "diagnostic": "Waiting for Xcode to confirm launch completion, token 2; repeated launch-progress status 0 responses",
+    "statusZeroPolls": 23894,
+    "firstPoll": "19:09:43.607 xcodebuild[3258:13276] Got status 0 from operation for token 2",
+    "lastPoll": "20:30:57.728 xcodebuild[3258:13276] Got status 0 from operation for token 2",
+    "underlyingCause": "Not established by these artifacts; no product bug diagnosis inferred"
+  },
+  "cancellation": {
+    "rawMessage": "2026-11-06T20:30:49.8571860Z ##[error]The operation was canceled.",
+    "jobStartedAt": "2026-11-06T19:00:37Z",
+    "jobCompletedAt": "2026-11-06T20:31:24Z",
+    "jobElapsedSeconds": 5447.0,
+    "secondsFromJobStartToCancellationMessage": 5412.857186,
+    "configuredTimeoutMinutes": 90,
+    "inference": "Timing strongly matches the configured 90-minute job deadline",
+    "causeExplicitInAPIOrLog": false,
+    "explicitActor": null,
+    "limits": "API says cancelled and log says operation canceled; timeout attribution is a timing/workflow inference, not an explicit timeout reason field."
+  },
+  "artifact": {
+    "id": 13538592701,
+    "node_id": "MDg6QXJ0aWZhY3QxMzUzODU5MjcwMQ==",
+    "name": "results-iPad18",
+    "size_in_bytes": 2136003,
+    "url": "https://api.github.com/repos/janickiy/meetspace_ios_mobile/actions/artifacts/13538592701",
+    "archive_download_url": "https://api.github.com/repos/janickiy/meetspace_ios_mobile/actions/artifacts/13538592701/zip",
+    "expired": false,
+    "digest": "sha256:20ca8fcb8dc4ed4094b73fa40752e8146917b67c5cfb4d2deeca110e137b8f3b",
+    "created_at": "2026-11-06T20:31:00Z",
+    "updated_at": "2026-11-06T20:31:00Z",
+    "expires_at": "2026-11-13T20:30:54Z",
+    "workflow_run": {
+      "id": 42275177048,
+      "repository_id": 1446695117,
+      "head_repository_id": 1446695117,
+      "head_branch": "codex/stage08-release-audit",
+      "head_sha": "04f70a3d80bfd8cd9314c798f0eb3fc7e58b343f"
+    }
+  },
+  "verification": {
+    "apiSHA256Matched": true,
+    "apiSizeMatched": true,
+    "apiRunSourceMatched": true,
+    "allZIPMembersCRCValid": true,
+    "zipSHA256": "20ca8fcb8dc4ed4094b73fa40752e8146917b67c5cfb4d2deeca110e137b8f3b",
+    "bytes": 2136003
+  },
+  "artifactCompleteness": {
+    "missing": [
+      "iPad18-summary.json",
+      "iPad18-export-status.json",
+      "iPad18-screenshots/manifest.json",
+      "iPad18.xcresult/Info.plist"
+    ],
+    "summaryAvailable": false,
+    "exportReceiptAvailable": false,
+    "attachmentManifestAvailable": false,
+    "xcresultFinalization": "Incomplete uploaded bundle; Staging diagnostics present, Info.plist absent"
+  },
+  "rawLog": {
+    "sourceFile": "simulators_iPad_18_iPad18_compatibility_iPad_mini_A17_Pro_.log",
+    "sha256": "58eb992e6b9704ac8a8b741c7eb966bf9b96a1958224cded79a5b08de85946a4",
+    "bytes": 891594,
+    "saved": "iPad18-native.log"
+  },
+  "rawDiagnostic": {
+    "zipMember": "iPad18.xcresult/Staging/1_Test/Diagnostics/MeetSpaceUITests-A1DF6759-44B9-48E6-B398-E26CCFBD3A30-Configuration-Test Scheme Action-Iteration-1/MeetSpaceUITests-56B4C6D7-E449-4ECD-A3DF-460C55EB579E/Session-MeetSpaceUITests-2026-11-06_190739-pBY5GS.log",
+    "sha256": "26e0ab8f620518ab9f33e7e1d16f76a2f4d807267e62ebc6fcbd257ca49c8a0d",
+    "bytes": 38777944,
+    "lineCount": 312447,
+    "excerpt": "iPad18-launch-progress-diagnostic-excerpt.txt",
+    "fullOriginalIn": "iPad18-results.zip"
+  },
+  "sourceWorkflowSHA256": "1b0ceeaef805915576b44ad28eb3813af8f3097745c72c0f0d9f0e5f84d491ba",
+  "limitations": "Hosted PASS results and successful artifact upload do not make the compatibility suite PASS. Three UI tests did not start; AX5 has no observed completion. Intel runner result is historical and superseded; no source fix requested."
+}
