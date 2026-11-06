@@ -40,7 +40,9 @@ import UIKit
     private func openProfileFeature(_ identifier: String, in app: XCUIApplication) {
         app.buttons["tab.profile"].tap()
         let link = app.buttons[identifier]
-        reveal(link, in: app)
+        // Returning to this tab preserves its scroll offset, including after an
+        // audit has sampled a lower row. Reveal in either direction from its frame.
+        revealEntireText(link, in: app)
         XCTAssertGreaterThanOrEqual(link.frame.height, 44, "The entire navigation row must be tappable")
         link.tap()
     }

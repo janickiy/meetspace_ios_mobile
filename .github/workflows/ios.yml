@@ -23,7 +23,7 @@ concurrency:
 jobs:
   package:
     if: inputs.scope != 'deletion'
-    runs-on: macos-15
+    runs-on: macos-15-intel
     timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
@@ -48,7 +48,7 @@ jobs:
           path: artifacts/
           retention-days: 7
   simulators:
-    runs-on: macos-15
+    runs-on: macos-15-intel
     timeout-minutes: 55
     strategy:
       fail-fast: false
@@ -69,6 +69,14 @@ jobs:
         # The default/full run always executes all four device/runtime combinations.
         if: (inputs.scope != 'audit' && inputs.scope != 'deletion') || matrix.label == 'iPhone18' || matrix.label == 'iPad26'
         run: python3 scripts/ci_simulators.py --family '${{ matrix.family }}' --runtime-major '${{ matrix.runtime }}' --label '${{ matrix.label }}' --preferred-device '${{ matrix.device }}' --scope '${{ inputs.scope == 'audit' && 'audit' || inputs.scope == 'deletion' && 'deletion' || matrix.scope }}'
+      - name: Diagnostic Instruments baseline (reported separately)
+        if: always() && matrix.label == 'iPhone18' && inputs.scope != 'deletion'
+        # Profiling capability is a separate gate. Preserve its exact failure/blocker
+        # in receipt.json; it must never replace the native test result above.
+        continue-on-error: true
+        run: |
+          meetspace_profile_udid=$(python3 -c 'import json; print(json.load(open("artifacts/iPhone18-environment.json"))["udid"])')
+          python3 scripts/profile_simulator.py --simulator "$meetspace_profile_udid" --output artifacts/iPhone18-profiling
       - name: Upload simulator test results
         if: always()
         uses: actions/upload-artifact@v4
