@@ -203,9 +203,10 @@ import UIKit
                 let target = app.descendants(matching: .any).matching(identifier: identifier).firstMatch
                 revealEntireText(target, in: app)
                 capture(app, name: "stage08-accessibility-\(screen)-visible-\(identifier)")
-                var targetFailed = false
+                var targetFailed = false, targetSeen = false
                 try app.performAccessibilityAudit(for: .contrast) { issue in
                     let isTarget = issue.element?.identifier == identifier
+                    if isTarget { targetSeen = true }
                     var resolution = reviewedCase(issue, screen: screen)
                     if isTarget && resolution == nil { targetFailed = true }
                     if !isTarget, let element = issue.element,
@@ -215,7 +216,9 @@ import UIKit
                     record(issue, screen: screen + "-visible-retest", resolution: resolution)
                     return true
                 }
-                issues[index]["resolution"] = targetFailed ? "retest failed; see unresolved finding" : "verified: fully visible contrast retest passed"
+                issues[index]["resolution"] = targetFailed ? "retest failed; see unresolved finding" :
+                    targetSeen ? "reviewed: fully visible retest produced a reviewed finding" :
+                    "verified: fully visible contrast retest produced no target finding"
             }
             if let data = try? JSONSerialization.data(withJSONObject: issues, options: [.prettyPrinted, .sortedKeys]) {
                 let progress = XCTAttachment(data: data, uniformTypeIdentifier: "public.json")
@@ -267,7 +270,12 @@ import UIKit
         let submit = app.buttons["deleteAccount.submit"]
         XCTAssertTrue(password.waitForExistence(timeout: 5))
         XCTAssertFalse(submit.isEnabled)
-        password.tap(); password.typeText("incorrect-password\n")
+        func enterPassword(_ value: String) {
+            password.tap(); password.typeText(value)
+            let done = app.keyboards.buttons.matching(NSPredicate(format: "label IN %@", ["Done", "Готово"])).firstMatch
+            XCTAssertTrue(done.waitForExistence(timeout: 5)); done.tap()
+        }
+        enterPassword("incorrect-password")
         reveal(submit, in: app); submit.tap()
         // iOS26 exposes nested button nodes for the same confirmation action.
         let confirmation = app.buttons.matching(identifier: "deleteAccount.confirm").firstMatch
@@ -282,7 +290,7 @@ import UIKit
         XCTAssertFalse(submit.isEnabled, "Rejected-password input must be cleared before retry")
         XCTAssertFalse(app.buttons["connectServer"].exists, "A wrong password must preserve the account")
         reveal(password, in: app, towardTop: true)
-        password.tap(); password.typeText("fixture-password\n")
+        enterPassword("fixture-password")
         reveal(submit, in: app); capture(app, name: "stage08-account-deletion")
         submit.tap(); XCTAssertTrue(confirmation.waitForExistence(timeout: 5)); confirmation.tap()
         XCTAssertTrue(app.buttons["connectServer"].waitForExistence(timeout: 10))
