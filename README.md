@@ -1,7 +1,7 @@
 # MeetSpace для iOS / iPadOS
 
 Целевая платформа — iPhone и iPad, iOS/iPadOS 18+, Swift и SwiftUI.
-Репозиторий содержит аудит, основу iOS-проекта, авторизацию, чаты, звонки, ReplayKit и **этап 07: календарь, записи, личные папки и настройки**.
+Репозиторий содержит нативный iOS-проект и **этап 08: аудит безопасности, проверки и подготовку релиза**.
 Backend используется существующий; его исходники не изменялись. Рабочие сервисы
 и данные не затрагивались; проверки выполнялись на отдельном одноразовом стенде.
 
@@ -30,6 +30,10 @@ Extension, App Group IPC и отдельный `video/screen` track. Систе�
 подписанного скачивания и проверки прав. Физические устройства и полноценная
 видеозапись реальной встречи требуют отдельной приёмки.
 
+- [Этап 08: исправления, проверки и подготовка релиза](docs/stage08/README.md)
+- [Безопасность](docs/stage08/SECURITY_AUDIT.md), [производительность](docs/stage08/PERFORMANCE_REPORT.md) и [результаты тестов](docs/stage08/TEST_REPORT.md)
+- [Подпись и выпуск](docs/stage08/RELEASE.md), [privacy disclosures](docs/stage08/PRIVACY_DISCLOSURE.md) и [оставшиеся ограничения](docs/stage08/KNOWN_LIMITATIONS.md)
+- [Серверное удаление аккаунта](docs/stage08/ACCOUNT_DELETION.md)
 - [Этап 07: реализация, проверки, файлы и ограничения](docs/stage07/README.md)
 - [Календарь: время, состояния и адаптация макетов](docs/stage07/CALENDAR_CONTRACT.md)
 - [Записи: права, загрузка и AVPlayer](docs/stage07/RECORDINGS_CONTRACT.md)

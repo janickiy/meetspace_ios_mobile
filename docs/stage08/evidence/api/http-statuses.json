@@ -1,0 +1,329 @@
+{
+  "source": "Aggregated actual API request logs, no credentials/URLs/IDs/bodies",
+  "requests": [
+    {
+      "method": "DELETE",
+      "routeTemplate": "/api/v1/auth/me",
+      "status": 200,
+      "count": 1
+    },
+    {
+      "method": "DELETE",
+      "routeTemplate": "/api/v1/auth/me",
+      "status": 409,
+      "count": 1
+    },
+    {
+      "method": "DELETE",
+      "routeTemplate": "/api/v1/auth/me",
+      "status": 422,
+      "count": 1
+    },
+    {
+      "method": "DELETE",
+      "routeTemplate": "/api/v1/folders/:id",
+      "status": 200,
+      "count": 1
+    },
+    {
+      "method": "DELETE",
+      "routeTemplate": "/api/v1/folders/:id",
+      "status": 404,
+      "count": 1
+    },
+    {
+      "method": "DELETE",
+      "routeTemplate": "/api/v1/folders/:id/items/:kind/:itemId",
+      "status": 200,
+      "count": 1
+    },
+    {
+      "method": "GET",
+      "routeTemplate": "/api/v1/auth/me",
+      "status": 200,
+      "count": 7
+    },
+    {
+      "method": "GET",
+      "routeTemplate": "/api/v1/auth/me",
+      "status": 401,
+      "count": 2
+    },
+    {
+      "method": "GET",
+      "routeTemplate": "/api/v1/capabilities",
+      "status": 200,
+      "count": 4
+    },
+    {
+      "method": "GET",
+      "routeTemplate": "/api/v1/conferences/:id",
+      "status": 200,
+      "count": 2
+    },
+    {
+      "method": "GET",
+      "routeTemplate": "/api/v1/conferences/:id/recordings",
+      "status": 200,
+      "count": 1
+    },
+    {
+      "method": "GET",
+      "routeTemplate": "/api/v1/conferences/:id/recordings/:recordingId",
+      "status": 200,
+      "count": 2
+    },
+    {
+      "method": "GET",
+      "routeTemplate": "/api/v1/conferences/:id/recordings/:recordingId",
+      "status": 403,
+      "count": 1
+    },
+    {
+      "method": "GET",
+      "routeTemplate": "/api/v1/conversations/:id",
+      "status": 200,
+      "count": 1
+    },
+    {
+      "method": "GET",
+      "routeTemplate": "/api/v1/conversations/:id/messages",
+      "status": 200,
+      "count": 2
+    },
+    {
+      "method": "GET",
+      "routeTemplate": "/api/v1/folder-items",
+      "status": 200,
+      "count": 1
+    },
+    {
+      "method": "GET",
+      "routeTemplate": "/api/v1/folders",
+      "status": 200,
+      "count": 4
+    },
+    {
+      "method": "GET",
+      "routeTemplate": "/api/v1/folders/:id/items",
+      "status": 200,
+      "count": 1
+    },
+    {
+      "method": "GET",
+      "routeTemplate": "/api/v1/folders/:id/items",
+      "status": 404,
+      "count": 1
+    },
+    {
+      "method": "GET",
+      "routeTemplate": "/api/v1/integrations/capabilities",
+      "status": 200,
+      "count": 1
+    },
+    {
+      "method": "GET",
+      "routeTemplate": "/api/v1/me/conferences",
+      "status": 200,
+      "count": 7
+    },
+    {
+      "method": "GET",
+      "routeTemplate": "/api/v1/notifications/devices",
+      "status": 200,
+      "count": 1
+    },
+    {
+      "method": "GET",
+      "routeTemplate": "/api/v1/notifications/preferences",
+      "status": 200,
+      "count": 5
+    },
+    {
+      "method": "GET",
+      "routeTemplate": "/api/v1/recordings",
+      "status": 200,
+      "count": 3
+    },
+    {
+      "method": "GET",
+      "routeTemplate": "/version",
+      "status": 200,
+      "count": 1
+    },
+    {
+      "method": "PATCH",
+      "routeTemplate": "/api/v1/auth/me",
+      "status": 200,
+      "count": 1
+    },
+    {
+      "method": "PATCH",
+      "routeTemplate": "/api/v1/folders/:id",
+      "status": 200,
+      "count": 1
+    },
+    {
+      "method": "PATCH",
+      "routeTemplate": "/api/v1/folders/:id",
+      "status": 404,
+      "count": 1
+    },
+    {
+      "method": "POST",
+      "routeTemplate": "/api/v1/auth/login",
+      "status": 200,
+      "count": 8
+    },
+    {
+      "method": "POST",
+      "routeTemplate": "/api/v1/auth/login",
+      "status": 401,
+      "count": 1
+    },
+    {
+      "method": "POST",
+      "routeTemplate": "/api/v1/auth/logout",
+      "status": 200,
+      "count": 6
+    },
+    {
+      "method": "POST",
+      "routeTemplate": "/api/v1/auth/refresh",
+      "status": 401,
+      "count": 2
+    },
+    {
+      "method": "POST",
+      "routeTemplate": "/api/v1/auth/register",
+      "status": 201,
+      "count": 5
+    },
+    {
+      "method": "POST",
+      "routeTemplate": "/api/v1/conference-invites/:code/join",
+      "status": 200,
+      "count": 1
+    },
+    {
+      "method": "POST",
+      "routeTemplate": "/api/v1/conferences",
+      "status": 201,
+      "count": 3
+    },
+    {
+      "method": "POST",
+      "routeTemplate": "/api/v1/conferences/:id/cancel",
+      "status": 200,
+      "count": 2
+    },
+    {
+      "method": "POST",
+      "routeTemplate": "/api/v1/conferences/:id/finish",
+      "status": 200,
+      "count": 1
+    },
+    {
+      "method": "POST",
+      "routeTemplate": "/api/v1/conferences/:id/join",
+      "status": 200,
+      "count": 1
+    },
+    {
+      "method": "POST",
+      "routeTemplate": "/api/v1/conferences/:id/recordings",
+      "status": 202,
+      "count": 1
+    },
+    {
+      "method": "POST",
+      "routeTemplate": "/api/v1/conferences/:id/recordings",
+      "status": 403,
+      "count": 1
+    },
+    {
+      "method": "POST",
+      "routeTemplate": "/api/v1/conferences/:id/recordings",
+      "status": 409,
+      "count": 1
+    },
+    {
+      "method": "POST",
+      "routeTemplate": "/api/v1/conferences/:id/recordings/:recordingId/stop",
+      "status": 202,
+      "count": 1
+    },
+    {
+      "method": "POST",
+      "routeTemplate": "/api/v1/conferences/:id/recordings/:recordingId/stop",
+      "status": 403,
+      "count": 1
+    },
+    {
+      "method": "POST",
+      "routeTemplate": "/api/v1/conferences/:id/start",
+      "status": 200,
+      "count": 1
+    },
+    {
+      "method": "POST",
+      "routeTemplate": "/api/v1/conversations/:id/messages",
+      "status": 201,
+      "count": 1
+    },
+    {
+      "method": "POST",
+      "routeTemplate": "/api/v1/conversations/direct",
+      "status": 201,
+      "count": 1
+    },
+    {
+      "method": "POST",
+      "routeTemplate": "/api/v1/folders",
+      "status": 201,
+      "count": 4
+    },
+    {
+      "method": "PUT",
+      "routeTemplate": "/api/v1/conferences/:id/schedule",
+      "status": 200,
+      "count": 1
+    },
+    {
+      "method": "PUT",
+      "routeTemplate": "/api/v1/conferences/:id/schedule",
+      "status": 403,
+      "count": 1
+    },
+    {
+      "method": "PUT",
+      "routeTemplate": "/api/v1/conferences/:id/schedule",
+      "status": 409,
+      "count": 1
+    },
+    {
+      "method": "PUT",
+      "routeTemplate": "/api/v1/folders/:id/items/:kind/:itemId",
+      "status": 200,
+      "count": 3
+    },
+    {
+      "method": "PUT",
+      "routeTemplate": "/api/v1/folders/:id/items/:kind/:itemId",
+      "status": 403,
+      "count": 1
+    },
+    {
+      "method": "PUT",
+      "routeTemplate": "/api/v1/folders/order",
+      "status": 200,
+      "count": 1
+    },
+    {
+      "method": "PUT",
+      "routeTemplate": "/api/v1/notifications/preferences",
+      "status": 200,
+      "count": 1
+    }
+  ]
+}

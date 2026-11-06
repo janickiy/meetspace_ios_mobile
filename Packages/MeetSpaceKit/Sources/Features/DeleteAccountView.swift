@@ -6,7 +6,7 @@ struct DeleteAccountView: View {
     @Bindable var identity: IdentityModel
     let account: AccountRecord
     @State private var password = ""
-    @State private var confirming = false
+    @State private var pendingPassword: String?
     @FocusState private var passwordFocused: Bool
     @Environment(\.dismiss) private var dismiss
     var body: some View {
@@ -23,7 +23,9 @@ struct DeleteAccountView: View {
                         .textContentType(.password).focused($passwordFocused).submitLabel(.done)
                         .onSubmit { passwordFocused = false }.accessibilityIdentifier("deleteAccount.password")
                     Button(tr("Удалить аккаунт на сервере"), role: .destructive) {
-                        passwordFocused = false; confirming = true
+                        // The confirmation owns the submitted value, independent of subsequent
+                        // SecureField/Form presentation and focus changes.
+                        pendingPassword = password; passwordFocused = false
                     }.disabled(password.isEmpty || identity.busy).accessibilityIdentifier("deleteAccount.submit")
                 }
                 if let error = identity.error {
@@ -34,13 +36,16 @@ struct DeleteAccountView: View {
                 .navigationTitle(tr("Удаление аккаунта")).msInlineTitle()
                 .toolbar { ToolbarItem(placement: .cancellationAction) { Button(tr("Отмена")) { dismiss() }.disabled(identity.busy) } }
                 .disabled(identity.busy).interactiveDismissDisabled(identity.busy)
-                .confirmationDialog(tr("Удалить этот аккаунт на сервере без возможности восстановления?"), isPresented: $confirming, titleVisibility: .visible) {
+                .confirmationDialog(tr("Удалить этот аккаунт на сервере без возможности восстановления?"),
+                    isPresented: Binding(get: { pendingPassword != nil }, set: { if !$0 { pendingPassword = nil } }),
+                    titleVisibility: .visible, presenting: pendingPassword) { supplied in
                     Button(tr("Удалить навсегда"), role: .destructive) {
-                        let supplied = password; password = ""
+                        password = ""; pendingPassword = nil
                         Task { if await identity.deleteAccount(account, password: supplied) { dismiss() } }
                     }.accessibilityIdentifier("deleteAccount.confirm")
+                    Button(tr("Отмена"), role: .cancel) { pendingPassword = nil }
+                        .accessibilityIdentifier("deleteAccount.cancelConfirmation")
                 }
-                .onDisappear { password = "" }
-        }
+        }.onDisappear { password = ""; pendingPassword = nil }
     }
 }

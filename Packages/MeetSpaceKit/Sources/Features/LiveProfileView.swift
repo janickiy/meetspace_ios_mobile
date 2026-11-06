@@ -18,7 +18,9 @@ struct LiveProfileView: View {
                         VStack(alignment: .leading, spacing: 5) {
                             Text(app.identity.settings?.profile.name ?? account.user.name).font(MSTheme.font(18, weight: .semibold))
                             Text(account.user.email).font(MSTheme.font(12)).foregroundStyle(MSTheme.muted)
+                                .accessibilityLabel(tr("Электронная почта")).accessibilityValue(account.user.email)
                             Text(account.server.displayName).font(MSTheme.font(12)).foregroundStyle(MSTheme.muted)
+                                .accessibilityLabel(tr("Адрес сервера")).accessibilityValue(account.server.displayName)
                         }
                     }.msCard()
                 }
@@ -43,10 +45,12 @@ struct LiveProfileView: View {
                                 VStack(alignment: .leading, spacing: 5) {
                                     Text(account.user.name)
                                     Text(account.server.displayName).font(MSTheme.font(11)).foregroundStyle(MSTheme.muted)
+                                        .fixedSize(horizontal: false, vertical: true)
+                                        .accessibilityLabel(tr("Адрес сервера")).accessibilityValue(account.server.displayName)
                                 }
                                 Spacer()
                                 if app.identity.messaging?.account.id == account.id { Image(systemName: "checkmark.circle.fill") }
-                            }.frame(minHeight: 44)
+                            }.frame(minHeight: 44).contentShape(Rectangle()).accessibilityElement(children: .combine)
                         }.buttonStyle(.plain)
                         IconButton("rectangle.portrait.and.arrow.right", label: "Выйти из аккаунта") { removing = account }
                     }.msCard()

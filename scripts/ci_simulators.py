@@ -44,6 +44,7 @@ def main():
     if args.scope != "full":
         selection = ["-only-testing:MeetSpaceTests",
                      "-only-testing:MeetSpaceUITests/FoundationUITests/testAccessibilityStage08CoreScreens",
+                     "-only-testing:MeetSpaceUITests/FoundationUITests/testAccessibilityStage08LargeTextLiveFlow",
                      "-only-testing:MeetSpaceUITests/FoundationUITests/testStage08AccountDeletionRequiresPasswordAndConfirmation",
                      "-only-testing:MeetSpaceUITests/FoundationUITests/testLargeTextNavigationAndAppearance"]
     try:

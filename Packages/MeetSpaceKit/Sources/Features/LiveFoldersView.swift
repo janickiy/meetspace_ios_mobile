@@ -104,9 +104,9 @@ private struct FolderContentsView: View {
                     Text(tr("Встречи")).tag(FolderFilter.conference)
                 }.pickerStyle(.segmented).onChange(of: model.filter) { Task { await model.loadItems() } }
                 HStack {
-                    SearchBox(text: $model.search, placeholder: "Поиск в папке")
+                    SearchBox(text: $model.search, placeholder: "Поиск в папке", onSubmit: { Task { await model.loadItems() } })
                     Button(tr("Найти")) { Task { await model.loadItems() } }
-                }.onSubmit { Task { await model.loadItems() } }
+                }
                 if let error = model.error { Text(tr(error)).foregroundStyle(MSTheme.danger) }
                 if model.loadingItems { ProgressView() }
                 if model.itemsState == .empty { Text(tr("Здесь пока пусто")).foregroundStyle(MSTheme.muted) }

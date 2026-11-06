@@ -1,0 +1,25 @@
+[
+  {
+    "attempt": 1,
+    "result": "FAIL",
+    "features": "PASS",
+    "deletion": "FAIL contract assumption: expected wrong-password400, actual422, client reported unconfirmed",
+    "correction": "Client accepts400/422 as passwordRejected; probe asserts actual422; first fixture cleanup0/0"
+  },
+  {
+    "attempt": 2,
+    "result": "PASS",
+    "tests": 2,
+    "requests": 106,
+    "cleanup": "0 containers,0 networks"
+  },
+  {
+    "attempt": 3,
+    "result": "PASS",
+    "tests": 2,
+    "requests": 106,
+    "cleanup": "0 containers,0 networks",
+    "change": "Final runner receipt counts per-test results and verifies source hashes unchanged during execution",
+    "finalReceipt": true
+  }
+]

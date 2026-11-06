@@ -50,16 +50,24 @@ import UIKit
         var issues: [[String: String]] = []
         func audit(_ screen: String) throws {
             capture(app, name: "stage08-accessibility-" + screen)
-            try app.performAccessibilityAudit(for: .all) { issue in
-                issues.append(["screen": screen, "type": String(issue.auditType.rawValue),
-                               "summary": issue.compactDescription, "detail": issue.detailedDescription,
-                               "element": issue.element?.identifier ?? "",
-                               "label": issue.element?.label ?? ""])
-                // Continue gathering all screens. The final assertion fails for every issue.
-                return true
+            // Audit contrast before the engine changes Dynamic Type. Keep the categories
+            // separate so each pass sees a settled layout after the preceding trait change.
+            let categories: [XCUIAccessibilityAuditType] = [.contrast, .elementDetection, .hitRegion,
+                .sufficientElementDescription, .trait, .dynamicType, .textClipped]
+            for category in categories {
+                try app.performAccessibilityAudit(for: category) { issue in
+                    issues.append(["screen": screen, "type": String(issue.auditType.rawValue),
+                                   "summary": issue.compactDescription, "detail": issue.detailedDescription,
+                                   "element": issue.element?.identifier ?? "",
+                                   "label": issue.element?.label ?? "",
+                                   "frame": issue.element.map { String(describing: $0.frame) } ?? ""])
+                    // Continue gathering all screens. The final assertion fails for every issue.
+                    return true
+                }
+                Thread.sleep(forTimeInterval: 0.5)
             }
         }
-        defer {
+        func attachIssues() {
             if let data = try? JSONSerialization.data(withJSONObject: issues, options: [.prettyPrinted, .sortedKeys]) {
                 let attachment = XCTAttachment(data: data, uniformTypeIdentifier: "public.json")
                 attachment.name = "stage08-accessibility-issues"; attachment.lifetime = .keepAlways; add(attachment)
@@ -89,6 +97,8 @@ import UIKit
         openProfileFeature("openAccountSettings", in: app)
         XCTAssertTrue(app.buttons["settingsSection.profile"].waitForExistence(timeout: 5))
         try audit("settings")
+        // XCTest can stop a failing test before Swift defer executes. Save evidence first.
+        attachIssues()
         XCTAssertTrue(issues.isEmpty, "Accessibility issues: \(issues)")
     }
 
@@ -103,12 +113,14 @@ import UIKit
         reveal(submit, in: app); submit.tap()
         let confirmation = app.buttons["deleteAccount.confirm"]
         XCTAssertTrue(confirmation.waitForExistence(timeout: 5))
-        let cancel = app.buttons.matching(identifier: "Отмена").allElementsBoundByIndex.last!
+        let cancel = app.buttons["deleteAccount.cancelConfirmation"]
+        XCTAssertTrue(cancel.waitForExistence(timeout: 5))
         cancel.tap()
         XCTAssertTrue(password.waitForExistence(timeout: 5)); XCTAssertTrue(submit.isEnabled)
         submit.tap(); XCTAssertTrue(confirmation.waitForExistence(timeout: 5)); confirmation.tap()
         let error = app.staticTexts["deleteAccount.error"]
         XCTAssertTrue(error.waitForExistence(timeout: 5))
+        XCTAssertFalse(submit.isEnabled, "Rejected-password input must be cleared before retry")
         XCTAssertFalse(app.buttons["connectServer"].exists, "A wrong password must preserve the account")
         reveal(password, in: app, towardTop: true)
         password.tap(); password.typeText("fixture-password\n")
@@ -116,6 +128,25 @@ import UIKit
         submit.tap(); XCTAssertTrue(confirmation.waitForExistence(timeout: 5)); confirmation.tap()
         XCTAssertTrue(app.buttons["connectServer"].waitForExistence(timeout: 10))
         XCTAssertFalse(app.buttons["tab.messages"].exists)
+    }
+
+    func testAccessibilityStage08LargeTextLiveFlow() {
+        let app = launch(["-UIPreferredContentSizeCategoryName", "UICTContentSizeCategoryAccessibilityXXXL"])
+        let heading = app.staticTexts["welcome.heading"]
+        XCTAssertTrue(heading.waitForExistence(timeout: 10))
+        capture(app, name: "stage08-large-text-welcome")
+        login(app)
+        XCTAssertTrue(app.buttons["tab.profile"].waitForExistence(timeout: 5))
+        XCTAssertLessThan(app.buttons["tab.profile"].frame.height, app.frame.height / 5)
+        capture(app, name: "stage08-large-text-messages")
+        app.buttons["tab.profile"].tap()
+        capture(app, name: "stage08-large-text-profile")
+        for (identifier, title) in [("openCalendar", "calendar"), ("openRecordings", "recordings"),
+                                    ("openFolders", "folders"), ("openAccountSettings", "settings")] {
+            openProfileFeature(identifier, in: app)
+            capture(app, name: "stage08-large-text-" + title)
+            app.navigationBars.buttons.firstMatch.tap()
+        }
     }
 
     func testStage07CalendarCreateRescheduleCancelAndViews() {
@@ -303,20 +334,23 @@ import UIKit
 
     private func authentication(_ app: XCUIApplication) {
         XCTAssertTrue(app.buttons["connectServer"].waitForExistence(timeout: 10))
+        reveal(app.buttons["connectServer"], in: app)
         app.buttons["connectServer"].tap()
         let address = app.textFields["serverURL"]
         XCTAssertTrue(address.waitForExistence(timeout: 5))
         address.tap(); address.typeText("https://fixture.example")
+        reveal(app.buttons["checkServer"], in: app)
         app.buttons["checkServer"].tap()
         let next = app.buttons["Перейти ко входу"]
-        XCTAssertTrue(next.waitForExistence(timeout: 5)); next.tap()
+        XCTAssertTrue(next.waitForExistence(timeout: 5)); reveal(next, in: app); next.tap()
     }
 
     private func login(_ app: XCUIApplication, password: String = "fixture-password") {
         authentication(app)
         let email = app.textFields["Электронная почта"]
-        XCTAssertTrue(email.waitForExistence(timeout: 5)); email.tap(); email.typeText("first@fixture.example")
+        XCTAssertTrue(email.waitForExistence(timeout: 5)); reveal(email, in: app); email.tap(); email.typeText("first@fixture.example")
         let secret = app.secureTextFields["Пароль"]
+        reveal(secret, in: app)
         secret.tap(); secret.typeText(password)
         let submit = app.buttons["authenticationSubmit"]
         for _ in 0..<3 where !submit.isHittable { app.swipeUp() }

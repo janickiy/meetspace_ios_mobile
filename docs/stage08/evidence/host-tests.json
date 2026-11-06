@@ -1,0 +1,37 @@
+{
+  "sourceCommit": "25f54fb96bd8eb8b36fb6d0ce15806039a525cb1",
+  "recordedAt": "2026-11-06T13:54:13.998105+00:00",
+  "total": 181,
+  "executed": 176,
+  "passed": 176,
+  "skipped": 5,
+  "failed": 0,
+  "scope": "macOS SwiftPM; opt-in actual backend tests executed separately, not covered by these skip results",
+  "logSHA256": "d41377380c52ae7ada44920ec0aeafb4f6e3619f444fc482cff3f757a2c411f3",
+  "summaries": [
+    {
+      "count": 3,
+      "seconds": 0.003
+    },
+    {
+      "count": 151,
+      "seconds": 2.802
+    },
+    {
+      "count": 8,
+      "seconds": 0.015
+    },
+    {
+      "count": 7,
+      "seconds": 0.005
+    },
+    {
+      "count": 7,
+      "seconds": 5.388
+    },
+    {
+      "count": 5,
+      "seconds": 0.003
+    }
+  ]
+}

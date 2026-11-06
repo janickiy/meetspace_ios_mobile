@@ -1,0 +1,482 @@
+[
+  {
+    "screen": "welcome",
+    "type": "2",
+    "summary": "Potentially inaccessible text",
+    "detail": "This element appears to display text that should be represented using the accessibility API.",
+    "element": "",
+    "label": ""
+  },
+  {
+    "screen": "welcome",
+    "summary": "Text clipped",
+    "element": "",
+    "label": "Команда ближе.\nИдей больше.",
+    "type": "131072",
+    "detail": "Text of this element may be clipped at larger Dynamic Type sizes."
+  },
+  {
+    "type": "4",
+    "label": "Поиск чатов",
+    "summary": "Hit area is too small",
+    "detail": "The size of this element is too small for user to interact.",
+    "screen": "messages",
+    "element": ""
+  },
+  {
+    "summary": "Contrast nearly passed",
+    "detail": "Contrast is not high enough for element unless font size is larger.",
+    "screen": "messages",
+    "element": "",
+    "type": "1",
+    "label": "ТЕ"
+  },
+  {
+    "element": "",
+    "label": "Встречи",
+    "type": "65536",
+    "screen": "messages",
+    "summary": "Dynamic Type font sizes are partially unsupported",
+    "detail": "User will not be able to change the font size of this element"
+  },
+  {
+    "summary": "Dynamic Type font sizes are partially unsupported",
+    "detail": "User will not be able to change the font size of this element",
+    "label": "ТЕ",
+    "type": "65536",
+    "element": "",
+    "screen": "messages"
+  },
+  {
+    "label": "Чаты",
+    "screen": "messages",
+    "type": "65536",
+    "summary": "Dynamic Type font sizes are partially unsupported",
+    "detail": "User will not be able to change the font size of this element",
+    "element": ""
+  },
+  {
+    "element": "",
+    "type": "65536",
+    "detail": "User will not be able to change the font size of this element",
+    "summary": "Dynamic Type font sizes are partially unsupported",
+    "label": "fixture.example",
+    "screen": "messages"
+  },
+  {
+    "label": "Профиль",
+    "screen": "messages",
+    "type": "65536",
+    "summary": "Dynamic Type font sizes are partially unsupported",
+    "detail": "User will not be able to change the font size of this element",
+    "element": ""
+  },
+  {
+    "label": "Переподключение…",
+    "screen": "messages",
+    "detail": "User will not be able to change the font size of this element",
+    "element": "",
+    "type": "65536",
+    "summary": "Dynamic Type font sizes are partially unsupported"
+  },
+  {
+    "screen": "messages",
+    "element": "",
+    "type": "8",
+    "label": "fixture.example",
+    "summary": "Label not human-readable",
+    "detail": "The accessibilityLabel of this element is not human-readable."
+  },
+  {
+    "type": "65536",
+    "element": "",
+    "label": "Встречи",
+    "screen": "profile",
+    "detail": "User will not be able to change the font size of this element",
+    "summary": "Dynamic Type font sizes are partially unsupported"
+  },
+  {
+    "screen": "profile",
+    "type": "65536",
+    "summary": "Dynamic Type font sizes are partially unsupported",
+    "detail": "User will not be able to change the font size of this element",
+    "element": "",
+    "label": "Профиль"
+  },
+  {
+    "type": "65536",
+    "label": "fixture.example",
+    "detail": "User will not be able to change the font size of this element",
+    "screen": "profile",
+    "summary": "Dynamic Type font sizes are partially unsupported",
+    "element": ""
+  },
+  {
+    "label": "Чаты",
+    "element": "",
+    "detail": "User will not be able to change the font size of this element",
+    "screen": "profile",
+    "type": "65536",
+    "summary": "Dynamic Type font sizes are partially unsupported"
+  },
+  {
+    "summary": "Label not human-readable",
+    "element": "",
+    "label": "first@fixture.example",
+    "type": "8",
+    "screen": "profile",
+    "detail": "The accessibilityLabel of this element is not human-readable."
+  },
+  {
+    "element": "",
+    "screen": "profile",
+    "summary": "Label not human-readable",
+    "detail": "The accessibilityLabel of this element is not human-readable.",
+    "label": "fixture.example",
+    "type": "8"
+  },
+  {
+    "type": "65536",
+    "summary": "Dynamic Type font sizes are partially unsupported",
+    "label": "13:00",
+    "detail": "User will not be able to change the font size of this element",
+    "element": "",
+    "screen": "calendar"
+  },
+  {
+    "type": "65536",
+    "summary": "Dynamic Type font sizes are partially unsupported",
+    "screen": "calendar",
+    "detail": "User will not be able to change the font size of this element",
+    "element": "",
+    "label": "Сб"
+  },
+  {
+    "summary": "Dynamic Type font sizes are partially unsupported",
+    "type": "65536",
+    "detail": "User will not be able to change the font size of this element",
+    "label": "Встречи",
+    "screen": "calendar",
+    "element": ""
+  },
+  {
+    "screen": "calendar",
+    "detail": "User will not be able to change the font size of this element",
+    "type": "65536",
+    "summary": "Dynamic Type font sizes are partially unsupported",
+    "element": "",
+    "label": "10:00"
+  },
+  {
+    "label": "12:00",
+    "type": "65536",
+    "screen": "calendar",
+    "summary": "Dynamic Type font sizes are partially unsupported",
+    "detail": "User will not be able to change the font size of this element",
+    "element": ""
+  },
+  {
+    "label": "14:00",
+    "detail": "User will not be able to change the font size of this element",
+    "screen": "calendar",
+    "summary": "Dynamic Type font sizes are partially unsupported",
+    "type": "65536",
+    "element": ""
+  },
+  {
+    "detail": "User will not be able to change the font size of this element",
+    "element": "",
+    "label": "Чт",
+    "screen": "calendar",
+    "summary": "Dynamic Type font sizes are partially unsupported",
+    "type": "65536"
+  },
+  {
+    "screen": "calendar",
+    "type": "65536",
+    "element": "",
+    "summary": "Dynamic Type font sizes are partially unsupported",
+    "label": "Пт",
+    "detail": "User will not be able to change the font size of this element"
+  },
+  {
+    "element": "",
+    "screen": "calendar",
+    "detail": "User will not be able to change the font size of this element",
+    "label": "09:00",
+    "summary": "Dynamic Type font sizes are partially unsupported",
+    "type": "65536"
+  },
+  {
+    "screen": "calendar",
+    "detail": "User will not be able to change the font size of this element",
+    "summary": "Dynamic Type font sizes are partially unsupported",
+    "type": "65536",
+    "label": "Профиль",
+    "element": ""
+  },
+  {
+    "screen": "calendar",
+    "label": "15:00",
+    "summary": "Dynamic Type font sizes are partially unsupported",
+    "type": "65536",
+    "detail": "User will not be able to change the font size of this element",
+    "element": ""
+  },
+  {
+    "label": "Ср",
+    "screen": "calendar",
+    "type": "65536",
+    "summary": "Dynamic Type font sizes are partially unsupported",
+    "element": "",
+    "detail": "User will not be able to change the font size of this element"
+  },
+  {
+    "label": "Вт",
+    "type": "65536",
+    "summary": "Dynamic Type font sizes are partially unsupported",
+    "detail": "User will not be able to change the font size of this element",
+    "screen": "calendar",
+    "element": ""
+  },
+  {
+    "summary": "Dynamic Type font sizes are partially unsupported",
+    "element": "",
+    "label": "Вс",
+    "detail": "User will not be able to change the font size of this element",
+    "type": "65536",
+    "screen": "calendar"
+  },
+  {
+    "detail": "User will not be able to change the font size of this element",
+    "summary": "Dynamic Type font sizes are partially unsupported",
+    "element": "",
+    "label": "Чаты",
+    "type": "65536",
+    "screen": "calendar"
+  },
+  {
+    "detail": "User will not be able to change the font size of this element",
+    "screen": "calendar",
+    "summary": "Dynamic Type font sizes are partially unsupported",
+    "label": "Пн",
+    "type": "65536",
+    "element": ""
+  },
+  {
+    "screen": "calendar",
+    "type": "65536",
+    "element": "",
+    "detail": "User will not be able to change the font size of this element",
+    "label": "11:00",
+    "summary": "Dynamic Type font sizes are partially unsupported"
+  },
+  {
+    "type": "1",
+    "label": "Пн",
+    "summary": "Contrast nearly passed",
+    "screen": "calendar",
+    "element": "",
+    "detail": "Contrast is not high enough for element unless font size is larger."
+  },
+  {
+    "summary": "Contrast failed",
+    "screen": "calendar",
+    "detail": "Contrast failed for element",
+    "type": "1",
+    "label": "Пт",
+    "element": ""
+  },
+  {
+    "label": "Поиск записей",
+    "detail": "The size of this element is too small for user to interact.",
+    "summary": "Hit area is too small",
+    "element": "",
+    "screen": "recordings",
+    "type": "4"
+  },
+  {
+    "summary": "Dynamic Type font sizes are partially unsupported",
+    "element": "",
+    "type": "65536",
+    "screen": "recordings",
+    "detail": "User will not be able to change the font size of this element",
+    "label": "6 нояб. 2026 г."
+  },
+  {
+    "element": "",
+    "type": "65536",
+    "summary": "Dynamic Type font sizes are partially unsupported",
+    "detail": "User will not be able to change the font size of this element",
+    "screen": "recordings",
+    "label": "Встречи"
+  },
+  {
+    "summary": "Dynamic Type font sizes are partially unsupported",
+    "screen": "recordings",
+    "label": "Обрабатывается",
+    "element": "",
+    "type": "65536",
+    "detail": "User will not be able to change the font size of this element"
+  },
+  {
+    "screen": "recordings",
+    "label": "6 нояб. 2026 г.",
+    "element": "",
+    "type": "65536",
+    "summary": "Dynamic Type font sizes are partially unsupported",
+    "detail": "User will not be able to change the font size of this element"
+  },
+  {
+    "screen": "recordings",
+    "type": "65536",
+    "label": "Не удалось записать",
+    "summary": "Dynamic Type font sizes are partially unsupported",
+    "detail": "User will not be able to change the font size of this element",
+    "element": ""
+  },
+  {
+    "screen": "recordings",
+    "detail": "User will not be able to change the font size of this element",
+    "element": "",
+    "label": "Профиль",
+    "type": "65536",
+    "summary": "Dynamic Type font sizes are partially unsupported"
+  },
+  {
+    "summary": "Dynamic Type font sizes are partially unsupported",
+    "label": "6 нояб. 2026 г.",
+    "detail": "User will not be able to change the font size of this element",
+    "type": "65536",
+    "screen": "recordings",
+    "element": ""
+  },
+  {
+    "label": "6 нояб. 2026 г.",
+    "element": "",
+    "type": "65536",
+    "detail": "User will not be able to change the font size of this element",
+    "summary": "Dynamic Type font sizes are partially unsupported",
+    "screen": "recordings"
+  },
+  {
+    "summary": "Dynamic Type font sizes are partially unsupported",
+    "type": "65536",
+    "element": "",
+    "screen": "recordings",
+    "detail": "User will not be able to change the font size of this element",
+    "label": "Поиск и фильтры применяются к загруженным записям."
+  },
+  {
+    "label": "Чаты",
+    "type": "65536",
+    "summary": "Dynamic Type font sizes are partially unsupported",
+    "detail": "User will not be able to change the font size of this element",
+    "screen": "recordings",
+    "element": ""
+  },
+  {
+    "summary": "Dynamic Type font sizes are partially unsupported",
+    "screen": "recordings",
+    "type": "65536",
+    "detail": "User will not be able to change the font size of this element",
+    "element": "",
+    "label": "Готова"
+  },
+  {
+    "type": "65536",
+    "summary": "Dynamic Type font sizes are partially unsupported",
+    "detail": "User will not be able to change the font size of this element",
+    "label": "Готова",
+    "screen": "recordings",
+    "element": ""
+  },
+  {
+    "element": "",
+    "detail": "User will not be able to change the font size of this element",
+    "screen": "folders",
+    "label": "Личное пространство",
+    "type": "65536",
+    "summary": "Dynamic Type font sizes are partially unsupported"
+  },
+  {
+    "summary": "Dynamic Type font sizes are partially unsupported",
+    "element": "",
+    "label": "Встречи",
+    "type": "65536",
+    "screen": "folders",
+    "detail": "User will not be able to change the font size of this element"
+  },
+  {
+    "label": "Профиль",
+    "screen": "folders",
+    "detail": "User will not be able to change the font size of this element",
+    "element": "",
+    "summary": "Dynamic Type font sizes are partially unsupported",
+    "type": "65536"
+  },
+  {
+    "screen": "folders",
+    "label": "Чаты",
+    "type": "65536",
+    "summary": "Dynamic Type font sizes are partially unsupported",
+    "element": "",
+    "detail": "User will not be able to change the font size of this element"
+  },
+  {
+    "label": "",
+    "type": "4",
+    "screen": "settings",
+    "detail": "The size of this element is too small for user to interact.",
+    "element": "",
+    "summary": "Hit area is too small"
+  },
+  {
+    "detail": "User will not be able to change the font size of this element",
+    "screen": "settings",
+    "label": "Встречи",
+    "summary": "Dynamic Type font sizes are partially unsupported",
+    "type": "65536",
+    "element": ""
+  },
+  {
+    "element": "",
+    "type": "65536",
+    "screen": "settings",
+    "summary": "Dynamic Type font sizes are partially unsupported",
+    "label": "Профиль",
+    "detail": "User will not be able to change the font size of this element"
+  },
+  {
+    "summary": "Dynamic Type font sizes are partially unsupported",
+    "detail": "User will not be able to change the font size of this element",
+    "screen": "settings",
+    "label": "Чаты",
+    "element": "",
+    "type": "65536"
+  },
+  {
+    "screen": "settings",
+    "type": "8",
+    "detail": "The accessibilityLabel of this element is not human-readable.",
+    "summary": "Label not human-readable",
+    "element": "",
+    "label": "first@fixture.example"
+  },
+  {
+    "summary": "Label not human-readable",
+    "element": "",
+    "detail": "The accessibilityLabel of this element is not human-readable.",
+    "label": "first@fixture.example",
+    "screen": "settings",
+    "type": "8"
+  },
+  {
+    "screen": "settings",
+    "label": "Сохранить профиль",
+    "summary": "Contrast failed",
+    "element": "saveProfile",
+    "type": "1",
+    "detail": "Contrast failed for element"
+  }
+]

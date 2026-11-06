@@ -17,11 +17,9 @@ struct LiveMessagesView: View {
                         IconButton("square.and.pencil", label: "Новый чат") { creating = true }
                             .accessibilityIdentifier("newChat")
                     }
-                    HStack {
-                        Text(app.identity.messaging?.account.server.displayName ?? "").lineLimit(1)
-                        Spacer()
-                        Label(tr(model.realtimeState == .connected ? "Подключено" : "Переподключение…"),
-                              systemImage: model.realtimeState == .connected ? "checkmark.circle" : "arrow.triangle.2.circlepath")
+                    ViewThatFits(in: .horizontal) {
+                        HStack { serverName; Spacer(); connectionStatus }
+                        VStack(alignment: .leading, spacing: 6) { serverName; connectionStatus }
                     }.font(MSTheme.font(11)).foregroundStyle(MSTheme.muted).padding(.horizontal, 20)
                     SearchBox(text: $model.listSearch, placeholder: "Поиск чатов").padding(.horizontal, 20)
                     HStack(spacing: 12) {
@@ -63,6 +61,15 @@ struct LiveMessagesView: View {
     private func select(_ id: UUID, wide: Bool) {
         if wide { selected = id }
         else { app.navigate(.conversation(id)) }
+    }
+    private var serverName: some View {
+        Text(model.account.server.displayName).fixedSize(horizontal: false, vertical: true)
+            .accessibilityLabel(tr("Адрес сервера")).accessibilityValue(model.account.server.displayName)
+    }
+    private var connectionStatus: some View {
+        Label(tr(model.realtimeState == .connected ? "Подключено" : "Переподключение…"),
+              systemImage: model.realtimeState == .connected ? "checkmark.circle" : "arrow.triangle.2.circlepath")
+            .fixedSize(horizontal: false, vertical: true)
     }
     private func row(_ item: Conversation) -> some View {
         HStack(spacing: 12) {

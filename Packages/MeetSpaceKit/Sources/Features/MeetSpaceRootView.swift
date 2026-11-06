@@ -103,6 +103,7 @@ private struct WelcomeView: View {
         VStack(alignment: .leading, spacing: 20) {
             Text(tr("ЕДИНОЕ ПРОСТРАНСТВО")).font(MSTheme.font(10, weight: .semibold, relativeTo: .caption)).tracking(2).foregroundStyle(MSTheme.accent)
             Text(tr("Команда ближе.\nИдей больше.")).font(MSTheme.font(34, weight: .semibold, relativeTo: .largeTitle)).tracking(-1.1).fixedSize(horizontal: false, vertical: true)
+                .accessibilityIdentifier("welcome.heading")
             Text(tr("MeetSpace — единое пространство для встреч и общения.")).foregroundStyle(MSTheme.muted)
             if showArtwork && !typeSize.isAccessibilitySize { WelcomeArtwork().frame(height: 155).padding(.vertical, 4) }
             connectionChoice("Подключиться к серверу", subtitle: "У меня уже есть адрес MeetSpace", icon: "network", primary: true) { model.show(.connect) }
@@ -179,7 +180,9 @@ private struct WelcomeArtwork: View {
                     Text(tr("Хорошие идеи\nначинаются здесь.")).font(MSTheme.font(11, weight: .semibold))
                 }.padding(14).background(MSTheme.surface, in: RoundedRectangle(cornerRadius: 14)).rotationEffect(.degrees(5))
             }
-        }.accessibilityHidden(true)
+        }.accessibilityElement(children: .ignore)
+            .accessibilityLabel(tr("Хорошие идеи\nначинаются здесь."))
+            .accessibilityIdentifier("welcome.artwork")
     }
 }
 

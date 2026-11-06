@@ -1,0 +1,24 @@
+{
+  "checkedAt": "2026-11-06",
+  "refs": {
+    "backend": {
+      "url": "https://github.com/janickiy/meet-space",
+      "commit": "9e6058c31cc07bff0f48d8f7f6a40106c55c4881"
+    },
+    "android": {
+      "url": "https://github.com/janickiy/meet-space-android",
+      "commit": "b8f289983e60671d415a128734c2e5bb6e93a29d"
+    },
+    "design": {
+      "url": "https://github.com/janickiy/mobile_maket",
+      "commit": "04d6a8ecdac75ae568459bbed0f3f6647bf8cbb3"
+    }
+  },
+  "backendModified": false,
+  "designAvailable": true,
+  "designScreenCount": 21,
+  "designFileCount": 124,
+  "iconSource": "Packages/MeetSpaceKit/Sources/DesignSystem/BrandMark.swift",
+  "iconRenderer": "scripts/render_app_icon.swift",
+  "iconSHA256": "982bedb7f69068c5cffdc6912220a043e128c442637a455c287864a58566e037"
+}

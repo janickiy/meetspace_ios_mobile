@@ -1,20 +1,29 @@
 import SwiftUI
 import MeetSpaceCore
 import MeetSpaceDesignSystem
+#if os(iOS)
+import UIKit
+#endif
 
 struct WorkspaceView: View {
     @Bindable var model: AppModel
+    @Environment(\.dynamicTypeSize) private var typeSize
     var body: some View {
         VStack(spacing: 0) {
             if model.isDemo { HStack(spacing: 8) {
-                Image(systemName: "eye").accessibilityHidden(true)
-                Text(tr("Демо · данные из макетов")).font(MSTheme.font(11, weight: .semibold))
-                    .accessibilityIdentifier("demoBanner")
+                Image(systemName: "eye").accessibilityHidden(!typeSize.isAccessibilitySize)
+                    .accessibilityLabel(tr("Демо · данные из макетов"))
+                if !typeSize.isAccessibilitySize {
+                    Text(tr("Демо · данные из макетов")).font(MSTheme.font(11, weight: .semibold))
+                        .accessibilityIdentifier("demoBanner")
+                }
                 Spacer(minLength: 0)
-                Button(tr("Выйти")) { model.leaveDemo() }.frame(minHeight: 44).accessibilityIdentifier("exitDemo")
+                Button { model.leaveDemo() } label: {
+                    if typeSize.isAccessibilitySize {
+                        Image(systemName: "rectangle.portrait.and.arrow.right").font(.title3).frame(minWidth: 44, minHeight: 44)
+                    } else { Text(tr("Выйти")).frame(minHeight: 44) }
+                }.accessibilityLabel(tr("Выйти")).accessibilityIdentifier("exitDemo")
             }.padding(.horizontal, 20).background(MSTheme.accentSoft).foregroundStyle(MSTheme.accent)
-                // Persistent navigation must leave room for fully scaled, scrollable content.
-                .dynamicTypeSize(...DynamicTypeSize.xxxLarge)
             }
             TabView(selection: $model.tab) {
                 stack(tab: .meetings, path: $model.meetingsPath) {
@@ -39,7 +48,6 @@ struct WorkspaceView: View {
                 tabButton(.profile, title: "Профиль", icon: "person.crop.circle")
             }.padding(.top, 5).background(MSTheme.surface)
                 .overlay(alignment: .top) { Rectangle().fill(MSTheme.line).frame(height: 1) }
-                .dynamicTypeSize(...DynamicTypeSize.xxxLarge)
         }.background(MSTheme.background)
     }
 
@@ -53,10 +61,13 @@ struct WorkspaceView: View {
         Button { model.tab = tab } label: {
             VStack(spacing: 5) {
                 Image(systemName: icon).font(.system(size: 21))
-                Text(tr(title)).font(MSTheme.font(10, weight: .semibold, relativeTo: .caption))
+                if !typeSize.isAccessibilitySize {
+                    Text(tr(title)).font(MSTheme.font(10, weight: .semibold, relativeTo: .caption))
+                }
             }.frame(maxWidth: .infinity, minHeight: 54).padding(.bottom, 3)
                 .foregroundStyle(model.tab == tab ? MSTheme.accent : MSTheme.muted).contentShape(Rectangle())
         }.buttonStyle(.plain).accessibilityIdentifier("tab.\(tab.rawValue)")
+            .accessibilityLabel(tr(title))
             .accessibilityAddTraits(model.tab == tab ? .isSelected : [])
     }
 }
@@ -112,15 +123,81 @@ struct PageHeader<Actions: View>: View {
 struct SearchBox: View {
     @Binding var text: String
     let placeholder: String
+    var onSubmit: () -> Void = {}
     var body: some View {
         HStack(spacing: 10) {
             Image(systemName: "magnifyingglass").foregroundStyle(MSTheme.muted).accessibilityHidden(true)
-            TextField(tr(placeholder), text: $text).textFieldStyle(.plain).frame(minHeight: 44).accessibilityLabel(tr(placeholder))
+            #if os(iOS)
+            AccessibleTextField(text: $text, placeholder: tr(placeholder), label: tr(placeholder), onSubmit: onSubmit)
+                .frame(minHeight: 44)
+            #else
+            TextField(tr(placeholder), text: $text).textFieldStyle(.plain).frame(minHeight: 44)
+                .accessibilityLabel(tr(placeholder)).onSubmit(onSubmit)
+            #endif
             if !text.isEmpty { Button { text = "" } label: { Image(systemName: "xmark.circle.fill") }.accessibilityLabel(tr("Очистить поиск")) }
         }.padding(.horizontal, 12).frame(minHeight: 44).background(MSTheme.surface, in: RoundedRectangle(cornerRadius: 12))
             .overlay(RoundedRectangle(cornerRadius: 12).stroke(MSTheme.line))
     }
 }
+
+#if os(iOS)
+/// The native text field itself must be 44pt high. A frame around SwiftUI's plain
+/// TextField leaves its UIKit accessibility element at the font's intrinsic height.
+struct AccessibleTextField: UIViewRepresentable {
+    @Binding var text: String
+    @Environment(\.isEnabled) private var isEnabled
+    let placeholder: String
+    let label: String
+    var identifier = ""
+    var focused: Binding<Bool>? = nil
+    var returnKey: UIReturnKeyType = .search
+    var onSubmit: () -> Void = {}
+
+    func makeUIView(context: Context) -> MinimumHeightTextField {
+        let field = MinimumHeightTextField()
+        field.delegate = context.coordinator
+        field.adjustsFontForContentSizeCategory = true
+        field.addTarget(context.coordinator, action: #selector(Coordinator.edited(_:)), for: .editingChanged)
+        field.setContentHuggingPriority(.defaultLow, for: .horizontal)
+        field.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
+        return field
+    }
+    func updateUIView(_ field: MinimumHeightTextField, context: Context) {
+        context.coordinator.owner = self
+        if field.text != text { field.text = text }
+        field.accessibilityLabel = label; field.accessibilityIdentifier = identifier; field.isEnabled = isEnabled
+        field.font = UIFontMetrics(forTextStyle: .body).scaledFont(for: UIFont(name: "Inter-Regular", size: 14) ?? .systemFont(ofSize: 14), compatibleWith: field.traitCollection)
+        field.attributedPlaceholder = NSAttributedString(string: placeholder, attributes: [.foregroundColor: UIColor(MSTheme.muted)])
+        field.textColor = UIColor(MSTheme.ink); field.returnKeyType = returnKey
+        if let focused, !focused.wrappedValue, field.isFirstResponder { field.resignFirstResponder() }
+    }
+    func sizeThatFits(_ proposal: ProposedViewSize, uiView: MinimumHeightTextField, context: Context) -> CGSize? {
+        CGSize(width: proposal.width ?? max(44, uiView.intrinsicContentSize.width), height: uiView.intrinsicContentSize.height)
+    }
+    func makeCoordinator() -> Coordinator { Coordinator(self) }
+    @MainActor final class Coordinator: NSObject, UITextFieldDelegate {
+        var owner: AccessibleTextField
+        init(_ owner: AccessibleTextField) { self.owner = owner }
+        @objc func edited(_ field: UITextField) { owner.text = field.text ?? "" }
+        func textFieldDidBeginEditing(_ textField: UITextField) {
+            if let focused = owner.focused, !focused.wrappedValue { focused.wrappedValue = true }
+        }
+        func textFieldDidEndEditing(_ textField: UITextField) {
+            if let focused = owner.focused, focused.wrappedValue { focused.wrappedValue = false }
+        }
+        func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+            owner.onSubmit(); textField.resignFirstResponder(); return true
+        }
+    }
+}
+
+final class MinimumHeightTextField: UITextField {
+    override var intrinsicContentSize: CGSize {
+        let size = super.intrinsicContentSize
+        return CGSize(width: size.width, height: max(44, (font?.lineHeight ?? size.height) + 12))
+    }
+}
+#endif
 
 struct FeatureNotice: View {
     let message: String

@@ -9,18 +9,19 @@ struct LiveCalendarView: View {
     @State private var selected: Conference?
     @State private var choosingZone = false
     @Environment(\.dynamicTypeSize) private var typeSize
+    @ScaledMetric(relativeTo: .body) private var timeColumnWidth: CGFloat = 43
+    @ScaledMetric(relativeTo: .body) private var dayMinimumWidth: CGFloat = 44
     var body: some View {
         GeometryReader { geometry in
             ScrollView {
                 VStack(alignment: .leading, spacing: 20) {
-                    HStack(alignment: .top) {
-                        VStack(alignment: .leading, spacing: 8) {
-                            Text(tr("Календарь")).font(MSTheme.font(28, weight: .semibold, relativeTo: .title)).accessibilityAddTraits(.isHeader)
-                            Text(tr("Время для важных разговоров.")).font(MSTheme.font(13)).foregroundStyle(MSTheme.muted)
+                    VStack(alignment: .leading, spacing: 8) {
+                        ViewThatFits(in: .horizontal) {
+                            HStack { heading.fixedSize(); Spacer(); headerActions }
+                            VStack(alignment: .leading, spacing: 8) { heading; headerActions }
                         }
-                        Spacer()
-                        IconButton("arrow.clockwise", label: "Обновить") { Task { await model.load() } }
-                        IconButton("plus", label: "Запланировать встречу") { creating = true }.accessibilityIdentifier("calendar.schedule")
+                        Text(tr("Время для важных разговоров.")).font(MSTheme.font(13)).foregroundStyle(MSTheme.muted)
+                            .fixedSize(horizontal: false, vertical: true)
                     }
                     Picker(tr("Вид календаря"), selection: Binding(get: { model.preferences.displayMode }, set: { mode in Task { await model.selectMode(mode) } })) {
                         Text(tr("Неделя")).tag(CalendarDisplayMode.week)
@@ -72,6 +73,17 @@ struct LiveCalendarView: View {
                 CalendarTimeZonePicker(selected: model.preferences.timeZoneIdentifier) { identifier in Task { await model.selectTimeZone(identifier) } }
             }
     }
+    private var heading: some View {
+        Text(tr("Календарь")).font(MSTheme.font(28, weight: .semibold, relativeTo: .title))
+            .fixedSize(horizontal: false, vertical: true).accessibilityAddTraits(.isHeader)
+            .accessibilityIdentifier("calendar.heading")
+    }
+    private var headerActions: some View {
+        HStack {
+            IconButton("arrow.clockwise", label: "Обновить") { Task { await model.load() } }
+            IconButton("plus", label: "Запланировать встречу") { creating = true }.accessibilityIdentifier("calendar.schedule")
+        }
+    }
     private var periodControls: some View {
         ViewThatFits(in: .horizontal) {
             HStack { periodTitle; Spacer(); navigationButtons }
@@ -117,13 +129,20 @@ struct LiveCalendarView: View {
             .overlay(RoundedRectangle(cornerRadius: 20).stroke(MSTheme.line))
     }
     private var monthGrid: some View {
+        ViewThatFits(in: .horizontal) {
+            monthGridContent
+            ScrollView(.horizontal) { monthGridContent }
+        }
+    }
+    private var monthGridContent: some View {
         let days = MeetingCalendar.days(in: model.interval, zone: model.zone)
         let leading = (model.calendar.component(.weekday, from: model.interval.start) + 5) % 7
-        return LazyVGrid(columns: Array(repeating: GridItem(.flexible(minimum: 28), spacing: 3), count: 7), spacing: 5) {
+        return LazyVGrid(columns: Array(repeating: GridItem(.flexible(minimum: dayMinimumWidth), spacing: 3), count: 7), spacing: 5) {
             ForEach(["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"], id: \.self) { Text(tr($0)).font(MSTheme.font(10)).foregroundStyle(MSTheme.muted) }
             ForEach(0..<leading, id: \.self) { _ in Color.clear.frame(height: 44) }
             ForEach(days, id: \.self) { day in dayButton(day, compact: true) }
-        }.padding(10).background(MSTheme.surface, in: RoundedRectangle(cornerRadius: 20))
+        }.frame(minWidth: dayMinimumWidth * 7 + 18).padding(10)
+            .background(MSTheme.surface, in: RoundedRectangle(cornerRadius: 20))
     }
     private func dayButton(_ day: Date, compact: Bool = false) -> some View {
         let selected = model.calendar.isDate(day, inSameDayAs: model.selectedDay)
@@ -133,7 +152,7 @@ struct LiveCalendarView: View {
                 if !compact { Text(calendarText(day, format: "EE", zone: model.zone)).font(MSTheme.font(10)) }
                 Text(calendarText(day, format: "d", zone: model.zone)).font(MSTheme.font(17, weight: .semibold))
                 Circle().fill(hasEvent ? (selected ? MSTheme.surface : MSTheme.accent) : .clear).frame(width: 4, height: 4)
-            }.frame(minWidth: compact ? 28 : 38, maxWidth: compact ? .infinity : nil, minHeight: compact ? 44 : 70)
+            }.frame(minWidth: dayMinimumWidth, maxWidth: compact ? .infinity : nil, minHeight: compact ? 44 : 70)
                 .padding(.horizontal, compact ? 0 : 4)
                 .background(selected ? MSTheme.accent : MSTheme.surface, in: RoundedRectangle(cornerRadius: 13))
                 .foregroundStyle(selected ? MSTheme.surface : MSTheme.ink)
@@ -148,7 +167,9 @@ struct LiveCalendarView: View {
             if events.isEmpty && !model.loading && model.feedErrors.isEmpty { emptyDay.padding(.bottom, 12) }
             ForEach(first...last, id: \.self) { hour in
                 HStack(alignment: .top, spacing: 10) {
-                    Text(String(format: "%02d:00", hour)).font(MSTheme.font(10)).foregroundStyle(MSTheme.muted).frame(width: 43, alignment: .leading).padding(.top, 4)
+                    Text(String(format: "%02d:00", hour)).font(MSTheme.font(10)).foregroundStyle(MSTheme.muted)
+                        .frame(width: timeColumnWidth, alignment: .leading).fixedSize(horizontal: false, vertical: true).padding(.top, 4)
+                        .accessibilityIdentifier("calendar.hour.\(hour)")
                     VStack(spacing: 6) {
                         Rectangle().fill(MSTheme.line).frame(height: 1)
                         ForEach(events.filter { model.calendar.component(.hour, from: MeetingCalendar.timelineDate($0)) == hour }) { event in eventCard(event) }

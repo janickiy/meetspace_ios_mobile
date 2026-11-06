@@ -30,6 +30,7 @@ struct AccountSettingsView: View {
                             VStack(alignment: .leading, spacing: 4) {
                                 Text(model.profile.name).font(MSTheme.font(13, weight: .semibold))
                                 Text(model.profile.email).font(MSTheme.font(11)).foregroundStyle(MSTheme.muted)
+                                    .accessibilityLabel(tr("Электронная почта")).accessibilityValue(model.profile.email)
                             }
                         }.padding(.bottom, 20)
                         ForEach(AccountSettingsSection.allCases) { section in
@@ -70,6 +71,7 @@ private struct AccountSettingsContent: View {
     @Bindable var model: SettingsModel
     let section: AccountSettingsSection
     @FocusState private var profileNameFocused: Bool
+    @State private var nativeProfileNameFocused = false
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 20) {
@@ -86,6 +88,7 @@ private struct AccountSettingsContent: View {
                 }
                 Button(tr("Обновить настройки")) {
                     profileNameFocused = false
+                    nativeProfileNameFocused = false
                     Task { await model.load() }
                 }
                     .buttonStyle(MSButtonStyle(primary: false)).disabled(model.busy)
@@ -93,7 +96,7 @@ private struct AccountSettingsContent: View {
         }.background(MSTheme.background)
             .scrollDismissesKeyboard(.interactively)
             .accessibilityIdentifier("accountSettingsScroll")
-            .onChange(of: section) { _, _ in profileNameFocused = false }
+            .onChange(of: section) { _, _ in profileNameFocused = false; nativeProfileNameFocused = false }
     }
     private var profile: some View {
         VStack(alignment: .leading, spacing: 16) {
@@ -106,17 +109,25 @@ private struct AccountSettingsContent: View {
                 Avatar(String(model.profile.name.prefix(2)).uppercased(), size: 64)
             }.padding(.bottom, 12)
             Text(tr("Имя для встреч")).font(MSTheme.font(12, weight: .semibold))
+            #if os(iOS)
+            AccessibleTextField(text: $model.displayName, placeholder: tr("Имя"), label: tr("Имя для встреч"),
+                                identifier: "profileDisplayName", focused: $nativeProfileNameFocused, returnKey: .done)
+                .frame(minHeight: 44).msCard().disabled(model.busy)
+            #else
             TextField(tr("Имя"), text: $model.displayName).textFieldStyle(.plain).msCard()
                 .focused($profileNameFocused).submitLabel(.done)
                 .onSubmit { profileNameFocused = false }
                 .disabled(model.busy).accessibilityIdentifier("profileDisplayName")
+            #endif
             Text(tr("От 1 до 100 символов")).font(MSTheme.font(12)).foregroundStyle(MSTheme.muted)
             Text(tr("Электронная почта")).font(MSTheme.font(12, weight: .semibold))
             Text(model.profile.email).textSelection(.enabled).frame(maxWidth: .infinity, alignment: .leading).msCard()
+                .accessibilityLabel(tr("Электронная почта")).accessibilityValue(model.profile.email)
             Text(tr("Адрес используется для входа. Изменение email недоступно.")).font(MSTheme.font(12)).foregroundStyle(MSTheme.muted)
             if let error = model.profileError { errorMessage(error) }
             Button(tr("Сохранить профиль")) {
                 profileNameFocused = false
+                nativeProfileNameFocused = false
                 Task { await model.saveProfile() }
             }
                 .buttonStyle(MSButtonStyle()).disabled(!model.canSaveProfile).accessibilityIdentifier("saveProfile")
