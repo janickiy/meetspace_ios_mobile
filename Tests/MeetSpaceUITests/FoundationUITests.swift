@@ -271,7 +271,11 @@ import UIKit
         XCTAssertTrue(password.waitForExistence(timeout: 5))
         XCTAssertFalse(submit.isEnabled)
         func enterPassword(_ value: String) {
-            password.tap(); password.typeText(value)
+            password.tap()
+            XCTAssertTrue(app.keyboards.firstMatch.waitForExistence(timeout: 5))
+            // Allow each real keyboard event to settle before the next character;
+            // this also exercises SecureField binding updates across a failed retry.
+            for character in value { password.typeText(String(character)) }
             let done = app.keyboards.buttons.matching(NSPredicate(format: "label IN %@", ["Done", "Готово"])).firstMatch
             XCTAssertTrue(done.waitForExistence(timeout: 5)); done.tap()
         }

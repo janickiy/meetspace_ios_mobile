@@ -25,6 +25,9 @@ struct DeleteAccountView: View {
                         .textInputAutocapitalization(.never)
                         #endif
                         .autocorrectionDisabled()
+                        #if DEBUG
+                        .onChange(of: password) { _, value in traceFixtureInput("edit", value) }
+                        #endif
                         .onSubmit {
                             #if DEBUG
                             traceFixtureInput("submit", password)
@@ -80,6 +83,7 @@ public enum UITestPasswordInputClassification {
     public static func classify(_ value: String?) -> String {
         guard let value else { return "missing" }
         guard !value.isEmpty else { return "empty" }
+        if value == "<redacted>" { return "literal-redacted" }
         let fixtures = [("fixture-password", "expected"), ("incorrect-password", "rejected")]
         for (fixture, label) in fixtures {
             if value == fixture { return label }
@@ -94,7 +98,30 @@ public enum UITestPasswordInputClassification {
                 if value == fixture.replacingOccurrences(of: "-", with: dash) { return label + "-" + name }
             }
         }
-        if value == "incorrect-passwordfixture-password" { return "appended-input" }
+        for (fixture, label) in fixtures {
+            if value == fixture.replacingOccurrences(of: "-", with: "") { return label + "-minus-hyphen" }
+            if value == fixture + fixture { return label + "-repeated" }
+            for index in fixture.indices {
+                var removed = fixture; removed.remove(at: index)
+                if value == removed { return label + "-single-deletion" }
+            }
+            if value.count == fixture.count, zip(value, fixture).filter({ $0 != $1 }).count == 1 {
+                return label + "-single-replacement"
+            }
+            if value.count == fixture.count + 1 {
+                for index in value.indices {
+                    var removed = value; removed.remove(at: index)
+                    if removed == fixture { return label + "-single-insertion" }
+                }
+            }
+        }
+        if value == "incorrect-passwordfixture-password" || value == "fixture-passwordincorrect-password" { return "appended-known-inputs" }
+        for (fixture, label) in fixtures {
+            if fixture.hasPrefix(value) { return label + "-prefix" }
+        }
+        if fixtures.contains(where: { $0.0.hasSuffix(value) }) { return "known-suffix" }
+        if fixtures.contains(where: { isSubsequence(value, of: $0.0) }) { return "known-dropped-characters" }
+        if value.allSatisfy({ $0 == "*" || $0 == "•" }) { return "mask-characters-only" }
         if value.allSatisfy(\.isWhitespace) { return "whitespace-only" }
         let letters = value.unicodeScalars.filter { CharacterSet.letters.contains($0) }
         if !letters.isEmpty, letters.allSatisfy({ (0x0400...0x052F).contains($0.value) || (0x2DE0...0x2DFF).contains($0.value) || (0xA640...0xA69F).contains($0.value) }) {
@@ -103,6 +130,14 @@ public enum UITestPasswordInputClassification {
         if value.contains("\n") || value.contains("\r") { return "other-with-linebreak" }
         if value.unicodeScalars.allSatisfy({ $0.isASCII }) { return "ascii-other" }
         return "unicode-other"
+    }
+
+    private static func isSubsequence(_ value: String, of fixture: String) -> Bool {
+        var cursor = value.startIndex
+        for character in fixture where cursor != value.endIndex {
+            if value[cursor] == character { cursor = value.index(after: cursor) }
+        }
+        return cursor == value.endIndex
     }
 }
 #endif
