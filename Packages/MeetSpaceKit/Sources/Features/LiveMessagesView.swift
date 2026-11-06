@@ -96,31 +96,43 @@ struct LiveThreadView: View {
     @State private var query = ""
     @State private var showsSearch = false
     @State private var deleting: ChatMessage?
-    var body: some View {
-        VStack(spacing: 0) {
+    @Environment(\.dynamicTypeSize) private var typeSize
+    private var threadHeader: some View {
+        VStack(alignment: .leading, spacing: 8) {
             HStack(spacing: 12) {
                 Avatar(String((model.conversation?.title ?? "").prefix(2)).uppercased(), size: 36)
                 VStack(alignment: .leading, spacing: 3) {
-                    Text(model.conversation?.title ?? tr("Чат")).font(MSTheme.font(16, weight: .semibold))
-                    if let count = model.conversation?.memberCount { Text("\(tr("Участники")): \(count)").font(MSTheme.font(11)).foregroundStyle(MSTheme.muted) }
-                }
-                Spacer()
-                if model.conversation?.type == "direct", let peer = model.conversation?.peer, let calls {
-                    Menu {
-                        Button(tr("Аудиозвонок"), systemImage: "phone") {
-                            Task { await calls.startOutgoing(peer: DirectCallPeer(id: peer.id, displayName: peer.displayName)) }
-                        }.accessibilityIdentifier("startAudioCall")
-                        Button(tr("Видеозвонок"), systemImage: "video") {
-                            Task { await calls.startOutgoing(peer: DirectCallPeer(id: peer.id, displayName: peer.displayName), isVideo: true) }
-                        }.accessibilityIdentifier("startVideoCall")
-                    } label: { Image(systemName: "phone").frame(width: 44, height: 44) }
-                        .accessibilityLabel(tr("Позвонить")).accessibilityIdentifier("directCallMenu")
-                }
-                IconButton("magnifyingglass", label: "Поиск сообщений") { showsSearch.toggle(); query = "" }
-                if model.conversation?.isGroup == true {
-                    IconButton("info.circle", label: "О группе") { groupDetails = true }
-                }
-            }.padding(16).background(MSTheme.surface)
+                    Text(model.conversation?.title ?? tr("Чат"))
+                        .font(MSTheme.font(16, weight: .semibold))
+                        .lineLimit(typeSize.isAccessibilitySize ? nil : 2)
+                    if let count = model.conversation?.memberCount {
+                        Text("\(tr("Участники")): \(count)").font(MSTheme.font(11)).foregroundStyle(MSTheme.muted)
+                    }
+                }.frame(minWidth: 0, maxWidth: .infinity, alignment: .leading)
+                if !typeSize.isAccessibilitySize { threadActions }
+            }
+            if typeSize.isAccessibilitySize { threadActions.frame(maxWidth: .infinity, alignment: .trailing) }
+        }.padding(16).background(MSTheme.surface)
+    }
+    private var threadActions: some View {
+        HStack(spacing: 12) {
+            if model.conversation?.type == "direct", let peer = model.conversation?.peer, let calls {
+                IconButton("phone", label: "Аудиозвонок") {
+                    Task { await calls.startOutgoing(peer: DirectCallPeer(id: peer.id, displayName: peer.displayName)) }
+                }.fixedSize().accessibilityIdentifier("startAudioCall")
+                IconButton("video", label: "Видеозвонок") {
+                    Task { await calls.startOutgoing(peer: DirectCallPeer(id: peer.id, displayName: peer.displayName), isVideo: true) }
+                }.fixedSize().accessibilityIdentifier("startVideoCall")
+            }
+            IconButton("magnifyingglass", label: "Поиск сообщений") { showsSearch.toggle(); query = "" }.fixedSize()
+            if model.conversation?.isGroup == true {
+                IconButton("info.circle", label: "О группе") { groupDetails = true }.fixedSize()
+            }
+        }
+    }
+    var body: some View {
+        VStack(spacing: 0) {
+            threadHeader
             if let error = calls?.error, calls?.isActive != true {
                 Text(tr(error)).font(MSTheme.font(12)).foregroundStyle(MSTheme.danger).padding(.horizontal, 16)
             }

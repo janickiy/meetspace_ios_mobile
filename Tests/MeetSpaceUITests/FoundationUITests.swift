@@ -335,14 +335,10 @@ import XCTest
         let app = launch(); login(app)
         let chat = app.buttons["conversation.22222222-2222-4222-8222-222222222222"]
         XCTAssertTrue(chat.waitForExistence(timeout: 10)); chat.tap()
-        let menu = app.buttons["directCallMenu"]
-        XCTAssertTrue(menu.waitForExistence(timeout: 10))
-        // SwiftUI Menu exposes an accessibility wrapper around its native UIButton on this runtime.
-        let menuButton = menu.buttons.firstMatch.exists ? menu.buttons.firstMatch : menu
-        let menuReady = XCTNSPredicateExpectation(predicate: NSPredicate(format: "hittable == true"), object: menuButton)
-        XCTAssertEqual(XCTWaiter.wait(for: [menuReady], timeout: 5), .completed)
-        menuButton.tap()
-        XCTAssertTrue(app.buttons["startAudioCall"].waitForExistence(timeout: 5)); app.buttons["startAudioCall"].tap()
+        let audioCall = app.buttons["startAudioCall"], videoCall = app.buttons["startVideoCall"]
+        XCTAssertTrue(audioCall.waitForExistence(timeout: 10))
+        XCTAssertTrue(audioCall.isHittable && videoCall.isHittable)
+        audioCall.tap()
         XCTAssertTrue(app.staticTexts["screen.directCall"].waitForExistence(timeout: 10))
         capture(app, name: "stage05-outgoing")
         XCTAssertFalse(app.buttons["directCallAnswer"].exists)
