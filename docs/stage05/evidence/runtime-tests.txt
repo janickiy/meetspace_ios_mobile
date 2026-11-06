@@ -1,0 +1,7 @@
+Extracted test results; private service logs and credentials are excluded.
+◇ Test actualBackendDirectCallsDevicesAndPrivateSFU() started.
+PASS real direct calls: idempotency, busy slots, concurrent accept, user WS, both owner-device tickets and SFU media.join, private room restrictions, server membership_closed on end, history/cancel/decline
+PASS ordinary push metadata: HTTP capability, encrypted-token registration/idempotency, same-token two-account distinct bindings, scoped revoke; no APNs delivery asserted
+PASS real timeouts: 45-second unanswered ring→missed and unrenewed accepted lease→ended
+✔ Test actualBackendDirectCallsDevicesAndPrivateSFU() passed after 48.468 seconds.
+✔ Test run with 1 test in 0 suites passed after 48.468 seconds.

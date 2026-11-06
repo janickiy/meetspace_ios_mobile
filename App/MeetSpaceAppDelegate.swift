@@ -36,15 +36,14 @@ import MeetSpaceCalling
         guard !isUITesting else { return }
         AppPlatformRuntime.shared.notifications.didFailRegistration()
     }
-    nonisolated func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification,
-        withCompletionHandler completionHandler: @escaping @Sendable (UNNotificationPresentationOptions) -> Void) {
+    nonisolated func userNotificationCenter(_ center: UNUserNotificationCenter,
+        willPresent notification: UNNotification) async -> UNNotificationPresentationOptions {
         // Ordinary APNs only; never interpret it as a call or a command to switch account.
-        completionHandler([.banner, .list, .sound])
+        [.banner, .list, .sound]
     }
-    nonisolated func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse,
-        withCompletionHandler completionHandler: @escaping @Sendable () -> Void) {
+    nonisolated func userNotificationCenter(_ center: UNUserNotificationCenter,
+        didReceive response: UNNotificationResponse) async {
         // Scene activation reconciles the authenticated workspace. The audited gateway doesn't
         // provide a verified account-scoped deep-link payload, so no payload URL is followed.
-        completionHandler()
     }
 }

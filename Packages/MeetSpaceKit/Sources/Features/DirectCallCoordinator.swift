@@ -38,6 +38,9 @@ import MeetSpaceCalling
     @ObservationIgnored private let now: @Sendable () -> Date
     @ObservationIgnored private var epoch = UUID()
     @ObservationIgnored private var applicationEpoch = UUID()
+    @ObservationIgnored private var applicationTask: Task<Void, Never>?
+    @ObservationIgnored private var applicationCallID: UUID?
+    @ObservationIgnored private var applicationVersion: Int64 = -1
     @ObservationIgnored private var mediaCleanup: Task<Void, Never>?
     @ObservationIgnored private var closed = false
     @ObservationIgnored private var foreground = true
@@ -107,7 +110,6 @@ import MeetSpaceCalling
             guard call.callerUserId == repository.userID, call.calleeUserId == peer.id,
                   call.callerClientId == clientID.uuidString.lowercased() else { throw ClientError.scopeMismatch }
             await apply(call)
-            pendingPeer = nil; createRequestID = nil; uncertain = false
         } catch {
             guard valid(current) else { return }
             // REST reconciliation may already have recovered this request while POST was suspended.
@@ -213,9 +215,26 @@ import MeetSpaceCalling
               repository.userID == conferenceRepository.userID else { return }
         do { _ = try incoming.validated(for: repository.userID) }
         catch { self.error = userMessage(error); return }
+        // Polling, POST responses and heartbeat can deliver the same version concurrently.
+        // They must await the same CallKit/media work instead of invalidating one another.
+        if let applicationTask, applicationCallID == incoming.id, applicationVersion >= incoming.version {
+            await applicationTask.value; return
+        }
         if let currentCall, currentCall.id == incoming.id, currentCall.version > incoming.version { return }
-        let previous = currentCall
         let current = epoch, application = UUID(); applicationEpoch = application
+        applicationCallID = incoming.id; applicationVersion = incoming.version
+        let task = Task { [weak self] in
+            guard let self else { return }
+            await self.applyState(incoming, current: current, application: application)
+        }
+        applicationTask = task
+        await task.value
+        if applicationEpoch == application { applicationTask = nil }
+    }
+
+    private func applyState(_ incoming: DirectCall, current: UUID, application: UUID) async {
+        guard valid(current), applicationEpoch == application else { return }
+        let previous = currentCall
         currentCall = incoming
         if previous?.id != incoming.id {
             let localIntent = createRequestID != nil && pendingPeer?.id == incoming.calleeUserId && incoming.callerClientId == clientID.uuidString.lowercased()
@@ -344,6 +363,10 @@ import MeetSpaceCalling
             else if call.status == .accepted, call.ownsMedia(userID: repository.userID, clientID: clientID) { result = try await repository.end(call.id, clientID: clientID) }
             else { return }
             guard valid(current), currentCall?.id == call.id else { return }
+            guard result.isTerminal else {
+                uncertain = true; error = "Сервер пока не подтвердил завершение звонка."
+                return
+            }
             await apply(result)
         } catch {
             guard valid(current), currentCall?.id == call.id else { return }

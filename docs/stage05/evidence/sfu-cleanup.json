@@ -1,0 +1,15 @@
+{
+  "roomsActive": 0,
+  "mediaPeersActive": 0,
+  "tracksPublished": 0,
+  "subscriptions": 0,
+  "peerConnectionTotal": 2,
+  "peerConnectionFailures": 0,
+  "relayConnections": 0,
+  "directConnections": 0,
+  "packetsForwarded": 0,
+  "bytesForwarded": 0,
+  "packetsDropped": 0,
+  "recordingOutputs": 0,
+  "recordingDrops": 0
+}

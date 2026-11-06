@@ -65,18 +65,24 @@ private actor CallService: DirectCallsServing {
     var value: DirectCall?
     var createIDs: [UUID] = []
     var createsFail = 0
+    var cancelFails = false
     var accepts = 0, cancels = 0, ends = 0, declines = 0, heartbeats = 0, reads = 0
     var acceptGate: CallGate?
+    var createReplyGate: CallGate?
     var heartbeatGate: CallGate?
     init(_ value: DirectCall? = nil) { self.value = value }
     func set(_ value: DirectCall?) { self.value = value }
     func failCreate() { createsFail = 1 }
+    func failCancel() { cancelFails = true }
     func blockAccept(_ gate: CallGate) { acceptGate = gate }
+    func blockCreateReply(_ gate: CallGate) { createReplyGate = gate }
     func blockHeartbeat(_ gate: CallGate) { heartbeatGate = gate }
-    func create(targetUserID: UUID, clientRequestID: UUID, clientID: UUID) throws -> DirectCall {
+    func create(targetUserID: UUID, clientRequestID: UUID, clientID: UUID) async throws -> DirectCall {
         createIDs.append(clientRequestID)
         if createsFail > 0 { createsFail -= 1; throw APIError.timeout }
-        let call = CallFixture.value(device: clientID); value = call; return call
+        let call = CallFixture.value(device: clientID); value = call
+        if let createReplyGate { await createReplyGate.wait() }
+        return call
     }
     func active() -> DirectCall? { value?.isActive == true ? value : nil }
     func read(_ id: UUID) throws -> DirectCall { reads += 1; guard let value else { throw APIError.httpStatus(404) }; return value }
@@ -88,8 +94,10 @@ private actor CallService: DirectCallsServing {
     func decline(_ id: UUID, clientID: UUID) -> DirectCall {
         declines += 1; let call = CallFixture.value(.declined, version: 3, incoming: true); value = call; return call
     }
-    func cancel(_ id: UUID, clientID: UUID) -> DirectCall {
-        cancels += 1; let call = CallFixture.value(.cancelled, version: 3, device: clientID); value = call; return call
+    func cancel(_ id: UUID, clientID: UUID) throws -> DirectCall {
+        cancels += 1
+        if cancelFails { throw APIError.timeout }
+        let call = CallFixture.value(.cancelled, version: 3, device: clientID); value = call; return call
     }
     func end(_ id: UUID, clientID: UUID) -> DirectCall {
         ends += 1; let call = CallFixture.value(.ended, version: 3, incoming: value?.calleeUserId == userID, device: clientID, acceptedDevice: clientID); value = call; return call
@@ -107,12 +115,14 @@ private actor CallService: DirectCallsServing {
     var incoming: [UUID] = [], starts: [UUID] = [], completed: [(UUID, Bool)] = []
     var ended: [(UUID, SystemCallEndReason)] = [], connected: [UUID] = []
     var invalidated = false, failStart = false
+    var startGate: CallGate?
     var lastAnswer: SystemCallAction?
     init(available: Bool = true) { isAvailable = available; (events, continuation) = AsyncStream.makeStream() }
     func reportIncoming(_ descriptor: SystemCallDescriptor, completion: @escaping @Sendable (Result<Void, SystemCallingError>) -> Void) {
         incoming.append(descriptor.id); completion(.success(()))
     }
-    func requestStart(_ descriptor: SystemCallDescriptor) throws {
+    func requestStart(_ descriptor: SystemCallDescriptor) async throws {
+        if let startGate { await startGate.wait() }
         if failStart { throw SystemCallingError.requestRejected }
         starts.append(descriptor.id); emit(.action(action(.start, id: descriptor.id)))
     }
@@ -295,6 +305,47 @@ private actor CallSockets: ConferenceSocketFactory {
     let service = CallService(), system = CallSystem(); system.failStart = true
     let calls = try coordinator(service, system: system)
     await calls.startOutgoing(peer: CallFixture.person)
+    #expect(await service.cancels == 1)
+    #expect(calls.currentCall?.status == .cancelled && calls.mediaSession == nil)
+    await calls.close()
+}
+
+@Test @MainActor func directCallStartRejectionPreservesUnknownServerCancellation() async throws {
+    let service = CallService(), system = CallSystem(); system.failStart = true
+    await service.failCancel()
+    let calls = try coordinator(service, system: system)
+    await calls.startOutgoing(peer: CallFixture.person)
+    #expect(await service.cancels == 1)
+    #expect(calls.uncertain && calls.ending && calls.pendingPeer == nil)
+    #expect(calls.currentCall?.status == .ringing && calls.mediaSession == nil)
+    await calls.reconcile()
+    #expect(calls.uncertain && calls.ending && system.starts.isEmpty)
+    await calls.close()
+}
+
+@Test @MainActor func directCallPOSTAndReconciliationAwaitTheSameRejectedSystemStart() async throws {
+    let service = CallService(), system = CallSystem(), createReply = CallGate(), systemReply = CallGate()
+    await service.blockCreateReply(createReply)
+    system.failStart = true; system.startGate = systemReply
+    let calls = try coordinator(service, system: system)
+    var returned = false
+    var returnedStatus: DirectCallStatus?
+    let creation = Task { @MainActor in
+        await calls.startOutgoing(peer: CallFixture.person)
+        returnedStatus = calls.currentCall?.status; returned = true
+    }
+    try await callEventually { await createReply.started }
+    // The server has committed; the startup poll owns a blocked CallKit request before POST returns.
+    let reconciliation = Task { await calls.reconcile() }
+    try await callEventually { await systemReply.started }
+    await createReply.release()
+    // Let the released POST continuation run while the explicit system gate stays closed.
+    // A completed create here would skip the lifecycle result that it promises its caller.
+    for _ in 0..<30 { await Task.yield() }
+    #expect(!returned && calls.busy)
+    await systemReply.release()
+    await creation.value; await reconciliation.value
+    #expect(returnedStatus == .cancelled)
     #expect(await service.cancels == 1)
     #expect(calls.currentCall?.status == .cancelled && calls.mediaSession == nil)
     await calls.close()
