@@ -372,8 +372,12 @@ import UIKit
         enterPassword("fixture-password")
         reveal(submit, in: app); capture(app, name: "stage08-account-deletion")
         submit.tap(); XCTAssertTrue(confirmation.waitForExistence(timeout: 5)); confirmation.tap()
-        XCTAssertTrue(app.buttons["connectServer"].waitForExistence(timeout: 10))
+        // Ending the session keeps the configured server and returns to its login form.
+        XCTAssertTrue(app.buttons["authenticationSubmit"].waitForExistence(timeout: 10))
+        XCTAssertTrue(app.staticTexts["Аккаунт удалён на сервере."].waitForExistence(timeout: 5))
+        XCTAssertFalse(password.exists)
         XCTAssertFalse(app.buttons["tab.messages"].exists)
+        capture(app, name: "stage08-account-deletion-success")
     }
 
     func testAccessibilityStage08LargeTextLiveFlow() {

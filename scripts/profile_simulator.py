@@ -31,7 +31,7 @@ def main():
     parser.add_argument("--boot-if-needed", action="store_true", help="Boot the exact tested simulator if Shutdown; requires --test-summary")
     parser.add_argument("--output", required=True, type=Path, help="New, empty evidence directory")
     parser.add_argument("--seconds", type=int, default=15, choices=range(5, 16))
-    parser.add_argument("--wall-budget", type=int, default=180, choices=range(90, 241))
+    parser.add_argument("--wall-budget", type=int, default=240, choices=range(90, 241))
     args = parser.parse_args()
     if args.boot_if_needed and not args.test_summary:
         parser.error("--boot-if-needed requires --test-summary; never guess the test destination")
@@ -62,7 +62,7 @@ def main():
         (out / "receipt.json").write_text(json.dumps(report, indent=2) + "\n")
 
     def run(name, command, timeout=12):
-        remaining = 5 if name in {"fixture-cleanup", "simulator-cleanup"} else deadline - time.monotonic()
+        remaining = {"fixture-cleanup": 5, "simulator-cleanup": 30}.get(name, deadline - time.monotonic())
         result = {"name": name, "argv": command, "log": name + ".log"}
         report["commands"].append(result)
         begin = time.monotonic()
@@ -161,7 +161,7 @@ def main():
                 return blocked("Exact tested simulator could not boot; see simulator-boot.log", failure=True)
             booted_here = True
             report["bootedByProfiler"] = True
-            boot_status, _ = run("simulator-bootstatus", ["xcrun", "simctl", "bootstatus", simulator, "-b"], timeout=45)
+            boot_status, _ = run("simulator-bootstatus", ["xcrun", "simctl", "bootstatus", simulator, "-b"], timeout=90)
             if not success(boot_status):
                 return blocked("Exact tested simulator boot did not finish within its bounded wait", failure=True)
             refreshed, devices_text = run("simctl-devices-after-boot", ["xcrun", "simctl", "list", "devices", "available", "--json"])
@@ -321,7 +321,7 @@ def main():
         if launched:
             run("fixture-cleanup", ["xcrun", "simctl", "terminate", simulator, BUNDLE], timeout=5)
         if booted_here:
-            run("simulator-cleanup", ["xcrun", "simctl", "shutdown", simulator], timeout=5)
+            run("simulator-cleanup", ["xcrun", "simctl", "shutdown", simulator], timeout=30)
         report["evidenceFiles"] = []
         for path in sorted(out.iterdir()):
             if path.is_file() and path.name != "receipt.json":
