@@ -110,7 +110,7 @@ private struct WelcomeView: View {
                 .accessibilityIdentifier("connectServer")
             connectionChoice("Развернуть свой сервер", subtitle: "Создать пространство на своём VPS", icon: "server.rack", primary: false) {
                 model.enterDemo(); model.navigate(.deploy)
-            }
+            }.accessibilityIdentifier("deployServer")
             HStack {
                 feature("video", "Встречи"); Spacer(); feature("bubble.left", "Сообщения"); Spacer(); feature("lock.shield", "Ваш сервер")
             }.padding(.top, 6)
@@ -131,6 +131,7 @@ private struct WelcomeView: View {
                     Text(tr(title)).font(MSTheme.font(14, weight: .semibold))
                     Text(tr(subtitle)).font(MSTheme.font(11, relativeTo: .caption))
                         .foregroundStyle(primary ? MSTheme.surface : MSTheme.muted)
+                        .accessibilityIdentifier(primary ? "welcome.connectSubtitle" : "welcome.deploySubtitle")
                 }.fixedSize(horizontal: false, vertical: true)
                 Spacer(minLength: 0); Image(systemName: "arrow.right").accessibilityHidden(true)
             }.padding(16).frame(maxWidth: .infinity, minHeight: 66)

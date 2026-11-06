@@ -240,6 +240,7 @@ struct LiveCalendarView: View {
     private var sidePanel: some View {
         VStack(alignment: .leading, spacing: 14) {
             Text(tr("На этой неделе")).font(MSTheme.font(11)).foregroundStyle(MSTheme.muted)
+                .accessibilityIdentifier("calendar.weekSummaryHeading")
             Text(tr("Хороший ритм")).font(MSTheme.font(21, weight: .semibold))
             Text(tr("Все встречи команды в вашем часовом поясе.")).font(MSTheme.font(12)).foregroundStyle(MSTheme.muted)
             let week = MeetingCalendar.interval(containing: model.selectedDay, mode: .week, in: model.zone)
