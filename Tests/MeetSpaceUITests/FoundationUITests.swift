@@ -98,31 +98,37 @@ import XCTest
             Thread.sleep(forTimeInterval: 0.1)
         }
         XCTAssertTrue(messages.exists || incoming.exists, "Login must reach the workspace or an incoming call")
-        // The simulator's Passwords remote view may arrive after the workspace is already in AX.
-        // Handle only the observed save-password prompt before screenshots or button assertions.
-        // Cold launch of the Passwords remote process can take longer than the app's transition.
+        // Cold launch of the Passwords remote process can outlive the app's transition.
+        // Stay in the app's embedded hierarchy; never activate SafariViewService separately.
         let promptDeadline = Date().addingTimeInterval(12)
-        // Query the embedded sheet through the app. Activating SafariViewService as a
-        // separate application races XCTest's default dismissal and disrupts later launches.
-        let surface: XCUIElement = app
+        var tappedPrompt = false
         while Date() < promptDeadline {
-            if surface.sheets["Save Password?"].exists || surface.sheets["Сохранить пароль?"].exists ||
-                        surface.alerts["Save Password?"].exists || surface.alerts["Сохранить пароль?"].exists ||
-                        surface.staticTexts["Save Password?"].exists || surface.staticTexts["Сохранить пароль?"].exists {
-                for label in ["Not Now", "Не сейчас"] {
-                    let decline = surface.buttons[label].firstMatch
-                    if decline.exists && decline.isHittable {
-                        decline.tap()
-                        let removed = XCTNSPredicateExpectation(predicate: NSPredicate(format: "exists == false"), object: decline)
-                        XCTAssertEqual(XCTWaiter.wait(for: [removed], timeout: 5), .completed)
-                        waitForWorkspaceInteraction(app)
-                        return
-                    }
-                }
+            if let decline = passwordDismissButton(app), decline.isHittable {
+                decline.tap(); tappedPrompt = true
+                // The first tap can arrive while the remote sheet is still animating.
+                // Requery and retry only if that same observed prompt is still actionable.
+                Thread.sleep(forTimeInterval: 1)
+                continue
             }
+            let target = app.buttons["directCallAnswer"].exists ? app.buttons["directCallAnswer"] : messages
+            if tappedPrompt && target.isHittable { return }
             Thread.sleep(forTimeInterval: 0.1)
         }
+        if let decline = passwordDismissButton(app) {
+            XCTAssertFalse(decline.isHittable, "The password prompt must no longer block the workspace")
+        }
         waitForWorkspaceInteraction(app)
+    }
+
+    private func passwordDismissButton(_ app: XCUIApplication) -> XCUIElement? {
+        guard app.sheets["Save Password?"].exists || app.sheets["Сохранить пароль?"].exists ||
+                app.alerts["Save Password?"].exists || app.alerts["Сохранить пароль?"].exists ||
+                app.staticTexts["Save Password?"].exists || app.staticTexts["Сохранить пароль?"].exists else { return nil }
+        for label in ["Not Now", "Не сейчас"] {
+            let button = app.buttons[label].firstMatch
+            if button.exists { return button }
+        }
+        return nil
     }
 
     private func waitForWorkspaceInteraction(_ app: XCUIApplication) {
