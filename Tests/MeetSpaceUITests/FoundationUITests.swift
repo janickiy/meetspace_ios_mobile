@@ -260,8 +260,10 @@ import UIKit
                     return findings
                 } catch {
                     let engineError = error as NSError
-                    let observedTimeoutCategory = category == .elementDetection || category == .dynamicType
-                    let retry = attempt == 1 && observedTimeoutCategory && callbackCount == 0 && findings.isEmpty &&
+                    // CI14 proved a Dynamic Type timeout can leave trait changes in
+                    // flight; immediately starting another such audit is not a reset.
+                    // Preserve that error and fail instead of overlapping those passes.
+                    let retry = attempt == 1 && category == .elementDetection && callbackCount == 0 && findings.isEmpty &&
                         engineError.domain == "com.apple.xcode.xctest.accessibilityAudit" && engineError.code == -56
                     receipt.merge(["outcome": "engineError", "callbackCount": callbackCount,
                         "findingsCount": findings.count, "elapsedSeconds": ProcessInfo.processInfo.systemUptime - started,
@@ -271,8 +273,8 @@ import UIKit
                     attempts.append(receipt)
                     attachAttempts()
                     if retry {
-                        // CI10/13 timed out inside Apple's element-detection/Dynamic Type
-                        // engine before any callback. Repeat that same pass once, preserving
+                        // CI10/14 timed out inside Apple's element-detection engine
+                        // before any callback. Repeat that same pass once, preserving
                         // the failed attempt; never waive a finding or change the viewport.
                         Thread.sleep(forTimeInterval: 2)
                         continue

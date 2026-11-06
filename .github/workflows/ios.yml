@@ -48,11 +48,14 @@ jobs:
           path: artifacts/
           retention-days: 7
   simulators:
-    runs-on: macos-15-intel
+    # Intel CI14 hit XCTest AX initialization and audit-engine timeouts.
+    # Recheck on Apple's native architecture; keep the runtime/device matrix intact.
+    runs-on: macos-15
     # CI10 iPad26 reached the 55m limit with eight tests remaining; preserve the full matrix.
     timeout-minutes: 90
     strategy:
       fail-fast: false
+      max-parallel: 2
       matrix:
         include:
           - {family: iPhone, runtime: 26, label: iPhone26, scope: full, device: 'iPhone 17 Pro Max'}
