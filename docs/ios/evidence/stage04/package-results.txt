@@ -1,0 +1,4 @@
+2026-11-05T17:40:43.6571710Z ✘ Test actualBackendConferenceRESTAndGuestScope() skipped.
+2026-11-05T17:40:43.6592530Z ✘ Test actualBackendTwoClientsAndFiles() skipped.
+2026-11-05T17:40:43.6879700Z ✔ Test run with 79 tests passed after 0.275 seconds.
+2026-11-05T17:42:31.9576250Z ** BUILD SUCCEEDED **

@@ -20,5 +20,16 @@
   "cause": "ObjC completion inherited MainActor isolation but WebRTC invoked it on its signaling thread.",
   "fix": "Explicit @Sendable closures for all peer and camera completions; only Sendable continuation results cross back into actor-isolated methods.",
   "additionalFix": "Camera capturer creation deferred until explicit enable passes permission and lifecycle checks.",
-  "verificationLimit": "The corrected native peer passes the macOS probe with actor checks enabled. The old callback does not reproduce the iPad trap on the local macOS toolchain; the iOS hosted rerun is the regression authority."
+  "verificationLimit": "The original trap did not reproduce under the local macOS toolchain. Resolution is confirmed by final iOS simulator hosted tests with the actual SDK and capture off; physical capture, networks and production deployment remain unverified.",
+  "resolution": {
+    "status": "PASS for covered simulator regression paths",
+    "sourceCommit": "9676f3f67bb50db2c66bda1d9f1a77a60d14d024",
+    "runID": 42076699344,
+    "url": "https://github.com/janickiy/meetspace_ios_mobile/actions/runs/42076699344",
+    "platforms": [
+      "iPhone SE (3rd generation), iOS Simulator 26.2",
+      "iPad mini (A17 Pro), iOS Simulator 26.2"
+    ],
+    "result": "Both formerly crashing actual WebRTC SDK hosted tests pass on each platform; 14 total hosted/UI tests per platform, zero failures/skips."
+  }
 }

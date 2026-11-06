@@ -35,5 +35,43 @@
   "swift6NativeAdapterTypecheck": "PASS: complete Media module typechecked against the actual M156 Mac Catalyst slice and Apple's UIKit/AVFoundation headers. Runtime iOS and device checks are separate.",
   "loggingVerification": "PASS: default SDK stderr remained empty across 10 native peer cycles. The M156 legacy RTCSetMinDebugLogLevel wrapper enables stderr even for .none, so production does not call it or install file/callback log sinks.",
   "iosDeviceMedia": "BLOCKED: no physical device/signing deployment in this session",
-  "peerSourceSHA256": "edf01ceec1056abe860a088fb5a0cc90506aa9bf84d52f823f154e32c1988614"
+  "peerSourceSHA256": "edf01ceec1056abe860a088fb5a0cc90506aa9bf84d52f823f154e32c1988614",
+  "iosHostedVerification": {
+    "status": "PASS",
+    "sourceCommit": "9676f3f67bb50db2c66bda1d9f1a77a60d14d024",
+    "runID": 42076699344,
+    "url": "https://github.com/janickiy/meetspace_ios_mobile/actions/runs/42076699344",
+    "platforms": [
+      {
+        "family": "iPhone",
+        "model": "iPhone SE (3rd generation)",
+        "runtime": "26.2",
+        "osBuild": "23C54",
+        "passed": 14,
+        "failed": 0,
+        "skipped": 0,
+        "hostedTests": 3,
+        "nativeSDKTests": 2,
+        "uiTests": 11
+      },
+      {
+        "family": "iPad",
+        "model": "iPad mini (A17 Pro)",
+        "runtime": "26.2",
+        "osBuild": "23C54",
+        "passed": 14,
+        "failed": 0,
+        "skipped": 0,
+        "hostedTests": 3,
+        "nativeSDKTests": 2,
+        "uiTests": 11
+      }
+    ],
+    "tests": [
+      "MediaIntegrationTests.testBlockedSourcesNeverRequestPermissionsOrAppearInOffer",
+      "MediaIntegrationTests.testNativePeerOfferAndCloseCyclesWithCaptureOff"
+    ],
+    "scope": "Actual M156 SDK loaded in application-hosted tests; capture off, offer/close cycles, blocked publications, no permission request. This does not verify physical camera/audio or SFU interoperability.",
+    "receipt": "docs/ios/evidence/stage04/ci-run.json"
+  }
 }

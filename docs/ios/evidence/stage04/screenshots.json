@@ -1,0 +1,146 @@
+{
+  "sourceCommit": "9676f3f67bb50db2c66bda1d9f1a77a60d14d024",
+  "runID": 42076699344,
+  "screenshots": [
+    {
+      "path": "screenshots/iPhone-stage04-meeting-chat.png",
+      "sha256": "8762781508d796b8343463258a760206952f7cf0e1ca372c374c77bda94f7911",
+      "testIdentifier": "FoundationUITests/testConferenceCreateMediaControlsChatAndLeave()",
+      "attachment": {
+        "configurationName": "Test Scheme Action",
+        "deviceId": "B220EC43-535F-472F-935A-5B2D0E9F2975",
+        "deviceName": "iPhone SE (3rd generation)",
+        "exportedFileName": "7488D457-5096-40F4-A4C4-9A8DBEB538C0.png",
+        "isAssociatedWithFailure": false,
+        "suggestedHumanReadableName": "stage04-meeting-chat_0_7B6934CC-8249-4034-9DAF-A2A0A7137F2C.png",
+        "timestamp": 1793900750.425
+      }
+    },
+    {
+      "path": "screenshots/iPhone-stage04-participants.png",
+      "sha256": "c88219b465d482c8a65b4c4ec432fe14cf173d813264de3d71ef7d21703f4f49",
+      "testIdentifier": "FoundationUITests/testConferenceCreateMediaControlsChatAndLeave()",
+      "attachment": {
+        "configurationName": "Test Scheme Action",
+        "deviceId": "B220EC43-535F-472F-935A-5B2D0E9F2975",
+        "deviceName": "iPhone SE (3rd generation)",
+        "exportedFileName": "7D2730DD-D2AD-4FD8-8CD1-49FDB0B6932F.png",
+        "isAssociatedWithFailure": false,
+        "suggestedHumanReadableName": "stage04-participants_0_79E9FEEF-1D36-48C8-B4BD-E8528C7B1F2B.png",
+        "timestamp": 1793900740.997
+      }
+    },
+    {
+      "path": "screenshots/iPhone-stage04-connected.png",
+      "sha256": "204a8a34c105f1ff985f8856e61d0b6f0b4b61e3060913bd2f4a08ce5436295a",
+      "testIdentifier": "FoundationUITests/testConferenceCreateMediaControlsChatAndLeave()",
+      "attachment": {
+        "configurationName": "Test Scheme Action",
+        "deviceId": "B220EC43-535F-472F-935A-5B2D0E9F2975",
+        "deviceName": "iPhone SE (3rd generation)",
+        "exportedFileName": "4A7C0360-4395-44AD-A2A8-DBF414193D26.png",
+        "isAssociatedWithFailure": false,
+        "suggestedHumanReadableName": "stage04-connected_0_90F81A91-076D-48E5-A975-FC52A45A9B30.png",
+        "timestamp": 1793900737.927
+      }
+    },
+    {
+      "path": "screenshots/iPhone-stage04-prejoin.png",
+      "sha256": "09c23c7c48f506c57c76340b1e5aec92775f9c31eaae061da9f80a0abb7054ff",
+      "testIdentifier": "FoundationUITests/testConferenceCreateMediaControlsChatAndLeave()",
+      "attachment": {
+        "configurationName": "Test Scheme Action",
+        "deviceId": "B220EC43-535F-472F-935A-5B2D0E9F2975",
+        "deviceName": "iPhone SE (3rd generation)",
+        "exportedFileName": "C0F7D55E-2140-483D-B62B-A415E2E4DF7D.png",
+        "isAssociatedWithFailure": false,
+        "suggestedHumanReadableName": "stage04-prejoin_0_9D2790BE-42A4-45FE-9681-6B99EEF07F5D.png",
+        "timestamp": 1793900726.805
+      }
+    },
+    {
+      "path": "screenshots/iPhone-stage04-camera-permission-denied.png",
+      "sha256": "2a2bf9dc6ab706447edc4a5ffd7e1c289ea59e11794bfbe1973be35e6654f191",
+      "testIdentifier": "FoundationUITests/testConferenceDeniedCameraPermissionKeepsCaptureOffAndCanLeave()",
+      "attachment": {
+        "configurationName": "Test Scheme Action",
+        "deviceId": "B220EC43-535F-472F-935A-5B2D0E9F2975",
+        "deviceName": "iPhone SE (3rd generation)",
+        "exportedFileName": "22F536D6-9BF1-4AD0-9184-6C6D7C26075F.png",
+        "isAssociatedWithFailure": false,
+        "suggestedHumanReadableName": "stage04-camera-permission-denied_0_26ED49B5-0F4B-4D41-9E9D-A98FD5CA1EDA.png",
+        "timestamp": 1793900807.159
+      }
+    },
+    {
+      "path": "screenshots/iPad-stage04-meeting-chat.png",
+      "sha256": "3b0804706645a0eceee9f28a0980806004af55f12e7344cc85f32709a75cfec9",
+      "testIdentifier": "FoundationUITests/testConferenceCreateMediaControlsChatAndLeave()",
+      "attachment": {
+        "configurationName": "Test Scheme Action",
+        "deviceId": "B8FDD452-636F-4559-AF6E-83AC73F482CF",
+        "deviceName": "iPad mini (A17 Pro)",
+        "exportedFileName": "A535D676-EABD-4C72-89CD-90F7EBE2D85F.png",
+        "isAssociatedWithFailure": false,
+        "suggestedHumanReadableName": "stage04-meeting-chat_0_9458B591-11D1-447A-9641-4EDB4204D55B.png",
+        "timestamp": 1793900797.893
+      }
+    },
+    {
+      "path": "screenshots/iPad-stage04-participants.png",
+      "sha256": "9899ab9982f7d8c928ea9f5b6bdf477f2dd80633c051e2f269323632a79aa47e",
+      "testIdentifier": "FoundationUITests/testConferenceCreateMediaControlsChatAndLeave()",
+      "attachment": {
+        "configurationName": "Test Scheme Action",
+        "deviceId": "B8FDD452-636F-4559-AF6E-83AC73F482CF",
+        "deviceName": "iPad mini (A17 Pro)",
+        "exportedFileName": "CE2D7410-5AB0-4523-915D-A511CF8A39EC.png",
+        "isAssociatedWithFailure": false,
+        "suggestedHumanReadableName": "stage04-participants_0_9CFF8FB6-F1E3-465A-A313-3E6CB6C47A6A.png",
+        "timestamp": 1793900789.066
+      }
+    },
+    {
+      "path": "screenshots/iPad-stage04-connected.png",
+      "sha256": "00caa4163e0194bb155bcc2336d6bd9811763858afd77b857b93c98042a9291c",
+      "testIdentifier": "FoundationUITests/testConferenceCreateMediaControlsChatAndLeave()",
+      "attachment": {
+        "configurationName": "Test Scheme Action",
+        "deviceId": "B8FDD452-636F-4559-AF6E-83AC73F482CF",
+        "deviceName": "iPad mini (A17 Pro)",
+        "exportedFileName": "064F5852-0D75-4C27-9112-55B81E95D61E.png",
+        "isAssociatedWithFailure": false,
+        "suggestedHumanReadableName": "stage04-connected_0_405539CD-E46E-4B7F-816E-3739097B9242.png",
+        "timestamp": 1793900786.302
+      }
+    },
+    {
+      "path": "screenshots/iPad-stage04-prejoin.png",
+      "sha256": "178d30fbe2d809929048dd98531ecf8a1dbe3c2cf3ddbffee9a8ca061e9b59a8",
+      "testIdentifier": "FoundationUITests/testConferenceCreateMediaControlsChatAndLeave()",
+      "attachment": {
+        "configurationName": "Test Scheme Action",
+        "deviceId": "B8FDD452-636F-4559-AF6E-83AC73F482CF",
+        "deviceName": "iPad mini (A17 Pro)",
+        "exportedFileName": "F09D074F-6C1B-4D58-B602-D7E2A13C1DBA.png",
+        "isAssociatedWithFailure": false,
+        "suggestedHumanReadableName": "stage04-prejoin_0_051126D1-586F-4D2B-AF80-CFF0FAC76708.png",
+        "timestamp": 1793900774.488
+      }
+    },
+    {
+      "path": "screenshots/iPad-stage04-camera-permission-denied.png",
+      "sha256": "36e5cecd76f74c4407534c38d57f216cf78dbdb15f29be5501684ef8ad62c1ad",
+      "testIdentifier": "FoundationUITests/testConferenceDeniedCameraPermissionKeepsCaptureOffAndCanLeave()",
+      "attachment": {
+        "configurationName": "Test Scheme Action",
+        "deviceId": "B8FDD452-636F-4559-AF6E-83AC73F482CF",
+        "deviceName": "iPad mini (A17 Pro)",
+        "exportedFileName": "FE75588D-AFFB-4F0C-826D-B2DBA1B86A35.png",
+        "isAssociatedWithFailure": false,
+        "suggestedHumanReadableName": "stage04-camera-permission-denied_0_C4A69164-4421-45AB-9F67-2B2AB95BD636.png",
+        "timestamp": 1793900852.234
+      }
+    }
+  ]
+}

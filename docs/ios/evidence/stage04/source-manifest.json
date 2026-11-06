@@ -1,0 +1,357 @@
+{
+  "date": "2026-11-05",
+  "iosSourceCommit": "9676f3f67bb50db2c66bda1d9f1a77a60d14d024",
+  "iosBranch": "codex/stage04-webrtc",
+  "iosSourceURL": "https://github.com/janickiy/meetspace_ios_mobile/tree/9676f3f67bb50db2c66bda1d9f1a77a60d14d024",
+  "backendCommit": "0bd1248a2411842515af4e02f1e95821616748fb",
+  "androidCommit": "b8f289983e60671d415a128734c2e5bb6e93a29d",
+  "designCommit": "04d6a8ecdac75ae568459bbed0f3f6647bf8cbb3",
+  "hashScope": "SHA-256 of committed file contents read with git show at iosSourceCommit; evidence-only follow-up commits do not change these source hashes.",
+  "webrtc": {
+    "package": "https://github.com/stasel/WebRTC.git",
+    "packageVersion": "156.0.0",
+    "packageRevision": "3cc466ea040e5dcd1344697bf211dc4c079d1a0c",
+    "packageResolvedSHA256": "0c6498db740964e2b94c742a1fbcacb681e97364e04bd999a3aa20ff90fb17df",
+    "upstreamCommit": "2a990ce0ccd00a3ad449f2201a8e5c2dad53177d",
+    "artifactURL": "https://github.com/stasel/WebRTC/releases/download/156.0.0/WebRTC-M156.xcframework.zip",
+    "artifactSHA256": "43c2a6f7a650185bbc911d7605a979589671886e8fc0ac283f54fdf3f511dc46",
+    "license": "BSD-3-Clause",
+    "licenseSHA256": "ab00a482b6a3902e40211b43c5d0441962ea99b6cc7c25c0f243fa270b78d482",
+    "supplementalNoticesEntries": 39,
+    "supplementalNoticesSHA256": "00c3ff0f731837f3c9a2868d1244c2a639b6512fad05294911d2d9a49b635b6e",
+    "distributorSignatures": {
+      "iosDeviceFramework": "unsigned",
+      "iosSimulatorFramework": "ad-hoc; no TeamIdentifier",
+      "appStoreArchiveValidation": "not performed; validate signing and SDK requirements before distribution"
+    },
+    "dependencyGraphVerification": "The distributor publishes no GN dependency graph or generated license report; exact binary-to-source dependency completeness remains a release verification item.",
+    "nativePeerSourceSHA256": "edf01ceec1056abe860a088fb5a0cc90506aa9bf84d52f823f154e32c1988614",
+    "mediaProductLinkage": "automatic",
+    "sdkPrivacyManifest": {
+      "NSPrivacyAccessedAPICategorySystemBootTime": [
+        "35F9.1",
+        "8FFB.1"
+      ],
+      "NSPrivacyAccessedAPICategoryFileTimestamp": [
+        "C617.1"
+      ],
+      "tracking": false
+    },
+    "mediaProductName": "MeetSpaceMedia",
+    "mediaModuleName": "MeetSpaceMedia",
+    "appLinkage": "Linked once transitively through MeetSpaceFeatures in application.",
+    "hostedTestLinkage": "No second media package product; compiled module symbols resolve through application debug dylib / BUNDLE_LOADER.",
+    "iosHostedVerification": {
+      "status": "PASS",
+      "runID": 42076699344,
+      "sourceCommit": "9676f3f67bb50db2c66bda1d9f1a77a60d14d024",
+      "evidence": "docs/ios/evidence/stage04/webrtc-library.json",
+      "actualSDKTestsPerPlatform": 2,
+      "physicalDevice": "BLOCKED"
+    }
+  },
+  "criticalSources": [
+    {
+      "path": "Packages/MeetSpaceKit/Sources/Core/Conference.swift",
+      "sha256": "69c57053b7736e0842347c66b9ba8f86a7fa0fdbf9f79ca21615c31b152e5916"
+    },
+    {
+      "path": "Packages/MeetSpaceKit/Sources/API/ConferenceRepository.swift",
+      "sha256": "b9beb4a872a3b7b8c9bef7c2f55c3fa81890cb565d58f8fef5603d0f27a51246"
+    },
+    {
+      "path": "Packages/MeetSpaceKit/Sources/Realtime/ConferenceSignaling.swift",
+      "sha256": "34d4ecf7ed42c30865bb8bafa98acec60226cbf61f4e8e78f2313f7a8089a226"
+    },
+    {
+      "path": "Packages/MeetSpaceKit/Sources/Media/ConferenceMediaEngine.swift",
+      "sha256": "d614ebb98d1f7b68d31ab070f80105fbc77bafbbf602f54842059a18c72116ed"
+    },
+    {
+      "path": "Packages/MeetSpaceKit/Sources/Media/NativeConferenceMediaEngine.swift",
+      "sha256": "c95927256c7eb79329015749a2e6cda37533315edba82d4983e50eb402bd32c1"
+    },
+    {
+      "path": "Packages/MeetSpaceKit/Sources/Media/NativePeer.swift",
+      "sha256": "edf01ceec1056abe860a088fb5a0cc90506aa9bf84d52f823f154e32c1988614"
+    },
+    {
+      "path": "Packages/MeetSpaceKit/Sources/Media/ConferenceVideoRenderer.swift",
+      "sha256": "6b84c35cb1c71637bb428e4c2a1f0c74d52607a8c70f1ceb7244566574fe33a0"
+    },
+    {
+      "path": "Packages/MeetSpaceKit/Sources/Features/ConferenceSession.swift",
+      "sha256": "4aac58f10355a0a6529924e6833ac1a00df00b232eeb4fef1516b0bfc55fc328"
+    },
+    {
+      "path": "Packages/MeetSpaceKit/Sources/Features/ConferenceWorkspace.swift",
+      "sha256": "36d0bd3293dffc732414efcc64823520454c9f062db45ee1b53aea858305e585"
+    },
+    {
+      "path": "Packages/MeetSpaceKit/Sources/Features/AppModel.swift",
+      "sha256": "000a8072fadc4083ec022cac824bfdf22b9d1b53cb191e28d99ac36952942db5"
+    },
+    {
+      "path": "Packages/MeetSpaceKit/Sources/Features/IdentityModel.swift",
+      "sha256": "6ce1bd8b48f5c53b1b13c9e56716febed0d86de40344fb5ae44375fa31456cd2"
+    },
+    {
+      "path": "Packages/MeetSpaceKit/Sources/Features/LiveConferenceView.swift",
+      "sha256": "971c04d56596024838b414abd10d19da5288d4a3c03a0dd5bfc4405023104892"
+    },
+    {
+      "path": "Packages/MeetSpaceKit/Sources/Features/MeetSpaceRootView.swift",
+      "sha256": "a297bf8dee498f54c4d82fe29faec17af2e1db719e44d2135b569e2f28cf6c81"
+    }
+  ],
+  "harness": {
+    "path": "scripts/run_webrtc_contract.py",
+    "sha256": "13fc83be151ddefc733ff41710dc589f0a3f8736b1c7c2ab0474909b9d8939ca"
+  },
+  "syntheticSFUProbe": {
+    "path": "scripts/fixtures/sfu_probe.go",
+    "sha256": "568aa66fe6516e83b3c59230932e6fc12a51bae9b0999e8d15bc667c24f81fd7"
+  },
+  "ci": {
+    "sourceCommit": "9676f3f67bb50db2c66bda1d9f1a77a60d14d024",
+    "status": "success",
+    "runID": 42076699344,
+    "url": "https://github.com/janickiy/meetspace_ios_mobile/actions/runs/42076699344",
+    "observedState": "completed",
+    "packageJobID": 127418691057,
+    "packageConclusion": "success",
+    "packageTestsPassed": 77,
+    "packageTestsOptInSkipped": 2,
+    "packageTestsTotal": 79,
+    "releaseBuild": "BUILD SUCCEEDED",
+    "iPhoneHostedAndUI": "PASS: 14 tests, 0 failures, 0 skips",
+    "iPadHostedAndUI": "PASS: 14 tests, 0 failures, 0 skips",
+    "jobs": [
+      {
+        "id": 127418691057,
+        "name": "package",
+        "html_url": "https://github.com/janickiy/meetspace_ios_mobile/actions/runs/42076699344/job/127418691057",
+        "conclusion": "success",
+        "started_at": "2026-11-05T17:39:27Z",
+        "completed_at": "2026-11-05T17:42:37Z"
+      },
+      {
+        "id": 127418691412,
+        "name": "simulators (iPad)",
+        "html_url": "https://github.com/janickiy/meetspace_ios_mobile/actions/runs/42076699344/job/127418691412",
+        "conclusion": "success",
+        "started_at": "2026-11-05T17:39:26Z",
+        "completed_at": "2026-11-05T17:50:12Z"
+      },
+      {
+        "id": 127418691494,
+        "name": "simulators (iPhone)",
+        "html_url": "https://github.com/janickiy/meetspace_ios_mobile/actions/runs/42076699344/job/127418691494",
+        "conclusion": "success",
+        "started_at": "2026-11-05T17:39:26Z",
+        "completed_at": "2026-11-05T17:49:24Z"
+      }
+    ],
+    "simulators": [
+      {
+        "family": "iPhone",
+        "model": "iPhone SE (3rd generation)",
+        "runtime": "26.2",
+        "osBuild": "23C54",
+        "passed": 14,
+        "failed": 0,
+        "skipped": 0,
+        "hostedTests": 3,
+        "nativeSDKTests": 2,
+        "uiTests": 11
+      },
+      {
+        "family": "iPad",
+        "model": "iPad mini (A17 Pro)",
+        "runtime": "26.2",
+        "osBuild": "23C54",
+        "passed": 14,
+        "failed": 0,
+        "skipped": 0,
+        "hostedTests": 3,
+        "nativeSDKTests": 2,
+        "uiTests": 11
+      }
+    ],
+    "toolchain": {
+      "xcode": "16.4",
+      "iosSDK": "18.5",
+      "simulatorRuntime": "26.2"
+    },
+    "receipt": "docs/ios/evidence/stage04/ci-run.json"
+  },
+  "deviceAcceptance": "BLOCKED: physical iOS camera/audio, iOS-Web-Android interoperability, Bluetooth/interruption/network changes and deployment TURN/TLS were not exercised by the synthetic probe.",
+  "sourceStatus": "Verified source: all three final CI jobs passed; package/Release and iPhone/iPad hosted/UI checks complete. Physical-device, TURN/deployment, complete pixel parity and manual VoiceOver acceptance remain blocked.",
+  "buildAndVerificationSources": [
+    {
+      "path": "Packages/MeetSpaceKit/Package.swift",
+      "sha256": "27870b1cda247ca19e08a47fe6f636ae51b5176fe9311530bc426c5627de3d14"
+    },
+    {
+      "path": "Tests/MeetSpaceTests/MediaIntegrationTests.swift",
+      "sha256": "279a4a3b700620efce7fd1708a0c538635fe43c67c9cf39e46226dcafe848dc6"
+    },
+    {
+      "path": "scripts/ci_simulators.py",
+      "sha256": "8565b15f1329c710f5401242a4c7aefe4481fee93f49a745e0da3c8c7e0bdf23"
+    },
+    {
+      "path": "scripts/generate_xcode_project.py",
+      "sha256": "21f11cc68c094187077d7033300120d1eab82dfd5f9d414e3afcebf732865e31"
+    },
+    {
+      "path": "MeetSpace.xcodeproj/project.pbxproj",
+      "sha256": "e5e2fb75c8c7862c67aad6894aba84e271eaf41f563dbe45e6ae2bef2d1cd948"
+    },
+    {
+      "path": "Tests/MeetSpaceUITests/FoundationUITests.swift",
+      "sha256": "96d72d0a98593fb4b467504eb4138943b6f67d124d14ddc2122ca18d3bf52a01"
+    }
+  ],
+  "appPrivacyManifest": {
+    "path": "App/PrivacyInfo.xcprivacy",
+    "sha256": "379b22f6e1b6bfdc1d5be9413e828e5044713591ab7207f1660897ccc9f27b19",
+    "tracking": false,
+    "collectedDataTypes": [
+      {
+        "NSPrivacyCollectedDataType": "NSPrivacyCollectedDataTypeName",
+        "NSPrivacyCollectedDataTypeLinked": true,
+        "NSPrivacyCollectedDataTypeTracking": false,
+        "NSPrivacyCollectedDataTypePurposes": [
+          "NSPrivacyCollectedDataTypePurposeAppFunctionality"
+        ]
+      },
+      {
+        "NSPrivacyCollectedDataType": "NSPrivacyCollectedDataTypeEmailAddress",
+        "NSPrivacyCollectedDataTypeLinked": true,
+        "NSPrivacyCollectedDataTypeTracking": false,
+        "NSPrivacyCollectedDataTypePurposes": [
+          "NSPrivacyCollectedDataTypePurposeAppFunctionality"
+        ]
+      },
+      {
+        "NSPrivacyCollectedDataType": "NSPrivacyCollectedDataTypeUserID",
+        "NSPrivacyCollectedDataTypeLinked": true,
+        "NSPrivacyCollectedDataTypeTracking": false,
+        "NSPrivacyCollectedDataTypePurposes": [
+          "NSPrivacyCollectedDataTypePurposeAppFunctionality"
+        ]
+      },
+      {
+        "NSPrivacyCollectedDataType": "NSPrivacyCollectedDataTypeEmailsOrTextMessages",
+        "NSPrivacyCollectedDataTypeLinked": true,
+        "NSPrivacyCollectedDataTypeTracking": false,
+        "NSPrivacyCollectedDataTypePurposes": [
+          "NSPrivacyCollectedDataTypePurposeAppFunctionality"
+        ]
+      },
+      {
+        "NSPrivacyCollectedDataType": "NSPrivacyCollectedDataTypePhotosorVideos",
+        "NSPrivacyCollectedDataTypeLinked": true,
+        "NSPrivacyCollectedDataTypeTracking": false,
+        "NSPrivacyCollectedDataTypePurposes": [
+          "NSPrivacyCollectedDataTypePurposeAppFunctionality"
+        ]
+      },
+      {
+        "NSPrivacyCollectedDataType": "NSPrivacyCollectedDataTypeAudioData",
+        "NSPrivacyCollectedDataTypeLinked": true,
+        "NSPrivacyCollectedDataTypeTracking": false,
+        "NSPrivacyCollectedDataTypePurposes": [
+          "NSPrivacyCollectedDataTypePurposeAppFunctionality"
+        ]
+      },
+      {
+        "NSPrivacyCollectedDataType": "NSPrivacyCollectedDataTypeOtherUserContent",
+        "NSPrivacyCollectedDataTypeLinked": true,
+        "NSPrivacyCollectedDataTypeTracking": false,
+        "NSPrivacyCollectedDataTypePurposes": [
+          "NSPrivacyCollectedDataTypePurposeAppFunctionality"
+        ]
+      }
+    ],
+    "accessedAPITypes": [
+      {
+        "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategoryUserDefaults",
+        "NSPrivacyAccessedAPITypeReasons": [
+          "CA92.1"
+        ]
+      }
+    ],
+    "verificationLimit": "Declared account/chat/attachment categories; deployment retention policy, App Store labels and archive validation remain unverified. Live RTP does not imply client recording."
+  },
+  "correctedRegressions": {
+    "nativeCallbackIsolation": "Explicit @Sendable ObjC completions; both actual SDK hosted tests pass on iPhone/iPad in final CI42076699344.",
+    "cameraCaptureCreation": "Deferred until explicit enable after permission/lifecycle checks; blocked-source hosted test passes without requesting permissions.",
+    "conferenceAccessibility": "Accessible heading and compact chat geometry assertions passed in final iPhone/iPad UI tests.",
+    "mediaBackgroundShutdown": "Independent from messaging foreground transition; physical capture/background acceptance remains separate.",
+    "nativeLoading": "Media linked once through Features/app; hosted tests resolve symbols through BUNDLE_LOADER. Final builds and actual SDK tests pass.",
+    "rendererIdentity": "New media engine/renderer registry creates a new UIView/coordinator identity.",
+    "compactChat": "Final UI assertions verify sender/message geometry between header and composer, keyboard open, and >=44pt controls; all ten final screenshots visually reviewed without clipping.",
+    "diagnosticEvidence": "docs/ios/evidence/stage04/native-callback-crash.json"
+  },
+  "changedFiles": {
+    "path": "docs/ios/evidence/stage04/changed-files.txt",
+    "baselineCommit": "8bdb5f1c9edf0e4ef116be6c521e1b447964581c",
+    "sourceCommit": "9676f3f67bb50db2c66bda1d9f1a77a60d14d024",
+    "command": "git diff --name-only 8bdb5f1c9edf0e4ef116be6c521e1b447964581c..9676f3f67bb50db2c66bda1d9f1a77a60d14d024",
+    "fileCount": 51,
+    "sha256": "f616c7a44035ec7f594461a4bce515031477c6b8f7f573a518996b20d45486c7"
+  },
+  "localPackageTests": {
+    "sourceCommit": "9676f3f67bb50db2c66bda1d9f1a77a60d14d024",
+    "passed": 77,
+    "optInSkipped": 2,
+    "failures": 0,
+    "evidence": "docs/ios/evidence/stage04/host-tests.txt",
+    "sha256": "c46e24c92422af3a6b79e58ecb3d0ad902fa5ade0def987aa5f0b7e30df532f1",
+    "redaction": {
+      "syntheticTestArguments": 1,
+      "replacement": "[synthetic credential URL redacted]",
+      "note": "One synthetic URL argument from rejectsUnsafeOrigins was redacted; counts and test results are unchanged. No production credential was present."
+    }
+  },
+  "visualEvidence": {
+    "manifest": "docs/ios/evidence/stage04/screenshots.json",
+    "count": 10,
+    "sourceCommit": "9676f3f67bb50db2c66bda1d9f1a77a60d14d024",
+    "runID": 42076699344,
+    "review": "PASS for recorded states: all ten final PNGs reviewed; no clipping/overlap/unreadable text. Compact iPhone chat sender/body/timestamp visible above composer; five primary controls accessible.",
+    "limits": "UI tests use DEBUG doubles; full pixel parity and manual VoiceOver are not certified."
+  },
+  "evidenceFiles": [
+    {
+      "path": "docs/ios/evidence/stage04/ci-run.json",
+      "sha256": "d6c2384e21060a41ede81faec58e317a2263f9f959ca73c0baff127ede5f9de4"
+    },
+    {
+      "path": "docs/ios/evidence/stage04/iPhone-summary.json",
+      "sha256": "a8a830a01c0256b5149ac7553b3c0105c3661451a498c37b8e95c6e98f55dc8f"
+    },
+    {
+      "path": "docs/ios/evidence/stage04/iPad-summary.json",
+      "sha256": "2b1a14840bfdfede4561a1784642ee78b138d973b6024c398d7e2ec02d1acd39"
+    },
+    {
+      "path": "docs/ios/evidence/stage04/iPhone-results.txt",
+      "sha256": "c0d3a57486d9748d7c89fd14a1fe4a76c524a64ac896c31fc2027955e66471c1"
+    },
+    {
+      "path": "docs/ios/evidence/stage04/iPad-results.txt",
+      "sha256": "fa87918d19dd527b919059e629b232f8bf0433262c51a382618dfa859d108f64"
+    },
+    {
+      "path": "docs/ios/evidence/stage04/package-results.txt",
+      "sha256": "0b129d7e04637fae5774799af5200b96ab9e5a4a9f97f45ab3587da42331e1b7"
+    },
+    {
+      "path": "docs/ios/evidence/stage04/screenshots.json",
+      "sha256": "1568aa9a5d984735c179d129848d02a8bb077a13a6acab3f749364f352c5a908"
+    }
+  ]
+}
