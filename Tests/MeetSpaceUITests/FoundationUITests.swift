@@ -3,21 +3,6 @@ import XCTest
 @MainActor final class FoundationUITests: XCTestCase {
     override func setUpWithError() throws {
         continueAfterFailure = false
-        // Passwords can render a remote sheet whose AX subtree is absent from
-        // the app snapshot. Handle only this unrelated system prompt.
-        addUIInterruptionMonitor(withDescription: "Decline saving fixture passwords") { element in
-            // XCTest's synchronous callback lacks an actor annotation in SDK 18.5.
-            // Verify the executor before accessing the main-actor UI elements.
-            MainActor.assumeIsolated {
-                let titles = ["Save Password?", "Сохранить пароль?"]
-                guard titles.contains(where: { element.label == $0 || element.staticTexts[$0].exists }) else { return false }
-                for title in ["Not Now", "Не сейчас"] {
-                    let decline = element.buttons[title].firstMatch
-                    if decline.exists && decline.isHittable { decline.tap(); return true }
-                }
-                return false
-            }
-        }
     }
 
     private func launch(_ arguments: [String] = []) -> XCUIApplication {
@@ -272,48 +257,9 @@ import XCTest
             Thread.sleep(forTimeInterval: 0.1)
         }
         XCTAssertTrue(messages.exists || incoming.exists, "Login must reach the workspace or an incoming call")
-        // Cold launch of the Passwords remote process can outlive the app's transition.
-        // Stay in the app's embedded hierarchy; never activate SafariViewService separately.
-        let promptDeadline = Date().addingTimeInterval(12)
-        var tappedPrompt = false
-        while Date() < promptDeadline {
-            if let decline = passwordDismissButton(app), decline.isHittable {
-                decline.tap(); tappedPrompt = true
-                // The first tap can arrive while the remote sheet is still animating.
-                // Requery and retry only if that same observed prompt is still actionable.
-                Thread.sleep(forTimeInterval: 1)
-                continue
-            }
-            let target = app.buttons["directCallAnswer"].exists ? app.buttons["directCallAnswer"] : messages
-            if tappedPrompt && target.isHittable { return }
-            Thread.sleep(forTimeInterval: 0.1)
-        }
-        if let decline = passwordDismissButton(app) {
-            XCTAssertFalse(decline.isHittable, "The password prompt must no longer block the workspace")
-        }
-        waitForWorkspaceInteraction(app)
-    }
-
-    private func passwordDismissButton(_ app: XCUIApplication) -> XCUIElement? {
-        guard app.sheets["Save Password?"].exists || app.sheets["Сохранить пароль?"].exists ||
-                app.alerts["Save Password?"].exists || app.alerts["Сохранить пароль?"].exists ||
-                app.staticTexts["Save Password?"].exists || app.staticTexts["Сохранить пароль?"].exists else { return nil }
-        for label in ["Not Now", "Не сейчас"] {
-            let button = app.buttons[label].firstMatch
-            if button.exists { return button }
-        }
-        return nil
-    }
-
-    private func waitForWorkspaceInteraction(_ app: XCUIApplication) {
-        let incoming = app.buttons["directCallAnswer"].exists
-        let target = incoming ? app.buttons["directCallAnswer"] : app.buttons["tab.messages"]
-        if !target.isHittable {
-            // Trigger interruption handling on the application surface. Trying
-            // to tap a covered child fails during scroll-to-visible before it
-            // can synthesize an event on some simulator Passwords windows.
-            app.tap()
-        }
+        // DEBUG fixture fields exclude the OS Passwords save flow. A successful
+        // login must still reach an actionable workspace (including incoming calls).
+        let target = incoming.exists ? incoming : messages
         let ready = XCTNSPredicateExpectation(predicate: NSPredicate(format: "hittable == true"), object: target)
         XCTAssertEqual(XCTWaiter.wait(for: [ready], timeout: 10), .completed, "The workspace must be actionable after login")
     }

@@ -249,8 +249,8 @@ private struct AuthenticationView: View {
             }.font(MSTheme.font(12)).msCard(padding: 12)
             if registration { field("Имя") { TextField(tr("Имя"), text: $name) } }
             field("Электронная почта") { TextField("name@example.com", text: $email).msEmailInput().textContentType(.emailAddress) }
-            field("Пароль") { SecureField(tr("Пароль"), text: $password) }
-            if registration { field("Повторите пароль") { SecureField(tr("Повторите пароль"), text: $confirmation) } }
+            field("Пароль") { SecureField(tr("Пароль"), text: $password).fixturePasswordInput() }
+            if registration { field("Повторите пароль") { SecureField(tr("Повторите пароль"), text: $confirmation).fixturePasswordInput() } }
             if registration { Text(tr("Пароль: от 8 до 128 символов. Имя: до 100 символов.")).font(MSTheme.font(12)).foregroundStyle(MSTheme.muted) }
             if let error = model.identity.error { Text(tr(error)).foregroundStyle(MSTheme.danger).accessibilityIdentifier("authenticationError") }
             if let information = model.identity.information { Text(tr(information)).foregroundStyle(MSTheme.success) }
@@ -286,6 +286,22 @@ private struct AuthenticationView: View {
             Text(tr(label)).font(MSTheme.font(12, weight: .semibold))
             content().textFieldStyle(.plain).padding(14).background(MSTheme.surfaceSecondary, in: RoundedRectangle(cornerRadius: 12)).accessibilityLabel(tr(label))
         }
+    }
+}
+
+private extension View {
+    @ViewBuilder func fixturePasswordInput() -> some View {
+        #if DEBUG && os(iOS)
+        if ProcessInfo.processInfo.arguments.contains("-uitesting") {
+            // UI fixtures use disposable credentials. Keep secure text entry,
+            // but exclude the unrelated system Passwords save flow from this suite.
+            self.textContentType(.oneTimeCode)
+        } else {
+            self
+        }
+        #else
+        self
+        #endif
     }
 }
 
