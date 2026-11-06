@@ -6,6 +6,7 @@ import MeetSpaceDesignSystem
 
 struct LiveRecordingsView: View {
     @Bindable var model: RecordingsModel
+    @Environment(\.dynamicTypeSize) private var typeSize
     @State private var confirmingDelete = false
     private let scrollTopID = "recordingsScrollTop"
     var body: some View {
@@ -56,19 +57,20 @@ struct LiveRecordingsView: View {
             }
             ForEach(model.visibleItems) { row in
                 Button { Task { await model.select(row) } } label: {
-                    HStack(spacing: 16) {
-                        RoundedRectangle(cornerRadius: 10).fill(MSTheme.accentSoft).frame(width: 90, height: 64)
-                            .overlay { Image(systemName: row.recording.mode == "audio_only" ? "waveform" : "play.rectangle").font(.system(size: 26)).foregroundStyle(MSTheme.accent) }
-                            .accessibilityHidden(true)
-                        VStack(alignment: .leading, spacing: 6) {
-                            Text(row.conference.title).font(MSTheme.font(14, weight: .semibold)).foregroundStyle(MSTheme.ink)
-                            Text(row.recording.createdAt, format: .dateTime.day().month().year()).font(MSTheme.font(11)).foregroundStyle(MSTheme.muted)
-                                .accessibilityIdentifier("recording.date.\(row.id.uuidString.lowercased())")
-                            Text(tr(row.recording.statusTitle)).font(MSTheme.font(11)).foregroundStyle(row.recording.ready ? MSTheme.accent : MSTheme.muted)
-                                .accessibilityIdentifier("recording.status.\(row.id.uuidString.lowercased())")
+                    Group {
+                        if typeSize.isAccessibilitySize {
+                            recordingSummary(row)
+                        } else {
+                            HStack(spacing: 16) {
+                                RoundedRectangle(cornerRadius: 10).fill(MSTheme.accentSoft).frame(width: 90, height: 64)
+                                    .overlay { Image(systemName: row.recording.mode == "audio_only" ? "waveform" : "play.rectangle").font(.system(size: 26)).foregroundStyle(MSTheme.accent) }
+                                    .accessibilityHidden(true)
+                                recordingSummary(row)
+                                Spacer(minLength: 0); Image(systemName: "chevron.right").foregroundStyle(MSTheme.muted).accessibilityHidden(true)
+                            }
                         }
-                        Spacer(minLength: 0); Image(systemName: "chevron.right").foregroundStyle(MSTheme.muted).accessibilityHidden(true)
-                    }.msCard().contentShape(Rectangle()).accessibilityElement(children: .combine)
+                    }.frame(maxWidth: .infinity, minHeight: 44, alignment: .leading)
+                        .msCard().contentShape(Rectangle()).accessibilityElement(children: .combine)
                 }.buttonStyle(.plain).disabled(model.loading).accessibilityIdentifier("recording.\(row.id.uuidString)")
             }
             if model.nextCursor != nil {
@@ -78,6 +80,20 @@ struct LiveRecordingsView: View {
             FeatureNotice("Срок хранения записей задаётся сервером. Доступ проверяется перед воспроизведением и скачиванием.")
                 .accessibilityIdentifier("recordings.retentionNotice")
         }
+    }
+    private func recordingSummary(_ row: RecordingLibraryItem) -> some View {
+        VStack(alignment: .leading, spacing: 6) {
+            Text(row.conference.title).font(MSTheme.font(14, weight: .semibold)).foregroundStyle(MSTheme.ink)
+            if typeSize.isAccessibilitySize {
+                Text(tr(RecordingMode(rawValue: row.recording.mode)?.title ?? row.recording.mode))
+                    .font(MSTheme.font(11)).foregroundStyle(MSTheme.muted)
+                    .accessibilityIdentifier("recording.mode.\(row.id.uuidString.lowercased())")
+            }
+            Text(row.recording.createdAt, format: .dateTime.day().month().year()).font(MSTheme.font(11)).foregroundStyle(MSTheme.muted)
+                .accessibilityIdentifier("recording.date.\(row.id.uuidString.lowercased())")
+            Text(tr(row.recording.statusTitle)).font(MSTheme.font(11)).foregroundStyle(row.recording.ready ? MSTheme.accent : MSTheme.muted)
+                .accessibilityIdentifier("recording.status.\(row.id.uuidString.lowercased())")
+        }.fixedSize(horizontal: false, vertical: true).multilineTextAlignment(.leading)
     }
     @ViewBuilder private var filters: some View {
         Menu {

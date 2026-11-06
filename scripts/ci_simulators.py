@@ -2,6 +2,7 @@
 """Select installed iOS simulators by device family; never silently omit iPad."""
 import argparse
 import json
+import platform
 import subprocess
 from pathlib import Path
 
@@ -38,6 +39,7 @@ def main():
     result.parent.mkdir(exist_ok=True)
     (result.parent / f"{label}-environment.json").write_text(json.dumps({
         "device": name, "runtime": list(version), "udid": udid, "scope": args.scope,
+        "hostArchitecture": platform.machine(), "hostOS": platform.platform(),
         "preferredDeviceMatched": preferred, "xcode": subprocess.check_output(["xcodebuild", "-version"], text=True),
     }, indent=2) + "\n")
     selection = []
@@ -56,12 +58,6 @@ def main():
                         "-resultBundlePath", str(result), "-parallel-testing-enabled", "NO",
                         *selection, "test"], check=True)
     finally:
-        # UI-test diagnostics contain only enum classifications of synthetic fixture
-        # inputs, never passwords, lengths, hashes, tokens or production account data.
-        with (result.parent / f"{label}-fixture-diagnostics.txt").open("w") as diagnostic:
-            subprocess.run(["xcrun", "simctl", "spawn", udid, "log", "show", "--style", "compact",
-                            "--predicate", 'eventMessage CONTAINS "MeetSpaceDeletionDiagnostic"',
-                            "--last", "1h"], stdout=diagnostic, stderr=subprocess.DEVNULL, check=False)
         if result.exists():
             # Diagnostic export must not replace the actual xcodebuild test result.
             subprocess.run(["xcrun", "xcresulttool", "export", "attachments", "--path", str(result),

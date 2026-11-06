@@ -119,6 +119,7 @@ struct PageHeader<Actions: View>: View {
     var body: some View {
         HStack(spacing: 2) {
             Text(tr(title)).font(MSTheme.font(25, weight: .semibold, relativeTo: .title)).tracking(-0.7)
+                .multilineTextAlignment(.leading).fixedSize(horizontal: false, vertical: true)
                 .accessibilityAddTraits(.isHeader)
             Spacer(minLength: 4); actions()
         }.padding(.horizontal, 24).padding(.vertical, 12).background(MSTheme.surface)

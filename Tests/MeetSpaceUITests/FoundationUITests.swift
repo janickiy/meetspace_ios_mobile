@@ -274,10 +274,26 @@ import UIKit
         XCTAssertFalse(submit.isEnabled)
         func enterPassword(_ value: String) {
             password.tap()
-            XCTAssertTrue(app.keyboards.firstMatch.waitForExistence(timeout: 5))
-            // Allow each real keyboard event to settle before the next character;
-            // this also exercises SecureField binding updates across a failed retry.
-            for character in value { password.typeText(String(character)) }
+            let keyboard = app.keyboards.firstMatch
+            XCTAssertTrue(keyboard.waitForExistence(timeout: 5))
+            // The app is Russian, while these fixtures contain Latin letters. CI's
+            // Russian secure keyboard silently discarded synthetic Latin typeText
+            // events. Select the real Latin keyboard and tap its actual keys.
+            for _ in 0..<4 where !keyboard.keys["f"].exists {
+                let next = keyboard.buttons.matching(NSPredicate(format:
+                    "identifier == %@ OR label IN %@", "emoji", ["Следующая клавиатура", "Next keyboard"])).firstMatch
+                XCTAssertTrue(next.waitForExistence(timeout: 5)); next.tap()
+            }
+            XCTAssertTrue(keyboard.keys["f"].waitForExistence(timeout: 5))
+            capture(app, name: "stage08-account-deletion-keyboard-" + (value == "fixture-password" ? "retry" : "initial"))
+            for character in value {
+                let key = keyboard.keys[String(character)]
+                if !key.exists {
+                    let more = keyboard.keys["more"]
+                    XCTAssertTrue(more.waitForExistence(timeout: 5)); more.tap()
+                }
+                XCTAssertTrue(key.waitForExistence(timeout: 5)); key.tap()
+            }
             let done = app.keyboards.buttons.matching(NSPredicate(format: "label IN %@", ["Done", "Готово"])).firstMatch
             XCTAssertTrue(done.waitForExistence(timeout: 5)); done.tap()
         }
@@ -312,6 +328,8 @@ import UIKit
         XCTAssertTrue(app.buttons["tab.profile"].waitForExistence(timeout: 5))
         XCTAssertLessThan(app.buttons["tab.profile"].frame.height, app.frame.height / 5)
         capture(app, name: "stage08-large-text-messages")
+        revealEntireText(app.buttons["conversation.22222222-2222-4222-8222-222222222222"], in: app)
+        capture(app, name: "stage08-large-text-messages-conversation")
         app.buttons["tab.profile"].tap()
         capture(app, name: "stage08-large-text-profile")
         for (identifier, title) in [("openCalendar", "calendar"), ("openRecordings", "recordings"),

@@ -12,34 +12,8 @@ struct LiveMessagesView: View {
         GeometryReader { proxy in
             let wide = proxy.size.width >= 800 && !typeSize.isAccessibilitySize
             HStack(spacing: 0) {
-                VStack(spacing: 12) {
-                    PageHeader(title: "Сообщения") {
-                        IconButton("square.and.pencil", label: "Новый чат") { creating = true }
-                            .accessibilityIdentifier("newChat")
-                    }
-                    ViewThatFits(in: .horizontal) {
-                        HStack { serverName; Spacer(); connectionStatus }
-                        VStack(alignment: .leading, spacing: 6) { serverName; connectionStatus }
-                    }.font(MSTheme.font(11)).foregroundStyle(MSTheme.muted).padding(.horizontal, 20)
-                    SearchBox(text: $model.listSearch, placeholder: "Поиск чатов").padding(.horizontal, 20)
-                    HStack(spacing: 12) {
-                        Toggle(isOn: $model.onlyUnread) { Text(tr("Непрочитанные")).frame(minHeight: 44) }
-                        Toggle(isOn: $model.groupFilter) { Text(tr("Группы")).frame(minHeight: 44) }
-                    }.toggleStyle(.button).font(MSTheme.font(12)).padding(.horizontal, 20)
-                    ScrollView {
-                        LazyVStack(spacing: 8) {
-                            StateContent(state: model.listState, retry: { Task { await model.refreshConversations() } }) {
-                                ForEach(model.conversations) { item in
-                                    Button { select(item.id, wide: wide) } label: { row(item) }
-                                        .buttonStyle(.plain).accessibilityIdentifier("conversation.\(item.id.uuidString.lowercased())")
-                                }
-                                if model.listCursor != nil {
-                                    Button(tr("Загрузить ещё")) { Task { await model.refreshConversations(more: true) } }.frame(minHeight: 44)
-                                }
-                            }
-                        }.padding(.horizontal, 16).padding(.bottom, 20)
-                    }.refreshable { await model.refreshConversations() }
-                }.frame(width: wide ? 340 : nil).frame(maxWidth: wide ? 340 : .infinity)
+                conversationColumn(wide: wide)
+                    .frame(width: wide ? 340 : nil).frame(maxWidth: wide ? 340 : .infinity)
                 if wide {
                     Divider()
                     if let selected { LiveThreadView(model: model, id: selected, calls: app.identity.calls).id(selected) }
@@ -57,6 +31,54 @@ struct LiveMessagesView: View {
         .alert(tr("MeetSpace"), isPresented: Binding(get: { model.error != nil }, set: { if !$0 { model.error = nil } })) {
             Button(tr("Понятно"), role: .cancel) { model.error = nil }
         } message: { Text(tr(model.error ?? "")) }
+    }
+    @ViewBuilder private func conversationColumn(wide: Bool) -> some View {
+        if typeSize.isAccessibilitySize {
+            // Keep the growing controls and results in one scroll surface so the
+            // header cannot consume the conversation viewport at accessibility sizes.
+            ScrollView {
+                VStack(spacing: 12) {
+                    conversationHeader
+                    conversationRows(wide: wide)
+                }
+            }.refreshable { await model.refreshConversations() }
+        } else {
+            VStack(spacing: 12) {
+                conversationHeader
+                ScrollView { conversationRows(wide: wide) }
+                    .refreshable { await model.refreshConversations() }
+            }
+        }
+    }
+    private var conversationHeader: some View {
+        VStack(spacing: 12) {
+            PageHeader(title: "Сообщения") {
+                IconButton("square.and.pencil", label: "Новый чат") { creating = true }
+                    .accessibilityIdentifier("newChat")
+            }
+            ViewThatFits(in: .horizontal) {
+                HStack { serverName; Spacer(); connectionStatus }
+                VStack(alignment: .leading, spacing: 6) { serverName; connectionStatus }
+            }.font(MSTheme.font(11)).foregroundStyle(MSTheme.muted).padding(.horizontal, 20)
+            SearchBox(text: $model.listSearch, placeholder: "Поиск чатов").padding(.horizontal, 20)
+            HStack(spacing: 12) {
+                Toggle(isOn: $model.onlyUnread) { Text(tr("Непрочитанные")).frame(minHeight: 44) }
+                Toggle(isOn: $model.groupFilter) { Text(tr("Группы")).frame(minHeight: 44) }
+            }.toggleStyle(.button).font(MSTheme.font(12)).padding(.horizontal, 20)
+        }
+    }
+    private func conversationRows(wide: Bool) -> some View {
+        LazyVStack(spacing: 8) {
+            StateContent(state: model.listState, retry: { Task { await model.refreshConversations() } }) {
+                ForEach(model.conversations) { item in
+                    Button { select(item.id, wide: wide) } label: { row(item) }
+                        .buttonStyle(.plain).accessibilityIdentifier("conversation.\(item.id.uuidString.lowercased())")
+                }
+                if model.listCursor != nil {
+                    Button(tr("Загрузить ещё")) { Task { await model.refreshConversations(more: true) } }.frame(minHeight: 44)
+                }
+            }
+        }.padding(.horizontal, 16).padding(.bottom, 20)
     }
     private func select(_ id: UUID, wide: Bool) {
         if wide { selected = id }

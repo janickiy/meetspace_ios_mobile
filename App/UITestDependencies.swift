@@ -322,8 +322,6 @@ enum UITestDependencies {
             if path.hasSuffix("/auth/me") {
                 if deletedAccounts.contains(selected) { return NetworkResponse(status: 401) }
                 if request.httpMethod == "DELETE" {
-                    let classification = UITestPasswordInputClassification.classify(body?["password"] as? String)
-                    NSLog("MeetSpaceDeletionDiagnostic stage=transport input=%@", classification)
                     guard body?["password"] as? String == "fixture-password" else { return NetworkResponse(status: 422) }
                     if ProcessInfo.processInfo.arguments.contains("-delete-account-unconfirmed") { throw APIError.timeout }
                     if ProcessInfo.processInfo.arguments.contains("-delete-account-conflict") { return NetworkResponse(status: 409) }
