@@ -330,7 +330,8 @@ import UIKit
             for character in value {
                 let key = keyboard.keys[String(character)]
                 if !key.exists {
-                    let more = keyboard.keys["more"]
+                    // iPad exposes equivalent number/letter toggles on both sides.
+                    let more = keyboard.keys.matching(identifier: "more").firstMatch
                     XCTAssertTrue(more.waitForExistence(timeout: 5)); more.tap()
                 }
                 XCTAssertTrue(key.waitForExistence(timeout: 5)); key.tap()
