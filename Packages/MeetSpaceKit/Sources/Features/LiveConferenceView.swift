@@ -5,8 +5,10 @@ import MeetSpaceDesignSystem
 
 struct LiveConferenceView: View {
     @Bindable var session: ConferenceSession
+    var recordings: RecordingsModel? = nil
     let close: () async -> Void
     @State private var showParticipants = false
+    @State private var showRecording = false
     @Environment(\.dynamicTypeSize) private var typeSize
     private let background = Color(red: 0.106, green: 0.125, blue: 0.180)
     private let panel = Color(red: 0.137, green: 0.176, blue: 0.235)
@@ -24,6 +26,10 @@ struct LiveConferenceView: View {
                     Spacer()
                     if let reaction = session.lastReaction { Text(reaction).font(.title) }
                     if session.phase == .connected {
+                        if recordings != nil {
+                            Button { showRecording = true } label: { Image(systemName: "record.circle").frame(width: 44, height: 44) }
+                                .accessibilityLabel(tr("Запись встречи")).accessibilityIdentifier("conferenceRecordings")
+                        }
                         Menu {
                             ForEach(["👍", "👏", "❤️", "😂"], id: \.self) { emoji in
                                 Button(emoji) { Task { await session.react(emoji) } }
@@ -50,6 +56,9 @@ struct LiveConferenceView: View {
         }.foregroundStyle(.white).tint(Color(red: 0.67, green: 0.73, blue: 1))
             .preferredColorScheme(.dark).interactiveDismissDisabled()
             .sheet(isPresented: $showParticipants) { participantsPanel }
+            .sheet(isPresented: $showRecording) {
+                if let recordings { ConferenceRecordingSheet(session: session, model: recordings) }
+            }
     }
 
     private var status: String {

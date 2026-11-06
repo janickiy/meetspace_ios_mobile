@@ -13,14 +13,25 @@ struct LiveProfileView: View {
                 Text(tr("Профиль")).font(MSTheme.font(28, weight: .semibold))
                 if let account = app.identity.messaging?.account {
                     HStack(spacing: 16) {
-                        Avatar(String(account.user.name.prefix(2)).uppercased(), size: 56)
+                        Avatar(String((app.identity.settings?.profile.name ?? account.user.name).prefix(2)).uppercased(), size: 56)
                         VStack(alignment: .leading, spacing: 5) {
-                            Text(account.user.name).font(MSTheme.font(18, weight: .semibold))
+                            Text(app.identity.settings?.profile.name ?? account.user.name).font(MSTheme.font(18, weight: .semibold))
                             Text(account.user.email).font(MSTheme.font(12)).foregroundStyle(MSTheme.muted)
                             Text(account.server.displayName).font(MSTheme.font(12)).foregroundStyle(MSTheme.muted)
                         }
                     }.msCard()
                 }
+                if let settings = app.identity.settings {
+                    NavigationLink { AccountSettingsView(model: settings) } label: {
+                        Label(tr("Настройки аккаунта"), systemImage: "person.crop.circle")
+                            .frame(maxWidth: .infinity, minHeight: 44, alignment: .leading)
+                    }.buttonStyle(.plain).msCard().accessibilityIdentifier("openAccountSettings")
+                }
+                VStack(spacing: 0) {
+                    workspaceLink("Календарь", icon: "calendar", route: .calendar, id: "openCalendar")
+                    workspaceLink("Записи встреч", icon: "play.rectangle", route: .recordings, id: "openRecordings")
+                    workspaceLink("Личные папки", icon: "folder", route: .folders, id: "openFolders")
+                }.msCard()
                 Text(tr("Аккаунты")).font(MSTheme.font(18, weight: .semibold))
                 ForEach(app.identity.index.accounts) { account in
                     HStack {
@@ -68,6 +79,12 @@ struct LiveProfileView: View {
                     if let account = removing { Task { await app.identity.logout(account) } }; removing = nil
                 }
             }
+    }
+    private func workspaceLink(_ title: String, icon: String, route: AppRoute, id: String) -> some View {
+        Button { app.navigate(route) } label: {
+            HStack { Label(tr(title), systemImage: icon); Spacer(); Image(systemName: "chevron.right") }
+                .frame(minHeight: 44)
+        }.buttonStyle(.plain).accessibilityIdentifier(id)
     }
     private var notificationSettings: some View {
         VStack(alignment: .leading, spacing: 12) {

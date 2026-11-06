@@ -1,0 +1,8 @@
+◇ Test actualBackendCalendarFoldersSettingsAndRecordings() started.
+PASS real Stage7 calendar: create/reschedule/cancel, exact UTC instants in 3 IANA zones, owner-only mutation, cancelled status conflict and actual finishedAt timeline
+PASS real Stage7 folders: create/rename/order/candidates/add/remove, 4 cross-account denials, delete leaves meeting/chat/message and other account folders intact
+PASS real Stage7 settings: profile rename, notification preferences survive fresh login, account isolation, devices list and real capabilities (push=noop)
+PASS real Stage7 recordings: capabilities, empty/populated catalogue, starting/stopping states, duplicate-start conflict, membership/stop authorization; no recorder worker, no fabricated ready media or playback assertion
+PASS real Stage7 cleanup: all test sessions logged out; HTTP requests=80
+✔ Test actualBackendCalendarFoldersSettingsAndRecordings() passed after 0.645 seconds.
+✔ Test run with 1 test in 0 suites passed after 0.645 seconds.

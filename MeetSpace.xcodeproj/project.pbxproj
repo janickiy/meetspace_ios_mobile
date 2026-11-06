@@ -233,6 +233,16 @@
 			"isa" = "PBXBuildFile";
 			"fileRef" = "F3FD2B0CE8668EDC939D990A";
 		};
+		"F2EA2C4DAC9E97D05E425ADF" = {
+			"isa" = "PBXFileReference";
+			"lastKnownFileType" = "sourcecode.swift";
+			"path" = "UITestRecordingFixture.swift";
+			"sourceTree" = "<group>";
+		};
+		"EAB52626ACA4165CD097A7A3" = {
+			"isa" = "PBXBuildFile";
+			"fileRef" = "F2EA2C4DAC9E97D05E425ADF";
+		};
 		"082CC8140C5DED09CFE9E4EA" = {
 			"isa" = "PBXGroup";
 			"children" = (
@@ -242,6 +252,7 @@
 				"E9504C8392DBC88EDD178F7B",
 				"F048BFA7B57836F484F1B9C1",
 				"F3FD2B0CE8668EDC939D990A",
+				"F2EA2C4DAC9E97D05E425ADF",
 			);
 			"path" = "App";
 			"sourceTree" = "<group>";
@@ -308,6 +319,7 @@
 				"A306030A7AB94F414E4A9444",
 				"CCD05243500362E42770ECCE",
 				"A5F7DC6A760D9A6C60E6DBA0",
+				"EAB52626ACA4165CD097A7A3",
 			);
 			"runOnlyForDeploymentPostprocessing" = 0;
 		};

@@ -17,7 +17,8 @@ enum UITestDependencies {
         return AppDependencies(serverProbe: Probe(), configuration: Preferences(), credentials: Secrets(),
                                transport: { server }, sockets: QuietSockets(),
                                conferenceSockets: ConferenceSockets(server: server), media: { Media() }, broadcast: { Broadcast() },
-                               calling: { calling }, notifications: { notifications })
+                               calling: { calling }, notifications: { notifications },
+                               recordingDownloads: { _ in UITestRecordingDownloads() })
     }
     /// Broadcast subscriptions model the process-wide native provider across account replacement.
     @MainActor private final class Calling: SystemCalling {
@@ -247,9 +248,12 @@ enum UITestDependencies {
         private var conferenceMessages: [[String: Any]] = []
         private var messages: [String: [[String: Any]]] = [:]
         private var groups: [String: [String: Any]] = [:]
+        private var profileNames: [String: String] = [:]
+        private var folders: [[String: Any]] = []
+        private var folderMembers: [String: Set<String>] = [:]
         private func user(_ id: String) -> [String: Any] {
             ["id": id, "email": id == second ? "second@fixture.example" : "first@fixture.example",
-             "displayName": id == second ? "Второй аккаунт" : "Первый аккаунт", "isAdmin": false,
+             "displayName": profileNames[id] ?? (id == second ? "Второй аккаунт" : "Первый аккаунт"), "isAdmin": false,
              "createdAt": "2026-11-05T10:00:00Z", "updatedAt": "2026-11-05T10:00:00Z"]
         }
         private func conversation(_ id: String) -> [String: Any] {
@@ -313,7 +317,10 @@ enum UITestDependencies {
                 return try response(["accessToken": "ui-fixture-\(id)", "tokenType": "Bearer", "expiresIn": 3600, "user": user(id)],
                     headers: ["set-cookie": "meetrix_session=ui-fixture-cookie; Path=/api/v1/auth; HttpOnly; Secure"])
             }
-            if path.hasSuffix("/auth/me") { return try response(["status": "ok", "user": user(selected)]) }
+            if path.hasSuffix("/auth/me") {
+                if request.httpMethod == "PATCH", let name = body?["displayName"] as? String { profileNames[selected] = name }
+                return try response(["status": "ok", "user": user(selected)])
+            }
             if path.hasSuffix("/auth/logout") { return try response(["status": "ok"]) }
             if path.hasSuffix("/ws-ticket") {
                 return try response(["ticket": String(repeating: "x", count: 43), "expiresAt": "2099-01-01T00:00:00Z"], status: 201)
@@ -324,6 +331,7 @@ enum UITestDependencies {
             if path == "/api/v1/integrations/capabilities" {
                 return try response(["push": "http", "email": "noop", "calendar": "noop", "calendarOAuthConfigured": false, "mockConnectAllowed": false])
             }
+            if let feature = try featureResponse(request, parts: parts, body: body) { return feature }
             if path == "/api/v1/notifications/preferences" {
                 if request.httpMethod == "PUT", let body { pushPreferences = body }
                 return try response(pushPreferences)
@@ -373,6 +381,10 @@ enum UITestDependencies {
                         "inviteCode": String(repeating: "a", count: 32), "inviteUrl": "https://fixture.example/i/" + String(repeating: "a", count: 32),
                         "status": "created", "createdAt": "2026-11-05T10:00:00Z", "updatedAt": "2026-11-05T10:00:00Z",
                         "waitingRoomEnabled": body?["waitingRoomEnabled"] ?? false]
+                    if let at = body?["scheduledAt"] {
+                        conference?["scheduledAt"] = at; conference?["status"] = "scheduled"
+                        conference?["plannedDurationMin"] = body?["plannedDurationMin"]
+                    }
                     return try response(["status": "success", "item": conference!], status: 201)
                 }
                 return try response(["status": "success", "items": conference.map { [$0] } ?? []])
@@ -434,6 +446,95 @@ enum UITestDependencies {
                 }
             }
             return NetworkResponse(status: 404)
+        }
+        private func featureResponse(_ request: URLRequest, parts: [String], body: [String: Any]?) throws -> NetworkResponse? {
+            let path = request.url!.path.lowercased(), method = request.httpMethod ?? "GET"
+            let query = Dictionary(uniqueKeysWithValues: (URLComponents(url: request.url!, resolvingAgainstBaseURL: false)?.queryItems ?? []).map { ($0.name, $0.value ?? "") })
+            if path == "/api/v1/capabilities" {
+                return try response(["capabilities": ["recordingModes": ["composite", "audio_only"]], "buildVersion": "ui-fixture"])
+            }
+            if path == "/api/v1/recordings" {
+                let rows: [[String: Any]] = [UITestRecordingFixture.recordingID, UITestRecordingFixture.processingID, UITestRecordingFixture.failedID].map { id in
+                    ["conference": recordingConference(), "recording": recordingFixture(id)]
+                }
+                return try response(["items": rows])
+            }
+            if parts.count >= 5, parts[2] == "conferences", parts[4] == "recordings" {
+                if ProcessInfo.processInfo.arguments.contains("-recording-access-denied") { return NetworkResponse(status: 403) }
+                if parts.count == 5 { return try response(["items": []]) }
+                return try response(["item": recordingFixture(parts[5])])
+            }
+            if path == "/api/v1/me/conferences" {
+                let matches = conference.map { meeting in
+                    let status = meeting["status"] as? String ?? ""
+                    return query["view"] == "upcoming" ? status == "scheduled" || status == "created"
+                        : query["view"] == "active" ? status == "active" : status == "cancelled" || status == "finished"
+                } ?? false
+                return try response(["items": matches ? [conference!] : []])
+            }
+            if path == "/api/v1/conferences/\(conferenceID)/schedule", conference != nil {
+                conference?["scheduledAt"] = body?["scheduledAt"]
+                conference?["plannedDurationMin"] = body?["plannedDurationMin"]
+                return try response(["item": conference!])
+            }
+            if path == "/api/v1/conferences/\(conferenceID)/cancel", conference != nil {
+                conference?["status"] = "cancelled"; return try response(["item": conference!])
+            }
+            if path == "/api/v1/folders" {
+                if method == "POST" {
+                    let id = UUID().uuidString.lowercased()
+                    let folder: [String: Any] = ["id": id, "name": body?["name"] ?? "Папка", "position": folders.count,
+                        "createdAt": "2026-11-06T10:00:00Z", "updatedAt": "2026-11-06T10:00:00Z",
+                        "itemCount": 0, "conversationCount": 0, "conferenceCount": 0]
+                    folders.append(folder); return try response(["item": folder], status: 201)
+                }
+                return try response(["items": folders])
+            }
+            if path == "/api/v1/folders/order", let ids = body?["ids"] as? [String] {
+                folders = ids.enumerated().compactMap { index, id in
+                    guard var folder = folders.first(where: { $0["id"] as? String == id }) else { return nil }
+                    folder["position"] = index; return folder
+                }
+                return try response(["items": folders])
+            }
+            if path == "/api/v1/folder-items" {
+                let included = folderMembers[query["folderId"] ?? ""]?.contains(direct) == true
+                return try response(["items": [["type": "conversation", "item": conversation(direct), "inFolder": included]]])
+            }
+            if parts.count >= 4, parts[2] == "folders", let index = folders.firstIndex(where: { $0["id"] as? String == parts[3] }) {
+                let id = parts[3]
+                if parts.count == 4 {
+                    if method == "DELETE" { folders.remove(at: index); folderMembers[id] = nil; return try response(["status": "success"]) }
+                    if method == "PATCH" { folders[index]["name"] = body?["name"] }
+                } else if parts.count == 5 {
+                    let items: [[String: Any]] = folderMembers[id]?.contains(direct) == true ? [["type": "conversation", "item": conversation(direct)]] : []
+                    return try response(["items": items])
+                } else if parts.count == 7 {
+                    if method == "PUT" { folderMembers[id, default: []].insert(parts[6]) }
+                    else { folderMembers[id]?.remove(parts[6]) }
+                    let count = folderMembers[id]?.count ?? 0
+                    folders[index]["itemCount"] = count; folders[index]["conversationCount"] = count
+                }
+                return try response(["item": folders[index]])
+            }
+            return nil
+        }
+        private func recordingConference() -> [String: Any] {
+            ["id": UITestRecordingFixture.conferenceID, "ownerId": first, "title": "Обсуждение проекта",
+             "inviteCode": "", "inviteUrl": "", "status": "finished", "createdAt": "2026-11-06T08:00:00Z",
+             "updatedAt": "2026-11-06T08:02:00Z", "waitingRoomEnabled": false]
+        }
+        private func recordingFixture(_ id: String) -> [String: Any] {
+            let ready = id == UITestRecordingFixture.recordingID
+            let file: [String: Any] = ["uuid": UITestRecordingFixture.fileID, "recordId": 1,
+                "fileType": "final_mp4", "fileName": "meeting.mp4", "mimeType": "video/mp4",
+                "sizeBytes": UITestRecordingFixture.data.count, "checksumSha256": UITestRecordingFixture.sha256,
+                "url": "https://recording.fixture/meeting.mp4"]
+            return ["id": ready ? 1 : id == UITestRecordingFixture.processingID ? 2 : 3, "uuid": id,
+                "conferenceId": UITestRecordingFixture.conferenceID, "mode": "composite",
+                "status": ready ? "ready" : id == UITestRecordingFixture.processingID ? "processing" : "failed",
+                "createdAt": "2026-11-06T08:00:00Z", "requestedBy": first, "durationSec": ready ? 2 : 0,
+                "files": ready ? [file] : []]
         }
     }
 }

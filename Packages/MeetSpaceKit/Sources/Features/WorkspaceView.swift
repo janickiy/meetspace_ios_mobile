@@ -19,7 +19,10 @@ struct WorkspaceView: View {
             TabView(selection: $model.tab) {
                 stack(tab: .meetings, path: $model.meetingsPath) {
                     if model.isDemo { MeetingsView(model: model) }
-                    else if let meetings = model.identity.conferences { LiveMeetingsView(model: meetings) }
+                    else if let meetings = model.identity.conferences {
+                        LiveMeetingsView(model: meetings, openCalendar: { model.navigate(.calendar) },
+                            openRecordings: { model.navigate(.recordings) }, openFolders: { model.navigate(.folders) })
+                    }
                 }
                 stack(tab: .messages, path: $model.messagesPath) {
                     if let messaging = model.identity.messaging, !model.isDemo { LiveMessagesView(app: model, model: messaging) }

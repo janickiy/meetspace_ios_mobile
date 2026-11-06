@@ -21,6 +21,8 @@ public struct AppDependencies: Sendable {
     public let calling: @MainActor @Sendable () -> any SystemCalling
     public let notifications: @MainActor @Sendable () -> any NormalPushNotifications
     public let pushStore: any PushRegistrationStore
+    public let calendarPreferences: @Sendable (CredentialKey) -> any CalendarPreferencesStore
+    public let recordingDownloads: @Sendable (AccountRecord) -> (any RecordingDownloading)?
     public init(serverProbe: any ServerProbing, configuration: any ConfigurationStore, credentials: any SecureStore,
                 accounts: any AccountIndexStore = MemoryAccountIndexStore(),
                 transport: @escaping @Sendable () -> any RequestTransport = { URLSessionRequestTransport() },
@@ -30,11 +32,15 @@ public struct AppDependencies: Sendable {
                 broadcast: @escaping @MainActor @Sendable () -> any ScreenBroadcastController = { BroadcastControllerFactory.make() },
                 calling: @escaping @MainActor @Sendable () -> any SystemCalling = { SystemCallingFactory.make() },
                 notifications: @escaping @MainActor @Sendable () -> any NormalPushNotifications = { NormalPushNotificationsFactory.make() },
-                pushStore: any PushRegistrationStore = MemoryPushRegistrationStore()) {
+                pushStore: any PushRegistrationStore = MemoryPushRegistrationStore(),
+                calendarPreferences: @escaping @Sendable (CredentialKey) -> any CalendarPreferencesStore = { _ in MemoryCalendarPreferencesStore() },
+                recordingDownloads: @escaping @Sendable (AccountRecord) -> (any RecordingDownloading)? = { _ in nil }) {
         self.serverProbe = serverProbe; self.configuration = configuration; self.credentials = credentials
         self.accounts = accounts; self.transport = transport; self.sockets = sockets
         self.conferenceSockets = conferenceSockets; self.media = media; self.broadcast = broadcast
         self.calling = calling; self.notifications = notifications; self.pushStore = pushStore
+        self.calendarPreferences = calendarPreferences
+        self.recordingDownloads = recordingDownloads
     }
     @MainActor public static func live(calling: (any SystemCalling)? = nil,
                                        notifications: (any NormalPushNotifications)? = nil) -> AppDependencies {
@@ -43,7 +49,8 @@ public struct AppDependencies: Sendable {
         return AppDependencies(serverProbe: ServerProbe(), configuration: PreferencesStore(),
                         credentials: KeychainStore(service: "com.meetspace.ios.credentials"), accounts: AccountPreferencesStore(),
                         calling: { system }, notifications: { push },
-                        pushStore: KeychainPushRegistrationStore(service: "com.meetspace.ios.push-bindings"))
+                        pushStore: KeychainPushRegistrationStore(service: "com.meetspace.ios.push-bindings"),
+                        calendarPreferences: { UserDefaultsCalendarPreferencesStore(account: $0) })
     }
 }
 

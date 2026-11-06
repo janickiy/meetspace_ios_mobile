@@ -4,6 +4,9 @@ import MeetSpaceDesignSystem
 
 struct LiveMeetingsView: View {
     @Bindable var model: ConferenceWorkspace
+    var openCalendar: () -> Void = {}
+    var openRecordings: () -> Void = {}
+    var openFolders: () -> Void = {}
     @State private var creating = false
     @State private var joining = false
     @State private var title = ""
@@ -25,6 +28,10 @@ struct LiveMeetingsView: View {
                             .buttonStyle(MSButtonStyle(primary: false)).accessibilityIdentifier("joinInvitation")
                     }
                     SearchBox(text: $query, placeholder: "Поиск встреч")
+                    ViewThatFits(in: .horizontal) {
+                        HStack(spacing: 20) { workspaceActions }
+                        VStack(alignment: .leading, spacing: 8) { workspaceActions }
+                    }
                     if let error = model.error { Text(tr(error)).foregroundStyle(MSTheme.danger) }
                     StateContent(state: model.state, retry: { Task { await model.load() } }) {
                         ForEach(model.meetings.filter { query.isEmpty || $0.title.localizedCaseInsensitiveContains(query) }) { meeting in
@@ -90,6 +97,13 @@ struct LiveMeetingsView: View {
                     finishing = nil
                 }
             }
+    }
+    private var workspaceActions: some View {
+        Group {
+            Button(action: openCalendar) { Label(tr("Календарь"), systemImage: "calendar") }.accessibilityIdentifier("meetingsCalendar")
+            Button(action: openRecordings) { Label(tr("Записи"), systemImage: "play.rectangle") }.accessibilityIdentifier("meetingsRecordings")
+            Button(action: openFolders) { Label(tr("Папки"), systemImage: "folder") }.accessibilityIdentifier("meetingsFolders")
+        }.frame(minHeight: 44)
     }
 }
 

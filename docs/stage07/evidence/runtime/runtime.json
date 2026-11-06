@@ -1,0 +1,62 @@
+{
+  "backendCommit": "0bd1248a2411842515af4e02f1e95821616748fb",
+  "images": {
+    "postgres": "sha256:742f40ea20b9ff2ff31db5458d127452988a2164df9e17441e191f3b72252193",
+    "redis": "sha256:e7723ff73d963f5cc6d9c4643ea3d989527a402a319239054e9472a7fb9219a2",
+    "minio": "sha256:b77a54e06b9c7e8f05cfd3873675644f094302bacd3aa7588a92ca30f44a2ee1",
+    "rabbitmq": "sha256:bda54cf7b1dc13aff98091ef8c99d59ca37c396b38eef1b21232f533136ba0ec",
+    "api": "sha256:5291449c3df73caf6ed85e649dec1b9e818b39a5d8c871e97afc13e9cd5e8fa8"
+  },
+  "result": 0,
+  "testCommand": [
+    "swift",
+    "test",
+    "--package-path",
+    "/Users/aleksandranickij/htdocs/meetspace_ios_mobile/Packages/MeetSpaceKit",
+    "--sdk",
+    "/Library/Developer/CommandLineTools/SDKs/MacOSX26.4.sdk",
+    "-Xswiftc",
+    "-load-plugin-library",
+    "-Xswiftc",
+    "/Library/Developer/CommandLineTools/usr/lib/swift/host/plugins/testing/libTestingMacros.dylib",
+    "--filter",
+    "actualBackendCalendarFoldersSettingsAndRecordings"
+  ],
+  "iosBaseCommit": "a9786fbba7b94708a9e7369cc752e3ac18024a52",
+  "iosWorkingTreeDirty": true,
+  "sourceSHA256": {
+    "scripts/run_features_contract.py": "f0b8d9c9c951ccdee76bf017fdc8948e237a29d152590cee9b5c605ba58573c3",
+    "Packages/MeetSpaceKit/Sources/API/Authentication.swift": "ab0f8b14cd392b2bdb29062ecde6ef49c0b3cf516a11d4312167a75fbfc67ec4",
+    "Packages/MeetSpaceKit/Sources/API/CalendarRepository.swift": "169de369fc25dfb2e3e77a9ec5e72093a12b9b36fba1e643de3616a9ab770bf7",
+    "Packages/MeetSpaceKit/Sources/API/ConferenceRepository.swift": "b9beb4a872a3b7b8c9bef7c2f55c3fa81890cb565d58f8fef5603d0f27a51246",
+    "Packages/MeetSpaceKit/Sources/API/DirectCallsRepository.swift": "9f00726fbfd055e47e3b5e983ccb5aeac493945d5046d569e8c18b8008466b0c",
+    "Packages/MeetSpaceKit/Sources/API/FoldersRepository.swift": "acd99ff9f35b633bccd94ac0ead94e8b48e4525ca1c2cbc4aaeaac9536aa69e5",
+    "Packages/MeetSpaceKit/Sources/API/MessagingRepository.swift": "d44d89ebe0acc02674edc3c87b223f0ceda91b9437eac8d7332f969079fcbbda",
+    "Packages/MeetSpaceKit/Sources/API/NotificationDeviceRepository.swift": "01e40c5f70e536543ca4cfbef46478a5309484b3187a8bc1d0453270da0ef84e",
+    "Packages/MeetSpaceKit/Sources/API/RecordingDownloads.swift": "0f39c54ecdbce9ef55fc662699d791a4d581a828b106e729977b384142dc3607",
+    "Packages/MeetSpaceKit/Sources/API/RecordingsRepository.swift": "50ccc1b4a8cb8ee3a6ab5fe2a6d212c46a18d08d6f8c176091dd215aa549e519",
+    "Packages/MeetSpaceKit/Sources/API/RequestTransport.swift": "8e42c5d7f9d5cc208211844db532ef217e7b7614acf49691be8b6db1712652bc",
+    "Packages/MeetSpaceKit/Sources/API/ServerProbe.swift": "107533236bfa400dc2577c9e2dde6762195afd7f0a6c01c0a1c88ffa6bf32f2b",
+    "Packages/MeetSpaceKit/Sources/API/SettingsRepository.swift": "bca0df5ed1bdee1190e07fec905e10924ac1a54339c9de7d5aef84359323ae2a",
+    "Packages/MeetSpaceKit/Sources/Core/Account.swift": "99554030618b794899d3a345fd9028220af477c4f2c208d4e46b7ec3d572c5e2",
+    "Packages/MeetSpaceKit/Sources/Core/AppState.swift": "4a74f2539509e5ebb70439fb0bec506a2dad82c48259db04168c26fa85c1d7f1",
+    "Packages/MeetSpaceKit/Sources/Core/Calendar.swift": "5d1dcaf7f457ecc2897d52e5c24d53383c3c2c20c2b818450ef9548efdc33f42",
+    "Packages/MeetSpaceKit/Sources/Core/Conference.swift": "69c57053b7736e0842347c66b9ba8f86a7fa0fdbf9f79ca21615c31b152e5916",
+    "Packages/MeetSpaceKit/Sources/Core/DirectCall.swift": "0f5184f6c07ad07de7a26d519915771ddde0ba0c340353015c825fb20220c100",
+    "Packages/MeetSpaceKit/Sources/Core/FilePolicy.swift": "c53b836798cedbe38903cc8d1835c20c344a5c5b87d1941c1c738fc9a6694126",
+    "Packages/MeetSpaceKit/Sources/Core/Folder.swift": "547c28eb9f3eb565d9a6ef2e86646d9c70151e04a2aae4b32e70ae6f701b8549",
+    "Packages/MeetSpaceKit/Sources/Core/Messaging.swift": "1daa2a915cc0b675e5c036ff0718dff8bec00589ea4bfca648ed7ec950bf956a",
+    "Packages/MeetSpaceKit/Sources/Core/PushRegistration.swift": "10cee6168f49fc86188685cc3bfda72e139487ffe6bf9c1a642052e8168f50a6",
+    "Packages/MeetSpaceKit/Sources/Core/Recording.swift": "8bab34354bf9df85d0bef1091fa86fb42da69530a926e75704f6a23484e0902b",
+    "Packages/MeetSpaceKit/Sources/Core/ServerOrigin.swift": "d4835bddcd79911feb8d71fa976fdd3885b0ae94930a3128e6de7d387fca2316",
+    "Packages/MeetSpaceKit/Sources/Core/Settings.swift": "0acdd1a9e904da158908871b9211f67f496cc9f02c273cabb2ac6d04094aaf6c",
+    "Packages/MeetSpaceKit/Tests/IntegrationTests/FeaturesLoopbackTests.swift": "9cef651462cc33736f6099dbd6c4c22784c30e75f675e2c44ce524331da5bd1f"
+  },
+  "tests": {
+    "total": 1,
+    "passed": 1,
+    "skipped": 0
+  },
+  "recordingsLimit": "API-only starting/stopping and authorization; no recorder/FFmpeg worker or final artifact, no AVPlayer acceptance",
+  "transport": "test-only loopback HTTP/WS adapter; production requires HTTPS/WSS"
+}

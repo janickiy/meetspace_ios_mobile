@@ -1,0 +1,11 @@
+{
+  "runtimeSourceSnapshot": "runtime.json preserves all hashes captured by the runner, without rewriting historical hashes",
+  "changedAfterRun": [
+    {
+      "path": "Packages/MeetSpaceKit/Sources/API/RecordingDownloads.swift",
+      "testedSnapshotSHA256": "0f39c54ecdbce9ef55fc662699d791a4d581a828b106e729977b384142dc3607",
+      "currentSHA256": "bbfaf2b8e1310039829a0846c17fcc20110b4d453b8d0ca622a5e4abf99960e3"
+    }
+  ],
+  "coverageBoundary": "RecordingDownloads.swift is not invoked by FeaturesLoopbackTests; the test does not call download(using:), AVPlayer or create a ready recording. All other recorded source hashes match at review."
+}

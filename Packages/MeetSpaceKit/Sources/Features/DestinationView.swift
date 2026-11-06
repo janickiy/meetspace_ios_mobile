@@ -12,8 +12,20 @@ struct DestinationView: View {
             case .conversation(let id):
                 if let messaging = model.identity.messaging { LiveThreadView(model: messaging, id: id, calls: model.identity.calls) }
             case .interfaceCatalog: ScreenCatalog(model: model)
-            case .calendar: CalendarScreen(model: model)
-            case .recordings, .recording, .folders: LibraryView(model: model, route: route)
+            case .calendar:
+                if model.isDemo { CalendarScreen(model: model) }
+                else if let calendar = model.identity.calendar {
+                    LiveCalendarView(model: calendar) { meeting in Task { await model.identity.conferences?.join(meeting) } }
+                }
+            case .folders:
+                if model.isDemo { LibraryView(model: model, route: route) }
+                else if let folders = model.identity.folders {
+                    LiveFoldersView(model: folders, openConversation: { model.navigate(.conversation($0)) },
+                        openConference: { meeting in Task { await model.identity.conferences?.join(meeting) } })
+                }
+            case .recordings, .recording:
+                if model.isDemo { LibraryView(model: model, route: route) }
+                else if let recordings = model.identity.recordings { LiveRecordingsView(model: recordings) }
             case .meetingDetails(let id): MeetingDetailView(model: model, meetingID: id)
             case .newMeeting, .scheduleMeeting, .joinMeeting: MeetingFormView(model: model, route: route)
             case .prejoin, .call, .personalCall: CallPreviewView(model: model, route: route)

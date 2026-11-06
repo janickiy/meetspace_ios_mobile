@@ -11,6 +11,10 @@ import MeetSpaceCalling
     public private(set) var messaging: MessagingModel?
     public private(set) var conferences: ConferenceWorkspace?
     public private(set) var calls: DirectCallCoordinator?
+    public private(set) var calendar: CalendarModel?
+    public private(set) var folders: FoldersModel?
+    public private(set) var settings: SettingsModel?
+    public private(set) var recordings: RecordingsModel?
     public let notifications: PushRegistrationModel
     public private(set) var busy = false
     public var addingAccount = false
@@ -92,6 +96,7 @@ import MeetSpaceCalling
             var pushRemoved = true
             if active {
                 epoch = UUID(); sessionEvents?.cancel(); sessionEvents = nil
+                await closeFeatures()
                 target = messaging?.client
                 notifications.suspendDelivery()
                 await calls?.close(); calls = nil
@@ -145,6 +150,7 @@ import MeetSpaceCalling
     private func install(_ client: AuthenticatedClient) async {
         epoch = UUID(); let current = epoch
         sessionEvents?.cancel()
+        await closeFeatures()
         if let previous = messaging {
             notifications.suspendDelivery()
             await calls?.close(); calls = nil
@@ -155,6 +161,17 @@ import MeetSpaceCalling
         }
         let workspace = MessagingModel(client: client, downloads: dependencies.transport(), sockets: dependencies.sockets)
         messaging = workspace; addingAccount = false
+        calendar = CalendarModel(repository: CalendarRepository(client: client), preferences: dependencies.calendarPreferences(client.account.key))
+        folders = FoldersModel(repository: FoldersRepository(client: client))
+        recordings = RecordingsModel(client: client, downloads: dependencies.recordingDownloads(client.account))
+        settings = SettingsModel(repository: SettingsRepository(client: client)) { [weak self] user in
+            guard let self, self.epoch == current, !self.busy, user.id == client.account.user.id,
+                  let position = self.index.accounts.firstIndex(where: { $0.id == client.account.id }) else { throw ClientError.scopeMismatch }
+            self.busy = true; defer { self.busy = false }
+            var next = self.index; next.accounts[position].user = user
+            try await self.dependencies.accounts.save(next)
+            self.index = next
+        }
         conferences = ConferenceWorkspace(repository: ConferenceRepository(client: client),
             sockets: dependencies.conferenceSockets, makeMedia: dependencies.media, makeBroadcast: dependencies.broadcast,
             canUseMedia: { [weak self] in self?.calls?.isActive != true && self?.calls?.busy != true })
@@ -175,6 +192,7 @@ import MeetSpaceCalling
                 }
                 guard !Task.isCancelled, self.epoch == current else { return }
                 self.busy = true
+                await self.closeFeatures()
                 self.notifications.suspendDelivery()
                 await self.calls?.close(); self.calls = nil
                 await self.conferences?.close(); self.conferences = nil
@@ -191,6 +209,13 @@ import MeetSpaceCalling
             }
         }
         workspace.start()
+    }
+    private func closeFeatures() async {
+        calendar?.close(); calendar = nil
+        folders?.close(); folders = nil
+        settings?.close(); settings = nil
+        let previous = recordings; recordings = nil
+        await previous?.close()
     }
 }
 

@@ -20,11 +20,11 @@ private struct ConferencePresentation: ViewModifier {
     @ViewBuilder private func presentation(_ content: Content) -> some View {
         #if os(iOS)
         content.fullScreenCover(item: $presented) { session in
-            LiveConferenceView(session: session) { await model.dismissConference() }
+            LiveConferenceView(session: session, recordings: model.identity.recordings) { await model.dismissConference() }
         }
         #else
         content.sheet(item: $presented) { session in
-            LiveConferenceView(session: session) { await model.dismissConference() }
+            LiveConferenceView(session: session, recordings: model.identity.recordings) { await model.dismissConference() }
                 .frame(minWidth: 700, minHeight: 650)
         }
         #endif
