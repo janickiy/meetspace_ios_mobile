@@ -6,6 +6,14 @@ import MeetSpaceAPI
 import MeetSpaceStorage
 import MeetSpaceCalling
 
+/// Opaque, single-generation permission to restore this installation's prior intent.
+struct AccountDeletionPushPause: Sendable {
+    fileprivate let origin: ServerOrigin
+    fileprivate let userID: UUID
+    fileprivate let epoch: UUID
+    fileprivate let enabledIntent: Bool
+}
+
 /// One process-wide owner of ordinary APNs registration. Server mutations and journal writes
 /// are serialized; detach drains them before the caller closes account credentials.
 @MainActor @Observable public final class PushRegistrationModel {
@@ -40,8 +48,48 @@ import MeetSpaceCalling
     /// not confirm server revocation: the owner must still await detach before closing credentials.
     public func suspendDelivery() { invalidate(); enabled = false }
 
+    /// Stop new callbacks and finish this client's queued writes while its credentials
+    /// are still valid. Failed cleanup remains journaled; it must not prevent the
+    /// authoritative account DELETE or be mistaken for a successful device revoke.
+    func prepareAccountDeletion(origin: ServerOrigin, userID: UUID) async -> AccountDeletionPushPause? {
+        guard repository.map({ $0.origin == origin && $0.userID == userID }) ?? true else { return nil }
+        var intent = enabled
+        invalidate(); enabled = false; let generation = epoch
+        let drained = await serial { [self] in
+            guard generation == epoch,
+                  repository.map({ $0.origin == origin && $0.userID == userID }) ?? true else { return false }
+            do {
+                try await load()
+                intent = journal.entries.first { $0.origin == origin && $0.userID == userID }?.enabled ?? false
+                if let repository { _ = await clean(repository) }
+            } catch { failedStorage() }
+            return generation == epoch && (repository.map({ $0.origin == origin && $0.userID == userID }) ?? true)
+        }
+        guard drained else { return nil }
+        return AccountDeletionPushPause(origin: origin, userID: userID, epoch: generation, enabledIntent: intent)
+    }
+
+    /// Rejection or an unknown DELETE outcome does not change the user's push intent.
+    /// A new account, explicit disable, or other generation change invalidates the token.
+    @discardableResult func restoreAccountDeletionPause(_ pause: AccountDeletionPushPause) async -> Bool {
+        guard pause.epoch == epoch, let target = repository,
+              target.origin == pause.origin, target.userID == pause.userID else { return false }
+        return await serial { [self] in
+            guard pause.epoch == epoch, repository.map({ same($0, target) }) == true else { return false }
+            guard pause.enabledIntent else { enabled = false; return true }
+            do {
+                try await load()
+                guard await clean(target), !hasBindings else { blocked(); return false }
+                guard pause.epoch == epoch, repository.map({ same($0, target) }) == true else { return false }
+                return await resume(target, generation: pause.epoch, askPermission: false)
+            } catch { failedStorage(); return false }
+        }
+    }
+
     /// Only after DELETE /auth/me success: the server atomically removed this account's
-    /// push devices. Drain old writes before forgetting that exact scope, without a revoked token.
+    /// push devices known to that transaction. The caller must drain this client's writes
+    /// before DELETE; this cannot fence concurrent writes from another client or server
+    /// requests whose response was lost. Forget only this scope, without a revoked token.
     @discardableResult public func accountDeletionConfirmed(origin: ServerOrigin, userID: UUID) async -> Bool {
         let isCurrent = repository.map { $0.origin == origin && $0.userID == userID } == true
         if isCurrent { invalidate(); enabled = false }

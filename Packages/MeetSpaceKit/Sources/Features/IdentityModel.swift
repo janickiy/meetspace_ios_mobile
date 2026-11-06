@@ -128,8 +128,13 @@ import MeetSpaceCalling
         }
         busy = true; deletingAccount = true; error = nil; information = nil
         defer { busy = false; deletingAccount = false }
+        guard let pushPause = await notifications.prepareAccountDeletion(origin: account.server, userID: account.user.id) else {
+            error = "Удаление не подтверждено. Проверьте подключение и состояние аккаунта перед повтором."
+            return false
+        }
         do { try await client.deleteAccount(password: password) }
         catch {
+            if messaging?.account.id == account.id { await notifications.restoreAccountDeletionPause(pushPause) }
             switch error {
             case AccountDeletionError.passwordRejected, ClientError.invalidInput:
                 self.error = "Неверный пароль аккаунта. Проверьте пароль и повторите."

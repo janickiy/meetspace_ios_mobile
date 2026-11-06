@@ -4,6 +4,7 @@ import MeetSpaceCore
 import MeetSpaceAPI
 import MeetSpaceStorage
 import MeetSpaceRealtime
+import MeetSpaceCalling
 @testable import MeetSpaceFeatures
 
 @Test func stage08AccountDeletionSendsOneScopedPasswordMutationAfterPreflightRefresh() async throws {
@@ -190,5 +191,152 @@ private actor DeletionGate {
         #expect(FileManager.default.fileExists(atPath: cached.path))
         #expect(try await previous.client.currentUser().id == account.user.id)
         await identity.logout(account)
+    }
+}
+
+@MainActor private final class DeletionPushPlatform: NormalPushNotifications {
+    let events: AsyncStream<NormalPushNotificationEvent>
+    private let continuation: AsyncStream<NormalPushNotificationEvent>.Continuation
+    var authorization: NormalPushAuthorization = .authorized
+    var prompts = 0
+    var registrations = 0
+    init() { (events, continuation) = AsyncStream.makeStream() }
+    func requestAuthorization() async throws -> NormalPushAuthorization { prompts += 1; return authorization }
+    func refreshAuthorization() async { }
+    func register() { registrations += 1 }
+    func unregister() { }
+    func didRegister(deviceToken: Data) { continuation.yield(.token(deviceToken)) }
+    func didFailRegistration() { continuation.yield(.failure(.registrationFailed)) }
+    func token(_ byte: UInt8) { didRegister(deviceToken: Data(repeating: byte, count: 32)) }
+}
+private actor DeletionPushOrder {
+    var events: [String] = []
+    func append(_ event: String) { events.append(event) }
+}
+@MainActor private func waitForDeletionPush(_ predicate: @escaping @MainActor () async -> Bool) async throws {
+    for _ in 0..<300 {
+        if await predicate() { return }
+        try await Task.sleep(for: .milliseconds(5))
+    }
+    throw APIError.timeout
+}
+private func deletionPushDefaults(_ path: String) throws -> NetworkResponse? {
+    if path == "/api/v1/integrations/capabilities" {
+        return NetworkResponse(status: 200, headers: ["content-type": "application/json"],
+            data: try WireJSON.encoder().encode(IntegrationCapabilities(push: "http")))
+    }
+    if path == "/api/v1/notifications/preferences" {
+        return NetworkResponse(status: 200, headers: ["content-type": "application/json"],
+            data: try WireJSON.encoder().encode(NotificationPreferences(push: true)))
+    }
+    return nil
+}
+private func deletionPushDevice() throws -> NetworkResponse {
+    try Fixture.response(["item": ["id": "ab111111-1111-4111-8111-111111111111", "platform": "ios", "provider": "http",
+        "createdAt": "2026-11-06T12:00:00Z", "updatedAt": "2026-11-06T12:00:00Z"]])
+}
+
+@Test @MainActor func stage08AccountDeletionWaitsForLatePushWriteAndCleanupBeforeDELETE() async throws {
+    for revokeFails in [false, true] {
+        let account = try Fixture.account(UUID()), secrets = TestSecrets(), accounts = MemoryAccountIndexStore()
+        let platform = DeletionPushPlatform(), store = MemoryPushRegistrationStore(), gate = DeletionGate(), order = DeletionPushOrder()
+        try await secrets.write(WireJSON.encoder().encode(Fixture.credentials()), for: account.key)
+        try await accounts.save(AccountIndex(accounts: [account], activeID: account.id))
+        let transport = RoutedTransport { request, _ in
+            let path = request.url!.path
+            if path == "/api/v1/notifications/devices", request.httpMethod == "POST" {
+                await order.append("register-start")
+                await gate.wait()
+                await order.append("register-finished")
+                return try deletionPushDevice()
+            }
+            if path.hasPrefix("/api/v1/notifications/devices/"), request.httpMethod == "DELETE" {
+                await order.append("revoke")
+                if revokeFails { throw APIError.offline }
+                return NetworkResponse(status: 204)
+            }
+            if path == "/api/v1/auth/me", request.httpMethod == "DELETE" {
+                let before = await order.events
+                #expect(before.first == "register-start" && before.dropFirst().first == "register-finished")
+                #expect(before.last == "revoke")
+                let entry = try #require(await store.load().entries.first)
+                #expect(entry.origin == account.server && entry.userID == account.user.id && entry.enabled)
+                #expect(entry.hasBinding == revokeFails) // Failed cleanup is not silently forgotten before 200.
+                await order.append("delete")
+                return try Fixture.response(["status": "success"])
+            }
+            if path == "/api/v1/auth/me" { return try Fixture.response(["user": Fixture.user(account.user.id)]) }
+            if let response = try deletionPushDefaults(path) { return response }
+            throw APIError.offline
+        }
+        let identity = IdentityModel(dependencies: AppDependencies(serverProbe: DeletionProbe(), configuration: DeletionPreferences(),
+            credentials: secrets, accounts: accounts, transport: { transport }, sockets: DeletionSockets(),
+            notifications: { platform }, pushStore: store))
+        await identity.restore(); await identity.notifications.enable()
+        platform.token(0xAC)
+        try await waitForDeletionPush { await gate.waiting }
+        let deletion = Task { await identity.deleteAccount(account, password: "confirmed-password") }
+        try await waitForDeletionPush { identity.deletingAccount && !identity.notifications.enabled }
+        #expect(await order.events == ["register-start"])
+        platform.token(0xAD) // New callbacks are fenced while the earlier POST is still running.
+        await gate.release()
+        #expect(await deletion.value)
+        #expect(await order.events.last == "delete")
+        #expect(await order.events.filter { $0 == "register-start" }.count == 1)
+        #expect(try await store.load().entries.isEmpty)
+        #expect(identity.messaging == nil)
+        #expect(await secrets.read(account.key) == nil)
+    }
+}
+
+@Test @MainActor func stage08AccountDeletionRejectionAndUnknownRestorePriorPushIntentWithoutPrompt() async throws {
+    for enabled in [false, true] {
+        for status in [422, 409, 503, -1] {
+            let account = try Fixture.account(UUID()), secrets = TestSecrets(), accounts = MemoryAccountIndexStore()
+            let platform = DeletionPushPlatform(), order = DeletionPushOrder()
+            let store = MemoryPushRegistrationStore(PushRegistrationJournal(entries: [
+                PushRegistrationEntry(origin: account.server, userID: account.user.id, enabled: enabled)]))
+            let credentials = try WireJSON.encoder().encode(Fixture.credentials())
+            try await secrets.write(credentials, for: account.key)
+            try await accounts.save(AccountIndex(accounts: [account], activeID: account.id))
+            let transport = RoutedTransport { request, _ in
+                let path = request.url!.path
+                if path == "/api/v1/auth/me", request.httpMethod == "DELETE" {
+                    await order.append("delete")
+                    if status == -1 { throw APIError.timeout }
+                    return NetworkResponse(status: status)
+                }
+                if path == "/api/v1/notifications/devices", request.httpMethod == "POST" {
+                    await order.append("register"); return try deletionPushDevice()
+                }
+                if path.hasPrefix("/api/v1/notifications/devices/"), request.httpMethod == "DELETE" {
+                    await order.append("revoke"); return NetworkResponse(status: 204)
+                }
+                if path == "/api/v1/auth/me" { return try Fixture.response(["user": Fixture.user(account.user.id)]) }
+                if let response = try deletionPushDefaults(path) { return response }
+                throw APIError.offline
+            }
+            let identity = IdentityModel(dependencies: AppDependencies(serverProbe: DeletionProbe(), configuration: DeletionPreferences(),
+                credentials: secrets, accounts: accounts, transport: { transport }, sockets: DeletionSockets(),
+                notifications: { platform }, pushStore: store))
+            await identity.restore()
+            let workspace = try #require(identity.messaging)
+            if enabled {
+                platform.token(0xBD)
+                try await waitForDeletionPush { await order.events.contains("register") && !identity.notifications.busy }
+            }
+            #expect(await identity.deleteAccount(account, password: "not-deleted") == false)
+            #expect(identity.messaging === workspace && identity.notifications.enabled == enabled)
+            #expect(platform.prompts == 0 && platform.registrations == (enabled ? 2 : 0))
+            #expect(try await store.load().entries.first?.enabled == enabled)
+            #expect(await secrets.read(account.key) == credentials)
+            #expect(await order.events.filter { $0 == "delete" }.count == 1)
+            if enabled {
+                #expect(await order.events == ["register", "revoke", "delete"])
+                platform.token(0xBE)
+                try await waitForDeletionPush { await order.events.filter { $0 == "register" }.count == 2 && !identity.notifications.busy }
+            }
+            await identity.logout(account)
+        }
     }
 }

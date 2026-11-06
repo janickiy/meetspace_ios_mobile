@@ -265,8 +265,8 @@ private actor FailingPushStore: PushRegistrationStore {
     #expect(await model.attach(repository: service)); await model.enable()
     platform.didRegister(deviceToken: Data(repeating: 0xEF, count: 32))
     try await waitForPush { await service.registerCount == 1 }
-    // DELETE has already committed on the server; its now-revoked credentials cannot clean
-    // a late registration receipt. Local forgetting must drain that write first.
+    // Defensive local ordering only: even confirmed-scope forgetting drains a late receipt.
+    // This does not prove server cleanup of that POST; the caller must pause BEFORE DELETE.
     await service.fail(revoke: true)
     let forgotten = Task { await model.accountDeletionConfirmed(origin: service.origin, userID: service.userID) }
     try await waitForPush { !model.enabled }
@@ -279,4 +279,27 @@ private actor FailingPushStore: PushRegistrationStore {
     try await Task.sleep(for: .milliseconds(20))
     #expect(await service.registerCount == 1)
     #expect(try await store.load().entries.isEmpty)
+}
+
+@Test @MainActor func stage08AccountDeletionPushPauseCannotRestoreAnotherScopeOrOverrideDisable() async throws {
+    let store = MemoryPushRegistrationStore(), platform = PushPlatformFixture()
+    let first = PushServiceFixture(store: store), second = PushServiceFixture(store: store, origin: try ServerOrigin("https://other-pause.fixture"))
+    let model = PushRegistrationModel(platform: platform, store: store)
+    #expect(await model.attach(repository: first)); await model.enable()
+    #expect(await model.prepareAccountDeletion(origin: second.origin, userID: second.userID) == nil)
+    #expect(model.enabled) // Wrong server with the same user ID cannot pause the active account.
+    let firstPause = try #require(await model.prepareAccountDeletion(origin: first.origin, userID: first.userID))
+    #expect(!model.enabled)
+    let registrations = platform.registrations
+    await model.disable()
+    #expect(await model.restoreAccountDeletionPause(firstPause) == false)
+    #expect(!model.enabled && platform.registrations == registrations)
+    #expect(try await store.load().entries.first?.enabled == false)
+    await model.enable()
+    let secondPause = try #require(await model.prepareAccountDeletion(origin: first.origin, userID: first.userID))
+    #expect(await model.attach(repository: second))
+    let afterSwitch = platform.registrations
+    #expect(await model.restoreAccountDeletionPause(secondPause) == false)
+    #expect(!model.enabled && platform.registrations == afterSwitch)
+    #expect(await model.detach())
 }
