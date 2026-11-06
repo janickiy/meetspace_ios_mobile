@@ -56,9 +56,14 @@ struct DirectCallView: View {
                         }
                         }
                         if call.uncertain {
-                            Button(tr("Проверить состояние")) { Task { await call.reconcile() } }.frame(minHeight: 44)
+                            Button(tr(call.ending ? "Проверить отмену" : "Проверить состояние")) {
+                                Task {
+                                    if call.ending { await call.end() }
+                                    await call.reconcile()
+                                }
+                            }.frame(minHeight: 44).disabled(call.busy)
                                 .accessibilityIdentifier("directCallReconcile")
-                            if let peer = call.pendingPeer {
+                            if let peer = call.pendingPeer, !call.ending {
                                 Button(tr("Повторить вызов")) { Task { await call.startOutgoing(peer: peer, isVideo: call.cameraWanted) } }
                                     .frame(minHeight: 44).disabled(call.busy)
                             }

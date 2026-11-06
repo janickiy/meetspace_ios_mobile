@@ -3,15 +3,6 @@ import XCTest
 @MainActor final class FoundationUITests: XCTestCase {
     override func setUpWithError() throws {
         continueAfterFailure = false
-        addUIInterruptionMonitor(withDescription: "Fixture password saving prompt") { @Sendable alert in
-            guard alert.label == "Save Password?" || alert.label == "Сохранить пароль?" ||
-                    alert.staticTexts["Save Password?"].exists || alert.staticTexts["Сохранить пароль?"].exists else { return false }
-            for label in ["Not Now", "Не сейчас"] {
-                let decline = alert.buttons[label]
-                if decline.exists && decline.isHittable { decline.tap(); return true }
-            }
-            return false
-        }
     }
 
     private func launch(_ arguments: [String] = []) -> XCUIApplication {

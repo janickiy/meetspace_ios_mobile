@@ -68,19 +68,25 @@ private actor CallService: DirectCallsServing {
     var cancelFails = false
     var accepts = 0, cancels = 0, ends = 0, declines = 0, heartbeats = 0, reads = 0
     var acceptGate: CallGate?
+    var createRequestGate: CallGate?
     var createReplyGate: CallGate?
+    var createStatus = DirectCallStatus.ringing
     var heartbeatGate: CallGate?
     init(_ value: DirectCall? = nil) { self.value = value }
     func set(_ value: DirectCall?) { self.value = value }
     func failCreate() { createsFail = 1 }
     func failCancel() { cancelFails = true }
+    func allowCancel() { cancelFails = false }
     func blockAccept(_ gate: CallGate) { acceptGate = gate }
     func blockCreateReply(_ gate: CallGate) { createReplyGate = gate }
+    func blockCreateRequest(_ gate: CallGate) { createRequestGate = gate }
+    func setCreateStatus(_ status: DirectCallStatus) { createStatus = status }
     func blockHeartbeat(_ gate: CallGate) { heartbeatGate = gate }
     func create(targetUserID: UUID, clientRequestID: UUID, clientID: UUID) async throws -> DirectCall {
         createIDs.append(clientRequestID)
         if createsFail > 0 { createsFail -= 1; throw APIError.timeout }
-        let call = CallFixture.value(device: clientID); value = call
+        if let createRequestGate { await createRequestGate.wait() }
+        let call = CallFixture.value(createStatus, version: createStatus == .ringing ? 1 : 2, device: clientID); value = call
         if let createReplyGate { await createReplyGate.wait() }
         return call
     }
@@ -115,6 +121,7 @@ private actor CallService: DirectCallsServing {
     var incoming: [UUID] = [], starts: [UUID] = [], completed: [(UUID, Bool)] = []
     var ended: [(UUID, SystemCallEndReason)] = [], connected: [UUID] = []
     var invalidated = false, failStart = false
+    var startRequests = 0
     var startGate: CallGate?
     var lastAnswer: SystemCallAction?
     init(available: Bool = true) { isAvailable = available; (events, continuation) = AsyncStream.makeStream() }
@@ -122,6 +129,7 @@ private actor CallService: DirectCallsServing {
         incoming.append(descriptor.id); completion(.success(()))
     }
     func requestStart(_ descriptor: SystemCallDescriptor) async throws {
+        startRequests += 1
         if let startGate { await startGate.wait() }
         if failStart { throw SystemCallingError.requestRejected }
         starts.append(descriptor.id); emit(.action(action(.start, id: descriptor.id)))
@@ -246,6 +254,80 @@ private actor CallSockets: ConferenceSocketFactory {
     #expect(keys.count == 2 && keys[0] == keys[1])
     #expect(!calls.uncertain && calls.currentCall?.status == .ringing)
     await calls.close(); #expect(!system.invalidated)
+}
+
+@Test @MainActor func directCallEndDuringCreateCancelsLateCallWithoutStartingSystemOrMedia() async throws {
+    let service = CallService(), system = CallSystem(), sockets = CallSockets(), request = CallGate()
+    await service.blockCreateRequest(request)
+    let calls = try coordinator(service, system: system, sockets: sockets)
+    let creation = Task { await calls.startOutgoing(peer: CallFixture.person, isVideo: true) }
+    try await callEventually { await request.started }
+    await calls.end()
+    #expect(calls.ending && calls.busy && calls.pendingPeer != nil)
+    #expect(!calls.microphoneWanted && !calls.cameraWanted)
+    await request.release(); await creation.value
+    #expect(calls.currentCall?.status == .cancelled && calls.pendingPeer == nil)
+    #expect(await service.cancels == 1)
+    #expect(await service.createIDs.count == 1)
+    #expect(system.startRequests == 0 && calls.mediaSession == nil)
+    #expect(await sockets.created.isEmpty)
+    await calls.close()
+}
+
+@Test @MainActor func directCallEndAfterUnknownCreateResolvesAcceptedCallWithOriginalKeyWithoutCapture() async throws {
+    let service = CallService(), system = CallSystem(), sockets = CallSockets()
+    let calls = try coordinator(service, system: system, sockets: sockets)
+    await service.failCreate(); await calls.startOutgoing(peer: CallFixture.person, isVideo: true)
+    #expect(calls.uncertain && calls.pendingPeer != nil)
+    await service.failCreate(); await calls.end()
+    #expect(calls.ending && calls.uncertain && calls.pendingPeer != nil)
+    #expect(!calls.microphoneWanted && !calls.cameraWanted)
+    await service.setCreateStatus(.accepted)
+    await calls.end()
+    let keys = await service.createIDs
+    #expect(keys.count == 3 && Set(keys).count == 1)
+    #expect(await service.ends == 1)
+    #expect(calls.currentCall?.status == .ended && calls.pendingPeer == nil)
+    #expect(system.startRequests == 0 && calls.mediaSession == nil)
+    #expect(await sockets.created.isEmpty)
+    await calls.close()
+}
+
+@Test @MainActor func directCallCancelledCreationStaysCaptureOffAcrossUnknownCancelAndAcceptance() async throws {
+    let service = CallService(), system = CallSystem(), sockets = CallSockets(), request = CallGate()
+    await service.blockCreateRequest(request); await service.failCancel()
+    let calls = try coordinator(service, system: system, sockets: sockets)
+    let creation = Task { await calls.startOutgoing(peer: CallFixture.person) }
+    try await callEventually { await request.started }
+    await calls.end(); await request.release(); await creation.value
+    #expect(calls.ending && calls.uncertain)
+    await calls.reconcile(); await calls.reconcile()
+    #expect(await service.cancels == 1)
+    await service.set(CallFixture.value(.accepted, version: 2)); await calls.reconcile()
+    #expect(await service.ends == 1)
+    #expect(calls.currentCall?.status == .ended)
+    #expect(system.startRequests == 0 && calls.mediaSession == nil)
+    #expect(await sockets.created.isEmpty)
+    await calls.close()
+}
+
+@Test @MainActor func directCallRepeatedEndRetriesUnknownCancellationAtSameServerVersion() async throws {
+    let service = CallService(), system = CallSystem(), sockets = CallSockets()
+    let calls = try coordinator(service, system: system, sockets: sockets)
+    await service.failCreate(); await calls.startOutgoing(peer: CallFixture.person)
+    await service.failCancel(); await calls.end()
+    #expect(calls.ending && calls.uncertain && calls.currentCall?.status == .ringing)
+    #expect(calls.pendingPeer == nil && calls.currentCall?.version == 1)
+    await calls.reconcile()
+    #expect(await service.cancels == 1)
+    await service.allowCancel(); await calls.end()
+    #expect(await service.cancels == 2)
+    #expect(calls.currentCall?.status == .cancelled && !calls.ending && !calls.uncertain)
+    let keys = await service.createIDs
+    #expect(keys.count == 2 && Set(keys).count == 1)
+    #expect(system.startRequests == 0 && calls.mediaSession == nil)
+    #expect(await sockets.created.isEmpty)
+    await calls.close()
 }
 
 @Test @MainActor func directCallReconcilesLostCreateResponseIntoOneSystemStartBeforeMedia() async throws {

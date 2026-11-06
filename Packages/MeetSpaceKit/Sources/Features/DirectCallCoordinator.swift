@@ -46,6 +46,9 @@ import MeetSpaceCalling
     @ObservationIgnored private var foreground = true
     @ObservationIgnored private var systemAudioActive = false
     @ObservationIgnored private var createRequestID: UUID?
+    @ObservationIgnored private var cancelledCreationRequestID: UUID?
+    @ObservationIgnored private var cancelledCreationCallID: UUID?
+    @ObservationIgnored private var cancelledCreationAttemptVersion: Int64 = -1
     @ObservationIgnored private var commandRevision = 0
     @ObservationIgnored private var eventsTask: Task<Void, Never>?
     @ObservationIgnored private var pollTask: Task<Void, Never>?
@@ -96,11 +99,16 @@ import MeetSpaceCalling
             if self.peer?.id != peer.id { error = "Сначала завершите текущий личный звонок." }
             return
         }
-        guard canUseMedia() else { error = "Сначала выйдите из текущей встречи."; return }
+        let resolvingCancellation = createRequestID != nil && cancelledCreationRequestID == createRequestID
+        guard resolvingCancellation || canUseMedia() else { error = "Сначала выйдите из текущей встречи."; return }
         if let pendingPeer, pendingPeer.id != peer.id { error = "Сначала проверьте результат предыдущего вызова."; return }
-        if createRequestID == nil { createRequestID = UUID(); microphoneWanted = true; cameraWanted = isVideo }
+        if createRequestID == nil {
+            createRequestID = UUID(); microphoneWanted = true; cameraWanted = isVideo
+            cancelledCreationRequestID = nil; cancelledCreationCallID = nil; cancelledCreationAttemptVersion = -1
+        }
         guard let requestID = createRequestID else { return }
-        pendingPeer = peer; minimized = false; busy = true; error = nil; ending = false
+        pendingPeer = peer; minimized = false; busy = true; error = nil
+        ending = cancelledCreationRequestID == requestID
         commandRevision += 1
         let current = epoch
         defer { if valid(current) { busy = false } }
@@ -115,7 +123,9 @@ import MeetSpaceCalling
             // REST reconciliation may already have recovered this request while POST was suspended.
             if createRequestID == nil, pendingPeer == nil { return }
             uncertain = Self.uncertainResult(error)
-            if !uncertain { pendingPeer = nil; createRequestID = nil }
+            if !uncertain {
+                pendingPeer = nil; createRequestID = nil; cancelledCreationRequestID = nil; ending = false
+            }
             self.error = uncertain ? "Результат вызова неизвестен. Повторите проверку — новый звонок не создаётся." : userMessage(error)
         }
     }
@@ -132,9 +142,18 @@ import MeetSpaceCalling
 
     public func end() async {
         guard !closed else { return }
-        if let pendingPeer, currentCall == nil || currentCall?.isTerminal == true {
-            // A lost create response is resolved with its original key, never replaced by a new call.
-            await startOutgoing(peer: pendingPeer, isVideo: cameraWanted)
+        if let pendingPeer, let createRequestID,
+           currentCall == nil || currentCall?.isTerminal == true ||
+            (currentCall?.callerUserId == repository.userID && currentCall?.calleeUserId == pendingPeer.id &&
+             currentCall?.callerClientId == clientID.uuidString.lowercased()) {
+            // Preserve cancellation before any suspension. An in-flight or unknown POST must
+            // resolve with its original key, then cancel/end without starting CallKit or media.
+            cancelledCreationRequestID = createRequestID
+            ending = true; microphoneWanted = false; cameraWanted = false
+            commandRevision += 1
+            guard !busy else { return }
+            await startOutgoing(peer: pendingPeer, isVideo: false)
+            return
         }
         guard let call = currentCall else { return }
         if call.isTerminal || otherDevice { minimized = true; return }
@@ -241,19 +260,33 @@ import MeetSpaceCalling
             failPendingAnswer(); await stopMedia()
             guard valid(current), applicationEpoch == application else { return }
             if let previous { reportEnd(previous, reason: .remoteEnded) }
-            ending = false; minimized = false; microphoneWanted = true
+            ending = cancelsPendingCreation(incoming); minimized = false
+            microphoneWanted = !ending
             if !localIntent { cameraWanted = false }
             lastHeartbeat = nil; lastHeartbeatAttempt = nil
         }
         if pendingPeer?.id == incoming.calleeUserId, incoming.callerUserId == repository.userID,
            incoming.callerClientId == clientID.uuidString.lowercased() {
+            if cancelledCreationRequestID != nil, cancelledCreationRequestID == createRequestID {
+                cancelledCreationCallID = incoming.id
+                cancelledCreationRequestID = nil
+            }
             pendingPeer = nil; createRequestID = nil; uncertain = false
         }
         if incoming.isTerminal {
             ending = false; uncertain = false
+            if cancelledCreationCallID == incoming.id { cancelledCreationCallID = nil; cancelledCreationAttemptVersion = -1 }
             failPendingAnswer(); await stopMedia()
             guard valid(current), applicationEpoch == application else { return }
             reportEnd(incoming, reason: incoming.status == .missed ? .unanswered : (incoming.status == .declined ? .declinedElsewhere : .remoteEnded))
+            return
+        }
+        if cancelledCreationCallID == incoming.id {
+            ending = true; microphoneWanted = false; cameraWanted = false
+            if incoming.version > cancelledCreationAttemptVersion {
+                cancelledCreationAttemptVersion = incoming.version
+                await terminate(reportReason: .remoteEnded)
+            }
             return
         }
         if incoming.callerUserId == repository.userID, ownsMedia, !ending,
@@ -512,6 +545,12 @@ import MeetSpaceCalling
     }
     private func descriptor(_ call: DirectCall) -> SystemCallDescriptor {
         SystemCallDescriptor(id: call.id, displayName: call.peer(for: repository.userID)?.displayName ?? "Личный звонок", isVideo: cameraWanted)
+    }
+    private func cancelsPendingCreation(_ call: DirectCall) -> Bool {
+        cancelledCreationCallID == call.id ||
+        (cancelledCreationRequestID != nil && cancelledCreationRequestID == createRequestID &&
+         pendingPeer?.id == call.calleeUserId && call.callerUserId == repository.userID &&
+         call.callerClientId == clientID.uuidString.lowercased())
     }
     private func reportEnd(_ call: DirectCall, reason: SystemCallEndReason) {
         if reported.remove(call.id) != nil { system.reportEnded(callID: call.id, reason: reason, at: now()) }

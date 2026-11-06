@@ -154,6 +154,29 @@ MinIO и синтетический HTTP push gateway. `actualBackendDirectCalls
 terminal/history, таймауты и account-scoped device API. Все credentials остаются внутри fixture;
 production HTTPS/WSS transport не ослабляется. Stage 04 RTP доказательство остаётся отдельным.
 
+Сохранённый запуск `/tmp/meetspace-stage05-contract-03`: **PASS, 1 тест за 48.468 секунды**.
+Оба устройства-владельца получили tickets и `media.joined`; после REST end оба room WS закрылись
+сервером с `membership_closed`, без предварительного клиентского `media.leave` или закрытия сокета.
+[Результаты теста](evidence/runtime-tests.txt) также подтверждают конкурирующий accept,
+45-секундные ringing/lease таймауты и scoped push API.
+
+[Итоговые метрики SFU](evidence/sfu-cleanup.json): `peerConnectionTotal=2`,
+`roomsActive=0`, `mediaPeersActive=0`, `tracksPublished=0`, `subscriptions=0`,
+`packetsForwarded=0`, `bytesForwarded=0`. Это две серверные аллокации PeerConnection и очистка;
+ICE-соединение и передача RTP этим запуском не проверялись.
+[Runtime receipt](evidence/runtime.json) фиксирует backend pin, Docker image hashes, `result=0`,
+`swiftContractExecuted=true`, `apnsDeliveryTested=false`, `nativeDeviceTested=false`.
+
+Повторная сверка сохранённого доказательства 2026-11-06: **7 из 7 SHA256 совпали с текущими файлами**
+из [runtime-sources.json](evidence/runtime-sources.json): runner `run_calls_contract.py`,
+fixture `push_gateway.go`, `DirectCallLoopbackTests.swift`, два API repository
+(`DirectCallsRepository.swift`, `NotificationDeviceRepository.swift`) и две Core модели
+(`DirectCall.swift`, `PushRegistration.swift`). Устаревших хешей в этом manifest нет.
+Сохранённые `runtime.json` и `sfu-cleanup.json` побайтно совпадают с output runtime03;
+каждая строка выделенных test results найдена в исходном `contract.log`.
+Manifest фиксирует эти семь файлов, а не весь iOS-проект: UI, CallKit и последующие lifecycle
+изменения проверяются отдельными unit/native/CI результатами. Повторного backend запуска при сверке не было.
+
 Синтетический gateway не связывается с Apple/Google. Успех runtime не подтверждает APNs delivery,
 PushKit wakeup, CallKit lock-screen UI, native camera/audio, Bluetooth, background/terminated поведение
-или доставку на физическом iPhone/iPad. Результаты конкретного запуска фиксируются в отчёте этапа.
+или доставку на физическом iPhone/iPad. Эти пункты остаются отдельной приёмкой на устройствах.
