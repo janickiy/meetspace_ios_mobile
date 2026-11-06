@@ -3,6 +3,17 @@ import XCTest
 @MainActor final class FoundationUITests: XCTestCase {
     override func setUpWithError() throws {
         continueAfterFailure = false
+        // Passwords can render a remote sheet whose AX subtree is absent from
+        // the app snapshot. Handle only this unrelated system prompt.
+        addUIInterruptionMonitor(withDescription: "Decline saving fixture passwords") { element in
+            let titles = ["Save Password?", "Сохранить пароль?"]
+            guard titles.contains(where: { element.label == $0 || element.staticTexts[$0].exists }) else { return false }
+            for title in ["Not Now", "Не сейчас"] {
+                let decline = element.buttons[title].firstMatch
+                if decline.exists && decline.isHittable { decline.tap(); return true }
+            }
+            return false
+        }
     }
 
     private func launch(_ arguments: [String] = []) -> XCUIApplication {
@@ -294,10 +305,10 @@ import XCTest
         let incoming = app.buttons["directCallAnswer"].exists
         let target = incoming ? app.buttons["directCallAnswer"] : app.buttons["tab.messages"]
         if !target.isHittable {
-            // Some iPad system alerts are visible only to XCTest's interruption handler.
-            // A harmless semantic interaction invokes it; pure AX polling never does.
-            if incoming { app.staticTexts["screen.directCall"].tap() }
-            else { app.buttons["tab.messages"].tap() }
+            // Trigger interruption handling on the application surface. Trying
+            // to tap a covered child fails during scroll-to-visible before it
+            // can synthesize an event on some simulator Passwords windows.
+            app.tap()
         }
         let ready = XCTNSPredicateExpectation(predicate: NSPredicate(format: "hittable == true"), object: target)
         XCTAssertEqual(XCTWaiter.wait(for: [ready], timeout: 10), .completed, "The workspace must be actionable after login")
