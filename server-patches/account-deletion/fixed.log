@@ -1,0 +1,28 @@
+=== RUN   TestAuditDeviceSaveSerializesWithAccountDeletion
+=== RUN   TestAuditDeviceSaveSerializesWithAccountDeletion/physical/save-first
+    device_account_concurrency_integration_test.go:143: observed second transaction waiting for first transaction in pg_blocking_pids
+=== RUN   TestAuditDeviceSaveSerializesWithAccountDeletion/physical/delete-first
+    device_account_concurrency_integration_test.go:143: observed second transaction waiting for first transaction in pg_blocking_pids
+=== RUN   TestAuditDeviceSaveSerializesWithAccountDeletion/tombstone/save-first
+    device_account_concurrency_integration_test.go:143: observed second transaction waiting for first transaction in pg_blocking_pids
+=== RUN   TestAuditDeviceSaveSerializesWithAccountDeletion/tombstone/delete-first
+    device_account_concurrency_integration_test.go:143: observed second transaction waiting for first transaction in pg_blocking_pids
+--- PASS: TestAuditDeviceSaveSerializesWithAccountDeletion (1.10s)
+    --- PASS: TestAuditDeviceSaveSerializesWithAccountDeletion/physical/save-first (0.32s)
+    --- PASS: TestAuditDeviceSaveSerializesWithAccountDeletion/physical/delete-first (0.29s)
+    --- PASS: TestAuditDeviceSaveSerializesWithAccountDeletion/tombstone/save-first (0.24s)
+    --- PASS: TestAuditDeviceSaveSerializesWithAccountDeletion/tombstone/delete-first (0.25s)
+=== RUN   TestAuditDeviceRegistrationRechecksAccountState
+=== RUN   TestAuditDeviceRegistrationRechecksAccountState/active
+=== RUN   TestAuditDeviceRegistrationRechecksAccountState/missing
+=== RUN   TestAuditDeviceRegistrationRechecksAccountState/tombstone
+=== RUN   TestAuditDeviceRegistrationRechecksAccountState/blocked
+=== RUN   TestAuditDeviceRegistrationRechecksAccountState/guest
+--- PASS: TestAuditDeviceRegistrationRechecksAccountState (1.08s)
+    --- PASS: TestAuditDeviceRegistrationRechecksAccountState/active (0.21s)
+    --- PASS: TestAuditDeviceRegistrationRechecksAccountState/missing (0.22s)
+    --- PASS: TestAuditDeviceRegistrationRechecksAccountState/tombstone (0.21s)
+    --- PASS: TestAuditDeviceRegistrationRechecksAccountState/blocked (0.22s)
+    --- PASS: TestAuditDeviceRegistrationRechecksAccountState/guest (0.22s)
+PASS
+ok  	github.com/janickiy/meet-space/internal/infrastructure/postgres	2.537s

@@ -73,7 +73,7 @@ def main():
     parser.add_argument("--runtime-major", type=int)
     parser.add_argument("--preferred-device")
     parser.add_argument("--label")
-    parser.add_argument("--scope", choices=["full", "audit", "compatibility", "deletion", "regression"], default="full")
+    parser.add_argument("--scope", choices=["full", "audit", "compatibility", "deletion", "regression", "push-recovery"], default="full")
     args = parser.parse_args()
     inventory = json.loads(subprocess.check_output(["xcrun", "simctl", "list", "devices", "available", "--json"], text=True))
     candidates = []
@@ -105,6 +105,12 @@ def main():
     selection = []
     if args.scope == "deletion":
         selection = ["-only-testing:MeetSpaceUITests/FoundationUITests/testStage08AccountDeletionRequiresPasswordAndConfirmation"]
+    elif args.scope == "push-recovery":
+        # P2 cleanup recovery: real Keychain protection/reopen tests plus the two affected
+        # ordinary-push/deletion UI flows. Package fault-injection tests run in the package job.
+        selection = ["-only-testing:MeetSpaceTests",
+                     "-only-testing:MeetSpaceUITests/FoundationUITests/testOrdinaryPushOptInAndDisableWithFixtureToken",
+                     "-only-testing:MeetSpaceUITests/FoundationUITests/testStage08AccountDeletionRequiresPasswordAndConfirmation"]
     elif args.scope == "regression":
         # Target the observed keyboard/profile harness failures on every device/runtime.
         # This is a separate regression result, not a replacement for the full baseline.

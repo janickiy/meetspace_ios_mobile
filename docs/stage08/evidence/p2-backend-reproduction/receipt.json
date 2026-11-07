@@ -1,0 +1,36 @@
+{
+  "startedAtUTC": "2026-11-07T01:44:43.660866+00:00",
+  "baseCommit": "9e6058c31cc07bff0f48d8f7f6a40106c55c4881",
+  "patchSHA256": "2d4249899e393338cfc7276c5ab925fd1324bec8f44675a2fe7d7895721a423d",
+  "status": "PASS",
+  "backendCheckoutModified": false,
+  "testExitCode": 0,
+  "cleanup": "PASS: owned disposable container removed",
+  "applyCheck": "PASS; applied source hashes match reviewed files",
+  "postgresVersion": "PostgreSQL 17.10 on aarch64-unknown-linux-musl, compiled by gcc (Alpine 15.2.0) 15.2.0, 64-bit",
+  "isolation": "read committed",
+  "dockerImage": "sha256:742f40ea20b9ff2ff31db5458d127452988a2164df9e17441e191f3b72252193",
+  "goVersion": "go version go1.26.5 darwin/arm64",
+  "command": [
+    "go",
+    "test",
+    "-race",
+    "./internal/infrastructure/postgres",
+    "-run",
+    "^TestAuditDevice(SaveSerializesWithAccountDeletion|RegistrationRechecksAccountState)$",
+    "-count=1",
+    "-v",
+    "-timeout",
+    "3m"
+  ],
+  "tests": {
+    "topLevelPassed": 2,
+    "subtestsPassed": 9,
+    "failed": [],
+    "skipped": [],
+    "observedLockDependencies": 4
+  },
+  "remainingAuditSchemas": 0,
+  "finishedAtUTC": "2026-11-07T01:44:53.492125+00:00",
+  "logSHA256": "c718bf4669ae61d65406231e2560be7b80c48a61048cd507f714b32742d899d4"
+}

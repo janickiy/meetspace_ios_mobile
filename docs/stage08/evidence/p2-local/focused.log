@@ -1,0 +1,247 @@
+warning: '--skip-update' option is deprecated and will be removed in a future release
+Building for debugging...
+[Computing dependencies]
+[6 / 73] MeetSpaceCore
+[17 / 95] MeetSpaceDesignSystem
+[25 / 96] MeetSpaceCore
+[35 / 109] MeetSpaceMedia
+[39 / 116] MeetSpaceStorage
+[44 / 116] MeetSpaceStorage
+[53 / 136] MeetSpaceStorage
+[67 / 137] MeetSpaceMedia
+[71 / 140] MeetSpaceCalling
+[75 / 141] MeetSpaceAPI
+[81 / 152] MeetSpaceCalling
+[88 / 156] MeetSpaceRealtime
+[96 / 157] MeetSpaceCalling
+/Users/aleksandranickij/htdocs/meetspace_ios_mobile/Packages/MeetSpaceKit/Package.swift: MeetSpaceDesignSystem: ld: warning: search path '/Library/Developer/CommandLineTools/Developer/Library/Frameworks' not found
+/Users/aleksandranickij/htdocs/meetspace_ios_mobile/Packages/MeetSpaceKit/Package.swift: MeetSpaceBroadcast: ld: warning: search path '/Library/Developer/CommandLineTools/Developer/Library/Frameworks' not found
+/Users/aleksandranickij/htdocs/meetspace_ios_mobile/Packages/MeetSpaceKit/Package.swift: MeetSpaceCore: ld: warning: search path '/Library/Developer/CommandLineTools/Developer/Library/Frameworks' not found
+[112 / 161] MeetSpaceCalling
+/Users/aleksandranickij/htdocs/meetspace_ios_mobile/Packages/MeetSpaceKit/Package.swift: MeetSpaceMedia: ld: warning: search path '/Library/Developer/CommandLineTools/Developer/Library/Frameworks' not found
+/Users/aleksandranickij/htdocs/meetspace_ios_mobile/Packages/MeetSpaceKit/Package.swift: MeetSpaceStorage: ld: warning: search path '/Library/Developer/CommandLineTools/Developer/Library/Frameworks' not found
+/Users/aleksandranickij/htdocs/meetspace_ios_mobile/Packages/MeetSpaceKit/Package.swift: MeetSpaceCalling: ld: warning: search path '/Library/Developer/CommandLineTools/Developer/Library/Frameworks' not found
+[118 / 161] MeetSpaceAPI
+/Users/aleksandranickij/htdocs/meetspace_ios_mobile/Packages/MeetSpaceKit/Package.swift: MeetSpaceAPI: ld: warning: search path '/Library/Developer/CommandLineTools/Developer/Library/Frameworks' not found
+[129 / 170] BroadcastTests-product
+[134 / 184] BroadcastTests-product
+[138 / 184] BroadcastTests-product
+[144 / 185] StorageTests-product
+[147 / 185] MeetSpaceRealtime
+/Users/aleksandranickij/htdocs/meetspace_ios_mobile/Packages/MeetSpaceKit/Package.swift: StorageTests-product: ld: warning: search path '/Library/Developer/CommandLineTools/Developer/usr/lib' not found
+/Users/aleksandranickij/htdocs/meetspace_ios_mobile/Packages/MeetSpaceKit/Package.swift: StorageTests-product: ld: warning: search path '/Library/Developer/CommandLineTools/Developer/Library/Frameworks' not found
+/Users/aleksandranickij/htdocs/meetspace_ios_mobile/Packages/MeetSpaceKit/Package.swift: MeetSpaceRealtime: ld: warning: search path '/Library/Developer/CommandLineTools/Developer/Library/Frameworks' not found
+[150 / 189] StorageTests-product
+[154 / 189] MeetSpaceFeatures
+/Users/aleksandranickij/htdocs/meetspace_ios_mobile/Packages/MeetSpaceKit/Sources/Features/RecordingsModel.swift:98:139: warning: 'weak' ownership of capture 'self' differs from implicitly-captured strong reference in outer scope [#ImplicitStrongCapture]
+ 95 |         await clearLocalFiles()
+ 96 |         guard valid(epoch), transferID == operationID else { return }
+ 97 |         let task = Task { [repository, downloads] in
+    |                         |- note: 'self' implicitly strongly captured here
+    |                         `- note: add 'self' as a capture list item to silence
+ 98 |             try await repository.download(conferenceID: row.conference.id, recordingID: row.id, fileID: fileID, using: downloads) { [weak self] value in
+    |                                                                                                                                           |- warning: 'weak' ownership of capture 'self' differs from implicitly-captured strong reference in outer scope [#ImplicitStrongCapture]
+    |                                                                                                                                           `- note: explicitly assign the capture list item to silence
+ 99 |                 Task { @MainActor in if self?.valid(epoch) == true && self?.transferID == operationID { self?.progress = value } }
+100 |             }
+
+[#ImplicitStrongCapture]: <https://docs.swift.org/compiler/documentation/diagnostics/implicit-strong-capture>
+[160 / 192] APITests-product
+[163 / 195] APITests-product
+[171 / 200] APITests-product
+[173 / 206] FoundationPreviewRenderer-product
+/Users/aleksandranickij/htdocs/meetspace_ios_mobile/Packages/MeetSpaceKit/Package.swift: BroadcastTests-product: ld: warning: search path '/Library/Developer/CommandLineTools/Developer/usr/lib' not found
+/Users/aleksandranickij/htdocs/meetspace_ios_mobile/Packages/MeetSpaceKit/Package.swift: BroadcastTests-product: ld: warning: search path '/Library/Developer/CommandLineTools/Developer/Library/Frameworks' not found
+/Users/aleksandranickij/htdocs/meetspace_ios_mobile/Packages/MeetSpaceKit/Package.swift: APITests-product: ld: warning: search path '/Library/Developer/CommandLineTools/Developer/usr/lib' not found
+/Users/aleksandranickij/htdocs/meetspace_ios_mobile/Packages/MeetSpaceKit/Package.swift: APITests-product: ld: warning: search path '/Library/Developer/CommandLineTools/Developer/Library/Frameworks' not found
+[177 / 206] CoreTests-product
+[187 / 210] MeetSpaceDesignSystem-product
+[187 / 211] CoreTests-product
+[189 / 211] CoreTests-product
+/Users/aleksandranickij/htdocs/meetspace_ios_mobile/Packages/MeetSpaceKit/Package.swift: CoreTests-product: ld: warning: search path '/Library/Developer/CommandLineTools/Developer/usr/lib' not found
+/Users/aleksandranickij/htdocs/meetspace_ios_mobile/Packages/MeetSpaceKit/Package.swift: CoreTests-product: ld: warning: search path '/Library/Developer/CommandLineTools/Developer/Library/Frameworks' not found
+[191 / 211] MeetSpaceFeatures
+/Users/aleksandranickij/htdocs/meetspace_ios_mobile/Packages/MeetSpaceKit/Package.swift: MeetSpaceFeatures: ld: warning: search path '/Library/Developer/CommandLineTools/Developer/Library/Frameworks' not found
+[199 / 208] FeaturesTests-product
+[209 / 222] IntegrationTests-product
+/Users/aleksandranickij/htdocs/meetspace_ios_mobile/Packages/MeetSpaceKit/Package.swift: FoundationPreviewRenderer-product: ld: warning: search path '/Library/Developer/CommandLineTools/Developer/usr/lib' not found
+/Users/aleksandranickij/htdocs/meetspace_ios_mobile/Packages/MeetSpaceKit/Package.swift: FoundationPreviewRenderer-product: ld: warning: search path '/Library/Developer/CommandLineTools/Developer/Library/Frameworks' not found
+[213 / 222] FeaturesTests-product
+[215 / 223] FeaturesTests-product
+[216 / 223] FoundationPreviewRenderer-product
+[219 / 225] IntegrationTests-product
+/Users/aleksandranickij/htdocs/meetspace_ios_mobile/Packages/MeetSpaceKit/Package.swift: FeaturesTests-product: ld: warning: search path '/Library/Developer/CommandLineTools/Developer/usr/lib' not found
+/Users/aleksandranickij/htdocs/meetspace_ios_mobile/Packages/MeetSpaceKit/Package.swift: FeaturesTests-product: ld: warning: search path '/Library/Developer/CommandLineTools/Developer/Library/Frameworks' not found
+[225 / 229] FeaturesTests-product
+macro expansion #expect:1:22: warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+`- /Users/aleksandranickij/htdocs/meetspace_ios_mobile/Packages/MeetSpaceKit/Tests/IntegrationTests/PushRegistrationLifecycleTests.swift:253:90: note: expanded code originates here
+251 |         if failure == 3 {
+252 |             #expect(await service.revoked.count == 1)
+253 |             #expect(try await store.load().entries.first?.pendingTokenFingerprint != nil)
+    |             `- note: in expansion of macro 'expect' here
+    +--- macro expansion #expect ---------------------------------------
+    |1 | Testing.__checkValue(try await store.load().entries.first?.pendingTokenFingerprint != nil,expression: .__fromSyntaxNode("try await store.load().entries.first?.pendingTokenFingerprint != nil"),comments: [],isRequired: false,sourceLocation: Testing.SourceLocation.__here()).__expected()
+    |  |                      `- warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+    +-------------------------------------------------------------------
+254 |         }
+255 |         #expect(model.error != nil)
+
+[#UnnecessaryEffectMarker]: <https://docs.swift.org/compiler/documentation/diagnostics/unnecessary-effect-marker>
+[226 / 229] IntegrationTests-product
+/Users/aleksandranickij/htdocs/meetspace_ios_mobile/Packages/MeetSpaceKit/Tests/IntegrationTests/AccountDeletionTests.swift:121:5: warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+119 |     let secrets = TestSecrets(), accounts = MemoryAccountIndexStore(), downloads = DeletionDownloads(), gate = DeletionGate()
+120 |     let credentials = try WireJSON.encoder().encode(Fixture.credentials())
+121 |     try await secrets.write(credentials, for: first.key); try await secrets.write(credentials, for: second.key)
+    |     `- warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+122 |     try await accounts.save(AccountIndex(accounts: [first, second], activeID: first.id))
+123 |     let otherBinding = PushRegistrationEntry(origin: second.server, userID: second.user.id, deviceIDs: [UUID()], enabled: true)
+
+/Users/aleksandranickij/htdocs/meetspace_ios_mobile/Packages/MeetSpaceKit/Tests/IntegrationTests/AccountDeletionTests.swift:121:59: warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+119 |     let secrets = TestSecrets(), accounts = MemoryAccountIndexStore(), downloads = DeletionDownloads(), gate = DeletionGate()
+120 |     let credentials = try WireJSON.encoder().encode(Fixture.credentials())
+121 |     try await secrets.write(credentials, for: first.key); try await secrets.write(credentials, for: second.key)
+    |                                                           `- warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+122 |     try await accounts.save(AccountIndex(accounts: [first, second], activeID: first.id))
+123 |     let otherBinding = PushRegistrationEntry(origin: second.server, userID: second.user.id, deviceIDs: [UUID()], enabled: true)
+
+/Users/aleksandranickij/htdocs/meetspace_ios_mobile/Packages/MeetSpaceKit/Tests/IntegrationTests/AccountDeletionTests.swift:173:9: warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+171 |         let account = try Fixture.account(UUID()), secrets = TestSecrets(), accounts = MemoryAccountIndexStore()
+172 |         let credentials = try WireJSON.encoder().encode(Fixture.credentials())
+173 |         try await secrets.write(credentials, for: account.key)
+    |         `- warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+174 |         try await accounts.save(AccountIndex(accounts: [account], activeID: account.id))
+175 |         let files = AccountFileStore(account: account)
+
+/Users/aleksandranickij/htdocs/meetspace_ios_mobile/Packages/MeetSpaceKit/Tests/IntegrationTests/AccountDeletionTests.swift:300:13: warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+298 |                 PushRegistrationEntry(origin: account.server, userID: account.user.id, enabled: enabled)]))
+299 |             let credentials = try WireJSON.encoder().encode(Fixture.credentials())
+300 |             try await secrets.write(credentials, for: account.key)
+    |             `- warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+301 |             try await accounts.save(AccountIndex(accounts: [account], activeID: account.id))
+302 |             let transport = RoutedTransport { request, _ in
+
+/Users/aleksandranickij/htdocs/meetspace_ios_mobile/Packages/MeetSpaceKit/Tests/IntegrationTests/AccountDeletionTests.swift:367:5: warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+365 |     let secrets = TestSecrets(), accounts = MemoryAccountIndexStore()
+366 |     let credentials = try WireJSON.encoder().encode(Fixture.credentials())
+367 |     try await secrets.write(credentials, for: deleted.key); try await secrets.write(credentials, for: other.key)
+    |     `- warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+368 |     try await accounts.save(AccountIndex(accounts: [deleted, other], activeID: deleted.id))
+369 |     // No OS token exists after restart, so this unknown binding cannot be revoked by retrying POST.
+
+/Users/aleksandranickij/htdocs/meetspace_ios_mobile/Packages/MeetSpaceKit/Tests/IntegrationTests/AccountDeletionTests.swift:367:61: warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+365 |     let secrets = TestSecrets(), accounts = MemoryAccountIndexStore()
+366 |     let credentials = try WireJSON.encoder().encode(Fixture.credentials())
+367 |     try await secrets.write(credentials, for: deleted.key); try await secrets.write(credentials, for: other.key)
+    |                                                             `- warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+368 |     try await accounts.save(AccountIndex(accounts: [deleted, other], activeID: deleted.id))
+369 |     // No OS token exists after restart, so this unknown binding cannot be revoked by retrying POST.
+
+/Users/aleksandranickij/htdocs/meetspace_ios_mobile/Packages/MeetSpaceKit/Tests/IntegrationTests/AccountDeletionTests.swift:408:5: warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+406 |     let secrets = TestSecrets(), accounts = MemoryAccountIndexStore(), push = MemoryPushRegistrationStore()
+407 |     let credentials = try WireJSON.encoder().encode(Fixture.credentials())
+408 |     try await secrets.write(credentials, for: deleted.key); try await secrets.write(credentials, for: other.key)
+    |     `- warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+409 |     try await accounts.save(AccountIndex(accounts: [deleted, other], activeID: deleted.id))
+410 |     try await push.recordDeletionConfirmation(PushAccountDeletionConfirmation(origin: deleted.server, userID: deleted.user.id))
+
+/Users/aleksandranickij/htdocs/meetspace_ios_mobile/Packages/MeetSpaceKit/Tests/IntegrationTests/AccountDeletionTests.swift:408:61: warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+406 |     let secrets = TestSecrets(), accounts = MemoryAccountIndexStore(), push = MemoryPushRegistrationStore()
+407 |     let credentials = try WireJSON.encoder().encode(Fixture.credentials())
+408 |     try await secrets.write(credentials, for: deleted.key); try await secrets.write(credentials, for: other.key)
+    |                                                             `- warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+409 |     try await accounts.save(AccountIndex(accounts: [deleted, other], activeID: deleted.id))
+410 |     try await push.recordDeletionConfirmation(PushAccountDeletionConfirmation(origin: deleted.server, userID: deleted.user.id))
+
+[#UnnecessaryEffectMarker]: <https://docs.swift.org/compiler/documentation/diagnostics/unnecessary-effect-marker>
+/Users/aleksandranickij/htdocs/meetspace_ios_mobile/Packages/MeetSpaceKit/Tests/IntegrationTests/DirectCallCoordinatorTests.swift:231:98: warning: '#require(_:_:)' is redundant because 'ready' never equals 'nil' (from macro 'require')
+229 |     }
+230 |     func acknowledge() throws {
+231 |         continuation.yield(try CallFixture.event("ack", ["type": "media.ready"], reply: #require(ready)))
+    |                                                                                                  `- warning: '#require(_:_:)' is redundant because 'ready' never equals 'nil' (from macro 'require')
+232 |     }
+233 |     func receive() async throws -> Data {
+[228 / 232] IntegrationTests-product
+/Users/aleksandranickij/htdocs/meetspace_ios_mobile/Packages/MeetSpaceKit/Package.swift: IntegrationTests-product: ld: warning: search path '/Library/Developer/CommandLineTools/Developer/usr/lib' not found
+/Users/aleksandranickij/htdocs/meetspace_ios_mobile/Packages/MeetSpaceKit/Package.swift: IntegrationTests-product: ld: warning: search path '/Library/Developer/CommandLineTools/Developer/Library/Frameworks' not found
+Build complete! (11,96 с)
+◇ Test run started.
+↳ Testing Library Version: 2084
+↳ Target Platform: arm64e-apple-macos14.0
+◇ Test pushDeletionRecoveryJournalFallbackSurvivesEitherSingleWriteFailureAndLaterNormalSaves() started.
+◇ Test stage08AccountDeletionPushPauseCannotRestoreAnotherScopeOrOverrideDisable() started.
+◇ Suite "Native calling boundaries" started.
+◇ Test stage08AccountDeletionFailurePreservesWorkspaceCredentialsAndCachedFiles() started.
+◇ Test stage08P2IdentityUnauthorizedIsNotDeletionConfirmation() started.
+➜ Test stage08ActualBackendAccountDeletion() skipped.
+◇ Test pushRegistrationRequiresExplicitConsentAndPersistsBeforeSendingToken() started.
+◇ Test pushDeletionRecoveryJournalMigrationValidationAndMonotonicMemoryReceipt() started.
+◇ Test stage08AccountDeletionKeepsAffirmativeResultWhenConcurrentReadSeesRevocation() started.
+◇ Test pushDeletionRecoveryRetainsMemoryProofAcrossFiniteFailureUntilExplicitRetry() started.
+◇ Test pushDetachDrainsLateRegistrationAndRevokesItsReceipt() started.
+◇ Test pushDeletionRecoveryCannotInferUnpersistedProofAfterProcessLossOr401() started.
+◇ Test pushDeletionRecoveryFencesRegistrationSuspendedAtPrePOSTJournalWrite() started.
+◇ Test pushDeletionRecoveryProofReadIsIndependentOfBrokenJournalAndNeverTreatsReadFailureAsFalse() started.
+◇ Test pushOfflineCleanupSurvivesRestartAndBlocksEveryOtherAccountAndServer() started.
+◇ Test stage08AccountDeletionDrainsLatePushWriteBeforeForgettingConfirmedScope() started.
+◇ Test pushTokenRotationRevokesOldReceiptBeforeNewRegistration() started.
+◇ Test stage08P2IdentityConfirmedDeletionRecoversJournalForAnotherAccountAfterRestart() started.
+◇ Test stage08P2IdentityNeverRestoresConfirmedDeletedScopeOffline() started.
+◇ Test callAndPushRepositoriesRejectGuestCredentialsBeforeAnyRequest() started.
+◇ Test stage08AccountDeletionRejectionsNeverReplayOrExpireValidSession() started.
+◇ Test pushDeletionRecoveryReplaysDurableProofAfterPruneFailureAndRestartWithoutRepository() started.
+◇ Test stage08AccountDeletionInvalidPasswordNeverSendsRequest() started.
+◇ Test pushDeletionRecoveryFencesLateOSTokenEnableAndPausedIntent() started.
+◇ Test pushForegroundPermissionRevocationStopsDeliveryAndCleansOwnBinding() started.
+◇ Test pushJournalFailurePreventsPOSTOrRevokesUnpersistedReceipt() started.
+◇ Test stage08AccountDeletionSendsOneScopedPasswordMutationAfterPreflightRefresh() started.
+◇ Test pushNoopGatewayOrDeniedPermissionNeverRegisters() started.
+◇ Test stage08AccountDeletionRejectionAndUnknownRestorePriorPushIntentWithoutPrompt() started.
+◇ Test pushDeletionRecoveryRetriesOneFailedProofWriteBeforePruning() started.
+◇ Test pushDeletionRecoveryRetriesLoadedModelAndAllowsOnlyDifferentConfirmedCleanScope() started.
+◇ Test stage08AccountDeletionRemovesOnlyConfirmedScopeAndFencesIdentityChanges() started.
+◇ Test stage08AccountDeletionUnknownOutcomeIsNeverReportedAsSuccessOrRetried() started.
+◇ Test pushDeletionRecoveryPersistsPendingProofBeforeOneFailedLedgerQuery() started.
+◇ Test pushUnknownResponseCanRecoverOnlyWithMatchingFreshOSToken() started.
+◇ Test stage08AccountDeletionWaitsForLatePushWriteAndCleanupBeforeDELETE() started.
+◇ Test pushCompletionIsSafeAcrossConcurrentCallbacks() started.
+◇ Test pushReportsSynchronouslyAndCompletesOnlyAfterCallKitResult() started.
+◇ Test rejectedIncomingCallStillCompletesPushExactlyOnce() started.
+✔ Test pushCompletionIsSafeAcrossConcurrentCallbacks() passed after 0.001 seconds.
+✔ Test pushDeletionRecoveryJournalMigrationValidationAndMonotonicMemoryReceipt() passed after 0.002 seconds.
+✔ Test stage08AccountDeletionInvalidPasswordNeverSendsRequest() passed after 0.009 seconds.
+✔ Test callAndPushRepositoriesRejectGuestCredentialsBeforeAnyRequest() passed after 0.009 seconds.
+✔ Test stage08AccountDeletionSendsOneScopedPasswordMutationAfterPreflightRefresh() passed after 0.013 seconds.
+✔ Test stage08AccountDeletionKeepsAffirmativeResultWhenConcurrentReadSeesRevocation() passed after 0.017 seconds.
+✔ Test stage08AccountDeletionUnknownOutcomeIsNeverReportedAsSuccessOrRetried() passed after 0.022 seconds.
+✔ Test pushReportsSynchronouslyAndCompletesOnlyAfterCallKitResult() passed after 0.023 seconds.
+✔ Test rejectedIncomingCallStillCompletesPushExactlyOnce() passed after 0.024 seconds.
+✔ Suite "Native calling boundaries" passed after 0.025 seconds.
+✔ Test stage08AccountDeletionRejectionsNeverReplayOrExpireValidSession() passed after 0.026 seconds.
+✔ Test pushDeletionRecoveryPersistsPendingProofBeforeOneFailedLedgerQuery() passed after 0.033 seconds.
+✔ Test pushNoopGatewayOrDeniedPermissionNeverRegisters() passed after 0.034 seconds.
+✔ Test pushDeletionRecoveryRetriesOneFailedProofWriteBeforePruning() passed after 0.034 seconds.
+✔ Test stage08P2IdentityUnauthorizedIsNotDeletionConfirmation() passed after 0.035 seconds.
+✔ Test pushDeletionRecoveryRetainsMemoryProofAcrossFiniteFailureUntilExplicitRetry() passed after 0.035 seconds.
+✔ Test pushDeletionRecoveryProofReadIsIndependentOfBrokenJournalAndNeverTreatsReadFailureAsFalse() passed after 0.035 seconds.
+✔ Test pushDeletionRecoveryCannotInferUnpersistedProofAfterProcessLossOr401() passed after 0.035 seconds.
+✔ Test pushDeletionRecoveryReplaysDurableProofAfterPruneFailureAndRestartWithoutRepository() passed after 0.036 seconds.
+✔ Test pushDeletionRecoveryRetriesLoadedModelAndAllowsOnlyDifferentConfirmedCleanScope() passed after 0.036 seconds.
+✔ Test stage08AccountDeletionPushPauseCannotRestoreAnotherScopeOrOverrideDisable() passed after 0.037 seconds.
+✔ Test stage08P2IdentityNeverRestoresConfirmedDeletedScopeOffline() passed after 0.039 seconds.
+✔ Test pushDeletionRecoveryJournalFallbackSurvivesEitherSingleWriteFailureAndLaterNormalSaves() passed after 0.039 seconds.
+✔ Test pushRegistrationRequiresExplicitConsentAndPersistsBeforeSendingToken() passed after 0.042 seconds.
+✔ Test stage08P2IdentityConfirmedDeletionRecoversJournalForAnotherAccountAfterRestart() passed after 0.043 seconds.
+✔ Test pushTokenRotationRevokesOldReceiptBeforeNewRegistration() passed after 0.048 seconds.
+✔ Test pushDeletionRecoveryFencesRegistrationSuspendedAtPrePOSTJournalWrite() passed after 0.048 seconds.
+✔ Test pushJournalFailurePreventsPOSTOrRevokesUnpersistedReceipt() passed after 0.048 seconds.
+✔ Test pushOfflineCleanupSurvivesRestartAndBlocksEveryOtherAccountAndServer() passed after 0.048 seconds.
+✔ Test stage08AccountDeletionRemovesOnlyConfirmedScopeAndFencesIdentityChanges() passed after 0.048 seconds.
+✔ Test stage08AccountDeletionFailurePreservesWorkspaceCredentialsAndCachedFiles() passed after 0.052 seconds.
+✔ Test pushDeletionRecoveryFencesLateOSTokenEnableAndPausedIntent() passed after 0.059 seconds.
+✔ Test pushDetachDrainsLateRegistrationAndRevokesItsReceipt() passed after 0.063 seconds.
+✔ Test stage08AccountDeletionWaitsForLatePushWriteAndCleanupBeforeDELETE() passed after 0.067 seconds.
+✔ Test pushForegroundPermissionRevocationStopsDeliveryAndCleansOwnBinding() passed after 0.067 seconds.
+✔ Test stage08AccountDeletionDrainsLatePushWriteBeforeForgettingConfirmedScope() passed after 0.069 seconds.
+✔ Test pushUnknownResponseCanRecoverOnlyWithMatchingFreshOSToken() passed after 0.069 seconds.
+✔ Test stage08AccountDeletionRejectionAndUnknownRestorePriorPushIntentWithoutPrompt() passed after 0.117 seconds.
+✔ Test run with 38 tests in 1 suite passed after 0.118 seconds.

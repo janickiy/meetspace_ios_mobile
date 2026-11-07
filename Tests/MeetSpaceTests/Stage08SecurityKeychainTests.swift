@@ -26,6 +26,29 @@ import MeetSpaceStorage
         try assertProtection(service: service, account: account)
     }
 
+    func testDeletionConfirmationSurvivesJournalRewriteWithDeviceOnlyProtection() async throws {
+        let service = "com.meetspace.ios.tests.deletion-security.\(UUID().uuidString)", account = "fixture-journal"
+        let ledgerAccount = account + "-confirmed-deletions-v1"
+        let store = KeychainPushRegistrationStore(service: service, account: account)
+        defer {
+            removeFixture(service: service, account: account)
+            removeFixture(service: service, account: ledgerAccount)
+        }
+        let origin = try ServerOrigin("https://deletion-keychain.fixture"), userID = UUID()
+        let confirmed = PushAccountDeletionConfirmation(origin: origin, userID: userID)
+        try await store.recordDeletionConfirmation(confirmed)
+        try assertProtection(service: service, account: ledgerAccount)
+        // Real SecItemUpdate, plus an unrelated journal rewrite, must preserve the proof.
+        try await store.recordDeletionConfirmation(confirmed)
+        try await store.save(PushRegistrationJournal())
+        try assertProtection(service: service, account: ledgerAccount)
+        let reopened = KeychainPushRegistrationStore(service: service, account: account)
+        let confirmations = try await reopened.loadDeletionConfirmations()
+        let journal = try await reopened.load()
+        XCTAssertEqual(confirmations, [confirmed])
+        XCTAssertTrue(journal.entries.isEmpty)
+    }
+
     private func query(service: String, account: String) -> [String: Any] {
         [kSecClass as String: kSecClassGenericPassword, kSecAttrService as String: service,
          kSecAttrAccount as String: account, kSecAttrSynchronizable as String: kSecAttrSynchronizableAny]

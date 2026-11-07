@@ -168,6 +168,17 @@ import MeetSpaceCalling
     }
 
     private func activateStored(_ account: AccountRecord, allowOffline: Bool) async throws {
+        // A persisted DELETE confirmation takes precedence over leftover credentials/index
+        // entries after a failed local write. Never restore that workspace in offline mode.
+        if try await notifications.isAccountDeletionConfirmed(origin: account.server, userID: account.user.id) {
+            var cleaned = true
+            do { try await dependencies.credentials.delete(account.key) } catch { cleaned = false }
+            do { try await AccountFileStore(account: account).clear() } catch { cleaned = false }
+            index.remove(account.id)
+            do { try await dependencies.accounts.save(index) } catch { cleaned = false }
+            information = cleaned ? "Аккаунт удалён на сервере." : "Сервер подтвердил удаление аккаунта. Не удалось полностью очистить локальные данные."
+            throw cleaned ? ClientError.sessionExpired : ClientError.storage
+        }
         guard let data = try await dependencies.credentials.read(account.key) else { throw ClientError.missingSession }
         let saved = try WireJSON.decoder().decode(SessionCredentials.self, from: data).validated()
         let candidate = client(account, credentials: saved)

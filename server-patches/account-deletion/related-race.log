@@ -1,0 +1,96 @@
+=== RUN   TestAuditUserBlockPublicAuthAndGuestCompatibility
+--- PASS: TestAuditUserBlockPublicAuthAndGuestCompatibility (0.31s)
+=== RUN   TestAuditSessionRevocation
+--- PASS: TestAuditSessionRevocation (0.27s)
+=== RUN   TestAuditRepositoryAuthorization
+=== RUN   TestAuditRepositoryAuthorization/recording_member_allowed
+=== RUN   TestAuditRepositoryAuthorization/recording_outsider_denied
+=== RUN   TestAuditRepositoryAuthorization/recording_stop_non_owner_denied
+=== RUN   TestAuditRepositoryAuthorization/meeting_outsider_cannot_finish
+=== RUN   TestAuditRepositoryAuthorization/chat_outsider_denied
+=== RUN   TestAuditRepositoryAuthorization/chat_other_sender_edit_denied
+=== RUN   TestAuditRepositoryAuthorization/direct_outsider_denied
+=== RUN   TestAuditRepositoryAuthorization/group_outsider_denied
+=== RUN   TestAuditRepositoryAuthorization/group_member_cannot_promote_self
+=== RUN   TestAuditRepositoryAuthorization/group_avatar_outsider_denied
+=== RUN   TestAuditRepositoryAuthorization/attachment_other_owner_denied
+=== RUN   TestAuditRepositoryAuthorization/folder_other_owner_denied
+=== RUN   TestAuditRepositoryAuthorization/group_removed_member_denied
+=== RUN   TestAuditRepositoryAuthorization/kicked_meeting_member_denied
+--- PASS: TestAuditRepositoryAuthorization (0.30s)
+    --- PASS: TestAuditRepositoryAuthorization/recording_member_allowed (0.00s)
+    --- PASS: TestAuditRepositoryAuthorization/recording_outsider_denied (0.00s)
+    --- PASS: TestAuditRepositoryAuthorization/recording_stop_non_owner_denied (0.00s)
+    --- PASS: TestAuditRepositoryAuthorization/meeting_outsider_cannot_finish (0.00s)
+    --- PASS: TestAuditRepositoryAuthorization/chat_outsider_denied (0.00s)
+    --- PASS: TestAuditRepositoryAuthorization/chat_other_sender_edit_denied (0.00s)
+    --- PASS: TestAuditRepositoryAuthorization/direct_outsider_denied (0.00s)
+    --- PASS: TestAuditRepositoryAuthorization/group_outsider_denied (0.00s)
+    --- PASS: TestAuditRepositoryAuthorization/group_member_cannot_promote_self (0.00s)
+    --- PASS: TestAuditRepositoryAuthorization/group_avatar_outsider_denied (0.00s)
+    --- PASS: TestAuditRepositoryAuthorization/attachment_other_owner_denied (0.01s)
+    --- PASS: TestAuditRepositoryAuthorization/folder_other_owner_denied (0.01s)
+    --- PASS: TestAuditRepositoryAuthorization/group_removed_member_denied (0.01s)
+    --- PASS: TestAuditRepositoryAuthorization/kicked_meeting_member_denied (0.00s)
+=== RUN   TestAuditDeviceSaveSerializesWithAccountDeletion
+=== RUN   TestAuditDeviceSaveSerializesWithAccountDeletion/physical/save-first
+    device_account_concurrency_integration_test.go:143: observed second transaction waiting for first transaction in pg_blocking_pids
+=== RUN   TestAuditDeviceSaveSerializesWithAccountDeletion/physical/delete-first
+    device_account_concurrency_integration_test.go:143: observed second transaction waiting for first transaction in pg_blocking_pids
+=== RUN   TestAuditDeviceSaveSerializesWithAccountDeletion/tombstone/save-first
+    device_account_concurrency_integration_test.go:143: observed second transaction waiting for first transaction in pg_blocking_pids
+=== RUN   TestAuditDeviceSaveSerializesWithAccountDeletion/tombstone/delete-first
+    device_account_concurrency_integration_test.go:143: observed second transaction waiting for first transaction in pg_blocking_pids
+--- PASS: TestAuditDeviceSaveSerializesWithAccountDeletion (1.18s)
+    --- PASS: TestAuditDeviceSaveSerializesWithAccountDeletion/physical/save-first (0.30s)
+    --- PASS: TestAuditDeviceSaveSerializesWithAccountDeletion/physical/delete-first (0.31s)
+    --- PASS: TestAuditDeviceSaveSerializesWithAccountDeletion/tombstone/save-first (0.30s)
+    --- PASS: TestAuditDeviceSaveSerializesWithAccountDeletion/tombstone/delete-first (0.28s)
+=== RUN   TestAuditDeviceRegistrationRechecksAccountState
+=== RUN   TestAuditDeviceRegistrationRechecksAccountState/active
+=== RUN   TestAuditDeviceRegistrationRechecksAccountState/missing
+=== RUN   TestAuditDeviceRegistrationRechecksAccountState/tombstone
+=== RUN   TestAuditDeviceRegistrationRechecksAccountState/blocked
+=== RUN   TestAuditDeviceRegistrationRechecksAccountState/guest
+--- PASS: TestAuditDeviceRegistrationRechecksAccountState (1.28s)
+    --- PASS: TestAuditDeviceRegistrationRechecksAccountState/active (0.26s)
+    --- PASS: TestAuditDeviceRegistrationRechecksAccountState/missing (0.26s)
+    --- PASS: TestAuditDeviceRegistrationRechecksAccountState/tombstone (0.26s)
+    --- PASS: TestAuditDeviceRegistrationRechecksAccountState/blocked (0.26s)
+    --- PASS: TestAuditDeviceRegistrationRechecksAccountState/guest (0.24s)
+=== RUN   TestAuditErrorLogIdempotencyPrivacyFiltersAndCursor
+--- PASS: TestAuditErrorLogIdempotencyPrivacyFiltersAndCursor (0.27s)
+=== RUN   TestAuditErrorLogStrictFourteenDayExpiryAndReset
+--- PASS: TestAuditErrorLogStrictFourteenDayExpiryAndReset (0.26s)
+=== RUN   TestAuditErrorLogHardCapAndConcurrentWriters
+--- PASS: TestAuditErrorLogHardCapAndConcurrentWriters (0.46s)
+=== RUN   TestAuditErrorLogGoPipelineFlushAndPrivacy
+--- PASS: TestAuditErrorLogGoPipelineFlushAndPrivacy (0.30s)
+=== RUN   TestAuditPlatformSettingsHTTPContract
+--- PASS: TestAuditPlatformSettingsHTTPContract (0.27s)
+=== RUN   TestAuditProfileAvatars
+--- PASS: TestAuditProfileAvatars (0.29s)
+PASS
+ok  	github.com/janickiy/meet-space/internal/infrastructure/postgres	6.632s
+=== RUN   TestEmailCapabilitiesFollowRuntimeMode
+--- PASS: TestEmailCapabilitiesFollowRuntimeMode (0.00s)
+PASS
+ok  	github.com/janickiy/meet-space/internal/usecase/integrations	1.241s
+?   	github.com/janickiy/meet-space/internal/app/integrations	[no test files]
+?   	github.com/janickiy/meet-space/internal/app/httpresponse	[no test files]
+=== RUN   TestBlockedLoginHasExplicitStatusWithoutIssuingCredentials
+--- PASS: TestBlockedLoginHasExplicitStatusWithoutIssuingCredentials (0.00s)
+=== RUN   TestDuplicateBlockedEmailPrecedesUnavailableVerification
+--- PASS: TestDuplicateBlockedEmailPrecedesUnavailableVerification (0.00s)
+=== RUN   TestPasswordRecoveryRejectsBlockedAndNeverClaimsDelivery
+=== RUN   TestPasswordRecoveryRejectsBlockedAndNeverClaimsDelivery/blocked
+=== RUN   TestPasswordRecoveryRejectsBlockedAndNeverClaimsDelivery/active
+=== RUN   TestPasswordRecoveryRejectsBlockedAndNeverClaimsDelivery/missing
+=== RUN   TestPasswordRecoveryRejectsBlockedAndNeverClaimsDelivery/database_failure
+--- PASS: TestPasswordRecoveryRejectsBlockedAndNeverClaimsDelivery (0.00s)
+    --- PASS: TestPasswordRecoveryRejectsBlockedAndNeverClaimsDelivery/blocked (0.00s)
+    --- PASS: TestPasswordRecoveryRejectsBlockedAndNeverClaimsDelivery/active (0.00s)
+    --- PASS: TestPasswordRecoveryRejectsBlockedAndNeverClaimsDelivery/missing (0.00s)
+    --- PASS: TestPasswordRecoveryRejectsBlockedAndNeverClaimsDelivery/database_failure (0.00s)
+PASS
+ok  	github.com/janickiy/meet-space/internal/usecase/auth	1.248s

@@ -25,6 +25,8 @@ struct AccountDeletionPushPause: Sendable {
     @ObservationIgnored private let store: any PushRegistrationStore
     @ObservationIgnored private var repository: (any NotificationDevicesServing)?
     @ObservationIgnored private var journal = PushRegistrationJournal()
+    @ObservationIgnored private var confirmedDeletions: [PushAccountDeletionConfirmation] = []
+    @ObservationIgnored private var pendingDeletionConfirmations: [PushAccountDeletionConfirmation] = []
     @ObservationIgnored private var loaded = false
     @ObservationIgnored private var epoch = UUID()
     @ObservationIgnored private var acceptingToken: (epoch: UUID, cleanupOnly: Bool)?
@@ -52,6 +54,7 @@ struct AccountDeletionPushPause: Sendable {
     /// are still valid. Failed cleanup remains journaled; it must not prevent the
     /// authoritative account DELETE or be mistaken for a successful device revoke.
     func prepareAccountDeletion(origin: ServerOrigin, userID: UUID) async -> AccountDeletionPushPause? {
+        guard !confirmedDeletions.contains(where: { $0.origin == origin && $0.userID == userID }) else { return nil }
         guard repository.map({ $0.origin == origin && $0.userID == userID }) ?? true else { return nil }
         var intent = enabled
         invalidate(); enabled = false; let generation = epoch
@@ -73,7 +76,8 @@ struct AccountDeletionPushPause: Sendable {
     /// A new account, explicit disable, or other generation change invalidates the token.
     @discardableResult func restoreAccountDeletionPause(_ pause: AccountDeletionPushPause) async -> Bool {
         guard pause.epoch == epoch, let target = repository,
-              target.origin == pause.origin, target.userID == pause.userID else { return false }
+              target.origin == pause.origin, target.userID == pause.userID,
+              !deletionConfirmed(target) else { return false }
         return await serial { [self] in
             guard pause.epoch == epoch, repository.map({ same($0, target) }) == true else { return false }
             guard pause.enabledIntent else { enabled = false; return true }
@@ -89,21 +93,29 @@ struct AccountDeletionPushPause: Sendable {
     /// Only after DELETE /auth/me success: the server atomically removed this account's
     /// push devices known to that transaction. The caller must drain this client's writes
     /// before DELETE; this cannot fence concurrent writes from another client or server
-    /// requests whose response was lost. Forget only this scope, without a revoked token.
+    /// requests whose response was lost. Persist exact-scope proof before pruning the journal.
+    /// If every proof write fails, memory retains it for a later retry; process death before
+    /// any durable write cannot be recovered by inferring deletion from a subsequent 401.
     @discardableResult public func accountDeletionConfirmed(origin: ServerOrigin, userID: UUID) async -> Bool {
-        let isCurrent = repository.map { $0.origin == origin && $0.userID == userID } == true
-        if isCurrent { invalidate(); enabled = false }
+        remember(PushAccountDeletionConfirmation(origin: origin, userID: userID), pending: true)
         return await serial { [self] in
             do {
                 try await load()
-                var next = journal
-                next.entries.removeAll { $0.origin == origin && $0.userID == userID }
-                try await store.save(next); journal = next
-                if repository.map({ $0.origin == origin && $0.userID == userID }) == true { repository = nil }
                 if !hasBindings { status = "Уведомления выключены"; error = nil }
                 return true
             } catch { failedStorage(); return false }
         }
+    }
+
+    /// Identity checks this before restoring credentials/offline state. This deliberately
+    /// reads only the confirmation store, not an unrelated cleanup journal or network 401.
+    public func isAccountDeletionConfirmed(origin: ServerOrigin, userID: UUID) async throws -> Bool {
+        let scope = PushAccountDeletionConfirmation(origin: origin, userID: userID)
+        if confirmedDeletions.contains(scope) { return true }
+        let saved = try await store.loadDeletionConfirmations()
+        _ = try PushRegistrationJournal(confirmedDeletions: saved).validated()
+        for confirmation in saved { remember(confirmation) }
+        return confirmedDeletions.contains(scope)
     }
 
     /// Call on foreground entry to notice permission changes made in iOS Settings. This never
@@ -124,6 +136,7 @@ struct AccountDeletionPushPause: Sendable {
         return await serial { [self] in
             do {
                 try await load()
+                guard !deletionConfirmed(next) else { deletedAccount(); return false }
                 if let previous = repository, !same(previous, next) { _ = await clean(previous) }
                 guard generation == epoch else { return false }
                 repository = next; enabled = entry(next).enabled; error = nil
@@ -201,11 +214,14 @@ struct AccountDeletionPushPause: Sendable {
     }
 
     public func retryCleanup() async {
-        guard let repository else { blocked(); return }
         invalidate(); enabled = false; let generation = epoch
         _ = await serial { [self] in
             do {
                 try await load()
+                guard let repository else {
+                    if hasBindings { blocked(); return false }
+                    error = nil; status = "Привязки этого приложения удалены"; return true
+                }
                 if await clean(repository), !hasBindings {
                     error = nil; status = "Привязки этого приложения удалены"; return true
                 }
@@ -217,6 +233,7 @@ struct AccountDeletionPushPause: Sendable {
     }
 
     private func resume(_ target: any NotificationDevicesServing, generation: UUID, askPermission: Bool) async -> Bool {
+        guard generation == epoch, !deletionConfirmed(target) else { return false }
         do {
             guard try await target.capabilities().push == "http" else {
                 error = "На сервере не настроен внешний push-шлюз"; status = "Push недоступен"; enabled = false; return false
@@ -276,6 +293,9 @@ struct AccountDeletionPushPause: Sendable {
     }
 
     private func register(_ token: Data, target: any NotificationDevicesServing, generation: UUID) async -> Bool {
+        guard generation == epoch, !deletionConfirmed(target) else { return false }
+        do { try await load() } catch { failedStorage(); return false }
+        guard generation == epoch, !deletionConfirmed(target) else { return false }
         let fingerprint = Self.tokenDigest(token)
         let existing = entry(target)
         if existing.pendingTokenFingerprint == nil, existing.registeredTokenFingerprint == fingerprint,
@@ -285,6 +305,7 @@ struct AccountDeletionPushPause: Sendable {
         do {
             var pending = entry(target); pending.pendingTokenFingerprint = fingerprint
             try await save(pending) // Must succeed before sending the token to the backend.
+            guard generation == epoch, enabled, !deletionConfirmed(target) else { return false }
             let device = try await target.register(token: Self.hex(token))
             guard await saveReceipt(device.id, fingerprint: fingerprint, target: target) else { return false }
             if generation != epoch || !enabled { return await clean(target) }
@@ -294,6 +315,9 @@ struct AccountDeletionPushPause: Sendable {
     }
 
     private func clean(_ target: any NotificationDevicesServing) async -> Bool {
+        // A confirmed deletion is local replay work, never a reason to POST an old token
+        // in order to recover its device ID. load() must durably prune it first.
+        guard !deletionConfirmed(target) else { return !entry(target).hasBinding }
         do {
             // Never list/revoke arbitrary account devices; only receipts from this installation.
             for id in entry(target).deviceIDs {
@@ -308,6 +332,7 @@ struct AccountDeletionPushPause: Sendable {
                 // Device identity includes the provider mode. Never recover a previous HTTP
                 // registration under a changed mock/noop mode and silently lose the old receipt.
                 guard try await target.capabilities().push == "http" else { return false }
+                guard !deletionConfirmed(target) else { return false }
                 // Same user/provider/token yields the same server ID. This recovers an unknown
                 // response; a rotated token must never be substituted for the lost one.
                 let recovered = try await target.register(token: Self.hex(latestToken))
@@ -322,6 +347,11 @@ struct AccountDeletionPushPause: Sendable {
     }
 
     private func saveReceipt(_ id: UUID, fingerprint: String, target: any NotificationDevicesServing) async -> Bool {
+        guard !deletionConfirmed(target) else {
+            // Defensive handling of a caller that failed to drain before DELETE. Never
+            // recreate a deleted journal scope from this stale registration callback.
+            try? await target.revoke(id); return false
+        }
         do {
             var value = entry(target)
             if !value.deviceIDs.contains(id) { value.deviceIDs.append(id) }
@@ -337,7 +367,7 @@ struct AccountDeletionPushPause: Sendable {
     private func requestRecoveryToken(_ target: any NotificationDevicesServing, generation: UUID) async {
         await platform.refreshAuthorization()
         guard generation == epoch, allowed(platform.authorization),
-              repository.map({ same($0, target) }) == true else { return }
+              repository.map({ same($0, target) }) == true, !deletionConfirmed(target) else { return }
         acceptingToken = (generation, true); platform.register()
     }
     private func invalidate() { epoch = UUID(); acceptingToken = nil; platform.unregister() }
@@ -352,12 +382,57 @@ struct AccountDeletionPushPause: Sendable {
     private func entry(_ target: any NotificationDevicesServing) -> PushRegistrationEntry {
         journal.entries.first(where: { matches($0, target) }) ?? PushRegistrationEntry(origin: target.origin, userID: target.userID)
     }
+    private func deletionConfirmed(_ target: any NotificationDevicesServing) -> Bool {
+        confirmedDeletions.contains { $0.origin == target.origin && $0.userID == target.userID }
+    }
+    private func remember(_ confirmation: PushAccountDeletionConfirmation, pending: Bool = false) {
+        if !confirmedDeletions.contains(confirmation) { confirmedDeletions.append(confirmation) }
+        if pending && !pendingDeletionConfirmations.contains(confirmation) { pendingDeletionConfirmations.append(confirmation) }
+        if repository.map({ $0.origin == confirmation.origin && $0.userID == confirmation.userID }) == true {
+            invalidate(); enabled = false; repository = nil
+        }
+    }
+    private func persistConfirmation(_ confirmation: PushAccountDeletionConfirmation) async throws {
+        // One immediate retry covers a transient single write failure. Later explicit
+        // cleanup/attach/load calls retry again; there is no unbounded background loop.
+        do { try await store.recordDeletionConfirmation(confirmation) }
+        catch { try await store.recordDeletionConfirmation(confirmation) }
+        pendingDeletionConfirmations.removeAll { $0 == confirmation }
+    }
     private func load() async throws {
-        guard !loaded else { return }
-        journal = try await store.load().validated(); loaded = true
+        // Replay even when loaded is true and no account is attached. Proof is persisted
+        // before reading/pruning the journal so its storage failure cannot erase DELETE200.
+        // Do not let an unrelated/read-once ledger query failure prevent the first proof write.
+        for confirmation in pendingDeletionConfirmations { try await persistConfirmation(confirmation) }
+        var saved = try await store.loadDeletionConfirmations()
+        _ = try PushRegistrationJournal(confirmedDeletions: saved).validated()
+        for confirmation in saved { remember(confirmation) }
+        for confirmation in confirmedDeletions where !saved.contains(confirmation) {
+            try await persistConfirmation(confirmation); saved.append(confirmation)
+        }
+        if !loaded { journal = try await store.load().validated(); loaded = true }
+        for confirmation in journal.confirmedDeletions where !confirmedDeletions.contains(confirmation) {
+            remember(confirmation, pending: true)
+            try await persistConfirmation(confirmation)
+            saved.append(confirmation)
+        }
+        // A different confirmation may arrive while a store operation is suspended.
+        // Its queued operation will persist it; do not prune or register ahead of that proof.
+        guard confirmedDeletions.allSatisfy(saved.contains) else { throw ClientError.storage }
+        var next = journal
+        next.confirmedDeletions = confirmedDeletions
+        next.entries.removeAll { entry in
+            confirmedDeletions.contains { $0.origin == entry.origin && $0.userID == entry.userID }
+        }
+        if next != journal { try await store.save(next.validated()); journal = next }
     }
     private func save(_ value: PushRegistrationEntry) async throws {
+        guard !confirmedDeletions.contains(where: { $0.origin == value.origin && $0.userID == value.userID }) else {
+            throw ClientError.scopeMismatch
+        }
         var next = journal
+        // Keep only the already-durable ledger snapshot here. A confirmation remembered
+        // during this operation is persisted by its queued replay before any scope is pruned.
         if let index = next.entries.firstIndex(where: { $0.origin == value.origin && $0.userID == value.userID }) { next.entries[index] = value }
         else { next.entries.append(value) }
         try await store.save(next); journal = next
@@ -375,6 +450,7 @@ struct AccountDeletionPushPause: Sendable {
         status = "Новая регистрация заблокирована до очистки"
     }
     private func failedStorage() { error = "Не удалось сохранить журнал push-привязок. Регистрация приостановлена"; status = "Журнал недоступен" }
+    private func deletedAccount() { enabled = false; error = "Этот аккаунт удалён на сервере"; status = "Уведомления выключены" }
     private static func tokenDigest(_ token: Data) -> String { SHA256.hash(data: Data(hex(token).utf8)).map { String(format: "%02x", $0) }.joined() }
     private static func hex(_ token: Data) -> String { token.map { String(format: "%02x", $0) }.joined() }
 }

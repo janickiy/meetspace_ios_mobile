@@ -1,0 +1,284 @@
+diff --git a/internal/infrastructure/postgres/integration_repository.go b/internal/infrastructure/postgres/integration_repository.go
+index 3ea6243..f062795 100644
+--- a/internal/infrastructure/postgres/integration_repository.go
++++ b/internal/infrastructure/postgres/integration_repository.go
+@@ -109,6 +109,28 @@ func (r *IntegrationRepository) Devices(ctx context.Context, userID string, acti
+ //     передачи данных или сохранения.
+ func (r *IntegrationRepository) SaveDevice(ctx context.Context, device d.Device) error {
+ 	return r.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
++		// Match DeleteAccount's users -> push_devices lock order. Authentication
++		// may have succeeded before deletion; retain this lock through the upsert
++		// so deletion either removes our device or we observe the erased account.
++		var account struct {
++			Registered bool
++			Blocked    bool
++			Guest      bool
++		}
++		found := tx.Raw(`SELECT password_hash<>'' AS registered, is_blocked AS blocked,
++			guest_conference_id IS NOT NULL AS guest FROM users WHERE id=? FOR UPDATE`, device.UserID).Scan(&account)
++		if found.Error != nil {
++			return found.Error
++		}
++		if found.RowsAffected == 0 || !account.Registered {
++			return apperrors.ErrUnauthorized
++		}
++		if account.Blocked {
++			return apperrors.ErrAccountBlocked
++		}
++		if account.Guest {
++			return apperrors.ErrForbidden
++		}
+ 		if err := tx.Exec("SELECT pg_advisory_xact_lock(hashtextextended(?,0))", device.UserID+":devices").Error; err != nil {
+ 			return err
+ 		}
+diff --git a/internal/infrastructure/postgres/device_account_concurrency_integration_test.go b/internal/infrastructure/postgres/device_account_concurrency_integration_test.go
+new file mode 100644
+index 0000000..512a688
+--- /dev/null
++++ b/internal/infrastructure/postgres/device_account_concurrency_integration_test.go
+@@ -0,0 +1,245 @@
++package postgres
++
++import (
++	"context"
++	"encoding/base64"
++	"errors"
++	"net/http"
++	"net/http/httptest"
++	"strings"
++	"testing"
++	"time"
++
++	"github.com/gin-gonic/gin"
++	"github.com/google/uuid"
++	integrationsapp "github.com/janickiy/meet-space/internal/app/integrations"
++	"github.com/janickiy/meet-space/internal/domain/apperrors"
++	d "github.com/janickiy/meet-space/internal/domain/integrations"
++	"github.com/janickiy/meet-space/internal/domain/users"
++	"github.com/janickiy/meet-space/internal/infrastructure/security"
++	middleware "github.com/janickiy/meet-space/internal/transport/http/middleware"
++	integrationsusecase "github.com/janickiy/meet-space/internal/usecase/integrations"
++	"gorm.io/gorm"
++)
++
++func deviceAccountFixture(t *testing.T, tombstone bool) (*gorm.DB, string, d.Device) {
++	t.Helper()
++	db := auditDatabase(t)
++	pool, err := db.DB()
++	if err != nil {
++		t.Fatal(err)
++	}
++	// Two operation connections and an independent lock observer.
++	pool.SetMaxOpenConns(4)
++	actor := uuid.NewString()
++	if err := db.Create(&users.User{ID: actor, Email: actor + "@example.invalid", PasswordHash: "synthetic"}).Error; err != nil {
++		t.Fatal(err)
++	}
++	if tombstone {
++		peer := uuid.NewString()
++		if err := db.Create(&users.User{ID: peer, Email: peer + "@example.invalid", PasswordHash: "synthetic"}).Error; err != nil {
++			t.Fatal(err)
++		}
++		// Real shared-history FKs force DeleteAccount's tombstone path.
++		if _, _, err := NewPersonalRepository(db).GetOrCreate(context.Background(), actor, peer); err != nil {
++			t.Fatal(err)
++		}
++	}
++	return db, actor, d.Device{ID: uuid.NewString(), UserID: actor, Platform: "ios", Provider: "mock", TokenCiphertext: "synthetic-ciphertext", TokenFingerprint: uuid.NewString()}
++}
++
++func deviceAccountTransaction(t *testing.T, db *gorm.DB, ctx context.Context) (*gorm.DB, int) {
++	t.Helper()
++	tx := db.WithContext(ctx).Begin()
++	if tx.Error != nil {
++		t.Fatal(tx.Error)
++	}
++	t.Cleanup(func() { _ = tx.Rollback().Error })
++	var pid int
++	if err := tx.Raw("SELECT pg_backend_pid()").Scan(&pid).Error; err != nil {
++		t.Fatal(err)
++	}
++	return tx, pid
++}
++
++// Read PostgreSQL's actual wait graph before allowing the first transaction to
++// commit. Elapsed time is never accepted as proof that the second writer waits.
++func awaitDeviceAccountLock(t *testing.T, db *gorm.DB, ctx context.Context, blocked, blocker int, done <-chan error) {
++	t.Helper()
++	tick := time.NewTicker(5 * time.Millisecond)
++	defer tick.Stop()
++	for {
++		var waiting bool
++		if err := db.WithContext(ctx).Raw("SELECT ? = ANY(pg_blocking_pids(?))", blocker, blocked).Scan(&waiting).Error; err != nil {
++			t.Fatal(err)
++		}
++		if waiting {
++			t.Log("observed second transaction waiting for first transaction in pg_blocking_pids")
++			return
++		}
++		select {
++		case err := <-done:
++			t.Fatalf("second operation finished before the first released its user lock: %v", err)
++		case <-ctx.Done():
++			t.Fatal("did not observe the required PostgreSQL lock dependency")
++		case <-tick.C:
++		}
++	}
++}
++
++func assertDeviceAccountErased(t *testing.T, db *gorm.DB, actor string, tombstone bool) {
++	t.Helper()
++	var count int64
++	if err := db.Model(&d.Device{}).Where("user_id=?", actor).Count(&count).Error; err != nil || count != 0 {
++		t.Fatalf("deleted account retains push device/token rows: count=%d error=%v", count, err)
++	}
++	var user users.User
++	err := db.Where("id=?", actor).Take(&user).Error
++	if tombstone {
++		if err != nil || user.PasswordHash != "" || user.Email != "deleted."+actor+"@invalid" {
++			t.Fatalf("shared-history account was not anonymized: %v", err)
++		}
++	} else if !errors.Is(err, gorm.ErrRecordNotFound) {
++		t.Fatalf("empty account was not physically removed: %v", err)
++	}
++}
++
++func TestAuditDeviceSaveSerializesWithAccountDeletion(t *testing.T) {
++	for _, tombstone := range []bool{false, true} {
++		kind := "physical"
++		if tombstone {
++			kind = "tombstone"
++		}
++		for _, deleteFirst := range []bool{false, true} {
++			order := "save-first"
++			if deleteFirst {
++				order = "delete-first"
++			}
++			t.Run(kind+"/"+order, func(t *testing.T) {
++				db, actor, device := deviceAccountFixture(t, tombstone)
++				ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
++				defer cancel()
++				first, firstPID := deviceAccountTransaction(t, db, ctx)
++				second, secondPID := deviceAccountTransaction(t, db, ctx)
++				// Repository transactions nest inside these outer transactions, so
++				// their real SQL and locks remain held until explicitly committed.
++				var err error
++				if deleteFirst {
++					err = NewUserRepository(first).DeleteAccount(ctx, actor, "synthetic")
++				} else {
++					err = NewIntegrationRepository(first).SaveDevice(ctx, device)
++				}
++				if err != nil {
++					t.Fatal(err)
++				}
++				done := make(chan error, 1)
++				go func() {
++					if deleteFirst {
++						done <- NewIntegrationRepository(second).SaveDevice(ctx, device)
++					} else {
++						done <- NewUserRepository(second).DeleteAccount(ctx, actor, "synthetic")
++					}
++				}()
++				awaitDeviceAccountLock(t, db, ctx, secondPID, firstPID, done)
++				if err := first.Commit().Error; err != nil {
++					t.Fatal(err)
++				}
++				select {
++				case err = <-done:
++				case <-ctx.Done():
++					t.Fatal("second operation did not finish after releasing the user lock")
++				}
++				if deleteFirst {
++					if !errors.Is(err, apperrors.ErrUnauthorized) {
++						t.Fatalf("late SaveDevice must reject the erased actor as unauthorized, got %v", err)
++					}
++				} else if err != nil {
++					t.Fatalf("DeleteAccount after SaveDevice: %v", err)
++				}
++				if err := second.Commit().Error; err != nil {
++					t.Fatal(err)
++				}
++				assertDeviceAccountErased(t, db, actor, tombstone)
++				assertDeviceRegistrationHTTP(t, db, actor, http.StatusUnauthorized)
++				assertDeviceAccountErased(t, db, actor, tombstone)
++			})
++		}
++	}
++}
++
++// This verifier deliberately models a request authenticated before the account
++// changed. RegisterDevice must still validate the actor when committing a write.
++type deviceAccountStaleVerifier struct{ actor string }
++
++func (v deviceAccountStaleVerifier) Verify(string) (string, error) { return v.actor, nil }
++
++func assertDeviceRegistrationHTTP(t *testing.T, db *gorm.DB, actor string, status int) {
++	t.Helper()
++	cipher, err := security.NewProviderTokens(base64.StdEncoding.EncodeToString([]byte(strings.Repeat("s", 32))))
++	if err != nil {
++		t.Fatal(err)
++	}
++	svc, err := integrationsusecase.NewService(NewIntegrationRepository(db), d.Providers{Capabilities: d.Capabilities{Push: "mock", Email: "noop", Calendar: "noop"}}, cipher, integrationsusecase.Options{PublicURL: "https://device-audit.example.invalid"})
++	if err != nil {
++		t.Fatal(err)
++	}
++	gin.SetMode(gin.TestMode)
++	router := gin.New()
++	router.Use(middleware.Authenticate(deviceAccountStaleVerifier{actor: actor}))
++	router.POST("/api/v1/notifications/devices", integrationsapp.NewHandler(svc).RegisterDevice)
++	req := httptest.NewRequest(http.MethodPost, "/api/v1/notifications/devices", strings.NewReader(`{"platform":"ios","token":"synthetic-device-token"}`))
++	req.Header.Set("Content-Type", "application/json")
++	req.Header.Set("Authorization", "Bearer synthetic-stale-authentication")
++	response := httptest.NewRecorder()
++	router.ServeHTTP(response, req)
++	if response.Code != status {
++		t.Fatalf("device registration HTTP status=%d expected=%d body=%s", response.Code, status, response.Body.String())
++	}
++	if status == http.StatusUnauthorized && response.Body.String() != `{"message":"authentication required or token invalid","status":"failed"}` {
++		t.Fatalf("unexpected erased-account error contract: %s", response.Body.String())
++	}
++	for _, private := range []string{"synthetic-device-token", "token_ciphertext", "token_fingerprint", "SQLSTATE", "push_devices_user_id_fkey"} {
++		if strings.Contains(response.Body.String(), private) {
++			t.Fatal("device API exposed private token or database diagnostics")
++		}
++	}
++}
++
++func TestAuditDeviceRegistrationRechecksAccountState(t *testing.T) {
++	for _, state := range []string{"active", "missing", "tombstone", "blocked", "guest"} {
++		t.Run(state, func(t *testing.T) {
++			db, actor, _ := deviceAccountFixture(t, false)
++			status := http.StatusCreated
++			var err error
++			switch state {
++			case "missing":
++				err = db.Exec("DELETE FROM users WHERE id=?", actor).Error
++				status = http.StatusUnauthorized
++			case "tombstone":
++				err = db.Exec("UPDATE users SET password_hash='' WHERE id=?", actor).Error
++				status = http.StatusUnauthorized
++			case "blocked":
++				err = db.Exec("UPDATE users SET is_blocked=true WHERE id=?", actor).Error
++				status = http.StatusForbidden
++			case "guest":
++				err = db.Exec("UPDATE users SET guest_conference_id=? WHERE id=?", uuid.NewString(), actor).Error
++				status = http.StatusForbidden
++			}
++			if err != nil {
++				t.Fatal(err)
++			}
++			assertDeviceRegistrationHTTP(t, db, actor, status)
++			var count int64
++			if err := db.Model(&d.Device{}).Where("user_id=?", actor).Count(&count).Error; err != nil {
++				t.Fatal(err)
++			}
++			want := int64(0)
++			if state == "active" {
++				want = 1
++			}
++			if count != want {
++				t.Fatalf("account state %s retains %d push devices, want %d", state, count, want)
++			}
++		})
++	}
++}

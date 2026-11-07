@@ -1,0 +1,129 @@
+{
+  "schemaVersion": 1,
+  "createdAt": "2026-11-07T01:42:27.089786+00:00",
+  "baseCommit": "9e6058c31cc07bff0f48d8f7f6a40106c55c4881",
+  "baseRef": "local main and origin/main at inspection; no fetch performed",
+  "worktree": "/Users/aleksandranickij/htdocs/meetspace-device-delete-fix-20261107",
+  "branch": "codex/device-delete-serialization",
+  "publication": "Patch prepared for iOS repository evidence only; no backend commit, push, deploy or production access.",
+  "patch": {
+    "file": "backend-device-account-serialization.patch",
+    "productionLinesAdded": 22,
+    "files": [
+      "internal/infrastructure/postgres/integration_repository.go",
+      "internal/infrastructure/postgres/device_account_concurrency_integration_test.go"
+    ],
+    "applyCheck": "PASS: applied to pristine base file in a fresh temporary directory; both resulting files matched isolated worktree bytes."
+  },
+  "diagnosis": "SaveDevice did not lock/revalidate users while DeleteAccount locked users then removed devices and physically deleted or anonymized the account. A late save recreated tombstone device credentials or failed with FK/HTTP500 after physical deletion.",
+  "behavior": "SaveDevice locks users FOR UPDATE in its transaction before device quota/advisory lock and upsert. Missing/empty-password actors return ErrUnauthorized/401; blocked actors return ErrAccountBlocked/403; guests return ErrForbidden/403. Successful save-first registration is removed by subsequent deletion; delete-first registration is rejected.",
+  "lockOrderReview": {
+    "SaveDevice": "users FOR UPDATE -> per-user :devices advisory lock -> device count/upsert",
+    "DeleteAccount": "users FOR UPDATE -> personal cleanup including push_devices -> physical users delete or tombstone",
+    "RevokeDevice": "push_devices update only; no users or advisory lock acquisition",
+    "inversionFound": false,
+    "scope": "No outbox, in-flight provider delivery or unrelated writer changes."
+  },
+  "determinism": "Each order uses two actual repository transactions nested in explicit outer transactions. Independent connection observes exact pg_blocking_pids dependency before first commit. Deadline/ticker only bound polling; elapsed delay never establishes order.",
+  "environment": {
+    "goVersion": "go version go1.26.10 darwin/arm64",
+    "postgres": {
+      "version": "PostgreSQL 17.10 on aarch64-unknown-linux-musl, compiled by gcc (Alpine 15.2.0) 15.2.0, 64-bit",
+      "defaultTransactionIsolation": "read committed",
+      "remainingAuditSchemas": 0,
+      "remainingUserRelations": 0
+    },
+    "containerName": "meetspace-device-delete-20261107-pg",
+    "image": "sha256:742f40ea20b9ff2ff31db5458d127452988a2164df9e17441e191f3b72252193 linux/arm64",
+    "network": "ephemeral loopback-only host port",
+    "storage": "new tmpfs PostgreSQL data; no named volume",
+    "database": "audit_backend; schema-per-case real migrations via existing auditDatabase guard",
+    "cleanup": "PASS: no remaining audit schemas/user relations before removal; only owned container removed; private temporary DSN file deleted."
+  },
+  "tests": {
+    "baseline": {
+      "exitCode": 1,
+      "file": "baseline.log",
+      "topLevel": {
+        "PASS": 0,
+        "FAIL": 2,
+        "SKIP": 0
+      },
+      "subtests": {
+        "PASS": 1,
+        "FAIL": 8,
+        "SKIP": 0
+      },
+      "observedBlockingDependencies": 4
+    },
+    "fixed": {
+      "exitCode": 0,
+      "file": "fixed.log",
+      "topLevel": {
+        "PASS": 2,
+        "FAIL": 0,
+        "SKIP": 0
+      },
+      "subtests": {
+        "PASS": 9,
+        "FAIL": 0,
+        "SKIP": 0
+      },
+      "observedBlockingDependencies": 4
+    },
+    "related-race": {
+      "exitCode": 0,
+      "file": "related-race.log",
+      "topLevel": {
+        "PASS": 15,
+        "FAIL": 0,
+        "SKIP": 0
+      },
+      "subtests": {
+        "PASS": 27,
+        "FAIL": 0,
+        "SKIP": 0
+      },
+      "observedBlockingDependencies": 4
+    }
+  },
+  "testCommands": [
+    "go test ./internal/infrastructure/postgres -run '^TestAuditDevice(SaveSerializesWithAccountDeletion|RegistrationRechecksAccountState)$' -count=1 -v -timeout 3m",
+    "go test -race ./internal/infrastructure/postgres ./internal/usecase/integrations ./internal/app/integrations ./internal/app/httpresponse ./internal/usecase/auth -run 'TestAuditDevice|TestAuditProfileAvatars|TestAuditSessionRevocation|TestAuditRepositoryAuthorization|TestAuditUserBlockPublicAuthAndGuestCompatibility|TestEmailCapabilitiesFollowRuntimeMode|Test.*(Blocked|DeleteAccount|HTTP|Error)' -count=1 -v -timeout 5m"
+  ],
+  "testEnvironment": "MEETSPACE_AUDIT_POSTGRES_DSN must point to a new disposable loopback PostgreSQL database named audit_backend; no application .env loaded.",
+  "sourceHashes": {
+    "internal/infrastructure/postgres/integration_repository.go": {
+      "sha256": "5d387f689fad3a73b83ce8a649379c38cb7cd0899db9656a323d9d5401ed7d00",
+      "sizeBytes": 44321
+    },
+    "internal/infrastructure/postgres/device_account_concurrency_integration_test.go": {
+      "sha256": "24c7238f19f8c1b619deb4c640f44f135b9ded8d007df59a5c666882dc7ed287",
+      "sizeBytes": 9076
+    }
+  },
+  "baseProductionFileSHA256": "036e7576f9b5099ed4b4425c1ae093a2667b395352133eecfa7e2c335a452794",
+  "limitations": [
+    "Local PostgreSQL17 integration coverage, not backend deployment or a production-backend retest.",
+    "No backend schema migration needed; queued/in-flight push delivery is outside this change.",
+    "No guarantee for transactions intentionally using non-default isolation levels; tested actual repository READ COMMITTED behavior."
+  ],
+  "files": {
+    "backend-device-account-serialization.patch": {
+      "sha256": "2d4249899e393338cfc7276c5ab925fd1324bec8f44675a2fe7d7895721a423d",
+      "sizeBytes": 11217
+    },
+    "baseline.log": {
+      "sha256": "aa605b3ca43d53b26b6a34cb624796db8919c9bbfc1a9ec3094bdb3f91a5ac4c",
+      "sizeBytes": 4065
+    },
+    "fixed.log": {
+      "sha256": "c0a02ae8ff35cae7635f7286ac02dd877e246e22a6d8dcd981b9f8578852b332",
+      "sizeBytes": 2277
+    },
+    "related-race.log": {
+      "sha256": "75aa0b31c333dfefb17b1ef933dc83fb8d5cf7cb5aa729bf54bb930c0e557263",
+      "sizeBytes": 6897
+    }
+  }
+}

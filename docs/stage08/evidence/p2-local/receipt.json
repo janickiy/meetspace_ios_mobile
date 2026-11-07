@@ -1,0 +1,78 @@
+{
+  "date": "2026-11-07",
+  "baseCommit": "b872e6c7903fd795d61d413cd0e0824bbed7d297",
+  "workingTreeDirty": true,
+  "sourceCommit": null,
+  "sourceBinding": "Exact source files below; capture before source commit. Localized deleted-account string added afterwards and foundation verifier passed; native CI will cover the complete final source.",
+  "sourceHashes": {
+    "Packages/MeetSpaceKit/Sources/Features/PushRegistrationModel.swift": "2b61b80f99567392368fe3cd8c74a491c3e8d89585a87610ecd4364e59da63d3",
+    "Packages/MeetSpaceKit/Sources/Features/IdentityModel.swift": "37b37f429fb795aa6319f239de5879d05b20b99c319e8c74881b35db67db535b",
+    "Packages/MeetSpaceKit/Sources/Storage/PushRegistrationStore.swift": "4a1cfc68f73c7382661b3a6c2735f5a1cd0501215c968bc1f098c9b33c0a462b",
+    "Packages/MeetSpaceKit/Tests/IntegrationTests/PushDeletionRecoveryTests.swift": "923952e7c3191098b378cf1ed510f0616aa8ade93cce199b9ea1c6a5c5f4ff71",
+    "Packages/MeetSpaceKit/Tests/IntegrationTests/AccountDeletionTests.swift": "41eb6b0d9de7b413d0e11c76d0a75c5c038efc79bfb5b733d4812c753f57cf32",
+    "Packages/MeetSpaceKit/Tests/IntegrationTests/PushRegistrationLifecycleTests.swift": "8b98a10fa8c928bd78fc5b4afd89bfadd18b77eb8b32efa4020ce4829697b7cf"
+  },
+  "focused": {
+    "total": 38,
+    "passed": 38,
+    "failed": 0,
+    "skipped": 0,
+    "newFaultTests": 11,
+    "newIdentityTests": 3,
+    "durationSeconds": 0.118,
+    "filter": "push|Push|AccountDeletion|stage08P2Identity"
+  },
+  "full": {
+    "registered": 198,
+    "passed": 193,
+    "failed": 0,
+    "skipped": 5,
+    "processTotals": [
+      3,
+      168,
+      8,
+      7,
+      7,
+      5
+    ],
+    "skippedTestIDs": [
+      "actualBackendConferenceRESTAndGuestScope()",
+      "actualBackendDirectCallsDevicesAndPrivateSFU()",
+      "actualBackendTwoClientsAndFiles()",
+      "stage08ActualBackendAccountDeletion()",
+      "actualBackendCalendarFoldersSettingsAndRecordings()"
+    ]
+  },
+  "fullCommand": {
+    "command": [
+      "swift",
+      "test",
+      "--package-path",
+      "Packages/MeetSpaceKit",
+      "--sdk",
+      "/Library/Developer/CommandLineTools/SDKs/MacOSX26.4.sdk",
+      "-Xswiftc",
+      "-load-plugin-library",
+      "-Xswiftc",
+      "/Library/Developer/CommandLineTools/usr/lib/swift/host/plugins/testing/libTestingMacros.dylib"
+    ],
+    "SDKROOT": "/Library/Developer/CommandLineTools/SDKs/MacOSX26.4.sdk",
+    "exitCode": 0,
+    "elapsedSeconds": 10.24
+  },
+  "files": {
+    "full.log": {
+      "sha256": "9cc26ee31fdf1b9647315d3986508eac7c652ac7c33ffe7676803e2659abc534",
+      "bytes": 38079
+    },
+    "focused.log": {
+      "sha256": "12595969347dd9ee48dff94ee2b59548660de372924e76a0d949932667eeffdd",
+      "bytes": 24384
+    }
+  },
+  "limitations": [
+    "Local macOS SwiftPM controlled transport/storage faults, not real APNs delivery or locked-device Keychain.",
+    "Existing five opt-in live-backend tests intentionally skipped by default; dedicated server patch tests use separate disposable PostgreSQL.",
+    "Native Keychain/protection/reopen tests require Xcode CI and are reported separately."
+  ]
+}

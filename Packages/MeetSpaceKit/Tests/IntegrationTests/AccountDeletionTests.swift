@@ -340,3 +340,105 @@ private func deletionPushDevice() throws -> NetworkResponse {
         }
     }
 }
+
+private actor IdentityDeletionRecoveryStore: PushRegistrationStore {
+    var journal: PushRegistrationJournal
+    var confirmations: [PushAccountDeletionConfirmation] = []
+    var failedPrunes = 0
+    init(_ journal: PushRegistrationJournal) { self.journal = journal }
+    func load() -> PushRegistrationJournal { journal }
+    func loadDeletionConfirmations() async throws -> [PushAccountDeletionConfirmation] { confirmations }
+    func recordDeletionConfirmation(_ value: PushAccountDeletionConfirmation) async throws {
+        if !confirmations.contains(value) { confirmations.append(value) }
+    }
+    func save(_ value: PushRegistrationJournal) throws {
+        if !confirmations.isEmpty, !journal.entries.isEmpty, value.entries.isEmpty, failedPrunes == 0 {
+            failedPrunes += 1; throw ClientError.storage
+        }
+        journal = try value.validated()
+    }
+}
+
+@Test @MainActor func stage08P2IdentityConfirmedDeletionRecoversJournalForAnotherAccountAfterRestart() async throws {
+    let deleted = try Fixture.account(UUID())
+    let other = try Fixture.account(UUID(), server: ServerOrigin("https://recovery-other.fixture"))
+    let secrets = TestSecrets(), accounts = MemoryAccountIndexStore()
+    let credentials = try WireJSON.encoder().encode(Fixture.credentials())
+    try await secrets.write(credentials, for: deleted.key); try await secrets.write(credentials, for: other.key)
+    try await accounts.save(AccountIndex(accounts: [deleted, other], activeID: deleted.id))
+    // No OS token exists after restart, so this unknown binding cannot be revoked by retrying POST.
+    let push = IdentityDeletionRecoveryStore(PushRegistrationJournal(entries: [PushRegistrationEntry(
+        origin: deleted.server, userID: deleted.user.id, pendingTokenFingerprint: String(repeating: "a", count: 64))]))
+    let transport = RoutedTransport { request, _ in
+        if request.httpMethod == "DELETE", request.url?.path == "/api/v1/auth/me" {
+            #expect(request.url?.host == deleted.server.url.host)
+            return try Fixture.response(["status": "success"])
+        }
+        if request.httpMethod == "GET", request.url?.path == "/api/v1/auth/me" {
+            return try Fixture.response(["user": Fixture.user(request.url?.host == deleted.server.url.host ? deleted.user.id : other.user.id)])
+        }
+        throw APIError.offline
+    }
+    let dependencies = AppDependencies(serverProbe: DeletionProbe(), configuration: DeletionPreferences(),
+        credentials: secrets, accounts: accounts, transport: { transport }, sockets: DeletionSockets(), pushStore: push)
+    let first = IdentityModel(dependencies: dependencies)
+    await first.restore()
+    #expect(await first.deleteAccount(deleted, password: "fixture-password"))
+    #expect(await push.failedPrunes == 1)
+    #expect(first.information?.contains("Сервер подтвердил удаление") == true)
+    #expect(await push.load().entries.count == 1)
+    #expect(await secrets.read(deleted.key) == nil && first.messaging == nil)
+    #expect(try await push.loadDeletionConfirmations() == [PushAccountDeletionConfirmation(origin: deleted.server, userID: deleted.user.id)])
+    let restarted = IdentityModel(dependencies: dependencies)
+    await restarted.restore(); await restarted.switchAccount(other)
+    #expect(restarted.messaging?.account.id == other.id)
+    #expect(await push.load().entries.isEmpty)
+    #expect(restarted.notifications.error == nil && !restarted.notifications.enabled)
+    #expect(await secrets.read(other.key) == credentials)
+    #expect(await transport.requests.filter { $0.httpMethod == "DELETE" && $0.url?.path == "/api/v1/auth/me" }.count == 1)
+    #expect(await transport.requests.filter { $0.url?.path.contains("/devices") == true }.isEmpty)
+    await restarted.logout(other)
+}
+
+@Test @MainActor func stage08P2IdentityNeverRestoresConfirmedDeletedScopeOffline() async throws {
+    let deleted = try Fixture.account(UUID())
+    let other = try Fixture.account(deleted.user.id, server: ServerOrigin("https://same-id-recovery.fixture"))
+    let secrets = TestSecrets(), accounts = MemoryAccountIndexStore(), push = MemoryPushRegistrationStore()
+    let credentials = try WireJSON.encoder().encode(Fixture.credentials())
+    try await secrets.write(credentials, for: deleted.key); try await secrets.write(credentials, for: other.key)
+    try await accounts.save(AccountIndex(accounts: [deleted, other], activeID: deleted.id))
+    try await push.recordDeletionConfirmation(PushAccountDeletionConfirmation(origin: deleted.server, userID: deleted.user.id))
+    let ownFiles = AccountFileStore(account: deleted), otherFiles = AccountFileStore(account: other)
+    let own = try await ownFiles.storeDownload(Data("deleted".utf8), filename: "fixture.txt")
+    let peer = try await otherFiles.storeDownload(Data("retained".utf8), filename: "fixture.txt")
+    let transport = RoutedTransport { _, _ in throw APIError.offline }
+    let identity = IdentityModel(dependencies: AppDependencies(serverProbe: DeletionProbe(), configuration: DeletionPreferences(),
+        credentials: secrets, accounts: accounts, transport: { transport }, sockets: DeletionSockets(), pushStore: push))
+    await identity.restore()
+    #expect(identity.messaging == nil && identity.index.accounts == [other])
+    #expect(await accounts.load().accounts == [other])
+    #expect(await transport.requests.isEmpty) // No refresh, currentUser, DELETE or old-scope push mutation.
+    let deletedCredentials = await secrets.read(deleted.key), retainedCredentials = await secrets.read(other.key)
+    #expect(deletedCredentials == nil && retainedCredentials == credentials)
+    #expect(!FileManager.default.fileExists(atPath: own.path) && FileManager.default.fileExists(atPath: peer.path))
+    await identity.switchAccount(other)
+    #expect(identity.messaging?.account.id == other.id) // Same UUID on another origin is independent.
+    await identity.logout(other)
+}
+
+@Test @MainActor func stage08P2IdentityUnauthorizedIsNotDeletionConfirmation() async throws {
+    let account = try Fixture.account(UUID()), secrets = TestSecrets(), accounts = MemoryAccountIndexStore()
+    let entry = PushRegistrationEntry(origin: account.server, userID: account.user.id,
+                                      pendingTokenFingerprint: String(repeating: "b", count: 64))
+    let push = MemoryPushRegistrationStore(PushRegistrationJournal(entries: [entry]))
+    try await secrets.write(WireJSON.encoder().encode(Fixture.credentials()), for: account.key)
+    try await accounts.save(AccountIndex(accounts: [account], activeID: account.id))
+    let transport = RoutedTransport { _, _ in NetworkResponse(status: 401) }
+    let identity = IdentityModel(dependencies: AppDependencies(serverProbe: DeletionProbe(), configuration: DeletionPreferences(),
+        credentials: secrets, accounts: accounts, transport: { transport }, sockets: DeletionSockets(), pushStore: push))
+    await identity.restore(); await identity.notifications.retryCleanup()
+    #expect(identity.messaging == nil)
+    #expect(try await push.load().entries == [entry])
+    #expect(try await push.loadDeletionConfirmations().isEmpty)
+    #expect(identity.notifications.error != nil)
+}

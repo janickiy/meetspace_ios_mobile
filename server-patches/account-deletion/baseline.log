@@ -1,0 +1,37 @@
+=== RUN   TestAuditDeviceSaveSerializesWithAccountDeletion
+=== RUN   TestAuditDeviceSaveSerializesWithAccountDeletion/physical/save-first
+    device_account_concurrency_integration_test.go:143: observed second transaction waiting for first transaction in pg_blocking_pids
+    device_account_concurrency_integration_test.go:163: device registration HTTP status=500 expected=401 body={"message":"internal server error","status":"failed"}
+=== RUN   TestAuditDeviceSaveSerializesWithAccountDeletion/physical/delete-first
+    device_account_concurrency_integration_test.go:143: observed second transaction waiting for first transaction in pg_blocking_pids
+    device_account_concurrency_integration_test.go:154: late SaveDevice must reject the erased actor as unauthorized, got ERROR: insert or update on table "push_devices" violates foreign key constraint "push_devices_user_id_fkey" (SQLSTATE 23503)
+=== RUN   TestAuditDeviceSaveSerializesWithAccountDeletion/tombstone/save-first
+    device_account_concurrency_integration_test.go:143: observed second transaction waiting for first transaction in pg_blocking_pids
+    device_account_concurrency_integration_test.go:163: device registration HTTP status=201 expected=401 body={"item":{"id":"b1dce9d4-33a8-5640-a68e-08ce80f490f6","platform":"ios","provider":"mock","createdAt":"0001-01-01T00:00:00Z","updatedAt":"0001-01-01T00:00:00Z"}}
+=== RUN   TestAuditDeviceSaveSerializesWithAccountDeletion/tombstone/delete-first
+    device_account_concurrency_integration_test.go:143: observed second transaction waiting for first transaction in pg_blocking_pids
+    device_account_concurrency_integration_test.go:154: late SaveDevice must reject the erased actor as unauthorized, got <nil>
+--- FAIL: TestAuditDeviceSaveSerializesWithAccountDeletion (1.15s)
+    --- FAIL: TestAuditDeviceSaveSerializesWithAccountDeletion/physical/save-first (0.32s)
+    --- FAIL: TestAuditDeviceSaveSerializesWithAccountDeletion/physical/delete-first (0.24s)
+    --- FAIL: TestAuditDeviceSaveSerializesWithAccountDeletion/tombstone/save-first (0.27s)
+    --- FAIL: TestAuditDeviceSaveSerializesWithAccountDeletion/tombstone/delete-first (0.31s)
+=== RUN   TestAuditDeviceRegistrationRechecksAccountState
+=== RUN   TestAuditDeviceRegistrationRechecksAccountState/active
+=== RUN   TestAuditDeviceRegistrationRechecksAccountState/missing
+    device_account_concurrency_integration_test.go:231: device registration HTTP status=500 expected=401 body={"message":"internal server error","status":"failed"}
+=== RUN   TestAuditDeviceRegistrationRechecksAccountState/tombstone
+    device_account_concurrency_integration_test.go:231: device registration HTTP status=201 expected=401 body={"item":{"id":"7aefb84c-195d-51b8-879c-06872e62c329","platform":"ios","provider":"mock","createdAt":"0001-01-01T00:00:00Z","updatedAt":"0001-01-01T00:00:00Z"}}
+=== RUN   TestAuditDeviceRegistrationRechecksAccountState/blocked
+    device_account_concurrency_integration_test.go:231: device registration HTTP status=201 expected=403 body={"item":{"id":"ab963167-8ed5-5f2f-88f6-fc800c2455b1","platform":"ios","provider":"mock","createdAt":"0001-01-01T00:00:00Z","updatedAt":"0001-01-01T00:00:00Z"}}
+=== RUN   TestAuditDeviceRegistrationRechecksAccountState/guest
+    device_account_concurrency_integration_test.go:231: device registration HTTP status=201 expected=403 body={"item":{"id":"d11b9b02-8daa-5261-a091-06bd857a05dd","platform":"ios","provider":"mock","createdAt":"0001-01-01T00:00:00Z","updatedAt":"0001-01-01T00:00:00Z"}}
+--- FAIL: TestAuditDeviceRegistrationRechecksAccountState (1.09s)
+    --- PASS: TestAuditDeviceRegistrationRechecksAccountState/active (0.22s)
+    --- FAIL: TestAuditDeviceRegistrationRechecksAccountState/missing (0.22s)
+    --- FAIL: TestAuditDeviceRegistrationRechecksAccountState/tombstone (0.22s)
+    --- FAIL: TestAuditDeviceRegistrationRechecksAccountState/blocked (0.22s)
+    --- FAIL: TestAuditDeviceRegistrationRechecksAccountState/guest (0.22s)
+FAIL
+FAIL	github.com/janickiy/meet-space/internal/infrastructure/postgres	3.201s
+FAIL
