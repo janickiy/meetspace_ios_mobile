@@ -1,0 +1,74 @@
+[
+  {
+    "attachments" : [
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "C3630581-519B-49DA-9400-67A78DCD42C8",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "2F3153DE-1BAB-4B7E-91F2-AF217C8BF1F8.json",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "stage08-actual-font-scaling_0_3BFA1E4F-3875-4B12-8045-67F7E06F7678.json",
+        "timestamp" : 1794016912.159
+      }
+    ],
+    "testIdentifier" : "TypographyAccessibilityTests/testBundledFontsScaleInActualUIKitHostingAtAllDynamicTypeSizes()",
+    "testIdentifierURL" : "test://com.apple.xcode/MeetSpace/MeetSpaceTests/TypographyAccessibilityTests/testBundledFontsScaleInActualUIKitHostingAtAllDynamicTypeSizes"
+  },
+  {
+    "attachments" : [
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "C3630581-519B-49DA-9400-67A78DCD42C8",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "65C57C21-ABDC-4922-B63E-8F35D5F37409.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "stage05-push-enabled_0_5324F795-2594-423E-A1AF-C2EBB6C1CDCB.png",
+        "timestamp" : 1794016999.132
+      }
+    ],
+    "testIdentifier" : "FoundationUITests/testOrdinaryPushOptInAndDisableWithFixtureToken()",
+    "testIdentifierURL" : "test://com.apple.xcode/MeetSpace/MeetSpaceUITests/FoundationUITests/testOrdinaryPushOptInAndDisableWithFixtureToken"
+  },
+  {
+    "attachments" : [
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "C3630581-519B-49DA-9400-67A78DCD42C8",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "96863811-7B10-44C5-A883-A17D8438B5E4.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "stage08-account-deletion-success_0_D33DFCE6-B640-4106-82C1-63A4CFB0D656.png",
+        "timestamp" : 1794017091.906
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "C3630581-519B-49DA-9400-67A78DCD42C8",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "289E6895-99CA-4EAB-88EE-ABC3049BEFDA.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "stage08-account-deletion_0_D4409545-9F78-48CB-B64B-54F4F7E54C20.png",
+        "timestamp" : 1794017086.673
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "C3630581-519B-49DA-9400-67A78DCD42C8",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "FC492900-F526-4D19-B554-95FBEFB80443.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "stage08-account-deletion-keyboard-retry_0_A44FA25D-5451-4472-AFB6-D82F35DE7D4A.png",
+        "timestamp" : 1794017080.883
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "C3630581-519B-49DA-9400-67A78DCD42C8",
+        "deviceName" : "iPhone SE (3rd generation)",
+        "exportedFileName" : "BE165B5F-0FF4-4593-B6A5-A9086C3BB23D.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "stage08-account-deletion-keyboard-initial_0_BF366434-8EC7-4146-BB5F-64C6DA1DEA4B.png",
+        "timestamp" : 1794017061.421
+      }
+    ],
+    "testIdentifier" : "FoundationUITests/testStage08AccountDeletionRequiresPasswordAndConfirmation()",
+    "testIdentifierURL" : "test://com.apple.xcode/MeetSpace/MeetSpaceUITests/FoundationUITests/testStage08AccountDeletionRequiresPasswordAndConfirmation"
+  }
+]

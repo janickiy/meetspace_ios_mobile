@@ -1,0 +1,211 @@
+{
+  "schemaVersion": 1,
+  "reviewedAt": "2026-11-07T02:08:56.648316+00:00",
+  "runID": 42326199451,
+  "sourceCommit": "5c4e3dcf49c64ab28b55231c5c02da16dca377b0",
+  "scope": "Manual visual inspection of ten unmodified original iPhone screenshots; normal-size portrait DEBUG fixture states.",
+  "result": "REVIEWED_WITH_EXISTING_LAYOUT_FINDINGS_AND_SCOPE_LIMITS",
+  "devices": {
+    "iPhone26": {
+      "environment": {
+        "device": "iPhone 17 Pro Max",
+        "runtime": [
+          26,
+          2
+        ],
+        "udid": "17F0E734-D183-4810-AB97-F27FD9968039",
+        "scope": "push-recovery",
+        "hostArchitecture": "arm64",
+        "hostOS": "macOS-15.8.2-arm64-arm-64bit-Mach-O",
+        "preferredDeviceMatched": true,
+        "xcode": "Xcode 26.3\nBuild version 17C529\n"
+      },
+      "nativePassed": 13,
+      "images": [
+        {
+          "file": "screenshots/iPhone26/stage05-push-enabled_0_E9D10E97-7FDC-4F56-90C9-F3F0CB8FDDDD.png",
+          "sha256": "d241ba26389d972822190dbcfb8776257cdc59a3ca1d04d6af442dc80ca15c01",
+          "sizeBytes": 238111,
+          "dimensionsPixels": [
+            1320,
+            2868
+          ],
+          "originalSuggestedName": "stage05-push-enabled_0_E9D10E97-7FDC-4F56-90C9-F3F0CB8FDDDD.png",
+          "zipMember": "iPhone26-screenshots/C6A4D3F7-C6F7-4EC4-BC9B-1C3817B84F89.png",
+          "observations": [
+            "Notification toggle shows on styling; complete token-saved/APNs-gateway status and foreground-calls limitation are readable.",
+            "Captured profile is scrolled; upper rows under the status bar do not establish whole-profile visual acceptance."
+          ]
+        },
+        {
+          "file": "screenshots/iPhone26/stage08-account-deletion-success_0_CBE1C666-B977-47A0-A06B-75D8093DE964.png",
+          "sha256": "e5aec95d255d0bcd868400a6cd173714afdd7dddbb2f5fe3567b9973385a2c86",
+          "sizeBytes": 169967,
+          "dimensionsPixels": [
+            1320,
+            2868
+          ],
+          "originalSuggestedName": "stage08-account-deletion-success_0_CBE1C666-B977-47A0-A06B-75D8093DE964.png",
+          "zipMember": "iPhone26-screenshots/377DA12C-F720-4636-AD1C-141AA9FDBCB6.png",
+          "observations": [
+            "Selected-server login is visible, deletion sheet and workspace tabs are absent.",
+            "Complete green message reads: Аккаунт удалён на сервере. Login controls are readable."
+          ]
+        },
+        {
+          "file": "screenshots/iPhone26/stage08-account-deletion_0_61D4E3AD-CCB2-437E-8C2C-DCBCF9056865.png",
+          "sha256": "09ae3f715925efa166f6089d212dcea8f3c5721fbc25534e6ecbda5dbb404344",
+          "sizeBytes": 199120,
+          "dimensionsPixels": [
+            1320,
+            2868
+          ],
+          "originalSuggestedName": "stage08-account-deletion_0_61D4E3AD-CCB2-437E-8C2C-DCBCF9056865.png",
+          "zipMember": "iPhone26-screenshots/ABB055C5-659F-4F74-A5AC-7E4FC04B0FB5.png",
+          "observations": [
+            "Full warning and prerequisites are readable; delete action has violet enabled-looking styling.",
+            "Secure field has no visible placeholder or exposed contents; contents cannot be inferred from pixels.",
+            "The previous wrong-password error remains fully readable; this is before successful resubmission, not a new server response.",
+            "Cancel label retains the existing Отме / на intra-word wrap in the system pill."
+          ]
+        },
+        {
+          "file": "screenshots/iPhone26/stage08-account-deletion-keyboard-retry_0_87ED113A-3B74-444F-A6EA-0B4EE9ADE017.png",
+          "sha256": "ef260f566b20c6f36db629a865eac19cb0ef98f5dfc232ef0f80fc877d463fb7",
+          "sizeBytes": 202778,
+          "dimensionsPixels": [
+            1320,
+            2868
+          ],
+          "originalSuggestedName": "stage08-account-deletion-keyboard-retry_0_87ED113A-3B74-444F-A6EA-0B4EE9ADE017.png",
+          "zipMember": "iPhone26-screenshots/C41BC4F0-BE26-443B-8625-94FAC21352C4.png",
+          "observations": [
+            "Full red error reads: Неверный пароль аккаунта. Проверьте пароль и повторите.",
+            "Password placeholder is visible; delete action has pale disabled-looking styling. Warning/prerequisites remain readable.",
+            "Cancel label retains the existing Отме / на intra-word wrap in the system pill."
+          ]
+        },
+        {
+          "file": "screenshots/iPhone26/stage08-account-deletion-keyboard-initial_0_0E138DF1-B908-4535-86B9-C70E6597F81A.png",
+          "sha256": "c58af99491b367fa8bcc939460f06a927203a3bb2a91adab03bc423c07cc12f8",
+          "sizeBytes": 186982,
+          "dimensionsPixels": [
+            1320,
+            2868
+          ],
+          "originalSuggestedName": "stage08-account-deletion-keyboard-initial_0_0E138DF1-B908-4535-86B9-C70E6597F81A.png",
+          "zipMember": "iPhone26-screenshots/137B6253-CC52-48E1-8EA4-584B3AD48859.png",
+          "observations": [
+            "Full warning/prerequisites and password placeholder are visible; no error is displayed.",
+            "Delete action has pale disabled-looking styling. Original image was also inspected alone at original resolution.",
+            "Cancel label retains the existing Отме / на intra-word wrap in the system pill."
+          ]
+        }
+      ]
+    },
+    "iPhone18": {
+      "environment": {
+        "device": "iPhone SE (3rd generation)",
+        "runtime": [
+          18,
+          6
+        ],
+        "udid": "C3630581-519B-49DA-9400-67A78DCD42C8",
+        "scope": "push-recovery",
+        "hostArchitecture": "arm64",
+        "hostOS": "macOS-15.8.2-arm64-arm-64bit-Mach-O",
+        "preferredDeviceMatched": true,
+        "xcode": "Xcode 26.3\nBuild version 17C529\n"
+      },
+      "nativePassed": 13,
+      "images": [
+        {
+          "file": "screenshots/iPhone18/stage05-push-enabled_0_5324F795-2594-423E-A1AF-C2EBB6C1CDCB.png",
+          "sha256": "689e6fe0116373b6a31dc20129854bf187c911dbff7ee4e25117ef42154e2f56",
+          "sizeBytes": 124824,
+          "dimensionsPixels": [
+            750,
+            1334
+          ],
+          "originalSuggestedName": "stage05-push-enabled_0_5324F795-2594-423E-A1AF-C2EBB6C1CDCB.png",
+          "zipMember": "iPhone18-screenshots/65C57C21-ABDC-4922-B63E-8F35D5F37409.png",
+          "observations": [
+            "Notification toggle shows on styling; complete token-saved/APNs-gateway status and foreground-calls limitation are readable.",
+            "Captured profile is scrolled; upper rows under the status bar do not establish whole-profile visual acceptance.",
+            "The partly scrolled account-name row overlaps the status-bar area; no whole-profile layout PASS is claimed."
+          ]
+        },
+        {
+          "file": "screenshots/iPhone18/stage08-account-deletion-success_0_D33DFCE6-B640-4106-82C1-63A4CFB0D656.png",
+          "sha256": "2db224dd4ac01ce63cd0fd07dd872f00d612f95ca950bde9444ad3467232de29",
+          "sizeBytes": 90121,
+          "dimensionsPixels": [
+            750,
+            1334
+          ],
+          "originalSuggestedName": "stage08-account-deletion-success_0_D33DFCE6-B640-4106-82C1-63A4CFB0D656.png",
+          "zipMember": "iPhone18-screenshots/96863811-7B10-44C5-A883-A17D8438B5E4.png",
+          "observations": [
+            "Selected-server login is visible, deletion sheet and workspace tabs are absent.",
+            "Complete green message reads: Аккаунт удалён на сервере. Login controls are readable."
+          ]
+        },
+        {
+          "file": "screenshots/iPhone18/stage08-account-deletion_0_D4409545-9F78-48CB-B64B-54F4F7E54C20.png",
+          "sha256": "a4361a9e86f858712a9aba64799faa91552772870cd57081c453699aeaed33be",
+          "sizeBytes": 109628,
+          "dimensionsPixels": [
+            750,
+            1334
+          ],
+          "originalSuggestedName": "stage08-account-deletion_0_D4409545-9F78-48CB-B64B-54F4F7E54C20.png",
+          "zipMember": "iPhone18-screenshots/289E6895-99CA-4EAB-88EE-ABC3049BEFDA.png",
+          "observations": [
+            "Full warning and prerequisites are readable; delete action has violet enabled-looking styling.",
+            "Secure field has no visible placeholder or exposed contents; contents cannot be inferred from pixels.",
+            "The previous wrong-password error remains fully readable; this is before successful resubmission, not a new server response.",
+            "Cancel label Отмена stays on one line."
+          ]
+        },
+        {
+          "file": "screenshots/iPhone18/stage08-account-deletion-keyboard-retry_0_A44FA25D-5451-4472-AFB6-D82F35DE7D4A.png",
+          "sha256": "29784157e692a1520f9fabf7437f6ae7ae300e5f2c3535cf878d76791ade4eeb",
+          "sizeBytes": 137972,
+          "dimensionsPixels": [
+            750,
+            1334
+          ],
+          "originalSuggestedName": "stage08-account-deletion-keyboard-retry_0_A44FA25D-5451-4472-AFB6-D82F35DE7D4A.png",
+          "zipMember": "iPhone18-screenshots/FC492900-F526-4D19-B554-95FBEFB80443.png",
+          "observations": [
+            "Full red error reads: Неверный пароль аккаунта. Проверьте пароль и повторите.",
+            "Password placeholder is visible; delete action has pale disabled-looking styling. Warning/prerequisites remain readable.",
+            "Cancel label Отмена stays on one line."
+          ]
+        },
+        {
+          "file": "screenshots/iPhone18/stage08-account-deletion-keyboard-initial_0_BF366434-8EC7-4146-BB5F-64C6DA1DEA4B.png",
+          "sha256": "4af516df28216b609d0e2c5c4395c2a5ca487d42758162faa86c015d73fab57d",
+          "sizeBytes": 125466,
+          "dimensionsPixels": [
+            750,
+            1334
+          ],
+          "originalSuggestedName": "stage08-account-deletion-keyboard-initial_0_BF366434-8EC7-4146-BB5F-64C6DA1DEA4B.png",
+          "zipMember": "iPhone18-screenshots/BE165B5F-0FF4-4593-B6A5-A9086C3BB23D.png",
+          "observations": [
+            "Full warning/prerequisites and password placeholder are visible; no error is displayed.",
+            "Delete action has pale disabled-looking styling. Original image was also inspected alone at original resolution.",
+            "Cancel label Отмена stays on one line."
+          ]
+        }
+      ]
+    }
+  },
+  "limitations": [
+    "No keyboard is visible in the app captures, irrespective of keyboard-prefixed names. No confirmation alert PNG is available.",
+    "Secure contents and actual enabled semantics are not inferred from PNGs; native test assertions are separate evidence.",
+    "No numeric contrast or 44-point measurements, Core AX/AX5, landscape, physical-device delivery, full profile, or 21-design-state acceptance.",
+    "Successful fixture UI does not establish backend patch deployment or real APNs delivery."
+  ]
+}

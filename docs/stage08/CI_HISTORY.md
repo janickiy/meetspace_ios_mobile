@@ -1,6 +1,14 @@
 # История CI этапа 08
 
-Срез: **2026-11-06 20:55 UTC**. Полный CI15 завершился97 PASS /3 FAIL из100; все failures относятся к старому helper удаления. CI16 regression завершился54 PASS /2 FAIL из56: оба iPhone14/14, оба iPad13/14, снова только deletion helper. CI17 подтвердил1/1 deletion на iPad26; остальные3 jobs отменены автором после запуска CI18, workflow CANCELLED. CI18 завершился SUCCESS: финальный deletion helper прошёл1/1 на всех4 устройствах,0 native SKIP. Product-код `55bfcfb` / `a33a153` / `163fb79` / `16c7025` одинаков. Targeted проверки не выдаются за один полный успешный suite итогового harness.
+Дополнение P2 от 7 ноября: run `42326199451` на новом product source
+`5c4e3dcf49c64ab28b55231c5c02da16dca377b0` завершился **SUCCESS**.
+Package: **193 PASS / 5 opt-in SKIP из 198**; native scope `push-recovery`:
+**52/52 PASS, 0 FAIL/SKIP**. [Итоговый receipt](evidence/p2-ci/receipt.json)
+проверяет source/API metadata, все пять ZIP hashes/CRC и точный состав тестов.
+Новый unsigned archive независимо проверен: **59 PASS, signing.distribution BLOCKED**.
+Исправления P2 и граница поставки серверного patch — в [P2_FIXES.md](P2_FIXES.md).
+
+Исторический срез **2026-11-06 20:55 UTC**: полный CI15 завершился97 PASS /3 FAIL из100; все failures относятся к старому helper удаления. CI16 regression завершился54 PASS /2 FAIL из56: оба iPhone14/14, оба iPad13/14, снова только deletion helper. CI17 подтвердил1/1 deletion на iPad26; остальные3 jobs отменены автором после запуска CI18, workflow CANCELLED. CI18 завершился SUCCESS: финальный deletion helper прошёл1/1 на всех4 устройствах,0 native SKIP. Product-код `55bfcfb` / `a33a153` / `163fb79` / `16c7025` одинаков; это равенство не относится к новому P2 source `5c4e3dc`. Targeted проверки не выдаются за один полный успешный suite итогового harness.
 
 ## Прогоны
 
@@ -25,10 +33,49 @@
 | [CI15 — 42281088607](https://github.com/janickiy/meetspace_ios_mobile/actions/runs/42281088607) | `55bfcfb1e075224eda9ed7106a669db0b55dd7e5` | Package/unsigned archive SUCCESS | Оба26:34 PASS /1 FAIL из35; iPhone18:15/15 PASS; iPad18:14 PASS /1 FAIL из15. Всего97 PASS /3 FAIL из100,0SKIP. Core AX/AX5/Settings PASS на всех4; только deletion helper FAIL. [Полный baseline](evidence/baseline-ci15-provenance/receipt.json). |
 | [CI16 — 42283560617](https://github.com/janickiy/meetspace_ios_mobile/actions/runs/42283560617) | `a33a153147d6941874884357134b3fd46de7532c` | 179 PASS /5 opt-in SKIP из184; archive SUCCESS,59 packaging PASS | Regression14/device, не full. Оба iPhone14/14 PASS; оба iPad13 PASS /1 FAIL. Всего54 PASS /2 FAIL из56,0SKIP. Failures только deletion helper; [итоговый receipt](evidence/ci16-final/receipt.json). |
 | [CI17 — 42287121804](https://github.com/janickiy/meetspace_ios_mobile/actions/runs/42287121804) | `163fb79059dbc0d5b2fbdbc206e74e2e3cb92e86` | Намеренный SKIP, source/product не менялись | iPad26:1/1 deletion PASS259.462с. Остальные3 jobs отменены автором после нового кандидата; workflow CANCELLED. [Подтверждённый single-device receipt](evidence/account-deletion/ci17-ipad26/receipt.json), не4×1PASS. |
-
 | [CI18 — 42288899326](https://github.com/janickiy/meetspace_ios_mobile/actions/runs/42288899326) | `16c702529f70ce675276d58f5d6334f0ba323fa7` | Намеренный SKIP; package/archive не запускаются в deletion scope | Только deletion: **4 PASS /0 FAIL /0 SKIP**, по1 тесту на каждом устройстве. Latin-layout guard → native typeText → bounded submit predicate, без binding injection. [проверенный CI18 receipt](evidence/account-deletion/final-ci18/receipt.json). |
+| [P2 — 42326199451](https://github.com/janickiy/meetspace_ios_mobile/actions/runs/42326199451) | `5c4e3dcf49c64ab28b55231c5c02da16dca377b0` | Package SUCCESS: 193 PASS / 5 opt-in SKIP из 198; archive SUCCESS, независимо 59 PASS + signing.distribution BLOCKED | `push-recovery`: **13/13 PASS на каждом из четырёх устройств; 52 PASS / 0 FAIL / 0 SKIP**. По 11 hosted + 2 UI. Полный baseline не запускался. [Receipt](evidence/p2-ci/receipt.json). |
 
 Все simulator проверки используют DEBUG fixture dependencies. Hosted tests исполняют настоящие framework-компоненты в симуляторе. Подписанная сборка, физические устройства, APNs, системный ReplayKit и Instruments этим не подтверждены: [TEST_REPORT.md](TEST_REPORT.md), [KNOWN_LIMITATIONS.md](KNOWN_LIMITATIONS.md).
+
+## P2: scope push-recovery запуска 42326199451
+
+Ветка `codex/stage08-p2-fixes`, source `5c4e3dcf49c64ab28b55231c5c02da16dca377b0`.
+Матрица: iPhone 17 Pro Max / iOS26.2, iPad Pro 13-inch (M5) / iPadOS26.2,
+iPhone SE (3rd generation) / iOS18.6, iPad mini (A17 Pro) / iPadOS18.6.
+Scope переопределяет слова `full`/`compatibility` в названиях jobs: на каждом
+устройстве выбраны следующие **13 точных testcases**, а не полный baseline.
+
+```text
+MeetSpaceTests.CallAudioIntegrationTests/testDirectCallCanNegotiateBeforeCallKitActivatesAudio
+MeetSpaceTests.KeychainIntegrationTests/testKeychainRoundTripUpdateAndScopedDeletion
+MeetSpaceTests.MediaIntegrationTests/testBlockedSourcesNeverRequestPermissionsOrAppearInOffer
+MeetSpaceTests.MediaIntegrationTests/testNativePeerOfferAndCloseCyclesWithCaptureOff
+MeetSpaceTests.MediaIntegrationTests/testScreenGenerationRollbackAndPolicyWithCaptureOff
+MeetSpaceTests.MediaIntegrationTests/testScreenRejectsInvalidAndStaleFrameSession
+MeetSpaceTests.RecordingPlaybackTests/testActualServerAACArtifactAdvancesNativePlayerTime
+MeetSpaceTests.Stage08SecurityKeychainTests/testCredentialsRemainDeviceOnlyAndUnsynchronizedAfterUpdate
+MeetSpaceTests.Stage08SecurityKeychainTests/testPushCleanupJournalUsesTheSameDeviceOnlyProtection
+MeetSpaceTests.Stage08SecurityKeychainTests/testDeletionConfirmationSurvivesJournalRewriteWithDeviceOnlyProtection
+MeetSpaceTests.TypographyAccessibilityTests/testBundledFontsScaleInActualUIKitHostingAtAllDynamicTypeSizes
+MeetSpaceUITests.FoundationUITests/testOrdinaryPushOptInAndDisableWithFixtureToken
+MeetSpaceUITests.FoundationUITests/testStage08AccountDeletionRequiresPasswordAndConfirmation
+```
+
+Все четыре native jobs завершены: **13/13 PASS × 4**, 0 FAIL/SKIP.
+Итоговые metadata, source/ZIP digests/CRC, summaries/environments и точные
+native results проверены в [receipt](evidence/p2-ci/receipt.json).
+Core accessibility audit, AX5, Settings и profiler в этом scope не запускаются.
+
+CI package log содержит **198 зарегистрированных tests: 193 PASS / 5 opt-in SKIP**,
+0 FAIL, две suites, 7.154с. Новый архив `0.2.0 (1)` собран Xcode26.3 (17C529),
+SDK iphoneos26.2, minimum18.0; независимый verifier подтвердил **59 PASS** и
+единственный **BLOCKED: signing.distribution**.
+[Archive receipt и hashes](evidence/p2-release-product/receipt.json) относятся только
+к packaging и не дают native/full-suite либо distribution approval.
+[Локальные fault-тесты](evidence/p2-local/receipt.json) и
+[серверный patch regression](evidence/p2-backend-reproduction/receipt.json) учитываются
+отдельно; серверное развёртывание этим CI не выполняется.
 
 ## CI14: выполненный deletion flow и сбои XCTest
 

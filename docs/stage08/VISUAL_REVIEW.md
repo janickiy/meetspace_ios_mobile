@@ -1,12 +1,25 @@
 # Визуальная приёмка: 21 экран макета
 
+Дополнение 7 ноября: [P2-исправления](P2_FIXES.md), source
+`5c4e3dcf49c64ab28b55231c5c02da16dca377b0`, меняют состояние push/identity
+и локализованную строку. Прежние результаты ниже относятся к своим исходникам;
+сравнение production-кода CI15 с `16c7025` не распространяется на новый source.
+Новый `push-recovery` CI проверяет удаление и push, без полного Core AX/AX5 audit.
+Просмотрены [10 iPhone PNG](evidence/p2-ci/iphone-visual-review.json),
+[5 iPad26 PNG](evidence/p2-ci/ipad26-visual-review.json) и
+[5 iPad18 PNG](evidence/p2-ci/ipad18-visual-review.json); [hash manifest](evidence/p2-ci/visual-files.json).
+Warning/error/success и push-status читаются. На обеих iOS26 конфигурациях
+сохраняется перенос «Отме/на»; в scrolled iPhone18 profile верхняя строка попадает
+под status bar. Keyboard и confirmation alert не захвачены. Полная визуальная
+приёмка этими 20 кадрами не закрывается.
+
 Дата обновления: 2026-11-06. **Полное визуальное соответствие — BLOCKED.** Просмотрены исторические normal/AX5 снимки CI9/CI10 на iPhone SE и iPad mini и новые CI15 снимки на iPhone26/iPad26. Итоговый source и завершённые проверки перечислены в [TEST_REPORT.md](TEST_REPORT.md). Завершённый полный baseline CI15 (`55bfcfb`), targeted regression CI16 (`a33a153`) и завершённый deletion-only CI18 (`16c7025`) имеют разный объём: результаты одного scope не объявляются полной native приёмкой другого. CI18 прошёл4/4 scoped deletion tests; это не полный suite.
 
 Это сводка исходной design matrix, существующих нативных снимков и уже выполненных визуальных review. Здесь не выполнено новое попиксельное сравнение всех экранов и не созданы недостающие изображения. Статус PARTIAL в таблице означает наличие конкретного структурного/типографического evidence, а не визуальный PASS экрана целиком.
 
 Просмотрен normal/AX5 набор полного CI15 на обеих iOS26 платформах: [iPhone26, 26 PNG](ACCESSIBILITY_CI15_IPHONE26_REVIEW.md), [iPad26, 26 PNG](ACCESSIBILITY_CI15_IPAD26_REVIEW.md). Core AX, AX5 и Settings прошли, но каждый из этих двух suite — **FAIL, 34 PASS / 1 FAIL из 35**, из-за deletion helper. Новые [consolidated CI15 audit/font JSON](evidence/accessibility-ci15-matrix/receipt.json) дополнительно подтверждают Core и font-hosting на всех четырёх конфигурациях: **199 completed category passes**, включая три visible contrast retests, без retry; **83 raw findings = 75 reviewed + 3 verified + 5 вне retest viewport без измерения контраста**. Эти пять records не являются успешными измерениями. CI15 baseline в целом — **97 PASS / 3 FAIL / 0 SKIP из 100**, три failures относятся к deletion.
 
-Consolidated JSON не является новым visual review iOS18 PNG и не заменяет поэкранное сравнение с DESIGN. Product-код `55bfcfb` совпадает с текущим `16c7025`; изменения нового harness не подменяют source выполненных тестов. [CI16 final receipt](evidence/ci16-final/receipt.json) подтверждает targeted итог **54 PASS / 2 FAIL / 0 SKIP из 56**: оба iPhone — 14/14, оба iPad — 13/14, failures только deletion. Это не полный 100-case baseline и не новый полный visual review. Полнота учёта **21 DESIGN ID** и успешные отдельные accessibility-сценарии не закрывают visual parity всех состояний; общий gate остаётся **BLOCKED**.
+Consolidated JSON не является новым visual review iOS18 PNG и не заменяет поэкранное сравнение с DESIGN. Product-код исторического `55bfcfb` совпадал с `16c7025`; изменения нового harness не подменяют source выполненных тестов. [CI16 final receipt](evidence/ci16-final/receipt.json) подтверждает targeted итог **54 PASS / 2 FAIL / 0 SKIP из 56**: оба iPhone — 14/14, оба iPad — 13/14, failures только deletion. Это не полный 100-case baseline и не новый полный visual review. Полнота учёта **21 DESIGN ID** и успешные отдельные accessibility-сценарии не закрывают visual parity всех состояний; общий gate остаётся **BLOCKED**.
 
 CI16 iPhone26 дополнительно сохранил четыре снимка удаления: initial, retry, presubmit и success. Retry показывает полный текст ошибки неверного пароля, пустое поле и disabled submit; success — login выбранного сервера с «Аккаунт удалён на сервере.». Отдельного confirmation-alert PNG нет: cancel/confirm подтверждены assertions успешного теста, не визуальным просмотром alert. Имя keyboard-снимка не доказывает видимую клавиатуру: `app.screenshot()` здесь её не захватил. Это ограниченное evidence удаления, не visual PASS всех его состояний.
 

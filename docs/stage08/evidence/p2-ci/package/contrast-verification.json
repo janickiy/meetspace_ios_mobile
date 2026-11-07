@@ -1,0 +1,286 @@
+{
+  "standard": "WCAG 2.x relative luminance, normal text >=4.5:1",
+  "scope": "Opaque semantic text colors; does not replace UI/VoiceOver audit",
+  "checks": [
+    {
+      "mode": "light",
+      "foreground": "ink",
+      "background": "background",
+      "ratio": 13.1654,
+      "status": "PASS"
+    },
+    {
+      "mode": "light",
+      "foreground": "ink",
+      "background": "surface",
+      "ratio": 13.9722,
+      "status": "PASS"
+    },
+    {
+      "mode": "light",
+      "foreground": "ink",
+      "background": "surfaceSecondary",
+      "ratio": 12.3955,
+      "status": "PASS"
+    },
+    {
+      "mode": "light",
+      "foreground": "ink",
+      "background": "accentSoft",
+      "ratio": 12.2511,
+      "status": "PASS"
+    },
+    {
+      "mode": "light",
+      "foreground": "muted",
+      "background": "background",
+      "ratio": 4.9103,
+      "status": "PASS"
+    },
+    {
+      "mode": "light",
+      "foreground": "muted",
+      "background": "surface",
+      "ratio": 5.2112,
+      "status": "PASS"
+    },
+    {
+      "mode": "light",
+      "foreground": "muted",
+      "background": "surfaceSecondary",
+      "ratio": 4.6232,
+      "status": "PASS"
+    },
+    {
+      "mode": "light",
+      "foreground": "muted",
+      "background": "accentSoft",
+      "ratio": 4.5693,
+      "status": "PASS"
+    },
+    {
+      "mode": "light",
+      "foreground": "accent",
+      "background": "background",
+      "ratio": 4.9669,
+      "status": "PASS"
+    },
+    {
+      "mode": "light",
+      "foreground": "accent",
+      "background": "surface",
+      "ratio": 5.2713,
+      "status": "PASS"
+    },
+    {
+      "mode": "light",
+      "foreground": "accent",
+      "background": "surfaceSecondary",
+      "ratio": 4.6764,
+      "status": "PASS"
+    },
+    {
+      "mode": "light",
+      "foreground": "accent",
+      "background": "accentSoft",
+      "ratio": 4.6219,
+      "status": "PASS"
+    },
+    {
+      "mode": "light",
+      "foreground": "success",
+      "background": "background",
+      "ratio": 4.9682,
+      "status": "PASS"
+    },
+    {
+      "mode": "light",
+      "foreground": "success",
+      "background": "surface",
+      "ratio": 5.2727,
+      "status": "PASS"
+    },
+    {
+      "mode": "light",
+      "foreground": "success",
+      "background": "surfaceSecondary",
+      "ratio": 4.6777,
+      "status": "PASS"
+    },
+    {
+      "mode": "light",
+      "foreground": "success",
+      "background": "accentSoft",
+      "ratio": 4.6232,
+      "status": "PASS"
+    },
+    {
+      "mode": "light",
+      "foreground": "danger",
+      "background": "background",
+      "ratio": 4.9307,
+      "status": "PASS"
+    },
+    {
+      "mode": "light",
+      "foreground": "danger",
+      "background": "surface",
+      "ratio": 5.2328,
+      "status": "PASS"
+    },
+    {
+      "mode": "light",
+      "foreground": "danger",
+      "background": "surfaceSecondary",
+      "ratio": 4.6423,
+      "status": "PASS"
+    },
+    {
+      "mode": "light",
+      "foreground": "danger",
+      "background": "accentSoft",
+      "ratio": 4.5882,
+      "status": "PASS"
+    },
+    {
+      "mode": "dark",
+      "foreground": "ink",
+      "background": "background",
+      "ratio": 15.9889,
+      "status": "PASS"
+    },
+    {
+      "mode": "dark",
+      "foreground": "ink",
+      "background": "surface",
+      "ratio": 14.1232,
+      "status": "PASS"
+    },
+    {
+      "mode": "dark",
+      "foreground": "ink",
+      "background": "surfaceSecondary",
+      "ratio": 12.1629,
+      "status": "PASS"
+    },
+    {
+      "mode": "dark",
+      "foreground": "ink",
+      "background": "accentSoft",
+      "ratio": 10.8079,
+      "status": "PASS"
+    },
+    {
+      "mode": "dark",
+      "foreground": "muted",
+      "background": "background",
+      "ratio": 8.51,
+      "status": "PASS"
+    },
+    {
+      "mode": "dark",
+      "foreground": "muted",
+      "background": "surface",
+      "ratio": 7.5169,
+      "status": "PASS"
+    },
+    {
+      "mode": "dark",
+      "foreground": "muted",
+      "background": "surfaceSecondary",
+      "ratio": 6.4736,
+      "status": "PASS"
+    },
+    {
+      "mode": "dark",
+      "foreground": "muted",
+      "background": "accentSoft",
+      "ratio": 5.7524,
+      "status": "PASS"
+    },
+    {
+      "mode": "dark",
+      "foreground": "accent",
+      "background": "background",
+      "ratio": 8.3286,
+      "status": "PASS"
+    },
+    {
+      "mode": "dark",
+      "foreground": "accent",
+      "background": "surface",
+      "ratio": 7.3567,
+      "status": "PASS"
+    },
+    {
+      "mode": "dark",
+      "foreground": "accent",
+      "background": "surfaceSecondary",
+      "ratio": 6.3356,
+      "status": "PASS"
+    },
+    {
+      "mode": "dark",
+      "foreground": "accent",
+      "background": "accentSoft",
+      "ratio": 5.6298,
+      "status": "PASS"
+    },
+    {
+      "mode": "dark",
+      "foreground": "success",
+      "background": "background",
+      "ratio": 10.6033,
+      "status": "PASS"
+    },
+    {
+      "mode": "dark",
+      "foreground": "success",
+      "background": "surface",
+      "ratio": 9.366,
+      "status": "PASS"
+    },
+    {
+      "mode": "dark",
+      "foreground": "success",
+      "background": "surfaceSecondary",
+      "ratio": 8.066,
+      "status": "PASS"
+    },
+    {
+      "mode": "dark",
+      "foreground": "success",
+      "background": "accentSoft",
+      "ratio": 7.1674,
+      "status": "PASS"
+    },
+    {
+      "mode": "dark",
+      "foreground": "danger",
+      "background": "background",
+      "ratio": 7.9476,
+      "status": "PASS"
+    },
+    {
+      "mode": "dark",
+      "foreground": "danger",
+      "background": "surface",
+      "ratio": 7.0202,
+      "status": "PASS"
+    },
+    {
+      "mode": "dark",
+      "foreground": "danger",
+      "background": "surfaceSecondary",
+      "ratio": 6.0458,
+      "status": "PASS"
+    },
+    {
+      "mode": "dark",
+      "foreground": "danger",
+      "background": "accentSoft",
+      "ratio": 5.3723,
+      "status": "PASS"
+    }
+  ]
+}

@@ -1,0 +1,293 @@
+{
+  "schema": 1,
+  "verifiedAtUTC": "2026-11-07T02:00:25.331701+00:00",
+  "runID": 42326199451,
+  "runURL": "https://github.com/janickiy/meetspace_ios_mobile/actions/runs/42326199451",
+  "sourceCommit": "5c4e3dcf49c64ab28b55231c5c02da16dca377b0",
+  "scope": "Independent actual unsigned Release archive packaging verification only.",
+  "result": "UNSIGNED_PRODUCT_VERIFIED",
+  "checkCounts": {
+    "PASS": 59,
+    "BLOCKED": 1
+  },
+  "blockedCheck": "signing.distribution",
+  "distributionApproval": "NOT_GRANTED",
+  "nativeUIGate": "NOT_ASSESSED_BY_THIS_VERIFICATION",
+  "fullSuitePass": false,
+  "packageTests": "NOT_RECOUNTED_BY_THIS_ARCHIVE_VERIFIER; separate CI collector owns test counts",
+  "rawWorkflowStatus": "queued",
+  "rawWorkflowConclusion": null,
+  "workflowStatusNote": "run.json can predate package metadata; these raw snapshots do not establish current whole-workflow completion.",
+  "packageJobID": 128261945134,
+  "packageJobConclusion": "success",
+  "artifact": {
+    "id": 13554983830,
+    "name": "release-unsigned",
+    "bytes": 18337013,
+    "githubDigest": "sha256:691f5e3637a82fe4607e6c5a247d04969c873a46c0c09c5689434205e2c2e498",
+    "downloadedSHA256": "691f5e3637a82fe4607e6c5a247d04969c873a46c0c09c5689434205e2c2e498",
+    "apiRunAndSourceMatch": true,
+    "apiDigestAndSizeMatch": true,
+    "allZIPMembersCRCVerified": true,
+    "zipMemberCount": 34
+  },
+  "rawInputMetadataSHA256": {
+    "run.json": "2969fdb5d531d064a5fc674d222cc17d949962fe184aea4248ffb0e22cf71982",
+    "jobs.json": "aac425bac5be66b1337814a747b13cd72c507f42886f6e26a00b33909781b5d3",
+    "artifacts.json": "085453542393143819f2e24ee95387960530e264ad707c74ec50eee716413f5b"
+  },
+  "command": [
+    "/opt/homebrew/opt/python@3.13/bin/python3.13",
+    "scripts/verify_release.py",
+    "--archive",
+    "/tmp/meetspace-p2-release-product-1_23rgkk/MeetSpace-Unsigned.xcarchive",
+    "--report",
+    "/tmp/meetspace-p2-release-product-1_23rgkk/independent-verification.json"
+  ],
+  "exitCode": 0,
+  "buildMetadata": {
+    "CFBundleShortVersionString": "0.2.0",
+    "CFBundleVersion": "1",
+    "DTXcode": "2630",
+    "DTXcodeBuild": "17C529",
+    "DTSDKName": "iphoneos26.2",
+    "DTPlatformName": "iphoneos",
+    "MinimumOSVersion": "18.0"
+  },
+  "sourcePackagingInputsMatchPinnedCommitAndCI": true,
+  "checkResultsMatchCI": true,
+  "verifierSHA256": "2efa55c4d63329f592c2983d3fc5c0de06bf363409dc9a9b80f2139e0c432ba3",
+  "helperSHA256": "1e6a3e991e0be5f57186f34142ead59392ce399868e983bde69b25a37b4d0aef",
+  "localVerifierObservedHEAD": "5c4e3dcf49c64ab28b55231c5c02da16dca377b0",
+  "localWorkingTreeModified": true,
+  "localWorkingTreeNote": "Current pinned product/configuration inputs checked independently; documentation changes are not a claim of a clean checkout.",
+  "sourceReleaseCheckCounts": {
+    "PASS": 30,
+    "BLOCKED": 1
+  },
+  "privateArchiveDirectory": "/tmp/meetspace-p2-release-product-1_23rgkk/MeetSpace-Unsigned.xcarchive",
+  "repositoryBinaryCopy": false,
+  "extractedArchiveFiles": [
+    {
+      "path": "Info.plist",
+      "bytes": 880,
+      "sha256": "17c03c0c80eccb5200d806c4fad942bc263a7b61516e57b54a29202c1bf88099"
+    },
+    {
+      "path": "Products/Applications/MeetSpace.app/AppIcon60x60@2x.png",
+      "bytes": 7204,
+      "sha256": "87b2e41fe980ed6b3771c1b385418d1c1c248579cdd76b57a8f4dda9d0430e36"
+    },
+    {
+      "path": "Products/Applications/MeetSpace.app/AppIcon76x76@2x~ipad.png",
+      "bytes": 9627,
+      "sha256": "0b19542bb8c588c31527df2ae3eb718b303bcffbbaabe442ccfc07fb8aecd640"
+    },
+    {
+      "path": "Products/Applications/MeetSpace.app/Assets.car",
+      "bytes": 799896,
+      "sha256": "c6292cf4895c20fb66c91a4709d6feb010891cc65b200352207652e8e44dba22"
+    },
+    {
+      "path": "Products/Applications/MeetSpace.app/Frameworks/WebRTC.framework/Info.plist",
+      "bytes": 750,
+      "sha256": "eec4cbf01a192c850a42d1acaf6b4ee2028652c2acf9b71c1cd269bd7596ef75"
+    },
+    {
+      "path": "Products/Applications/MeetSpace.app/Frameworks/WebRTC.framework/PrivacyInfo.xcprivacy",
+      "bytes": 845,
+      "sha256": "eb9337f2dee5992f74ae2b10f78f526d3eec1da8cfde029131081c0b18579614"
+    },
+    {
+      "path": "Products/Applications/MeetSpace.app/Frameworks/WebRTC.framework/WebRTC",
+      "bytes": 12539488,
+      "sha256": "25f632105a9d2528c11e4b390bf1d2cc35ae313144f5f0c45d4f758eed242583"
+    },
+    {
+      "path": "Products/Applications/MeetSpace.app/Info.plist",
+      "bytes": 1967,
+      "sha256": "96077ca4c540b955407c073f25f1c796d1d520c37b7f3bb56af3b8b694d44f68"
+    },
+    {
+      "path": "Products/Applications/MeetSpace.app/MeetSpace",
+      "bytes": 6068376,
+      "sha256": "ea82c1a94a1557af6357614d5c7f46ccd4869a59a41d7b4b6ae7ebe2b7d35b21"
+    },
+    {
+      "path": "Products/Applications/MeetSpace.app/MeetSpaceKit_MeetSpaceDesignSystem.bundle/Info.plist",
+      "bytes": 713,
+      "sha256": "a955b6263b5bfe2c5c3bd9ca2567120c80400fda54b97342adbb9a98d6c0d089"
+    },
+    {
+      "path": "Products/Applications/MeetSpace.app/MeetSpaceKit_MeetSpaceDesignSystem.bundle/Inter-OFL.txt",
+      "bytes": 4380,
+      "sha256": "262481e844521b326f5ecd053e59b98c8b2da78c8ee1bdbb6e8174305e54935a"
+    },
+    {
+      "path": "Products/Applications/MeetSpace.app/MeetSpaceKit_MeetSpaceDesignSystem.bundle/inter_regular.ttf",
+      "bytes": 411640,
+      "sha256": "40d692fce188e4471e2b3cba937be967878f631ad3ebbbdcd587687c7ebe0c82"
+    },
+    {
+      "path": "Products/Applications/MeetSpace.app/MeetSpaceKit_MeetSpaceDesignSystem.bundle/inter_semibold.ttf",
+      "bytes": 419744,
+      "sha256": "78a843fade9d4612a5567302fb595b56976eb5fcebf4fea5a5912d638bafcde3"
+    },
+    {
+      "path": "Products/Applications/MeetSpace.app/MeetSpaceKit_MeetSpaceDesignSystem.bundle/ru.lproj/Localizable.strings",
+      "bytes": 64839,
+      "sha256": "b7706b9c7c648e544123e42aeecd2a3b8bc0705858ac32b282eeadfdac6eac51"
+    },
+    {
+      "path": "Products/Applications/MeetSpace.app/MeetSpaceKit_MeetSpaceMedia.bundle/Info.plist",
+      "bytes": 699,
+      "sha256": "e95d7c74db7120c3b4cb8838a2d96ae926761a0e24d60a4c1452b1adcb36a43d"
+    },
+    {
+      "path": "Products/Applications/MeetSpace.app/MeetSpaceKit_MeetSpaceMedia.bundle/WebRTC-Distribution-LICENSE.txt",
+      "bytes": 2992,
+      "sha256": "843529896bae499c92af3ecade86855128f930334ba97530695ccecef56e966d"
+    },
+    {
+      "path": "Products/Applications/MeetSpace.app/MeetSpaceKit_MeetSpaceMedia.bundle/WebRTC-LICENSE.txt",
+      "bytes": 1511,
+      "sha256": "ab00a482b6a3902e40211b43c5d0441962ea99b6cc7c25c0f243fa270b78d482"
+    },
+    {
+      "path": "Products/Applications/MeetSpace.app/MeetSpaceKit_MeetSpaceMedia.bundle/WebRTC-PATENTS.txt",
+      "bytes": 1388,
+      "sha256": "01462e2068d1a04c2274f3389773014c14ed9bc3446b28303543bd3e3c064145"
+    },
+    {
+      "path": "Products/Applications/MeetSpace.app/MeetSpaceKit_MeetSpaceMedia.bundle/WebRTC-THIRD-PARTY-NOTICES.txt",
+      "bytes": 223952,
+      "sha256": "00c3ff0f731837f3c9a2868d1244c2a639b6512fad05294911d2d9a49b635b6e"
+    },
+    {
+      "path": "Products/Applications/MeetSpace.app/PkgInfo",
+      "bytes": 8,
+      "sha256": "82502191c9484b04d685374f9879a0066069c49b8acae7a04b01d38d07e8eca0"
+    },
+    {
+      "path": "Products/Applications/MeetSpace.app/PlugIns/BroadcastUpload.appex/BroadcastUpload",
+      "bytes": 211520,
+      "sha256": "0b0500ed6e87749b65303283cab3974df9e056dcf09aeb077e1e57243b352a6b"
+    },
+    {
+      "path": "Products/Applications/MeetSpace.app/PlugIns/BroadcastUpload.appex/Info.plist",
+      "bytes": 1141,
+      "sha256": "12891d22a58d283cfc39d41a41b9b289d5ebce26928a395e9008472e9b59d95d"
+    },
+    {
+      "path": "Products/Applications/MeetSpace.app/PlugIns/BroadcastUpload.appex/PrivacyInfo.xcprivacy",
+      "bytes": 544,
+      "sha256": "b10fbeb0cb363b7be2f5887a2abf11628ded6ff4aa5639624627e15e6c882fef"
+    },
+    {
+      "path": "Products/Applications/MeetSpace.app/PrivacyInfo.xcprivacy",
+      "bytes": 4265,
+      "sha256": "86957e3db44cec97b14ac9f75c27db587bbcb5a340527a97a01fa08d61b42b94"
+    },
+    {
+      "path": "Signatures/WebRTC.xcframework-ios.signature",
+      "bytes": 397,
+      "sha256": "4aa1955ad3ff3f499d83b58288f0c538c6cff81144d245ce4da9f92cc175a648"
+    },
+    {
+      "path": "dSYMs/BroadcastUpload.appex.dSYM/Contents/Info.plist",
+      "bytes": 664,
+      "sha256": "a8204e142c3365ce07f09058e57ecebce37532b6db2ed4b93198575e34cff4f7"
+    },
+    {
+      "path": "dSYMs/BroadcastUpload.appex.dSYM/Contents/Resources/DWARF/BroadcastUpload",
+      "bytes": 2668788,
+      "sha256": "83d330ca0f267d62809911a19e4bf308f71676cf90ead13ddcea927e360cb63a"
+    },
+    {
+      "path": "dSYMs/BroadcastUpload.appex.dSYM/Contents/Resources/Relocations/aarch64/BroadcastUpload.yml",
+      "bytes": 335,
+      "sha256": "820cb34116adce37e011b8b918ce242494f18c8d2703a3ad3c94241bbedaf3b5"
+    },
+    {
+      "path": "dSYMs/MeetSpace.app.dSYM/Contents/Info.plist",
+      "bytes": 648,
+      "sha256": "1b0c8dc8e9fc3d9a6f0d37c69724e4571669dce617ff7bc6bf7f98e7f6d05d9b"
+    },
+    {
+      "path": "dSYMs/MeetSpace.app.dSYM/Contents/Resources/DWARF/MeetSpace",
+      "bytes": 28702784,
+      "sha256": "3bf80228e469039a6fee74a6667ac9b0fe929d377d58ccf9da59e1cc779d596d"
+    },
+    {
+      "path": "dSYMs/MeetSpace.app.dSYM/Contents/Resources/Relocations/aarch64/MeetSpace.yml",
+      "bytes": 312,
+      "sha256": "d99be91837295a35264f73ccd3e890cd86692d7b755c988aad31ce31bd5a16a3"
+    }
+  ],
+  "evidence": [
+    {
+      "file": "artifact-metadata.json",
+      "bytes": 805,
+      "sha256": "30d7f0ec7592adec0ef604a0601c733485e84270d650b0b65b1ecd242c7ce018"
+    },
+    {
+      "file": "ci-verification.json",
+      "bytes": 10934,
+      "sha256": "5b76f0f4c85bb6f992fad6f7093de142c76844b545e88c1192440f1ccdb10926"
+    },
+    {
+      "file": "independent-checks.txt",
+      "bytes": 4948,
+      "sha256": "95c5c3906919109a3aa5a3b73e7ad31e5d9482e83ebb760eb31d4a5db12df1cc"
+    },
+    {
+      "file": "independent-stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "independent-verification.json",
+      "bytes": 10933,
+      "sha256": "36949c72487c8baa09de6eb60e02f75ef15677517fd7ec679bb19585becc4969"
+    },
+    {
+      "file": "package-job-metadata.json",
+      "bytes": 3061,
+      "sha256": "92feacedc152f422f40af2d5ec18ed1b6c64fdc70419edec508f3f690d63da47"
+    },
+    {
+      "file": "raw-artifacts.json",
+      "bytes": 1691,
+      "sha256": "085453542393143819f2e24ee95387960530e264ad707c74ec50eee716413f5b"
+    },
+    {
+      "file": "raw-jobs.json",
+      "bytes": 12800,
+      "sha256": "aac425bac5be66b1337814a747b13cd72c507f42886f6e26a00b33909781b5d3"
+    },
+    {
+      "file": "raw-run.json",
+      "bytes": 14242,
+      "sha256": "2969fdb5d531d064a5fc674d222cc17d949962fe184aea4248ffb0e22cf71982"
+    },
+    {
+      "file": "run-metadata.json",
+      "bytes": 14242,
+      "sha256": "2969fdb5d531d064a5fc674d222cc17d949962fe184aea4248ffb0e22cf71982"
+    },
+    {
+      "file": "source-proof.json",
+      "bytes": 2148,
+      "sha256": "6973df5365f7e46e777c4cc0d05e76ef25f57e07f21f5fca6ab9e867cbf66b97"
+    },
+    {
+      "file": "source-release-verification.json",
+      "bytes": 6397,
+      "sha256": "fa02ee66d78e4af3870ad31fdd9ae6e0ffbeae58eb358866dcc0769db86e8f1c"
+    }
+  ],
+  "limits": [
+    "No signing, export, App Store approval, device acceptance, native UI, or security-fix runtime proof is granted by packaging checks.",
+    "Prior CI15/16 failures and CI17 cancellation are not reclassified."
+  ]
+}

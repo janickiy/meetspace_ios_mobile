@@ -1,5 +1,19 @@
 # Тестирование этапа 08
 
+Дополнение 7 ноября: [P2-исправления](P2_FIXES.md), source
+`5c4e3dcf49c64ab28b55231c5c02da16dca377b0`. Локально: **38/38 focused PASS**;
+полный SwiftPM: **193 PASS / 5 opt-in SKIP из 198**, 0 FAIL. Серверный patch:
+**9/9 PostgreSQL PASS**, включая независимое применение к pinned source с `-race`.
+Новый [Xcode CI](https://github.com/janickiy/meetspace_ios_mobile/actions/runs/42326199451)
+завершился SUCCESS: **52/52 native PASS**, 0 FAIL/SKIP; scope `push-recovery` —
+11 hosted + 2 UI tests на каждой из четырёх конфигураций (iPhone/iPad 26.2 и 18.6).
+[Receipt с точными test IDs и проверкой происхождения](evidence/p2-ci/receipt.json).
+CI package: **193 PASS / 5 opt-in SKIP**. Unsigned archive: **59 PASS; signing BLOCKED**
+([независимая проверка](evidence/p2-release-product/receipt.json)).
+[20 оригинальных PNG просмотрены](evidence/p2-ci/visual-files.json); это ограниченный
+push/deletion scope, без Core AX/AX5/full UI baseline и profiler.
+Предыдущие результаты ниже относятся к прежнему source, а не к новой реализации P2.
+
 Дата: 2026-11-06. Финальная целевая native проверка удаления — **4/4 PASS**.
 Подготовка к распространению остаётся **BLOCKED** перечисленными внешними gates.
 Проверки разделены по фактически выполненному scope:

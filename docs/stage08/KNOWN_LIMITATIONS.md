@@ -1,6 +1,6 @@
 # Ограничения этапа 08
 
-Дата проверки: 2026-11-06. Результат аудита и подготовки не является разрешением
+Дата обновления: 7 ноября 2026. Результат аудита и подготовки не является разрешением
 на production или подтверждением App Store review.
 
 | Gate | Статус | Что требуется для закрытия |
@@ -11,8 +11,8 @@
 | Instruments | BLOCKED | Allocations, Leaks, Time Profiler, Energy Log на устройстве: 30 звонков, 60 минут конференции, screen share, reconnect и большие transfers. Host RSS/CPU не заменяют эти результаты |
 | APNs | BLOCKED device acceptance | Нужны production/development profiles и настроенный внешний push gateway. Сохранение token не доказывает доставку |
 | PushKit / cold-start VoIP | BLOCKED contract | В существующем backend нет подтверждённого VoIP token/payload/delivery contract; adapter выключен. UI CallKit и активная сессия не доказывают пробуждение закрытого приложения |
-| Push-привязки при конкурентном удалении аккаунта | OPEN P2; host regression PASS, native concurrent push не проверен | Уже авторизованный POST devices может записать привязку после DELETE, если backend сохранил анонимную строку пользователя. Ожидание локальной push-очереди до DELETE снижает гонку этого процесса, но не синхронизирует другой клиент. Нужны серверная транзакционная защита и concurrency regression; см. SECURITY_AUDIT.md |
-| Push после ошибки локального хранилища при удалении | OPEN P2 availability; source review | Если после server200 не удалось записать очищенный journal с прежней pending binding, она может блокировать push другого аккаунта даже после восстановления storage. Требуются сохранение подтверждения и повтор локальной очистки; отдельный fault-injection тест ещё не выполнен. Обычный успешный путь не затронут; см. SECURITY_AUDIT.md |
+| Push-привязки при конкурентном удалении аккаунта | FIXED IN PATCH; BACKEND INTEGRATION REQUIRED | [Серверная правка](../../server-patches/account-deletion/README.md) сериализует SaveDevice/DELETE;9/9 PostgreSQL сценариев PASS. На непатченном9e6058c дефект остаётся; требуется включить patch в backend и выпустить сервер. Production не изменён |
+| Push после ошибки локального хранилища при удалении | FIXED IN iOS; local fault + native regression PASS | [Отдельное подтверждение и replay](P2_FIXES.md) восстанавливают очистку после write/read failure и restart; другие scopes сохранены. Если все записи отказали и процесс завершён до durable proof, остаётся fail-closed;401 не используется как подтверждение |
 | ReplayKit | BLOCKED device acceptance | Реальное системное расширение, захват других приложений, interruption/stop/restart и FPS/CPU/RAM на устройстве. System audio не передаётся |
 | Серверные видеозаписи | PARTIAL | Настоящий audio-only pipeline проверен на этапе 7. Composite/screen-focus video, реальный микрофон, долгий playback, Files export и physical lock требуют отдельной проверки |
 | App Store privacy / metadata | BLOCKED publisher input | Privacy-policy/support URLs, возрастной рейтинг, export classification, права на материалы, review contact/account и итоговые App Privacy answers |
@@ -26,7 +26,7 @@
 анонимизированной согласно существующему серверному контракту. Сервер может
 отказать из-за активных звонков, открытых встреч или владения группами.
 
-Удаление push-привязок в транзакции DELETE не гарантирует, что уже авторизованная
+В исходном backend без нового patch удаление push-привязок в транзакции DELETE не гарантирует, что уже авторизованная
 операция другого устройства не добавит их снова. Backend `9e6058c` очищает таблицу
 и может оставить tombstone ([account_repository.go:67–108](https://github.com/janickiy/meet-space/blob/9e6058c31cc07bff0f48d8f7f6a40106c55c4881/internal/infrastructure/postgres/account_repository.go#L67-L108));
 `SaveDevice` не проверяет состояние владельца под общей блокировкой

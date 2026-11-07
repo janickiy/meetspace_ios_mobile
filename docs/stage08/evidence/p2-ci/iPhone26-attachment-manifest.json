@@ -1,0 +1,74 @@
+[
+  {
+    "attachments" : [
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "17F0E734-D183-4810-AB97-F27FD9968039",
+        "deviceName" : "iPhone 17 Pro Max",
+        "exportedFileName" : "C5ECCCD5-A851-4FD9-BD40-2B9B1B356BE7.json",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "stage08-actual-font-scaling_0_D6CF1860-774D-466D-B204-8748C3FF30B6.json",
+        "timestamp" : 1794016628.65
+      }
+    ],
+    "testIdentifier" : "TypographyAccessibilityTests/testBundledFontsScaleInActualUIKitHostingAtAllDynamicTypeSizes()",
+    "testIdentifierURL" : "test://com.apple.xcode/MeetSpace/MeetSpaceTests/TypographyAccessibilityTests/testBundledFontsScaleInActualUIKitHostingAtAllDynamicTypeSizes"
+  },
+  {
+    "attachments" : [
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "17F0E734-D183-4810-AB97-F27FD9968039",
+        "deviceName" : "iPhone 17 Pro Max",
+        "exportedFileName" : "C6A4D3F7-C6F7-4EC4-BC9B-1C3817B84F89.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "stage05-push-enabled_0_E9D10E97-7FDC-4F56-90C9-F3F0CB8FDDDD.png",
+        "timestamp" : 1794016725.688
+      }
+    ],
+    "testIdentifier" : "FoundationUITests/testOrdinaryPushOptInAndDisableWithFixtureToken()",
+    "testIdentifierURL" : "test://com.apple.xcode/MeetSpace/MeetSpaceUITests/FoundationUITests/testOrdinaryPushOptInAndDisableWithFixtureToken"
+  },
+  {
+    "attachments" : [
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "17F0E734-D183-4810-AB97-F27FD9968039",
+        "deviceName" : "iPhone 17 Pro Max",
+        "exportedFileName" : "377DA12C-F720-4636-AD1C-141AA9FDBCB6.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "stage08-account-deletion-success_0_CBE1C666-B977-47A0-A06B-75D8093DE964.png",
+        "timestamp" : 1794016805.078
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "17F0E734-D183-4810-AB97-F27FD9968039",
+        "deviceName" : "iPhone 17 Pro Max",
+        "exportedFileName" : "ABB055C5-659F-4F74-A5AC-7E4FC04B0FB5.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "stage08-account-deletion_0_61D4E3AD-CCB2-437E-8C2C-DCBCF9056865.png",
+        "timestamp" : 1794016799.233
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "17F0E734-D183-4810-AB97-F27FD9968039",
+        "deviceName" : "iPhone 17 Pro Max",
+        "exportedFileName" : "C41BC4F0-BE26-443B-8625-94FAC21352C4.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "stage08-account-deletion-keyboard-retry_0_87ED113A-3B74-444F-A6EA-0B4EE9ADE017.png",
+        "timestamp" : 1794016793.398
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "17F0E734-D183-4810-AB97-F27FD9968039",
+        "deviceName" : "iPhone 17 Pro Max",
+        "exportedFileName" : "137B6253-CC52-48E1-8EA4-584B3AD48859.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "stage08-account-deletion-keyboard-initial_0_0E138DF1-B908-4535-86B9-C70E6597F81A.png",
+        "timestamp" : 1794016774.011
+      }
+    ],
+    "testIdentifier" : "FoundationUITests/testStage08AccountDeletionRequiresPasswordAndConfirmation()",
+    "testIdentifierURL" : "test://com.apple.xcode/MeetSpace/MeetSpaceUITests/FoundationUITests/testStage08AccountDeletionRequiresPasswordAndConfirmation"
+  }
+]

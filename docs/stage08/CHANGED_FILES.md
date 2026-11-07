@@ -1,6 +1,6 @@
 # Файлы этапа 08
 
-База сравнения: `42c02958b4f25296e282fd7efb66c0ac0d83c3a0`. Всего изменённых/новых файлов: **984**. Список отражает исходники, проверки, отчёты и сохранённые доказательства текущей рабочей копии.
+База сравнения: `42c02958b4f25296e282fd7efb66c0ac0d83c3a0`. Всего изменённых/новых файлов: **1069**. Список отражает исходники, проверки, отчёты и сохранённые доказательства текущей рабочей копии.
 
 ## Приложение и конфигурация сборки — 7
 
@@ -12,7 +12,7 @@
 - [App/UITestDependencies.swift](../../App/UITestDependencies.swift)
 - [MeetSpace.xcodeproj/project.pbxproj](../../MeetSpace.xcodeproj/project.pbxproj)
 
-## Production Swift modules — 16
+## Production Swift modules — 17
 
 - [Packages/MeetSpaceKit/Sources/API/Authentication.swift](../../Packages/MeetSpaceKit/Sources/API/Authentication.swift)
 - [Packages/MeetSpaceKit/Sources/API/BoundedUpload.swift](../../Packages/MeetSpaceKit/Sources/API/BoundedUpload.swift)
@@ -30,14 +30,16 @@
 - [Packages/MeetSpaceKit/Sources/Features/MeetSpaceRootView.swift](../../Packages/MeetSpaceKit/Sources/Features/MeetSpaceRootView.swift)
 - [Packages/MeetSpaceKit/Sources/Features/PushRegistrationModel.swift](../../Packages/MeetSpaceKit/Sources/Features/PushRegistrationModel.swift)
 - [Packages/MeetSpaceKit/Sources/Features/WorkspaceView.swift](../../Packages/MeetSpaceKit/Sources/Features/WorkspaceView.swift)
+- [Packages/MeetSpaceKit/Sources/Storage/PushRegistrationStore.swift](../../Packages/MeetSpaceKit/Sources/Storage/PushRegistrationStore.swift)
 
-## Тесты — 13
+## Тесты — 14
 
 - [Packages/MeetSpaceKit/Tests/BroadcastTests/BroadcastLifecycleStressTests.swift](../../Packages/MeetSpaceKit/Tests/BroadcastTests/BroadcastLifecycleStressTests.swift)
 - [Packages/MeetSpaceKit/Tests/IntegrationTests/AccountDeletionTests.swift](../../Packages/MeetSpaceKit/Tests/IntegrationTests/AccountDeletionTests.swift)
 - [Packages/MeetSpaceKit/Tests/IntegrationTests/ConferenceSessionTests.swift](../../Packages/MeetSpaceKit/Tests/IntegrationTests/ConferenceSessionTests.swift)
 - [Packages/MeetSpaceKit/Tests/IntegrationTests/DirectCallCoordinatorTests.swift](../../Packages/MeetSpaceKit/Tests/IntegrationTests/DirectCallCoordinatorTests.swift)
 - [Packages/MeetSpaceKit/Tests/IntegrationTests/FileTransferStressTests.swift](../../Packages/MeetSpaceKit/Tests/IntegrationTests/FileTransferStressTests.swift)
+- [Packages/MeetSpaceKit/Tests/IntegrationTests/PushDeletionRecoveryTests.swift](../../Packages/MeetSpaceKit/Tests/IntegrationTests/PushDeletionRecoveryTests.swift)
 - [Packages/MeetSpaceKit/Tests/IntegrationTests/PushRegistrationLifecycleTests.swift](../../Packages/MeetSpaceKit/Tests/IntegrationTests/PushRegistrationLifecycleTests.swift)
 - [Packages/MeetSpaceKit/Tests/IntegrationTests/RealtimeStressTests.swift](../../Packages/MeetSpaceKit/Tests/IntegrationTests/RealtimeStressTests.swift)
 - [Packages/MeetSpaceKit/Tests/IntegrationTests/RecordingsTests.swift](../../Packages/MeetSpaceKit/Tests/IntegrationTests/RecordingsTests.swift)
@@ -47,7 +49,16 @@
 - [Tests/MeetSpaceTests/TypographyAccessibilityTests.swift](../../Tests/MeetSpaceTests/TypographyAccessibilityTests.swift)
 - [Tests/MeetSpaceUITests/FoundationUITests.swift](../../Tests/MeetSpaceUITests/FoundationUITests.swift)
 
-## Инструменты — 8
+## Серверный patch — 6
+
+- [server-patches/account-deletion/README.md](../../server-patches/account-deletion/README.md)
+- [server-patches/account-deletion/backend-device-account-serialization.patch](../../server-patches/account-deletion/backend-device-account-serialization.patch)
+- [server-patches/account-deletion/baseline.log](../../server-patches/account-deletion/baseline.log)
+- [server-patches/account-deletion/fixed.log](../../server-patches/account-deletion/fixed.log)
+- [server-patches/account-deletion/receipt.json](../../server-patches/account-deletion/receipt.json)
+- [server-patches/account-deletion/related-race.log](../../server-patches/account-deletion/related-race.log)
+
+## Инструменты — 9
 
 - [scripts/ci_simulators.py](../../scripts/ci_simulators.py)
 - [scripts/generate_xcode_project.py](../../scripts/generate_xcode_project.py)
@@ -55,10 +66,11 @@
 - [scripts/profile_simulator.py](../../scripts/profile_simulator.py)
 - [scripts/render_app_icon.swift](../../scripts/render_app_icon.swift)
 - [scripts/stage08_backend_contract.py](../../scripts/stage08_backend_contract.py)
+- [scripts/verify_backend_deletion_patch.py](../../scripts/verify_backend_deletion_patch.py)
 - [scripts/verify_contrast.py](../../scripts/verify_contrast.py)
 - [scripts/verify_release.py](../../scripts/verify_release.py)
 
-## Документация — 24
+## Документация — 26
 
 - [README.md](../../README.md)
 - [docs/stage07/README.md](../../docs/stage07/README.md)
@@ -77,6 +89,8 @@
 - [docs/stage08/CHANGED_FILES.md](../../docs/stage08/CHANGED_FILES.md)
 - [docs/stage08/CI_HISTORY.md](../../docs/stage08/CI_HISTORY.md)
 - [docs/stage08/KNOWN_LIMITATIONS.md](../../docs/stage08/KNOWN_LIMITATIONS.md)
+- [docs/stage08/P2_FILES.md](../../docs/stage08/P2_FILES.md)
+- [docs/stage08/P2_FIXES.md](../../docs/stage08/P2_FIXES.md)
 - [docs/stage08/PERFORMANCE_REPORT.md](../../docs/stage08/PERFORMANCE_REPORT.md)
 - [docs/stage08/PRIVACY_DISCLOSURE.md](../../docs/stage08/PRIVACY_DISCLOSURE.md)
 - [docs/stage08/README.md](../../docs/stage08/README.md)
@@ -85,7 +99,7 @@
 - [docs/stage08/TEST_REPORT.md](../../docs/stage08/TEST_REPORT.md)
 - [docs/stage08/VISUAL_REVIEW.md](../../docs/stage08/VISUAL_REVIEW.md)
 
-## Сохранённые результаты и скриншоты — 916
+## Сохранённые результаты и скриншоты — 990
 
 - [docs/stage08/evidence/accessibility-attempt01/README.md](../../docs/stage08/evidence/accessibility-attempt01/README.md)
 - [docs/stage08/evidence/accessibility-attempt01/iPad18-issues.json](../../docs/stage08/evidence/accessibility-attempt01/iPad18-issues.json)
@@ -850,6 +864,80 @@
 - [docs/stage08/evidence/host-capabilities.json](../../docs/stage08/evidence/host-capabilities.json)
 - [docs/stage08/evidence/host-results.txt](../../docs/stage08/evidence/host-results.txt)
 - [docs/stage08/evidence/host-tests.json](../../docs/stage08/evidence/host-tests.json)
+- [docs/stage08/evidence/p2-backend-reproduction/receipt.json](../../docs/stage08/evidence/p2-backend-reproduction/receipt.json)
+- [docs/stage08/evidence/p2-backend-reproduction/tests.log](../../docs/stage08/evidence/p2-backend-reproduction/tests.log)
+- [docs/stage08/evidence/p2-ci/files.json](../../docs/stage08/evidence/p2-ci/files.json)
+- [docs/stage08/evidence/p2-ci/iPad18-attachment-manifest.json](../../docs/stage08/evidence/p2-ci/iPad18-attachment-manifest.json)
+- [docs/stage08/evidence/p2-ci/iPad18-environment.json](../../docs/stage08/evidence/p2-ci/iPad18-environment.json)
+- [docs/stage08/evidence/p2-ci/iPad18-export-status.json](../../docs/stage08/evidence/p2-ci/iPad18-export-status.json)
+- [docs/stage08/evidence/p2-ci/iPad18-native-results.txt](../../docs/stage08/evidence/p2-ci/iPad18-native-results.txt)
+- [docs/stage08/evidence/p2-ci/iPad18-summary.json](../../docs/stage08/evidence/p2-ci/iPad18-summary.json)
+- [docs/stage08/evidence/p2-ci/iPad26-attachment-manifest.json](../../docs/stage08/evidence/p2-ci/iPad26-attachment-manifest.json)
+- [docs/stage08/evidence/p2-ci/iPad26-environment.json](../../docs/stage08/evidence/p2-ci/iPad26-environment.json)
+- [docs/stage08/evidence/p2-ci/iPad26-export-status.json](../../docs/stage08/evidence/p2-ci/iPad26-export-status.json)
+- [docs/stage08/evidence/p2-ci/iPad26-native-results.txt](../../docs/stage08/evidence/p2-ci/iPad26-native-results.txt)
+- [docs/stage08/evidence/p2-ci/iPad26-summary.json](../../docs/stage08/evidence/p2-ci/iPad26-summary.json)
+- [docs/stage08/evidence/p2-ci/iPhone18-attachment-manifest.json](../../docs/stage08/evidence/p2-ci/iPhone18-attachment-manifest.json)
+- [docs/stage08/evidence/p2-ci/iPhone18-environment.json](../../docs/stage08/evidence/p2-ci/iPhone18-environment.json)
+- [docs/stage08/evidence/p2-ci/iPhone18-export-status.json](../../docs/stage08/evidence/p2-ci/iPhone18-export-status.json)
+- [docs/stage08/evidence/p2-ci/iPhone18-native-results.txt](../../docs/stage08/evidence/p2-ci/iPhone18-native-results.txt)
+- [docs/stage08/evidence/p2-ci/iPhone18-summary.json](../../docs/stage08/evidence/p2-ci/iPhone18-summary.json)
+- [docs/stage08/evidence/p2-ci/iPhone26-attachment-manifest.json](../../docs/stage08/evidence/p2-ci/iPhone26-attachment-manifest.json)
+- [docs/stage08/evidence/p2-ci/iPhone26-environment.json](../../docs/stage08/evidence/p2-ci/iPhone26-environment.json)
+- [docs/stage08/evidence/p2-ci/iPhone26-export-status.json](../../docs/stage08/evidence/p2-ci/iPhone26-export-status.json)
+- [docs/stage08/evidence/p2-ci/iPhone26-native-results.txt](../../docs/stage08/evidence/p2-ci/iPhone26-native-results.txt)
+- [docs/stage08/evidence/p2-ci/iPhone26-summary.json](../../docs/stage08/evidence/p2-ci/iPhone26-summary.json)
+- [docs/stage08/evidence/p2-ci/ipad18-visual-review.json](../../docs/stage08/evidence/p2-ci/ipad18-visual-review.json)
+- [docs/stage08/evidence/p2-ci/ipad26-visual-review.json](../../docs/stage08/evidence/p2-ci/ipad26-visual-review.json)
+- [docs/stage08/evidence/p2-ci/iphone-visual-review.json](../../docs/stage08/evidence/p2-ci/iphone-visual-review.json)
+- [docs/stage08/evidence/p2-ci/package/contrast-verification.json](../../docs/stage08/evidence/p2-ci/package/contrast-verification.json)
+- [docs/stage08/evidence/p2-ci/package/native-package-results.txt](../../docs/stage08/evidence/p2-ci/package/native-package-results.txt)
+- [docs/stage08/evidence/p2-ci/package/release-verification.json](../../docs/stage08/evidence/p2-ci/package/release-verification.json)
+- [docs/stage08/evidence/p2-ci/package/source-release-verification.json](../../docs/stage08/evidence/p2-ci/package/source-release-verification.json)
+- [docs/stage08/evidence/p2-ci/raw-api/artifacts.json](../../docs/stage08/evidence/p2-ci/raw-api/artifacts.json)
+- [docs/stage08/evidence/p2-ci/raw-api/jobs.json](../../docs/stage08/evidence/p2-ci/raw-api/jobs.json)
+- [docs/stage08/evidence/p2-ci/raw-api/run.json](../../docs/stage08/evidence/p2-ci/raw-api/run.json)
+- [docs/stage08/evidence/p2-ci/receipt.json](../../docs/stage08/evidence/p2-ci/receipt.json)
+- [docs/stage08/evidence/p2-ci/screenshots/iPad18/stage05-push-enabled_0_9E71F122-644C-4DC8-80C8-C47C8BC86B6E.png](../../docs/stage08/evidence/p2-ci/screenshots/iPad18/stage05-push-enabled_0_9E71F122-644C-4DC8-80C8-C47C8BC86B6E.png)
+- [docs/stage08/evidence/p2-ci/screenshots/iPad18/stage08-account-deletion-keyboard-initial_0_53856B4E-77BB-494E-AE2A-20E9944041E8.png](../../docs/stage08/evidence/p2-ci/screenshots/iPad18/stage08-account-deletion-keyboard-initial_0_53856B4E-77BB-494E-AE2A-20E9944041E8.png)
+- [docs/stage08/evidence/p2-ci/screenshots/iPad18/stage08-account-deletion-keyboard-retry_0_C5ABCCBE-E787-4F2A-AD50-0CD1D122BA88.png](../../docs/stage08/evidence/p2-ci/screenshots/iPad18/stage08-account-deletion-keyboard-retry_0_C5ABCCBE-E787-4F2A-AD50-0CD1D122BA88.png)
+- [docs/stage08/evidence/p2-ci/screenshots/iPad18/stage08-account-deletion-success_0_489E6E51-F88F-45D5-83E3-8E5EDD49C993.png](../../docs/stage08/evidence/p2-ci/screenshots/iPad18/stage08-account-deletion-success_0_489E6E51-F88F-45D5-83E3-8E5EDD49C993.png)
+- [docs/stage08/evidence/p2-ci/screenshots/iPad18/stage08-account-deletion_0_7C5153E5-7126-401C-A341-335FF097D82B.png](../../docs/stage08/evidence/p2-ci/screenshots/iPad18/stage08-account-deletion_0_7C5153E5-7126-401C-A341-335FF097D82B.png)
+- [docs/stage08/evidence/p2-ci/screenshots/iPad26/stage05-push-enabled_0_AD5A5072-0D60-4B3C-B9F0-20CCA66D0614.png](../../docs/stage08/evidence/p2-ci/screenshots/iPad26/stage05-push-enabled_0_AD5A5072-0D60-4B3C-B9F0-20CCA66D0614.png)
+- [docs/stage08/evidence/p2-ci/screenshots/iPad26/stage08-account-deletion-keyboard-initial_0_B922AAB3-6B12-434E-AF06-067679C85F0C.png](../../docs/stage08/evidence/p2-ci/screenshots/iPad26/stage08-account-deletion-keyboard-initial_0_B922AAB3-6B12-434E-AF06-067679C85F0C.png)
+- [docs/stage08/evidence/p2-ci/screenshots/iPad26/stage08-account-deletion-keyboard-retry_0_753BF678-EC4A-40E6-B7FE-F800FBFA0CE3.png](../../docs/stage08/evidence/p2-ci/screenshots/iPad26/stage08-account-deletion-keyboard-retry_0_753BF678-EC4A-40E6-B7FE-F800FBFA0CE3.png)
+- [docs/stage08/evidence/p2-ci/screenshots/iPad26/stage08-account-deletion-success_0_0DE15304-AA07-4008-8684-B60BFBF18649.png](../../docs/stage08/evidence/p2-ci/screenshots/iPad26/stage08-account-deletion-success_0_0DE15304-AA07-4008-8684-B60BFBF18649.png)
+- [docs/stage08/evidence/p2-ci/screenshots/iPad26/stage08-account-deletion_0_63E74A62-425C-4E09-A90B-F9C03BC9396E.png](../../docs/stage08/evidence/p2-ci/screenshots/iPad26/stage08-account-deletion_0_63E74A62-425C-4E09-A90B-F9C03BC9396E.png)
+- [docs/stage08/evidence/p2-ci/screenshots/iPhone18/stage05-push-enabled_0_5324F795-2594-423E-A1AF-C2EBB6C1CDCB.png](../../docs/stage08/evidence/p2-ci/screenshots/iPhone18/stage05-push-enabled_0_5324F795-2594-423E-A1AF-C2EBB6C1CDCB.png)
+- [docs/stage08/evidence/p2-ci/screenshots/iPhone18/stage08-account-deletion-keyboard-initial_0_BF366434-8EC7-4146-BB5F-64C6DA1DEA4B.png](../../docs/stage08/evidence/p2-ci/screenshots/iPhone18/stage08-account-deletion-keyboard-initial_0_BF366434-8EC7-4146-BB5F-64C6DA1DEA4B.png)
+- [docs/stage08/evidence/p2-ci/screenshots/iPhone18/stage08-account-deletion-keyboard-retry_0_A44FA25D-5451-4472-AFB6-D82F35DE7D4A.png](../../docs/stage08/evidence/p2-ci/screenshots/iPhone18/stage08-account-deletion-keyboard-retry_0_A44FA25D-5451-4472-AFB6-D82F35DE7D4A.png)
+- [docs/stage08/evidence/p2-ci/screenshots/iPhone18/stage08-account-deletion-success_0_D33DFCE6-B640-4106-82C1-63A4CFB0D656.png](../../docs/stage08/evidence/p2-ci/screenshots/iPhone18/stage08-account-deletion-success_0_D33DFCE6-B640-4106-82C1-63A4CFB0D656.png)
+- [docs/stage08/evidence/p2-ci/screenshots/iPhone18/stage08-account-deletion_0_D4409545-9F78-48CB-B64B-54F4F7E54C20.png](../../docs/stage08/evidence/p2-ci/screenshots/iPhone18/stage08-account-deletion_0_D4409545-9F78-48CB-B64B-54F4F7E54C20.png)
+- [docs/stage08/evidence/p2-ci/screenshots/iPhone26/stage05-push-enabled_0_E9D10E97-7FDC-4F56-90C9-F3F0CB8FDDDD.png](../../docs/stage08/evidence/p2-ci/screenshots/iPhone26/stage05-push-enabled_0_E9D10E97-7FDC-4F56-90C9-F3F0CB8FDDDD.png)
+- [docs/stage08/evidence/p2-ci/screenshots/iPhone26/stage08-account-deletion-keyboard-initial_0_0E138DF1-B908-4535-86B9-C70E6597F81A.png](../../docs/stage08/evidence/p2-ci/screenshots/iPhone26/stage08-account-deletion-keyboard-initial_0_0E138DF1-B908-4535-86B9-C70E6597F81A.png)
+- [docs/stage08/evidence/p2-ci/screenshots/iPhone26/stage08-account-deletion-keyboard-retry_0_87ED113A-3B74-444F-A6EA-0B4EE9ADE017.png](../../docs/stage08/evidence/p2-ci/screenshots/iPhone26/stage08-account-deletion-keyboard-retry_0_87ED113A-3B74-444F-A6EA-0B4EE9ADE017.png)
+- [docs/stage08/evidence/p2-ci/screenshots/iPhone26/stage08-account-deletion-success_0_CBE1C666-B977-47A0-A06B-75D8093DE964.png](../../docs/stage08/evidence/p2-ci/screenshots/iPhone26/stage08-account-deletion-success_0_CBE1C666-B977-47A0-A06B-75D8093DE964.png)
+- [docs/stage08/evidence/p2-ci/screenshots/iPhone26/stage08-account-deletion_0_61D4E3AD-CCB2-437E-8C2C-DCBCF9056865.png](../../docs/stage08/evidence/p2-ci/screenshots/iPhone26/stage08-account-deletion_0_61D4E3AD-CCB2-437E-8C2C-DCBCF9056865.png)
+- [docs/stage08/evidence/p2-ci/source-contract.txt](../../docs/stage08/evidence/p2-ci/source-contract.txt)
+- [docs/stage08/evidence/p2-ci/visual-files.json](../../docs/stage08/evidence/p2-ci/visual-files.json)
+- [docs/stage08/evidence/p2-local/focused.log](../../docs/stage08/evidence/p2-local/focused.log)
+- [docs/stage08/evidence/p2-local/full.log](../../docs/stage08/evidence/p2-local/full.log)
+- [docs/stage08/evidence/p2-local/receipt.json](../../docs/stage08/evidence/p2-local/receipt.json)
+- [docs/stage08/evidence/p2-release-product/artifact-metadata.json](../../docs/stage08/evidence/p2-release-product/artifact-metadata.json)
+- [docs/stage08/evidence/p2-release-product/ci-verification.json](../../docs/stage08/evidence/p2-release-product/ci-verification.json)
+- [docs/stage08/evidence/p2-release-product/files.json](../../docs/stage08/evidence/p2-release-product/files.json)
+- [docs/stage08/evidence/p2-release-product/independent-checks.txt](../../docs/stage08/evidence/p2-release-product/independent-checks.txt)
+- [docs/stage08/evidence/p2-release-product/independent-stderr.txt](../../docs/stage08/evidence/p2-release-product/independent-stderr.txt)
+- [docs/stage08/evidence/p2-release-product/independent-verification.json](../../docs/stage08/evidence/p2-release-product/independent-verification.json)
+- [docs/stage08/evidence/p2-release-product/package-job-metadata.json](../../docs/stage08/evidence/p2-release-product/package-job-metadata.json)
+- [docs/stage08/evidence/p2-release-product/raw-artifacts.json](../../docs/stage08/evidence/p2-release-product/raw-artifacts.json)
+- [docs/stage08/evidence/p2-release-product/raw-jobs.json](../../docs/stage08/evidence/p2-release-product/raw-jobs.json)
+- [docs/stage08/evidence/p2-release-product/raw-run.json](../../docs/stage08/evidence/p2-release-product/raw-run.json)
+- [docs/stage08/evidence/p2-release-product/receipt.json](../../docs/stage08/evidence/p2-release-product/receipt.json)
+- [docs/stage08/evidence/p2-release-product/run-metadata.json](../../docs/stage08/evidence/p2-release-product/run-metadata.json)
+- [docs/stage08/evidence/p2-release-product/source-proof.json](../../docs/stage08/evidence/p2-release-product/source-proof.json)
+- [docs/stage08/evidence/p2-release-product/source-release-verification.json](../../docs/stage08/evidence/p2-release-product/source-release-verification.json)
+- [docs/stage08/evidence/p2-source-review.json](../../docs/stage08/evidence/p2-source-review.json)
 - [docs/stage08/evidence/performance/completion-wait-filtered.txt](../../docs/stage08/evidence/performance/completion-wait-filtered.txt)
 - [docs/stage08/evidence/performance/completion-wait-full-1.log](../../docs/stage08/evidence/performance/completion-wait-full-1.log)
 - [docs/stage08/evidence/performance/completion-wait-full-2.log](../../docs/stage08/evidence/performance/completion-wait-full-2.log)

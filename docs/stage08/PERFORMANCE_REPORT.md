@@ -1,5 +1,11 @@
 # Производительность и lifecycle: этап 08
 
+Дополнение7ноября: P2-реализация изменила push/account cleanup. Новый полный
+SwiftPM прогон193 PASS /5SKIP включает прежние stress assertions, но новые
+численные CPU/RSS/energy измерения не выполнялись. Метрики ниже остаются baseline
+указанных исходников, не измерениями новой реализации ledger. Новый P2 CI намеренно
+не повторяет ранее неуспешный diagnostic Instruments job.
+
 Дата: 2026-11-06. **PASS** для описанных host stress assertions. **BLOCKED** для
 Instruments на физическом устройстве, device CPU/memory/energy, длительного реального
 звонка и физического ReplayKit. Simulator profiling CI8 — **BLOCKED** на Shutdown

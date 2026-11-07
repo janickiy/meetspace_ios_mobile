@@ -1,0 +1,183 @@
+{
+  "schemaVersion": 1,
+  "reviewedAt": "2026-11-07T02:08:21.908549+00:00",
+  "runID": 42326199451,
+  "sourceCommit": "5c4e3dcf49c64ab28b55231c5c02da16dca377b0",
+  "device": "iPad18",
+  "scope": "Manual review of five original portrait iPad18 P2 push/deletion DEBUG fixture screenshots only.",
+  "artifact": {
+    "id": 13554979844,
+    "node_id": "MDg6QXJ0aWZhY3QxMzU1NDk3OTg0NA==",
+    "name": "results-iPad18",
+    "size_in_bytes": 5367860,
+    "url": "https://api.github.com/repos/janickiy/meetspace_ios_mobile/actions/artifacts/13554979844",
+    "archive_download_url": "https://api.github.com/repos/janickiy/meetspace_ios_mobile/actions/artifacts/13554979844/zip",
+    "expired": false,
+    "digest": "sha256:d9171a352bdbfbabbddacb8faab953b804e587869ec6cee658ca47cf1a300c41",
+    "created_at": "2026-11-07T02:06:44Z",
+    "updated_at": "2026-11-07T02:06:44Z",
+    "expires_at": "2026-11-14T02:06:42Z",
+    "workflow_run": {
+      "id": 42326199451,
+      "repository_id": 1446695117,
+      "head_repository_id": 1446695117,
+      "head_branch": "codex/stage08-p2-fixes",
+      "head_sha": "5c4e3dcf49c64ab28b55231c5c02da16dca377b0"
+    }
+  },
+  "artifactVerification": {
+    "APIrunAndSource": true,
+    "APIsha256AndSize": true,
+    "allMembersCRC": true,
+    "extractedViewedBytesMatchZIP": true
+  },
+  "actualEnvironment": {
+    "device": "iPad mini (A17 Pro)",
+    "runtime": [
+      18,
+      6
+    ],
+    "udid": "2A250684-88E3-4EDB-A21E-B7726B4C69F6",
+    "scope": "push-recovery",
+    "hostArchitecture": "arm64",
+    "hostOS": "macOS-15.8.2-arm64-arm-64bit-Mach-O",
+    "preferredDeviceMatched": true,
+    "xcode": "Xcode 26.3\nBuild version 17C529\n"
+  },
+  "nativeVerification": {
+    "exactTestIDs": [
+      "MeetSpaceTests.CallAudioIntegrationTests/testDirectCallCanNegotiateBeforeCallKitActivatesAudio",
+      "MeetSpaceTests.KeychainIntegrationTests/testKeychainRoundTripUpdateAndScopedDeletion",
+      "MeetSpaceTests.MediaIntegrationTests/testBlockedSourcesNeverRequestPermissionsOrAppearInOffer",
+      "MeetSpaceTests.MediaIntegrationTests/testNativePeerOfferAndCloseCyclesWithCaptureOff",
+      "MeetSpaceTests.MediaIntegrationTests/testScreenGenerationRollbackAndPolicyWithCaptureOff",
+      "MeetSpaceTests.MediaIntegrationTests/testScreenRejectsInvalidAndStaleFrameSession",
+      "MeetSpaceTests.RecordingPlaybackTests/testActualServerAACArtifactAdvancesNativePlayerTime",
+      "MeetSpaceTests.Stage08SecurityKeychainTests/testCredentialsRemainDeviceOnlyAndUnsynchronizedAfterUpdate",
+      "MeetSpaceTests.Stage08SecurityKeychainTests/testDeletionConfirmationSurvivesJournalRewriteWithDeviceOnlyProtection",
+      "MeetSpaceTests.Stage08SecurityKeychainTests/testPushCleanupJournalUsesTheSameDeviceOnlyProtection",
+      "MeetSpaceTests.TypographyAccessibilityTests/testBundledFontsScaleInActualUIKitHostingAtAllDynamicTypeSizes",
+      "MeetSpaceUITests.FoundationUITests/testOrdinaryPushOptInAndDisableWithFixtureToken",
+      "MeetSpaceUITests.FoundationUITests/testStage08AccountDeletionRequiresPasswordAndConfirmation"
+    ],
+    "passed": 13,
+    "failed": 0,
+    "skipped": 0,
+    "nativeLogSHA256": "3697d63c1ac3c59c0abf8a75a4c6a2584f08b22d2bbff2a7342c33eaac1951c0"
+  },
+  "result": "REVIEWED_NO_NEW_BLOCKING_CLIPPING_IN_CAPTURED_STATES",
+  "images": [
+    {
+      "originalSuggestedName": "stage05-push-enabled_0_9E71F122-644C-4DC8-80C8-C47C8BC86B6E.png",
+      "exportedFileName": "70029FC2-E42C-4046-8747-B2AE666876F7.png",
+      "zipMember": "iPad18-screenshots/70029FC2-E42C-4046-8747-B2AE666876F7.png",
+      "expectedCollectedPath": "screenshots/iPad18/stage05-push-enabled_0_9E71F122-644C-4DC8-80C8-C47C8BC86B6E.png",
+      "sha256": "436b07d8754dcfe1f98dd1411cf3d6aea8ac919a23483fe8dd933ad91c889521",
+      "sizeBytes": 201623,
+      "dimensionsPixels": [
+        1488,
+        2266
+      ],
+      "testIdentifier": "FoundationUITests/testOrdinaryPushOptInAndDisableWithFixtureToken()",
+      "timestamp": 1794017104.104,
+      "observations": [
+        "Profile notification toggle is visibly on (violet track with thumb at right).",
+        "Complete status is readable: Токен сохранён сервером; доставка APNs требует настройки шлюза.",
+        "The separate foreground-calls limitation text is readable; no clipping/overlap in the notification card is observed.",
+        "No clipping or overlap of the principal warning/error/success text is observed in this captured state.",
+        "The notification card, both explanatory lines and appearance selector are in the captured viewport; lower profile actions are outside this scroll position and are not assessed here."
+      ]
+    },
+    {
+      "originalSuggestedName": "stage08-account-deletion-success_0_489E6E51-F88F-45D5-83E3-8E5EDD49C993.png",
+      "exportedFileName": "D6A2533F-ADB5-493F-BC6A-56C5B0D8D447.png",
+      "zipMember": "iPad18-screenshots/D6A2533F-ADB5-493F-BC6A-56C5B0D8D447.png",
+      "expectedCollectedPath": "screenshots/iPad18/stage08-account-deletion-success_0_489E6E51-F88F-45D5-83E3-8E5EDD49C993.png",
+      "sha256": "93123968cbc1df48ad3012b9177a71fd29ce9003fd9051620145d49345bf91d8",
+      "sizeBytes": 132679,
+      "dimensionsPixels": [
+        1488,
+        2266
+      ],
+      "testIdentifier": "FoundationUITests/testStage08AccountDeletionRequiresPasswordAndConfirmation()",
+      "timestamp": 1794017192.427,
+      "observations": [
+        "Deletion sheet and workspace tabs are absent; single-column selected-server login is visible.",
+        "Complete green message is visible: Аккаунт удалён на сервере.",
+        "Login form remains readable.",
+        "No clipping or overlap of the principal warning/error/success text is observed in this captured state."
+      ]
+    },
+    {
+      "originalSuggestedName": "stage08-account-deletion_0_7C5153E5-7126-401C-A341-335FF097D82B.png",
+      "exportedFileName": "2160F7D3-4237-4F8B-AC8C-BB553AC6626F.png",
+      "zipMember": "iPad18-screenshots/2160F7D3-4237-4F8B-AC8C-BB553AC6626F.png",
+      "expectedCollectedPath": "screenshots/iPad18/stage08-account-deletion_0_7C5153E5-7126-401C-A341-335FF097D82B.png",
+      "sha256": "2633d9752a63105545dcc29e7354d5a1aa1430fefa5f0a06b7a8cd7e049fca7b",
+      "sizeBytes": 346916,
+      "dimensionsPixels": [
+        1488,
+        2266
+      ],
+      "testIdentifier": "FoundationUITests/testStage08AccountDeletionRequiresPasswordAndConfirmation()",
+      "timestamp": 1794017186.848,
+      "observations": [
+        "Complete warning/prerequisites and violet delete action are readable.",
+        "Secure-field row shows no placeholder, text or bullets; its content cannot be inferred from the PNG.",
+        "Previous wrong-password error remains fully visible inside the modal and also on the dimmed profile beneath it; no overlap with modal controls is observed.",
+        "No clipping or overlap of the principal warning/error/success text is observed in this captured state.",
+        "Cancel label Отмена fits completely on one line; no overlap with the modal title is observed."
+      ]
+    },
+    {
+      "originalSuggestedName": "stage08-account-deletion-keyboard-retry_0_C5ABCCBE-E787-4F2A-AD50-0CD1D122BA88.png",
+      "exportedFileName": "6A20B84B-1FD3-4DA2-B230-07320E1AB458.png",
+      "zipMember": "iPad18-screenshots/6A20B84B-1FD3-4DA2-B230-07320E1AB458.png",
+      "expectedCollectedPath": "screenshots/iPad18/stage08-account-deletion-keyboard-retry_0_C5ABCCBE-E787-4F2A-AD50-0CD1D122BA88.png",
+      "sha256": "68abb83241a7d0dbedab2939a06c9efb371205f65194f38d23ed195c1aa6ed8c",
+      "sizeBytes": 311463,
+      "dimensionsPixels": [
+        1488,
+        2266
+      ],
+      "testIdentifier": "FoundationUITests/testStage08AccountDeletionRequiresPasswordAndConfirmation()",
+      "timestamp": 1794017180.86,
+      "observations": [
+        "Complete red error is visible: Неверный пароль аккаунта. Проверьте пароль и повторите.",
+        "Password placeholder is visible and delete action has pale disabled-looking styling.",
+        "No clipping or overlap of the principal warning/error/success text is observed in this captured state.",
+        "Cancel label Отмена fits completely on one line; no overlap with the modal title is observed."
+      ]
+    },
+    {
+      "originalSuggestedName": "stage08-account-deletion-keyboard-initial_0_53856B4E-77BB-494E-AE2A-20E9944041E8.png",
+      "exportedFileName": "C101DD1A-4E75-460E-8F32-725EDCAB1D53.png",
+      "zipMember": "iPad18-screenshots/C101DD1A-4E75-460E-8F32-725EDCAB1D53.png",
+      "expectedCollectedPath": "screenshots/iPad18/stage08-account-deletion-keyboard-initial_0_53856B4E-77BB-494E-AE2A-20E9944041E8.png",
+      "sha256": "67f7824fba12e9c412341e08c600eba1d1ee3ad50c39dff58407bd7aec852283",
+      "sizeBytes": 301741,
+      "dimensionsPixels": [
+        1488,
+        2266
+      ],
+      "testIdentifier": "FoundationUITests/testStage08AccountDeletionRequiresPasswordAndConfirmation()",
+      "timestamp": 1794017160.325,
+      "observations": [
+        "Complete deletion warning and prerequisites are readable.",
+        "Password placeholder is visible and delete action has pale disabled-looking styling; no error message is shown.",
+        "No clipping or overlap of the principal warning/error/success text is observed in this captured state.",
+        "Cancel label Отмена fits completely on one line; no overlap with the modal title is observed."
+      ]
+    }
+  ],
+  "openVisualFinding": null,
+  "limitations": [
+    "This review independently verifies only the iPad18 exact 13-test result; it does not aggregate the four-device workflow.",
+    "System keyboard is not visible in the app PNGs, regardless of keyboard-prefixed names; keyboard occlusion/layout is not visually verified.",
+    "No confirmation alert PNG was exported among these four deletion states; native cancel/confirm assertions are separate evidence.",
+    "Secure-field contents and actual button enabled semantics are not determined from pixels.",
+    "No 44-point hit-target or numeric contrast measurement, AX5, landscape, Split View, physical-device validation or 21-state design parity.",
+    "Fixture push-enabled styling/status does not prove delivery by APNs or a deployed backend fix.",
+    "Original PNGs and repository files were not altered; this temporary review awaits final evidence collection."
+  ]
+}

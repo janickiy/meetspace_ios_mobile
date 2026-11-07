@@ -1,0 +1,846 @@
+{
+  "schemaVersion": 1,
+  "runID": 42326199451,
+  "sourceCommit": "5c4e3dcf49c64ab28b55231c5c02da16dca377b0",
+  "branch": "codex/stage08-p2-fixes",
+  "url": "https://github.com/janickiy/meetspace_ios_mobile/actions/runs/42326199451",
+  "createdAt": "2026-11-07T01:50:39Z",
+  "updatedAt": "2026-11-07T02:06:49Z",
+  "scope": "push-recovery",
+  "result": "P2_SCOPED_NATIVE_AND_PACKAGE_PASS",
+  "fullNativeSuitePass": false,
+  "coverage": {
+    "nativePassed": 52,
+    "nativeFailed": 0,
+    "nativeSkipped": 0,
+    "perPlatform": 13,
+    "hostedPerPlatform": 11,
+    "uiPerPlatform": 2,
+    "coreAccessibilityAudit": "NOT_RUN",
+    "AX5": "NOT_RUN"
+  },
+  "artifactVerification": {
+    "APIrunSourceBranch": true,
+    "APIdigestAndSize": true,
+    "allZIPMembersCRC": true,
+    "membersReadFromOriginalZIPs": true
+  },
+  "sourceProvenance": {
+    "sourceCommit": "5c4e3dcf49c64ab28b55231c5c02da16dca377b0",
+    "sourceFileSHA256": {
+      ".github/workflows/ios.yml": "ae2daaf01db5f18d161b7825dd2fc0878d6f4d306af2d5bcd7b5ad5af807660e",
+      "Packages/MeetSpaceKit/Sources/Features/IdentityModel.swift": "37b37f429fb795aa6319f239de5879d05b20b99c319e8c74881b35db67db535b",
+      "Packages/MeetSpaceKit/Sources/Features/PushRegistrationModel.swift": "2b61b80f99567392368fe3cd8c74a491c3e8d89585a87610ecd4364e59da63d3",
+      "Packages/MeetSpaceKit/Sources/Storage/PushRegistrationStore.swift": "4a1cfc68f73c7382661b3a6c2735f5a1cd0501215c968bc1f098c9b33c0a462b",
+      "Packages/MeetSpaceKit/Tests/IntegrationTests/AccountDeletionTests.swift": "41eb6b0d9de7b413d0e11c76d0a75c5c038efc79bfb5b733d4812c753f57cf32",
+      "Packages/MeetSpaceKit/Tests/IntegrationTests/PushDeletionRecoveryTests.swift": "923952e7c3191098b378cf1ed510f0616aa8ade93cce199b9ea1c6a5c5f4ff71",
+      "Tests/MeetSpaceTests/CallAudioIntegrationTests.swift": "758938f633d3adfdd65db97944550ca1c328e24fdb12c5a2cd0de890a02acdf5",
+      "Tests/MeetSpaceTests/KeychainIntegrationTests.swift": "b7f0a4d3f72096dbc761d0ddd498661a47939d11c9cc11e9e5cb55bdde1c3b4a",
+      "Tests/MeetSpaceTests/MediaIntegrationTests.swift": "f935fb4f965c93b2de382bce58adcd0aea99525ab564586dae30509350ffb1de",
+      "Tests/MeetSpaceTests/RecordingPlaybackTests.swift": "9584bd0d5e560f49af0bb832e6ab89fe839cbb566ff6eaeace668248497956a4",
+      "Tests/MeetSpaceTests/Stage08SecurityKeychainTests.swift": "b6a27a940c584d24a39f7f7f7fe408cb1128a98e9f002fa5d17e4f5a26ff52af",
+      "Tests/MeetSpaceTests/TypographyAccessibilityTests.swift": "0f70e686b4a3766bdcd24b0cf8e5cb0b0356b7fe70174a23ab8774d6780a59b6",
+      "Tests/MeetSpaceUITests/FoundationUITests.swift": "4e2f3ce4ecda1a8473a986a5670491f09530ec33b6695f4cdc35c96cfa4270db",
+      "scripts/ci_simulators.py": "5934bacdf6f0944117ec79472a2235f218f4974bc039f568c95d53c761735c30"
+    },
+    "nativeTestIDs": [
+      "MeetSpaceTests.CallAudioIntegrationTests/testDirectCallCanNegotiateBeforeCallKitActivatesAudio",
+      "MeetSpaceTests.KeychainIntegrationTests/testKeychainRoundTripUpdateAndScopedDeletion",
+      "MeetSpaceTests.MediaIntegrationTests/testBlockedSourcesNeverRequestPermissionsOrAppearInOffer",
+      "MeetSpaceTests.MediaIntegrationTests/testNativePeerOfferAndCloseCyclesWithCaptureOff",
+      "MeetSpaceTests.MediaIntegrationTests/testScreenGenerationRollbackAndPolicyWithCaptureOff",
+      "MeetSpaceTests.MediaIntegrationTests/testScreenRejectsInvalidAndStaleFrameSession",
+      "MeetSpaceTests.RecordingPlaybackTests/testActualServerAACArtifactAdvancesNativePlayerTime",
+      "MeetSpaceTests.Stage08SecurityKeychainTests/testCredentialsRemainDeviceOnlyAndUnsynchronizedAfterUpdate",
+      "MeetSpaceTests.Stage08SecurityKeychainTests/testDeletionConfirmationSurvivesJournalRewriteWithDeviceOnlyProtection",
+      "MeetSpaceTests.Stage08SecurityKeychainTests/testPushCleanupJournalUsesTheSameDeviceOnlyProtection",
+      "MeetSpaceTests.TypographyAccessibilityTests/testBundledFontsScaleInActualUIKitHostingAtAllDynamicTypeSizes",
+      "MeetSpaceUITests.FoundationUITests/testOrdinaryPushOptInAndDisableWithFixtureToken",
+      "MeetSpaceUITests.FoundationUITests/testStage08AccountDeletionRequiresPasswordAndConfirmation"
+    ],
+    "requiredPackageTests": [
+      "pushDeletionRecoveryReplaysDurableProofAfterPruneFailureAndRestartWithoutRepository",
+      "pushDeletionRecoveryRetriesLoadedModelAndAllowsOnlyDifferentConfirmedCleanScope",
+      "pushDeletionRecoveryRetriesOneFailedProofWriteBeforePruning",
+      "pushDeletionRecoveryRetainsMemoryProofAcrossFiniteFailureUntilExplicitRetry",
+      "pushDeletionRecoveryCannotInferUnpersistedProofAfterProcessLossOr401",
+      "pushDeletionRecoveryProofReadIsIndependentOfBrokenJournalAndNeverTreatsReadFailureAsFalse",
+      "pushDeletionRecoveryJournalFallbackSurvivesEitherSingleWriteFailureAndLaterNormalSaves",
+      "pushDeletionRecoveryFencesLateOSTokenEnableAndPausedIntent",
+      "pushDeletionRecoveryFencesRegistrationSuspendedAtPrePOSTJournalWrite",
+      "pushDeletionRecoveryPersistsPendingProofBeforeOneFailedLedgerQuery",
+      "pushDeletionRecoveryJournalMigrationValidationAndMonotonicMemoryReceipt",
+      "stage08P2IdentityConfirmedDeletionRecoversJournalForAnotherAccountAfterRestart",
+      "stage08P2IdentityNeverRestoresConfirmedDeletedScopeOffline",
+      "stage08P2IdentityUnauthorizedIsNotDeletionConfirmation"
+    ],
+    "oldProductionEqualityRequired": false,
+    "scope": "Three iOS production files changed; no assertion of equality with CI18/16c."
+  },
+  "devices": {
+    "iPhone26": {
+      "scope": "push-recovery",
+      "actualEnvironment": {
+        "device": "iPhone 17 Pro Max",
+        "runtime": [
+          26,
+          2
+        ],
+        "udid": "17F0E734-D183-4810-AB97-F27FD9968039",
+        "scope": "push-recovery",
+        "hostArchitecture": "arm64",
+        "hostOS": "macOS-15.8.2-arm64-arm-64bit-Mach-O",
+        "preferredDeviceMatched": true,
+        "xcode": "Xcode 26.3\nBuild version 17C529\n"
+      },
+      "nativeSummary": {
+        "devicesAndConfigurations": [
+          {
+            "device": {
+              "architecture": "arm64",
+              "deviceId": "17F0E734-D183-4810-AB97-F27FD9968039",
+              "deviceName": "iPhone 17 Pro Max",
+              "modelName": "iPhone 17 Pro Max",
+              "osBuildNumber": "23C54",
+              "osVersion": "26.2",
+              "platform": "iOS Simulator"
+            },
+            "expectedFailures": 0,
+            "failedTests": 0,
+            "passedTests": 13,
+            "skippedTests": 0,
+            "testPlanConfiguration": {
+              "configurationId": "1",
+              "configurationName": "Test Scheme Action"
+            }
+          }
+        ],
+        "environmentDescription": "MeetSpace-Debug · Built with macOS 15.8.2",
+        "expectedFailures": 0,
+        "failedTests": 0,
+        "finishTime": 1794016807.127,
+        "passedTests": 13,
+        "result": "Passed",
+        "skippedTests": 0,
+        "startTime": 1794016307.856,
+        "statistics": [],
+        "testFailures": [],
+        "title": "Test - MeetSpace-Debug",
+        "topInsights": [
+          {
+            "category": "Longest Test Runs",
+            "impact": "82% of duration",
+            "text": "1 longest test run with outlier durations exceeding 21.00s (three standard deviations)"
+          }
+        ],
+        "totalTestCount": 13
+      },
+      "passedExactTestIDs": [
+        "MeetSpaceTests.CallAudioIntegrationTests/testDirectCallCanNegotiateBeforeCallKitActivatesAudio",
+        "MeetSpaceTests.KeychainIntegrationTests/testKeychainRoundTripUpdateAndScopedDeletion",
+        "MeetSpaceTests.MediaIntegrationTests/testBlockedSourcesNeverRequestPermissionsOrAppearInOffer",
+        "MeetSpaceTests.MediaIntegrationTests/testNativePeerOfferAndCloseCyclesWithCaptureOff",
+        "MeetSpaceTests.MediaIntegrationTests/testScreenGenerationRollbackAndPolicyWithCaptureOff",
+        "MeetSpaceTests.MediaIntegrationTests/testScreenRejectsInvalidAndStaleFrameSession",
+        "MeetSpaceTests.RecordingPlaybackTests/testActualServerAACArtifactAdvancesNativePlayerTime",
+        "MeetSpaceTests.Stage08SecurityKeychainTests/testCredentialsRemainDeviceOnlyAndUnsynchronizedAfterUpdate",
+        "MeetSpaceTests.Stage08SecurityKeychainTests/testDeletionConfirmationSurvivesJournalRewriteWithDeviceOnlyProtection",
+        "MeetSpaceTests.Stage08SecurityKeychainTests/testPushCleanupJournalUsesTheSameDeviceOnlyProtection",
+        "MeetSpaceTests.TypographyAccessibilityTests/testBundledFontsScaleInActualUIKitHostingAtAllDynamicTypeSizes",
+        "MeetSpaceUITests.FoundationUITests/testOrdinaryPushOptInAndDisableWithFixtureToken",
+        "MeetSpaceUITests.FoundationUITests/testStage08AccountDeletionRequiresPasswordAndConfirmation"
+      ],
+      "passed": 13,
+      "failed": 0,
+      "skipped": 0,
+      "jobID": 128261945423,
+      "nativeLogSHA256": "0490f5b7bbd1f28092efa0f2b4e880dc427f2076b918307012071e731e07545a",
+      "nativeLogFile": "simulators_iPhone_26_iPhone26_full_iPhone_17_Pro_Max_.log",
+      "screenshots": {
+        "originalPNGs": {
+          "stage05-push-enabled": {
+            "file": "screenshots/iPhone26/stage05-push-enabled_0_E9D10E97-7FDC-4F56-90C9-F3F0CB8FDDDD.png",
+            "originalSuggestedName": "stage05-push-enabled_0_E9D10E97-7FDC-4F56-90C9-F3F0CB8FDDDD.png",
+            "zipMember": "iPhone26-screenshots/C6A4D3F7-C6F7-4EC4-BC9B-1C3817B84F89.png",
+            "sha256": "d241ba26389d972822190dbcfb8776257cdc59a3ca1d04d6af442dc80ca15c01",
+            "sizeBytes": 238111,
+            "width": 1320,
+            "height": 2868,
+            "testIdentifier": "FoundationUITests/testOrdinaryPushOptInAndDisableWithFixtureToken()",
+            "attachment": {
+              "configurationName": "Test Scheme Action",
+              "deviceId": "17F0E734-D183-4810-AB97-F27FD9968039",
+              "deviceName": "iPhone 17 Pro Max",
+              "exportedFileName": "C6A4D3F7-C6F7-4EC4-BC9B-1C3817B84F89.png",
+              "isAssociatedWithFailure": false,
+              "suggestedHumanReadableName": "stage05-push-enabled_0_E9D10E97-7FDC-4F56-90C9-F3F0CB8FDDDD.png",
+              "timestamp": 1794016725.688
+            }
+          },
+          "stage08-account-deletion-success": {
+            "file": "screenshots/iPhone26/stage08-account-deletion-success_0_CBE1C666-B977-47A0-A06B-75D8093DE964.png",
+            "originalSuggestedName": "stage08-account-deletion-success_0_CBE1C666-B977-47A0-A06B-75D8093DE964.png",
+            "zipMember": "iPhone26-screenshots/377DA12C-F720-4636-AD1C-141AA9FDBCB6.png",
+            "sha256": "e5aec95d255d0bcd868400a6cd173714afdd7dddbb2f5fe3567b9973385a2c86",
+            "sizeBytes": 169967,
+            "width": 1320,
+            "height": 2868,
+            "testIdentifier": "FoundationUITests/testStage08AccountDeletionRequiresPasswordAndConfirmation()",
+            "attachment": {
+              "configurationName": "Test Scheme Action",
+              "deviceId": "17F0E734-D183-4810-AB97-F27FD9968039",
+              "deviceName": "iPhone 17 Pro Max",
+              "exportedFileName": "377DA12C-F720-4636-AD1C-141AA9FDBCB6.png",
+              "isAssociatedWithFailure": false,
+              "suggestedHumanReadableName": "stage08-account-deletion-success_0_CBE1C666-B977-47A0-A06B-75D8093DE964.png",
+              "timestamp": 1794016805.078
+            }
+          },
+          "stage08-account-deletion": {
+            "file": "screenshots/iPhone26/stage08-account-deletion_0_61D4E3AD-CCB2-437E-8C2C-DCBCF9056865.png",
+            "originalSuggestedName": "stage08-account-deletion_0_61D4E3AD-CCB2-437E-8C2C-DCBCF9056865.png",
+            "zipMember": "iPhone26-screenshots/ABB055C5-659F-4F74-A5AC-7E4FC04B0FB5.png",
+            "sha256": "09ae3f715925efa166f6089d212dcea8f3c5721fbc25534e6ecbda5dbb404344",
+            "sizeBytes": 199120,
+            "width": 1320,
+            "height": 2868,
+            "testIdentifier": "FoundationUITests/testStage08AccountDeletionRequiresPasswordAndConfirmation()",
+            "attachment": {
+              "configurationName": "Test Scheme Action",
+              "deviceId": "17F0E734-D183-4810-AB97-F27FD9968039",
+              "deviceName": "iPhone 17 Pro Max",
+              "exportedFileName": "ABB055C5-659F-4F74-A5AC-7E4FC04B0FB5.png",
+              "isAssociatedWithFailure": false,
+              "suggestedHumanReadableName": "stage08-account-deletion_0_61D4E3AD-CCB2-437E-8C2C-DCBCF9056865.png",
+              "timestamp": 1794016799.233
+            }
+          },
+          "stage08-account-deletion-keyboard-retry": {
+            "file": "screenshots/iPhone26/stage08-account-deletion-keyboard-retry_0_87ED113A-3B74-444F-A6EA-0B4EE9ADE017.png",
+            "originalSuggestedName": "stage08-account-deletion-keyboard-retry_0_87ED113A-3B74-444F-A6EA-0B4EE9ADE017.png",
+            "zipMember": "iPhone26-screenshots/C41BC4F0-BE26-443B-8625-94FAC21352C4.png",
+            "sha256": "ef260f566b20c6f36db629a865eac19cb0ef98f5dfc232ef0f80fc877d463fb7",
+            "sizeBytes": 202778,
+            "width": 1320,
+            "height": 2868,
+            "testIdentifier": "FoundationUITests/testStage08AccountDeletionRequiresPasswordAndConfirmation()",
+            "attachment": {
+              "configurationName": "Test Scheme Action",
+              "deviceId": "17F0E734-D183-4810-AB97-F27FD9968039",
+              "deviceName": "iPhone 17 Pro Max",
+              "exportedFileName": "C41BC4F0-BE26-443B-8625-94FAC21352C4.png",
+              "isAssociatedWithFailure": false,
+              "suggestedHumanReadableName": "stage08-account-deletion-keyboard-retry_0_87ED113A-3B74-444F-A6EA-0B4EE9ADE017.png",
+              "timestamp": 1794016793.398
+            }
+          },
+          "stage08-account-deletion-keyboard-initial": {
+            "file": "screenshots/iPhone26/stage08-account-deletion-keyboard-initial_0_0E138DF1-B908-4535-86B9-C70E6597F81A.png",
+            "originalSuggestedName": "stage08-account-deletion-keyboard-initial_0_0E138DF1-B908-4535-86B9-C70E6597F81A.png",
+            "zipMember": "iPhone26-screenshots/137B6253-CC52-48E1-8EA4-584B3AD48859.png",
+            "sha256": "c58af99491b367fa8bcc939460f06a927203a3bb2a91adab03bc423c07cc12f8",
+            "sizeBytes": 186982,
+            "width": 1320,
+            "height": 2868,
+            "testIdentifier": "FoundationUITests/testStage08AccountDeletionRequiresPasswordAndConfirmation()",
+            "attachment": {
+              "configurationName": "Test Scheme Action",
+              "deviceId": "17F0E734-D183-4810-AB97-F27FD9968039",
+              "deviceName": "iPhone 17 Pro Max",
+              "exportedFileName": "137B6253-CC52-48E1-8EA4-584B3AD48859.png",
+              "isAssociatedWithFailure": false,
+              "suggestedHumanReadableName": "stage08-account-deletion-keyboard-initial_0_0E138DF1-B908-4535-86B9-C70E6597F81A.png",
+              "timestamp": 1794016774.011
+            }
+          }
+        },
+        "notExported": [],
+        "visualReview": "NOT_PERFORMED_BY_COLLECTOR",
+        "limits": "Original app screenshots only; names do not establish keyboard/confirmation-alert visibility or visual correctness."
+      }
+    },
+    "iPad26": {
+      "scope": "push-recovery",
+      "actualEnvironment": {
+        "device": "iPad Pro 13-inch (M5)",
+        "runtime": [
+          26,
+          2
+        ],
+        "udid": "73C19119-B10E-4309-872E-C53EF3F0EF27",
+        "scope": "push-recovery",
+        "hostArchitecture": "arm64",
+        "hostOS": "macOS-15.8.2-arm64-arm-64bit-Mach-O",
+        "preferredDeviceMatched": true,
+        "xcode": "Xcode 26.3\nBuild version 17C529\n"
+      },
+      "nativeSummary": {
+        "devicesAndConfigurations": [
+          {
+            "device": {
+              "architecture": "arm64",
+              "deviceId": "73C19119-B10E-4309-872E-C53EF3F0EF27",
+              "deviceName": "iPad Pro 13-inch (M5)",
+              "modelName": "iPad Pro 13-inch (M5)",
+              "osBuildNumber": "23C54",
+              "osVersion": "26.2",
+              "platform": "iOS Simulator"
+            },
+            "expectedFailures": 0,
+            "failedTests": 0,
+            "passedTests": 13,
+            "skippedTests": 0,
+            "testPlanConfiguration": {
+              "configurationId": "1",
+              "configurationName": "Test Scheme Action"
+            }
+          }
+        ],
+        "environmentDescription": "MeetSpace-Debug · Built with macOS 15.8.2",
+        "expectedFailures": 0,
+        "failedTests": 0,
+        "finishTime": 1794016678.438,
+        "passedTests": 13,
+        "result": "Passed",
+        "skippedTests": 0,
+        "startTime": 1794016283.202,
+        "statistics": [],
+        "testFailures": [],
+        "title": "Test - MeetSpace-Debug",
+        "topInsights": [],
+        "totalTestCount": 13
+      },
+      "passedExactTestIDs": [
+        "MeetSpaceTests.CallAudioIntegrationTests/testDirectCallCanNegotiateBeforeCallKitActivatesAudio",
+        "MeetSpaceTests.KeychainIntegrationTests/testKeychainRoundTripUpdateAndScopedDeletion",
+        "MeetSpaceTests.MediaIntegrationTests/testBlockedSourcesNeverRequestPermissionsOrAppearInOffer",
+        "MeetSpaceTests.MediaIntegrationTests/testNativePeerOfferAndCloseCyclesWithCaptureOff",
+        "MeetSpaceTests.MediaIntegrationTests/testScreenGenerationRollbackAndPolicyWithCaptureOff",
+        "MeetSpaceTests.MediaIntegrationTests/testScreenRejectsInvalidAndStaleFrameSession",
+        "MeetSpaceTests.RecordingPlaybackTests/testActualServerAACArtifactAdvancesNativePlayerTime",
+        "MeetSpaceTests.Stage08SecurityKeychainTests/testCredentialsRemainDeviceOnlyAndUnsynchronizedAfterUpdate",
+        "MeetSpaceTests.Stage08SecurityKeychainTests/testDeletionConfirmationSurvivesJournalRewriteWithDeviceOnlyProtection",
+        "MeetSpaceTests.Stage08SecurityKeychainTests/testPushCleanupJournalUsesTheSameDeviceOnlyProtection",
+        "MeetSpaceTests.TypographyAccessibilityTests/testBundledFontsScaleInActualUIKitHostingAtAllDynamicTypeSizes",
+        "MeetSpaceUITests.FoundationUITests/testOrdinaryPushOptInAndDisableWithFixtureToken",
+        "MeetSpaceUITests.FoundationUITests/testStage08AccountDeletionRequiresPasswordAndConfirmation"
+      ],
+      "passed": 13,
+      "failed": 0,
+      "skipped": 0,
+      "jobID": 128261945409,
+      "nativeLogSHA256": "870870c2792ba85a45b003265020a09a9e70bf8ff3a8b2b3cc106ab7bfb5dd0f",
+      "nativeLogFile": "simulators_iPad_26_iPad26_full_iPad_Pro_13-inch_M5_.log",
+      "screenshots": {
+        "originalPNGs": {
+          "stage05-push-enabled": {
+            "file": "screenshots/iPad26/stage05-push-enabled_0_AD5A5072-0D60-4B3C-B9F0-20CCA66D0614.png",
+            "originalSuggestedName": "stage05-push-enabled_0_AD5A5072-0D60-4B3C-B9F0-20CCA66D0614.png",
+            "zipMember": "iPad26-screenshots/E5597688-A5F4-4FC7-B5AB-0FD42FFC0C5A.png",
+            "sha256": "d12fa4ce9dff0fd36cea975a0c3efde7bca03cd6a921d9474b6bdf66ac652a51",
+            "sizeBytes": 252991,
+            "width": 2064,
+            "height": 2752,
+            "testIdentifier": "FoundationUITests/testOrdinaryPushOptInAndDisableWithFixtureToken()",
+            "attachment": {
+              "configurationName": "Test Scheme Action",
+              "deviceId": "73C19119-B10E-4309-872E-C53EF3F0EF27",
+              "deviceName": "iPad Pro 13-inch (M5)",
+              "exportedFileName": "E5597688-A5F4-4FC7-B5AB-0FD42FFC0C5A.png",
+              "isAssociatedWithFailure": false,
+              "suggestedHumanReadableName": "stage05-push-enabled_0_AD5A5072-0D60-4B3C-B9F0-20CCA66D0614.png",
+              "timestamp": 1794016573.424
+            }
+          },
+          "stage08-account-deletion-success": {
+            "file": "screenshots/iPad26/stage08-account-deletion-success_0_0DE15304-AA07-4008-8684-B60BFBF18649.png",
+            "originalSuggestedName": "stage08-account-deletion-success_0_0DE15304-AA07-4008-8684-B60BFBF18649.png",
+            "zipMember": "iPad26-screenshots/843248B3-8380-49DE-A9FE-A0369F8A306F.png",
+            "sha256": "d08b18fc1276e6595fb4980508887e0f171c6ac0b72992997cff1df50c7e6ecc",
+            "sizeBytes": 265562,
+            "width": 2064,
+            "height": 2752,
+            "testIdentifier": "FoundationUITests/testStage08AccountDeletionRequiresPasswordAndConfirmation()",
+            "attachment": {
+              "configurationName": "Test Scheme Action",
+              "deviceId": "73C19119-B10E-4309-872E-C53EF3F0EF27",
+              "deviceName": "iPad Pro 13-inch (M5)",
+              "exportedFileName": "843248B3-8380-49DE-A9FE-A0369F8A306F.png",
+              "isAssociatedWithFailure": false,
+              "suggestedHumanReadableName": "stage08-account-deletion-success_0_0DE15304-AA07-4008-8684-B60BFBF18649.png",
+              "timestamp": 1794016671.873
+            }
+          },
+          "stage08-account-deletion": {
+            "file": "screenshots/iPad26/stage08-account-deletion_0_63E74A62-425C-4E09-A90B-F9C03BC9396E.png",
+            "originalSuggestedName": "stage08-account-deletion_0_63E74A62-425C-4E09-A90B-F9C03BC9396E.png",
+            "zipMember": "iPad26-screenshots/84E6529F-0495-4ABE-B8D4-7A94E0434B4A.png",
+            "sha256": "5fcab8b71c46fde62b1af1d20867e54e1743a2f22df63ab3767999242f380b25",
+            "sizeBytes": 361112,
+            "width": 2064,
+            "height": 2752,
+            "testIdentifier": "FoundationUITests/testStage08AccountDeletionRequiresPasswordAndConfirmation()",
+            "attachment": {
+              "configurationName": "Test Scheme Action",
+              "deviceId": "73C19119-B10E-4309-872E-C53EF3F0EF27",
+              "deviceName": "iPad Pro 13-inch (M5)",
+              "exportedFileName": "84E6529F-0495-4ABE-B8D4-7A94E0434B4A.png",
+              "isAssociatedWithFailure": false,
+              "suggestedHumanReadableName": "stage08-account-deletion_0_63E74A62-425C-4E09-A90B-F9C03BC9396E.png",
+              "timestamp": 1794016664.519
+            }
+          },
+          "stage08-account-deletion-keyboard-retry": {
+            "file": "screenshots/iPad26/stage08-account-deletion-keyboard-retry_0_753BF678-EC4A-40E6-B7FE-F800FBFA0CE3.png",
+            "originalSuggestedName": "stage08-account-deletion-keyboard-retry_0_753BF678-EC4A-40E6-B7FE-F800FBFA0CE3.png",
+            "zipMember": "iPad26-screenshots/F7338E1C-CC93-48F1-87CB-DE865296D539.png",
+            "sha256": "78710791524718b1c0bc015022db00a3f241bca5560c23d43979366802257255",
+            "sizeBytes": 319661,
+            "width": 2064,
+            "height": 2752,
+            "testIdentifier": "FoundationUITests/testStage08AccountDeletionRequiresPasswordAndConfirmation()",
+            "attachment": {
+              "configurationName": "Test Scheme Action",
+              "deviceId": "73C19119-B10E-4309-872E-C53EF3F0EF27",
+              "deviceName": "iPad Pro 13-inch (M5)",
+              "exportedFileName": "F7338E1C-CC93-48F1-87CB-DE865296D539.png",
+              "isAssociatedWithFailure": false,
+              "suggestedHumanReadableName": "stage08-account-deletion-keyboard-retry_0_753BF678-EC4A-40E6-B7FE-F800FBFA0CE3.png",
+              "timestamp": 1794016657.141
+            }
+          },
+          "stage08-account-deletion-keyboard-initial": {
+            "file": "screenshots/iPad26/stage08-account-deletion-keyboard-initial_0_B922AAB3-6B12-434E-AF06-067679C85F0C.png",
+            "originalSuggestedName": "stage08-account-deletion-keyboard-initial_0_B922AAB3-6B12-434E-AF06-067679C85F0C.png",
+            "zipMember": "iPad26-screenshots/0B111A39-71E2-4C19-9700-E1E7D62B77A5.png",
+            "sha256": "628dd3a6940b765b12be38451f5c0cb1cc90f5e72a8b5565a2ad87ebfb898d48",
+            "sizeBytes": 309032,
+            "width": 2064,
+            "height": 2752,
+            "testIdentifier": "FoundationUITests/testStage08AccountDeletionRequiresPasswordAndConfirmation()",
+            "attachment": {
+              "configurationName": "Test Scheme Action",
+              "deviceId": "73C19119-B10E-4309-872E-C53EF3F0EF27",
+              "deviceName": "iPad Pro 13-inch (M5)",
+              "exportedFileName": "0B111A39-71E2-4C19-9700-E1E7D62B77A5.png",
+              "isAssociatedWithFailure": false,
+              "suggestedHumanReadableName": "stage08-account-deletion-keyboard-initial_0_B922AAB3-6B12-434E-AF06-067679C85F0C.png",
+              "timestamp": 1794016629.775
+            }
+          }
+        },
+        "notExported": [],
+        "visualReview": "NOT_PERFORMED_BY_COLLECTOR",
+        "limits": "Original app screenshots only; names do not establish keyboard/confirmation-alert visibility or visual correctness."
+      }
+    },
+    "iPhone18": {
+      "scope": "push-recovery",
+      "actualEnvironment": {
+        "device": "iPhone SE (3rd generation)",
+        "runtime": [
+          18,
+          6
+        ],
+        "udid": "C3630581-519B-49DA-9400-67A78DCD42C8",
+        "scope": "push-recovery",
+        "hostArchitecture": "arm64",
+        "hostOS": "macOS-15.8.2-arm64-arm-64bit-Mach-O",
+        "preferredDeviceMatched": true,
+        "xcode": "Xcode 26.3\nBuild version 17C529\n"
+      },
+      "nativeSummary": {
+        "devicesAndConfigurations": [
+          {
+            "device": {
+              "architecture": "arm64",
+              "deviceId": "C3630581-519B-49DA-9400-67A78DCD42C8",
+              "deviceName": "iPhone SE (3rd generation)",
+              "modelName": "iPhone SE (3rd generation)",
+              "osBuildNumber": "22G86",
+              "osVersion": "18.6",
+              "platform": "iOS Simulator"
+            },
+            "expectedFailures": 0,
+            "failedTests": 0,
+            "passedTests": 13,
+            "skippedTests": 0,
+            "testPlanConfiguration": {
+              "configurationId": "1",
+              "configurationName": "Test Scheme Action"
+            }
+          }
+        ],
+        "environmentDescription": "MeetSpace-Debug · Built with macOS 15.8.2",
+        "expectedFailures": 0,
+        "failedTests": 0,
+        "finishTime": 1794017094.225,
+        "passedTests": 13,
+        "result": "Passed",
+        "skippedTests": 0,
+        "startTime": 1794016736.043,
+        "statistics": [],
+        "testFailures": [],
+        "title": "Test - MeetSpace-Debug",
+        "topInsights": [],
+        "totalTestCount": 13
+      },
+      "passedExactTestIDs": [
+        "MeetSpaceTests.CallAudioIntegrationTests/testDirectCallCanNegotiateBeforeCallKitActivatesAudio",
+        "MeetSpaceTests.KeychainIntegrationTests/testKeychainRoundTripUpdateAndScopedDeletion",
+        "MeetSpaceTests.MediaIntegrationTests/testBlockedSourcesNeverRequestPermissionsOrAppearInOffer",
+        "MeetSpaceTests.MediaIntegrationTests/testNativePeerOfferAndCloseCyclesWithCaptureOff",
+        "MeetSpaceTests.MediaIntegrationTests/testScreenGenerationRollbackAndPolicyWithCaptureOff",
+        "MeetSpaceTests.MediaIntegrationTests/testScreenRejectsInvalidAndStaleFrameSession",
+        "MeetSpaceTests.RecordingPlaybackTests/testActualServerAACArtifactAdvancesNativePlayerTime",
+        "MeetSpaceTests.Stage08SecurityKeychainTests/testCredentialsRemainDeviceOnlyAndUnsynchronizedAfterUpdate",
+        "MeetSpaceTests.Stage08SecurityKeychainTests/testDeletionConfirmationSurvivesJournalRewriteWithDeviceOnlyProtection",
+        "MeetSpaceTests.Stage08SecurityKeychainTests/testPushCleanupJournalUsesTheSameDeviceOnlyProtection",
+        "MeetSpaceTests.TypographyAccessibilityTests/testBundledFontsScaleInActualUIKitHostingAtAllDynamicTypeSizes",
+        "MeetSpaceUITests.FoundationUITests/testOrdinaryPushOptInAndDisableWithFixtureToken",
+        "MeetSpaceUITests.FoundationUITests/testStage08AccountDeletionRequiresPasswordAndConfirmation"
+      ],
+      "passed": 13,
+      "failed": 0,
+      "skipped": 0,
+      "jobID": 128261945485,
+      "nativeLogSHA256": "025804f2e6b2830a82981305ac438d87c526219209bb2dae290057e7d845361c",
+      "nativeLogFile": "simulators_iPhone_18_iPhone18_compatibility_iPhone_SE_3rd_generation_.log",
+      "screenshots": {
+        "originalPNGs": {
+          "stage05-push-enabled": {
+            "file": "screenshots/iPhone18/stage05-push-enabled_0_5324F795-2594-423E-A1AF-C2EBB6C1CDCB.png",
+            "originalSuggestedName": "stage05-push-enabled_0_5324F795-2594-423E-A1AF-C2EBB6C1CDCB.png",
+            "zipMember": "iPhone18-screenshots/65C57C21-ABDC-4922-B63E-8F35D5F37409.png",
+            "sha256": "689e6fe0116373b6a31dc20129854bf187c911dbff7ee4e25117ef42154e2f56",
+            "sizeBytes": 124824,
+            "width": 750,
+            "height": 1334,
+            "testIdentifier": "FoundationUITests/testOrdinaryPushOptInAndDisableWithFixtureToken()",
+            "attachment": {
+              "configurationName": "Test Scheme Action",
+              "deviceId": "C3630581-519B-49DA-9400-67A78DCD42C8",
+              "deviceName": "iPhone SE (3rd generation)",
+              "exportedFileName": "65C57C21-ABDC-4922-B63E-8F35D5F37409.png",
+              "isAssociatedWithFailure": false,
+              "suggestedHumanReadableName": "stage05-push-enabled_0_5324F795-2594-423E-A1AF-C2EBB6C1CDCB.png",
+              "timestamp": 1794016999.132
+            }
+          },
+          "stage08-account-deletion-success": {
+            "file": "screenshots/iPhone18/stage08-account-deletion-success_0_D33DFCE6-B640-4106-82C1-63A4CFB0D656.png",
+            "originalSuggestedName": "stage08-account-deletion-success_0_D33DFCE6-B640-4106-82C1-63A4CFB0D656.png",
+            "zipMember": "iPhone18-screenshots/96863811-7B10-44C5-A883-A17D8438B5E4.png",
+            "sha256": "2db224dd4ac01ce63cd0fd07dd872f00d612f95ca950bde9444ad3467232de29",
+            "sizeBytes": 90121,
+            "width": 750,
+            "height": 1334,
+            "testIdentifier": "FoundationUITests/testStage08AccountDeletionRequiresPasswordAndConfirmation()",
+            "attachment": {
+              "configurationName": "Test Scheme Action",
+              "deviceId": "C3630581-519B-49DA-9400-67A78DCD42C8",
+              "deviceName": "iPhone SE (3rd generation)",
+              "exportedFileName": "96863811-7B10-44C5-A883-A17D8438B5E4.png",
+              "isAssociatedWithFailure": false,
+              "suggestedHumanReadableName": "stage08-account-deletion-success_0_D33DFCE6-B640-4106-82C1-63A4CFB0D656.png",
+              "timestamp": 1794017091.906
+            }
+          },
+          "stage08-account-deletion": {
+            "file": "screenshots/iPhone18/stage08-account-deletion_0_D4409545-9F78-48CB-B64B-54F4F7E54C20.png",
+            "originalSuggestedName": "stage08-account-deletion_0_D4409545-9F78-48CB-B64B-54F4F7E54C20.png",
+            "zipMember": "iPhone18-screenshots/289E6895-99CA-4EAB-88EE-ABC3049BEFDA.png",
+            "sha256": "a4361a9e86f858712a9aba64799faa91552772870cd57081c453699aeaed33be",
+            "sizeBytes": 109628,
+            "width": 750,
+            "height": 1334,
+            "testIdentifier": "FoundationUITests/testStage08AccountDeletionRequiresPasswordAndConfirmation()",
+            "attachment": {
+              "configurationName": "Test Scheme Action",
+              "deviceId": "C3630581-519B-49DA-9400-67A78DCD42C8",
+              "deviceName": "iPhone SE (3rd generation)",
+              "exportedFileName": "289E6895-99CA-4EAB-88EE-ABC3049BEFDA.png",
+              "isAssociatedWithFailure": false,
+              "suggestedHumanReadableName": "stage08-account-deletion_0_D4409545-9F78-48CB-B64B-54F4F7E54C20.png",
+              "timestamp": 1794017086.673
+            }
+          },
+          "stage08-account-deletion-keyboard-retry": {
+            "file": "screenshots/iPhone18/stage08-account-deletion-keyboard-retry_0_A44FA25D-5451-4472-AFB6-D82F35DE7D4A.png",
+            "originalSuggestedName": "stage08-account-deletion-keyboard-retry_0_A44FA25D-5451-4472-AFB6-D82F35DE7D4A.png",
+            "zipMember": "iPhone18-screenshots/FC492900-F526-4D19-B554-95FBEFB80443.png",
+            "sha256": "29784157e692a1520f9fabf7437f6ae7ae300e5f2c3535cf878d76791ade4eeb",
+            "sizeBytes": 137972,
+            "width": 750,
+            "height": 1334,
+            "testIdentifier": "FoundationUITests/testStage08AccountDeletionRequiresPasswordAndConfirmation()",
+            "attachment": {
+              "configurationName": "Test Scheme Action",
+              "deviceId": "C3630581-519B-49DA-9400-67A78DCD42C8",
+              "deviceName": "iPhone SE (3rd generation)",
+              "exportedFileName": "FC492900-F526-4D19-B554-95FBEFB80443.png",
+              "isAssociatedWithFailure": false,
+              "suggestedHumanReadableName": "stage08-account-deletion-keyboard-retry_0_A44FA25D-5451-4472-AFB6-D82F35DE7D4A.png",
+              "timestamp": 1794017080.883
+            }
+          },
+          "stage08-account-deletion-keyboard-initial": {
+            "file": "screenshots/iPhone18/stage08-account-deletion-keyboard-initial_0_BF366434-8EC7-4146-BB5F-64C6DA1DEA4B.png",
+            "originalSuggestedName": "stage08-account-deletion-keyboard-initial_0_BF366434-8EC7-4146-BB5F-64C6DA1DEA4B.png",
+            "zipMember": "iPhone18-screenshots/BE165B5F-0FF4-4593-B6A5-A9086C3BB23D.png",
+            "sha256": "4af516df28216b609d0e2c5c4395c2a5ca487d42758162faa86c015d73fab57d",
+            "sizeBytes": 125466,
+            "width": 750,
+            "height": 1334,
+            "testIdentifier": "FoundationUITests/testStage08AccountDeletionRequiresPasswordAndConfirmation()",
+            "attachment": {
+              "configurationName": "Test Scheme Action",
+              "deviceId": "C3630581-519B-49DA-9400-67A78DCD42C8",
+              "deviceName": "iPhone SE (3rd generation)",
+              "exportedFileName": "BE165B5F-0FF4-4593-B6A5-A9086C3BB23D.png",
+              "isAssociatedWithFailure": false,
+              "suggestedHumanReadableName": "stage08-account-deletion-keyboard-initial_0_BF366434-8EC7-4146-BB5F-64C6DA1DEA4B.png",
+              "timestamp": 1794017061.421
+            }
+          }
+        },
+        "notExported": [],
+        "visualReview": "NOT_PERFORMED_BY_COLLECTOR",
+        "limits": "Original app screenshots only; names do not establish keyboard/confirmation-alert visibility or visual correctness."
+      }
+    },
+    "iPad18": {
+      "scope": "push-recovery",
+      "actualEnvironment": {
+        "device": "iPad mini (A17 Pro)",
+        "runtime": [
+          18,
+          6
+        ],
+        "udid": "2A250684-88E3-4EDB-A21E-B7726B4C69F6",
+        "scope": "push-recovery",
+        "hostArchitecture": "arm64",
+        "hostOS": "macOS-15.8.2-arm64-arm-64bit-Mach-O",
+        "preferredDeviceMatched": true,
+        "xcode": "Xcode 26.3\nBuild version 17C529\n"
+      },
+      "nativeSummary": {
+        "devicesAndConfigurations": [
+          {
+            "device": {
+              "architecture": "arm64",
+              "deviceId": "2A250684-88E3-4EDB-A21E-B7726B4C69F6",
+              "deviceName": "iPad mini (A17 Pro)",
+              "modelName": "iPad mini (A17 Pro)",
+              "osBuildNumber": "22G86",
+              "osVersion": "18.6",
+              "platform": "iOS Simulator"
+            },
+            "expectedFailures": 0,
+            "failedTests": 0,
+            "passedTests": 13,
+            "skippedTests": 0,
+            "testPlanConfiguration": {
+              "configurationId": "1",
+              "configurationName": "Test Scheme Action"
+            }
+          }
+        ],
+        "environmentDescription": "MeetSpace-Debug · Built with macOS 15.8.2",
+        "expectedFailures": 0,
+        "failedTests": 0,
+        "finishTime": 1794017194.449,
+        "passedTests": 13,
+        "result": "Passed",
+        "skippedTests": 0,
+        "startTime": 1794016876.438,
+        "statistics": [],
+        "testFailures": [],
+        "title": "Test - MeetSpace-Debug",
+        "topInsights": [
+          {
+            "category": "Longest Test Runs",
+            "impact": "72% of duration",
+            "text": "1 longest test run with outlier durations exceeding 7.66s (three standard deviations)"
+          }
+        ],
+        "totalTestCount": 13
+      },
+      "passedExactTestIDs": [
+        "MeetSpaceTests.CallAudioIntegrationTests/testDirectCallCanNegotiateBeforeCallKitActivatesAudio",
+        "MeetSpaceTests.KeychainIntegrationTests/testKeychainRoundTripUpdateAndScopedDeletion",
+        "MeetSpaceTests.MediaIntegrationTests/testBlockedSourcesNeverRequestPermissionsOrAppearInOffer",
+        "MeetSpaceTests.MediaIntegrationTests/testNativePeerOfferAndCloseCyclesWithCaptureOff",
+        "MeetSpaceTests.MediaIntegrationTests/testScreenGenerationRollbackAndPolicyWithCaptureOff",
+        "MeetSpaceTests.MediaIntegrationTests/testScreenRejectsInvalidAndStaleFrameSession",
+        "MeetSpaceTests.RecordingPlaybackTests/testActualServerAACArtifactAdvancesNativePlayerTime",
+        "MeetSpaceTests.Stage08SecurityKeychainTests/testCredentialsRemainDeviceOnlyAndUnsynchronizedAfterUpdate",
+        "MeetSpaceTests.Stage08SecurityKeychainTests/testDeletionConfirmationSurvivesJournalRewriteWithDeviceOnlyProtection",
+        "MeetSpaceTests.Stage08SecurityKeychainTests/testPushCleanupJournalUsesTheSameDeviceOnlyProtection",
+        "MeetSpaceTests.TypographyAccessibilityTests/testBundledFontsScaleInActualUIKitHostingAtAllDynamicTypeSizes",
+        "MeetSpaceUITests.FoundationUITests/testOrdinaryPushOptInAndDisableWithFixtureToken",
+        "MeetSpaceUITests.FoundationUITests/testStage08AccountDeletionRequiresPasswordAndConfirmation"
+      ],
+      "passed": 13,
+      "failed": 0,
+      "skipped": 0,
+      "jobID": 128261945478,
+      "nativeLogSHA256": "3697d63c1ac3c59c0abf8a75a4c6a2584f08b22d2bbff2a7342c33eaac1951c0",
+      "nativeLogFile": "simulators_iPad_18_iPad18_compatibility_iPad_mini_A17_Pro_.log",
+      "screenshots": {
+        "originalPNGs": {
+          "stage05-push-enabled": {
+            "file": "screenshots/iPad18/stage05-push-enabled_0_9E71F122-644C-4DC8-80C8-C47C8BC86B6E.png",
+            "originalSuggestedName": "stage05-push-enabled_0_9E71F122-644C-4DC8-80C8-C47C8BC86B6E.png",
+            "zipMember": "iPad18-screenshots/70029FC2-E42C-4046-8747-B2AE666876F7.png",
+            "sha256": "436b07d8754dcfe1f98dd1411cf3d6aea8ac919a23483fe8dd933ad91c889521",
+            "sizeBytes": 201623,
+            "width": 1488,
+            "height": 2266,
+            "testIdentifier": "FoundationUITests/testOrdinaryPushOptInAndDisableWithFixtureToken()",
+            "attachment": {
+              "configurationName": "Test Scheme Action",
+              "deviceId": "2A250684-88E3-4EDB-A21E-B7726B4C69F6",
+              "deviceName": "iPad mini (A17 Pro)",
+              "exportedFileName": "70029FC2-E42C-4046-8747-B2AE666876F7.png",
+              "isAssociatedWithFailure": false,
+              "suggestedHumanReadableName": "stage05-push-enabled_0_9E71F122-644C-4DC8-80C8-C47C8BC86B6E.png",
+              "timestamp": 1794017104.104
+            }
+          },
+          "stage08-account-deletion-success": {
+            "file": "screenshots/iPad18/stage08-account-deletion-success_0_489E6E51-F88F-45D5-83E3-8E5EDD49C993.png",
+            "originalSuggestedName": "stage08-account-deletion-success_0_489E6E51-F88F-45D5-83E3-8E5EDD49C993.png",
+            "zipMember": "iPad18-screenshots/D6A2533F-ADB5-493F-BC6A-56C5B0D8D447.png",
+            "sha256": "93123968cbc1df48ad3012b9177a71fd29ce9003fd9051620145d49345bf91d8",
+            "sizeBytes": 132679,
+            "width": 1488,
+            "height": 2266,
+            "testIdentifier": "FoundationUITests/testStage08AccountDeletionRequiresPasswordAndConfirmation()",
+            "attachment": {
+              "configurationName": "Test Scheme Action",
+              "deviceId": "2A250684-88E3-4EDB-A21E-B7726B4C69F6",
+              "deviceName": "iPad mini (A17 Pro)",
+              "exportedFileName": "D6A2533F-ADB5-493F-BC6A-56C5B0D8D447.png",
+              "isAssociatedWithFailure": false,
+              "suggestedHumanReadableName": "stage08-account-deletion-success_0_489E6E51-F88F-45D5-83E3-8E5EDD49C993.png",
+              "timestamp": 1794017192.427
+            }
+          },
+          "stage08-account-deletion": {
+            "file": "screenshots/iPad18/stage08-account-deletion_0_7C5153E5-7126-401C-A341-335FF097D82B.png",
+            "originalSuggestedName": "stage08-account-deletion_0_7C5153E5-7126-401C-A341-335FF097D82B.png",
+            "zipMember": "iPad18-screenshots/2160F7D3-4237-4F8B-AC8C-BB553AC6626F.png",
+            "sha256": "2633d9752a63105545dcc29e7354d5a1aa1430fefa5f0a06b7a8cd7e049fca7b",
+            "sizeBytes": 346916,
+            "width": 1488,
+            "height": 2266,
+            "testIdentifier": "FoundationUITests/testStage08AccountDeletionRequiresPasswordAndConfirmation()",
+            "attachment": {
+              "configurationName": "Test Scheme Action",
+              "deviceId": "2A250684-88E3-4EDB-A21E-B7726B4C69F6",
+              "deviceName": "iPad mini (A17 Pro)",
+              "exportedFileName": "2160F7D3-4237-4F8B-AC8C-BB553AC6626F.png",
+              "isAssociatedWithFailure": false,
+              "suggestedHumanReadableName": "stage08-account-deletion_0_7C5153E5-7126-401C-A341-335FF097D82B.png",
+              "timestamp": 1794017186.848
+            }
+          },
+          "stage08-account-deletion-keyboard-retry": {
+            "file": "screenshots/iPad18/stage08-account-deletion-keyboard-retry_0_C5ABCCBE-E787-4F2A-AD50-0CD1D122BA88.png",
+            "originalSuggestedName": "stage08-account-deletion-keyboard-retry_0_C5ABCCBE-E787-4F2A-AD50-0CD1D122BA88.png",
+            "zipMember": "iPad18-screenshots/6A20B84B-1FD3-4DA2-B230-07320E1AB458.png",
+            "sha256": "68abb83241a7d0dbedab2939a06c9efb371205f65194f38d23ed195c1aa6ed8c",
+            "sizeBytes": 311463,
+            "width": 1488,
+            "height": 2266,
+            "testIdentifier": "FoundationUITests/testStage08AccountDeletionRequiresPasswordAndConfirmation()",
+            "attachment": {
+              "configurationName": "Test Scheme Action",
+              "deviceId": "2A250684-88E3-4EDB-A21E-B7726B4C69F6",
+              "deviceName": "iPad mini (A17 Pro)",
+              "exportedFileName": "6A20B84B-1FD3-4DA2-B230-07320E1AB458.png",
+              "isAssociatedWithFailure": false,
+              "suggestedHumanReadableName": "stage08-account-deletion-keyboard-retry_0_C5ABCCBE-E787-4F2A-AD50-0CD1D122BA88.png",
+              "timestamp": 1794017180.86
+            }
+          },
+          "stage08-account-deletion-keyboard-initial": {
+            "file": "screenshots/iPad18/stage08-account-deletion-keyboard-initial_0_53856B4E-77BB-494E-AE2A-20E9944041E8.png",
+            "originalSuggestedName": "stage08-account-deletion-keyboard-initial_0_53856B4E-77BB-494E-AE2A-20E9944041E8.png",
+            "zipMember": "iPad18-screenshots/C101DD1A-4E75-460E-8F32-725EDCAB1D53.png",
+            "sha256": "67f7824fba12e9c412341e08c600eba1d1ee3ad50c39dff58407bd7aec852283",
+            "sizeBytes": 301741,
+            "width": 1488,
+            "height": 2266,
+            "testIdentifier": "FoundationUITests/testStage08AccountDeletionRequiresPasswordAndConfirmation()",
+            "attachment": {
+              "configurationName": "Test Scheme Action",
+              "deviceId": "2A250684-88E3-4EDB-A21E-B7726B4C69F6",
+              "deviceName": "iPad mini (A17 Pro)",
+              "exportedFileName": "C101DD1A-4E75-460E-8F32-725EDCAB1D53.png",
+              "isAssociatedWithFailure": false,
+              "suggestedHumanReadableName": "stage08-account-deletion-keyboard-initial_0_53856B4E-77BB-494E-AE2A-20E9944041E8.png",
+              "timestamp": 1794017160.325
+            }
+          }
+        },
+        "notExported": [],
+        "visualReview": "NOT_PERFORMED_BY_COLLECTOR",
+        "limits": "Original app screenshots only; names do not establish keyboard/confirmation-alert visibility or visual correctness."
+      }
+    }
+  },
+  "package": {
+    "registered": 198,
+    "passed": 193,
+    "skippedOptIn": 5,
+    "failed": 0,
+    "suites": 2,
+    "durationSeconds": 7.154,
+    "requiredP2TestsPassed": [
+      "pushDeletionRecoveryReplaysDurableProofAfterPruneFailureAndRestartWithoutRepository",
+      "pushDeletionRecoveryRetriesLoadedModelAndAllowsOnlyDifferentConfirmedCleanScope",
+      "pushDeletionRecoveryRetriesOneFailedProofWriteBeforePruning",
+      "pushDeletionRecoveryRetainsMemoryProofAcrossFiniteFailureUntilExplicitRetry",
+      "pushDeletionRecoveryCannotInferUnpersistedProofAfterProcessLossOr401",
+      "pushDeletionRecoveryProofReadIsIndependentOfBrokenJournalAndNeverTreatsReadFailureAsFalse",
+      "pushDeletionRecoveryJournalFallbackSurvivesEitherSingleWriteFailureAndLaterNormalSaves",
+      "pushDeletionRecoveryFencesLateOSTokenEnableAndPausedIntent",
+      "pushDeletionRecoveryFencesRegistrationSuspendedAtPrePOSTJournalWrite",
+      "pushDeletionRecoveryPersistsPendingProofBeforeOneFailedLedgerQuery",
+      "pushDeletionRecoveryJournalMigrationValidationAndMonotonicMemoryReceipt",
+      "stage08P2IdentityConfirmedDeletionRecoversJournalForAnotherAccountAfterRestart",
+      "stage08P2IdentityNeverRestoresConfirmedDeletedScopeOffline",
+      "stage08P2IdentityUnauthorizedIsNotDeletionConfirmation"
+    ],
+    "nativeLogSHA256": "7165200fa462d0f94a17cb361205195398613f9fb1d34dd85f4956c56b1e90db"
+  },
+  "unsignedArchive": {
+    "CIreport": "package/release-verification.json",
+    "checks": {
+      "PASS": 59,
+      "BLOCKED": 1
+    },
+    "blockedCheck": "signing.distribution",
+    "distributionApproval": "NOT_GRANTED",
+    "independentArchiveVerification": "NOT_PERFORMED_BY_THIS_COLLECTOR",
+    "binaryCopiedToRepository": false,
+    "buildMetadata": {
+      "CFBundleShortVersionString": "0.2.0",
+      "CFBundleVersion": "1",
+      "DTXcode": "2630",
+      "DTXcodeBuild": "17C529",
+      "DTSDKName": "iphoneos26.2",
+      "DTPlatformName": "iphoneos",
+      "MinimumOSVersion": "18.0"
+    }
+  },
+  "profiler": "INTENTIONALLY_NOT_RUN",
+  "limitations": [
+    "Scoped push/deletion native regression only; no full native or 21-state design-parity claim.",
+    "Fixture deletion/push behavior does not verify real backend deployment or delivery through APNs.",
+    "Raw screenshot names retained; no automatic visual review.",
+    "Independent archive inspection is separate; distribution remains blocked."
+  ]
+}

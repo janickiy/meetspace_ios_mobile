@@ -1,0 +1,25 @@
+{
+  "runID": 42326199451,
+  "sourceCommit": "5c4e3dcf49c64ab28b55231c5c02da16dca377b0",
+  "collectorReceiptUnmodified": true,
+  "reviewedOriginalPNGCount": 20,
+  "allReviewImageSHA256MatchCanonicalPNGs": true,
+  "tabletReviewsImportedUnchanged": true,
+  "files": [
+    {
+      "file": "iphone-visual-review.json",
+      "sha256": "b20413a69a41fae566d7a732d4e2114dd58cf41600bcc92023b7089b2e6b84d1",
+      "sizeBytes": 10974
+    },
+    {
+      "file": "ipad26-visual-review.json",
+      "sha256": "0a480562900d1c24a08347e87e4df054abfe4e517d356acefb0a297eae8cd6db",
+      "sizeBytes": 10659
+    },
+    {
+      "file": "ipad18-visual-review.json",
+      "sha256": "26fcbf373395d3e27adf2ba7a3de459134f68a05ed002e5835e8b504adca8d2c",
+      "sizeBytes": 10451
+    }
+  ]
+}

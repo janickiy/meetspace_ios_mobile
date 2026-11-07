@@ -1,0 +1,30 @@
+{
+  "sourceCommit": "5c4e3dcf49c64ab28b55231c5c02da16dca377b0",
+  "packagingInputSHA256": {
+    "App/Info.plist": "3a8efff3b59af6132a23af3ec087c33d269f08622db6f35826e87691429b0c6d",
+    "App/MeetSpace.entitlements": "93d68a3b4536b9a1c5d1848a9c5631d3a8fc73d61f05a46cd367bdb15289311e",
+    "App/PrivacyInfo.xcprivacy": "86957e3db44cec97b14ac9f75c27db587bbcb5a340527a97a01fa08d61b42b94",
+    "BroadcastExtension/Info.plist": "8d9dbd740d0591311ecb3865c3329176682b46c0e9cf605fdba4f3b84277b5a9",
+    "BroadcastExtension/MeetSpaceBroadcast.entitlements": "5eead1805d2e1fc7d6497d7204ced4221247f54e948b30095938d479a2df70eb",
+    "BroadcastExtension/PrivacyInfo.xcprivacy": "b10fbeb0cb363b7be2f5887a2abf11628ded6ff4aa5639624627e15e6c882fef",
+    "MeetSpace.xcodeproj/project.pbxproj": "07517ee3822130ae452a49b976e4530b91d0ecf7c704464609b54419d527046e",
+    "Packages/MeetSpaceKit/Package.swift": "ac030863f2872a863eef7a4eede62525c25421e60dd3f318f0f467eabc0518f0",
+    "Packages/MeetSpaceKit/Package.resolved": "0c6498db740964e2b94c742a1fbcacb681e97364e04bd999a3aa20ff90fb17df",
+    "scripts/generate_xcode_project.py": "aca1504b4238d4c91e9f22a387143b27421250e2794406d117d5fa4cd88aab92",
+    "scripts/verify_release.py": "2efa55c4d63329f592c2983d3fc5c0de06bf363409dc9a9b80f2139e0c432ba3",
+    "MeetSpace.xcodeproj/xcshareddata/xcschemes/MeetSpace-Release.xcscheme": "cb137328a78344faa9221cc00684a043a475b1ceb465136a52b63031ac13eaeb",
+    "docs/ios/evidence/stage04/webrtc-library.json": "6df9b0eb1edcde3483dcdc3df91ad31fcd7988bae8be83e3d529a39ce5a5934b"
+  },
+  "additionalSourceInputsBeyondVerifierReport": [
+    "MeetSpace.xcodeproj/xcshareddata/xcschemes/MeetSpace-Release.xcscheme",
+    "docs/ios/evidence/stage04/webrtc-library.json"
+  ],
+  "verifierSHA256": "2efa55c4d63329f592c2983d3fc5c0de06bf363409dc9a9b80f2139e0c432ba3",
+  "productionTrees": {
+    "App": "4098b55a42e80f71dcc919be18316ae92e3c1110",
+    "Packages": "dad6bbb9414f817fc7e6f4f61c09dfd810408a5d",
+    "BroadcastExtension": "4517bbe5a62655b843403b53487fb2f91867d4ce"
+  },
+  "currentProductTreesMatchPinnedSource": true,
+  "localObservedHEAD": "5c4e3dcf49c64ab28b55231c5c02da16dca377b0"
+}

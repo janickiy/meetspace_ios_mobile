@@ -1,0 +1,20 @@
+{
+  "id": 13554983830,
+  "node_id": "MDg6QXJ0aWZhY3QxMzU1NDk4MzgzMA==",
+  "name": "release-unsigned",
+  "size_in_bytes": 18337013,
+  "url": "https://api.github.com/repos/janickiy/meetspace_ios_mobile/actions/artifacts/13554983830",
+  "archive_download_url": "https://api.github.com/repos/janickiy/meetspace_ios_mobile/actions/artifacts/13554983830/zip",
+  "expired": false,
+  "digest": "sha256:691f5e3637a82fe4607e6c5a247d04969c873a46c0c09c5689434205e2c2e498",
+  "created_at": "2026-11-07T01:57:26Z",
+  "updated_at": "2026-11-07T01:57:26Z",
+  "expires_at": "2026-11-14T01:57:21Z",
+  "workflow_run": {
+    "id": 42326199451,
+    "repository_id": 1446695117,
+    "head_repository_id": 1446695117,
+    "head_branch": "codex/stage08-p2-fixes",
+    "head_sha": "5c4e3dcf49c64ab28b55231c5c02da16dca377b0"
+  }
+}

@@ -20,11 +20,11 @@
 подтверждается `pg_blocking_pids`, не задержкой по таймеру. Проверены также
 active/missing/tombstone/blocked/guest и существующий HTTP mapper.
 
-- До исправления: **8 FAIL /1 PASS** из9 новых сценариев.
-- После исправления: **9/9 PASS**,0SKIP; четыре наблюдённые зависимости блокировок.
-- Смежные проверки с `-race`: **15 верхнеуровневых тестов и27 вложенных сценариев PASS**,0SKIP; вложенные не суммируются с родительскими.
+- До исправления: **8 FAIL / 1 PASS** из 9 новых сценариев.
+- После исправления: **9/9 PASS**,0 SKIP; четыре наблюдённые зависимости блокировок.
+- Смежные проверки с `-race`: **15 верхнеуровневых тестов и 27 вложенных сценариев PASS**,0 SKIP; вложенные не суммируются с родительскими.
 - Независимое применение опубликованного patch к чистой временной копии pinned
-  source и повтор с `-race`: **9/9 PASS**,0SKIP; [receipt](evidence/p2-backend-reproduction/receipt.json).
+  source и повтор с `-race`: **9/9 PASS**,0 SKIP; [receipt](evidence/p2-backend-reproduction/receipt.json).
 
 Статус: **исправление реализовано и проверено в patch; требуется интеграция и выпуск backend**.
 Исходный сервер `9e6058c` без patch сохраняет дефект. Обновление iOS самостоятельно
@@ -59,7 +59,7 @@ push gateway и реальная APNs-доставка не проверялис
 Протокол хранилища имеет реальную journal-backed реализацию для существующих
 in-memory/custom stores. Keychain использует отдельный item; его read-modify-write
 выполняется без suspension внутри actor. Подтверждения сохраняются для блокировки
-восстановления удалённого scope; предел1000 уникальных записей проверяется без
+восстановления удалённого scope; предел 1000 уникальных записей проверяется без
 автоматического удаления доказательств. Минимальные origin/UUID остаются локально
 и не отправляются на сервер.
 
@@ -70,7 +70,24 @@ push-привязка остаётся заблокированной: отсу�
 
 ## Проверки iOS
 
-Локальные fault-injection и native Keychain/UI проверки: **PENDING**.
-Окончательный source, команды и результаты будут добавлены после выполнения.
+Проверяемый исходник: `5c4e3dcf49c64ab28b55231c5c02da16dca377b0`.
+Локальный целевой набор: **38/38 PASS**,0 SKIP (11 новых fault/schema tests,
+3 Identity-сценария и существующие push/account tests). Полный SwiftPM:
+**193 PASS / 5 opt-in SKIP из 198**,0 FAIL. [Команды, логи и hashes](evidence/p2-local/receipt.json).
+[Обзор исходников](evidence/p2-source-review.json) отдельно фиксирует защёлки
+между async операциями, изоляцию origin/UUID и неизменные privacy/entitlements.
+Новый native Keychain/UI [CI42326199451](https://github.com/janickiy/meetspace_ios_mobile/actions/runs/42326199451)
+завершился успешно: **52/52 PASS, 0 FAIL, 0 SKIP**. Scope `push-recovery`:
+11 hosted + 2 UI testcases на каждой из четырёх конфигураций — iPhone/iPad 26.2
+и 18.6. Проверен реальный Keychain: отдельная запись подтверждения, обновление,
+повторное открытие и защита device-only. [Итоговый receipt](evidence/p2-ci/receipt.json)
+сверяет точные test IDs, source, API metadata, ZIP hashes/CRC и фактические environments.
+Полный 35/15-case UI baseline, Core AX и AX5 повторно не запускались.
+Просмотрены [20 оригинальных PNG](evidence/p2-ci/visual-files.json); сохраняются
+прежний перенос «Отме/на» на iOS26 и ограничения keyboard/alert capture.
+CI package: **193 PASS / 5 opt-in SKIP**; новый unsigned archive независимо прошёл
+**59 packaging checks**, signing.distribution BLOCKED; [receipt](evidence/p2-release-product/receipt.json).
 Набор проверяет реальный lifecycle/API с контролируемыми сбоями хранилища;
 системная APNs-доставка и locked-device Keychain требуют физических устройств.
+
+[Файлы этого исправления](P2_FILES.md) перечислены отдельно от полного этапа 8.

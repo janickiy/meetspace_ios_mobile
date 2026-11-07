@@ -1,6 +1,13 @@
 # Политика разбора accessibility findings
 
-Документ описывает Core accessibility harness, неизменённый между проверенными `55bfcfb`/`a33a153` и кандидатом `16c702529f70ce675276d58f5d6334f0ba323fa7`. Product-код CI15 совпадает с этим кандидатом; последующие изменения касаются тестового ввода при удалении и CI, а не production UI или Core audit. [Consolidated receipt](evidence/accessibility-ci15-matrix/receipt.json) фиксирует diff и точные исходники. Актуальный общий статус кандидата — [TEST_REPORT.md](TEST_REPORT.md), история — [CI_HISTORY.md](CI_HISTORY.md). Код: [FoundationUITests.swift](../../Tests/MeetSpaceUITests/FoundationUITests.swift), [TypographyAccessibilityTests.swift](../../Tests/MeetSpaceTests/TypographyAccessibilityTests.swift).
+Дополнение 7 ноября: [P2-исправления](P2_FIXES.md), source
+`5c4e3dcf49c64ab28b55231c5c02da16dca377b0`, не меняют Core AX harness.
+Его прежние результаты ниже сохраняют исходные source/scope. Новый scope
+`push-recovery` включает hosted font test, удаление и push; Core AX, AX5 и весь
+набор Settings не запускает. Новый код хранения не наследует полный accessibility
+PASS из старых прогонов. Текущая проверка — [TEST_REPORT.md](TEST_REPORT.md).
+
+Документ описывает Core accessibility harness, неизменённый между проверенными `55bfcfb`/`a33a153` и прежним кандидатом `16c702529f70ce675276d58f5d6334f0ba323fa7`. Product-код CI15 совпадает с этим кандидатом; последующие изменения касаются тестового ввода при удалении и CI, а не production UI или Core audit. [Consolidated receipt](evidence/accessibility-ci15-matrix/receipt.json) фиксирует diff и точные исходники. Актуальный общий статус — [TEST_REPORT.md](TEST_REPORT.md), история — [CI_HISTORY.md](CI_HISTORY.md). Код: [FoundationUITests.swift](../../Tests/MeetSpaceUITests/FoundationUITests.swift), [TypographyAccessibilityTests.swift](../../Tests/MeetSpaceTests/TypographyAccessibilityTests.swift).
 
 Harness сохраняет один immutable snapshot в callback, postprocessing после возврата Apple audit, direction-aware навигацию профиля и различение результатов retest (`targetSeen` / `targetFailed`). Для `elementDetection` допускается максимум один повтор exact engine timeout без callbacks/findings, с отдельными receipts. В завершённой четырёхплатформенной матрице CI15 этот retry не понадобился:
 

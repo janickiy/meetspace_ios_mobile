@@ -1,0 +1,46 @@
+{
+  "devicesAndConfigurations" : [
+    {
+      "device" : {
+        "architecture" : "arm64",
+        "deviceId" : "2A250684-88E3-4EDB-A21E-B7726B4C69F6",
+        "deviceName" : "iPad mini (A17 Pro)",
+        "modelName" : "iPad mini (A17 Pro)",
+        "osBuildNumber" : "22G86",
+        "osVersion" : "18.6",
+        "platform" : "iOS Simulator"
+      },
+      "expectedFailures" : 0,
+      "failedTests" : 0,
+      "passedTests" : 13,
+      "skippedTests" : 0,
+      "testPlanConfiguration" : {
+        "configurationId" : "1",
+        "configurationName" : "Test Scheme Action"
+      }
+    }
+  ],
+  "environmentDescription" : "MeetSpace-Debug · Built with macOS 15.8.2",
+  "expectedFailures" : 0,
+  "failedTests" : 0,
+  "finishTime" : 1794017194.449,
+  "passedTests" : 13,
+  "result" : "Passed",
+  "skippedTests" : 0,
+  "startTime" : 1794016876.438,
+  "statistics" : [
+
+  ],
+  "testFailures" : [
+
+  ],
+  "title" : "Test - MeetSpace-Debug",
+  "topInsights" : [
+    {
+      "category" : "Longest Test Runs",
+      "impact" : "72% of duration",
+      "text" : "1 longest test run with outlier durations exceeding 7.66s (three standard deviations)"
+    }
+  ],
+  "totalTestCount" : 13
+}

@@ -74,5 +74,6 @@
     "Local macOS SwiftPM controlled transport/storage faults, not real APNs delivery or locked-device Keychain.",
     "Existing five opt-in live-backend tests intentionally skipped by default; dedicated server patch tests use separate disposable PostgreSQL.",
     "Native Keychain/protection/reopen tests require Xcode CI and are reported separately."
-  ]
+  ],
+  "subsequentlyCommittedSource": "5c4e3dcf49c64ab28b55231c5c02da16dca377b0"
 }

@@ -2,10 +2,18 @@
 
 Дата проверки требований: 2026-11-06. Это инструкция подготовки артефакта, а не подтверждение публикации или допуска Apple. Итоговые результаты Stage 8 находятся в `TEST_REPORT.md`; неподписанная сборка, simulator tests и подписанная App Store distribution — разные проверки.
 
+Дополнение 7 ноября: [P2-исправления](P2_FIXES.md) меняют production-код iOS;
+новый CI42326199451 собрал unsigned archive source `5c4e3dc`. Он независимо
+проверен по исходному ZIP: **59 PASS; signing.distribution BLOCKED**.
+Отдельный native scope `push-recovery` завершён: **52/52 PASS**, 0 FAIL/SKIP;
+[receipt](evidence/p2-ci/receipt.json). Это не полный UI baseline и не допуск к distribution.
+Серверный patch требуется интегрировать и выпустить в backend до закрытия
+server-account-deletion gate. Отправки в Apple и backend deployment не выполнялись.
+
 ## Текущее состояние и ограничения
 
 - Проект рассчитан на iPhone/iPad, iOS 18+. Release использует оптимизацию `-O`, dSYM, отдельный ReplayKit Upload Extension, production APNs entitlement и общий App Group.
-- Для `a33a153147d6941874884357134b3fd46de7532c` CI16 собрал настоящий неподписанный device archive: версия `0.2.0 (1)`, Xcode `26.3 (17C529)`, SDK `iphoneos26.2`, minimum `18.0`. Независимая проверка скачанного архива: **59 PASS; signing.distribution BLOCKED**; [receipt и хеши](evidence/release-product-final/receipt.json). Production trees App/Packages/BroadcastExtension совпадают с `16c7025`; новый архив для последующего test-only commit не собирался. Native suite и signing учитываются отдельно.
+- Для `5c4e3dcf49c64ab28b55231c5c02da16dca377b0` CI42326199451 собрал настоящий неподписанный device archive: версия `0.2.0 (1)`, Xcode `26.3 (17C529)`, SDK `iphoneos26.2`, minimum `18.0`. Независимая проверка скачанного архива: **59 PASS; signing.distribution BLOCKED**; [новый receipt и хеши](evidence/p2-release-product/receipt.json). Предыдущий [архив CI16/a33](evidence/release-product-final/receipt.json) сохранён как исторический результат, его binary не содержит последующего P2-исправления. Native suite и signing учитываются отдельно.
 - На локальном хосте выбран Command Line Tools, полного Xcode нет; валидных code-signing identities — 0, provisioning profiles — 0. Проверялись только наличие и количество, без экспорта ключей, сертификатов или содержимого профилей. Подключение/возможности физических устройств этим не доказаны.
 - Архив с Apple Distribution, экспорт `.ipa`, TestFlight, реальный APNs и физические device gates остаются **BLOCKED** до доступности необходимых ресурсов. Эта работа не выполняет отправку в Apple.
 - WebRTC M156 закреплён по версии, Git revision и checksum; его device framework поставляется без подписи дистрибьютора. Подписание/происхождение SDK и полнота notices требуют закрытия перед распространением. Подробнее ниже.

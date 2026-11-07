@@ -1,0 +1,28 @@
+2026-11-07T01:58:33.5547080Z Testing iPhone SE (3rd generation) on iOS (18, 6): C3630581-519B-49DA-9400-67A78DCD42C8, scope=push-recovery
+2026-11-07T02:01:49.3541060Z Test Case '-[MeetSpaceTests.CallAudioIntegrationTests testDirectCallCanNegotiateBeforeCallKitActivatesAudio]' started.
+2026-11-07T02:01:49.6703030Z Test Case '-[MeetSpaceTests.CallAudioIntegrationTests testDirectCallCanNegotiateBeforeCallKitActivatesAudio]' passed (0.349 seconds).
+2026-11-07T02:01:49.7158570Z Test Case '-[MeetSpaceTests.KeychainIntegrationTests testKeychainRoundTripUpdateAndScopedDeletion]' started.
+2026-11-07T02:01:49.8183920Z Test Case '-[MeetSpaceTests.KeychainIntegrationTests testKeychainRoundTripUpdateAndScopedDeletion]' passed (0.025 seconds).
+2026-11-07T02:01:50.4413070Z Test Case '-[MeetSpaceTests.MediaIntegrationTests testBlockedSourcesNeverRequestPermissionsOrAppearInOffer]' started.
+2026-11-07T02:01:50.6932310Z Test Case '-[MeetSpaceTests.MediaIntegrationTests testBlockedSourcesNeverRequestPermissionsOrAppearInOffer]' passed (0.082 seconds).
+2026-11-07T02:01:50.7319350Z Test Case '-[MeetSpaceTests.MediaIntegrationTests testNativePeerOfferAndCloseCyclesWithCaptureOff]' started.
+2026-11-07T02:01:50.9145810Z Test Case '-[MeetSpaceTests.MediaIntegrationTests testNativePeerOfferAndCloseCyclesWithCaptureOff]' passed (0.389 seconds).
+2026-11-07T02:01:50.9416670Z Test Case '-[MeetSpaceTests.MediaIntegrationTests testScreenGenerationRollbackAndPolicyWithCaptureOff]' started.
+2026-11-07T02:01:50.9538950Z Test Case '-[MeetSpaceTests.MediaIntegrationTests testScreenGenerationRollbackAndPolicyWithCaptureOff]' passed (0.107 seconds).
+2026-11-07T02:01:50.9877940Z Test Case '-[MeetSpaceTests.MediaIntegrationTests testScreenRejectsInvalidAndStaleFrameSession]' started.
+2026-11-07T02:01:51.0048130Z Test Case '-[MeetSpaceTests.MediaIntegrationTests testScreenRejectsInvalidAndStaleFrameSession]' passed (0.067 seconds).
+2026-11-07T02:01:51.4082000Z Test Case '-[MeetSpaceTests.RecordingPlaybackTests testActualServerAACArtifactAdvancesNativePlayerTime]' started.
+2026-11-07T02:01:51.6702020Z Test Case '-[MeetSpaceTests.RecordingPlaybackTests testActualServerAACArtifactAdvancesNativePlayerTime]' passed (1.197 seconds).
+2026-11-07T02:01:51.7846990Z Test Case '-[MeetSpaceTests.Stage08SecurityKeychainTests testCredentialsRemainDeviceOnlyAndUnsynchronizedAfterUpdate]' started.
+2026-11-07T02:01:51.8184730Z Test Case '-[MeetSpaceTests.Stage08SecurityKeychainTests testCredentialsRemainDeviceOnlyAndUnsynchronizedAfterUpdate]' passed (0.025 seconds).
+2026-11-07T02:01:51.8351650Z Test Case '-[MeetSpaceTests.Stage08SecurityKeychainTests testDeletionConfirmationSurvivesJournalRewriteWithDeviceOnlyProtection]' started.
+2026-11-07T02:01:51.9027060Z Test Case '-[MeetSpaceTests.Stage08SecurityKeychainTests testDeletionConfirmationSurvivesJournalRewriteWithDeviceOnlyProtection]' passed (0.024 seconds).
+2026-11-07T02:01:51.9148110Z Test Case '-[MeetSpaceTests.Stage08SecurityKeychainTests testPushCleanupJournalUsesTheSameDeviceOnlyProtection]' started.
+2026-11-07T02:01:51.9252440Z Test Case '-[MeetSpaceTests.Stage08SecurityKeychainTests testPushCleanupJournalUsesTheSameDeviceOnlyProtection]' passed (0.006 seconds).
+2026-11-07T02:01:52.1833930Z Test Case '-[MeetSpaceTests.TypographyAccessibilityTests testBundledFontsScaleInActualUIKitHostingAtAllDynamicTypeSizes]' started.
+2026-11-07T02:01:52.7235840Z Test Case '-[MeetSpaceTests.TypographyAccessibilityTests testBundledFontsScaleInActualUIKitHostingAtAllDynamicTypeSizes]' passed (0.540 seconds).
+2026-11-07T02:02:17.3918680Z Test Case '-[MeetSpaceUITests.FoundationUITests testOrdinaryPushOptInAndDisableWithFixtureToken]' started.
+2026-11-07T02:03:22.0360140Z Test Case '-[MeetSpaceUITests.FoundationUITests testOrdinaryPushOptInAndDisableWithFixtureToken]' passed (64.934 seconds).
+2026-11-07T02:03:22.0459510Z Test Case '-[MeetSpaceUITests.FoundationUITests testStage08AccountDeletionRequiresPasswordAndConfirmation]' started.
+2026-11-07T02:04:52.3052420Z Test Case '-[MeetSpaceUITests.FoundationUITests testStage08AccountDeletionRequiresPasswordAndConfirmation]' passed (90.272 seconds).
+2026-11-07T02:04:54.3235440Z ** TEST SUCCEEDED **

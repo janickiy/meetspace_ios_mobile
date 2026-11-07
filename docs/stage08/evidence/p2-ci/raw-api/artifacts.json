@@ -1,0 +1,102 @@
+[
+  {
+    "id": 13556340233,
+    "node_id": "MDg6QXJ0aWZhY3QxMzU1NjM0MDIzMw==",
+    "name": "results-iPhone18",
+    "size_in_bytes": 4118559,
+    "url": "https://api.github.com/repos/janickiy/meetspace_ios_mobile/actions/artifacts/13556340233",
+    "archive_download_url": "https://api.github.com/repos/janickiy/meetspace_ios_mobile/actions/artifacts/13556340233/zip",
+    "expired": false,
+    "digest": "sha256:251bc85391acbed9ed8cb70f7c3abe2ba947a9e3430aefd522db681d74c5426e",
+    "created_at": "2026-11-07T02:05:05Z",
+    "updated_at": "2026-11-07T02:05:05Z",
+    "expires_at": "2026-11-14T02:05:04Z",
+    "workflow_run": {
+      "id": 42326199451,
+      "repository_id": 1446695117,
+      "head_repository_id": 1446695117,
+      "head_branch": "codex/stage08-p2-fixes",
+      "head_sha": "5c4e3dcf49c64ab28b55231c5c02da16dca377b0"
+    }
+  },
+  {
+    "id": 13555651357,
+    "node_id": "MDg6QXJ0aWZhY3QxMzU1NTY1MTM1Nw==",
+    "name": "results-iPhone26",
+    "size_in_bytes": 4021311,
+    "url": "https://api.github.com/repos/janickiy/meetspace_ios_mobile/actions/artifacts/13555651357",
+    "archive_download_url": "https://api.github.com/repos/janickiy/meetspace_ios_mobile/actions/artifacts/13555651357/zip",
+    "expired": false,
+    "digest": "sha256:577f766412f7161969338a6aea78a28fae3ebfc82e43dbd5dbc8ca2afe398b1e",
+    "created_at": "2026-11-07T02:00:18Z",
+    "updated_at": "2026-11-07T02:00:18Z",
+    "expires_at": "2026-11-14T02:00:16Z",
+    "workflow_run": {
+      "id": 42326199451,
+      "repository_id": 1446695117,
+      "head_repository_id": 1446695117,
+      "head_branch": "codex/stage08-p2-fixes",
+      "head_sha": "5c4e3dcf49c64ab28b55231c5c02da16dca377b0"
+    }
+  },
+  {
+    "id": 13555531128,
+    "node_id": "MDg6QXJ0aWZhY3QxMzU1NTUzMTEyOA==",
+    "name": "results-iPad26",
+    "size_in_bytes": 4970137,
+    "url": "https://api.github.com/repos/janickiy/meetspace_ios_mobile/actions/artifacts/13555531128",
+    "archive_download_url": "https://api.github.com/repos/janickiy/meetspace_ios_mobile/actions/artifacts/13555531128/zip",
+    "expired": false,
+    "digest": "sha256:5e567417f201623ce0cf90ce85878c0ef7cdf09aa9e25ca2147dfdb6e0080917",
+    "created_at": "2026-11-07T01:58:12Z",
+    "updated_at": "2026-11-07T01:58:12Z",
+    "expires_at": "2026-11-14T01:58:10Z",
+    "workflow_run": {
+      "id": 42326199451,
+      "repository_id": 1446695117,
+      "head_repository_id": 1446695117,
+      "head_branch": "codex/stage08-p2-fixes",
+      "head_sha": "5c4e3dcf49c64ab28b55231c5c02da16dca377b0"
+    }
+  },
+  {
+    "id": 13554983830,
+    "node_id": "MDg6QXJ0aWZhY3QxMzU1NDk4MzgzMA==",
+    "name": "release-unsigned",
+    "size_in_bytes": 18337013,
+    "url": "https://api.github.com/repos/janickiy/meetspace_ios_mobile/actions/artifacts/13554983830",
+    "archive_download_url": "https://api.github.com/repos/janickiy/meetspace_ios_mobile/actions/artifacts/13554983830/zip",
+    "expired": false,
+    "digest": "sha256:691f5e3637a82fe4607e6c5a247d04969c873a46c0c09c5689434205e2c2e498",
+    "created_at": "2026-11-07T01:57:26Z",
+    "updated_at": "2026-11-07T01:57:26Z",
+    "expires_at": "2026-11-14T01:57:21Z",
+    "workflow_run": {
+      "id": 42326199451,
+      "repository_id": 1446695117,
+      "head_repository_id": 1446695117,
+      "head_branch": "codex/stage08-p2-fixes",
+      "head_sha": "5c4e3dcf49c64ab28b55231c5c02da16dca377b0"
+    }
+  },
+  {
+    "id": 13554979844,
+    "node_id": "MDg6QXJ0aWZhY3QxMzU1NDk3OTg0NA==",
+    "name": "results-iPad18",
+    "size_in_bytes": 5367860,
+    "url": "https://api.github.com/repos/janickiy/meetspace_ios_mobile/actions/artifacts/13554979844",
+    "archive_download_url": "https://api.github.com/repos/janickiy/meetspace_ios_mobile/actions/artifacts/13554979844/zip",
+    "expired": false,
+    "digest": "sha256:d9171a352bdbfbabbddacb8faab953b804e587869ec6cee658ca47cf1a300c41",
+    "created_at": "2026-11-07T02:06:44Z",
+    "updated_at": "2026-11-07T02:06:44Z",
+    "expires_at": "2026-11-14T02:06:42Z",
+    "workflow_run": {
+      "id": 42326199451,
+      "repository_id": 1446695117,
+      "head_repository_id": 1446695117,
+      "head_branch": "codex/stage08-p2-fixes",
+      "head_sha": "5c4e3dcf49c64ab28b55231c5c02da16dca377b0"
+    }
+  }
+]

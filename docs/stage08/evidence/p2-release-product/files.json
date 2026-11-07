@@ -1,0 +1,71 @@
+{
+  "algorithm": "sha256",
+  "excludesSelf": true,
+  "files": [
+    {
+      "path": "artifact-metadata.json",
+      "bytes": 805,
+      "sha256": "30d7f0ec7592adec0ef604a0601c733485e84270d650b0b65b1ecd242c7ce018"
+    },
+    {
+      "path": "ci-verification.json",
+      "bytes": 10934,
+      "sha256": "5b76f0f4c85bb6f992fad6f7093de142c76844b545e88c1192440f1ccdb10926"
+    },
+    {
+      "path": "independent-checks.txt",
+      "bytes": 4948,
+      "sha256": "95c5c3906919109a3aa5a3b73e7ad31e5d9482e83ebb760eb31d4a5db12df1cc"
+    },
+    {
+      "path": "independent-stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "independent-verification.json",
+      "bytes": 10933,
+      "sha256": "36949c72487c8baa09de6eb60e02f75ef15677517fd7ec679bb19585becc4969"
+    },
+    {
+      "path": "package-job-metadata.json",
+      "bytes": 3061,
+      "sha256": "92feacedc152f422f40af2d5ec18ed1b6c64fdc70419edec508f3f690d63da47"
+    },
+    {
+      "path": "raw-artifacts.json",
+      "bytes": 1691,
+      "sha256": "085453542393143819f2e24ee95387960530e264ad707c74ec50eee716413f5b"
+    },
+    {
+      "path": "raw-jobs.json",
+      "bytes": 12800,
+      "sha256": "aac425bac5be66b1337814a747b13cd72c507f42886f6e26a00b33909781b5d3"
+    },
+    {
+      "path": "raw-run.json",
+      "bytes": 14242,
+      "sha256": "2969fdb5d531d064a5fc674d222cc17d949962fe184aea4248ffb0e22cf71982"
+    },
+    {
+      "path": "receipt.json",
+      "bytes": 11537,
+      "sha256": "fd8db056874d0556a430762d1d6e841f8513a8d60ef4ba0e57677bf3df132ce9"
+    },
+    {
+      "path": "run-metadata.json",
+      "bytes": 14242,
+      "sha256": "2969fdb5d531d064a5fc674d222cc17d949962fe184aea4248ffb0e22cf71982"
+    },
+    {
+      "path": "source-proof.json",
+      "bytes": 2148,
+      "sha256": "6973df5365f7e46e777c4cc0d05e76ef25f57e07f21f5fca6ab9e867cbf66b97"
+    },
+    {
+      "path": "source-release-verification.json",
+      "bytes": 6397,
+      "sha256": "fa02ee66d78e4af3870ad31fdd9ae6e0ffbeae58eb358866dcc0769db86e8f1c"
+    }
+  ]
+}

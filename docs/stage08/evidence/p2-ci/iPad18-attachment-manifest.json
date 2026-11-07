@@ -1,0 +1,74 @@
+[
+  {
+    "attachments" : [
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "2A250684-88E3-4EDB-A21E-B7726B4C69F6",
+        "deviceName" : "iPad mini (A17 Pro)",
+        "exportedFileName" : "F5889585-B2CF-4432-BA12-8DA8072E8976.json",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "stage08-actual-font-scaling_0_FFD899B8-14F0-4B2C-B3DD-A05319058664.json",
+        "timestamp" : 1794017016.759
+      }
+    ],
+    "testIdentifier" : "TypographyAccessibilityTests/testBundledFontsScaleInActualUIKitHostingAtAllDynamicTypeSizes()",
+    "testIdentifierURL" : "test://com.apple.xcode/MeetSpace/MeetSpaceTests/TypographyAccessibilityTests/testBundledFontsScaleInActualUIKitHostingAtAllDynamicTypeSizes"
+  },
+  {
+    "attachments" : [
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "2A250684-88E3-4EDB-A21E-B7726B4C69F6",
+        "deviceName" : "iPad mini (A17 Pro)",
+        "exportedFileName" : "70029FC2-E42C-4046-8747-B2AE666876F7.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "stage05-push-enabled_0_9E71F122-644C-4DC8-80C8-C47C8BC86B6E.png",
+        "timestamp" : 1794017104.104
+      }
+    ],
+    "testIdentifier" : "FoundationUITests/testOrdinaryPushOptInAndDisableWithFixtureToken()",
+    "testIdentifierURL" : "test://com.apple.xcode/MeetSpace/MeetSpaceUITests/FoundationUITests/testOrdinaryPushOptInAndDisableWithFixtureToken"
+  },
+  {
+    "attachments" : [
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "2A250684-88E3-4EDB-A21E-B7726B4C69F6",
+        "deviceName" : "iPad mini (A17 Pro)",
+        "exportedFileName" : "D6A2533F-ADB5-493F-BC6A-56C5B0D8D447.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "stage08-account-deletion-success_0_489E6E51-F88F-45D5-83E3-8E5EDD49C993.png",
+        "timestamp" : 1794017192.427
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "2A250684-88E3-4EDB-A21E-B7726B4C69F6",
+        "deviceName" : "iPad mini (A17 Pro)",
+        "exportedFileName" : "2160F7D3-4237-4F8B-AC8C-BB553AC6626F.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "stage08-account-deletion_0_7C5153E5-7126-401C-A341-335FF097D82B.png",
+        "timestamp" : 1794017186.848
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "2A250684-88E3-4EDB-A21E-B7726B4C69F6",
+        "deviceName" : "iPad mini (A17 Pro)",
+        "exportedFileName" : "6A20B84B-1FD3-4DA2-B230-07320E1AB458.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "stage08-account-deletion-keyboard-retry_0_C5ABCCBE-E787-4F2A-AD50-0CD1D122BA88.png",
+        "timestamp" : 1794017180.86
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "2A250684-88E3-4EDB-A21E-B7726B4C69F6",
+        "deviceName" : "iPad mini (A17 Pro)",
+        "exportedFileName" : "C101DD1A-4E75-460E-8F32-725EDCAB1D53.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "stage08-account-deletion-keyboard-initial_0_53856B4E-77BB-494E-AE2A-20E9944041E8.png",
+        "timestamp" : 1794017160.325
+      }
+    ],
+    "testIdentifier" : "FoundationUITests/testStage08AccountDeletionRequiresPasswordAndConfirmation()",
+    "testIdentifierURL" : "test://com.apple.xcode/MeetSpace/MeetSpaceUITests/FoundationUITests/testStage08AccountDeletionRequiresPasswordAndConfirmation"
+  }
+]
