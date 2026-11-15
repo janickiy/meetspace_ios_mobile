@@ -24,7 +24,7 @@ jobs:
   package:
     if: inputs.scope != 'deletion'
     runs-on: macos-15-intel
-    timeout-minutes: 50
+    timeout-minutes: 75
     steps:
       - uses: actions/checkout@v4
       - name: Verify generated project and audit
@@ -42,7 +42,7 @@ jobs:
         run: python3 scripts/verify_release.py --archive artifacts/MeetSpace-Unsigned.xcarchive --report artifacts/release-verification.json
       - name: Build beta simulator application
         if: inputs.scope == 'beta'
-        run: xcodebuild -project MeetSpace.xcodeproj -scheme MeetSpace-Release -configuration Release -destination 'generic/platform=iOS Simulator' -derivedDataPath artifacts/BetaSimulator CODE_SIGNING_ALLOWED=NO build
+        run: xcodebuild -project MeetSpace.xcodeproj -scheme MeetSpace-Release -configuration Release -destination 'generic/platform=iOS Simulator' -derivedDataPath artifacts/BetaSimulator build
       - name: Install and launch the actual beta simulator product
         if: inputs.scope == 'beta'
         run: python3 scripts/smoke_beta_simulator.py --app artifacts/BetaSimulator/Build/Products/Release-iphonesimulator/MeetSpace.app --output artifacts/beta-smoke
@@ -56,7 +56,9 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: release-unsigned
-          path: artifacts/
+          path: |
+            artifacts/
+            !artifacts/BetaSimulator/**
           retention-days: 7
   simulators:
     # Intel CI14 hit XCTest AX initialization and audit-engine timeouts.

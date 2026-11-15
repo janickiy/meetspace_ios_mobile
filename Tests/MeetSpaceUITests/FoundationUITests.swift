@@ -32,10 +32,37 @@ import UIKit
             XCTAssertTrue(element.waitForExistence(timeout: 10))
             let scroll = app.scrollViews["installer.scroll"].firstMatch
             XCTAssertTrue(scroll.waitForExistence(timeout: 5))
-            for _ in 0..<18 where !element.isHittable {
-                if towardTop { scroll.swipeDown() } else { scroll.swipeUp() }
+            for _ in 0..<18 {
+                if let decline = passwordDismissButton(app), decline.isHittable {
+                    decline.tap()
+                    Thread.sleep(forTimeInterval: 0.5)
+                    continue
+                }
+                if element.isHittable { return }
+                var viewport = scroll.frame.intersection(app.frame)
+                let keyboard = app.keyboards.firstMatch
+                if keyboard.exists, keyboard.frame.intersects(viewport) {
+                    viewport.size.height = max(0, keyboard.frame.minY - viewport.minY)
+                }
+                // The actual iPhone 26 diagnostics capture contains Save Password?,
+                // whose remote window can omit its AX buttons. Dismiss only the
+                // exact observed prompt, using the existing screenshot-grounded helper.
+                if (viewport.intersects(element.frame) || !scroll.isHittable),
+                   dismissInaccessiblePasswordPrompt(app) {
+                    Thread.sleep(forTimeInterval: 0.5)
+                    continue
+                }
+                viewport = viewport.insetBy(dx: 12, dy: 12)
+                XCTAssertGreaterThan(viewport.height, 40, "Installer must expose a scrollable area above the keyboard")
+                let down = element.frame.maxY < viewport.minY || (viewport.intersects(element.frame) && towardTop)
+                let startY = viewport.minY + viewport.height * (down ? 0.2 : 0.8)
+                let endY = viewport.minY + viewport.height * (down ? 0.8 : 0.2)
+                let origin = app.coordinate(withNormalizedOffset: .zero)
+                origin.withOffset(CGVector(dx: viewport.midX, dy: startY)).press(forDuration: 0.1,
+                    thenDragTo: origin.withOffset(CGVector(dx: viewport.midX, dy: endY)),
+                    withVelocity: .slow, thenHoldForDuration: 0.2)
             }
-            XCTAssertTrue(element.isHittable)
+            XCTAssertTrue(element.isHittable, "Installer control must be tappable: \(element.identifier)")
         }
         func tap(_ id: String, towardTop: Bool = false) {
             let button = app.buttons[id]; show(button, towardTop: towardTop); button.tap()
@@ -95,10 +122,23 @@ import UIKit
         capture(app, name: "beta-chat-multiple-selection")
         app.buttons["message.shareSelected"].tap()
         // Copy the synthetic text from the real system sheet; no external recipient is used.
-        let copy = app.descendants(matching: .any).matching(NSPredicate(format: "label IN %@", ["Copy", "Скопировать", "Копировать"])).firstMatch
+        let activity = app.otherElements["ActivityListView"].firstMatch
+        XCTAssertTrue(activity.waitForExistence(timeout: 10))
+        let copy = activity.descendants(matching: .any).matching(NSPredicate(format: "label IN %@", ["Copy", "Скопировать", "Копировать"])).firstMatch
         XCTAssertTrue(copy.waitForExistence(timeout: 10))
+        for _ in 0..<10 {
+            if copy.isHittable { break }
+            // iOS 18 exposes Copy before it is visible. Scroll the observed native
+            // activity collection; the chat's own history must never receive this gesture.
+            let actions = activity.collectionViews["activityCollectionView"].firstMatch
+            XCTAssertTrue(actions.exists, "The system share sheet must expose its activity collection")
+            actions.swipeUp()
+        }
+        XCTAssertTrue(copy.isHittable, "Copy must be visible and tappable in the native share sheet")
         capture(app, name: "beta-chat-system-share")
         copy.tap()
+        let shareDismissed = XCTNSPredicateExpectation(predicate: NSPredicate(format: "exists == false"), object: activity)
+        XCTAssertEqual(XCTWaiter.wait(for: [shareDismissed], timeout: 5), .completed, "Copy must dismiss the actual system share sheet")
         let remove = app.buttons["message.deleteSelected"]
         let ready = XCTNSPredicateExpectation(predicate: NSPredicate(format: "hittable == true"), object: remove)
         XCTAssertEqual(XCTWaiter.wait(for: [ready], timeout: 5), .completed)

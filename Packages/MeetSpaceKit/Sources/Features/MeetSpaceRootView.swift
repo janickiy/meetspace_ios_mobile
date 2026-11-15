@@ -180,7 +180,8 @@ private struct WelcomeView: View {
     }
 }
 
-private struct OnboardingAside: View {
+struct OnboardingAside: View {
+    var install = false
     var body: some View {
         VStack(alignment: .leading, spacing: 18) {
             HStack(spacing: 9) {
@@ -188,10 +189,10 @@ private struct OnboardingAside: View {
                 (Text("MeetSpace") + Text(".").foregroundColor(MSTheme.accent)).font(MSTheme.font(24, weight: .semibold))
             }
             Spacer(minLength: 25)
-            Text(tr("БЛИЖЕ К КОМАНДЕ.")).font(MSTheme.font(10, weight: .semibold)).tracking(1.8).foregroundStyle(MSTheme.muted)
-            Text(tr("Быть на одной\nволне.")).font(MSTheme.font(43, weight: .semibold, relativeTo: .largeTitle)).tracking(-1.8)
+            Text(install ? tr("ВАШ СЕРВЕР. ВАШИ ПРАВИЛА.") : tr("БЛИЖЕ К КОМАНДЕ.")).font(MSTheme.font(10, weight: .semibold)).tracking(1.8).foregroundStyle(MSTheme.muted)
+            Text(install ? tr("Своё пространство.\nПолный контроль.") : tr("Быть на одной\nволне.")).font(MSTheme.font(43, weight: .semibold, relativeTo: .largeTitle)).tracking(-1.8)
                 .fixedSize(horizontal: false, vertical: true)
-            Text(tr("Встречи, сообщения и идеи — в одном пространстве."))
+            Text(install ? tr("Подключите удалённый сервер, а мы покажем каждый шаг настройки.") : tr("Встречи, сообщения и идеи — в одном пространстве."))
                 .font(MSTheme.font(15)).lineSpacing(5).foregroundStyle(MSTheme.muted)
             WelcomeArtwork().frame(height: 285).padding(.horizontal, -18)
             Spacer(minLength: 25)

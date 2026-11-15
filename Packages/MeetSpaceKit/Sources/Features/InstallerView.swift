@@ -11,21 +11,12 @@ struct InstallerView: View {
     @State private var confirmForget = false
     @Environment(\.scenePhase) private var phase
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.dynamicTypeSize) private var typeSize
     var body: some View {
         GeometryReader { geometry in
+            let wide = geometry.size.width >= 800 && !typeSize.isAccessibilitySize
             HStack(spacing: 0) {
-                if geometry.size.width >= 800 {
-                    VStack(alignment: .leading, spacing: 24) {
-                        HStack { BrandMark().frame(width: 36, height: 38); Text("MeetSpace").font(MSTheme.font(22, weight: .semibold)) }
-                        Spacer()
-                        Text("ВАШЕ ПРОСТРАНСТВО").font(MSTheme.font(11, weight: .semibold)).tracking(2).foregroundStyle(MSTheme.accent)
-                        Text("Своя команда.\nСвой сервер.").font(MSTheme.font(42, weight: .semibold, relativeTo: .largeTitle))
-                        Text("Встречи и общение на вашей инфраструктуре.").foregroundStyle(MSTheme.muted)
-                        Image(systemName: "server.rack").font(.system(size: 86)).foregroundStyle(MSTheme.accent).frame(maxWidth: .infinity).padding(40)
-                        Spacer()
-                        Label("Ваше пространство. Ваши правила.", systemImage: "lock.shield")
-                    }.padding(44).frame(maxWidth: .infinity).background(MSTheme.accentSoft)
-                }
+                if wide { OnboardingAside(install: true).frame(maxWidth: .infinity, maxHeight: .infinity) }
                 ScrollView {
                     VStack(alignment: .leading, spacing: 22) {
                         HStack { BrandMark().frame(width: 28, height: 30); Text("MeetSpace").font(MSTheme.font(21, weight: .semibold)); Spacer()
@@ -38,7 +29,7 @@ struct InstallerView: View {
                             HStack { ProgressView(); Text("Проверяем сервер…") }.frame(maxWidth: .infinity).padding()
                             Button("Отменить проверку") { model.cancelLocalOperation() }.buttonStyle(MSButtonStyle(primary: false))
                         } else { content }
-                    }.padding(geometry.size.width >= 800 ? 40 : 24).frame(maxWidth: 560).frame(maxWidth: .infinity)
+                    }.padding(wide ? 40 : 24).frame(maxWidth: 560).frame(maxWidth: .infinity)
                 }.id(model.step).scrollDismissesKeyboard(.interactively).accessibilityIdentifier("installer.scroll")
                     .frame(maxWidth: .infinity).background(MSTheme.surface)
             }

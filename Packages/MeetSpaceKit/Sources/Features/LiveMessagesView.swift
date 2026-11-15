@@ -133,6 +133,9 @@ struct LiveThreadView: View {
     @State private var deleting: ChatMessage?
     @State private var localDelete = false
     @State private var forwardingMessage: ChatMessage?
+    #if canImport(UIKit)
+    @State private var sharing: MessageShareRequest?
+    #endif
     private var selectedShareText: String { model.selectedMessages.map { "\($0.senderName):\n\($0.shareText)" }.joined(separator: "\n\n") }
     @Environment(\.dynamicTypeSize) private var typeSize
     private var threadHeader: some View {
@@ -240,6 +243,13 @@ struct LiveThreadView: View {
             .sheet(isPresented: $groupDetails) { GroupDetailsView(model: model, id: id) }
             .sheet(item: $forwardingMessage) { MessageForwardView(model: model, messages: [$0]) }
             .sheet(isPresented: $localDelete) { localDeleteSheet }
+            #if canImport(UIKit)
+            .sheet(item: $sharing) { request in
+                MessageActivitySheet(request: request) { sharing = nil }
+                    .presentationDetents([.medium, .large])
+                    .presentationDragIndicator(.visible)
+            }
+            #endif
             .onChange(of: model.selectedMessages.count) { _, count in if count == 0 { localDelete = false } }
             .confirmationDialog(tr("Удалить сообщение?"), isPresented: Binding(get: { deleting != nil }, set: { if !$0 { deleting = nil } })) {
                 Button(tr("Удалить для всех"), role: .destructive) {
@@ -269,8 +279,15 @@ struct LiveThreadView: View {
         }.frame(maxWidth: .infinity).padding(12).background(MSTheme.surface)
     }
     private var selectedShare: some View {
-        ShareLink(item: selectedShareText) { Label(tr("Поделиться"), systemImage: "square.and.arrow.up").frame(minHeight: 44) }
-            .disabled(model.selectedMessages.isEmpty || model.hidingMessages).accessibilityIdentifier("message.shareSelected")
+        Group {
+            #if canImport(UIKit)
+            Button { sharing = MessageShareRequest(payload: .text(selectedShareText)) } label: {
+                Label(tr("Поделиться"), systemImage: "square.and.arrow.up").frame(minHeight: 44)
+            }
+            #else
+            ShareLink(item: selectedShareText) { Label(tr("Поделиться"), systemImage: "square.and.arrow.up").frame(minHeight: 44) }
+            #endif
+        }.disabled(model.selectedMessages.isEmpty || model.hidingMessages).accessibilityIdentifier("message.shareSelected")
     }
     private var selectedDelete: some View {
         Button(role: .destructive) { model.error = nil; localDelete = true } label: {
@@ -368,7 +385,13 @@ struct LiveThreadView: View {
             .frame(maxWidth: .infinity, alignment: own ? .trailing : .leading)
             .contextMenu {
                 if message.isActionable && !model.selectingMessages {
+                    #if canImport(UIKit)
+                    Button { sharing = MessageShareRequest(payload: .text(message.shareText)) } label: {
+                        Label(tr("Поделиться"), systemImage: "square.and.arrow.up")
+                    }
+                    #else
                     ShareLink(item: message.shareText) { Label(tr("Поделиться"), systemImage: "square.and.arrow.up") }
+                    #endif
                     Button(tr("Копировать"), systemImage: "doc.on.doc") {
                         #if canImport(UIKit)
                         UIPasteboard.general.string = message.shareText
@@ -401,7 +424,13 @@ struct LiveThreadView: View {
             }
             if let state = model.downloads[attachment.id] {
                 if let url = state.url {
+                    #if canImport(UIKit)
+                    Button { sharing = MessageShareRequest(payload: .file(url)) } label: {
+                        Label(tr("Сохранить или поделиться"), systemImage: "square.and.arrow.up")
+                    }.font(MSTheme.font(12))
+                    #else
                     ShareLink(item: url) { Label(tr("Сохранить или поделиться"), systemImage: "square.and.arrow.up") }.font(MSTheme.font(12))
+                    #endif
                 } else if let error = state.error {
                     Text(tr(error)).font(MSTheme.font(11)).foregroundStyle(MSTheme.danger)
                     Button(tr("Повторить")) { model.download(attachment) }
@@ -413,3 +442,30 @@ struct LiveThreadView: View {
         }
     }
 }
+
+#if canImport(UIKit)
+/// Snapshot the requested content so selection changes cannot alter an open activity sheet.
+private struct MessageShareRequest: Identifiable {
+    enum Payload { case text(String), file(URL) }
+    let id = UUID()
+    let payload: Payload
+    var activityItems: [Any] {
+        switch payload { case .text(let text): [text]; case .file(let url): [url] }
+    }
+}
+
+/// Present from the thread's sheet, avoiding a popover constrained below its bottom toolbar.
+private struct MessageActivitySheet: UIViewControllerRepresentable {
+    let request: MessageShareRequest
+    let didFinish: @MainActor () -> Void
+    func makeUIViewController(context: Context) -> UIActivityViewController {
+        let controller = UIActivityViewController(activityItems: request.activityItems, applicationActivities: nil)
+        let completion = didFinish
+        controller.completionWithItemsHandler = { _, _, _, _ in
+            Task { @MainActor in completion() }
+        }
+        return controller
+    }
+    func updateUIViewController(_ controller: UIActivityViewController, context: Context) {}
+}
+#endif
