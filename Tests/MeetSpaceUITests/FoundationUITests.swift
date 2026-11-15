@@ -144,12 +144,9 @@ import UIKit
 
     func testBetaChatSelectionAndShare() {
         let app = launch(); login(app)
-        let chat = app.buttons["conversation.22222222-2222-4222-8222-222222222222"]
-        XCTAssertTrue(chat.waitForExistence(timeout: 10)); chat.tap()
         let composer = app.textFields["messageComposer"]
-        XCTAssertTrue(composer.waitForExistence(timeout: 10))
         for text in ["Первое сообщение beta", "Второе сообщение beta"] {
-            composer.tap(); composer.typeText(text)
+            typeMessage(text, into: composer, in: app)
             app.buttons["sendMessage"].tap()
             XCTAssertTrue(app.staticTexts[text].waitForExistence(timeout: 5))
         }
@@ -163,16 +160,21 @@ import UIKit
         let activity = app.otherElements["ActivityListView"].firstMatch
         XCTAssertTrue(activity.waitForExistence(timeout: 10))
         let copy = activity.descendants(matching: .any).matching(NSPredicate(format: "label IN %@", ["Copy", "Скопировать", "Копировать"])).firstMatch
-        XCTAssertTrue(copy.waitForExistence(timeout: 10))
+        // The iPhone 18 failure contains only ShareSheet.RemoteContainerView:
+        // wait for the remote process to load its actual actions before scrolling.
+        let actions = activity.collectionViews["activityCollectionView"].firstMatch
+        let actionsDeadline = Date().addingTimeInterval(30)
+        while Date() < actionsDeadline, !(copy.exists && copy.isHittable), !(actions.exists && actions.isHittable) {
+            Thread.sleep(forTimeInterval: 0.2)
+        }
         for _ in 0..<10 {
-            if copy.isHittable { break }
-            // iOS 18 exposes Copy before it is visible. Scroll the observed native
-            // activity collection; the chat's own history must never receive this gesture.
-            let actions = activity.collectionViews["activityCollectionView"].firstMatch
-            XCTAssertTrue(actions.exists, "The system share sheet must expose its activity collection")
+            if copy.exists && copy.isHittable { break }
+            // Offscreen actions may be absent from AX until scrolled into view.
+            // Keep this gesture inside the actual share sheet, away from chat history.
+            XCTAssertTrue(actions.exists && actions.isHittable, "The system share sheet must load a scrollable activity collection")
             actions.swipeUp()
         }
-        XCTAssertTrue(copy.isHittable, "Copy must be visible and tappable in the native share sheet")
+        XCTAssertTrue(copy.exists && copy.isHittable, "Copy must be visible and tappable in the native share sheet")
         capture(app, name: "beta-chat-system-share")
         copy.tap()
         let shareDismissed = XCTNSPredicateExpectation(predicate: NSPredicate(format: "exists == false"), object: activity)
@@ -976,10 +978,8 @@ import UIKit
         XCTAssertTrue(chat.waitForExistence(timeout: 10))
         XCTAssertFalse(app.staticTexts["demoBanner"].exists)
         capture(app, name: "stage03-live-chats")
-        chat.tap()
         let composer = app.textFields["messageComposer"]
-        XCTAssertTrue(composer.waitForExistence(timeout: 10))
-        composer.tap(); composer.typeText("Проверка сообщения")
+        typeMessage("Проверка сообщения", into: composer, in: app)
         app.buttons["sendMessage"].tap()
         XCTAssertTrue(app.staticTexts["Проверка сообщения"].waitForExistence(timeout: 5))
         capture(app, name: "stage03-live-thread")
@@ -991,6 +991,57 @@ import UIKit
         XCTAssertTrue(logout.waitForExistence(timeout: 5)); logout.tap()
         XCTAssertTrue(app.secureTextFields["Пароль"].waitForExistence(timeout: 5))
         XCTAssertFalse(app.buttons["tab.messages"].exists)
+    }
+
+    private func openFixtureChatForTyping(in app: XCUIApplication) -> XCUIElement {
+        let chat = app.buttons["conversation.22222222-2222-4222-8222-222222222222"]
+        let composer = app.textFields["messageComposer"]
+        let keyboard = app.keyboards.firstMatch
+        let deadline = Date().addingTimeInterval(30)
+        var tappedRow = false, tappedComposer = false
+        while Date() < deadline {
+            // The cold Passwords process can appear after login has returned:
+            // iPhone 18 intercepts the row tap, iPhone 26 intercepts composer focus.
+            // Retry a tap only after declining that exact observed system prompt.
+            if let decline = passwordDismissButton(app), decline.isHittable {
+                decline.tap(); tappedRow = false; tappedComposer = false
+                Thread.sleep(forTimeInterval: 0.5)
+                continue
+            }
+            if composer.exists && composer.isHittable {
+                if tappedComposer && keyboard.exists { return composer }
+                if !tappedComposer {
+                    composer.tap(); tappedComposer = true
+                    continue
+                }
+            } else if !tappedRow && chat.exists && chat.isHittable {
+                chat.tap(); tappedRow = true
+                continue
+            }
+            if dismissInaccessiblePasswordPrompt(app) {
+                tappedRow = false; tappedComposer = false
+                Thread.sleep(forTimeInterval: 0.5)
+                continue
+            }
+            Thread.sleep(forTimeInterval: 0.2)
+        }
+        capture(app, name: "chat-navigation-or-focus-blocked")
+        let hierarchy = XCTAttachment(string: app.debugDescription)
+        hierarchy.name = "chat-navigation-or-focus-hierarchy"
+        hierarchy.lifetime = .keepAlways; add(hierarchy)
+        XCTFail("The fixture conversation must open and its composer must show the keyboard")
+        return composer
+    }
+
+    private func typeMessage(_ text: String, into composer: XCUIElement, in app: XCUIApplication) {
+        // Sending may dismiss the keyboard; focus the real field for each message.
+        _ = openFixtureChatForTyping(in: app)
+        XCTAssertTrue(composer.isHittable)
+        XCTAssertTrue(app.keyboards.firstMatch.waitForExistence(timeout: 5), "The composer must have opened the keyboard before typing")
+        composer.typeText(text)
+        let entered = XCTNSPredicateExpectation(predicate: NSPredicate(format: "value == %@", text), object: composer)
+        XCTAssertEqual(XCTWaiter.wait(for: [entered], timeout: 5), .completed,
+                       "The composer must contain the complete message before sending")
     }
 
     func testCreateGroupWithSelectedMember() {
