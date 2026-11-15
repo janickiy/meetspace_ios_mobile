@@ -206,8 +206,31 @@ struct InstallerView: View {
         VStack(alignment: .leading, spacing: 8) { Text(label).font(MSTheme.font(12, weight: .semibold)); SecureField(label, text: binding).textFieldStyle(.plain).padding(14).background(MSTheme.background, in: RoundedRectangle(cornerRadius: 12)).accessibilityIdentifier(id) }
     }
     private var phaseNames: [String] { ["Docker, Compose и Buildx", "Проверка исходников", "Подготовка образов", "Конфигурация и секреты", "База, очередь и хранилище", "Резервная копия", "Миграции БД", "HTTPS и сертификат", "Запуск MeetSpace", "Проверка готовности"] }
-    private var diagnostics: [(String,String)] {
-        let f = model.facts
-        return [("Операционная система", "\(f["distro"] ?? "unknown") \(f["distro_version"] ?? "")"), ("Архитектура", f["arch"] ?? "unknown"), ("Процессор", f["cpu"] ?? "unknown"), ("Оперативная память, КиБ", f["ram_kib"] ?? "unknown"), ("Свободный диск, КиБ", f["disk_kib"] ?? "unknown"), ("Права пользователя", f["sudo"] ?? "unknown"), ("Docker", f["docker"] ?? "unknown"), ("Доступ к Docker daemon", f["docker_access"] ?? "unknown"), ("Docker Compose", f["compose"] ?? "unknown"), ("Существующая установка", f["existing_paths"] ?? "unknown")] + [80,443,3478,5349,50010].map { ("TCP \($0)", f["ports_known"] == "yes" ? (f["tcp_\($0)"] ?? "unknown") : "unknown") } + [3478,50010].map { ("UDP \($0)", f["ports_known"] == "yes" ? (f["udp_\($0)"] ?? "unknown") : "unknown") } + [("UDP 49160–49259", f["ports_known"] == "yes" ? "Занятых портов: \(f["udp_relay_busy"] ?? "unknown")" : "unknown"), ("DNS", f["dns_domain"] ?? "unknown"), ("TLS", "Будет проверен при установке HTTPS"), ("Firewall", f["firewall"] ?? "unknown")]
+    private var diagnostics: [(String, String)] {
+        let facts = model.facts
+        let system = "\(facts["distro"] ?? "unknown") \(facts["distro_version"] ?? "")"
+        var rows: [(String, String)] = [("Операционная система", system)]
+        let fields: [(String, String)] = [
+            ("Архитектура", "arch"), ("Процессор", "cpu"), ("Оперативная память, КиБ", "ram_kib"),
+            ("Свободный диск, КиБ", "disk_kib"), ("Права пользователя", "sudo"),
+            ("Docker", "docker"), ("Доступ к Docker daemon", "docker_access"),
+            ("Docker Compose", "compose"), ("Существующая установка", "existing_paths")
+        ]
+        for (title, key) in fields { rows.append((title, facts[key] ?? "unknown")) }
+        let portsKnown = facts["ports_known"] == "yes"
+        for port in [80, 443, 3478, 5349, 50010] {
+            let value = portsKnown ? facts["tcp_\(port)"] ?? "unknown" : "unknown"
+            rows.append(("TCP \(port)", value))
+        }
+        for port in [3478, 50010] {
+            let value = portsKnown ? facts["udp_\(port)"] ?? "unknown" : "unknown"
+            rows.append(("UDP \(port)", value))
+        }
+        let relay = portsKnown ? "Занятых портов: \(facts["udp_relay_busy"] ?? "unknown")" : "unknown"
+        rows.append(("UDP 49160–49259", relay))
+        rows.append(("DNS", facts["dns_domain"] ?? "unknown"))
+        rows.append(("TLS", "Будет проверен при установке HTTPS"))
+        rows.append(("Firewall", facts["firewall"] ?? "unknown"))
+        return rows
     }
 }
