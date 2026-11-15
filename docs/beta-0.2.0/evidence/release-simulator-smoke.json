@@ -1,0 +1,205 @@
+{
+  "schema": 1,
+  "status": "PASS",
+  "app": "/Users/runner/work/meetspace_ios_mobile/meetspace_ios_mobile/artifacts/BetaSimulator/Build/Products/Release-iphonesimulator/MeetSpace.app",
+  "bundleID": "com.meetspace.ios",
+  "startedAt": "2026-11-15T14:34:57.873345+00:00",
+  "commands": [
+    {
+      "step": "inventory",
+      "argv": [
+        "xcrun",
+        "simctl",
+        "list",
+        "devices",
+        "available",
+        "--json"
+      ],
+      "timeoutSeconds": 30,
+      "exitCode": 0,
+      "stdout": "83E57455C\\/data\",\n        \"dataPathSize\" : 18337792,\n        \"logPath\" : \"\\/Users\\/runner\\/Library\\/Logs\\/CoreSimulator\\/309F4F0C-F632-4F5C-BB25-BD783E57455C\",\n        \"udid\" : \"309F4F0C-F632-4F5C-BB25-BD783E57455C\",\n        \"isAvailable\" : true,\n        \"deviceTypeIdentifier\" : \"com.apple.CoreSimulator.SimDeviceType.iPhone-16\",\n        \"state\" : \"Shutdown\",\n        \"name\" : \"iPhone 16\"\n      },\n      {\n        \"dataPath\" : \"\\/Users\\/runner\\/Library\\/Developer\\/CoreSimulator\\/Devices\\/C20E3165-9F7B-4F04-88BB-CACE712B88AB\\/data\",\n        \"dataPathSize\" : 18337792,\n        \"logPath\" : \"\\/Users\\/runner\\/Library\\/Logs\\/CoreSimulator\\/C20E3165-9F7B-4F04-88BB-CACE712B88AB\",\n        \"udid\" : \"C20E3165-9F7B-4F04-88BB-CACE712B88AB\",\n        \"isAvailable\" : true,\n        \"deviceTypeIdentifier\" : \"com.apple.CoreSimulator.SimDeviceType.iPhone-16-Plus\",\n        \"state\" : \"Shutdown\",\n        \"name\" : \"iPhone 16 Plus\"\n      },\n      {\n        \"dataPath\" : \"\\/Users\\/runner\\/Library\\/Developer\\/CoreSimulator\\/Devices\\/A1285399-F2F4-46E9-8CF2-4AA227FF7EF3\\/data\",\n        \"dataPathSize\" : 18337792,\n        \"logPath\" : \"\\/Users\\/runner\\/Library\\/Logs\\/CoreSimulator\\/A1285399-F2F4-46E9-8CF2-4AA227FF7EF3\",\n        \"udid\" : \"A1285399-F2F4-46E9-8CF2-4AA227FF7EF3\",\n        \"isAvailable\" : true,\n        \"deviceTypeIdentifier\" : \"com.apple.CoreSimulator.SimDeviceType.iPhone-SE-3rd-generation\",\n        \"state\" : \"Shutdown\",\n        \"name\" : \"iPhone SE (3rd generation)\"\n      },\n      {\n        \"dataPath\" : \"\\/Users\\/runner\\/Library\\/Developer\\/CoreSimulator\\/Devices\\/73C19119-B10E-4309-872E-C53EF3F0EF27\\/data\",\n        \"dataPathSize\" : 18337792,\n        \"logPath\" : \"\\/Users\\/runner\\/Library\\/Logs\\/CoreSimulator\\/73C19119-B10E-4309-872E-C53EF3F0EF27\",\n        \"udid\" : \"73C19119-B10E-4309-872E-C53EF3F0EF27\",\n        \"isAvailable\" : true,\n        \"deviceTypeIdentifier\" : \"com.apple.CoreSimulator.SimDeviceType.iPad-Pro-13-inch-M5-12GB\",\n        \"state\" : \"Shutdown\",\n        \"name\" : \"iPad Pro 13-inch (M5)\"\n      },\n      {\n        \"dataPath\" : \"\\/Users\\/runner\\/Library\\/Developer\\/CoreSimulator\\/Devices\\/F67B0B21-7494-4851-8FEA-F5FECE154B6D\\/data\",\n        \"dataPathSize\" : 18337792,\n        \"logPath\" : \"\\/Users\\/runner\\/Library\\/Logs\\/CoreSimulator\\/F67B0B21-7494-4851-8FEA-F5FECE154B6D\",\n        \"udid\" : \"F67B0B21-7494-4851-8FEA-F5FECE154B6D\",\n        \"isAvailable\" : true,\n        \"deviceTypeIdentifier\" : \"com.apple.CoreSimulator.SimDeviceType.iPad-Pro-11-inch-M5-12GB\",\n        \"state\" : \"Shutdown\",\n        \"name\" : \"iPad Pro 11-inch (M5)\"\n      },\n      {\n        \"dataPath\" : \"\\/Users\\/runner\\/Library\\/Developer\\/CoreSimulator\\/Devices\\/02E8A1AA-FFE7-472E-82B1-99CEDB718216\\/data\",\n        \"dataPathSize\" : 18337792,\n        \"logPath\" : \"\\/Users\\/runner\\/Library\\/Logs\\/CoreSimulator\\/02E8A1AA-FFE7-472E-82B1-99CEDB718216\",\n        \"udid\" : \"02E8A1AA-FFE7-472E-82B1-99CEDB718216\",\n        \"isAvailable\" : true,\n        \"deviceTypeIdentifier\" : \"com.apple.CoreSimulator.SimDeviceType.iPad-Pro-11-inch-M4-8GB\",\n        \"state\" : \"Shutdown\",\n        \"name\" : \"iPad Pro 11-inch (M4)\"\n      },\n      {\n        \"dataPath\" : \"\\/Users\\/runner\\/Library\\/Developer\\/CoreSimulator\\/Devices\\/04A9C222-F4D9-4FD4-98BE-4054EEE6F66B\\/data\",\n        \"dataPathSize\" : 18337792,\n        \"logPath\" : \"\\/Users\\/runner\\/Library\\/Logs\\/CoreSimulator\\/04A9C222-F4D9-4FD4-98BE-4054EEE6F66B\",\n        \"udid\" : \"04A9C222-F4D9-4FD4-98BE-4054EEE6F66B\",\n        \"isAvailable\" : true,\n        \"deviceTypeIdentifier\" : \"com.apple.CoreSimulator.SimDeviceType.iPad-Pro-13-inch-M4-8GB\",\n        \"state\" : \"Shutdown\",\n        \"name\" : \"iPad Pro 13-inch (M4)\"\n      },\n      {\n        \"dataPath\" : \"\\/Users\\/runner\\/Library\\/Developer\\/CoreSimulator\\/Devices\\/B8FDD452-636F-4559-AF6E-83AC73F482CF\\/data\",\n        \"dataPathSize\" : 18337792,\n        \"logPath\" : \"\\/Users\\/runner\\/Library\\/Logs\\/CoreSimulator\\/B8FDD452-636F-4559-AF6E-83AC73F482CF\",\n        \"udid\" : \"B8FDD452-636F-4559-AF6E-83AC73F482CF\",\n        \"isAvailable\" : true,\n        \"deviceTypeIdentifier\" : \"com.apple.CoreSimulator.SimDeviceType.iPad-mini-A17-Pro\",\n        \"state\" : \"Shutdown\",\n        \"name\" : \"iPad mini (A17 Pro)\"\n      },\n      {\n        \"dataPath\" : \"\\/Users\\/runner\\/Library\\/Developer\\/CoreSimulator\\/Devices\\/99B14484-E343-4170-AA2E-F738DF7FB3F2\\/data\",\n        \"dataPathSize\" : 18337792,\n        \"logPath\" : \"\\/Users\\/runner\\/Library\\/Logs\\/CoreSimulator\\/99B14484-E343-4170-AA2E-F738DF7FB3F2\",\n        \"udid\" : \"99B14484-E343-4170-AA2E-F738DF7FB3F2\",\n        \"isAvailable\" : true,\n        \"deviceTypeIdentifier\" : \"com.apple.CoreSimulator.SimDeviceType.iPad-A16\",\n        \"state\" : \"Shutdown\",\n        \"name\" : \"iPad (A16)\"\n      },\n      {\n        \"dataPath\" : \"\\/Users\\/runner\\/Library\\/Developer\\/CoreSimulator\\/Devices\\/697390A7-516F-4E42-BC81-BAE7B3D9899F\\/data\",\n        \"dataPathSize\" : 18337792,\n        \"logPath\" : \"\\/Users\\/runner\\/Library\\/Logs\\/CoreSimulator\\/697390A7-516F-4E42-BC81-BAE7B3D9899F\",\n        \"udid\" : \"697390A7-516F-4E42-BC81-BAE7B3D9899F\",\n        \"isAvailable\" : true,\n        \"deviceTypeIdentifier\" : \"com.apple.CoreSimulator.SimDeviceType.iPad-Air-13-inch-M3\",\n        \"state\" : \"Shutdown\",\n        \"name\" : \"iPad Air 13-inch (M3)\"\n      },\n      {\n        \"dataPath\" : \"\\/Users\\/runner\\/Library\\/Developer\\/CoreSimulator\\/Devices\\/46B2C201-34BD-490F-B6CA-09A9D44428F6\\/data\",\n        \"dataPathSize\" : 18337792,\n        \"logPath\" : \"\\/Users\\/runner\\/Library\\/Logs\\/CoreSimulator\\/46B2C201-34BD-490F-B6CA-09A9D44428F6\",\n        \"udid\" : \"46B2C201-34BD-490F-B6CA-09A9D44428F6\",\n        \"isAvailable\" : true,\n        \"deviceTypeIdentifier\" : \"com.apple.CoreSimulator.SimDeviceType.iPad-Air-11-inch-M3\",\n        \"state\" : \"Shutdown\",\n        \"name\" : \"iPad Air 11-inch (M3)\"\n      },\n      {\n        \"dataPath\" : \"\\/Users\\/runner\\/Library\\/Developer\\/CoreSimulator\\/Devices\\/600769A2-106D-47FC-BC82-226EB3CB9A19\\/data\",\n        \"dataPathSize\" : 18337792,\n        \"logPath\" : \"\\/Users\\/runner\\/Library\\/Logs\\/CoreSimulator\\/600769A2-106D-47FC-BC82-226EB3CB9A19\",\n        \"udid\" : \"600769A2-106D-47FC-BC82-226EB3CB9A19\",\n        \"isAvailable\" : true,\n        \"deviceTypeIdentifier\" : \"com.apple.CoreSimulator.SimDeviceType.iPad-Air-11-inch-M2\",\n        \"state\" : \"Shutdown\",\n        \"name\" : \"iPad Air 11-inch (M2)\"\n      },\n      {\n        \"dataPath\" : \"\\/Users\\/runner\\/Library\\/Developer\\/CoreSimulator\\/Devices\\/EC963428-282D-4710-92F4-AF92774819A7\\/data\",\n        \"dataPathSize\" : 18337792,\n        \"logPath\" : \"\\/Users\\/runner\\/Library\\/Logs\\/CoreSimulator\\/EC963428-282D-4710-92F4-AF92774819A7\",\n        \"udid\" : \"EC963428-282D-4710-92F4-AF92774819A7\",\n        \"isAvailable\" : true,\n        \"deviceTypeIdentifier\" : \"com.apple.CoreSimulator.SimDeviceType.iPad-Air-13-inch-M2\",\n        \"state\" : \"Shutdown\",\n        \"name\" : \"iPad Air 13-inch (M2)\"\n      },\n      {\n        \"dataPath\" : \"\\/Users\\/runner\\/Library\\/Developer\\/CoreSimulator\\/Devices\\/06716521-45A3-4B83-9675-8E50641017F6\\/data\",\n        \"dataPathSize\" : 18337792,\n        \"logPath\" : \"\\/Users\\/runner\\/Library\\/Logs\\/CoreSimulator\\/06716521-45A3-4B83-9675-8E50641017F6\",\n        \"udid\" : \"06716521-45A3-4B83-9675-8E50641017F6\",\n        \"isAvailable\" : true,\n        \"deviceTypeIdentifier\" : \"com.apple.CoreSimulator.SimDeviceType.iPad-10th-generation\",\n        \"state\" : \"Shutdown\",\n        \"name\" : \"iPad (10th generation)\"\n      }\n    ],\n    \"com.apple.CoreSimulator.SimRuntime.xrOS-26-2\" : [\n      {\n        \"dataPath\" : \"\\/Users\\/runner\\/Library\\/Developer\\/CoreSimulator\\/Devices\\/644B81BA-B8E0-472D-A49B-84FF1C95498B\\/data\",\n        \"dataPathSize\" : 4096,\n        \"logPath\" : \"\\/Users\\/runner\\/Library\\/Logs\\/CoreSimulator\\/644B81BA-B8E0-472D-A49B-84FF1C95498B\",\n        \"udid\" : \"644B81BA-B8E0-472D-A49B-84FF1C95498B\",\n        \"isAvailable\" : true,\n        \"deviceTypeIdentifier\" : \"com.apple.CoreSimulator.SimDeviceType.Apple-Vision-Pro-4K\",\n        \"state\" : \"Shutdown\",\n        \"name\" : \"Apple Vision Pro\"\n      }\n    ]\n  }\n}\n",
+      "stderr": "",
+      "elapsedSeconds": 1.723
+    },
+    {
+      "step": "boot",
+      "argv": [
+        "xcrun",
+        "simctl",
+        "boot",
+        "C3630581-519B-49DA-9400-67A78DCD42C8"
+      ],
+      "timeoutSeconds": 30,
+      "exitCode": 0,
+      "stdout": "",
+      "stderr": "",
+      "elapsedSeconds": 2.282
+    },
+    {
+      "step": "boot-status",
+      "argv": [
+        "xcrun",
+        "simctl",
+        "bootstatus",
+        "C3630581-519B-49DA-9400-67A78DCD42C8",
+        "-b"
+      ],
+      "timeoutSeconds": 300,
+      "exitCode": 0,
+      "stdout": "n Elapsed:00:02 seconds\n\n[2026-11-15 14:35:14 +0000] Status=2, isTerminal=NO, Elapsed=00:13.\n\tWaiting on Data Migration\n\t\tReason:Running plugin com.apple.-0LaunchServicesMigrator (00LaunchServicesMigrator.migrator, user-agnostic)\n\t\tMigration Elapsed:00:03 seconds\n\n[2026-11-15 14:35:15 +0000] Status=2, isTerminal=NO, Elapsed=00:14.\n\tWaiting on Data Migration\n\t\tReason:Running plugin com.apple.-0LaunchServicesMigrator (00LaunchServicesMigrator.migrator, user-agnostic)\n\t\tMigration Elapsed:00:04 seconds\n\n[2026-11-15 14:35:16 +0000] Status=2, isTerminal=NO, Elapsed=00:15.\n\tWaiting on Data Migration\n\t\tReason:Running plugin com.apple.-0LaunchServicesMigrator (00LaunchServicesMigrator.migrator, user-agnostic)\n\t\tMigration Elapsed:00:05 seconds\n\n[2026-11-15 14:35:17 +0000] Status=2, isTerminal=NO, Elapsed=00:16.\n\tWaiting on Data Migration\n\t\tReason:Running plugin com.apple.-0LaunchServicesMigrator (00LaunchServicesMigrator.migrator, user-agnostic)\n\t\tMigration Elapsed:00:06 seconds\n\n[2026-11-15 14:35:17 +0000] Status=2, isTerminal=NO, Elapsed=00:17.\n\tWaiting on Data Migration\n\t\tReason:Running plugin com.apple.-0LaunchServicesMigrator (00LaunchServicesMigrator.migrator, user-agnostic)\n\t\tMigration Elapsed:00:07 seconds\n\n[2026-11-15 14:35:19 +0000] Status=2, isTerminal=NO, Elapsed=00:18.\n\tWaiting on Data Migration\n\t\tReason:Running plugin com.apple.-0LaunchServicesMigrator (00LaunchServicesMigrator.migrator, user-agnostic)\n\t\tMigration Elapsed:00:08 seconds\n\n[2026-11-15 14:35:20 +0000] Status=2, isTerminal=NO, Elapsed=00:19.\n\tWaiting on Data Migration\n\t\tReason:Running plugin com.apple.-0LaunchServicesMigrator (00LaunchServicesMigrator.migrator, user-agnostic)\n\t\tMigration Elapsed:00:09 seconds\n\n[2026-11-15 14:35:21 +0000] Status=2, isTerminal=NO, Elapsed=00:20.\n\tWaiting on Data Migration\n\t\tReason:Running plugin com.apple.-0LaunchServicesMigrator (00LaunchServicesMigrator.migrator, user-agnostic)\n\t\tMigration Elapsed:00:10 seconds\n\n[2026-11-15 14:35:21 +0000] Status=2, isTerminal=NO, Elapsed=00:21.\n\tWaiting on Data Migration\n\t\tReason:Running plugin com.apple.-0LaunchServicesMigrator (00LaunchServicesMigrator.migrator, user-agnostic)\n\t\tMigration Elapsed:00:11 seconds\n\n[2026-11-15 14:35:22 +0000] Status=2, isTerminal=NO, Elapsed=00:22.\n\tWaiting on Data Migration\n\t\tReason:Running plugin com.apple.-0LaunchServicesMigrator (00LaunchServicesMigrator.migrator, user-agnostic)\n\t\tMigration Elapsed:00:12 seconds\n\n[2026-11-15 14:35:23 +0000] Status=2, isTerminal=NO, Elapsed=00:23.\n\tWaiting on Data Migration\n\t\tReason:Running plugin com.apple.-0LaunchServicesMigrator (00LaunchServicesMigrator.migrator, user-agnostic)\n\t\tMigration Elapsed:00:13 seconds\n\n[2026-11-15 14:35:24 +0000] Status=2, isTerminal=NO, Elapsed=00:24.\n\tWaiting on Data Migration\n\t\tReason:Running plugin com.apple.-0LaunchServicesMigrator (00LaunchServicesMigrator.migrator, user-agnostic)\n\t\tMigration Elapsed:00:14 seconds\n\n[2026-11-15 14:35:25 +0000] Status=2, isTerminal=NO, Elapsed=00:25.\n\tWaiting on Data Migration\n\t\tReason:Running plugin com.apple.-0LaunchServicesMigrator (00LaunchServicesMigrator.migrator, user-agnostic)\n\t\tMigration Elapsed:00:15 seconds\n\n[2026-11-15 14:35:27 +0000] Status=2, isTerminal=NO, Elapsed=00:26.\n\tWaiting on Data Migration\n\t\tReason:Running plugin com.apple.-0LaunchServicesMigrator (00LaunchServicesMigrator.migrator, user-agnostic)\n\t\tMigration Elapsed:00:16 seconds\n\n[2026-11-15 14:35:27 +0000] Status=2, isTerminal=NO, Elapsed=00:27.\n\tWaiting on Data Migration\n\t\tReason:Running plugin com.apple.-0LaunchServicesMigrator (00LaunchServicesMigrator.migrator, user-agnostic)\n\t\tMigration Elapsed:00:17 seconds\n\n[2026-11-15 14:35:29 +0000] Status=2, isTerminal=NO, Elapsed=00:28.\n\tWaiting on Data Migration\n\t\tReason:Running plugin com.apple.-0LaunchServicesMigrator (00LaunchServicesMigrator.migrator, user-agnostic)\n\t\tMigration Elapsed:00:18 seconds\n\n[2026-11-15 14:35:30 +0000] Status=2, isTerminal=NO, Elapsed=00:29.\n\tWaiting on Data Migration\n\t\tReason:Running plugin com.apple.-0LaunchServicesMigrator (00LaunchServicesMigrator.migrator, user-agnostic)\n\t\tMigration Elapsed:00:19 seconds\n\n[2026-11-15 14:35:30 +0000] Status=2, isTerminal=NO, Elapsed=00:30.\n\tWaiting on Data Migration\n\t\tReason:Running plugin com.apple.-0LaunchServicesMigrator (00LaunchServicesMigrator.migrator, user-agnostic)\n\t\tMigration Elapsed:00:20 seconds\n\n[2026-11-15 14:35:31 +0000] Status=2, isTerminal=NO, Elapsed=00:31.\n\tWaiting on Data Migration\n\t\tReason:Running plugin com.apple.-0LaunchServicesMigrator (00LaunchServicesMigrator.migrator, user-agnostic)\n\t\tMigration Elapsed:00:21 seconds\n\n[2026-11-15 14:35:32 +0000] Status=2, isTerminal=NO, Elapsed=00:32.\n\tWaiting on Data Migration\n\t\tReason:Running plugin com.apple.-0LaunchServicesMigrator (00LaunchServicesMigrator.migrator, user-agnostic)\n\t\tMigration Elapsed:00:22 seconds\n\n[2026-11-15 14:35:33 +0000] Status=2, isTerminal=NO, Elapsed=00:33.\n\tWaiting on Data Migration\n\t\tReason:Running plugin com.apple.-0LaunchServicesMigrator (00LaunchServicesMigrator.migrator, user-agnostic)\n\t\tMigration Elapsed:00:23 seconds\n\n[2026-11-15 14:35:34 +0000] Status=2, isTerminal=NO, Elapsed=00:34.\n\tWaiting on Data Migration\n\t\tReason:Running plugin com.apple.-0LaunchServicesMigrator (00LaunchServicesMigrator.migrator, user-agnostic)\n\t\tMigration Elapsed:00:24 seconds\n\n[2026-11-15 14:35:35 +0000] Status=2, isTerminal=NO, Elapsed=00:35.\n\tWaiting on Data Migration\n\t\tReason:Running plugin com.apple.-0LaunchServicesMigrator (00LaunchServicesMigrator.migrator, user-agnostic)\n\t\tMigration Elapsed:00:25 seconds\n\n[2026-11-15 14:35:36 +0000] Status=2, isTerminal=NO, Elapsed=00:36.\n\tWaiting on Data Migration\n\t\tReason:Running plugin com.apple.-0LaunchServicesMigrator (00LaunchServicesMigrator.migrator, user-agnostic)\n\t\tMigration Elapsed:00:26 seconds\n\n[2026-11-15 14:35:37 +0000] Status=2, isTerminal=NO, Elapsed=00:37.\n\tWaiting on Data Migration\n\t\tReason:Running plugin com.apple.-0LaunchServicesMigrator (00LaunchServicesMigrator.migrator, user-agnostic)\n\t\tMigration Elapsed:00:27 seconds\n\n[2026-11-15 14:35:40 +0000] Status=2, isTerminal=NO, Elapsed=00:40.\n\tWaiting on Data Migration\n\t\tReason:Running plugin com.apple.managedconfiguration.migrator (MCProfile.migrator, user-agnostic)\n\t\tMigration Elapsed:00:28 seconds\n\n[2026-11-15 14:35:41 +0000] Status=2, isTerminal=NO, Elapsed=00:40.\n\tWaiting on Data Migration\n\t\tReason:Running plugin com.apple.managedconfiguration.migrator (MCProfile.migrator, user-agnostic)\n\t\tMigration Elapsed:00:30 seconds\n\n[2026-11-15 14:35:42 +0000] Status=2, isTerminal=NO, Elapsed=00:41.\n\tWaiting on Data Migration\n\t\tReason:Running plugin com.apple.managedconfiguration.migrator (MCProfile.migrator, user-agnostic)\n\t\tMigration Elapsed:00:31 seconds\n\n[2026-11-15 14:35:43 +0000] Status=2, isTerminal=NO, Elapsed=00:42.\n\tWaiting on Data Migration\n\t\tReason:Running plugin com.apple.managedconfiguration.migrator (MCProfile.migrator, user-agnostic)\n\t\tMigration Elapsed:00:32 seconds\n\n[2026-11-15 14:35:44 +0000] Status=2, isTerminal=NO, Elapsed=00:43.\n\tWaiting on Data Migration\n\t\tReason:Running plugin com.apple.managedconfiguration.migrator (MCProfile.migrator, user-agnostic)\n\t\tMigration Elapsed:00:33 seconds\n\n[2026-11-15 14:35:45 +0000] Status=2, isTerminal=NO, Elapsed=00:44.\n\tWaiting on Data Migration\n\t\tReason:Running plugin com.apple.MobileSafari.migrator (MobileSafari.migrator)\n\t\tMigration Elapsed:00:34 seconds\n\n[2026-11-15 14:35:46 +0000] Status=2, isTerminal=NO, Elapsed=00:45.\n\tWaiting on Data Migration\n\t\tReason:Running plugin com.apple.PreferencesMigrator (PreferencesMigrator.migrator)\n\t\tMigration Elapsed:00:35 seconds\n\n[2026-11-15 14:35:48 +0000] Status=2, isTerminal=NO, Elapsed=00:47.\n\tWaiting on Data Migration\n\t\tReason:Running plugin com.apple.coreaudio.HAENDataMigrator (HAENDataMigrator.migrator)\n\t\tMigration Elapsed:00:36 seconds\n\n[2026-11-15 14:35:48 +0000] Status=4, isTerminal=NO, Elapsed=00:48.\n\tWaiting on System App\n\n[2026-11-15 14:35:52 +0000] Status=4294967295, isTerminal=YES, Elapsed=00:51.\n\tFinished\n\n",
+      "stderr": "",
+      "elapsedSeconds": 51.071
+    },
+    {
+      "step": "existing-app",
+      "argv": [
+        "xcrun",
+        "simctl",
+        "get_app_container",
+        "C3630581-519B-49DA-9400-67A78DCD42C8",
+        "com.meetspace.ios",
+        "app"
+      ],
+      "timeoutSeconds": 90,
+      "exitCode": 2,
+      "stdout": "",
+      "stderr": "An error was encountered processing the command (domain=NSPOSIXErrorDomain, code=2):\nThe operation couldn\u2019t be completed. No such file or directory\nNo such file or directory\n",
+      "elapsedSeconds": 10.838
+    },
+    {
+      "step": "install-release",
+      "argv": [
+        "xcrun",
+        "simctl",
+        "install",
+        "C3630581-519B-49DA-9400-67A78DCD42C8",
+        "/Users/runner/work/meetspace_ios_mobile/meetspace_ios_mobile/artifacts/BetaSimulator/Build/Products/Release-iphonesimulator/MeetSpace.app"
+      ],
+      "timeoutSeconds": 180,
+      "exitCode": 0,
+      "stdout": "",
+      "stderr": "",
+      "elapsedSeconds": 16.565
+    },
+    {
+      "step": "launch-release",
+      "argv": [
+        "xcrun",
+        "simctl",
+        "launch",
+        "C3630581-519B-49DA-9400-67A78DCD42C8",
+        "com.meetspace.ios"
+      ],
+      "timeoutSeconds": 60,
+      "exitCode": 0,
+      "stdout": "com.meetspace.ios: 43658\n",
+      "stderr": "",
+      "elapsedSeconds": 9.515
+    },
+    {
+      "step": "check-running",
+      "argv": [
+        "xcrun",
+        "simctl",
+        "spawn",
+        "C3630581-519B-49DA-9400-67A78DCD42C8",
+        "launchctl",
+        "list"
+      ],
+      "timeoutSeconds": 30,
+      "exitCode": 0,
+      "stdout": "ributiond\n-\t0\tcom.apple.devicemanagementclient.mdmd\n-\t0\tcom.apple.textunderstandingd\n42151\t0\tcom.apple.liveactivitiesd\n42608\t0\tcom.apple.akd\n42776\t0\tcom.apple.mobile.installd\n43988\t0\tcom.apple.xpc.launchd.oneshot.0x10000000.launchctl\n-\t0\tcom.apple.siri-distributed-evaluation\n42363\t0\tcom.apple.assetsd\n-\t0\tcom.apple.VideoSubscriberAccount.PrivacyService\n-\t0\tcom.apple.AXMediaUtilitiesService\n42104\t0\tcom.apple.appprotectiond\n43574\t0\tcom.apple.splashboard\n-\t0\tcom.apple.UIKit.SecureControlService\n-\t0\tcom.apple.GPUTools.MobileService\n42106\t0\tcom.apple.askpermissiond\n42107\t0\tcom.apple.backboardd\n43520\t0\tUIKitApplication:com.apple.family[3773][rb-legacy]\n-\t0\tcom.apple.CameraOverlayAngel\n42150\t0\tcom.apple.lsd\n-\t0\tcom.apple.announced\n-\t0\tcom.apple.webinspectord\n-\t0\tcom.apple.ProximityReaderSceneUI\n42594\t0\tcom.apple.avatarsd\n-\t0\tcom.apple.devicesharingd\n42916\t0\tcom.apple.siri.context.service\n-\t0\tcom.apple.mediaartworkd\n42330\t0\tcom.apple.pluginkit.pkd\n-\t0\tcom.apple.coredatad\n42115\t0\tcom.apple.CoreSimulator.bridge\n-\t0\tcom.apple.logind\n42117\t0\tcom.apple.remindd\n42248\t0\tcom.apple.findmy.findmylocated\n-\t0\tcom.apple.storebookkeeperd\n42264\t0\tcom.apple.searchd\n-\t0\tcom.apple.nanoregistrylaunchd\n-\t0\tcom.apple.webkit.webpushd\n42609\t0\tcom.apple.weatherd\n42222\t0\tcom.apple.tvremoted\n-\t0\tcom.apple.voiced\n-\t0\tcom.apple.GSSCred\n-\t0\tcom.apple.accounts.dom\n-\t0\tcom.apple.mdt\n-\t0\tcom.apple.modelmanagerd\n42283\t0\tcom.apple.appleaccountd\n-\t0\tcom.apple.parsecd\n-\t0\tcom.apple.mlruntimed\n-\t0\tcom.apple.TextInput.kbd\n-\t0\tcom.apple.sensorkitd\n42876\t0\tcom.apple.dmd\n42873\t0\tcom.apple.parsec-fbf\n-\t0\tcom.apple.security.swcagent\n42588\t0\tcom.apple.followupd\n-\t0\tcom.apple.PointerUI.pointeruid\n-\t0\tcom.apple.accessibility.HearingMLHelperService\n42102\t0\tcom.apple.identityservicesd\n42194\t0\tcom.apple.telephonyutilities.callservicesd\n42791\t0\tcom.apple.MobileInstallationHelperService\n-\t0\tcom.apple.generativeexperiencesd\n-\t0\tcom.apple.DesktopServicesHelper\n-\t0\tcom.apple.SecureBackupDaemon\n-\t0\tcom.apple.intelligenceflowd\n42935\t0\tcom.apple.businessservicesd\n-\t0\tcom.apple.and\n-\t0\tcom.apple.siri.acousticsignature\n42207\t0\tcom.apple.WebBookmarks.webbookmarksd\n42110\t0\tcom.apple.locationd\n-\t0\tcom.apple.feedbackd\n42147\t0\tcom.apple.containermanagerd\n-\t0\tcom.apple.rtcreportingd\n-\t0\tcom.apple.avconferenced\n42111\t0\tcom.apple.nanoprefsyncd.2\n-\t0\tcom.apple.imdpersistence.IMDPersistenceAgent\n-\t0\tcom.apple.MobileAsset.ManifestStorageService\n-\t0\tcom.apple.audio.systemsoundserver-simd\n-\t0\tcom.apple.devicemanagementclient.mdmuserd\n-\t0\tcom.apple.fitcore.session\n-\t0\tcom.apple.reversetemplated\n42119\t0\tcom.apple.rapportd\n-\t0\tcom.apple.accessibility.axremoted\n-\t0\tcom.apple.ABDatabaseDoctor\n-\t0\tcom.apple.mlhostd\n-\t0\tcom.apple.VideoSubscriberAccount.DeveloperService\n42092\t0\tcom.apple.accountsd\n42208\t0\tcom.apple.cdpd\n42094\t0\tcom.apple.routined\n-\t0\tcom.apple.managedappdistributiond\n42165\t0\tcom.apple.siriactionsd\n42397\t0\tcom.apple.FileCoordination\n-\t0\tcom.apple.healthappd\n-\t0\tcom.apple.remoteappintentsd\n42159\t0\tcom.apple.pasteboard.pasted\n-\t0\tcom.apple.storagedatad\n43616\t0\tcom.apple.AssetCacheLocatorService\n43564\t0\tcom.apple.videosubscriptionsd\n-\t0\tcom.apple.speechmodeltrainingd\n42100\t0\tcom.apple.familynotification\n-\t0\tcom.apple.protectedcloudstorage.protectedcloudkeysyncing\n42365\t0\tcom.apple.FileProvider\n-\t0\tcom.apple.imcore.imtransferagent\n42101\t0\tcom.apple.mobiletimerd\n-\t0\tcom.apple.ckdiscretionaryd\n-\t0\tcom.apple.fullkeyboardaccess\n-\t0\tcom.apple.AppSSODaemon\n-\t0\tcom.apple.EscrowSecurityAlert\n-\t0\tcom.apple.nanobackupd\n-\t0\tcom.apple.VoiceOverTouch\n42328\t0\tcom.apple.spotlightknowledged\n-\t0\tcom.apple.securityuploadd\n-\t0\tcom.apple.midiserver.sim\n-\t0\tcom.apple.devicemanagementclient.teslad\n-\t0\tcom.apple.companiond\n42244\t0\tcom.apple.siriknowledged\n-\t0\tcom.apple.PassbookUISceneService\n42108\t0\tcom.apple.sharingd\n42204\t0\tcom.apple.trustd\n42979\t0\tUIKitApplication:com.apple.chrono.WidgetRenderer-Default[a8e0][rb-legacy]\n42196\t0\tcom.apple.familycircled\n-\t0\tcom.apple.dt.ViewHierarchyAgent\n-\t0\tcom.apple.RemoteManagementAgent\n-\t0\tcom.apple.cloudsettingssyncagent\n42271\t0\tcom.apple.assistant_cdmd\n-\t0\tcom.apple.ShortcutsUI\n43177\t0\tcom.apple.photoanalysisd\n-\t0\tcom.apple.logd_reporter\n-\t0\tcom.apple.imautomatichistorydeletionagent\n42113\t0\tcom.apple.distnoted.xpc.daemon\n42360\t0\tcom.apple.suggestd\n42116\t0\tcom.apple.navd\n42201\t0\tcom.apple.purplebuddy.budd\n42118\t0\tcom.apple.revisiond\n-\t0\tcom.apple.appleidsetupd\n42120\t0\tcom.apple.amsaccountsd\n43571\t0\tcom.apple.Maps.mapssyncd\n42143\t0\tcom.apple.cfprefsd.xpc.daemon\n-\t0\tcom.apple.applicensedeliveryd\n-\t0\tcom.apple.gputoolsserviced\n42198\t0\tcom.apple.usernotificationsd\n43570\t0\tcom.apple.FamilyControlsAgent\n-\t0\tcom.apple.relatived\n42088\t0\tcom.apple.assistantd\n42273\t0\tcom.apple.siriinferenced\n-\t0\tcom.apple.corespotlightservice\n-\t0\tcom.apple.MemojiImageRenderService\n42295\t0\tcom.apple.financed\n-\t0\tcom.apple.previewsd\n-\t0\tcom.apple.mediaanalysisd\n-\t0\tcom.apple.assessmentagent\n-\t0\tcom.apple.CarPlayApp\n-\t0\tcom.apple.dt.automationmode-writer\n-\t0\tcom.apple.testmanagerd\n-\t0\tcom.apple.dt.AutomationModeUI\n-\t0\tcom.apple.keychainsharingmessagingd\n-\t0\tcom.apple.CallKit.CallDirectory\n42331\t0\tcom.apple.biomesyncd\n-\t0\tcom.apple.iokitsimd\n-\t0\tcom.apple.BundleComplicationMigrationService\n42607\t0\tcom.apple.UsageTrackingAgent\n42220\t0\tcom.apple.email.maild\n-\t0\tcom.apple.remotemanagementd\n42157\t0\tcom.apple.donotdisturbd\n-\t0\tcom.apple.livetranscriptionui\n-\t0\tcom.apple.Maps.mapspushd\n43567\t0\tcom.apple.coreidvd\n42962\t0\tcom.apple.gamed\n42329\t0\tcom.apple.medialibraryd\n-\t0\tcom.apple.intelligencecontextd\n-\t0\tcom.apple.devicemanagementclient.managedappsd\n-\t0\tcom.apple.usbsmartcardreaderd\n-\t0\tcom.apple.gamecontroller.ConfigService\n42169\t0\tcom.apple.AccessibilityUIServer\n42206\t0\tcom.apple.icloudmailagent\n-\t0\tcom.apple.GameOverlayUI\n-\t0\tcom.apple.sharing.airdropui\n42114\t0\tcom.apple.passd\n-\t0\tcom.apple.sosd\n-\t0\tcom.apple.accessibility.axAuditDaemon.deviceservice\n-\t0\tcom.apple.migrationpluginwrapper\n42602\t0\tcom.apple.nanotimekitcompaniond\n42880\t0\tcom.apple.sociallayerd\n42874\t0\tcom.apple.deviceaccessd\n42121\t0\tcom.apple.configd_sim\n-\t0\tcom.apple.printbandservice\n-\t0\tcom.apple.accessibility.mediaaccessibilityd\n42188\t0\tcom.apple.syncdefaultsd\n42164\t0\tcom.apple.chronod\n-\t0\tcom.apple.accessibility.heard\n42267\t0\tcom.apple.corespeechd\n43502\t0\tcom.apple.geoanalyticsd\n42218\t0\tcom.apple.itunescloudd\n-\t0\tcom.apple.scrod\n-\t0\tcom.apple.UIKit.OverlayUI\n42221\t0\tcom.apple.fitcore\n-\t0\tcom.apple.AuthenticationServicesCore.AuthenticationServicesAgent\n-\t0\tcom.apple.bookdatastored\n-\t0\tcom.apple.sharinguiservice\n-\t0\tcom.apple.appstorecomponentsd\n42203\t0\tcom.apple.mobileassetd\n-\t0\tcom.apple.datamigratorhelper\n-\t0\tcom.apple.privacyaccountingd\n42888\t0\tcom.apple.amsengagementd\n-\t0\tcom.apple.proactiveeventtrackerd\n42268\t0\tcom.apple.linkd\n42928\t0\tcom.apple.managedconfiguration.profiled\n-\t0\tcom.apple.ClockAngel\n-\t0\tcom.apple.idsfoundation.IDSRemoteURLConnectionAgent\n-\t0\tcom.apple.safarifetcherd\n-\t0\tcom.apple.recentsd\n-\t0\tcom.apple.spotlightknowledged.updater\n42269\t0\tcom.apple.sirittsd\n42959\t0\tcom.apple.installcoordinationd\n-\t0\tcom.apple.AccessorySetupUI\n42249\t0\tcom.apple.eligibilityd\n-\t0\tcom.apple.photos.ImageConversionService\n-\t0\tcom.apple.Safari.History\n-\t0\tcom.apple.translationd\n42895\t0\tcom.apple.calaccessd\n42886\t0\tcom.apple.appstored\n-\t0\tcom.apple.DataDetectorsSourceAccess\n-\t0\tcom.apple.newsd\n42145\t0\tcom.apple.apsd\n42179\t0\tcom.apple.contactsd\n42890\t0\tcom.apple.swcd\n42146\t0\tcom.apple.GameController.gamecontrollerd\n-\t0\tcom.apple.backgroundassets.user\n-\t0\tcom.apple.shazamd\n-\t0\tcom.apple.CoreRoutine.helperservice\n-\t0\tcom.apple.assetsd.nebulad\n-\t0\tcom.apple.naturallanguaged\n42314\t0\tcom.apple.SetStoreUpdateService\n42112\t0\tcom.apple.sleepd\n42200\t0\tcom.apple.ClipServices.clipserviced\n42226\t0\tcom.apple.systemstatusd\n-\t0\tcom.apple.handwritingd\n42176\t0\tcom.apple.geod\n-\t0\tcom.apple.ids.IDSCredentialsAgent\n-\t0\tcom.apple.photos.VideoConversionService\n-\t0\tcom.apple.mobile.MCInstall\n-\t0\tcom.apple.aps.tcpdump.en0\n-\t0\tcom.apple.photosface\n-\t0\tcom.apple.BarcodeSupport.BarcodeNotificationService\n",
+      "stderr": "",
+      "elapsedSeconds": 20.739
+    },
+    {
+      "step": "screenshot",
+      "argv": [
+        "xcrun",
+        "simctl",
+        "io",
+        "C3630581-519B-49DA-9400-67A78DCD42C8",
+        "screenshot",
+        "/Users/runner/work/meetspace_ios_mobile/meetspace_ios_mobile/artifacts/beta-smoke/release-simulator.png"
+      ],
+      "timeoutSeconds": 30,
+      "exitCode": 0,
+      "stdout": "",
+      "stderr": "Detected file type 'PNG' from extension\nWrote screenshot to: /Users/runner/work/meetspace_ios_mobile/meetspace_ios_mobile/artifacts/beta-smoke/release-simulator.png\n",
+      "elapsedSeconds": 10.296
+    },
+    {
+      "step": "check-running-after-screenshot",
+      "argv": [
+        "xcrun",
+        "simctl",
+        "spawn",
+        "C3630581-519B-49DA-9400-67A78DCD42C8",
+        "launchctl",
+        "list"
+      ],
+      "timeoutSeconds": 30,
+      "exitCode": 0,
+      "stdout": "ributiond\n-\t0\tcom.apple.devicemanagementclient.mdmd\n-\t0\tcom.apple.textunderstandingd\n42151\t0\tcom.apple.liveactivitiesd\n42608\t0\tcom.apple.akd\n42776\t0\tcom.apple.mobile.installd\n-\t0\tcom.apple.siri-distributed-evaluation\n42363\t0\tcom.apple.assetsd\n-\t0\tcom.apple.VideoSubscriberAccount.PrivacyService\n-\t0\tcom.apple.AXMediaUtilitiesService\n42104\t0\tcom.apple.appprotectiond\n43574\t0\tcom.apple.splashboard\n-\t0\tcom.apple.UIKit.SecureControlService\n-\t0\tcom.apple.GPUTools.MobileService\n42106\t0\tcom.apple.askpermissiond\n42107\t0\tcom.apple.backboardd\n43520\t0\tUIKitApplication:com.apple.family[3773][rb-legacy]\n-\t0\tcom.apple.CameraOverlayAngel\n42150\t0\tcom.apple.lsd\n-\t0\tcom.apple.announced\n-\t0\tcom.apple.webinspectord\n-\t0\tcom.apple.ProximityReaderSceneUI\n42594\t0\tcom.apple.avatarsd\n-\t0\tcom.apple.devicesharingd\n42916\t0\tcom.apple.siri.context.service\n-\t0\tcom.apple.mediaartworkd\n42330\t0\tcom.apple.pluginkit.pkd\n-\t0\tcom.apple.coredatad\n42115\t0\tcom.apple.CoreSimulator.bridge\n-\t0\tcom.apple.logind\n42117\t0\tcom.apple.remindd\n42248\t0\tcom.apple.findmy.findmylocated\n-\t0\tcom.apple.storebookkeeperd\n42264\t0\tcom.apple.searchd\n-\t0\tcom.apple.nanoregistrylaunchd\n-\t0\tcom.apple.webkit.webpushd\n42609\t0\tcom.apple.weatherd\n42222\t0\tcom.apple.tvremoted\n-\t0\tcom.apple.voiced\n-\t0\tcom.apple.GSSCred\n-\t0\tcom.apple.accounts.dom\n-\t0\tcom.apple.mdt\n-\t0\tcom.apple.modelmanagerd\n42283\t0\tcom.apple.appleaccountd\n-\t0\tcom.apple.parsecd\n-\t0\tcom.apple.mlruntimed\n-\t0\tcom.apple.TextInput.kbd\n-\t0\tcom.apple.sensorkitd\n42876\t0\tcom.apple.dmd\n42873\t0\tcom.apple.parsec-fbf\n-\t0\tcom.apple.security.swcagent\n42588\t0\tcom.apple.followupd\n-\t0\tcom.apple.PointerUI.pointeruid\n-\t0\tcom.apple.accessibility.HearingMLHelperService\n42102\t0\tcom.apple.identityservicesd\n42194\t0\tcom.apple.telephonyutilities.callservicesd\n42791\t0\tcom.apple.MobileInstallationHelperService\n-\t0\tcom.apple.generativeexperiencesd\n-\t0\tcom.apple.DesktopServicesHelper\n-\t0\tcom.apple.SecureBackupDaemon\n-\t0\tcom.apple.intelligenceflowd\n42935\t0\tcom.apple.businessservicesd\n-\t0\tcom.apple.and\n-\t0\tcom.apple.siri.acousticsignature\n42207\t0\tcom.apple.WebBookmarks.webbookmarksd\n42110\t0\tcom.apple.locationd\n-\t0\tcom.apple.feedbackd\n42147\t0\tcom.apple.containermanagerd\n-\t0\tcom.apple.rtcreportingd\n-\t0\tcom.apple.avconferenced\n42111\t0\tcom.apple.nanoprefsyncd.2\n-\t0\tcom.apple.imdpersistence.IMDPersistenceAgent\n-\t0\tcom.apple.MobileAsset.ManifestStorageService\n-\t0\tcom.apple.audio.systemsoundserver-simd\n-\t0\tcom.apple.devicemanagementclient.mdmuserd\n-\t0\tcom.apple.fitcore.session\n-\t0\tcom.apple.reversetemplated\n42119\t0\tcom.apple.rapportd\n-\t0\tcom.apple.accessibility.axremoted\n-\t0\tcom.apple.ABDatabaseDoctor\n-\t0\tcom.apple.mlhostd\n-\t0\tcom.apple.VideoSubscriberAccount.DeveloperService\n42092\t0\tcom.apple.accountsd\n42208\t0\tcom.apple.cdpd\n42094\t0\tcom.apple.routined\n44571\t0\tcom.apple.xpc.launchd.oneshot.0x10000001.launchctl\n-\t0\tcom.apple.managedappdistributiond\n42165\t0\tcom.apple.siriactionsd\n42397\t0\tcom.apple.FileCoordination\n-\t0\tcom.apple.healthappd\n-\t0\tcom.apple.remoteappintentsd\n42159\t0\tcom.apple.pasteboard.pasted\n-\t0\tcom.apple.storagedatad\n43616\t0\tcom.apple.AssetCacheLocatorService\n43564\t0\tcom.apple.videosubscriptionsd\n-\t0\tcom.apple.speechmodeltrainingd\n42100\t0\tcom.apple.familynotification\n-\t0\tcom.apple.protectedcloudstorage.protectedcloudkeysyncing\n42365\t0\tcom.apple.FileProvider\n-\t0\tcom.apple.imcore.imtransferagent\n42101\t0\tcom.apple.mobiletimerd\n-\t0\tcom.apple.ckdiscretionaryd\n-\t0\tcom.apple.fullkeyboardaccess\n-\t0\tcom.apple.AppSSODaemon\n-\t0\tcom.apple.EscrowSecurityAlert\n-\t0\tcom.apple.nanobackupd\n-\t0\tcom.apple.VoiceOverTouch\n42328\t0\tcom.apple.spotlightknowledged\n-\t0\tcom.apple.securityuploadd\n-\t0\tcom.apple.midiserver.sim\n-\t0\tcom.apple.devicemanagementclient.teslad\n-\t0\tcom.apple.companiond\n42244\t0\tcom.apple.siriknowledged\n-\t0\tcom.apple.PassbookUISceneService\n42108\t0\tcom.apple.sharingd\n42204\t0\tcom.apple.trustd\n42979\t0\tUIKitApplication:com.apple.chrono.WidgetRenderer-Default[a8e0][rb-legacy]\n42196\t0\tcom.apple.familycircled\n-\t0\tcom.apple.dt.ViewHierarchyAgent\n-\t0\tcom.apple.RemoteManagementAgent\n-\t0\tcom.apple.cloudsettingssyncagent\n42271\t0\tcom.apple.assistant_cdmd\n-\t0\tcom.apple.ShortcutsUI\n43177\t0\tcom.apple.photoanalysisd\n-\t0\tcom.apple.logd_reporter\n-\t0\tcom.apple.imautomatichistorydeletionagent\n42113\t0\tcom.apple.distnoted.xpc.daemon\n42360\t0\tcom.apple.suggestd\n42116\t0\tcom.apple.navd\n42201\t0\tcom.apple.purplebuddy.budd\n42118\t0\tcom.apple.revisiond\n-\t0\tcom.apple.appleidsetupd\n42120\t0\tcom.apple.amsaccountsd\n43571\t0\tcom.apple.Maps.mapssyncd\n42143\t0\tcom.apple.cfprefsd.xpc.daemon\n-\t0\tcom.apple.applicensedeliveryd\n-\t0\tcom.apple.gputoolsserviced\n42198\t0\tcom.apple.usernotificationsd\n43570\t0\tcom.apple.FamilyControlsAgent\n-\t0\tcom.apple.relatived\n42088\t0\tcom.apple.assistantd\n42273\t0\tcom.apple.siriinferenced\n-\t0\tcom.apple.corespotlightservice\n-\t0\tcom.apple.MemojiImageRenderService\n42295\t0\tcom.apple.financed\n-\t0\tcom.apple.previewsd\n-\t0\tcom.apple.mediaanalysisd\n-\t0\tcom.apple.assessmentagent\n-\t0\tcom.apple.CarPlayApp\n-\t0\tcom.apple.dt.automationmode-writer\n-\t0\tcom.apple.testmanagerd\n-\t0\tcom.apple.dt.AutomationModeUI\n-\t0\tcom.apple.keychainsharingmessagingd\n-\t0\tcom.apple.CallKit.CallDirectory\n42331\t0\tcom.apple.biomesyncd\n-\t0\tcom.apple.iokitsimd\n-\t0\tcom.apple.BundleComplicationMigrationService\n42607\t0\tcom.apple.UsageTrackingAgent\n42220\t0\tcom.apple.email.maild\n-\t0\tcom.apple.remotemanagementd\n42157\t0\tcom.apple.donotdisturbd\n-\t0\tcom.apple.livetranscriptionui\n-\t0\tcom.apple.Maps.mapspushd\n43567\t0\tcom.apple.coreidvd\n42962\t0\tcom.apple.gamed\n42329\t0\tcom.apple.medialibraryd\n-\t0\tcom.apple.intelligencecontextd\n-\t0\tcom.apple.devicemanagementclient.managedappsd\n-\t0\tcom.apple.usbsmartcardreaderd\n-\t0\tcom.apple.gamecontroller.ConfigService\n42169\t0\tcom.apple.AccessibilityUIServer\n42206\t0\tcom.apple.icloudmailagent\n-\t0\tcom.apple.GameOverlayUI\n-\t0\tcom.apple.sharing.airdropui\n42114\t0\tcom.apple.passd\n-\t0\tcom.apple.sosd\n-\t0\tcom.apple.accessibility.axAuditDaemon.deviceservice\n-\t0\tcom.apple.migrationpluginwrapper\n42602\t0\tcom.apple.nanotimekitcompaniond\n42880\t0\tcom.apple.sociallayerd\n42874\t0\tcom.apple.deviceaccessd\n42121\t0\tcom.apple.configd_sim\n-\t0\tcom.apple.printbandservice\n-\t0\tcom.apple.accessibility.mediaaccessibilityd\n42188\t0\tcom.apple.syncdefaultsd\n42164\t0\tcom.apple.chronod\n-\t0\tcom.apple.accessibility.heard\n42267\t0\tcom.apple.corespeechd\n43502\t0\tcom.apple.geoanalyticsd\n42218\t0\tcom.apple.itunescloudd\n-\t0\tcom.apple.scrod\n-\t0\tcom.apple.UIKit.OverlayUI\n42221\t0\tcom.apple.fitcore\n-\t0\tcom.apple.AuthenticationServicesCore.AuthenticationServicesAgent\n-\t0\tcom.apple.bookdatastored\n-\t0\tcom.apple.sharinguiservice\n-\t0\tcom.apple.appstorecomponentsd\n42203\t0\tcom.apple.mobileassetd\n-\t0\tcom.apple.datamigratorhelper\n-\t0\tcom.apple.privacyaccountingd\n42888\t0\tcom.apple.amsengagementd\n-\t0\tcom.apple.proactiveeventtrackerd\n42268\t0\tcom.apple.linkd\n42928\t0\tcom.apple.managedconfiguration.profiled\n-\t0\tcom.apple.ClockAngel\n-\t0\tcom.apple.idsfoundation.IDSRemoteURLConnectionAgent\n-\t0\tcom.apple.safarifetcherd\n-\t0\tcom.apple.recentsd\n-\t0\tcom.apple.spotlightknowledged.updater\n42269\t0\tcom.apple.sirittsd\n42959\t0\tcom.apple.installcoordinationd\n-\t0\tcom.apple.AccessorySetupUI\n42249\t0\tcom.apple.eligibilityd\n-\t0\tcom.apple.photos.ImageConversionService\n-\t0\tcom.apple.Safari.History\n-\t0\tcom.apple.translationd\n42895\t0\tcom.apple.calaccessd\n42886\t0\tcom.apple.appstored\n-\t0\tcom.apple.DataDetectorsSourceAccess\n-\t0\tcom.apple.newsd\n42145\t0\tcom.apple.apsd\n42179\t0\tcom.apple.contactsd\n42890\t0\tcom.apple.swcd\n42146\t0\tcom.apple.GameController.gamecontrollerd\n-\t0\tcom.apple.backgroundassets.user\n-\t0\tcom.apple.shazamd\n-\t0\tcom.apple.CoreRoutine.helperservice\n-\t0\tcom.apple.assetsd.nebulad\n-\t0\tcom.apple.naturallanguaged\n42314\t0\tcom.apple.SetStoreUpdateService\n42112\t0\tcom.apple.sleepd\n42200\t0\tcom.apple.ClipServices.clipserviced\n42226\t0\tcom.apple.systemstatusd\n-\t0\tcom.apple.handwritingd\n42176\t0\tcom.apple.geod\n-\t0\tcom.apple.ids.IDSCredentialsAgent\n-\t0\tcom.apple.photos.VideoConversionService\n-\t0\tcom.apple.mobile.MCInstall\n-\t0\tcom.apple.aps.tcpdump.en0\n-\t0\tcom.apple.photosface\n-\t0\tcom.apple.BarcodeSupport.BarcodeNotificationService\n",
+      "stderr": "",
+      "elapsedSeconds": 2.371
+    }
+  ],
+  "cleanup": [
+    {
+      "step": "terminate",
+      "argv": [
+        "xcrun",
+        "simctl",
+        "terminate",
+        "C3630581-519B-49DA-9400-67A78DCD42C8",
+        "com.meetspace.ios"
+      ],
+      "timeoutSeconds": 30,
+      "exitCode": 0,
+      "stdout": "",
+      "stderr": "",
+      "elapsedSeconds": 0.824
+    },
+    {
+      "step": "uninstall",
+      "argv": [
+        "xcrun",
+        "simctl",
+        "uninstall",
+        "C3630581-519B-49DA-9400-67A78DCD42C8",
+        "com.meetspace.ios"
+      ],
+      "timeoutSeconds": 90,
+      "exitCode": 0,
+      "stdout": "",
+      "stderr": "",
+      "elapsedSeconds": 2.841
+    },
+    {
+      "step": "restore-shutdown",
+      "argv": [
+        "xcrun",
+        "simctl",
+        "shutdown",
+        "C3630581-519B-49DA-9400-67A78DCD42C8"
+      ],
+      "timeoutSeconds": 90,
+      "exitCode": 0,
+      "stdout": "",
+      "stderr": "",
+      "elapsedSeconds": 5.559
+    }
+  ],
+  "version": "0.2.0",
+  "build": "2",
+  "device": {
+    "udid": "C3630581-519B-49DA-9400-67A78DCD42C8",
+    "name": "iPhone SE (3rd generation)",
+    "runtime": "com.apple.CoreSimulator.SimRuntime.iOS-18-6",
+    "initialState": "Shutdown"
+  },
+  "pid": 43658,
+  "screenshot": "release-simulator.png",
+  "finishedAt": "2026-11-15T14:37:18.264094+00:00"
+}

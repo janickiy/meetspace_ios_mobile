@@ -1,6 +1,6 @@
 # MeetSpace iOS 0.2.0-beta
 
-Изменения от 15 ноября 2026 года. Версия пакета — `0.2.0-beta`; числовые поля
+Изменения от 15–16 ноября 2026 года. Версия пакета — `0.2.0-beta`; числовые поля
 Apple — версия `0.2.0`, сборка `2`, одинаковые у приложения и ReplayKit extension.
 Поле `MeetSpaceReleaseVersion` сохраняет полную beta-метку в обоих bundle.
 
@@ -41,6 +41,8 @@ Docker/Let's Encrypt и изменений, установка и восстан
 записи сообщения и выделение сохраняются. Подтверждённое удаление аккаунта
 очищает этот локальный список. Обычный logout сохраняет его.
 
+На iOS системное меню «Поделиться» открывается отдельной панелью: действия
+доступны и на iPad с iOS 18, где привязанный к нижней кнопке popover обрезался.
 Текстовое «Поделиться» содержит текст и имена вложений; сам файл можно передать
 после его авторизованного скачивания через действие «Сохранить или поделиться».
 Пересылка внутри MeetSpace использует настоящий API, включая вложения; старому
@@ -67,8 +69,54 @@ Docker/Let's Encrypt и изменений, установка и восстан
 
 ## Сборки и проверка
 
-Проверки и ссылки на готовые артефакты будут добавлены после завершения CI.
-Simulator ZIP предназначен для Xcode Simulator на Mac. После распаковки откройте
+[Релиз 0.2.0-beta](https://github.com/janickiy/meetspace_ios_mobile/releases/tag/v0.2.0-beta):
+[Simulator ZIP](https://github.com/janickiy/meetspace_ios_mobile/releases/download/v0.2.0-beta/MeetSpace-0.2.0-beta-simulator.zip) ·
+[неподписанный iOS archive](https://github.com/janickiy/meetspace_ios_mobile/releases/download/v0.2.0-beta/MeetSpace-0.2.0-beta-ios-unsigned.zip) ·
+[SHA256SUMS](https://github.com/janickiy/meetspace_ios_mobile/releases/download/v0.2.0-beta/SHA256SUMS).
+
+Исходники обоих бинарников — `f13b06483ca1b805c046b7eddd1784d715ea405c`.
+[Сборка пакета](https://github.com/janickiy/meetspace_ios_mobile/actions/runs/43723520749)
+завершилась успешно на Apple Silicon / Xcode 26.3: 219 зарегистрированных тестов,
+213 пройдено, 6 явно пропущено (5 требуют внешнего backend, 1 — отдельного SSH-стенда).
+[Локальный прогон](evidence/local-tests.json) на `40f0089` со стендом SSH: 214 пройдено, 5 пропущено.
+
+Проверены настоящий device Release archive (SDK iOS 26.2), версии app/extension,
+ресурсы, обе архитектуры simulator-продукта и его подписи. Готовое Release-приложение
+установлено и запущено на iPhone SE / iOS 18.6 в CI; после запуска проверено,
+что процесс продолжает работать, сохранён [снимок](evidence/release-simulator.png).
+Локально повторно проверены SHA-256, целостность ZIP и подписи всех архитектур.
+[Manifest](evidence/beta-manifest.json), [результат сборки](evidence/ci-package.json),
+[проверка архива](evidence/release-verification.json),
+[протокол запуска](evidence/release-simulator-smoke.json).
+
+[Нативный прогон](https://github.com/janickiy/meetspace_ios_mobile/actions/runs/43760912857): **64/64 PASS**, без пропусков.
+Коммит UI-проверок — `074254ebd4027573a4426c4a47e26646a4cf1f33`.
+С момента сборки бинарников изменился только UI-тест; код приложения, зависимости,
+проект и версия совпадают. Финальный тег дополнительно содержит отчёты.
+
+| Устройство | iOS/iPadOS | Результат |
+|---|---|---|
+| iPhone SE (3rd generation) | 18.6 | 16/16 PASS |
+| iPhone 17 Pro Max | 26.2 | 16/16 PASS |
+| iPad mini (A17 Pro) | 18.6 | 16/16 PASS |
+| iPad Pro 13-inch (M5) | 26.2 | 16/16 PASS |
+
+На каждом устройстве выполнены нативные проверки media/Keychain/типографики и пять
+UI-сценариев: установщик, выбор/общий доступ/удаление сообщений, аудио, вход/чат/выход,
+создание группы. Первый запуск iPad18 остановился в `XCUIApplication.launch`
+с ошибкой системного background assertion; повторено только это задание на том же
+коммите, после чего все 16 проверок прошли. [Полный результат](evidence/ci-native.json).
+
+Просмотрены снимки установщика на маленьком/большом iPhone и iPad, чатов и аудио;
+существенных обрезаний и перекрытий не обнаружено. Примеры:
+[установщик](evidence/iPad26-beta-installer-address.png),
+[выделение сообщений](evidence/iPhone18-beta-chat-multiple-selection.png),
+[системное меню](evidence/iPhone18-beta-chat-system-share.png),
+[аудио](evidence/iPad26-beta-audio-microphone.png).
+
+Simulator ZIP содержит `arm64` и `x86_64` для Xcode Simulator на Mac с Apple Silicon или Intel.
+Архитектуры приложения, WebRTC и ReplayKit extension, а также подписи simulator
+bundle проверяются перед упаковкой. После распаковки откройте
 Xcode → Open Developer Tool → Simulator, загрузите симулятор iPhone/iPad и
 перетащите `MeetSpace.app` в его окно. Для входа укажите адрес своего сервера.
 Фикстуры доступны только в Debug UI-тестах: опубликованный Release использует

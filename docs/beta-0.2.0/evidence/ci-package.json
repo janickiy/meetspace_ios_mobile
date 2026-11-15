@@ -1,0 +1,19 @@
+{
+  "sourceCommit": "f13b06483ca1b805c046b7eddd1784d715ea405c",
+  "runURL": "https://github.com/janickiy/meetspace_ios_mobile/actions/runs/43723520749",
+  "jobID": 132840398470,
+  "hostArchitecture": "arm64",
+  "xcode": "26.3",
+  "registeredTests": 219,
+  "passed": 213,
+  "skippedTests": [
+    "installerNativeSSHHandshakePinningAndStdin()",
+    "stage08ActualBackendAccountDeletion()",
+    "actualBackendCalendarFoldersSettingsAndRecordings()",
+    "actualBackendDirectCallsDevicesAndPrivateSFU()",
+    "actualBackendConferenceRESTAndGuestScope()",
+    "actualBackendTwoClientsAndFiles()"
+  ],
+  "result": "PASS",
+  "logSHA256": "4cda61734b8b2004df553a79ec4c372118ade61612184b2e92e0879911537965"
+}

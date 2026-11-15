@@ -1,0 +1,135 @@
+{
+  "sourceCommit": "074254ebd4027573a4426c4a47e26646a4cf1f33",
+  "binarySourceCommit": "f13b06483ca1b805c046b7eddd1784d715ea405c",
+  "productSourcesUnchanged": true,
+  "changedPathsSinceBinaryBuild": [
+    "Tests/MeetSpaceUITests/FoundationUITests.swift"
+  ],
+  "runURL": "https://github.com/janickiy/meetspace_ios_mobile/actions/runs/43760912857",
+  "runAttempt": 2,
+  "result": "PASS",
+  "passed": 64,
+  "failed": 0,
+  "skipped": 0,
+  "devices": [
+    {
+      "label": "iPhone18",
+      "device": "iPhone SE (3rd generation)",
+      "runtime": "18.6",
+      "passed": 16,
+      "failed": 0,
+      "skipped": 0,
+      "successfulAttempt": 1
+    },
+    {
+      "label": "iPhone26",
+      "device": "iPhone 17 Pro Max",
+      "runtime": "26.2",
+      "passed": 16,
+      "failed": 0,
+      "skipped": 0,
+      "successfulAttempt": 1
+    },
+    {
+      "label": "iPad18",
+      "device": "iPad mini (A17 Pro)",
+      "runtime": "18.6",
+      "passed": 16,
+      "failed": 0,
+      "skipped": 0,
+      "successfulAttempt": 2
+    },
+    {
+      "label": "iPad26",
+      "device": "iPad Pro 13-inch (M5)",
+      "runtime": "26.2",
+      "passed": 16,
+      "failed": 0,
+      "skipped": 0,
+      "successfulAttempt": 1
+    }
+  ],
+  "retryReason": "iPad18 first attempt failed at XCUIApplication.launch: Failed to get background assertion for target app. Only failed job retried at unchanged source; second attempt passed all16 tests.",
+  "artifacts": [
+    {
+      "id": 14180953720,
+      "node_id": "MDg6QXJ0aWZhY3QxNDE4MDk1MzcyMA==",
+      "name": "results-iPad18",
+      "size_in_bytes": 15577593,
+      "url": "https://api.github.com/repos/janickiy/meetspace_ios_mobile/actions/artifacts/14180953720",
+      "archive_download_url": "https://api.github.com/repos/janickiy/meetspace_ios_mobile/actions/artifacts/14180953720/zip",
+      "expired": false,
+      "digest": "sha256:c84a44b3bee8c33f03403a7f1db5821b691ab854ebca937c6281ed14eb7af90d",
+      "created_at": "2026-11-15T21:31:42Z",
+      "updated_at": "2026-11-15T21:31:42Z",
+      "expires_at": "2026-11-22T21:31:40Z",
+      "workflow_run": {
+        "id": 43760912857,
+        "repository_id": 1446695117,
+        "head_repository_id": 1446695117,
+        "head_branch": "codex/ios-beta-validation",
+        "head_sha": "074254ebd4027573a4426c4a47e26646a4cf1f33"
+      }
+    },
+    {
+      "id": 14180852341,
+      "node_id": "MDg6QXJ0aWZhY3QxNDE4MDg1MjM0MQ==",
+      "name": "results-iPhone18",
+      "size_in_bytes": 14598786,
+      "url": "https://api.github.com/repos/janickiy/meetspace_ios_mobile/actions/artifacts/14180852341",
+      "archive_download_url": "https://api.github.com/repos/janickiy/meetspace_ios_mobile/actions/artifacts/14180852341/zip",
+      "expired": false,
+      "digest": "sha256:302057a410fda2ab119723bb713cf25a45c57c40a11d4712a86429dbd5cb178d",
+      "created_at": "2026-11-15T21:11:47Z",
+      "updated_at": "2026-11-15T21:11:47Z",
+      "expires_at": "2026-11-22T21:11:45Z",
+      "workflow_run": {
+        "id": 43760912857,
+        "repository_id": 1446695117,
+        "head_repository_id": 1446695117,
+        "head_branch": "codex/ios-beta-validation",
+        "head_sha": "074254ebd4027573a4426c4a47e26646a4cf1f33"
+      }
+    },
+    {
+      "id": 14180353179,
+      "node_id": "MDg6QXJ0aWZhY3QxNDE4MDM1MzE3OQ==",
+      "name": "results-iPad26",
+      "size_in_bytes": 18786628,
+      "url": "https://api.github.com/repos/janickiy/meetspace_ios_mobile/actions/artifacts/14180353179",
+      "archive_download_url": "https://api.github.com/repos/janickiy/meetspace_ios_mobile/actions/artifacts/14180353179/zip",
+      "expired": false,
+      "digest": "sha256:b5fac0dad03efd068a606e1c97301019304e65d08592645723e109a7f066af30",
+      "created_at": "2026-11-15T21:15:10Z",
+      "updated_at": "2026-11-15T21:15:10Z",
+      "expires_at": "2026-11-22T21:15:06Z",
+      "workflow_run": {
+        "id": 43760912857,
+        "repository_id": 1446695117,
+        "head_repository_id": 1446695117,
+        "head_branch": "codex/ios-beta-validation",
+        "head_sha": "074254ebd4027573a4426c4a47e26646a4cf1f33"
+      }
+    },
+    {
+      "id": 14180713879,
+      "node_id": "MDg6QXJ0aWZhY3QxNDE4MDcxMzg3OQ==",
+      "name": "results-iPhone26",
+      "size_in_bytes": 15854088,
+      "url": "https://api.github.com/repos/janickiy/meetspace_ios_mobile/actions/artifacts/14180713879",
+      "archive_download_url": "https://api.github.com/repos/janickiy/meetspace_ios_mobile/actions/artifacts/14180713879/zip",
+      "expired": false,
+      "digest": "sha256:f64089fc6381a7568f3308dba7519031c5480322dc640d04e731bad18587f816",
+      "created_at": "2026-11-15T21:17:30Z",
+      "updated_at": "2026-11-15T21:17:30Z",
+      "expires_at": "2026-11-22T21:17:27Z",
+      "workflow_run": {
+        "id": 43760912857,
+        "repository_id": 1446695117,
+        "head_repository_id": 1446695117,
+        "head_branch": "codex/ios-beta-validation",
+        "head_sha": "074254ebd4027573a4426c4a47e26646a4cf1f33"
+      }
+    }
+  ]
+}

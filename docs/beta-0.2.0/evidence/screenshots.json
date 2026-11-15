@@ -1,0 +1,32 @@
+[
+  {
+    "file": "iPhone18-beta-chat-multiple-selection.png",
+    "sourceCommit": "074254ebd4027573a4426c4a47e26646a4cf1f33",
+    "run": 43760912857,
+    "attachment": "EA78F935-EA65-4CB3-9617-72A1FB6A9084.png"
+  },
+  {
+    "file": "iPhone18-beta-chat-system-share.png",
+    "sourceCommit": "074254ebd4027573a4426c4a47e26646a4cf1f33",
+    "run": 43760912857,
+    "attachment": "E6B13904-6276-4BAD-81C3-D7EDDC3108F4.png"
+  },
+  {
+    "file": "iPhone18-beta-installer-complete.png",
+    "sourceCommit": "074254ebd4027573a4426c4a47e26646a4cf1f33",
+    "run": 43760912857,
+    "attachment": "2D3C37D9-0AE1-4FB8-AFC9-0EF800C9B27F.png"
+  },
+  {
+    "file": "iPad26-beta-installer-address.png",
+    "sourceCommit": "074254ebd4027573a4426c4a47e26646a4cf1f33",
+    "run": 43760912857,
+    "attachment": "D463A8A2-C588-449F-A568-1D1493CD409F.png"
+  },
+  {
+    "file": "iPad26-beta-audio-microphone.png",
+    "sourceCommit": "074254ebd4027573a4426c4a47e26646a4cf1f33",
+    "run": 43760912857,
+    "attachment": "1559E6B2-8B30-4F4E-AC97-8FB90EE4D2EE.png"
+  }
+]

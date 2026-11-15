@@ -1,0 +1,51 @@
+{
+  "release": "0.2.0-beta",
+  "sourceCommit": "f13b06483ca1b805c046b7eddd1784d715ea405c",
+  "distributionSigned": false,
+  "files": [
+    {
+      "file": "MeetSpace-0.2.0-beta-ios-unsigned.zip",
+      "sha256": "6b0347620ded0ceb0a5cb93305f4d2f96710626223e9f73a6f3c26919928ab6d",
+      "bytes": 39053306,
+      "platform": "iPhoneOS",
+      "version": "0.2.0",
+      "build": "2",
+      "binaryArchitectures": {
+        "MeetSpace": [
+          "arm64"
+        ],
+        "PlugIns/BroadcastUpload.appex/BroadcastUpload": [
+          "arm64"
+        ],
+        "Frameworks/WebRTC.framework/WebRTC": [
+          "arm64"
+        ]
+      },
+      "simulatorCodeSignVerified": false
+    },
+    {
+      "file": "MeetSpace-0.2.0-beta-simulator.zip",
+      "sha256": "f0f22c8beaf2c8fd351b3c17eec888eb4246ac8a01fa0a8b7c568e0f021febac",
+      "bytes": 32158285,
+      "platform": "iPhoneSimulator",
+      "version": "0.2.0",
+      "build": "2",
+      "binaryArchitectures": {
+        "MeetSpace": [
+          "arm64",
+          "x86_64"
+        ],
+        "PlugIns/BroadcastUpload.appex/BroadcastUpload": [
+          "arm64",
+          "x86_64"
+        ],
+        "Frameworks/WebRTC.framework/WebRTC": [
+          "arm64",
+          "x86_64"
+        ]
+      },
+      "simulatorCodeSignVerified": true
+    }
+  ],
+  "installation": "Simulator ZIP contains a simulator .app. Device ZIP is an unsigned xcarchive requiring Apple signing; no IPA or TestFlight upload."
+}
