@@ -10,6 +10,7 @@ struct InstallerView: View {
     @State private var confirmStop = false
     @State private var confirmForget = false
     @Environment(\.scenePhase) private var phase
+    @Environment(\.dismiss) private var dismiss
     var body: some View {
         GeometryReader { geometry in
             HStack(spacing: 0) {
@@ -28,7 +29,7 @@ struct InstallerView: View {
                 ScrollView {
                     VStack(alignment: .leading, spacing: 22) {
                         HStack { BrandMark().frame(width: 28, height: 30); Text("MeetSpace").font(MSTheme.font(21, weight: .semibold)); Spacer()
-                            Button { model.detach(); app.installerPresented = false } label: { Image(systemName: "xmark").frame(width: 44, height: 44) }.accessibilityLabel("Закрыть установщик").accessibilityIdentifier("installer.close")
+                            Button { model.detach(); app.installerPresented = false; dismiss() } label: { Image(systemName: "xmark").frame(width: 44, height: 44) }.accessibilityLabel("Закрыть установщик").accessibilityIdentifier("installer.close")
                         }
                         HStack { Text("Подключение к серверу"); Spacer(); Text("Шаг \(model.stepNumber) из 5") }.font(MSTheme.font(11)).foregroundStyle(MSTheme.muted)
                         HStack(spacing: 6) { ForEach(1...5, id: \.self) { n in Capsule().fill(n <= model.stepNumber ? MSTheme.accent : MSTheme.line).frame(height: 4) } }
@@ -38,10 +39,14 @@ struct InstallerView: View {
                             Button("Отменить проверку") { model.cancelLocalOperation() }.buttonStyle(MSButtonStyle(primary: false))
                         } else { content }
                     }.padding(geometry.size.width >= 800 ? 40 : 24).frame(maxWidth: 560).frame(maxWidth: .infinity)
-                }.id(model.step).scrollDismissesKeyboard(.interactively)
+                }.id(model.step).scrollDismissesKeyboard(.interactively).accessibilityIdentifier("installer.scroll")
                     .frame(maxWidth: .infinity).background(MSTheme.surface)
             }
         }.background(MSTheme.background)
+        .font(MSTheme.font())
+        .foregroundStyle(MSTheme.ink)
+        .tint(MSTheme.accent)
+        .buttonStyle(MSTextButtonStyle())
         .task { await model.restore() }
         .task { await model.observe() }
         .onDisappear { model.detach() }

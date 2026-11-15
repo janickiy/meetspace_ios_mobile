@@ -15,6 +15,7 @@
   ],
   "sshLoopbackEnabled": true,
   "result": "PASS",
-  "logSHA256": "016d4a0541ad2a5b858a3b2804145a4830fa4e5a020b5650a8994236eabebbd2",
-  "command": "MEETSPACE_SSH_FIXTURE=1 swift test --package-path Packages/MeetSpaceKit --sdk /Library/Developer/CommandLineTools/SDKs/MacOSX26.5.sdk -Xswiftc -load-plugin-library -Xswiftc /Library/Developer/CommandLineTools/usr/lib/swift/host/plugins/testing/libTestingMacros.dylib"
+  "logSHA256": "35fbc96a5b76837d185c8aae33cb8ef32e3dfec902bb97ed277531b51d74e78b",
+  "command": "MEETSPACE_SSH_FIXTURE=1 swift test --package-path Packages/MeetSpaceKit --sdk /Library/Developer/CommandLineTools/SDKs/MacOSX26.5.sdk -Xswiftc -load-plugin-library -Xswiftc /Library/Developer/CommandLineTools/usr/lib/swift/host/plugins/testing/libTestingMacros.dylib",
+  "sourceCommit": "40f0089072f6733ec677915a2129b6b8c6e39783"
 }

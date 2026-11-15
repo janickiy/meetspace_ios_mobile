@@ -75,7 +75,7 @@ struct AccountAudioSettingsView: View {
                 HStack(spacing: 8) {
                     Text(audio.outputName).font(MSTheme.font(14)).lineLimit(2).frame(maxWidth: .infinity, alignment: .leading)
                     AudioRoutePicker().frame(width: 44, height: 44).accessibilityLabel(tr("Выбрать другое устройство"))
-                }.padding(.leading, 13).background(MSTheme.surface, in: RoundedRectangle(cornerRadius: 11))
+                }.frame(minHeight: 46).padding(.leading, 13).background(MSTheme.surface, in: RoundedRectangle(cornerRadius: 11))
                     .overlay(RoundedRectangle(cornerRadius: 11).stroke(MSTheme.line, lineWidth: 1))
                 #else
                 selectorLabel(tr("По умолчанию"))
@@ -83,7 +83,15 @@ struct AccountAudioSettingsView: View {
             } test: { checkButton(kind) }
             volumeTitle(volume, value: audio.outputVolume).padding(.top, 20)
             #if os(iOS)
+            #if targetEnvironment(simulator)
+            Slider(value: .constant(Double(audio.outputVolume)), in: 0...1)
+                .disabled(true).frame(minHeight: 44)
+                .accessibilityLabel(tr(volume)).accessibilityIdentifier("audioVolume.\(kind.rawValue)")
+            Text(tr("Громкость регулируется на iPhone или iPad."))
+                .font(MSTheme.font(11)).foregroundStyle(MSTheme.muted)
+            #else
             SystemAudioVolume().frame(height: 44).accessibilityIdentifier("audioVolume.\(kind.rawValue)")
+            #endif
             #else
             Slider(value: .constant(Double(audio.outputVolume))).disabled(true).frame(minHeight: 44)
             #endif

@@ -26,13 +26,26 @@ import UIKit
         capture(app, name: "beta-welcome")
         let deploy = app.buttons["deployServer"]
         reveal(deploy, in: app); deploy.tap()
-        func tap(_ id: String) { let button = app.buttons[id]; revealEntireText(button, in: app); button.tap() }
+        // The wizard owns one explicit scroll surface. Keyboard internals and the
+        // presenting welcome screen must not participate in its scrolling geometry.
+        func show(_ element: XCUIElement, towardTop: Bool = false) {
+            XCTAssertTrue(element.waitForExistence(timeout: 10))
+            let scroll = app.scrollViews["installer.scroll"].firstMatch
+            XCTAssertTrue(scroll.waitForExistence(timeout: 5))
+            for _ in 0..<18 where !element.isHittable {
+                if towardTop { scroll.swipeDown() } else { scroll.swipeUp() }
+            }
+            XCTAssertTrue(element.isHittable)
+        }
+        func tap(_ id: String, towardTop: Bool = false) {
+            let button = app.buttons[id]; show(button, towardTop: towardTop); button.tap()
+        }
         func fill(_ id: String, _ value: String, secure: Bool = false) {
             let field = secure ? app.secureTextFields[id] : app.textFields[id]
-            revealEntireText(field, in: app); field.tap(); field.typeText(value)
+            show(field); field.tap(); field.typeText(value)
         }
         func toggle(_ id: String) {
-            let control = app.switches[id]; revealEntireText(control, in: app); control.tap()
+            let control = app.switches[id]; show(control); control.tap()
         }
         XCTAssertTrue(app.textFields["installer.host"].waitForExistence(timeout: 10))
         capture(app, name: "beta-installer-address")
@@ -60,7 +73,7 @@ import UIKit
         XCTAssertTrue(app.buttons["installer.finish"].waitForExistence(timeout: 20))
         capture(app, name: "beta-installer-complete")
         // The fixture validates the actual signed plan/parser; it never contacts a VPS.
-        tap("installer.close")
+        tap("installer.close", towardTop: true)
         XCTAssertTrue(app.buttons["deployServer"].waitForExistence(timeout: 5))
     }
 
@@ -82,7 +95,7 @@ import UIKit
         capture(app, name: "beta-chat-multiple-selection")
         app.buttons["message.shareSelected"].tap()
         // Copy the synthetic text from the real system sheet; no external recipient is used.
-        let copy = app.buttons.matching(NSPredicate(format: "label IN %@", ["Copy", "Скопировать", "Копировать"])).firstMatch
+        let copy = app.descendants(matching: .any).matching(NSPredicate(format: "label IN %@", ["Copy", "Скопировать", "Копировать"])).firstMatch
         XCTAssertTrue(copy.waitForExistence(timeout: 10))
         capture(app, name: "beta-chat-system-share")
         copy.tap()

@@ -53,7 +53,7 @@ struct AccountSettingsView: View {
                         ForEach(AccountSettingsSection.allCases) { section in
                             NavigationLink {
                                 AccountSettingsContent(model: model, section: section)
-                                    .navigationTitle(tr(section.rawValue)).msInlineTitle()
+                                    .navigationTitle(tr(section == .audio ? "Настройки аккаунта" : section.rawValue)).msInlineTitle()
                             } label: {
                                 HStack { Label(tr(section.rawValue), systemImage: section.icon); Spacer(); Image(systemName: "chevron.right").accessibilityHidden(true) }
                                     .frame(minHeight: 44).msCard().contentShape(Rectangle())

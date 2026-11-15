@@ -32,9 +32,27 @@ struct DestinationView: View {
             case .audioSettings, .videoSettings, .notificationSettings, .appearance, .connection, .accounts:
                 SettingsDetailView(model: model, route: route)
             case .deploy, .fingerprint, .preflight, .install, .complete, .installError:
-                InstallerView(app: model)
+                InstallerCatalogNotice(model: model)
             }
         }.navigationTitle(tr(route.title)).msInlineTitle()
+    }
+}
+
+/// Catalog destinations stay inert; only the explicit welcome action opens live SSH setup.
+private struct InstallerCatalogNotice: View {
+    @Bindable var model: AppModel
+    var body: some View {
+        ScrollView {
+            VStack(alignment: .leading, spacing: 24) {
+                Label("Установщик сервера", systemImage: "server.rack")
+                    .font(MSTheme.font(28, weight: .semibold, relativeTo: .title))
+                FeatureNotice("В демо-каталоге подключение к VPS и установка не выполняются. Чтобы настроить свой сервер, вернитесь на приветственный экран и выберите «Развернуть свой сервер».")
+                    .accessibilityIdentifier("installer.demoNotice")
+                Button("На приветственный экран") { model.leaveDemo() }
+                    .buttonStyle(MSButtonStyle(primary: false))
+                    .accessibilityIdentifier("installer.returnToWelcome")
+            }.padding(24).frame(maxWidth: 720).frame(maxWidth: .infinity)
+        }.background(MSTheme.background)
     }
 }
 

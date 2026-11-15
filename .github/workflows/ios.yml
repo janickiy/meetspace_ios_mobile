@@ -43,6 +43,9 @@ jobs:
       - name: Build beta simulator application
         if: inputs.scope == 'beta'
         run: xcodebuild -project MeetSpace.xcodeproj -scheme MeetSpace-Release -configuration Release -destination 'generic/platform=iOS Simulator' -derivedDataPath artifacts/BetaSimulator CODE_SIGNING_ALLOWED=NO build
+      - name: Install and launch the actual beta simulator product
+        if: inputs.scope == 'beta'
+        run: python3 scripts/smoke_beta_simulator.py --app artifacts/BetaSimulator/Build/Products/Release-iphonesimulator/MeetSpace.app --output artifacts/beta-smoke
       - name: Package beta downloads
         if: inputs.scope == 'beta'
         run: |

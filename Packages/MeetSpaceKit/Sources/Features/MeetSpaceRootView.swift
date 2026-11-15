@@ -10,7 +10,11 @@ public struct MeetSpaceRootView: View {
 
     public var body: some View {
         lifecycleContent
-        .sheet(isPresented: $model.installerPresented) { InstallerView(app: model).interactiveDismissDisabled() }
+        #if os(iOS)
+        .fullScreenCover(isPresented: $model.installerPresented) { InstallerView(app: model).interactiveDismissDisabled().preferredColorScheme(colorScheme) }
+        #else
+        .sheet(isPresented: $model.installerPresented) { InstallerView(app: model).interactiveDismissDisabled().preferredColorScheme(colorScheme) }
+        #endif
         .conferencePresentation(model: model)
         .directCallPresentation(model: model)
         .alert(tr("MeetSpace"), isPresented: Binding(get: { model.notice != nil }, set: { if !$0 { model.notice = nil } })) {
