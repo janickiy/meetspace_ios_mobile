@@ -47,8 +47,10 @@ public struct MessagingRepository: Sendable {
     }
     public func direct(userID: UUID) async throws -> Conversation {
         struct Body: Encodable { let userId: UUID }
-        return try decodeJSON(ItemResponse<Conversation>.self, from: await client.request("POST", path: ["conversations", "direct"],
+        let conversation = try decodeJSON(ItemResponse<Conversation>.self, from: await client.request("POST", path: ["conversations", "direct"],
             body: WireJSON.encoder().encode(Body(userId: userID)))).item
+        guard conversation.type == "direct", conversation.peer?.id == userID else { throw APIError.invalidResponse }
+        return conversation
     }
     public func createGroup(id: UUID, name: String, description: String, members: [UUID]) async throws -> Conversation {
         try validateGroup(name: name, description: description)
@@ -82,8 +84,24 @@ public struct MessagingRepository: Sendable {
             path: scope(conversation) + ["messages", sid(message)], body: WireJSON.encoder().encode(Body(text: normalized)))).item
     }
     public func delete(_ conversation: UUID, message: UUID) async throws -> ChatMessage {
-        try decodeJSON(ItemResponse<ChatMessage>.self, from: await client.request("DELETE",
+        let deleted = try decodeJSON(ItemResponse<ChatMessage>.self, from: await client.request("DELETE",
             path: scope(conversation) + ["messages", sid(message)])).item
+        guard deleted.id == message, deleted.conversationId == conversation, deleted.isDeleted else { throw APIError.invalidResponse }
+        return deleted
+    }
+    public func forward(_ destination: UUID, source: UUID, messages: [UUID], requestID: UUID) async throws -> [ChatMessage] {
+        guard (1...30).contains(messages.count), Set(messages).count == messages.count else { throw ClientError.invalidInput }
+        struct Body: Encodable { let sourceType = "conversation"; let sourceId: UUID; let messageIds: [UUID]; let clientRequestId: UUID }
+        let body = Body(sourceId: source, messageIds: messages, clientRequestId: requestID)
+        let items = try decodeJSON(ItemsResponse<ChatMessage>.self, from: await client.request("POST",
+            path: scope(destination) + ["messages", "forward"], body: WireJSON.encoder().encode(body))).items
+        guard items.count == messages.count, Set(items.map(\.id)).count == items.count,
+              items.allSatisfy({ $0.conversationId == destination && $0.senderId == client.account.user.id &&
+                  $0.call == nil && ($0.isDeleted || $0.forwardedFrom?.senderName.isEmpty == false) }) else { throw APIError.invalidResponse }
+        return items
+    }
+    public func pin(_ conversation: UUID, message: UUID, pinned: Bool) async throws {
+        _ = try await client.request(pinned ? "PUT" : "DELETE", path: scope(conversation) + ["pins", sid(message)])
     }
     public func markRead(_ conversation: UUID, through message: UUID) async throws -> ReadState {
         struct Body: Encodable { let messageId: UUID }

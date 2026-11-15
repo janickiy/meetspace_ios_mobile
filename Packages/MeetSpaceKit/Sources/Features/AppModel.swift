@@ -68,6 +68,7 @@ public struct AppDependencies: Sendable {
     public private(set) var checkedServer: ServerOrigin?
     public private(set) var serverVersion: ServerVersion?
     public private(set) var connectionError: ConnectionError?
+    public var installerPresented = false
     public var notice: String?
     public let identity: IdentityModel
     public private(set) var guestConference: ConferenceSession?

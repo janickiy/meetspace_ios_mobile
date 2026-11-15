@@ -124,9 +124,14 @@ def source_checks():
     check("source.app_icon", icon_ok, "AppIcon catalog contains a 1024-pixel icon and is selected for compilation")
     pinned = json.loads((ROOT / "Packages/MeetSpaceKit/Package.resolved").read_text())["pins"]
     package = (ROOT / "Packages/MeetSpaceKit/Package.swift").read_text()
-    check("source.dependency_pin", len(pinned) == 1 and pinned[0]["identity"] == "webrtc" and
-          pinned[0]["state"] == {"revision": "3cc466ea040e5dcd1344697bf211dc4c079d1a0c", "version": "156.0.0"} and
-          'exact: "156.0.0"' in package, "WebRTC source resolution is pinned to audited revision/version")
+    expected = json.loads((ROOT / "docs/beta-0.2.0/dependencies.json").read_text())["pins"]
+    check("source.dependency_pin", pinned == expected and
+          any(p["identity"] == "webrtc" and p["state"] == {"revision": "3cc466ea040e5dcd1344697bf211dc4c079d1a0c", "version": "156.0.0"} for p in pinned) and
+          'exact: "156.0.0"' in package, "Resolved dependencies match the reviewed beta pins, including unchanged WebRTC")
+    check("source.beta_version", (ROOT / "VERSION").read_text().strip() == "0.2.0-beta" and
+          app["MARKETING_VERSION"] == "0.2.0" and app["CURRENT_PROJECT_VERSION"] == "2" and
+          info.get("MeetSpaceReleaseVersion") == extension_info.get("MeetSpaceReleaseVersion") == "0.2.0-beta",
+          "Beta label and Apple numeric app/extension versions match")
     audit = json.loads((ROOT / "docs/ios/evidence/stage04/webrtc-library.json").read_text())
     check("source.binary_checksum", audit.get("artifactSHA256") == "43c2a6f7a650185bbc911d7605a979589671886e8fc0ac283f54fdf3f511dc46",
           "Audited M156 binary checksum recorded; SPM verifies downloaded artifact")
@@ -209,6 +214,14 @@ def product_checks(bundle, require_signing):
     check("product.webrtc", (framework / "WebRTC").is_file() and (framework / "PrivacyInfo.xcprivacy").is_file(), "Native WebRTC binary and its own privacy manifest embedded")
     for filename in ("WebRTC-LICENSE.txt", "WebRTC-PATENTS.txt", "WebRTC-THIRD-PARTY-NOTICES.txt", "WebRTC-Distribution-LICENSE.txt", "Inter-OFL.txt"):
         check("product.notice." + filename, any(bundle.rglob(filename)), "Bundled dependency notice: " + filename)
+    check("product.beta_version", info.get("CFBundleShortVersionString") == "0.2.0" and
+          info.get("CFBundleVersion") == "2" and info.get("MeetSpaceReleaseVersion") == ext_info.get("MeetSpaceReleaseVersion") == "0.2.0-beta",
+          "Actual app and extension carry beta release 0.2.0 (2)")
+    for filename in ("runner.py", "release.sig", "trust-root.pem", "preflight.sh"):
+        original = ROOT / "Packages/MeetSpaceKit/Sources/Installer/Resources" / filename
+        check("product.installer." + filename,
+              any(hashlib.sha256(p.read_bytes()).digest() == hashlib.sha256(original.read_bytes()).digest() for p in bundle.rglob(filename)),
+              "Original installer resource embedded: " + filename)
     check("product.no_test_payload", not list(bundle.rglob("*.xctest")), "No test bundles in distribution product")
     if require_signing:
         team = signing_checks(bundle, group)
@@ -251,7 +264,7 @@ def main():
                       "BroadcastExtension/Info.plist", "BroadcastExtension/MeetSpaceBroadcast.entitlements",
                       "BroadcastExtension/PrivacyInfo.xcprivacy", "MeetSpace.xcodeproj/project.pbxproj",
                       "Packages/MeetSpaceKit/Package.swift", "Packages/MeetSpaceKit/Package.resolved",
-                      "scripts/generate_xcode_project.py", "scripts/verify_release.py"]
+                      "scripts/generate_xcode_project.py", "scripts/verify_release.py", "VERSION", "docs/beta-0.2.0/dependencies.json"]
     source_hashes = {path: hashlib.sha256((ROOT / path).read_bytes()).hexdigest()
                      for path in tracked_inputs if (ROOT / path).is_file()}
     report = {"schema": 1, "checkedAt": dt.datetime.now(dt.timezone.utc).isoformat(),

@@ -21,6 +21,95 @@ import UIKit
         attachment.name = name; attachment.lifetime = .keepAlways; add(attachment)
     }
 
+    func testBetaInstallerNavigationAndValidation() {
+        let app = launch(["-installer-fixture"])
+        capture(app, name: "beta-welcome")
+        let deploy = app.buttons["deployServer"]
+        reveal(deploy, in: app); deploy.tap()
+        func tap(_ id: String) { let button = app.buttons[id]; revealEntireText(button, in: app); button.tap() }
+        func fill(_ id: String, _ value: String, secure: Bool = false) {
+            let field = secure ? app.secureTextFields[id] : app.textFields[id]
+            revealEntireText(field, in: app); field.tap(); field.typeText(value)
+        }
+        func toggle(_ id: String) {
+            let control = app.switches[id]; revealEntireText(control, in: app); control.tap()
+        }
+        XCTAssertTrue(app.textFields["installer.host"].waitForExistence(timeout: 10))
+        capture(app, name: "beta-installer-address")
+        fill("installer.host", "203.0.113.10")
+        fill("installer.domain", "meet.example.org")
+        tap("installer.inspect")
+        XCTAssertTrue(app.switches["installer.trust"].waitForExistence(timeout: 10))
+        capture(app, name: "beta-installer-fingerprint")
+        toggle("installer.trust"); tap("installer.trustContinue")
+        fill("installer.password", "12345678", secure: true)
+        capture(app, name: "beta-installer-access")
+        tap("installer.authenticate")
+        XCTAssertTrue(app.buttons["installer.optionsNext"].waitForExistence(timeout: 10))
+        capture(app, name: "beta-installer-diagnostics")
+        tap("installer.optionsNext")
+        XCTAssertTrue(app.textFields["installer.installDomain"].waitForExistence(timeout: 10))
+        capture(app, name: "beta-installer-options")
+        tap("installer.getPlan")
+        fill("installer.adminPassword", "12345678", secure: true)
+        fill("installer.adminRepeat", "12345678", secure: true)
+        if app.switches["installer.confirmDocker"].exists { toggle("installer.confirmDocker") }
+        toggle("installer.confirmACME"); toggle("installer.confirmPlan")
+        capture(app, name: "beta-installer-plan")
+        tap("installer.apply")
+        XCTAssertTrue(app.buttons["installer.finish"].waitForExistence(timeout: 20))
+        capture(app, name: "beta-installer-complete")
+        // The fixture validates the actual signed plan/parser; it never contacts a VPS.
+        tap("installer.close")
+        XCTAssertTrue(app.buttons["deployServer"].waitForExistence(timeout: 5))
+    }
+
+    func testBetaChatSelectionAndShare() {
+        let app = launch(); login(app)
+        let chat = app.buttons["conversation.22222222-2222-4222-8222-222222222222"]
+        XCTAssertTrue(chat.waitForExistence(timeout: 10)); chat.tap()
+        let composer = app.textFields["messageComposer"]
+        XCTAssertTrue(composer.waitForExistence(timeout: 10))
+        for text in ["Первое сообщение beta", "Второе сообщение beta"] {
+            composer.tap(); composer.typeText(text)
+            app.buttons["sendMessage"].tap()
+            XCTAssertTrue(app.staticTexts[text].waitForExistence(timeout: 5))
+        }
+        app.buttons["message.selectMode"].tap()
+        XCTAssertTrue(app.buttons["message.selectAll"].waitForExistence(timeout: 5))
+        app.buttons["message.selectAll"].tap()
+        XCTAssertTrue(app.buttons["message.shareSelected"].isEnabled)
+        capture(app, name: "beta-chat-multiple-selection")
+        app.buttons["message.shareSelected"].tap()
+        // Copy the synthetic text from the real system sheet; no external recipient is used.
+        let copy = app.buttons.matching(NSPredicate(format: "label IN %@", ["Copy", "Скопировать", "Копировать"])).firstMatch
+        XCTAssertTrue(copy.waitForExistence(timeout: 10))
+        capture(app, name: "beta-chat-system-share")
+        copy.tap()
+        let remove = app.buttons["message.deleteSelected"]
+        let ready = XCTNSPredicateExpectation(predicate: NSPredicate(format: "hittable == true"), object: remove)
+        XCTAssertEqual(XCTWaiter.wait(for: [ready], timeout: 5), .completed)
+        remove.tap()
+        let confirm = app.buttons["message.confirmLocalDelete"]
+        XCTAssertTrue(confirm.waitForExistence(timeout: 5)); confirm.tap()
+        let gone = XCTNSPredicateExpectation(predicate: NSPredicate(format: "exists == false"), object: app.staticTexts["Первое сообщение beta"])
+        XCTAssertEqual(XCTWaiter.wait(for: [gone], timeout: 5), .completed)
+        XCTAssertFalse(app.staticTexts["Второе сообщение beta"].exists)
+        capture(app, name: "beta-chat-after-local-removal")
+    }
+
+    func testBetaAudioSettingsLayout() {
+        let app = launch(); login(app)
+        openProfileFeature("openAccountSettings", in: app)
+        let audio = app.buttons["settingsSection.audio"]
+        XCTAssertTrue(audio.waitForExistence(timeout: 5)); audio.tap()
+        XCTAssertTrue(app.staticTexts["Микрофон"].firstMatch.waitForExistence(timeout: 5))
+        capture(app, name: "beta-audio-microphone")
+        let signals = app.staticTexts["Звонки и уведомления"].firstMatch
+        revealEntireText(signals, in: app)
+        capture(app, name: "beta-audio-speaker-signals")
+    }
+
     private func revealDemoLink(_ app: XCUIApplication) -> XCUIElement {
         let link = app.buttons["openDemo"]
         for _ in 0..<4 where !link.isHittable { app.swipeUp() }
@@ -576,7 +665,7 @@ import UIKit
         capture(app, name: "stage07-settings-notifications")
         if !app.buttons["settingsSection.server"].exists { app.navigationBars.buttons.firstMatch.tap() }
         app.buttons["settingsSection.server"].tap()
-        XCTAssertTrue(app.staticTexts["sshUnavailable"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.staticTexts["installerAvailable"].waitForExistence(timeout: 5))
         capture(app, name: "stage07-settings-server")
     }
 
@@ -985,7 +1074,7 @@ import UIKit
         let banner = app.buttons["directCallBanner"]
         XCTAssertTrue(banner.waitForExistence(timeout: 10))
         XCTAssertTrue(banner.isHittable)
-        let heading = app.staticTexts["Сообщения"].firstMatch
+        let heading = app.staticTexts["Чаты"].firstMatch
         XCTAssertTrue(heading.waitForExistence(timeout: 5))
         XCTAssertGreaterThanOrEqual(heading.frame.minY, banner.frame.maxY - 1, "The call banner must not cover the workspace header")
         capture(app, name: "stage05-minimized")

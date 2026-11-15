@@ -146,6 +146,7 @@ public struct DirectConferenceContext: Sendable {
                 sleep: @escaping @Sendable (Double) async throws -> Void = { try await Task.sleep(for: .seconds($0)) }) {
         self.repository = repository; self.title = title; self.participant = participant
         self.directContext = directContext
+        if directContext == nil { wantsMicrophone = !DeviceAudioPreferences.load().mutedOnJoin && !participant.microphoneBlocked }
         conferenceID = participant.conferenceId; self.sockets = sockets; self.makeMedia = makeMedia; self.makeBroadcast = makeBroadcast; self.sleep = sleep
         phase = participant.isWaiting ? .waiting : .prejoin
         microphoneBlocked = participant.microphoneBlocked; cameraBlocked = participant.cameraBlocked; screenBlocked = participant.screenBlocked

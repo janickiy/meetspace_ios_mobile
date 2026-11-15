@@ -1,0 +1,12 @@
+{
+  "androidCommit": "9681bddb31c738d133fe9e82794cd52c9c27faec",
+  "source": "https://github.com/janickiy/meet-space-android",
+  "sha256": {
+    "runner.py": "144333d90e2dff3de2ab16d9d69a4de2a5895a925edf9d2043ce35a60139143b",
+    "release.json": "3961b54525ee313d8b9f8fd4dfd1eb55f391ae6b377efae7f33e31ef48b5f98d",
+    "release.sig": "ef7cc137f55cd19b491463a40326efbace4a0debbfc6bfcc1fe6522494dd65d7",
+    "trust-root.pem": "9f16201125cd17dc9fb90a7579e78589c76ecbfdb1ee80df3428ee34d6b90dfc",
+    "docker.asc": "1500c1f56fa9e26b9b8f42452a553675796ade0807cdce11975eb98170b3a570",
+    "preflight.sh": "8870d3554d34bd4fb3fb26c6ff2918ac99fdda5101721f168516e2d5c74ded13"
+  }
+}

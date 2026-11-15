@@ -33,7 +33,7 @@ public struct UserEvent: Sendable {
         let supported = ["message.created", "message.updated", "message.deleted",
             "conversation.updated", "conversation.member.added", "conversation.member.removed",
             "conversation.member.updated", "conversation.read.updated", "conversation.preferences.updated",
-            "conversation.history.cleared", "conversation.hidden", "conversation.pin.updated", "call.updated"]
+            "conversation.history.cleared", "conversation.hidden", "conversation.pin.updated", "conversation.pins.updated", "call.updated"]
         guard supported.contains(header.type) else { return nil }
         let envelope = try WireJSON.decoder().decode(Envelope.self, from: bytes)
         // Call events are account-wide and have no conversationId in their envelope.

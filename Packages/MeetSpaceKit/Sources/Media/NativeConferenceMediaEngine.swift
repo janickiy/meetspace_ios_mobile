@@ -4,6 +4,7 @@ import SwiftUI
 import UIKit
 import Network
 import MeetSpaceBroadcast
+import MeetSpaceCore
 @preconcurrency import AVFoundation
 @preconcurrency import WebRTC
 
@@ -59,6 +60,7 @@ import MeetSpaceBroadcast
                   }
               }) else { throw ConferenceMediaError.invalidConfiguration }
         try Task.checkCancellation()
+        AudioSessionUse.beginConference(callAudioOwner)
         self.configuration = configuration
         let audio = RTCAudioSession.sharedInstance()
         audio.useManualAudio = true; audio.isAudioEnabled = false
@@ -220,6 +222,13 @@ import MeetSpaceBroadcast
         guard configuration?.microphoneAllowed == true else { throw ConferenceMediaError.publicationBlocked }
         guard !interrupted else { throw ConferenceMediaError.interrupted }
         try activateAudio()
+        let preferences = DeviceAudioPreferences.load()
+        let session = AVAudioSession.sharedInstance()
+        if let uid = preferences.preferredInputUID {
+            guard let input = session.availableInputs?.first(where: { $0.uid == uid }) else { throw ConferenceMediaError.capture }
+            try session.setPreferredInput(input)
+        } else { try session.setPreferredInput(nil) }
+        if session.isInputGainSettable { try session.setInputGain(preferences.inputGain) }
         enableAudioIfAllowed()
         do {
             try peer.setMicrophoneEnabled(true); microphoneEnabled = true; captureChanged()
@@ -326,6 +335,7 @@ import MeetSpaceBroadcast
     }
 
     private func finishClose() async {
+        defer { AudioSessionUse.endConference(callAudioOwner) }
         pathMonitor?.cancel(); pathMonitor = nil
         peer?.audioTrack.isEnabled = false; peer?.videoTrack.isEnabled = false
         microphoneEnabled = false; cameraEnabled = false

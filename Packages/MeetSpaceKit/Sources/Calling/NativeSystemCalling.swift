@@ -62,6 +62,7 @@ import MeetSpaceMedia
             if !invalidated { provider.reportCall(with: descriptor.id, updated: update(descriptor)) }
         } catch {
             descriptors[descriptor.id] = nil; outgoing.remove(descriptor.id)
+            CallAudioSessionBridge.endCall(descriptor.id)
             throw error
         }
     }
@@ -87,7 +88,7 @@ import MeetSpaceMedia
             hub.yield(.timedOut(value.value)); return
         }
         if succeeded && (value.value.kind == .start || value.value.kind == .answer) {
-            do { try CallAudioSessionBridge.prepareForCall() }
+            do { try CallAudioSessionBridge.prepareForCall(value.value.callID) }
             catch {
                 value.action.fail()
                 reportEnded(callID: value.value.callID, reason: .failed, at: nil)
@@ -98,6 +99,7 @@ import MeetSpaceMedia
         if succeeded { value.action.fulfill() } else { value.action.fail() }
         if value.value.kind == .end && succeeded {
             descriptors[value.value.callID] = nil; outgoing.remove(value.value.callID)
+            CallAudioSessionBridge.endCall(value.value.callID)
         }
     }
     func reportConnecting(callID: UUID, at date: Date?) {
@@ -120,6 +122,7 @@ import MeetSpaceMedia
         }
         provider.reportCall(with: callID, endedAt: date, reason: native)
         descriptors[callID] = nil; outgoing.remove(callID)
+        CallAudioSessionBridge.endCall(callID)
         for id in pending.filter({ $0.value.value.callID == callID }).map(\.key) { completeAction(id: id, succeeded: false) }
     }
     func updateCall(_ descriptor: SystemCallDescriptor) {

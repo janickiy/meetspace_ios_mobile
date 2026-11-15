@@ -1,0 +1,20 @@
+{
+  "date": "2026-11-15",
+  "host": "macOS arm64; Swift 6.4 CLI; SDK26.5; explicit TestingMacros plugin",
+  "registeredTests": 219,
+  "skipped": 5,
+  "passed": 214,
+  "suiteCounts": [
+    3,
+    179,
+    5,
+    12,
+    8,
+    7,
+    5
+  ],
+  "sshLoopbackEnabled": true,
+  "result": "PASS",
+  "logSHA256": "016d4a0541ad2a5b858a3b2804145a4830fa4e5a020b5650a8994236eabebbd2",
+  "command": "MEETSPACE_SSH_FIXTURE=1 swift test --package-path Packages/MeetSpaceKit --sdk /Library/Developer/CommandLineTools/SDKs/MacOSX26.5.sdk -Xswiftc -load-plugin-library -Xswiftc /Library/Developer/CommandLineTools/usr/lib/swift/host/plugins/testing/libTestingMacros.dylib"
+}

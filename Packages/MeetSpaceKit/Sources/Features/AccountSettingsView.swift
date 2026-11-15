@@ -3,11 +3,12 @@ import MeetSpaceCore
 import MeetSpaceDesignSystem
 
 private enum AccountSettingsSection: String, CaseIterable, Identifiable {
-    case profile = "Профиль", notifications = "Уведомления аккаунта", devices = "Устройства уведомлений", server = "Возможности сервера"
+    case profile = "Профиль", audio = "Аудио", notifications = "Уведомления аккаунта", devices = "Устройства уведомлений", server = "Возможности сервера"
     var id: Self { self }
     var icon: String {
         switch self {
         case .profile: "person.crop.circle"
+        case .audio: "mic"
         case .notifications: "bell"
         case .devices: "iphone.and.arrow.forward"
         case .server: "server.rack"
@@ -44,7 +45,7 @@ struct AccountSettingsView: View {
                                 .accessibilityIdentifier("settingsSection.\(section)")
                         }
                     }.padding(16).frame(width: 230).msCard()
-                    AccountSettingsContent(model: model, section: selection)
+                    AccountSettingsContent(model: model, section: selection, wide: true)
                 }.padding(24)
             } else {
                 ScrollView {
@@ -70,28 +71,32 @@ struct AccountSettingsView: View {
 private struct AccountSettingsContent: View {
     @Bindable var model: SettingsModel
     let section: AccountSettingsSection
+    var wide = false
     @FocusState private var profileNameFocused: Bool
     @State private var nativeProfileNameFocused = false
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 20) {
-                if section != .profile { Text(tr(section.rawValue)).font(MSTheme.font(24, weight: .semibold)) }
+                if section != .profile && section != .audio { Text(tr(section.rawValue)).font(MSTheme.font(24, weight: .semibold)) }
                 switch section {
                 case .profile: profile
+                case .audio: AccountAudioSettingsView(wide: wide)
                 case .notifications: preferences
                 case .devices: devices
                 case .server: server
                 }
-                if model.busy { ProgressView().accessibilityIdentifier("settingsLoading") }
-                if let information = model.information {
-                    Text(tr(information)).font(MSTheme.font(13)).foregroundStyle(MSTheme.muted).accessibilityIdentifier("settingsSaved")
+                if section != .audio {
+                    if model.busy { ProgressView().accessibilityIdentifier("settingsLoading") }
+                    if let information = model.information {
+                        Text(tr(information)).font(MSTheme.font(13)).foregroundStyle(MSTheme.muted).accessibilityIdentifier("settingsSaved")
+                    }
+                    Button(tr("Обновить настройки")) {
+                        profileNameFocused = false
+                        nativeProfileNameFocused = false
+                        Task { await model.load() }
+                    }
+                        .buttonStyle(MSButtonStyle(primary: false)).disabled(model.busy)
                 }
-                Button(tr("Обновить настройки")) {
-                    profileNameFocused = false
-                    nativeProfileNameFocused = false
-                    Task { await model.load() }
-                }
-                    .buttonStyle(MSButtonStyle(primary: false)).disabled(model.busy)
             }.padding(24).frame(maxWidth: 720).frame(maxWidth: .infinity, alignment: .topLeading)
         }.background(MSTheme.background)
             .scrollDismissesKeyboard(.interactively)
@@ -195,9 +200,8 @@ private struct AccountSettingsContent: View {
                 .font(MSTheme.font(12)).foregroundStyle(MSTheme.muted)
             Divider()
             Label(tr("Установка сервера по SSH"), systemImage: "terminal").font(MSTheme.font(16, weight: .semibold))
-            Text(tr("Недоступна в iOS: реализация не утверждена. Подключитесь к уже установленному серверу."))
-                .font(MSTheme.font(13)).foregroundStyle(MSTheme.muted).accessibilityIdentifier("sshUnavailable")
-            Button(tr("Установить сервер")) {}.buttonStyle(MSButtonStyle(primary: false)).disabled(!IOSFeatureAvailability.sshInstallationEnabled)
+            Text(tr("Откройте мастер «Развернуть свой сервер» на первом экране."))
+                .font(MSTheme.font(13)).foregroundStyle(MSTheme.muted).accessibilityIdentifier("installerAvailable")
         }
     }
     private func capabilityRow(_ title: String, value: String) -> some View {

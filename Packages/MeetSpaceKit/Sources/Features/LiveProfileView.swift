@@ -2,6 +2,7 @@ import SwiftUI
 import MeetSpaceCore
 import MeetSpaceDesignSystem
 import MeetSpaceMedia
+import MeetSpaceInstaller
 
 struct LiveProfileView: View {
     @Bindable var app: AppModel
@@ -80,7 +81,7 @@ struct LiveProfileView: View {
             .sheet(item: $deleting) { account in DeleteAccountView(identity: app.identity, account: account) }
             .sheet(isPresented: $licenses) {
                 NavigationStack {
-                    ScrollView { Text(WebRTCLibrary.licenseText).font(.system(size: 11, design: .monospaced)).textSelection(.enabled).padding() }
+                    ScrollView { Text(WebRTCLibrary.licenseText + "\n\n" + InstallerLibrary.licenseText).font(.system(size: 11, design: .monospaced)).textSelection(.enabled).padding() }
                         .navigationTitle(tr("Лицензии компонентов"))
                         .toolbar { ToolbarItem(placement: .confirmationAction) { Button(tr("Готово")) { licenses = false } } }
                 }

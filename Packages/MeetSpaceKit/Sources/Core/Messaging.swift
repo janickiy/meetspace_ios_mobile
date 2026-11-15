@@ -63,6 +63,10 @@ public struct CallHistory: Codable, Equatable, Sendable {
     public let durationSec: Int64
 }
 
+public struct ForwardedMessageOrigin: Codable, Equatable, Sendable {
+    public let senderName: String
+}
+
 public struct ChatMessage: Codable, Equatable, Sendable, Identifiable {
     public let id: UUID
     public let sequence: Int64
@@ -79,12 +83,19 @@ public struct ChatMessage: Codable, Equatable, Sendable, Identifiable {
     public let deletedAt: Date?
     public let attachments: [Attachment]
     public let call: CallHistory?
+    public let pinned: Bool
+    public let forwardedFrom: ForwardedMessageOrigin?
+    public var isActionable: Bool { !isDeleted && call == nil }
+    public var shareText: String {
+        guard isActionable else { return "" }
+        return ([text] + attachments.map(\.filename)).filter { !$0.isEmpty }.joined(separator: "\n")
+    }
     public var isDeleted: Bool { deletedAt != nil }
-    public func canEdit(as user: UUID) -> Bool { senderId == user && !isDeleted && call == nil }
+    public func canEdit(as user: UUID) -> Bool { senderId == user && isActionable && forwardedFrom == nil }
 
     enum CodingKeys: String, CodingKey {
         case id, sequence, conversationId, senderId, senderName, clientRequestId, text, replyTo, replyPreview
-        case version, createdAt, updatedAt, deletedAt, attachments, call
+        case version, createdAt, updatedAt, deletedAt, attachments, call, pinned, forwardedFrom
     }
     public init(from decoder: Decoder) throws {
         let c = try decoder.container(keyedBy: CodingKeys.self)
@@ -107,6 +118,8 @@ public struct ChatMessage: Codable, Equatable, Sendable, Identifiable {
         deletedAt = try c.decodeIfPresent(Date.self, forKey: .deletedAt)
         attachments = try c.decodeIfPresent([Attachment].self, forKey: .attachments) ?? []
         call = try c.decodeIfPresent(CallHistory.self, forKey: .call)
+        pinned = try c.decodeIfPresent(Bool.self, forKey: .pinned) ?? false
+        forwardedFrom = try c.decodeIfPresent(ForwardedMessageOrigin.self, forKey: .forwardedFrom)
     }
     public func encode(to encoder: Encoder) throws {
         var c = encoder.container(keyedBy: CodingKeys.self)
@@ -118,6 +131,7 @@ public struct ChatMessage: Codable, Equatable, Sendable, Identifiable {
         try c.encode(version, forKey: .version); try c.encode(createdAt, forKey: .createdAt)
         try c.encode(updatedAt, forKey: .updatedAt); try c.encodeIfPresent(deletedAt, forKey: .deletedAt)
         try c.encode(attachments, forKey: .attachments); try c.encodeIfPresent(call, forKey: .call)
+        try c.encode(pinned, forKey: .pinned); try c.encodeIfPresent(forwardedFrom, forKey: .forwardedFrom)
     }
 }
 
@@ -152,6 +166,9 @@ public struct MessageTimeline: Sendable {
     public init() {}
     public var messages: [ChatMessage] {
         byID.values.sorted { $0.sequence == $1.sequence ? $0.id.uuidString < $1.id.uuidString : $0.sequence < $1.sequence }
+    }
+    public mutating func remove(_ ids: Set<UUID>) {
+        for id in ids { byID.removeValue(forKey: id) }
     }
     public mutating func merge(_ incoming: [ChatMessage], conversation: UUID) {
         for message in incoming where message.conversationId == conversation {

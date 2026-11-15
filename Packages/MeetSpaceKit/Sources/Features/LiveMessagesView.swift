@@ -1,6 +1,11 @@
 import SwiftUI
 import MeetSpaceCore
 import MeetSpaceDesignSystem
+#if canImport(UIKit)
+import UIKit
+#elseif canImport(AppKit)
+import AppKit
+#endif
 
 struct LiveMessagesView: View {
     @Bindable var app: AppModel
@@ -10,7 +15,7 @@ struct LiveMessagesView: View {
     @Environment(\.dynamicTypeSize) private var typeSize
     var body: some View {
         GeometryReader { proxy in
-            let wide = proxy.size.width >= 800 && !typeSize.isAccessibilitySize
+            let wide = proxy.size.width >= 780 && !typeSize.isAccessibilitySize
             HStack(spacing: 0) {
                 conversationColumn(wide: wide)
                     .frame(width: wide ? 340 : nil).frame(maxWidth: wide ? 340 : .infinity)
@@ -52,7 +57,7 @@ struct LiveMessagesView: View {
     }
     private var conversationHeader: some View {
         VStack(spacing: 12) {
-            PageHeader(title: "Сообщения") {
+            PageHeader(title: "Чаты") {
                 IconButton("square.and.pencil", label: "Новый чат") { creating = true }
                     .accessibilityIdentifier("newChat")
             }
@@ -105,7 +110,7 @@ struct LiveMessagesView: View {
                     if let time = item.lastMessageAt { Text(time, style: .time).font(MSTheme.font(10)).foregroundStyle(MSTheme.muted) }
                 }
                 HStack {
-                    Text(item.preview.isEmpty ? tr("Пока нет сообщений") : item.preview).font(MSTheme.font(12)).foregroundStyle(MSTheme.muted).lineLimit(typeSize.isAccessibilitySize ? nil : 2)
+                    Text(model.conversationPreview(item).isEmpty ? tr("Пока нет сообщений") : model.conversationPreview(item)).font(MSTheme.font(12)).foregroundStyle(MSTheme.muted).lineLimit(typeSize.isAccessibilitySize ? nil : 2)
                     Spacer(minLength: 0)
                     if item.unreadCount > 0 {
                         Text("\(item.unreadCount)").font(MSTheme.font(11, weight: .semibold)).foregroundStyle(MSTheme.surface)
@@ -126,6 +131,9 @@ struct LiveThreadView: View {
     @State private var query = ""
     @State private var showsSearch = false
     @State private var deleting: ChatMessage?
+    @State private var localDelete = false
+    @State private var forwardingMessage: ChatMessage?
+    private var selectedShareText: String { model.selectedMessages.map { "\($0.senderName):\n\($0.shareText)" }.joined(separator: "\n\n") }
     @Environment(\.dynamicTypeSize) private var typeSize
     private var threadHeader: some View {
         VStack(alignment: .leading, spacing: 8) {
@@ -154,6 +162,8 @@ struct LiveThreadView: View {
                     Task { await calls.startOutgoing(peer: DirectCallPeer(id: peer.id, displayName: peer.displayName), isVideo: true) }
                 }.fixedSize().accessibilityIdentifier("startVideoCall")
             }
+            IconButton("checkmark.circle", label: "Выбрать сообщения") { showsSearch = false; query = ""; model.beginMessageSelection() }
+                .fixedSize().accessibilityIdentifier("message.selectMode")
             IconButton("magnifyingglass", label: "Поиск сообщений") { showsSearch.toggle(); query = "" }.fixedSize()
             if model.conversation?.isGroup == true {
                 IconButton("info.circle", label: "О группе") { groupDetails = true }.fixedSize()
@@ -162,7 +172,7 @@ struct LiveThreadView: View {
     }
     var body: some View {
         VStack(spacing: 0) {
-            threadHeader
+            if model.selectingMessages { selectionHeader } else { threadHeader }
             if let error = calls?.error, calls?.isActive != true {
                 Text(tr(error)).font(MSTheme.font(12)).foregroundStyle(MSTheme.danger).padding(.horizontal, 16)
             }
@@ -212,10 +222,11 @@ struct LiveThreadView: View {
                 HStack { Text(tr(error)); Spacer(); Button(tr("Закрыть")) { model.error = nil } }
                     .font(MSTheme.font(12)).foregroundStyle(MSTheme.danger).padding(12)
             }
-            if model.conversation?.id == id { composer }
+            if model.selectingMessages { selectionToolbar }
+            else if model.conversation?.id == id { composer }
         }.background(MSTheme.background)
             .task(id: id) { await model.open(id) }
-            .onDisappear { model.hide(id) }
+            .onDisappear { model.hide(id); model.cancelMessageSelection() }
             .task(id: query) {
                 do { try await Task.sleep(for: .milliseconds(350)) } catch { return }
                 await model.searchMessages(query)
@@ -227,11 +238,64 @@ struct LiveThreadView: View {
                 }
             }
             .sheet(isPresented: $groupDetails) { GroupDetailsView(model: model, id: id) }
+            .sheet(item: $forwardingMessage) { MessageForwardView(model: model, messages: [$0]) }
+            .sheet(isPresented: $localDelete) { localDeleteSheet }
+            .onChange(of: model.selectedMessages.count) { _, count in if count == 0 { localDelete = false } }
             .confirmationDialog(tr("Удалить сообщение?"), isPresented: Binding(get: { deleting != nil }, set: { if !$0 { deleting = nil } })) {
-                Button(tr("Удалить"), role: .destructive) {
+                Button(tr("Удалить для всех"), role: .destructive) {
                     if let message = deleting { Task { await model.delete(message) } }; deleting = nil
                 }
+            } message: { Text(tr("Сообщение будет удалено для участников чата.")) }
+    }
+    private var selectionHeader: some View {
+        HStack(spacing: 8) {
+            IconButton("xmark", label: "Отменить выбор сообщений") { model.cancelMessageSelection() }
+                .accessibilityIdentifier("message.cancelSelection")
+            VStack(alignment: .leading, spacing: 3) {
+                Text("\(tr("Выбрано")): \(model.selectedMessages.count)").font(MSTheme.font(15, weight: .semibold))
+                    .accessibilityIdentifier("message.selectionCount")
+                Text(tr("Выберите сообщения")).font(MSTheme.font(11)).foregroundStyle(MSTheme.muted)
             }
+            Spacer(minLength: 0)
+            Button(tr(!model.selectableMessages.isEmpty && model.selectedMessages.count == model.selectableMessages.count ? "Снять выбор" : "Выбрать все")) {
+                model.toggleAllMessages()
+            }.frame(minHeight: 44).accessibilityIdentifier("message.selectAll")
+        }.padding(12).background(MSTheme.surface).disabled(model.hidingMessages)
+    }
+    private var selectionToolbar: some View {
+        ViewThatFits(in: .horizontal) {
+            HStack(spacing: 16) { selectedShare; selectedDelete }
+            VStack(spacing: 8) { selectedShare; selectedDelete }
+        }.frame(maxWidth: .infinity).padding(12).background(MSTheme.surface)
+    }
+    private var selectedShare: some View {
+        ShareLink(item: selectedShareText) { Label(tr("Поделиться"), systemImage: "square.and.arrow.up").frame(minHeight: 44) }
+            .disabled(model.selectedMessages.isEmpty || model.hidingMessages).accessibilityIdentifier("message.shareSelected")
+    }
+    private var selectedDelete: some View {
+        Button(role: .destructive) { model.error = nil; localDelete = true } label: {
+            Label("\(tr("Удалить")) (\(model.selectedMessages.count))", systemImage: "trash").frame(minHeight: 44)
+        }.disabled(model.selectedMessages.isEmpty || model.hidingMessages).accessibilityIdentifier("message.deleteSelected")
+    }
+    private var localDeleteSheet: some View {
+        NavigationStack {
+            ScrollView {
+                VStack(alignment: .leading, spacing: 20) {
+                    Text("\(tr("Выбрано сообщений")): \(model.selectedMessages.count)").font(MSTheme.font(15, weight: .semibold))
+                    Text(tr("Сообщения будут удалены из вашей истории на этом устройстве. У других участников они останутся."))
+                        .font(MSTheme.font(14)).foregroundStyle(MSTheme.muted)
+                    if let error = model.error { Text(tr(error)).foregroundStyle(MSTheme.danger) }
+                    if model.hidingMessages { ProgressView() }
+                    Button(role: .destructive) {
+                        Task { if await model.hideSelectedMessages() { localDelete = false } }
+                    } label: { Label(tr("Удалить у меня"), systemImage: "trash").frame(maxWidth: .infinity, minHeight: 46) }
+                        .buttonStyle(.borderedProminent).tint(MSTheme.danger)
+                        .disabled(model.hidingMessages || model.selectedMessages.isEmpty)
+                        .accessibilityIdentifier("message.confirmLocalDelete")
+                }.padding(24)
+            }.background(MSTheme.background).navigationTitle(tr("Удалить выбранные сообщения?"))
+                .toolbar { ToolbarItem(placement: .cancellationAction) { Button(tr("Отмена")) { localDelete = false }.disabled(model.hidingMessages) } }
+        }.presentationDetents([.medium, .large]).interactiveDismissDisabled(model.hidingMessages)
     }
     private var composer: some View {
         VStack(spacing: 8) {
@@ -272,9 +336,22 @@ struct LiveThreadView: View {
     }
     private func bubble(_ message: ChatMessage) -> some View {
         let own = message.senderId == model.account.user.id
-        return VStack(alignment: .leading, spacing: 6) {
-            Text(message.senderName).font(MSTheme.font(11, weight: .semibold)).foregroundStyle(MSTheme.accent)
-            if let reply = message.replyPreview, !message.isDeleted {
+        return HStack(alignment: .center, spacing: 8) {
+            if model.selectingMessages && message.isActionable {
+                Button { model.toggleMessageSelection(message.id) } label: {
+                    Image(systemName: model.selectedMessageIDs.contains(message.id) ? "checkmark.circle.fill" : "circle")
+                        .font(.system(size: 23)).frame(width: 44, height: 44)
+                }.accessibilityLabel(tr("Выбрать сообщение")).accessibilityValue(tr(model.selectedMessageIDs.contains(message.id) ? "Выбрано" : "Не выбрано"))
+                    .accessibilityIdentifier("message.select.\(message.id.uuidString.lowercased())")
+            }
+            VStack(alignment: .leading, spacing: 6) {
+            if let forwarded = message.forwardedFrom, !message.isDeleted {
+                Label("\(tr("Переслано от")) \(forwarded.senderName)", systemImage: "arrowshape.turn.up.right")
+                    .font(MSTheme.font(11)).foregroundStyle(MSTheme.muted)
+            }
+            if message.pinned && !message.isDeleted { Label(tr("Закреплено"), systemImage: "pin.fill").font(MSTheme.font(10)).foregroundStyle(MSTheme.accent) }
+            Text(own ? tr("Вы") : message.senderName).font(MSTheme.font(11, weight: .semibold)).foregroundStyle(MSTheme.accent)
+            if let reply = message.replyPreview, !message.isDeleted, !model.hiddenMessageIDs.contains(reply.id) {
                 VStack(alignment: .leading, spacing: 3) {
                     Text(reply.senderName).font(MSTheme.font(11, weight: .semibold))
                     Text(reply.deleted ? tr("Сообщение удалено") : reply.text).font(MSTheme.font(12)).lineLimit(3)
@@ -290,15 +367,29 @@ struct LiveThreadView: View {
             .background(own ? MSTheme.accentSoft : MSTheme.surface, in: RoundedRectangle(cornerRadius: 14))
             .frame(maxWidth: .infinity, alignment: own ? .trailing : .leading)
             .contextMenu {
-                if !message.isDeleted && message.call == nil {
+                if message.isActionable && !model.selectingMessages {
+                    ShareLink(item: message.shareText) { Label(tr("Поделиться"), systemImage: "square.and.arrow.up") }
+                    Button(tr("Копировать"), systemImage: "doc.on.doc") {
+                        #if canImport(UIKit)
+                        UIPasteboard.general.string = message.shareText
+                        #elseif canImport(AppKit)
+                        NSPasteboard.general.clearContents(); NSPasteboard.general.setString(message.shareText, forType: .string)
+                        #endif
+                    }
+                    Button(tr("Переслать"), systemImage: "arrowshape.turn.up.right") { forwardingMessage = message }
+                    Button(tr("Выбрать"), systemImage: "checkmark.circle") { showsSearch = false; query = ""; model.beginMessageSelection(message) }
+                    Button(tr(message.pinned ? "Открепить" : "Закрепить"), systemImage: "pin") { Task { await model.pin(message) } }
                     Button(tr("Ответить"), systemImage: "arrowshape.turn.up.left") { model.reply = message; model.editing = nil }
                 }
-                if message.canEdit(as: model.account.user.id) {
+                if message.canEdit(as: model.account.user.id) && !model.selectingMessages {
                     if model.uploads.isEmpty {
                         Button(tr("Редактировать"), systemImage: "pencil") { model.editing = message; model.reply = nil; model.text = message.text }
                     }
-                    Button(tr("Удалить"), systemImage: "trash", role: .destructive) { deleting = message }
                 }
+                if own && message.isActionable && !model.selectingMessages {
+                    Button(tr("Удалить для всех"), systemImage: "trash", role: .destructive) { deleting = message }
+                }
+            }
             }
             .accessibilityIdentifier("message.\(message.id.uuidString.lowercased())")
     }

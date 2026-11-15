@@ -1,5 +1,6 @@
 #if os(iOS)
 import Foundation
+import MeetSpaceCore
 @preconcurrency import WebRTC
 
 /// The ObjC SDK is thread safe; all mutations are serialized by MainActor. Delegate arguments cross
@@ -43,7 +44,9 @@ private final class RTCReference<Value>: @unchecked Sendable {
         factory = RTCPeerConnectionFactory(encoderFactory: RTCDefaultVideoEncoderFactory(),
                                           decoderFactory: RTCDefaultVideoDecoderFactory())
         streamID = configuration.mediaPeerID.uuidString.lowercased()
-        audioTrack = factory.audioTrack(withTrackId: "microphone-" + streamID)
+        let noise = DeviceAudioPreferences.load().noiseSuppression ? "true" : "false"
+        let source = factory.audioSource(with: RTCMediaConstraints(mandatoryConstraints: nil, optionalConstraints: ["googNoiseSuppression": noise]))
+        audioTrack = factory.audioTrack(with: source, trackId: "microphone-" + streamID)
         videoSource = factory.videoSource()
         screenSource = factory.videoSource(forScreenCast: true)
         videoTrack = factory.videoTrack(with: videoSource, trackId: videoTrackID)

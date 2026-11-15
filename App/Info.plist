@@ -10,6 +10,7 @@
     <key>CFBundlePackageType</key><string>APPL</string>
     <key>CFBundleShortVersionString</key><string>$(MARKETING_VERSION)</string>
     <key>CFBundleVersion</key><string>$(CURRENT_PROJECT_VERSION)</string>
+    <key>MeetSpaceReleaseVersion</key><string>0.2.0-beta</string>
     <key>LSRequiresIPhoneOS</key><true/>
     <key>MeetSpaceBroadcastAppGroup</key><string>$(BROADCAST_APP_GROUP)</string>
     <key>MeetSpaceBroadcastExtension</key><string>com.meetspace.ios.BroadcastUpload</string>

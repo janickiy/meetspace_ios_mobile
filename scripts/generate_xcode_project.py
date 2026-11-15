@@ -92,13 +92,13 @@ def make_project():
                         SUPPORTED_PLATFORMS="iphoneos iphonesimulator", SUPPORTS_MACCATALYST="NO", SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD="NO")
         if name == "MeetSpace":
             settings.update(CODE_SIGN_ENTITLEMENTS="App/MeetSpace.entitlements", INFOPLIST_FILE="App/Info.plist", GENERATE_INFOPLIST_FILE="NO", MARKETING_VERSION="0.2.0",
-                            CURRENT_PROJECT_VERSION="1", ASSETCATALOG_COMPILER_APPICON_NAME="AppIcon",
+                            CURRENT_PROJECT_VERSION="2", ASSETCATALOG_COMPILER_APPICON_NAME="AppIcon",
                             LD_RUNPATH_SEARCH_PATHS=["$(inherited)", "@executable_path/Frameworks"])
         elif name == "BroadcastUpload":
             settings.update(CODE_SIGN_ENTITLEMENTS="BroadcastExtension/MeetSpaceBroadcast.entitlements",
                             INFOPLIST_FILE="BroadcastExtension/Info.plist", GENERATE_INFOPLIST_FILE="NO",
                             APPLICATION_EXTENSION_API_ONLY="YES", SKIP_INSTALL="YES", MARKETING_VERSION="0.2.0",
-                            CURRENT_PROJECT_VERSION="1", LD_RUNPATH_SEARCH_PATHS=["$(inherited)", "@executable_path/Frameworks", "@executable_path/../../Frameworks"])
+                            CURRENT_PROJECT_VERSION="2", LD_RUNPATH_SEARCH_PATHS=["$(inherited)", "@executable_path/Frameworks", "@executable_path/../../Frameworks"])
         elif name == "MeetSpaceTests":
             settings.update(TEST_HOST="$(BUILT_PRODUCTS_DIR)/MeetSpace.app/MeetSpace",
                             BUNDLE_LOADER="$(TEST_HOST)", LD_RUNPATH_SEARCH_PATHS=["$(inherited)", "@executable_path/Frameworks", "@loader_path/Frameworks"])

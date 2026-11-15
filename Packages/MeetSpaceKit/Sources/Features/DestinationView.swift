@@ -32,7 +32,7 @@ struct DestinationView: View {
             case .audioSettings, .videoSettings, .notificationSettings, .appearance, .connection, .accounts:
                 SettingsDetailView(model: model, route: route)
             case .deploy, .fingerprint, .preflight, .install, .complete, .installError:
-                DeploymentPlaceholder(route: route)
+                InstallerView(app: model)
             }
         }.navigationTitle(tr(route.title)).msInlineTitle()
     }
@@ -142,20 +142,6 @@ private struct CalendarScreen: View {
                 DatePicker(tr("Выберите день"), selection: $date, displayedComponents: .date).datePickerStyle(.graphical).msCard()
                 FeatureNotice("Календарь показывает локальный выбор даты. Серверные встречи ещё не подключены.")
                 Button(tr("Запланировать встречу")) { model.navigate(.scheduleMeeting) }.buttonStyle(MSButtonStyle())
-            }.padding(24).frame(maxWidth: 720).frame(maxWidth: .infinity)
-        }.background(MSTheme.background)
-    }
-}
-
-private struct DeploymentPlaceholder: View {
-    let route: AppRoute
-    var body: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: 24) {
-                StepHeading(step: "СВОЁ ПРОСТРАНСТВО", title: route.title, subtitle: "Создайте пространство на своём VPS.")
-                FeatureNotice("Развёртывание по SSH будет реализовано отдельным этапом. Подключение, проверка отпечатка и установка сейчас недоступны.")
-                // Never request an SSH password or display a made-up host fingerprint/result.
-                Image(systemName: "server.rack").font(.system(size: 54)).foregroundStyle(MSTheme.accent).frame(maxWidth: .infinity).padding(30)
             }.padding(24).frame(maxWidth: 720).frame(maxWidth: .infinity)
         }.background(MSTheme.background)
     }

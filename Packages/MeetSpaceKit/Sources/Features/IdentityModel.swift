@@ -161,6 +161,7 @@ import MeetSpaceCalling
         var localClean = pushClean
         do { try await dependencies.credentials.delete(account.key) } catch { localClean = false }
         do { try await AccountFileStore(account: account).clear() } catch { localClean = false }
+        do { try await DeviceHiddenChatMessagesStore.shared.erase(scope: account.id) } catch { localClean = false }
         index.remove(account.id)
         do { try await dependencies.accounts.save(index) } catch { localClean = false }
         information = localClean ? "Аккаунт удалён на сервере." : "Сервер подтвердил удаление аккаунта. Не удалось полностью очистить локальные данные."
@@ -174,6 +175,7 @@ import MeetSpaceCalling
             var cleaned = true
             do { try await dependencies.credentials.delete(account.key) } catch { cleaned = false }
             do { try await AccountFileStore(account: account).clear() } catch { cleaned = false }
+            do { try await DeviceHiddenChatMessagesStore.shared.erase(scope: account.id) } catch { cleaned = false }
             index.remove(account.id)
             do { try await dependencies.accounts.save(index) } catch { cleaned = false }
             information = cleaned ? "Аккаунт удалён на сервере." : "Сервер подтвердил удаление аккаунта. Не удалось полностью очистить локальные данные."

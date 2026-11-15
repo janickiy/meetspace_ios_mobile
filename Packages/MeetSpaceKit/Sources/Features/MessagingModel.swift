@@ -43,6 +43,11 @@ public struct DownloadState: Identifiable {
     public private(set) var searchResults: [ChatMessage] = []
     public private(set) var searchCursor: String?
     public private(set) var searching = false
+    public private(set) var hiddenMessageIDs: Set<UUID> = []
+    public private(set) var selectedMessageIDs: Set<UUID> = []
+    public private(set) var selectingMessages = false
+    public private(set) var hidingMessages = false
+    public private(set) var forwarding = false
     public private(set) var realtimeState: RealtimeState = .disconnected
     public private(set) var pending: [PendingMessage] = []
     public private(set) var uploads: [UploadState] = []
@@ -59,6 +64,8 @@ public struct DownloadState: Identifiable {
     @ObservationIgnored public var onCallUpdate: (@MainActor (DirectCall) -> Void)?
     @ObservationIgnored public var onRealtimeConnected: (@MainActor () -> Void)?
     @ObservationIgnored private let realtime: UserRealtime
+    @ObservationIgnored private let hiddenStore: any HiddenChatMessagesStore
+    @ObservationIgnored private var hiddenLoaded = false
     @ObservationIgnored private let files: AccountFileStore
     @ObservationIgnored private var realtimeTask: Task<Void, Never>?
     @ObservationIgnored private var tasks: [UUID: Task<Void, Never>] = [:]
@@ -74,8 +81,9 @@ public struct DownloadState: Identifiable {
     @ObservationIgnored private var visible = false
 
     public init(client: AuthenticatedClient, downloads: any RequestTransport = URLSessionRequestTransport(),
-                sockets: any RealtimeSocketFactory = URLSessionSocketFactory(), files: AccountFileStore? = nil) {
-        account = client.account; self.client = client
+                sockets: any RealtimeSocketFactory = URLSessionSocketFactory(), files: AccountFileStore? = nil,
+                hiddenMessages: any HiddenChatMessagesStore = DeviceHiddenChatMessagesStore.shared) {
+        account = client.account; self.client = client; self.hiddenStore = hiddenMessages
         let repository = MessagingRepository(client: client, downloads: downloads)
         self.repository = repository
         realtime = UserRealtime(origin: client.account.server, ticket: { try await repository.ticket().ticket }, sockets: sockets)
@@ -121,7 +129,7 @@ public struct DownloadState: Identifiable {
     }
     public func close() async {
         guard active else { return }
-        active = false; visible = false
+        active = false; visible = false; cancelMessageSelection()
         listEpoch = UUID(); historyEpoch = UUID(); searchEpoch = UUID()
         selectionEpoch = UUID()
         let running = Array(tasks.values)
@@ -142,6 +150,8 @@ public struct DownloadState: Identifiable {
         let search = String(listSearch.prefix(100)); let unread = onlyUnread; let groups = groupFilter
         if !more && conversations.isEmpty { listState = .loading }
         do {
+            try await loadHiddenMessages()
+            guard active, listEpoch == epoch else { return }
             let page = try await repository.conversations(cursor: cursor, search: search, type: groups ? "group" : nil, unreadOnly: unread)
             try Task.checkCancellation()
             guard active, listEpoch == epoch else { return }
@@ -163,6 +173,7 @@ public struct DownloadState: Identifiable {
         guard active else { return }
         selectionEpoch = UUID(); let epoch = selectionEpoch
         if conversation?.id != id {
+            cancelMessageSelection()
             await clearComposer()
             guard active, selectionEpoch == epoch else { return }
             conversation = conversations.first { $0.id == id }
@@ -183,6 +194,8 @@ public struct DownloadState: Identifiable {
         // Reset BEFORE the request; events received during the fetch are merged by version.
         timeline = MessageTimeline()
         do {
+            try await loadHiddenMessages()
+            guard active, historyEpoch == epoch else { return }
             let detail = try await repository.conversation(id)
             guard active, historyEpoch == epoch else { return }
             conversation = detail
@@ -190,6 +203,7 @@ public struct DownloadState: Identifiable {
             try Task.checkCancellation()
             guard active, historyEpoch == epoch, conversation?.id == id else { return }
             merge(page.items, in: id); historyCursor = nonempty(page.nextCursor)
+            pruneMessageSelection()
             historyState = timeline.messages.isEmpty ? .empty : .content
             markVisibleRead()
         } catch is CancellationError { }
@@ -227,13 +241,13 @@ public struct DownloadState: Identifiable {
             guard active, conversation?.id == id, searchEpoch == epoch else { return }
             var results = MessageTimeline()
             results.merge(searchResults + page.items, conversation: id)
-            searchResults = results.messages; searchCursor = nonempty(page.nextCursor)
+            searchResults = results.messages.filter { !hiddenMessageIDs.contains($0.id) }; searchCursor = nonempty(page.nextCursor)
         } catch is CancellationError { }
         catch { if active, searchEpoch == epoch { self.error = userMessage(error) } }
     }
 
     public var canSend: Bool {
-        active && !savingEdit && conversation != nil && historyState != .loading &&
+        active && !selectingMessages && !savingEdit && conversation != nil && historyState != .loading &&
         text.unicodeScalars.count <= 4000 &&
         uploads.allSatisfy { $0.attachment != nil } &&
         (!text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || !uploads.isEmpty || editing?.attachments.isEmpty == false)
@@ -281,12 +295,126 @@ public struct DownloadState: Identifiable {
         }
     }
     public func delete(_ message: ChatMessage) async {
-        guard active, message.canEdit(as: account.user.id), let id = conversation?.id else { return }
+        guard active, message.senderId == account.user.id, message.isActionable,
+              let id = conversation?.id, message.conversationId == id, !hiddenMessageIDs.contains(message.id) else { return }
         do {
             let deleted = try await repository.delete(id, message: message.id)
             guard active, conversation?.id == id else { return }
-            merge([deleted], in: id); scheduleListRefresh()
+            merge([deleted], in: id); updateSearch([deleted]); scheduleListRefresh()
         } catch { if active { self.error = userMessage(error) } }
+    }
+
+    public var selectableMessages: [ChatMessage] { timeline.messages.filter { $0.isActionable && !hiddenMessageIDs.contains($0.id) } }
+    public var selectedMessages: [ChatMessage] { selectableMessages.filter { selectedMessageIDs.contains($0.id) } }
+    public func beginMessageSelection(_ message: ChatMessage? = nil) {
+        guard active, !hidingMessages else { return }
+        selectingMessages = true
+        selectedMessageIDs = []
+        if let message, message.conversationId == conversation?.id, message.isActionable,
+           !hiddenMessageIDs.contains(message.id),
+           (timeline.messages + searchResults).contains(where: { $0.id == message.id }) {
+            timeline.merge([message], conversation: message.conversationId!)
+            selectedMessageIDs.insert(message.id)
+        }
+    }
+    public func toggleMessageSelection(_ id: UUID) {
+        guard active, selectingMessages, !hidingMessages, selectableMessages.contains(where: { $0.id == id }) else { return }
+        if !selectedMessageIDs.insert(id).inserted { selectedMessageIDs.remove(id) }
+    }
+    public func toggleAllMessages() {
+        guard active, selectingMessages, !hidingMessages else { return }
+        let ids = Set(selectableMessages.map(\.id))
+        selectedMessageIDs = selectedMessageIDs == ids ? [] : ids
+    }
+    public func cancelMessageSelection() { selectingMessages = false; selectedMessageIDs = [] }
+    /// As on Android, bulk removal is local and never calls server DELETE.
+    @discardableResult public func hideSelectedMessages() async -> Bool {
+        guard active, !hidingMessages, let id = conversation?.id, !selectedMessageIDs.isEmpty,
+              selectedMessages.count == selectedMessageIDs.count else { return false }
+        let ids = selectedMessageIDs, epoch = selectionEpoch
+        hidingMessages = true; error = nil
+        defer { hidingMessages = false }
+        do {
+            let stored = try await hiddenStore.hide(ids, scope: account.id)
+            guard active else { return false }
+            hiddenMessageIDs.formUnion(stored); hiddenLoaded = true
+            timeline.remove(stored); searchResults.removeAll { stored.contains($0.id) }
+            if historyState == .content && timeline.messages.isEmpty { historyState = .empty }
+            if let reply, stored.contains(reply.id) { self.reply = nil }
+            if let editing, stored.contains(editing.id) { self.editing = nil; text = "" }
+            if conversation?.id == id, selectionEpoch == epoch { cancelMessageSelection() }
+            pruneMessageSelection()
+            return true
+        } catch {
+            if active { self.error = "Не удалось сохранить список удалённых на этом устройстве сообщений." }
+            return false
+        }
+    }
+    public func conversationPreview(_ item: Conversation) -> String {
+        guard let last = item.lastMessageID, hiddenMessageIDs.contains(last) else { return item.preview }
+        guard item.id == conversation?.id, let previous = timeline.messages.last else { return "" }
+        return previous.isDeleted ? "Сообщение удалено" : previous.shareText
+    }
+    public func pin(_ message: ChatMessage) async {
+        guard active, message.isActionable, let id = conversation?.id, message.conversationId == id,
+              !hiddenMessageIDs.contains(message.id) else { return }
+        do {
+            try await repository.pin(id, message: message.id, pinned: !message.pinned)
+            guard active, conversation?.id == id else { return }
+            await reloadHistory(id)
+        } catch { if active { self.error = userMessage(error) } }
+    }
+    /// Idempotency key belongs to the recipient in the forwarding sheet and survives retries.
+    public func forward(_ messages: [ChatMessage], to destination: UUID, requestID: UUID) async throws {
+        try await performForward(messages, requestID: requestID) { destination }
+    }
+    public func forward(_ messages: [ChatMessage], toUser userID: UUID, requestID: UUID) async throws {
+        try await performForward(messages, requestID: requestID) {
+            try await self.repository.direct(userID: userID).id
+        }
+    }
+    private func performForward(_ messages: [ChatMessage], requestID: UUID,
+                                destination: () async throws -> UUID) async throws {
+        try Task.checkCancellation()
+        guard active, !forwarding, let source = conversation?.id, !messages.isEmpty else { throw ClientError.invalidInput }
+        func validMessages() -> Bool {
+            active && conversation?.id == source && messages.allSatisfy({ original in
+                  let current = (timeline.messages + searchResults).filter { $0.id == original.id }.max { $0.version < $1.version }
+                  return original.conversationId == source && current?.conversationId == source &&
+                      current?.isActionable == true && !hiddenMessageIDs.contains(original.id)
+              })
+        }
+        guard validMessages() else { throw ClientError.invalidInput }
+        forwarding = true
+        defer { forwarding = false }
+        let target = try await destination()
+        try Task.checkCancellation()
+        guard validMessages() else { throw ClientError.invalidInput }
+        _ = try await repository.forward(target, source: source, messages: messages.map(\.id), requestID: requestID)
+        try Task.checkCancellation()
+        guard active else { throw CancellationError() }
+        scheduleListRefresh()
+        if conversation?.id == target { await reloadHistory(target) }
+    }
+    private func loadHiddenMessages() async throws {
+        guard !hiddenLoaded else { return }
+        do {
+            let ids = try await hiddenStore.load(scope: account.id)
+            guard active else { throw CancellationError() }
+            hiddenMessageIDs.formUnion(ids); hiddenLoaded = true
+        } catch is CancellationError { throw CancellationError() }
+        catch { throw ClientError.storage }
+    }
+    private func pruneMessageSelection() {
+        selectedMessageIDs.formIntersection(Set(selectableMessages.map(\.id)))
+    }
+    private func updateSearch(_ incoming: [ChatMessage]) {
+        let updates = Dictionary(incoming.map { ($0.id, $0) }, uniquingKeysWith: { _, new in new })
+        searchResults = searchResults.compactMap { old in
+            if hiddenMessageIDs.contains(old.id) { return nil }
+            if let fresh = updates[old.id], fresh.version >= old.version { return fresh }
+            return old
+        }
     }
 
     public func importFiles(_ urls: [URL]) async {
@@ -359,6 +487,7 @@ public struct DownloadState: Identifiable {
     public func removedConversation(_ id: UUID) async {
         conversations.removeAll { $0.id == id }
         if conversation?.id == id {
+            cancelMessageSelection()
             historyEpoch = UUID(); searchEpoch = UUID(); conversation = nil; timeline = MessageTimeline()
             searchResults = []; historyCursor = nil; await clearComposer()
         }
@@ -383,7 +512,9 @@ public struct DownloadState: Identifiable {
         scheduleListRefresh()
     }
     private func merge(_ messages: [ChatMessage], in id: UUID) {
-        timeline.merge(messages, conversation: id)
+        timeline.merge(messages.filter { !hiddenMessageIDs.contains($0.id) }, conversation: id)
+        updateSearch(messages)
+        pruneMessageSelection()
         let acknowledged = Set(messages.filter { $0.senderId == account.user.id }.map(\.clientRequestId))
         pending.removeAll { $0.conversation == id && acknowledged.contains($0.id) }
         if !timeline.messages.isEmpty { historyState = .content }
