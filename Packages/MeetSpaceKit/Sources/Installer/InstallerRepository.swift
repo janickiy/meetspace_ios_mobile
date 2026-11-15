@@ -91,7 +91,7 @@ public actor InstallerRepository {
     }
 }
 func resource(_ name: String) throws -> Data {
-    guard let url = Bundle.module.url(forResource: name, withExtension: nil, subdirectory: "Resources") else { throw InstallerFailure.response }
+    guard let url = Bundle.module.url(forResource: name, withExtension: nil) else { throw InstallerFailure.response }
     let data = try Data(contentsOf: url); guard data.count <= 256 * 1024 else { throw InstallerFailure.response }; return data
 }
 func sha(_ data: Data) -> String { SHA256.hash(data: data).map { String(format: "%02x", $0) }.joined() }

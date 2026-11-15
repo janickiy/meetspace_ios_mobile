@@ -34,7 +34,12 @@ let package = Package(
         .target(name: "MeetSpaceMedia", dependencies: ["MeetSpaceCore", "MeetSpaceBroadcast", .product(name: "WebRTC", package: "WebRTC", condition: .when(platforms: [.iOS]))], path: "Sources/Media", resources: [.process("Resources")]),
         .target(name: "MeetSpaceCalling", dependencies: ["MeetSpaceMedia"], path: "Sources/Calling"),
         .target(name: "MeetSpaceDesignSystem", path: "Sources/DesignSystem", resources: [.process("Resources")]),
-        .target(name: "MeetSpaceInstaller", dependencies: [.product(name: "Citadel", package: "Citadel"), .product(name: "NIOSSH", package: "swift-nio-ssh"), .product(name: "NIOCore", package: "swift-nio"), .product(name: "NIOPosix", package: "swift-nio"), .product(name: "Crypto", package: "swift-crypto")], path: "Sources/Installer", resources: [.copy("Resources")]),
+        .target(name: "MeetSpaceInstaller", dependencies: [.product(name: "Citadel", package: "Citadel"), .product(name: "NIOSSH", package: "swift-nio-ssh"), .product(name: "NIOCore", package: "swift-nio"), .product(name: "NIOPosix", package: "swift-nio"), .product(name: "Crypto", package: "swift-crypto")], path: "Sources/Installer", resources: [
+            .copy("Resources/runner.py"), .copy("Resources/release.json"),
+            .copy("Resources/release.sig"), .copy("Resources/trust-root.pem"),
+            .copy("Resources/docker.asc"), .copy("Resources/preflight.sh"),
+            .copy("Resources/provenance.json"), .copy("Resources/SSH-THIRD-PARTY-NOTICES.txt")
+        ]),
         .target(name: "MeetSpaceFeatures", dependencies: ["MeetSpaceInstaller", "MeetSpaceCore", "MeetSpaceAPI", "MeetSpaceStorage", "MeetSpaceRealtime", "MeetSpaceMedia", "MeetSpaceCalling", "MeetSpaceBroadcast", "MeetSpaceDesignSystem"], path: "Sources/Features"),
         .executableTarget(name: "FoundationPreviewRenderer", dependencies: ["MeetSpaceFeatures", "MeetSpaceDesignSystem", "MeetSpaceCore"], path: "Tools/PreviewRenderer"),
         .testTarget(name: "InstallerTests", dependencies: ["MeetSpaceInstaller"]),
