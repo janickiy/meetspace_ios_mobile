@@ -57,10 +57,20 @@ import UIKit
                 let down = element.frame.maxY < viewport.minY || (viewport.intersects(element.frame) && towardTop)
                 let startY = viewport.minY + viewport.height * (down ? 0.2 : 0.8)
                 let endY = viewport.minY + viewport.height * (down ? 0.8 : 0.2)
+                // The iPhone 18 recording shows the midpoint starting inside the
+                // host TextField, which consumes the drag without scrolling. Use
+                // the observed 24pt content gutter, outside every input/control.
+                let gestureX = scroll.frame.intersection(app.frame).minX + 8
                 let origin = app.coordinate(withNormalizedOffset: .zero)
-                origin.withOffset(CGVector(dx: viewport.midX, dy: startY)).press(forDuration: 0.1,
-                    thenDragTo: origin.withOffset(CGVector(dx: viewport.midX, dy: endY)),
+                origin.withOffset(CGVector(dx: gestureX, dy: startY)).press(forDuration: 0.1,
+                    thenDragTo: origin.withOffset(CGVector(dx: gestureX, dy: endY)),
                     withVelocity: .slow, thenHoldForDuration: 0.2)
+            }
+            if !element.isHittable {
+                capture(app, name: "beta-installer-unreachable-" + element.identifier)
+                let hierarchy = XCTAttachment(string: app.debugDescription)
+                hierarchy.name = "beta-installer-unreachable-hierarchy"
+                hierarchy.lifetime = .keepAlways; add(hierarchy)
             }
             XCTAssertTrue(element.isHittable, "Installer control must be tappable: \(element.identifier)")
         }
