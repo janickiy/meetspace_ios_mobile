@@ -32,18 +32,35 @@ import UIKit
             XCTAssertTrue(element.waitForExistence(timeout: 10))
             let scroll = app.scrollViews["installer.scroll"].firstMatch
             XCTAssertTrue(scroll.waitForExistence(timeout: 5))
-            for _ in 0..<18 {
+            for attempt in 0...18 {
                 if let decline = passwordDismissButton(app), decline.isHittable {
                     decline.tap()
                     Thread.sleep(forTimeInterval: 0.5)
                     continue
                 }
-                if element.isHittable { return }
                 var viewport = scroll.frame.intersection(app.frame)
                 let keyboard = app.keyboards.firstMatch
                 if keyboard.exists, keyboard.frame.intersects(viewport) {
-                    viewport.size.height = max(0, keyboard.frame.minY - viewport.minY)
+                    var keyboardTop = keyboard.frame.minY
+                    // The secure keyboard accessory is a sibling of Keyboard in AX.
+                    // On iPhone SE it covers y407...451, although Keyboard starts451.
+                    // A half-visible SecureField is "hittable", but its center tap
+                    // lands on Passwords and leaves the previous field focused.
+                    let accessories = app.buttons.matching(NSPredicate(format: "label IN %@", ["Passwords", "Пароли"]))
+                    for accessory in accessories.allElementsBoundByIndex where accessory.isHittable {
+                        let frame = accessory.frame
+                        if frame.maxY <= keyboardTop + 1, keyboardTop - frame.minY <= 100,
+                           frame.intersects(viewport) { keyboardTop = min(keyboardTop, frame.minY) }
+                    }
+                    viewport.size.height = max(0, keyboardTop - viewport.minY)
                 }
+                let visible = viewport.insetBy(dx: 0, dy: 4)
+                let target = element.frame
+                let targetVisible = target.height <= visible.height
+                    ? visible.contains(target)
+                    : visible.contains(CGPoint(x: target.midX, y: target.midY))
+                if element.isHittable, targetVisible { return }
+                if attempt == 18 { break }
                 // The actual iPhone 26 diagnostics capture contains Save Password?,
                 // whose remote window can omit its AX buttons. Dismiss only the
                 // exact observed prompt, using the existing screenshot-grounded helper.
@@ -54,9 +71,16 @@ import UIKit
                 }
                 viewport = viewport.insetBy(dx: 12, dy: 12)
                 XCTAssertGreaterThan(viewport.height, 40, "Installer must expose a scrollable area above the keyboard")
-                let down = element.frame.maxY < viewport.minY || (viewport.intersects(element.frame) && towardTop)
-                let startY = viewport.minY + viewport.height * (down ? 0.2 : 0.8)
-                let endY = viewport.minY + viewport.height * (down ? 0.8 : 0.2)
+                let delta: CGFloat
+                if target.height > viewport.height { delta = target.midY - viewport.midY }
+                else if target.minY < viewport.minY { delta = target.minY - viewport.minY }
+                else if target.maxY > viewport.maxY { delta = target.maxY - viewport.maxY }
+                else { delta = towardTop ? -32 : 32 }
+                // Move only the distance still needed to expose the target. Large
+                // checkbox labels must not oscillate across a fixed page-sized jump.
+                let distance = min(viewport.height * 0.6, max(32, abs(delta)))
+                let startY = viewport.midY + (delta < 0 ? -distance / 2 : distance / 2)
+                let endY = viewport.midY + (delta < 0 ? distance / 2 : -distance / 2)
                 // The iPhone 18 recording shows the midpoint starting inside the
                 // host TextField, which consumes the drag without scrolling. Use
                 // the observed 24pt content gutter, outside every input/control.
@@ -66,13 +90,11 @@ import UIKit
                     thenDragTo: origin.withOffset(CGVector(dx: gestureX, dy: endY)),
                     withVelocity: .slow, thenHoldForDuration: 0.2)
             }
-            if !element.isHittable {
-                capture(app, name: "beta-installer-unreachable-" + element.identifier)
-                let hierarchy = XCTAttachment(string: app.debugDescription)
-                hierarchy.name = "beta-installer-unreachable-hierarchy"
-                hierarchy.lifetime = .keepAlways; add(hierarchy)
-            }
-            XCTAssertTrue(element.isHittable, "Installer control must be tappable: \(element.identifier)")
+            capture(app, name: "beta-installer-unreachable-" + element.identifier)
+            let hierarchy = XCTAttachment(string: app.debugDescription)
+            hierarchy.name = "beta-installer-unreachable-hierarchy"
+            hierarchy.lifetime = .keepAlways; add(hierarchy)
+            XCTFail("Installer control must be visible above the keyboard and tappable: \(element.identifier)")
         }
         func tap(_ id: String, towardTop: Bool = false) {
             let button = app.buttons[id]; show(button, towardTop: towardTop); button.tap()
@@ -80,6 +102,12 @@ import UIKit
         func fill(_ id: String, _ value: String, secure: Bool = false) {
             let field = secure ? app.secureTextFields[id] : app.textFields[id]
             show(field); field.tap(); field.typeText(value)
+            let predicate = secure
+                ? NSPredicate(format: "value.length == %d AND value != %@", value.count, field.placeholderValue ?? "")
+                : NSPredicate(format: "value == %@", value)
+            let entered = XCTNSPredicateExpectation(predicate: predicate, object: field)
+            XCTAssertEqual(XCTWaiter.wait(for: [entered], timeout: 5), .completed,
+                           "The requested field must contain the complete typed value: \(id)")
         }
         func toggle(_ id: String) {
             let control = app.switches[id]; show(control); control.tap()
