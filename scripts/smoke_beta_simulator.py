@@ -98,14 +98,14 @@ def main():
         if device["initialState"] == "Shutdown":
             booted_by_script = True
             run("boot", ["xcrun", "simctl", "boot", udid], timeout=30)
-        run("boot-status", ["xcrun", "simctl", "bootstatus", udid, "-b"], timeout=180)
-        existing = run("existing-app", ["xcrun", "simctl", "get_app_container", udid, BUNDLE_ID, "app"], check=False)
+        run("boot-status", ["xcrun", "simctl", "bootstatus", udid, "-b"], timeout=300)
+        existing = run("existing-app", ["xcrun", "simctl", "get_app_container", udid, BUNDLE_ID, "app"], timeout=90, check=False)
         if existing.returncode == 0:
             raise RuntimeError("MeetSpace is already installed; refusing to overwrite an existing simulator app")
         if not re.search(r"no such (?:file|app)|couldn.t be found", existing.stderr, re.IGNORECASE):
             raise RuntimeError("Could not determine whether MeetSpace is already installed")
         install_attempted = True
-        run("install-release", ["xcrun", "simctl", "install", udid, str(app)], timeout=90)
+        run("install-release", ["xcrun", "simctl", "install", udid, str(app)], timeout=180)
         launch_attempted = True
         launch = run("launch-release", ["xcrun", "simctl", "launch", udid, BUNDLE_ID], timeout=60)
         pid = find_launch_pid(launch.stdout)
@@ -131,7 +131,7 @@ def main():
             if launch_attempted:
                 cleanup.append(("terminate", ["xcrun", "simctl", "terminate", udid, BUNDLE_ID], 30))
             if install_attempted:
-                cleanup.append(("uninstall", ["xcrun", "simctl", "uninstall", udid, BUNDLE_ID], 60))
+                cleanup.append(("uninstall", ["xcrun", "simctl", "uninstall", udid, BUNDLE_ID], 90))
             if booted_by_script:
                 cleanup.append(("restore-shutdown", ["xcrun", "simctl", "shutdown", udid], 90))
             for label, argv, timeout in cleanup:
