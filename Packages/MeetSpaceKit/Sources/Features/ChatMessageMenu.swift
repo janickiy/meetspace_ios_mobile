@@ -10,6 +10,9 @@ private struct ChatMenuItem: Identifiable {
     let own: Bool
     let author: String
     let summary: String
+    let attachments: [String]
+    let reaction: String?
+    let react: ((String) -> Void)?
     let time: String
     let actions: AnyView
 }
@@ -75,6 +78,9 @@ struct MessageMenuTrigger<Actions: View>: ViewModifier {
     let author: String
     let time: String
     let summary: String
+    let attachments: [String]
+    let reaction: String?
+    let react: ((String) -> Void)?
     let identifier: String
     let wide: Bool
     @ViewBuilder var actions: () -> Actions
@@ -108,6 +114,7 @@ struct MessageMenuTrigger<Actions: View>: ViewModifier {
 
     private func open() {
         presentation?.item = ChatMenuItem(id: identifier, anchor: anchor.bounds, own: own, author: author, summary: summary,
+                                          attachments: attachments, reaction: reaction, react: react,
                                           time: time, actions: AnyView(actions()))
     }
 }
@@ -159,6 +166,7 @@ struct ChatMenuShareButton: View {
 private struct ChatMessageMenu: View {
     let item: ChatMenuItem
     let close: () -> Void
+    @Environment(\.chatMenu) private var presentation
     @State private var contentHeight: CGFloat = 360
     @AccessibilityFocusState private var focused: Bool
     var body: some View {
@@ -196,13 +204,36 @@ private struct ChatMessageMenu: View {
                         .background(.white.opacity(0.12), in: Circle()).frame(width: 44, height: 44)
                 }.buttonStyle(.plain).accessibilityLabel(tr("Закрыть действия с сообщением"))
             }.foregroundStyle(.white).padding(.leading, 12)
+            if let react = item.react {
+                HStack(spacing: 2) {
+                    ForEach(ChatQuickReaction.allCases, id: \.self) { choice in
+                        Button { presentation?.choose { react(choice.rawValue) } } label: {
+                            Text(choice.rawValue).font(.system(size: 25))
+                                .frame(maxWidth: .infinity, minHeight: 44)
+                                .background(item.reaction == choice.rawValue ? MSTheme.accentSoft : .clear, in: Capsule())
+                        }.buttonStyle(.plain).accessibilityLabel(choice.title)
+                            .accessibilityAddTraits(item.reaction == choice.rawValue ? .isSelected : [])
+                    }
+                }.padding(6).background(MSTheme.surface, in: Capsule())
+                    .overlay(Capsule().strokeBorder(MSTheme.line))
+            }
+            let shape = UnevenRoundedRectangle(topLeadingRadius: 17, bottomLeadingRadius: item.own ? 17 : 5,
+                                               bottomTrailingRadius: item.own ? 5 : 17, topTrailingRadius: 17)
             VStack(alignment: .leading, spacing: 5) {
-                Text(item.author).font(MSTheme.font(12, weight: .semibold)).foregroundStyle(MSTheme.accent)
-                Text(item.summary).font(MSTheme.font(13)).lineLimit(4)
+                Text(item.author).font(MSTheme.font(11, weight: .semibold)).foregroundStyle(MSTheme.accent)
+                if !item.summary.isEmpty { Text(item.summary).font(MSTheme.font(12)).lineSpacing(3).lineLimit(4) }
+                if let first = item.attachments.first {
+                    HStack(spacing: 6) {
+                        WorkspaceIcon("paperclip", size: 15).foregroundStyle(MSTheme.accent)
+                        Text(item.attachments.count == 1 ? first : "\(first) · \(tr("ещё")) \(item.attachments.count - 1)")
+                            .font(MSTheme.font(11)).foregroundStyle(MSTheme.muted).lineLimit(2)
+                    }
+                }
                 Text(item.time).font(MSTheme.font(10)).foregroundStyle(MSTheme.muted)
                     .frame(maxWidth: .infinity, alignment: .trailing)
-            }.padding(14).frame(maxWidth: .infinity, alignment: .leading)
-                .background(item.own ? MSTheme.accentSoft : MSTheme.surface, in: RoundedRectangle(cornerRadius: 16))
+            }.padding(.horizontal, 15).padding(.top, 13).padding(.bottom, 10).frame(maxWidth: .infinity, alignment: .leading)
+                .background(item.own ? MSTheme.accentSoft : MSTheme.surface, in: shape)
+                .overlay(shape.strokeBorder(item.own ? MSTheme.accentSoft : MSTheme.line))
                 .accessibilityElement(children: .combine)
             VStack(spacing: 0) { item.actions }
                 .padding(5).background(MSTheme.surface, in: RoundedRectangle(cornerRadius: 16))
@@ -212,6 +243,21 @@ private struct ChatMessageMenu: View {
         .onGeometryChange(for: CGFloat.self) { $0.size.height } action: { contentHeight = $0 }
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("message.actionMenu")
+    }
+}
+
+private enum ChatQuickReaction: String, CaseIterable {
+    case like = "👍", love = "❤️", laugh = "😂", surprise = "😮", sad = "😢", thanks = "🙏"
+
+    var title: String {
+        switch self {
+        case .like: tr("Нравится")
+        case .love: tr("Любовь")
+        case .laugh: tr("Смешно")
+        case .surprise: tr("Удивление")
+        case .sad: tr("Грусть")
+        case .thanks: tr("Спасибо")
+        }
     }
 }
 

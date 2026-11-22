@@ -155,6 +155,18 @@ import UIKit
         XCTAssertTrue(app.buttons["message.selectAll"].waitForExistence(timeout: 5))
         app.buttons["message.selectAll"].tap()
         XCTAssertTrue(app.buttons["message.shareSelected"].isEnabled)
+        if app.frame.width >= 780 {
+            let tab = app.buttons["tab.messages"]
+            let remove = app.buttons["message.deleteSelected"]
+            let keyboard = app.keyboards.firstMatch
+            let closed = XCTNSPredicateExpectation(predicate: NSPredicate(format: "exists == false"), object: keyboard)
+            XCTAssertEqual(XCTWaiter.wait(for: [closed], timeout: 8), .completed)
+            let deadline = Date().addingTimeInterval(5)
+            func toolbarGap() -> CGFloat { tab.frame.minY - remove.frame.maxY }
+            while !(0...60).contains(toolbarGap()) && Date() < deadline { Thread.sleep(forTimeInterval: 0.1) }
+            XCTAssertTrue((0...60).contains(toolbarGap()),
+                          "The selection bar should sit above the tabs after the composer keyboard closes")
+        }
         capture(app, name: "beta-chat-multiple-selection")
         app.buttons["message.shareSelected"].tap()
         // Copy the synthetic text from the real system sheet; no external recipient is used.
@@ -185,7 +197,20 @@ import UIKit
         XCTAssertEqual(XCTWaiter.wait(for: [ready], timeout: 5), .completed)
         remove.tap()
         let confirm = app.buttons["message.confirmLocalDelete"]
-        XCTAssertTrue(confirm.waitForExistence(timeout: 5)); confirm.tap()
+        XCTAssertTrue(confirm.waitForExistence(timeout: 5))
+        capture(app, name: "confirm-delete-selected")
+        app.buttons["message.cancelLocalDelete"].tap()
+        let restored = XCTNSPredicateExpectation(predicate: NSPredicate(format: "hittable == true"), object: remove)
+        XCTAssertEqual(XCTWaiter.wait(for: [restored], timeout: 5), .completed)
+        for text in ["Первое сообщение beta", "Второе сообщение beta"] {
+            let selected = app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH %@ AND label CONTAINS %@",
+                                                            "message.select.", text)).firstMatch
+            XCTAssertTrue(selected.exists)
+            XCTAssertTrue((selected.value as? String)?.hasPrefix("Выбрано") == true)
+        }
+        remove.tap()
+        XCTAssertTrue(confirm.waitForExistence(timeout: 5))
+        confirm.tap()
         let gone = XCTNSPredicateExpectation(predicate: NSPredicate(format: "exists == false"), object: app.staticTexts["Первое сообщение beta"])
         XCTAssertEqual(XCTWaiter.wait(for: [gone], timeout: 5), .completed)
         XCTAssertFalse(app.staticTexts["Второе сообщение beta"].exists)
@@ -196,6 +221,7 @@ import UIKit
         let app = launch(["-demo"])
         let first = app.buttons["meeting.1"]
         XCTAssertTrue(first.waitForExistence(timeout: 5))
+        capture(app, name: "workspace-meetings")
         let active = app.buttons["Активные"]
         reveal(active, in: app)
         active.tap()

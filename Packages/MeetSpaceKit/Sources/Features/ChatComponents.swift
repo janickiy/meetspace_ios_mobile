@@ -6,25 +6,30 @@ struct ChatAvatar: View {
     var initials: String? = nil
     var size: CGFloat = 42
     var group = false
+    var listRow = false
 
     private var colors: (Color, Color) {
         switch name {
-        case "Анна Кузнецова": (Color(red: 0.97, green: 0.91, blue: 0.86), Color(red: 0.51, green: 0.32, blue: 0.20))
-        case "Максим Петров", "Мария Полякова": (Color(red: 0.87, green: 0.94, blue: 0.91), Color(red: 0.17, green: 0.40, blue: 0.34))
-        case "Разработка", "Дмитрий Волков": (Color(red: 0.87, green: 0.91, blue: 1), Color(red: 0.24, green: 0.36, blue: 0.62))
-        default: (Color(red: 0.90, green: 0.87, blue: 0.96), Color(red: 0.41, green: 0.29, blue: 0.58))
+        case "Анна Кузнецова": (Color(red: 0.965, green: 0.906, blue: 0.859), Color(red: 0.675, green: 0.455, blue: 0.318))
+        case "Максим Петров", "Мария Полякова": (Color(red: 0.871, green: 0.941, blue: 0.914), Color(red: 0.239, green: 0.522, blue: 0.463))
+        case "Разработка", "Дмитрий Волков": (Color(red: 0.875, green: 0.910, blue: 1), Color(red: 0.302, green: 0.443, blue: 0.773))
+        default: (Color(red: 0.902, green: 0.871, blue: 0.965), Color(red: 0.447, green: 0.325, blue: 0.635))
         }
     }
 
     var body: some View {
         let letters = name.split(whereSeparator: \.isWhitespace).prefix(2).compactMap(\.first)
         Text(initials ?? String(letters).uppercased())
-            .font(MSTheme.font(size * 0.32, weight: .semibold)).foregroundStyle(colors.1)
-            .frame(width: size, height: size).background(colors.0, in: RoundedRectangle(cornerRadius: size * 0.32))
+            .font(MSTheme.font(listRow ? 18 : size * 0.32, weight: .semibold)).foregroundStyle(colors.1)
+            .frame(width: listRow ? 51 : size, height: listRow ? 53 : size)
+            .background(colors.0, in: RoundedRectangle(cornerRadius: listRow ? 17 : size * 0.32, style: .circular))
             .overlay(alignment: .bottomTrailing) {
                 if group {
-                    Image(systemName: "person.2.fill").font(.system(size: size * 0.2))
-                        .foregroundStyle(.white).padding(3).background(MSTheme.accent, in: Capsule())
+                    let shape = RoundedRectangle(cornerRadius: listRow ? 8 : 6, style: .circular)
+                    WorkspaceIcon("person.2", size: listRow ? 13 : 11)
+                        .foregroundStyle(MSTheme.brandAccent).frame(width: listRow ? 22 : 18, height: listRow ? 22 : 18)
+                        .background(MSTheme.accentSoft, in: shape)
+                        .overlay { shape.strokeBorder(MSTheme.surface, lineWidth: 2) }.offset(x: 3, y: 3)
                 }
             }.accessibilityHidden(true)
     }
@@ -165,6 +170,7 @@ struct ChatDeleteConfirmation: View {
                         .background(MSTheme.danger, in: RoundedRectangle(cornerRadius: 13))
                 }.buttonStyle(.plain).disabled(count == 0).accessibilityIdentifier("message.confirmLocalDelete")
                 Button(tr("Отмена"), action: cancel).buttonStyle(MSButtonStyle(primary: false))
+                    .accessibilityIdentifier("message.cancelLocalDelete")
             }.padding(20).font(MSTheme.font(14)).foregroundStyle(MSTheme.ink)
         }.background(MSTheme.surface).disabled(busy).interactiveDismissDisabled(busy)
             .presentationDetents([.medium, .large]).presentationDragIndicator(.visible)
@@ -184,6 +190,9 @@ struct ChatMessageRow<Content: View, Actions: View>: View {
     var forwarded: String?
     let identifier: String
     let summary: String
+    var attachments: [String] = []
+    var reaction: String?
+    var react: ((String) -> Void)?
     let toggle: () -> Void
     @Environment(\.workspaceWidth) private var width
     @ViewBuilder let content: () -> Content
@@ -201,7 +210,7 @@ struct ChatMessageRow<Content: View, Actions: View>: View {
                     .background(selected ? MSTheme.accentSoft.opacity(0.7) : .clear, in: RoundedRectangle(cornerRadius: 15))
                     .overlay { RoundedRectangle(cornerRadius: 15).strokeBorder(selected ? MSTheme.accent.opacity(0.28) : .clear) }
             }.buttonStyle(.plain).accessibilityElement(children: .combine)
-                .accessibilityLabel("\(tr("Выбрать сообщение")), \(author), \(time), \(summary)")
+                .accessibilityLabel(([tr("Выбрать сообщение"), author, time, summary] + attachments).joined(separator: ", "))
                 .accessibilityValue(tr(selected ? "Выбрано" : "Не выбрано"))
                 .accessibilityIdentifier("message.select.\(identifier)")
         } else {
@@ -236,7 +245,20 @@ struct ChatMessageRow<Content: View, Actions: View>: View {
             .background(own ? MSTheme.accentSoft : MSTheme.surface, in: shape)
             .overlay { shape.strokeBorder(own ? .clear : MSTheme.line) }
             .modifier(MessageMenuTrigger(enabled: actionable && !selecting, own: own, author: author, time: time, summary: summary,
-                                         identifier: identifier, wide: wide, actions: actions))
+                                         attachments: attachments, reaction: reaction, react: react, identifier: identifier, wide: wide, actions: actions))
+            .padding(.bottom, reaction == nil ? 0 : 34)
+            .overlay(alignment: own ? .bottomTrailing : .bottomLeading) {
+                if let reaction, let react {
+                    Button { react(reaction) } label: {
+                        Text("\(reaction) 1").font(MSTheme.font(11))
+                            .padding(.horizontal, 9).frame(minHeight: 28)
+                            .background(MSTheme.surface, in: Capsule())
+                            .overlay(Capsule().strokeBorder(MSTheme.line))
+                            .frame(minWidth: 44, minHeight: 44, alignment: .bottom)
+                            .contentShape(Rectangle())
+                    }.buttonStyle(.plain).disabled(selecting).accessibilityLabel("\(tr("Снять реакцию")) \(reaction)")
+                }
+            }
             .frame(maxWidth: wide ? 500 : nil, alignment: own ? .trailing : .leading)
             if !own { Spacer(minLength: selecting ? 0 : (wide ? 22 : max(0, compactLogWidth * 0.06 - 7))) }
         }.foregroundStyle(MSTheme.ink)
@@ -290,27 +312,43 @@ struct ChatListRow: View {
     @Environment(\.dynamicTypeSize) private var typeSize
     @Environment(\.workspaceWidth) private var width
     var body: some View {
-        HStack(spacing: 10) {
-            ChatAvatar(name: name, initials: initials, size: 51, group: group)
-            VStack(alignment: .leading, spacing: 4) {
-                Text(name).font(MSTheme.font(15, weight: .semibold))
-                if let subtitle { Text(subtitle).font(MSTheme.font(11)).foregroundStyle(MSTheme.muted) }
-                Text(preview).font(MSTheme.font(13)).foregroundStyle(MSTheme.muted).lineLimit(typeSize.isAccessibilitySize ? nil : 2)
-            }
-            Spacer(minLength: 2)
-            VStack(alignment: .trailing, spacing: 8) {
-                Text(time).font(MSTheme.font(10)).foregroundStyle(MSTheme.muted)
+        let wide = width >= 780
+        let inset: CGFloat = wide ? 14 : 15
+        let shape = RoundedRectangle(cornerRadius: wide ? 14 : 0, style: .circular)
+        HStack(alignment: .top, spacing: 10) {
+            HStack(spacing: 10) {
+                ChatAvatar(name: name, initials: initials, group: group, listRow: true)
+                VStack(alignment: .leading, spacing: 0) {
+                    Text(name).font(MSTheme.font(15, weight: .semibold))
+                        .lineLimit(typeSize.isAccessibilitySize ? nil : 1).frame(minHeight: 21.75)
+                    if let subtitle {
+                        Text(subtitle).font(MSTheme.font(10)).foregroundStyle(MSTheme.muted)
+                            .frame(minHeight: 15).padding(.top, 1)
+                    }
+                    Text(preview).font(MSTheme.font(13)).foregroundStyle(MSTheme.muted)
+                        .lineLimit(typeSize.isAccessibilitySize ? nil : 2).lineSpacing(3)
+                        .padding(.vertical, 1.25).padding(.top, 4)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                }.frame(maxWidth: .infinity, alignment: .leading)
+            }.frame(minHeight: (group ? 98 : 87) - 2 * inset - 1, alignment: .center)
+            VStack(alignment: .trailing, spacing: 10) {
+                Text(time).font(MSTheme.font(10)).foregroundStyle(MSTheme.muted).frame(minHeight: 15)
                 if unread > 0 {
-                    Text("\(unread)").font(MSTheme.font(10, weight: .semibold)).padding(.horizontal, 5).frame(minHeight: 18)
-                        .foregroundStyle(.white).background(MSTheme.accent, in: Capsule())
+                    Text("\(unread)").font(MSTheme.font(10, weight: .semibold)).padding(.horizontal, 4)
+                        .frame(minWidth: 18, minHeight: 18).foregroundStyle(.white)
+                        .background(MSTheme.brandAccent, in: RoundedRectangle(cornerRadius: 7, style: .circular))
                 } else if !time.isEmpty {
-                    ChatDeliveryMark().font(.system(size: 9)).foregroundStyle(MSTheme.muted).accessibilityHidden(true)
+                    WorkspaceIcon("checkmark.double", size: 14).foregroundStyle(MSTheme.muted.opacity(0.6))
                 }
+            }.padding(.top, 2).frame(minWidth: wide ? 36 : nil, alignment: .trailing)
+                .fixedSize(horizontal: true, vertical: false)
+        }.padding(.horizontal, wide ? 12 : 0).padding(.vertical, inset).padding(.bottom, 1)
+            .background {
+                shape.fill(MSTheme.line)
+                shape.fill(selected ? MSTheme.accentSoft : MSTheme.surface).padding(.bottom, 1)
             }
-        }.padding(.horizontal, width >= 780 ? 12 : 0).padding(.vertical, 15).frame(maxWidth: .infinity, alignment: .leading)
-            .frame(minHeight: group ? 98 : 87).background(selected ? MSTheme.accentSoft : .clear, in: RoundedRectangle(cornerRadius: 14))
-            .overlay(alignment: .bottom) { Rectangle().fill(MSTheme.line).frame(height: 1) }.foregroundStyle(MSTheme.ink).contentShape(Rectangle())
-            .accessibilityElement(children: .combine)
+            .foregroundStyle(MSTheme.ink).contentShape(Rectangle()).accessibilityElement(children: .combine)
+            .padding(.leading, wide ? 0 : -1).padding(.trailing, wide ? 1 : 0).padding(.bottom, wide ? 4 : 0)
     }
 }
 
@@ -320,20 +358,21 @@ struct ChatFilterBar: View {
     @Binding var filter: ChatFilter
     var unread: Int?
     let folders: () -> Void
+    @Environment(\.workspaceWidth) private var width
     var body: some View {
         ScrollView(.horizontal) {
-            HStack(spacing: 22) {
+            HStack(spacing: 23) {
                 ForEach([ChatFilter.all, .direct, .unread], id: \.self) { value in
                     Button { filter = value } label: {
-                        HStack(spacing: 4) {
+                        HStack(spacing: 5) {
                             Text(tr(value.rawValue)).font(MSTheme.font(14, weight: .semibold))
                             if value == .unread, let unread {
-                                Text("\(unread)").font(MSTheme.font(11)).padding(.horizontal, 5)
+                                Text("\(unread)").font(MSTheme.font(11)).padding(.horizontal, 5).frame(minHeight: 18.5)
                                     .background(MSTheme.surfaceSecondary, in: Capsule()).foregroundStyle(MSTheme.muted)
                             }
-                        }.frame(minHeight: 50)
+                        }.frame(minHeight: 51)
                             .foregroundStyle(filter == value ? MSTheme.ink : MSTheme.muted)
-                            .overlay(alignment: .bottom) { if filter == value { Rectangle().fill(MSTheme.accent).frame(height: 3) } }
+                            .overlay(alignment: .bottom) { if filter == value { Rectangle().fill(MSTheme.brandAccent).frame(height: 3) } }
                     }.buttonStyle(.plain).accessibilityAddTraits(filter == value ? .isSelected : [])
                 }
                 Menu {
@@ -342,10 +381,10 @@ struct ChatFilterBar: View {
                 } label: {
                     HStack(spacing: 4) {
                         Text(tr(filter == .groups ? "Группы" : "Папки")).font(MSTheme.font(14, weight: .semibold))
-                        Image(systemName: "chevron.down").font(.caption)
+                        WorkspaceIcon("chevron.down", size: 13)
                     }.frame(minHeight: 50)
                 }.menuStyle(.button).buttonStyle(.plain).menuIndicator(.hidden).foregroundStyle(filter == .groups ? MSTheme.ink : MSTheme.muted)
-            }.padding(.horizontal, 16)
+            }.padding(.horizontal, width >= 780 ? 16 : 17).padding(.bottom, 1)
         }.scrollIndicators(.hidden).overlay(alignment: .bottom) { Rectangle().fill(MSTheme.line).frame(height: 1) }
     }
 }
@@ -420,28 +459,29 @@ struct ChatGestureHint: View {
 struct ChatInviteCard: View {
     let url: URL
     @State private var hidden = false
+    @Environment(\.workspaceWidth) private var width
+
     var body: some View {
         if !hidden {
-            HStack(spacing: 6) {
-                ShareLink(item: url) {
-                    HStack(spacing: 12) {
-                        VStack(alignment: .leading, spacing: 5) {
-                            Text(tr("Пригласите свою команду")).font(MSTheme.font(14, weight: .semibold))
-                            Text(tr("Общайтесь и встречайтесь в MeetSpace")).font(MSTheme.font(11)).foregroundStyle(MSTheme.muted)
-                        }
-                        Spacer()
-                        Image(systemName: "person.badge.plus").font(.system(size: 25)).foregroundStyle(MSTheme.accent)
-                    }.frame(minHeight: 70).contentShape(Rectangle())
-                }.buttonStyle(.plain)
-            }.padding(.horizontal, 15).frame(minHeight: 84)
-                .background(MSTheme.surfaceSecondary, in: RoundedRectangle(cornerRadius: 18))
+            ShareLink(item: url) {
+                HStack(spacing: 13) {
+                    VStack(alignment: .leading, spacing: 5) {
+                        Text(tr("Пригласите свою команду")).font(MSTheme.font(14, weight: .semibold)).frame(minHeight: 21)
+                        Text(tr("Общайтесь и встречайтесь в MeetSpace")).font(MSTheme.font(11)).foregroundStyle(MSTheme.muted)
+                            .frame(minHeight: 15.4)
+                    }.frame(maxWidth: .infinity, alignment: .leading)
+                    WorkspaceIcon("person.badge.plus", size: 30).foregroundStyle(MSTheme.brandAccent)
+                }.padding(.horizontal, 15).padding(.vertical, 19).frame(minHeight: 84).contentShape(Rectangle())
+            }.buttonStyle(.plain)
+                .background(MSTheme.surfaceSecondary, in: RoundedRectangle(cornerRadius: 18, style: .circular))
                 .overlay(alignment: .topTrailing) {
                     Button { hidden = true } label: {
-                        Image(systemName: "xmark").font(.system(size: 14)).frame(width: 28, height: 28)
-                            .background(MSTheme.surface, in: Circle()).frame(width: 40, height: 40)
-                    }.buttonStyle(.plain).accessibilityLabel(tr("Скрыть приглашение")).offset(x: 8, y: -8)
-                }
-                .padding(.top, 15).padding(.bottom, 14)
+                        WorkspaceIcon("xmark", size: 17).frame(width: 33, height: 33)
+                            .background(MSTheme.surface, in: Circle()).frame(width: 44, height: 44)
+                            .contentShape(Rectangle())
+                    }.buttonStyle(.plain).accessibilityLabel(tr("Скрыть приглашение")).offset(x: 13.5, y: -13.5)
+                }.padding(.leading, width >= 780 ? 0 : -1).padding(.trailing, width >= 780 ? 1 : 0)
+                .padding(.top, width >= 780 ? 16 : 15).padding(.bottom, 14)
         }
     }
 }

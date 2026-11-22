@@ -19,11 +19,16 @@ import Observation
         let id = UUID()
         let author: String
         let own: Bool
-        let text: String
+        var text: String
         let time: String
         var files: [String] = []
         var forwarded: String?
         var pinned = false
+        var reaction: String?
+        var replyTo: UUID?
+        var edited = false
+        var deleted = false
+        var canEdit: Bool { own && !deleted && forwarded == nil }
         var shareText: String { ([text] + files).joined(separator: "\n") }
     }
 
@@ -51,12 +56,63 @@ import Observation
     }
 
     func forward(_ id: UUID, from source: Int, to destination: Int) -> Bool {
-        guard let original = history[source]?.first(where: { $0.id == id }), history[destination] != nil else { return false }
+        guard let original = history[source]?.first(where: { $0.id == id && !$0.deleted }),
+              history[destination] != nil else { return false }
         let copy = Message(author: "Вы", own: true, text: original.text, time: Date().formatted(date: .omitted, time: .shortened),
                            files: original.files, forwarded: original.forwarded ?? original.author)
         history[destination]?.append(copy)
         updated.insert(destination)
         return true
+    }
+
+    func reply(to id: UUID, text: String, in chat: Int) -> Bool {
+        let content = text.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !content.isEmpty, activeIndex(id, in: chat) != nil else { return false }
+        history[chat]?.append(Message(author: "Вы", own: true, text: content,
+                                      time: Date().formatted(date: .omitted, time: .shortened), replyTo: id))
+        updated.insert(chat)
+        return true
+    }
+
+    func edit(_ id: UUID, text: String, in chat: Int) -> Bool {
+        let content = text.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !content.isEmpty, let index = activeIndex(id, in: chat),
+              history[chat]?[index].canEdit == true else { return false }
+        if history[chat]?[index].text != content {
+            history[chat]?[index].text = content
+            history[chat]?[index].edited = true
+            if history[chat]?.last?.id == id { updated.insert(chat) }
+        }
+        return true
+    }
+
+    func togglePin(_ id: UUID, in chat: Int) {
+        guard let index = activeIndex(id, in: chat) else { return }
+        history[chat]?[index].pinned.toggle()
+    }
+
+    func toggleReaction(_ emoji: String, for id: UUID, in chat: Int) {
+        guard let index = activeIndex(id, in: chat) else { return }
+        let current = history[chat]?[index].reaction
+        history[chat]?[index].reaction = current == emoji ? nil : emoji
+    }
+
+    func deleteOwn(_ id: UUID, in chat: Int) {
+        guard let index = activeIndex(id, in: chat), var message = history[chat]?[index], message.own else { return }
+        message.text = ""
+        message.files = []
+        message.forwarded = nil
+        message.replyTo = nil
+        message.reaction = nil
+        message.pinned = false
+        message.edited = false
+        message.deleted = true
+        history[chat]?[index] = message
+        if history[chat]?.last?.id == id { updated.insert(chat) }
+    }
+
+    private func activeIndex(_ id: UUID, in chat: Int) -> Int? {
+        history[chat]?.firstIndex { $0.id == id && !$0.deleted }
     }
 
     func remove(_ ids: Set<UUID>, in source: Int) {

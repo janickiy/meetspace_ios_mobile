@@ -13,6 +13,7 @@ struct LiveMessagesView: View {
     @State private var creating = false
     @State private var selected: UUID?
     @State private var searching = false
+    @ScaledMetric(relativeTo: .body) private var compactListBottomSpace: CGFloat = 84
     @Environment(\.dynamicTypeSize) private var typeSize
     private var filter: Binding<ChatFilter> {
         Binding(get: { model.onlyUnread ? .unread : model.groupFilter ? .groups : model.directFilter ? .direct : .all },
@@ -46,6 +47,7 @@ struct LiveMessagesView: View {
             }.background(MSTheme.background)
                 .sheet(isPresented: $creating) { NewConversationView(model: model) { id in select(id, wide: wide) } }
         }.toolbar(.hidden)
+        .ignoresSafeArea(model.selectingMessages && !searching ? .keyboard : [], edges: .bottom)
         .task(id: "\(model.listSearch)|\(model.onlyUnread)|\(model.groupFilter)|\(model.directFilter)") {
             do { try await Task.sleep(for: .milliseconds(300)) } catch { return }
             await model.refreshConversations()
@@ -62,7 +64,12 @@ struct LiveMessagesView: View {
                 listControls
                 ScrollView { conversationRows(wide: wide) }.refreshable { await model.refreshConversations() }
             }
-            if !wide { ChatNewButton(compact: true) { creating = true }.frame(maxWidth: .infinity, alignment: .trailing).padding(.trailing, 18).padding(.bottom, 17) }
+        }
+        .overlay(alignment: .bottomTrailing) {
+            if !wide {
+                ChatNewButton(compact: true) { creating = true }
+                    .padding(.trailing, 18).padding(.bottom, 17)
+            }
         }
     }
 
@@ -97,7 +104,7 @@ struct LiveMessagesView: View {
             if let error = model.error, !wide {
                 Button(tr(error)) { model.error = nil }.foregroundStyle(MSTheme.danger).font(MSTheme.font(12))
             }
-        }.padding(.horizontal, 16).padding(.bottom, 20)
+        }.padding(.horizontal, 16).padding(.bottom, wide ? 20 : compactListBottomSpace)
     }
     private func select(_ id: UUID, wide: Bool) {
         if wide { selected = id }
@@ -124,6 +131,7 @@ struct LiveThreadView: View {
     var newChat: (() -> Void)?
     @Environment(\.dismiss) private var dismiss
     @Environment(\.chatMenu) private var chatMenu
+    @FocusState private var composerFocused: Bool
     @State private var coveredConversation: UUID?
     @State private var contactDetails = false
     @State private var importing = false
@@ -169,7 +177,15 @@ struct LiveThreadView: View {
         if item.isGroup { groupDetails = true } else if item.peer != nil { contactDetails = true }
     }
     private func beginSelection(_ message: ChatMessage? = nil) {
-        showsSearch = false; query = ""; model.beginMessageSelection(message)
+        // Resign the native input before replacing it with the selection toolbar.
+        // Removing a focused text field can leave its keyboard inset on the iPad split view.
+        #if os(iOS)
+        UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+        #endif
+        composerFocused = false
+        showsSearch = false
+        query = ""
+        model.beginMessageSelection(message)
     }
     var body: some View {
         VStack(spacing: 0) {
@@ -338,6 +354,7 @@ struct LiveThreadView: View {
                     .buttonStyle(.plain).accessibilityLabel(tr("Прикрепить файл"))
                     .disabled(model.uploads.count >= 5 || model.editing != nil).accessibilityIdentifier("attachFile")
                 TextField(tr("Написать сообщение…"), text: $model.text, axis: .vertical).lineLimit(1...6)
+                    .focused($composerFocused)
                     .font(MSTheme.font(13)).textFieldStyle(.plain).padding(12).frame(minHeight: 48)
                     .background(MSTheme.background, in: RoundedRectangle(cornerRadius: 12))
                     .overlay { RoundedRectangle(cornerRadius: 12).strokeBorder(MSTheme.line) }
@@ -357,7 +374,8 @@ struct LiveThreadView: View {
                               selecting: model.selectingMessages, selected: model.selectedMessageIDs.contains(message.id),
                               actionable: message.isActionable, pinned: message.pinned && !message.isDeleted,
                               edited: message.version > 1 && !message.isDeleted, forwarded: message.isDeleted ? nil : message.forwardedFrom?.senderName,
-                              identifier: message.id.uuidString.lowercased(), summary: message.shareText, toggle: { model.toggleMessageSelection(message.id) }) {
+                              identifier: message.id.uuidString.lowercased(), summary: message.text, attachments: message.attachments.map(\.filename),
+                              toggle: { model.toggleMessageSelection(message.id) }) {
             if let reply = message.replyPreview, !message.isDeleted, !model.hiddenMessageIDs.contains(reply.id) {
                 VStack(alignment: .leading, spacing: 3) {
                     Text(reply.senderName).font(MSTheme.font(11, weight: .semibold))

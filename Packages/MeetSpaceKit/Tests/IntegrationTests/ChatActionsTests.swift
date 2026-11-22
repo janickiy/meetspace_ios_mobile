@@ -218,6 +218,47 @@ private actor DirectRecipientGate {
     #expect(store.updated == [source, target])
 }
 
+@Test @MainActor func demoCommentActionsUseOnlyTheSelectedSessionAndConversation() throws {
+    let store = DemoChatStore()
+    let chat = 1, other = 0
+    let original = try #require(store.history[chat]?.first)
+    let outgoing = store.history[chat]?.first(where: \.own)
+    let own = try #require(outgoing)
+    let otherHistory = store.history[other]
+
+    #expect(!store.edit(original.id, text: "Изменено", in: chat))
+    store.deleteOwn(original.id, in: chat)
+    #expect(store.history[chat]?.first == original)
+    #expect(!store.reply(to: original.id, text: "Ответ", in: other))
+    #expect(!store.reply(to: original.id, text: "   ", in: chat))
+    #expect(store.reply(to: original.id, text: "  Ответ  ", in: chat))
+    let reply = try #require(store.history[chat]?.last)
+    #expect(reply.own && reply.replyTo == original.id && reply.text == "Ответ")
+
+    #expect(store.edit(own.id, text: "Обновлённый текст", in: chat))
+    store.togglePin(own.id, in: chat)
+    store.toggleReaction("👍", for: own.id, in: chat)
+    let edited = try #require(store.history[chat]?.first(where: { $0.id == own.id }))
+    #expect(edited.edited && edited.text == "Обновлённый текст" && edited.files == own.files)
+    #expect(edited.pinned && edited.reaction == "👍")
+    store.toggleReaction("👍", for: own.id, in: chat)
+    #expect(store.history[chat]?.first(where: { $0.id == own.id })?.reaction == nil)
+    #expect(store.forward(own.id, from: chat, to: chat))
+    let forwarded = try #require(store.history[chat]?.last)
+    #expect(!store.edit(forwarded.id, text: "Изменено", in: chat))
+
+    store.deleteOwn(own.id, in: chat)
+    let deleted = try #require(store.history[chat]?.first(where: { $0.id == own.id }))
+    #expect(deleted.deleted && !deleted.pinned && !deleted.canEdit && deleted.shareText.isEmpty)
+    #expect(!store.forward(own.id, from: chat, to: other))
+    #expect(!store.reply(to: own.id, text: "Ответ", in: chat))
+    #expect(store.history[chat]?.last == forwarded)
+    #expect(store.history[other] == otherHistory)
+    let fresh = try #require(DemoChatStore().history[chat])
+    #expect(fresh.count == 3 && !fresh.contains(where: \.deleted))
+    #expect(fresh.first(where: \.own)?.text == own.text)
+}
+
 @Test @MainActor func forwardingReturnsTheConfirmedDestinationAndPreservesSourceHistory() async throws {
     let message = try Fixture.message(text: "Материалы встречи")
     let destination = UUID(), requestID = UUID()
