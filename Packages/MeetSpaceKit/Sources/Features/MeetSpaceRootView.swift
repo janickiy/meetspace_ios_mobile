@@ -40,6 +40,7 @@ public struct MeetSpaceRootView: View {
         }
         .onChange(of: model.identity.messaging?.account.id) { _, _ in
             model.identityChanged()
+            model.showingWorkspaceNotifications = false
             model.meetingsPath = []; model.messagesPath = []; model.profilePath = []
             if let account = model.identity.messaging?.account {
                 model.configuration.server = account.server; model.tab = .messages
@@ -49,7 +50,9 @@ public struct MeetSpaceRootView: View {
 
     private var styledContent: some View {
         Group {
-            if model.isDemo || (model.identity.messaging != nil && !model.identity.addingAccount) { WorkspaceView(model: model) }
+            if model.isDemo || (model.identity.messaging != nil && !model.identity.addingAccount) {
+                WorkspaceView(model: model).id(model.identity.messaging?.account.id)
+            }
             else { OnboardingView(model: model) }
         }
         .font(MSTheme.font()).foregroundStyle(MSTheme.ink).tint(MSTheme.accent)

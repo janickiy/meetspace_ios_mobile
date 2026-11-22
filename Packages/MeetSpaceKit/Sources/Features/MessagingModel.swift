@@ -59,6 +59,7 @@ public struct DownloadState: Identifiable {
     public var listSearch = ""
     public var onlyUnread = false
     public var groupFilter = false
+    public var directFilter = false
     public private(set) var active = true
     public private(set) var savingEdit = false
     @ObservationIgnored public var onCallUpdate: (@MainActor (DirectCall) -> Void)?
@@ -147,12 +148,12 @@ public struct DownloadState: Identifiable {
         if more && listCursor == nil { return }
         listEpoch = UUID(); let epoch = listEpoch
         let cursor = more ? listCursor : nil
-        let search = String(listSearch.prefix(100)); let unread = onlyUnread; let groups = groupFilter
+        let search = String(listSearch.prefix(100)); let unread = onlyUnread; let type = groupFilter ? "group" : directFilter ? "direct" : nil
         if !more && conversations.isEmpty { listState = .loading }
         do {
             try await loadHiddenMessages()
             guard active, listEpoch == epoch else { return }
-            let page = try await repository.conversations(cursor: cursor, search: search, type: groups ? "group" : nil, unreadOnly: unread)
+            let page = try await repository.conversations(cursor: cursor, search: search, type: type, unreadOnly: unread)
             try Task.checkCancellation()
             guard active, listEpoch == epoch else { return }
             let prior = more ? conversations : []
@@ -365,16 +366,16 @@ public struct DownloadState: Identifiable {
         } catch { if active { self.error = userMessage(error) } }
     }
     /// Idempotency key belongs to the recipient in the forwarding sheet and survives retries.
-    public func forward(_ messages: [ChatMessage], to destination: UUID, requestID: UUID) async throws {
+    @discardableResult public func forward(_ messages: [ChatMessage], to destination: UUID, requestID: UUID) async throws -> UUID {
         try await performForward(messages, requestID: requestID) { destination }
     }
-    public func forward(_ messages: [ChatMessage], toUser userID: UUID, requestID: UUID) async throws {
+    @discardableResult public func forward(_ messages: [ChatMessage], toUser userID: UUID, requestID: UUID) async throws -> UUID {
         try await performForward(messages, requestID: requestID) {
             try await self.repository.direct(userID: userID).id
         }
     }
     private func performForward(_ messages: [ChatMessage], requestID: UUID,
-                                destination: () async throws -> UUID) async throws {
+                                destination: () async throws -> UUID) async throws -> UUID {
         try Task.checkCancellation()
         guard active, !forwarding, let source = conversation?.id, !messages.isEmpty else { throw ClientError.invalidInput }
         func validMessages() -> Bool {
@@ -395,6 +396,7 @@ public struct DownloadState: Identifiable {
         guard active else { throw CancellationError() }
         scheduleListRefresh()
         if conversation?.id == target { await reloadHistory(target) }
+        return target
     }
     private func loadHiddenMessages() async throws {
         guard !hiddenLoaded else { return }

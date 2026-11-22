@@ -9,6 +9,10 @@ import MeetSpaceBroadcast
 @MainActor @Observable public final class ConferenceWorkspace {
     public let repository: ConferenceRepository
     public private(set) var meetings: [Conference] = []
+    public private(set) var hasMore = false
+    public private(set) var loadingMore = false
+    @ObservationIgnored private var nextOffset = 0
+    private let pageSize = 50
     public private(set) var call: ConferenceSession?
     public private(set) var state: LoadState = .empty
     public private(set) var busy = false
@@ -30,13 +34,33 @@ import MeetSpaceBroadcast
     public func load() async {
         guard !closed else { return }
         let current = UUID(); epoch = current; state = .loading
+        loadingMore = false
         do {
-            let result = try await repository.list()
+            let result = try await repository.list(limit: pageSize)
             guard !closed, epoch == current else { return }
-            meetings = result; state = result.isEmpty ? .empty : .content
+            nextOffset = result.count; hasMore = result.count == pageSize
+            meetings = result; state = result.isEmpty ? .empty : .content; error = nil
         } catch {
             guard !closed, epoch == current else { return }
             state = .failed; self.error = userMessage(error)
+        }
+    }
+
+    public func loadMore() async {
+        guard !closed, hasMore, !loadingMore, state == .content else { return }
+        let current = epoch
+        loadingMore = true
+        defer { if epoch == current { loadingMore = false } }
+        do {
+            let page = try await repository.list(limit: pageSize, offset: nextOffset)
+            guard !closed, epoch == current else { return }
+            var known = Set(meetings.map(\.id))
+            meetings.append(contentsOf: page.filter { known.insert($0.id).inserted })
+            nextOffset += page.count; hasMore = page.count == pageSize
+            error = nil
+        } catch {
+            guard !closed, epoch == current else { return }
+            self.error = userMessage(error)
         }
     }
     public func create(title: String, waitingRoom: Bool) async -> Bool {
@@ -123,6 +147,7 @@ import MeetSpaceBroadcast
     }
     public func close() async {
         closed = true; epoch = UUID()
+        hasMore = false; loadingMore = false; nextOffset = 0
         await dismissCall(); meetings = []
     }
 }

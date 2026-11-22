@@ -1,4 +1,8 @@
 import SwiftUI
+import AVFoundation
+#if os(iOS)
+import UIKit
+#endif
 import MeetSpaceCore
 import MeetSpaceDesignSystem
 import MeetSpaceMedia
@@ -10,74 +14,37 @@ struct LiveProfileView: View {
     @State private var licenses = false
     @State private var deleting: AccountRecord?
     var body: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: 24) {
-                Text(tr("Профиль")).font(MSTheme.font(28, weight: .semibold))
-                if let account = app.identity.messaging?.account {
-                    HStack(spacing: 16) {
-                        Avatar(String((app.identity.settings?.profile.name ?? account.user.name).prefix(2)).uppercased(), size: 56)
-                        VStack(alignment: .leading, spacing: 5) {
-                            Text(app.identity.settings?.profile.name ?? account.user.name).font(MSTheme.font(18, weight: .semibold))
-                            Text(account.user.email).font(MSTheme.font(12)).foregroundStyle(MSTheme.muted)
-                                .accessibilityLabel(tr("Электронная почта")).accessibilityValue(account.user.email)
-                            Text(account.server.displayName).font(MSTheme.font(12)).foregroundStyle(MSTheme.muted)
-                                .accessibilityLabel(tr("Адрес сервера")).accessibilityValue(account.server.displayName)
-                        }
-                    }.msCard()
+        Group {
+            if let account = app.identity.messaging?.account, let settings = app.identity.settings {
+                AccountHome(name: settings.profile.name, email: account.user.email, server: account.server.displayName,
+                            demo: false, photo: settings.photo, logout: { removing = account }) { section, wide in
+                    switch section {
+                    case .profile: AccountSettingsContent(model: settings, section: .profile, wide: wide)
+                    case .accounts: ScrollView { accounts.padding(20) }
+                    case .audio: AccountSettingsContent(model: settings, section: .audio, wide: wide)
+                    case .video: CameraDevicesView()
+                    case .notifications: AccountSettingsContent(model: settings, section: .notifications, wide: wide)
+                    case .appearance: SettingsDetailView(model: app, route: .appearance)
+                    case .connection: AccountSettingsContent(model: settings, section: .server, wide: wide)
+                    }
+                } extras: {
+                    VStack(alignment: .leading, spacing: 12) {
+                        NavigationLink { AccountSettingsView(model: settings) } label: {
+                            Label(tr("Дополнительные настройки"), systemImage: "gearshape").frame(maxWidth: .infinity, minHeight: 44, alignment: .leading)
+                        }.buttonStyle(.plain).accessibilityIdentifier("openAccountSettings")
+                        workspaceLink("Календарь", icon: "calendar", route: .calendar, id: "openCalendar")
+                        workspaceLink("Записи встреч", icon: "play.rectangle", route: .recordings, id: "openRecordings")
+                        workspaceLink("Личные папки", icon: "folder", route: .folders, id: "openFolders")
+                        notificationSettings
+                        Button(tr("Лицензии компонентов")) { licenses = true }.frame(minHeight: 44)
+                        Button(tr("Удалить аккаунт на сервере"), role: .destructive) {
+                            app.identity.error = nil; deleting = account
+                        }.frame(minHeight: 44).accessibilityIdentifier("openDeleteAccount")
+                    }
                 }
-                if let settings = app.identity.settings {
-                    NavigationLink { AccountSettingsView(model: settings) } label: {
-                        Label(tr("Настройки аккаунта"), systemImage: "person.crop.circle")
-                            .frame(maxWidth: .infinity, minHeight: 44, alignment: .leading)
-                    }.buttonStyle(.plain).msCard().accessibilityIdentifier("openAccountSettings")
-                }
-                VStack(spacing: 0) {
-                    workspaceLink("Календарь", icon: "calendar", route: .calendar, id: "openCalendar")
-                    workspaceLink("Записи встреч", icon: "play.rectangle", route: .recordings, id: "openRecordings")
-                    workspaceLink("Личные папки", icon: "folder", route: .folders, id: "openFolders")
-                }.msCard()
-                Text(tr("Аккаунты")).font(MSTheme.font(18, weight: .semibold))
-                ForEach(app.identity.index.accounts) { account in
-                    HStack {
-                        Button {
-                            Task { await app.identity.switchAccount(account) }
-                        } label: {
-                            HStack {
-                                VStack(alignment: .leading, spacing: 5) {
-                                    Text(account.user.name)
-                                    Text(account.server.displayName).font(MSTheme.font(11)).foregroundStyle(MSTheme.muted)
-                                        .fixedSize(horizontal: false, vertical: true)
-                                        .accessibilityLabel(tr("Адрес сервера")).accessibilityValue(account.server.displayName)
-                                }
-                                Spacer()
-                                if app.identity.messaging?.account.id == account.id { Image(systemName: "checkmark.circle.fill") }
-                            }.frame(minHeight: 44).contentShape(Rectangle()).accessibilityElement(children: .combine)
-                        }.buttonStyle(.plain)
-                        IconButton("rectangle.portrait.and.arrow.right", label: "Выйти из аккаунта") { removing = account }
-                    }.msCard()
-                }
-                Button(tr("Добавить аккаунт")) {
-                    app.identity.error = nil; app.identity.information = nil
-                    app.identity.addingAccount = true; app.show(.connect)
-                }.buttonStyle(MSButtonStyle(primary: false)).accessibilityIdentifier("addAccount")
-                Text(tr("До 5 аккаунтов на каждом сервере.")).font(MSTheme.font(12)).foregroundStyle(MSTheme.muted)
-                notificationSettings
-                Picker(tr("Оформление"), selection: Binding(get: { app.configuration.appearance }, set: { app.setAppearance($0) })) {
-                    Text(tr("Как в системе")).tag(Appearance.system)
-                    Text(tr("Светлая")).tag(Appearance.light)
-                    Text(tr("Тёмная")).tag(Appearance.dark)
-                }.pickerStyle(.segmented)
-                if app.identity.busy { ProgressView() }
-                if let error = app.identity.error { Text(tr(error)).foregroundStyle(MSTheme.danger) }
-                if let information = app.identity.information { Text(tr(information)).foregroundStyle(MSTheme.muted) }
-                Button(tr("Лицензии компонентов")) { licenses = true }
-                if let account = app.identity.messaging?.account {
-                    Button(tr("Удалить аккаунт на сервере"), role: .destructive) {
-                        app.identity.error = nil; deleting = account
-                    }.frame(minHeight: 44).accessibilityIdentifier("openDeleteAccount")
-                }
-            }.padding(24).frame(maxWidth: 720).frame(maxWidth: .infinity)
-        }.background(MSTheme.background).disabled(app.identity.busy)
+                .task(id: account.id) { if !settings.loaded { await settings.load() } }
+            }
+        }.disabled(app.identity.busy)
             .sheet(item: $deleting) { account in DeleteAccountView(identity: app.identity, account: account) }
             .sheet(isPresented: $licenses) {
                 NavigationStack {
@@ -92,6 +59,39 @@ struct LiveProfileView: View {
                 }
             }
     }
+    private var accounts: some View {
+        VStack(alignment: .leading, spacing: 16) {
+            Text(tr("Аккаунты")).font(MSTheme.font(21, weight: .semibold))
+            ForEach(app.identity.index.accounts) { account in
+                HStack {
+                    Button {
+                        Task { await app.identity.switchAccount(account) }
+                    } label: {
+                        HStack {
+                            VStack(alignment: .leading, spacing: 5) {
+                                Text(account.user.name)
+                                Text(account.server.displayName).font(MSTheme.font(11)).foregroundStyle(MSTheme.muted)
+                                    .fixedSize(horizontal: false, vertical: true)
+                                    .accessibilityLabel(tr("Адрес сервера")).accessibilityValue(account.server.displayName)
+                            }
+                            Spacer()
+                            if app.identity.messaging?.account.id == account.id { Image(systemName: "checkmark.circle.fill") }
+                        }.frame(minHeight: 44).contentShape(Rectangle()).accessibilityElement(children: .combine)
+                    }.buttonStyle(.plain)
+                    IconButton("rectangle.portrait.and.arrow.right", label: "Выйти из аккаунта") { removing = account }
+                }.msCard()
+            }
+            Button(tr("Добавить аккаунт")) {
+                app.identity.error = nil; app.identity.information = nil
+                app.identity.addingAccount = true; app.show(.connect)
+            }.buttonStyle(MSButtonStyle(primary: false)).accessibilityIdentifier("addAccount")
+            Text(tr("До 5 аккаунтов на каждом сервере.")).font(MSTheme.font(12)).foregroundStyle(MSTheme.muted)
+            if app.identity.busy { ProgressView() }
+            if let error = app.identity.error { Text(tr(error)).foregroundStyle(MSTheme.danger) }
+            if let information = app.identity.information { Text(tr(information)).foregroundStyle(MSTheme.muted) }
+        }.frame(maxWidth: 680, alignment: .leading).frame(maxWidth: .infinity, alignment: .leading)
+    }
+
     private func workspaceLink(_ title: String, icon: String, route: AppRoute, id: String) -> some View {
         Button { app.navigate(route) } label: {
             HStack { Label(tr(title), systemImage: icon); Spacer(); Image(systemName: "chevron.right") }
@@ -118,5 +118,34 @@ struct LiveProfileView: View {
             Text(tr("Входящие звонки доступны, пока приложение открыто. Вызовы при закрытом приложении ещё не настроены на сервере."))
                 .font(MSTheme.font(12)).foregroundStyle(MSTheme.muted)
         }.msCard()
+    }
+}
+
+private struct CameraDevicesView: View {
+    @Environment(\.scenePhase) private var scenePhase
+    @State private var cameras: [String] = []
+    @State private var permission = AVCaptureDevice.authorizationStatus(for: .video)
+    var body: some View {
+        ScrollView {
+            VStack(alignment: .leading, spacing: 18) {
+                Text(tr("Видео")).font(MSTheme.font(21, weight: .semibold))
+                Text(tr("Камера")).font(MSTheme.font(16, weight: .semibold))
+                if cameras.isEmpty { Text(tr("Камера недоступна")).foregroundStyle(MSTheme.muted) }
+                ForEach(Array(cameras.enumerated()), id: \.offset) { _, name in Label(name, systemImage: "video") }
+                if permission == .denied || permission == .restricted {
+                    Text(tr("Доступ к камере отключён")).foregroundStyle(MSTheme.muted)
+                    #if os(iOS)
+                    if let url = URL(string: UIApplication.openSettingsURLString) {
+                        Link(tr("Открыть настройки"), destination: url).frame(minHeight: 44)
+                    }
+                    #endif
+                }
+            }.padding(24).frame(maxWidth: .infinity, alignment: .leading)
+        }.onAppear(perform: refresh).onChange(of: scenePhase) { _, value in if value == .active { refresh() } }
+    }
+    private func refresh() {
+        permission = AVCaptureDevice.authorizationStatus(for: .video)
+        cameras = AVCaptureDevice.DiscoverySession(deviceTypes: [.builtInWideAngleCamera, .external],
+                                                    mediaType: .video, position: .unspecified).devices.map(\.localizedName)
     }
 }

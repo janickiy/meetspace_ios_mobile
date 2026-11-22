@@ -57,6 +57,8 @@ public struct AppDependencies: Sendable {
 @MainActor @Observable public final class AppModel {
     public enum Onboarding: Hashable { case welcome, connect, login, register }
     public private(set) var onboarding: Onboarding = .welcome
+    private(set) var demoChats = DemoChatStore()
+    private(set) var demoProfile = DemoAccountProfile()
     public private(set) var isDemo = false
     public var tab: AppTab = .meetings
     public var meetingsPath: [AppRoute] = []
@@ -68,6 +70,8 @@ public struct AppDependencies: Sendable {
     public private(set) var checkedServer: ServerOrigin?
     public private(set) var serverVersion: ServerVersion?
     public private(set) var connectionError: ConnectionError?
+    var showingWorkspaceNotifications = false
+    func presentWorkspaceNotifications() { showingWorkspaceNotifications = true }
     public var installerPresented = false
     public var notice: String?
     public let identity: IdentityModel
@@ -211,6 +215,9 @@ public struct AppDependencies: Sendable {
 
     public func enterDemo() {
         guard identity.messaging == nil, !identity.busy else { return }
+        demoChats = DemoChatStore()
+        demoProfile = DemoAccountProfile()
+        showingWorkspaceNotifications = false
         cancelProbe(); isDemo = true; tab = .meetings
         meetingsPath = []; messagesPath = []; profilePath = []; contentState = .content
     }

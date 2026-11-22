@@ -370,7 +370,7 @@ private struct CalendarTimeZonePicker: View {
     }
 }
 
-private func calendarText(_ date: Date, format: String, zone: TimeZone) -> String {
+func calendarText(_ date: Date, format: String, zone: TimeZone) -> String {
     let formatter = DateFormatter(); formatter.locale = Locale(identifier: "ru_RU")
     formatter.calendar = MeetingCalendar.calendar(in: zone); formatter.timeZone = zone; formatter.dateFormat = format
     return formatter.string(from: date)

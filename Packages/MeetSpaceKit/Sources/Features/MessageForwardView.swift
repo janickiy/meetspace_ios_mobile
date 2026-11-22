@@ -7,6 +7,7 @@ import MeetSpaceDesignSystem
 struct MessageForwardView: View {
     @Bindable var model: MessagingModel
     let messages: [ChatMessage]
+    var didForward: (UUID) -> Void = { _ in }
     @Environment(\.dismiss) private var dismiss
     @State private var query = ""
     @State private var recipients: [Conversation] = []
@@ -22,31 +23,26 @@ struct MessageForwardView: View {
         NavigationStack {
             ScrollView {
                 VStack(alignment: .leading, spacing: 16) {
-                    SearchBox(text: $query, placeholder: "Получатель")
-                    if let first = messages.first {
-                        VStack(alignment: .leading, spacing: 6) {
-                            Text(first.senderName).font(MSTheme.font(11, weight: .semibold)).foregroundStyle(MSTheme.muted)
-                            Text(first.shareText).font(MSTheme.font(13)).lineLimit(4)
-                        }.msCard()
-                    }
+                    Text(tr("Получатель")).font(MSTheme.font(12, weight: .semibold))
+                    SearchBox(text: $query, placeholder: "Найти чат или группу")
+                    if let first = messages.first { ForwardPreview(author: first.senderName, text: first.shareText) }
                     if loading || sending { ProgressView() }
                     if let failure { Text(tr(failure)).foregroundStyle(MSTheme.danger).font(MSTheme.font(13)) }
                     ForEach(recipients) { target in
                         Button { beginForward(to: target.id) } label: {
-                            Label(target.title, systemImage: target.isGroup ? "person.2" : "person")
-                                .frame(maxWidth: .infinity, minHeight: 44, alignment: .leading)
-                        }.accessibilityIdentifier("message.forward.\(target.id.uuidString.lowercased())")
+                            ChatRecipientLabel(name: target.title, group: target.isGroup)
+                        }.buttonStyle(.plain).accessibilityIdentifier("message.forward.\(target.id.uuidString.lowercased())")
                     }
                     ForEach(users) { user in
                         Button { beginForward(to: user.id, isUser: true) } label: {
-                            Label(user.displayName, systemImage: "person.badge.plus").frame(minHeight: 44)
-                        }
+                            ChatRecipientLabel(name: user.displayName)
+                        }.buttonStyle(.plain)
                     }
                     if cursor != nil { Button(tr("Загрузить ещё")) { Task { await load(more: true) } } }
                     if !loading && recipients.isEmpty && users.isEmpty { Text(tr("Чат не найден")).foregroundStyle(MSTheme.muted) }
                 }.padding(20).disabled(sending || model.forwarding)
-            }.background(MSTheme.background)
-                .navigationTitle(tr("Переслать сообщение"))
+            }.background(MSTheme.surface)
+                .navigationTitle(tr("Переслать сообщение")).msInlineTitle()
                 .toolbar { ToolbarItem(placement: .cancellationAction) { Button(tr("Отмена")) { dismiss() }.disabled(sending || model.forwarding) } }
                 .interactiveDismissDisabled(sending || model.forwarding)
                 .onDisappear { forwardTask?.cancel(); forwardTask = nil }
@@ -90,9 +86,11 @@ struct MessageForwardView: View {
         let request = requestIDs[id] ?? UUID(); requestIDs[id] = request
         do {
             try Task.checkCancellation()
-            if isUser { try await model.forward(messages, toUser: id, requestID: request) }
-            else { try await model.forward(messages, to: id, requestID: request) }
+            let target: UUID
+            if isUser { target = try await model.forward(messages, toUser: id, requestID: request) }
+            else { target = try await model.forward(messages, to: id, requestID: request) }
             try Task.checkCancellation()
+            didForward(target)
             dismiss()
         }
         catch is CancellationError { }

@@ -150,6 +150,7 @@ import UIKit
             app.buttons["sendMessage"].tap()
             XCTAssertTrue(app.staticTexts[text].waitForExistence(timeout: 5))
         }
+        app.buttons["chat.menu"].tap()
         app.buttons["message.selectMode"].tap()
         XCTAssertTrue(app.buttons["message.selectAll"].waitForExistence(timeout: 5))
         app.buttons["message.selectAll"].tap()
@@ -189,6 +190,41 @@ import UIKit
         XCTAssertEqual(XCTWaiter.wait(for: [gone], timeout: 5), .completed)
         XCTAssertFalse(app.staticTexts["Второе сообщение beta"].exists)
         capture(app, name: "beta-chat-after-local-removal")
+    }
+
+    func testWorkspaceMeetingTabs() {
+        let app = launch(["-demo"])
+        let first = app.buttons["meeting.1"]
+        XCTAssertTrue(first.waitForExistence(timeout: 5))
+        let active = app.buttons["Активные"]
+        reveal(active, in: app)
+        active.tap()
+        XCTAssertTrue(app.buttons["meeting.4"].waitForExistence(timeout: 5))
+        XCTAssertFalse(first.exists)
+        app.buttons["Завершённые"].tap()
+        XCTAssertTrue(app.buttons["meeting.5"].waitForExistence(timeout: 5))
+        app.buttons["Предстоящие"].tap()
+        XCTAssertTrue(first.waitForExistence(timeout: 5))
+    }
+
+    func testForwardCommentFromAnnaToGroup() {
+        let app = launch(["-demo"])
+        let chats = app.buttons["tab.messages"]
+        XCTAssertTrue(chats.waitForExistence(timeout: 5)); chats.tap()
+        app.buttons["chat.0"].tap()
+        let first = app.staticTexts["Доброе утро! Материалы к встрече готовы. Посмотрите, когда будет минутка."].firstMatch
+        reveal(first, in: app, towardTop: true)
+        first.press(forDuration: 0.8)
+        app.buttons["message.forwardAction"].tap()
+        let group = app.buttons["message.forward.1"]
+        XCTAssertTrue(group.waitForExistence(timeout: 5)); group.tap()
+        let attribution = app.staticTexts.matching(NSPredicate(format: "label BEGINSWITH %@", "Переслано")).firstMatch
+        for _ in 0..<5 where !attribution.isHittable {
+            let thread = app.scrollViews.containing(.staticText, identifier: "Сегодня, 16 октября").firstMatch
+            if thread.exists { thread.swipeUp() } else { app.swipeUp() }
+        }
+        XCTAssertTrue(attribution.isHittable)
+        capture(app, name: "forwarded-comment-group")
     }
 
     func testBetaAudioSettingsLayout() {
@@ -232,8 +268,8 @@ import UIKit
     private func openProfile(in app: XCUIApplication) {
         let tab = app.buttons["tab.profile"]
         XCTAssertTrue(tab.waitForExistence(timeout: 10))
-        tapAfterLogin(tab, in: app, expecting: app.buttons["openAccountSettings"],
-                      unchanged: { !app.buttons["openAccountSettings"].exists })
+        tapAfterLogin(tab, in: app, expecting: app.buttons["profileMenu.profile"],
+                      unchanged: { !app.buttons["profileMenu.profile"].exists })
     }
 
     /// iOS 26 can present Passwords during XCTest's 60-second event-synthesis wait.
@@ -812,15 +848,17 @@ import UIKit
         XCTAssertFalse(app.staticTexts["demoBanner"].exists)
         let demo = revealDemoLink(app)
         XCTAssertTrue(demo.isHittable); demo.tap()
-        XCTAssertTrue(app.buttons["exitDemo"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.buttons["meetingsCalendar"].waitForExistence(timeout: 5))
         capture(app, name: "meetings-light")
         app.buttons["tab.messages"].tap()
         XCTAssertTrue(app.buttons["chat.0"].waitForExistence(timeout: 5))
         capture(app, name: "messages-light")
         app.buttons["tab.profile"].tap()
-        XCTAssertTrue(app.staticTexts["Демо-профиль"].exists)
+        XCTAssertTrue(app.buttons["profileMenu.accounts"].waitForExistence(timeout: 5))
         capture(app, name: "profile-light")
-        app.buttons["exitDemo"].tap()
+        let exit = app.buttons["exitDemo"]
+        reveal(exit, in: app)
+        exit.tap()
         XCTAssertTrue(app.buttons["connectServer"].waitForExistence(timeout: 5))
     }
 
@@ -983,10 +1021,13 @@ import UIKit
         app.buttons["sendMessage"].tap()
         XCTAssertTrue(app.staticTexts["Проверка сообщения"].waitForExistence(timeout: 5))
         capture(app, name: "stage03-live-thread")
+        if !app.buttons["tab.profile"].isHittable { app.buttons["chat.back"].tap() }
         app.buttons["tab.profile"].tap()
-        XCTAssertTrue(app.buttons["addAccount"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.buttons["profileMenu.accounts"].waitForExistence(timeout: 5))
         capture(app, name: "stage03-live-profile")
-        app.buttons["Выйти из аккаунта"].firstMatch.tap()
+        let signOut = app.buttons["account.logout"]
+        reveal(signOut, in: app)
+        signOut.tap()
         let logout = app.buttons["Выйти"]
         XCTAssertTrue(logout.waitForExistence(timeout: 5)); logout.tap()
         XCTAssertTrue(app.secureTextFields["Пароль"].waitForExistence(timeout: 5))
@@ -1063,6 +1104,7 @@ import UIKit
         app.buttons["createConversation"].tap()
         XCTAssertTrue(app.staticTexts["Команда iOS"].firstMatch.waitForExistence(timeout: 10))
         XCTAssertTrue(app.textFields["messageComposer"].waitForExistence(timeout: 10))
+        app.buttons["chat.menu"].tap()
         app.buttons["О группе"].tap()
         XCTAssertTrue(app.staticTexts["Тестовый собеседник"].waitForExistence(timeout: 5))
         capture(app, name: "stage03-group-members")
@@ -1270,7 +1312,7 @@ import UIKit
         XCTAssertTrue(chat.waitForExistence(timeout: 10)); chat.tap()
         let audioCall = app.buttons["startAudioCall"], videoCall = app.buttons["startVideoCall"]
         XCTAssertTrue(audioCall.waitForExistence(timeout: 10))
-        XCTAssertTrue(audioCall.isHittable && videoCall.isHittable)
+        XCTAssertTrue(audioCall.isHittable)
         audioCall.tap()
         XCTAssertTrue(app.staticTexts["screen.directCall"].waitForExistence(timeout: 10))
         capture(app, name: "stage05-outgoing")
@@ -1280,6 +1322,8 @@ import UIKit
         XCTAssertEqual(app.staticTexts["directCallStatus"].label, "Вызов отменён")
         callControl(app, "directCallDone").tap()
         XCTAssertTrue(app.textFields["messageComposer"].waitForExistence(timeout: 10))
+        app.buttons["chat.menu"].tap()
+        XCTAssertTrue(videoCall.waitForExistence(timeout: 5) && videoCall.isHittable)
     }
 
     func testDirectCallAcceptedOnOtherDeviceHasNoCaptureControls() {
@@ -1333,11 +1377,11 @@ import UIKit
 
     func testLargeTextNavigationAndAppearance() {
         let app = launch(["-demo", "-UIPreferredContentSizeCategoryName", "UICTContentSizeCategoryAccessibilityXXXL"])
-        XCTAssertTrue(app.buttons["exitDemo"].waitForExistence(timeout: 5))
-        XCTAssertLessThan(app.buttons["tab.profile"].frame.height + app.buttons["exitDemo"].frame.height,
+        XCTAssertTrue(app.buttons["tab.profile"].waitForExistence(timeout: 5))
+        XCTAssertLessThan(app.buttons["tab.profile"].frame.height,
                           app.frame.height / 4, "Persistent controls must leave space for large-text content")
         app.buttons["tab.profile"].tap()
-        let appearance = app.buttons["Оформление"]
+        let appearance = app.buttons["profileMenu.appearance"]
         for _ in 0..<4 where !appearance.isHittable { app.swipeUp() }
         XCTAssertTrue(appearance.isHittable); appearance.tap()
         let dark = app.buttons["appearance.dark"]

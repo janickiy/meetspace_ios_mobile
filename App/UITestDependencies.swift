@@ -342,6 +342,7 @@ enum UITestDependencies {
                 return try response(["push": "http", "email": "noop", "calendar": "noop", "calendarOAuthConfigured": false, "mockConnectAllowed": false])
             }
             if let feature = try featureResponse(request, parts: parts, body: body) { return feature }
+            if path == "/api/v1/notifications" { return try response(["items": [], "unreadCount": 0]) }
             if path == "/api/v1/notifications/preferences" {
                 if request.httpMethod == "PUT", let body { pushPreferences = body }
                 return try response(pushPreferences)

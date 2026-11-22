@@ -25,6 +25,14 @@ public struct ServerCapabilities: Decodable, Equatable, Sendable {
 }
 
 public enum ProfileValidation {
+    public static func bio(_ input: String) throws -> String {
+        let value = input.replacingOccurrences(of: "\r\n", with: "\n")
+        guard value.unicodeScalars.count <= 1000, !value.unicodeScalars.contains(where: {
+            $0.properties.generalCategory == .control && $0 != "\n" && $0 != "\t"
+        }) else { throw ClientError.invalidInput }
+        return value
+    }
+
     /// Mirrors Go strings.TrimSpace, rune counting, and unicode.IsControl for this field.
     public static func displayName(_ input: String) throws -> String {
         let value = input.trimmingCharacters(in: .whitespacesAndNewlines)

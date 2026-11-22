@@ -1,0 +1,67 @@
+import Foundation
+import Observation
+
+/// History belongs only to the current demo session and never touches an authenticated account.
+@MainActor @Observable final class DemoChatStore {
+    struct Contact: Identifiable {
+        let id: Int
+        let name: String
+        let initials: String
+        let members: [String]
+        let preview: String
+        let time: String
+        var unread = 0
+        var group: Bool { !members.isEmpty }
+        var subtitle: String? { group ? "Группа · \(members.count) \(members.count == 5 ? "участников" : "участника")" : nil }
+    }
+
+    struct Message: Identifiable, Equatable {
+        let id = UUID()
+        let author: String
+        let own: Bool
+        let text: String
+        let time: String
+        var files: [String] = []
+        var forwarded: String?
+        var pinned = false
+        var shareText: String { ([text] + files).joined(separator: "\n") }
+    }
+
+    static let contacts = [
+        Contact(id: 1, name: "Команда продукта", initials: "П", members: ["Вы", "Мария Полякова", "Анна Кузнецова", "Максим Петров", "Дмитрий Волков"], preview: "Мария: собрала всё в одном файле", time: "09:38", unread: 3),
+        Contact(id: 0, name: "Анна Кузнецова", initials: "АК", members: [], preview: "Да, до встречи!", time: "09:24", unread: 1),
+        Contact(id: 3, name: "Разработка", initials: "Р", members: ["Вы", "Дмитрий Волков", "Анна Кузнецова", "Максим Петров"], preview: "Дмитрий: обновление готово", time: "Вчера"),
+        Contact(id: 2, name: "Максим Петров", initials: "МП", members: [], preview: "Вы: Спасибо, посмотрю сегодня", time: "Вчера"),
+        Contact(id: 4, name: "Дизайн-команда", initials: "Д", members: ["Вы", "Анна Кузнецова", "Мария Полякова"], preview: "Анна: новая версия макетов в папке", time: "Пт")
+    ]
+
+    private(set) var history: [Int: [Message]]
+    private(set) var updated: Set<Int> = []
+    init() {
+        history = Dictionary(uniqueKeysWithValues: Self.contacts.map { contact in
+            let authors = contact.members.dropFirst()
+            let first = authors.first ?? contact.name
+            let second = authors.dropFirst().first ?? contact.name
+            return (contact.id, [
+                Message(author: first, own: false, text: "Доброе утро! Материалы к встрече готовы. Посмотрите, когда будет минутка.", time: "09:32", files: ["Обзор продукта.pdf"]),
+                Message(author: "Вы", own: true, text: "Спасибо! Посмотрю перед встречей. Есть пара идей по навигации.", time: "09:34", files: contact.id == 1 ? ["Наш офис.jpg"] : []),
+                Message(author: second, own: false, text: "Встречаемся в 10:00. Обсудим новую версию и планы команды.", time: "09:38", files: contact.id == 1 ? ["Переговорная.jpg", "Рабочее пространство.jpg", "Офис команды.jpg"] : [], pinned: true)
+            ])
+        })
+    }
+
+    func forward(_ id: UUID, from source: Int, to destination: Int) -> Bool {
+        guard let original = history[source]?.first(where: { $0.id == id }), history[destination] != nil else { return false }
+        let copy = Message(author: "Вы", own: true, text: original.text, time: Date().formatted(date: .omitted, time: .shortened),
+                           files: original.files, forwarded: original.forwarded ?? original.author)
+        history[destination]?.append(copy)
+        updated.insert(destination)
+        return true
+    }
+
+    func remove(_ ids: Set<UUID>, in source: Int) {
+        guard !ids.isEmpty, history[source] != nil else { return }
+        history[source]?.removeAll { ids.contains($0.id) }
+        updated.insert(source)
+    }
+}

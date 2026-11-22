@@ -25,6 +25,18 @@ public struct UploadInput: Encodable, Sendable {
     }
 }
 
+public enum ChatMaterialKind: String, CaseIterable, Sendable { case media, file, link }
+
+public struct ChatMaterialPage: Decodable, Sendable {
+    public struct Item: Decodable, Sendable {
+        public let message: ChatMessage
+        public let attachment: Attachment?
+        public let url: String?
+    }
+    public let items: [Item]
+    public let nextCursor: String?
+}
+
 public struct MessagingRepository: Sendable {
     public let client: AuthenticatedClient
     private let downloads: any RequestTransport
@@ -40,6 +52,27 @@ public struct MessagingRepository: Sendable {
     }
     public func conversation(_ id: UUID) async throws -> Conversation {
         try decodeJSON(ItemResponse<Conversation>.self, from: await client.request("GET", path: scope(id))).item
+    }
+    public func contactProfile(_ conversation: UUID, user: UUID) async throws -> ContactProfile {
+        let response = try await client.request("GET", path: scope(conversation) + ["profiles", sid(user)])
+        let profile = try decodeJSON(ItemResponse<ContactProfile>.self, from: response).item
+        guard profile.id == user else { throw APIError.invalidResponse }
+        return profile
+    }
+    public func materials(_ conversation: UUID, kind: ChatMaterialKind, cursor: String?) async throws -> ChatMaterialPage {
+        let query = pageQuery(cursor) + [URLQueryItem(name: "kind", value: kind.rawValue)]
+        let response = try await client.request("GET", path: scope(conversation) + ["materials"], query: query)
+        let page = try decodeJSON(ChatMaterialPage.self, from: response)
+        guard page.items.count <= 50, page.items.allSatisfy({ item in
+            let message = item.message
+            guard message.conversationId == conversation, message.isActionable else { return false }
+            if kind == .link { return item.url != nil }
+            guard let file = item.attachment, file.conversationId == conversation, file.messageId == message.id,
+                  message.attachments.contains(file) else { return false }
+            let media = file.mimeType.hasPrefix("image/") || file.mimeType.hasPrefix("video/")
+            return (kind == .media) == media
+        }) else { throw APIError.invalidResponse }
+        return page
     }
     public func users(search: String) async throws -> [Peer] {
         try decodeJSON(ItemsResponse<Peer>.self, from: await client.request("GET", path: ["users"],

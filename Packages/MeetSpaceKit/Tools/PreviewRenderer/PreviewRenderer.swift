@@ -14,6 +14,11 @@ import MeetSpaceDesignSystem
             ("welcome", 390.0, 844.0, false, false),
             ("welcome", 1194.0, 834.0, false, false),
             ("meetings", 390.0, 844.0, false, false),
+            ("meetings", 1194.0, 834.0, false, false),
+            ("messages", 390.0, 844.0, false, false),
+            ("messages", 1194.0, 834.0, false, false),
+            ("thread", 390.0, 844.0, false, false),
+            ("profile", 1194.0, 834.0, false, false),
             ("meetings", 834.0, 1194.0, true, false),
             ("messages", 1194.0, 834.0, true, false),
             ("profile", 390.0, 844.0, false, true)

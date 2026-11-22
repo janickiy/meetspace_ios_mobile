@@ -2,7 +2,7 @@ import SwiftUI
 import MeetSpaceCore
 import MeetSpaceDesignSystem
 
-private enum AccountSettingsSection: String, CaseIterable, Identifiable {
+enum AccountSettingsSection: String, CaseIterable, Identifiable {
     case profile = "Профиль", audio = "Аудио", notifications = "Уведомления аккаунта", devices = "Устройства уведомлений", server = "Возможности сервера"
     var id: Self { self }
     var icon: String {
@@ -27,7 +27,7 @@ struct AccountSettingsView: View {
                 HStack(alignment: .top, spacing: 24) {
                     VStack(alignment: .leading, spacing: 8) {
                         HStack(spacing: 12) {
-                            Avatar(String(model.profile.name.prefix(2)).uppercased(), size: 40)
+                            ProfileAvatar(name: model.profile.name, size: 42, cornerRadius: 14)
                             VStack(alignment: .leading, spacing: 4) {
                                 Text(model.profile.name).font(MSTheme.font(13, weight: .semibold))
                                 Text(model.profile.email).font(MSTheme.font(11)).foregroundStyle(MSTheme.muted)
@@ -68,7 +68,7 @@ struct AccountSettingsView: View {
     }
 }
 
-private struct AccountSettingsContent: View {
+struct AccountSettingsContent: View {
     @Bindable var model: SettingsModel
     let section: AccountSettingsSection
     var wide = false
@@ -97,45 +97,51 @@ private struct AccountSettingsContent: View {
                     }
                         .buttonStyle(MSButtonStyle(primary: false)).disabled(model.busy)
                 }
-            }.padding(24).frame(maxWidth: 720).frame(maxWidth: .infinity, alignment: .topLeading)
+            }.padding(.horizontal, wide && section == .profile ? 48 : 24).padding(.vertical, wide && section == .profile ? 36 : 24)
+                .frame(maxWidth: section == .profile ? 860 : 720).frame(maxWidth: .infinity, alignment: .topLeading)
         }.background(MSTheme.background)
             .scrollDismissesKeyboard(.interactively)
             .accessibilityIdentifier("accountSettingsScroll")
             .onChange(of: section) { _, _ in profileNameFocused = false; nativeProfileNameFocused = false }
     }
     private var profile: some View {
-        VStack(alignment: .leading, spacing: 16) {
-            HStack(alignment: .top, spacing: 16) {
-                VStack(alignment: .leading, spacing: 8) {
-                    Text(tr("Ваш профиль")).font(MSTheme.font(24, weight: .semibold))
-                    Text(tr("Как вас видят участники встречи.")).font(MSTheme.font(12)).foregroundStyle(MSTheme.muted)
+        VStack(alignment: .leading, spacing: 26) {
+            ProfileEditorHeading()
+            ProfilePhotoCard(name: model.profile.name, photo: model.photo, hasPhoto: model.profile.avatarVersion != nil) {
+                await model.savePhoto($0)
+            }.disabled(model.busy).task(id: model.profile.avatarVersion) { await model.loadPhoto() }
+            ProfileField(label: "Имя для встреч", hint: "От 1 до 100 символов.") {
+                #if os(iOS)
+                AccessibleTextField(text: $model.displayName, placeholder: tr("Имя"), label: tr("Имя для встреч"),
+                                    identifier: "profileDisplayName", focused: $nativeProfileNameFocused, returnKey: .done)
+                    .frame(minHeight: 26).profileInput().disabled(model.busy || model.profile.authSource == "ldap")
+                #else
+                TextField(tr("Имя"), text: $model.displayName).textFieldStyle(.plain).profileInput()
+                    .focused($profileNameFocused).submitLabel(.done).onSubmit { profileNameFocused = false }
+                    .disabled(model.busy || model.profile.authSource == "ldap").accessibilityIdentifier("profileDisplayName")
+                #endif
+            }
+            if model.profile.bio != nil {
+                ProfileField(label: "О себе") {
+                    TextField(tr("Расскажите о себе"), text: $model.bio, axis: .vertical)
+                        .textFieldStyle(.plain).lineLimit(3...12).profileInput(multiline: true)
+                        .accessibilityLabel(tr("О себе")).accessibilityIdentifier("profileBio").disabled(model.busy)
                 }
-                Spacer(minLength: 0)
-                Avatar(String(model.profile.name.prefix(2)).uppercased(), size: 64)
-            }.padding(.bottom, 12)
-            Text(tr("Имя для встреч")).font(MSTheme.font(12, weight: .semibold))
-            #if os(iOS)
-            AccessibleTextField(text: $model.displayName, placeholder: tr("Имя"), label: tr("Имя для встреч"),
-                                identifier: "profileDisplayName", focused: $nativeProfileNameFocused, returnKey: .done)
-                .frame(minHeight: 44).msCard().disabled(model.busy)
-            #else
-            TextField(tr("Имя"), text: $model.displayName).textFieldStyle(.plain).msCard()
-                .focused($profileNameFocused).submitLabel(.done)
-                .onSubmit { profileNameFocused = false }
-                .disabled(model.busy).accessibilityIdentifier("profileDisplayName")
-            #endif
-            Text(tr("От 1 до 100 символов")).font(MSTheme.font(12)).foregroundStyle(MSTheme.muted)
-            Text(tr("Электронная почта")).font(MSTheme.font(12, weight: .semibold))
-            Text(model.profile.email).textSelection(.enabled).frame(maxWidth: .infinity, alignment: .leading).msCard()
-                .accessibilityLabel(tr("Электронная почта")).accessibilityValue(model.profile.email)
-            Text(tr("Адрес используется для входа. Изменение email недоступно.")).font(MSTheme.font(12)).foregroundStyle(MSTheme.muted)
+                if (try? ProfileValidation.bio(model.bio)) == nil {
+                    errorMessage("Допустимо до 1000 символов, включая переносы строк.")
+                }
+            }
+            ProfileField(label: "Email", hint: "Адрес используется для входа. Изменение email недоступно.") {
+                Text(verbatim: model.profile.email).textSelection(.enabled).profileInput(readOnly: true)
+                    .accessibilityLabel(tr("Электронная почта")).accessibilityValue(model.profile.email)
+            }
             if let error = model.profileError { errorMessage(error) }
             Button(tr("Сохранить профиль")) {
                 profileNameFocused = false
                 nativeProfileNameFocused = false
                 Task { await model.saveProfile() }
             }
-                .buttonStyle(MSButtonStyle()).disabled(!model.canSaveProfile).accessibilityIdentifier("saveProfile")
+                .buttonStyle(MSButtonStyle()).fixedSize(horizontal: true, vertical: false).disabled(!model.canSaveProfile).accessibilityIdentifier("saveProfile")
             Divider()
             LabeledContent(tr("Регистрация")) {
                 Text(model.profile.createdAt, format: .dateTime.day().month().year())

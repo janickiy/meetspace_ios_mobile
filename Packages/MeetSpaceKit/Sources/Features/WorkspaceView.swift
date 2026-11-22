@@ -7,77 +7,143 @@ import UIKit
 
 struct WorkspaceView: View {
     @Bindable var model: AppModel
+    @State private var inbox = WorkspaceInbox()
     @Environment(\.dynamicTypeSize) private var typeSize
+
     var body: some View {
-        VStack(spacing: 0) {
-            if model.isDemo { HStack(spacing: 8) {
-                Image(systemName: "eye").accessibilityHidden(!typeSize.isAccessibilitySize)
-                    .accessibilityLabel(tr("Демо · данные из макетов"))
-                if !typeSize.isAccessibilitySize {
-                    Text(tr("Демо · данные из макетов")).font(MSTheme.font(11, weight: .semibold))
-                        .accessibilityIdentifier("demoBanner")
-                }
-                Spacer(minLength: 0)
-                Button { model.leaveDemo() } label: {
-                    if typeSize.isAccessibilitySize {
-                        Image(systemName: "rectangle.portrait.and.arrow.right").font(.title3).frame(minWidth: 44, minHeight: 44)
-                    } else { Text(tr("Выйти")).frame(minHeight: 44) }
-                }.accessibilityLabel(tr("Выйти")).accessibilityIdentifier("exitDemo")
-            }.padding(.horizontal, 20).background(MSTheme.accentSoft).foregroundStyle(MSTheme.accent)
-            }
-            TabView(selection: $model.tab) {
-                stack(tab: .meetings, path: $model.meetingsPath) {
-                    if model.isDemo { MeetingsView(model: model) }
-                    else if let meetings = model.identity.conferences {
-                        LiveMeetingsView(model: meetings, openCalendar: { model.navigate(.calendar) },
-                            openRecordings: { model.navigate(.recordings) }, openFolders: { model.navigate(.folders) })
-                    }
-                }
-                stack(tab: .messages, path: $model.messagesPath) {
-                    if let messaging = model.identity.messaging, !model.isDemo { LiveMessagesView(app: model, model: messaging) }
-                    else { MessagesView(model: model) }
-                }
-                stack(tab: .profile, path: $model.profilePath) {
-                    if model.isDemo { ProfileView(model: model) }
-                    else { LiveProfileView(app: model) }
+        GeometryReader { geometry in
+            let wide = geometry.size.width >= 780
+            VStack(spacing: 0) {
+                tabs
+                if (wide && !typeSize.isAccessibilitySize) || !showingThread {
+                    WorkspaceTabBar(model: model, wide: wide)
                 }
             }
-            HStack(spacing: 0) {
-                tabButton(.meetings, title: "Встречи", icon: "video")
-                tabButton(.messages, title: "Чаты", icon: "bubble.left.and.bubble.right")
-                tabButton(.profile, title: "Профиль", icon: "person.crop.circle")
-            }.padding(.top, 5).background(MSTheme.surface)
-                .overlay(alignment: .top) { Rectangle().fill(MSTheme.line).frame(height: 1) }
-        }.background(MSTheme.background)
+            .chatMessageMenuHost()
+            .accessibilityHidden(model.showingWorkspaceNotifications)
+            .overlayPreferenceValue(InboxBellAnchor.self) { anchor in
+                if model.showingWorkspaceNotifications {
+                    WorkspaceInboxOverlay(inbox: inbox, app: model, anchor: anchor)
+                }
+            }
+            .environment(\.workspaceWidth, geometry.size.width)
+            .environment(\.workspaceUnreadNotifications, inbox.unread)
+        }
+        .background(MSTheme.background)
+        .task(id: model.identity.settings?.account.id) { await model.identity.settings?.loadPhoto() }
+        .task { await inbox.refresh(using: model.identity.messaging?.client, demo: model.isDemo) }
+    }
+
+    private var showingThread: Bool {
+        let path: [AppRoute]
+        switch model.tab {
+        case .meetings: path = model.meetingsPath
+        case .messages: path = model.messagesPath
+        case .profile: path = model.profilePath
+        }
+        switch path.last {
+        case .thread, .conversation: return true
+        default: return false
+        }
+    }
+
+    private var tabs: some View {
+        TabView(selection: $model.tab) {
+            stack(tab: .meetings, path: $model.meetingsPath) {
+                if model.isDemo { MeetingsView(model: model) }
+                else if let meetings = model.identity.conferences {
+                    LiveMeetingsView(model: meetings, calendar: model.identity.calendar, recordings: model.identity.recordings,
+                        openCalendar: { model.navigate(.calendar) },
+                        openRecordings: { model.navigate(.recordings) }, openFolders: { model.navigate(.folders) },
+                        openNotifications: { model.presentWorkspaceNotifications() })
+                }
+            }
+            stack(tab: .messages, path: $model.messagesPath) {
+                if let messaging = model.identity.messaging, !model.isDemo { LiveMessagesView(app: model, model: messaging) }
+                else { MessagesView(model: model) }
+            }
+            stack(tab: .profile, path: $model.profilePath) {
+                if model.isDemo { ProfileView(model: model) }
+                else { LiveProfileView(app: model) }
+            }
+        }
     }
 
     private func stack<Content: View>(tab: AppTab, path: Binding<[AppRoute]>, @ViewBuilder content: () -> Content) -> some View {
         NavigationStack(path: path) {
-            content().navigationDestination(for: AppRoute.self) { route in DestinationView(model: model, route: route) }
+            content().msHideRootBar().navigationDestination(for: AppRoute.self) { route in DestinationView(model: model, route: route) }
         }.tag(tab).msHideSystemTabBar()
     }
+}
 
-    private func tabButton(_ tab: AppTab, title: String, icon: String) -> some View {
-        Button { model.tab = tab } label: {
-            // At accessibility sizes, place the icon beside the fully scaled label
-            // so two-line words do not also pay for a separate icon row.
-            let layout = typeSize.isAccessibilitySize
-                ? AnyLayout(HStackLayout(spacing: 4))
-                : AnyLayout(VStackLayout(spacing: 5))
+struct WorkspaceTabBar: View {
+    let model: AppModel
+    let wide: Bool
+    @Environment(\.dynamicTypeSize) private var typeSize
+
+    var body: some View {
+        HStack(spacing: 0) {
+            tabButton(.meetings, title: "Встречи", icon: "video", wide: wide)
+            tabButton(.messages, title: "Чаты", icon: "bubble.left.and.bubble.right", wide: wide)
+            tabButton(.profile, title: "Профиль", icon: "person.crop.circle", wide: wide)
+        }
+        .padding(.horizontal, 12).padding(.top, wide ? 10 : 7)
+        .frame(maxWidth: .infinity)
+        .background(MSTheme.surface, ignoresSafeAreaEdges: .bottom)
+        .overlay(alignment: .top) { Rectangle().fill(MSTheme.line).frame(height: 1) }
+    }
+
+    private func tabButton(_ tab: AppTab, title: String, icon: String, wide: Bool) -> some View {
+        let selected = model.tab == tab
+        let layout = typeSize.isAccessibilitySize ? AnyLayout(HStackLayout(spacing: 4)) : AnyLayout(VStackLayout(spacing: 5))
+        return Button { model.tab = tab } label: {
             layout {
-                Image(systemName: icon).font(.system(size: 21))
-                    .fixedSize().accessibilityHidden(true)
-                Text(tr(title)).font(MSTheme.font(10, weight: .semibold, relativeTo: .caption))
+                if tab == .profile {
+                    let name = model.isDemo ? model.demoProfile.name : model.identity.settings?.profile.name ?? model.identity.messaging?.account.user.name ?? ""
+                    ProfileAvatar(name: name, size: 29, photo: model.isDemo ? model.demoProfile.photo : model.identity.settings?.photo)
+                        .overlay { if selected { Circle().strokeBorder(MSTheme.accent, lineWidth: 2) } }
+                        .overlay(alignment: .bottomTrailing) {
+                            if model.isDemo || model.identity.messaging?.realtimeState == .connected {
+                                tabDot(MSTheme.success)
+                            }
+                        }
+                } else {
+                    WorkspaceIcon(icon, size: 27)
+                        .background {
+                            if selected {
+                                RoundedRectangle(cornerRadius: 9).fill(MSTheme.accentSoft).padding(-5)
+                            }
+                        }
+                        .overlay(alignment: .topTrailing) {
+                            if tab == .messages && (model.isDemo || (model.identity.messaging?.unreadCount ?? 0) > 0) {
+                                tabDot(MSTheme.brandAccent).offset(x: 3, y: -1)
+                            }
+                        }
+                }
+                Text(tr(title)).font(MSTheme.font(11, weight: selected ? .semibold : .regular, relativeTo: .caption))
                     .multilineTextAlignment(.center).fixedSize(horizontal: false, vertical: true)
-            }.frame(maxWidth: .infinity, minHeight: 54).padding(.bottom, 3)
-                .foregroundStyle(model.tab == tab ? MSTheme.accent : MSTheme.muted).contentShape(Rectangle())
-        }.buttonStyle(.plain).accessibilityIdentifier("tab.\(tab.rawValue)")
-            .accessibilityLabel(tr(title))
-            .accessibilityAddTraits(model.tab == tab ? .isSelected : [])
+            }.frame(maxWidth: .infinity, minHeight: 54).contentShape(Rectangle())
+                .foregroundStyle(selected ? MSTheme.accent : MSTheme.muted)
+        }.buttonStyle(.plain).frame(maxWidth: wide ? 200 : 170)
+            .accessibilityIdentifier("tab.\(tab.rawValue)").accessibilityLabel(tr(title))
+            .accessibilityAddTraits(selected ? .isSelected : [])
+    }
+
+    private func tabDot(_ color: Color) -> some View {
+        Circle().fill(color).frame(width: 9, height: 9)
+            .overlay { Circle().strokeBorder(MSTheme.surface, lineWidth: 1.5) }.accessibilityHidden(true)
     }
 }
 
 private extension View {
+    @ViewBuilder func msHideRootBar() -> some View {
+        #if os(iOS)
+        self.toolbar(.hidden, for: .navigationBar)
+        #else
+        self
+        #endif
+    }
+
     @ViewBuilder func msHideSystemTabBar() -> some View {
         #if os(iOS)
         self.toolbar(.hidden, for: .tabBar)
@@ -113,16 +179,78 @@ struct StateContent<Content: View>: View {
     }
 }
 
+private enum WorkspaceWidthKey: EnvironmentKey { static let defaultValue: CGFloat = 390 }
+private enum WorkspaceUnreadKey: EnvironmentKey { static let defaultValue = 0 }
+
+extension EnvironmentValues {
+    var workspaceWidth: CGFloat {
+        get { self[WorkspaceWidthKey.self] }
+        set { self[WorkspaceWidthKey.self] = newValue }
+    }
+    var workspaceUnreadNotifications: Int {
+        get { self[WorkspaceUnreadKey.self] }
+        set { self[WorkspaceUnreadKey.self] = newValue }
+    }
+}
+
 struct PageHeader<Actions: View>: View {
     let title: String
     @ViewBuilder var actions: () -> Actions
+    @Environment(\.workspaceWidth) private var width
+
     var body: some View {
-        HStack(spacing: 2) {
-            Text(tr(title)).font(MSTheme.font(25, weight: .semibold, relativeTo: .title)).tracking(-0.7)
-                .multilineTextAlignment(.leading).fixedSize(horizontal: false, vertical: true)
-                .accessibilityAddTraits(.isHeader)
-            Spacer(minLength: 4); actions()
-        }.padding(.horizontal, 24).padding(.vertical, 12).background(MSTheme.surface)
+        HStack(spacing: width >= 780 ? 8 : 1) {
+            if width >= 780 { BrandMark().frame(width: 32, height: 32).padding(.trailing, 6) }
+            Text(tr(title)).font(MSTheme.font(width >= 780 ? 25 : 23, weight: .semibold, relativeTo: .title))
+                .tracking(-0.5).fixedSize(horizontal: false, vertical: true).accessibilityAddTraits(.isHeader)
+            Spacer(minLength: 4)
+            actions()
+        }
+        .padding(.horizontal, width >= 700 ? 28 : width < 360 ? 16 : 20)
+        .padding(.vertical, 8).frame(minHeight: 75)
+        .background(MSTheme.surface, ignoresSafeAreaEdges: .top)
+        .overlay(alignment: .bottom) { Rectangle().fill(MSTheme.line).frame(height: 1) }
+    }
+}
+
+struct WorkspaceHeaderButton: View {
+    let symbol: String
+    let label: String
+    let action: () -> Void
+    @Environment(\.workspaceWidth) private var width
+
+    init(_ symbol: String, label: String, action: @escaping () -> Void) {
+        self.symbol = symbol
+        self.label = label
+        self.action = action
+    }
+
+    var body: some View {
+        let size: CGFloat = width >= 780 ? 46 : 44
+        Button(action: action) {
+            WorkspaceIcon(symbol, size: width >= 780 ? 27 : 24)
+                .frame(width: size, height: size).contentShape(Rectangle())
+        }.foregroundStyle(MSTheme.ink).buttonStyle(.plain).accessibilityLabel(tr(label))
+    }
+}
+
+struct WorkspaceBell: View {
+    let action: () -> Void
+    @Environment(\.workspaceUnreadNotifications) private var unread
+
+    var body: some View {
+        WorkspaceHeaderButton("bell", label: "Уведомления", action: action)
+            .overlay(alignment: .topTrailing) {
+                if unread > 0 {
+                    Text(unread > 99 ? "99+" : String(unread)).font(.system(size: 10, weight: .semibold))
+                        .foregroundStyle(.white).padding(.horizontal, 4).frame(minWidth: 19, minHeight: 19)
+                        .background(MSTheme.brandAccent, in: Capsule())
+                        .overlay { Capsule().strokeBorder(MSTheme.background, lineWidth: 2) }.padding(.top, 3)
+                        .allowsHitTesting(false).accessibilityHidden(true)
+                }
+            }
+            .anchorPreference(key: InboxBellAnchor.self, value: .bounds) { $0 }
+            .accessibilityValue(String(unread)).accessibilityIdentifier("workspace.notifications")
     }
 }
 

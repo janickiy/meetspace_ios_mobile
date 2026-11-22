@@ -115,6 +115,8 @@ def main():
         selection = ["-only-testing:MeetSpaceTests",
                      "-only-testing:MeetSpaceUITests/FoundationUITests/testBetaInstallerNavigationAndValidation",
                      "-only-testing:MeetSpaceUITests/FoundationUITests/testBetaChatSelectionAndShare",
+                     "-only-testing:MeetSpaceUITests/FoundationUITests/testWorkspaceMeetingTabs",
+                     "-only-testing:MeetSpaceUITests/FoundationUITests/testForwardCommentFromAnnaToGroup",
                      "-only-testing:MeetSpaceUITests/FoundationUITests/testBetaAudioSettingsLayout",
                      "-only-testing:MeetSpaceUITests/FoundationUITests/testAuthenticatedChatSendAndLogout",
                      "-only-testing:MeetSpaceUITests/FoundationUITests/testCreateGroupWithSelectedMember"]

@@ -15,6 +15,7 @@ public enum MSTheme {
     public static let ink = adaptive(0x292b3b, 0xf3f3fa)
     public static let muted = adaptive(0x686c7d, 0xb0b3c7)
     public static let line = adaptive(0xe7e8f0, 0x36394c)
+    public static let brandAccent = adaptive(0x6264d9, 0xaaaaff)
     public static let accent = adaptive(0x5d5fcd, 0xaaaaff)
     public static let accentSoft = adaptive(0xeeeffe, 0x343452)
     public static let success = adaptive(0x237962, 0x83d9bb)

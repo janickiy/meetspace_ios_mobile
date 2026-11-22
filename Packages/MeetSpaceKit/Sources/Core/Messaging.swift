@@ -28,6 +28,12 @@ public struct Peer: Codable, Equatable, Hashable, Sendable, Identifiable {
     public let id: UUID
     public let displayName: String
 }
+public struct ContactProfile: Decodable, Sendable {
+    public let id: UUID
+    public let displayName: String
+    public let email: String
+    public let bio: String
+}
 public struct GroupMember: Codable, Equatable, Sendable, Identifiable {
     public let id: UUID
     public let displayName: String

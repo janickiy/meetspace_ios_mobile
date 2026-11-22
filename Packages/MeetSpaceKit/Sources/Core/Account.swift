@@ -9,6 +9,8 @@ public struct AccountUser: Codable, Equatable, Sendable, Identifiable {
     public let id: UUID
     public let email: String
     public let displayName: String?
+    public let bio: String?
+    public let authSource: String?
     public let isAdmin: Bool
     public let guestConferenceId: UUID?
     public let avatarVersion: String?

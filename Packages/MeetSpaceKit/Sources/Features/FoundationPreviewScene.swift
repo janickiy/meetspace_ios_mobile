@@ -10,16 +10,32 @@ public struct FoundationPreviewScene: View {
     public init(screen: String, state: LoadState = .content) {
         self.screen = screen
         self.model = AppModel()
+        self.model.enterDemo()
+        self.model.tab = screen == "messages" || screen == "thread" ? .messages : screen == "profile" ? .profile : .meetings
         self.model.contentState = state
     }
     public var body: some View {
-        Group {
-            switch screen {
-            case "meetings": MeetingsView(model: model)
-            case "messages": MessagesView(model: model)
-            case "profile": ProfileView(model: model)
-            default: OnboardingView(model: model)
-            }
+        GeometryReader { geometry in
+            if ["meetings", "messages", "thread", "profile"].contains(screen) {
+                let wide = geometry.size.width >= 780
+                VStack(spacing: 0) {
+                    Group {
+                        switch screen {
+                        case "meetings": MeetingsView(model: model)
+                        case "messages": MessagesView(model: model)
+                        case "thread": ThreadView(model: model, personIndex: 0)
+                        default: ProfileView(model: model)
+                        }
+                    }.frame(maxHeight: .infinity)
+                    if screen != "thread" || wide { WorkspaceTabBar(model: model, wide: wide) }
+                }
+                .chatMessageMenuHost()
+                .environment(\.workspaceWidth, geometry.size.width)
+                .environment(\.workspaceUnreadNotifications, 3)
+                // Reserve the prototype's system insets in this borderless macOS host only.
+                .padding(.top, wide ? 28 : 32).padding(.bottom, wide ? 16 : screen == "thread" ? 0 : 22)
+                .background(MSTheme.surface)
+            } else { OnboardingView(model: model) }
         }.font(MSTheme.font()).foregroundStyle(MSTheme.ink).tint(MSTheme.accent).buttonStyle(MSTextButtonStyle()).background(MSTheme.background)
     }
 }

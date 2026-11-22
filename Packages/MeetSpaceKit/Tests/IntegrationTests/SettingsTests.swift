@@ -29,6 +29,107 @@ import MeetSpaceAPI
     #expect(throws: ClientError.invalidInput) { try ProfileValidation.displayName(String(repeating: "е\u{0301}", count: 51)) }
 }
 
+@Test func profileBioOnlyPatchPreservesDirectoryNameAndSupportsClearing() async throws {
+    let transport = RoutedTransport { request, _ in
+        let body = try JSONDecoder().decode([String: String].self, from: #require(request.httpBody))
+        #expect(Set(body.keys) == ["bio"])
+        var user = Fixture.user()
+        user["authSource"] = "ldap"
+        user["bio"] = try #require(body["bio"])
+        return try Fixture.response(["user": user])
+    }
+    let repository = SettingsRepository(client: AuthenticatedClient(account: try Fixture.account(), credentials: Fixture.credentials(),
+                                                                      secureStore: TestSecrets(), transport: transport))
+    #expect(try await repository.updateProfile(displayName: nil, bio: "Первая\r\nВторая").bio == "Первая\nВторая")
+    #expect(try await repository.updateProfile(displayName: nil, bio: "").bio == "")
+    #expect(throws: ClientError.invalidInput) { try ProfileValidation.bio(String(repeating: "е\u{301}", count: 501)) }
+    #expect(throws: ClientError.invalidInput) { try ProfileValidation.bio("слово\u{0000}") }
+    #expect(try ProfileValidation.bio(String(repeating: "я", count: 1000)).count == 1000)
+}
+
+@Test func chatContactDetailsVerifyIdentityAndScopeMaterialsToTheOpenConversation() async throws {
+    let peer = UUID()
+    let transport = RoutedTransport { request, _ in
+        if request.url?.lastPathComponent == peer.uuidString.lowercased() {
+            return try Fixture.response(["item": ["id": peer.uuidString, "displayName": "Контакт", "email": "peer@example.org", "bio": "О себе"]])
+        }
+        if request.url?.lastPathComponent == "materials" {
+            let data = try WireJSON.encoder().encode(Fixture.message())
+            let message = try JSONSerialization.jsonObject(with: data)
+            return try Fixture.response(["items": [["message": message, "url": "https://example.org"]]])
+        }
+        return try Fixture.response(["item": ["id": peer.uuidString, "displayName": "", "email": "", "bio": ""]])
+    }
+    let repository = MessagingRepository(client: AuthenticatedClient(account: try Fixture.account(), credentials: Fixture.credentials(),
+                                                                       secureStore: TestSecrets(), transport: transport))
+    #expect(try await repository.contactProfile(Fixture.conversationID, user: peer).bio == "О себе")
+    await #expect(throws: APIError.invalidResponse) { try await repository.contactProfile(Fixture.conversationID, user: UUID()) }
+    #expect(try await repository.materials(Fixture.conversationID, kind: .link, cursor: nil).items.count == 1)
+    await #expect(throws: APIError.invalidResponse) { try await repository.materials(UUID(), kind: .link, cursor: nil) }
+}
+
+@Test func profilePhotoUsesAuthenticatedBinaryRoutesAndChecksReturnedOwner() async throws {
+    let jpeg = Data([0xff, 0xd8, 0xff, 0xd9])
+    let account = try Fixture.account()
+    let transport = RoutedTransport { request, _ in
+        #expect(request.value(forHTTPHeaderField: "Authorization") == "Bearer fixture-token")
+        if request.httpMethod == "GET" {
+            #expect(request.url?.path.hasSuffix("/users/\(account.user.id.uuidString.lowercased())/avatar/content") == true)
+            return NetworkResponse(status: 200, headers: ["Content-Type": "image/jpeg"], data: jpeg)
+        }
+        #expect(request.url?.path == "/api/v1/auth/me/avatar")
+        var user = Fixture.user()
+        if request.httpMethod == "PUT" {
+            #expect(request.value(forHTTPHeaderField: "Content-Type") == "image/jpeg")
+            #expect(request.httpBody == jpeg)
+            user["avatarVersion"] = "v1"
+        } else { #expect(request.httpMethod == "DELETE" && request.httpBody == nil) }
+        return try Fixture.response(["user": user])
+    }
+    let repository = SettingsRepository(client: AuthenticatedClient(account: account, credentials: Fixture.credentials(),
+                                                                      secureStore: TestSecrets(), transport: transport))
+    #expect(try await repository.savePhoto(jpeg).avatarVersion == "v1")
+    #expect(try await repository.photo() == jpeg)
+    #expect(try await repository.savePhoto(nil).avatarVersion == nil)
+    let other = RoutedTransport { _, _ in try Fixture.response(["user": Fixture.user(UUID())]) }
+    let scoped = SettingsRepository(client: AuthenticatedClient(account: account, credentials: Fixture.credentials(),
+                                                                 secureStore: TestSecrets(), transport: other))
+    await #expect(throws: ClientError.accountMismatch) { try await scoped.savePhoto(nil) }
+}
+
+@Test @MainActor func refreshedProfileLoadsNewAvatarAndDropsResponseAfterAccountSwitch() async throws {
+    let gate = SettingsGate(), account = try Fixture.account()
+    let jpeg = Data([0xff, 0xd8, 0xff, 0xd9])
+    let transport = RoutedTransport { request, _ in
+        if request.url?.path == "/api/v1/auth/me" {
+            var user = Fixture.user(); user["avatarVersion"] = "v2"
+            return try Fixture.response(["status": "success", "user": user])
+        }
+        if request.url?.path.hasSuffix("/avatar/content") == true {
+            if !(await gate.started) { await gate.wait() }
+            return NetworkResponse(status: 200, headers: ["Content-Type": "image/jpeg"], data: jpeg)
+        }
+        return NetworkResponse(status: 404)
+    }
+    let repository = SettingsRepository(client: AuthenticatedClient(account: account, credentials: Fixture.credentials(),
+                                                                      secureStore: TestSecrets(), transport: transport))
+    let first = SettingsModel(repository: repository)
+    await first.loadPhoto()
+    #expect(await transport.requests.isEmpty)
+    let fetch = Task { await first.load() }
+    for _ in 0..<200 {
+        if await gate.started { break }
+        try await Task.sleep(for: .milliseconds(5))
+    }
+    #expect(await gate.started)
+    first.close(); await gate.release(); await fetch.value
+    #expect(first.photo == nil)
+    let second = SettingsModel(repository: repository)
+    await second.load()
+    #expect(second.profile.avatarVersion == "v2" && second.photo == jpeg)
+    second.close()
+}
+
 @Test func settingsCapabilitiesOnlyUseAdvertisedModesAndSSHStaysDisabled() async throws {
     let valid = try Fixture.data(["status": "success", "buildVersion": "20261106", "capabilities": ["recordingModes": ["composite", "individual_tracks"], "futureFeature": true]])
     let capabilities = try WireJSON.decoder().decode(ServerCapabilities.self, from: valid)

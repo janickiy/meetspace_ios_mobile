@@ -21,6 +21,7 @@ import MeetSpaceAPI
     @ObservationIgnored private var epoch = UUID()
     @ObservationIgnored private var closed = false
     @ObservationIgnored private var restored = false
+    @ObservationIgnored private var restoring: Task<CalendarPreferences, Error>?
 
     public init(repository: CalendarRepository, preferences: any CalendarPreferencesStore = MemoryCalendarPreferencesStore(), now: Date = Date()) {
         self.repository = repository; store = preferences; selectedDay = now
@@ -33,12 +34,20 @@ import MeetSpaceAPI
     public func canManage(_ meeting: Conference) -> Bool { meeting.ownerId == repository.userID && meeting.status == "scheduled" }
     public func initialize() async {
         guard !closed else { return }
-        if !restored {
-            restored = true
-            do { let value = try await store.load().validated(); guard !closed else { return }; preferences = value }
-            catch { guard !closed else { return }; self.error = "Не удалось восстановить настройки календаря." }
-        }
+        await restorePreferences()
         await load()
+    }
+    func restorePreferences() async {
+        guard !closed, !restored else { return }
+        let request = restoring ?? Task { [store] in try await store.load().validated() }
+        restoring = request
+        let result = await request.result
+        guard !closed, !restored else { return }
+        restored = true; restoring = nil
+        switch result {
+        case .success(let value): preferences = value
+        case .failure: error = "Не удалось восстановить настройки календаря."
+        }
     }
     public func selectDay(_ date: Date) async {
         guard !closed, MeetingCalendar.isValidInstant(date) else { return }
@@ -51,10 +60,12 @@ import MeetSpaceAPI
     }
     public func selectScope(_ value: ConferenceTimelineScope) async { guard !closed else { return }; scope = value; await load() }
     public func selectMode(_ mode: CalendarDisplayMode) async {
+        await restorePreferences()
         guard !closed, preferences.displayMode != mode else { return }
         preferences.displayMode = mode; await savePreferences(); await load()
     }
     public func selectTimeZone(_ identifier: String) async {
+        await restorePreferences()
         guard !closed, TimeZone(identifier: identifier) != nil, preferences.timeZoneIdentifier != identifier else { return }
         // Keep the selected instant: changing presentation timezone must not move a meeting.
         preferences.timeZoneIdentifier = identifier; await savePreferences(); await load()
@@ -143,6 +154,7 @@ import MeetSpaceAPI
         catch { if !closed { self.error = userMessage(error) } }
     }
     public func close() {
+        restoring?.cancel(); restoring = nil
         closed = true; epoch = UUID(); pages = [:]; meetings = []; feedErrors = []; errorsByView = [:]; error = nil
         loading = false; state = .empty
     }

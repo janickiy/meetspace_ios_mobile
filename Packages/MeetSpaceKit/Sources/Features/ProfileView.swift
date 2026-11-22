@@ -5,52 +5,97 @@ import MeetSpaceDesignSystem
 struct ProfileView: View {
     @Bindable var model: AppModel
     var body: some View {
-        VStack(spacing: 0) {
-            PageHeader(title: "Профиль") { EmptyView() }
-            ScrollView {
-                VStack(alignment: .leading, spacing: 24) {
-                    HStack(spacing: 16) {
-                        Avatar("АС", size: 64)
-                        VStack(alignment: .leading, spacing: 7) {
-                            Text(tr("Александр Соколов")).font(MSTheme.font(19, weight: .semibold, relativeTo: .title2))
-                            Text("alex@meetspace.example").font(MSTheme.font(12)).foregroundStyle(MSTheme.muted)
-                            Text(tr("Демо-профиль")).font(MSTheme.font(11)).foregroundStyle(MSTheme.accent)
-                        }
-                    }.msCard()
-                    VStack(spacing: 0) {
-                        row("Аудио", "mic", .audioSettings)
-                        row("Видео", "video", .videoSettings)
-                        row("Уведомления", "bell", .notificationSettings)
-                        row("Оформление", "paintpalette", .appearance)
-                    }.msCard(padding: 4)
-                    VStack(spacing: 0) {
-                        row("Подключение", "network", .connection)
-                        row("Аккаунты", "person.2", .accounts)
-                        row("Каталог экранов", "square.grid.2x2", .interfaceCatalog)
-                    }.msCard(padding: 4)
-                    VStack(alignment: .leading, spacing: 12) {
-                        Text(tr("Состояния интерфейса")).font(MSTheme.font(14, weight: .semibold))
-                        Text(tr("Применяется к спискам встреч и сообщений в демо.")).font(MSTheme.font(12)).foregroundStyle(MSTheme.muted)
-                        Picker(tr("Состояние"), selection: $model.contentState) {
-                            Text(tr("Данные")).tag(LoadState.content)
-                            Text(tr("Загрузка")).tag(LoadState.loading)
-                            Text(tr("Пусто")).tag(LoadState.empty)
-                            Text(tr("Ошибка")).tag(LoadState.failed)
-                            Text(tr("Офлайн")).tag(LoadState.offline)
-                        }.accessibilityIdentifier("demoStatePicker")
-                    }.msCard()
-                    Button(tr("Выйти из демо")) { model.leaveDemo() }.buttonStyle(MSButtonStyle(primary: false))
-                }.padding(20).frame(maxWidth: 720).frame(maxWidth: .infinity)
+        AccountHome(name: model.demoProfile.name, email: "alex@example.org", server: model.configuration.server?.displayName ?? "meet.example.org",
+                    demo: true, photo: model.demoProfile.photo, logout: { model.leaveDemo() }) { section, wide in
+            switch section {
+            case .profile: DemoProfileEditor(profile: model.demoProfile, wide: wide)
+            case .accounts: SettingsDetailView(model: model, route: .accounts)
+            case .audio: ScrollView { AccountAudioSettingsView(wide: wide).padding(20) }
+            case .video: SettingsDetailView(model: model, route: .videoSettings)
+            case .notifications: SettingsDetailView(model: model, route: .notificationSettings)
+            case .appearance: SettingsDetailView(model: model, route: .appearance)
+            case .connection: SettingsDetailView(model: model, route: .connection)
             }
-        }.background(MSTheme.background).toolbar(.hidden).accessibilityIdentifier("screen.profile")
+        } extras: {
+            VStack(alignment: .leading, spacing: 12) {
+                Button { model.navigate(.interfaceCatalog) } label: {
+                    Label(tr("Каталог экранов"), systemImage: "square.grid.2x2").frame(minHeight: 44)
+                }
+                Text(tr("Состояния интерфейса")).font(MSTheme.font(14, weight: .semibold))
+                Picker(tr("Состояние"), selection: $model.contentState) {
+                    Text(tr("Данные")).tag(LoadState.content)
+                    Text(tr("Загрузка")).tag(LoadState.loading)
+                    Text(tr("Пусто")).tag(LoadState.empty)
+                    Text(tr("Ошибка")).tag(LoadState.failed)
+                    Text(tr("Офлайн")).tag(LoadState.offline)
+                }.accessibilityIdentifier("demoStatePicker")
+            }
+        }.toolbar(.hidden)
     }
-    private func row(_ title: String, _ icon: String, _ route: AppRoute) -> some View {
-        Button { model.navigate(route) } label: {
-            HStack(spacing: 14) {
-                Image(systemName: icon).foregroundStyle(MSTheme.accent).frame(width: 24)
-                Text(tr(title)); Spacer(); Image(systemName: "chevron.right").font(.system(size: 11)).foregroundStyle(MSTheme.muted)
-            }.padding(14).frame(minHeight: 48).contentShape(Rectangle())
-        }.buttonStyle(.plain)
+}
+
+private struct DemoProfileEditor: View {
+    let profile: DemoAccountProfile
+    let wide: Bool
+    @State private var name = ""
+    @State private var bio = ""
+    var body: some View {
+        ScrollView {
+            VStack(alignment: .leading, spacing: 26) {
+                ProfileEditorHeading()
+                ProfilePhotoCard(name: profile.name, photo: profile.photo, hasPhoto: profile.photo != nil) { profile.photo = $0; return true }
+                ProfileField(label: "Имя для встреч", hint: "От 1 до 100 символов.") {
+                    TextField(tr("Имя"), text: $name).textFieldStyle(.plain).profileInput()
+                }
+                ProfileField(label: "О себе") {
+                    TextField(tr("Расскажите о себе"), text: $bio, axis: .vertical).textFieldStyle(.plain).lineLimit(3...12)
+                        .profileInput(multiline: true)
+                }
+                ProfileField(label: "Email", hint: "Адрес используется для входа. Изменение email недоступно.") {
+                    Text(verbatim: "alex@example.org").profileInput(readOnly: true)
+                }
+                Button(tr("Сохранить профиль")) {
+                    if let validName = try? ProfileValidation.displayName(name), let validBio = try? ProfileValidation.bio(bio) {
+                        profile.name = validName; profile.bio = validBio
+                    }
+                }.buttonStyle(MSButtonStyle()).fixedSize(horizontal: true, vertical: false)
+                    .disabled((try? ProfileValidation.displayName(name)) == nil ||
+                        (try? ProfileValidation.bio(bio)) == nil || (profile.name == name && profile.bio == bio))
+            }.padding(.horizontal, wide ? 48 : 20).padding(.vertical, wide ? 36 : 18)
+                .frame(maxWidth: 860).frame(maxWidth: .infinity, alignment: .topLeading)
+        }.background(MSTheme.background).onAppear { name = profile.name; bio = profile.bio }
+    }
+}
+
+struct ProfileEditorHeading: View {
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text(tr("Ваш профиль")).font(MSTheme.font(23, weight: .semibold)).accessibilityAddTraits(.isHeader)
+            Text(tr("Как вас видят участники встречи.")).font(MSTheme.font(13)).foregroundStyle(MSTheme.muted)
+        }
+    }
+}
+
+struct ProfileField<Content: View>: View {
+    let label: String
+    var hint: String?
+    @ViewBuilder var content: () -> Content
+    var body: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            Text(tr(label)).font(MSTheme.font(14, weight: .semibold))
+            content()
+            if let hint { Text(tr(hint)).font(MSTheme.font(12)).foregroundStyle(MSTheme.muted) }
+        }
+    }
+}
+
+extension View {
+    func profileInput(multiline: Bool = false, readOnly: Bool = false) -> some View {
+        self.font(MSTheme.font(14)).padding(.horizontal, 14).padding(.vertical, 12)
+            .frame(maxWidth: .infinity, minHeight: multiline ? 94 : 50, alignment: multiline ? .topLeading : .leading)
+            .foregroundStyle(readOnly ? MSTheme.muted : MSTheme.ink)
+            .background(readOnly ? MSTheme.background : MSTheme.surface, in: RoundedRectangle(cornerRadius: 11))
+            .overlay(RoundedRectangle(cornerRadius: 11).strokeBorder(MSTheme.muted.opacity(0.58)))
     }
 }
 

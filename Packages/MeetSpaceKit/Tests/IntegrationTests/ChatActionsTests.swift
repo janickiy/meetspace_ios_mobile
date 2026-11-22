@@ -198,3 +198,52 @@ private actor DirectRecipientGate {
     #expect(event.type == "conversation.pins.updated" && event.conversationID == Fixture.conversationID)
     #expect(event.message == nil) // The active conversation is reloaded for conversation-only events.
 }
+
+@Test @MainActor func demoForwardAndBulkDeleteAreScopedToTheVisibleConversation() throws {
+    let store = DemoChatStore()
+    let source = 0, target = 1
+    let original = try #require(store.history[source]?.first)
+    let second = try #require(store.history[source]?.last)
+    #expect(store.forward(original.id, from: source, to: target))
+    let copy = try #require(store.history[target]?.last)
+    #expect(copy.id != original.id && copy.own && copy.forwarded == original.author)
+    #expect(copy.files == original.files && copy.text == original.text)
+    #expect(store.forward(copy.id, from: target, to: source))
+    let forwardedAgain = try #require(store.history[source]?.last)
+    #expect(forwardedAgain.forwarded == original.author)
+    store.remove([original.id, second.id], in: source)
+    #expect(store.history[source]?.contains(where: { $0.id == original.id || $0.id == second.id }) == false)
+    #expect(store.history[target]?.last == copy)
+    #expect(!store.forward(original.id, from: source, to: target))
+    #expect(store.updated == [source, target])
+}
+
+@Test @MainActor func forwardingReturnsTheConfirmedDestinationAndPreservesSourceHistory() async throws {
+    let message = try Fixture.message(text: "Материалы встречи")
+    let destination = UUID(), requestID = UUID()
+    let forwarded = try Fixture.message(id: UUID(), requestID: requestID, conversation: destination, text: message.text)
+    var copy = try JSONSerialization.jsonObject(with: WireJSON.encoder().encode(forwarded)) as! [String: Any]
+    copy["forwardedFrom"] = ["senderName": message.senderName]
+    let response = try Fixture.response(["items": [copy]])
+    let transport = RoutedTransport { request, _ in
+        if request.url?.lastPathComponent == "forward" {
+            #expect(request.httpMethod == "POST")
+            #expect(request.url?.path == "/api/v1/conversations/\(destination.uuidString.lowercased())/messages/forward")
+            let body = try JSONSerialization.jsonObject(with: #require(request.httpBody)) as! [String: Any]
+            #expect((body["sourceId"] as? String).flatMap(UUID.init(uuidString:)) == Fixture.conversationID)
+            #expect((body["clientRequestId"] as? String).flatMap(UUID.init(uuidString:)) == requestID)
+            #expect((body["messageIds"] as? [String])?.compactMap(UUID.init(uuidString:)) == [message.id])
+            return response
+        }
+        if request.url?.lastPathComponent == "messages" { return try chatResponse([message]) }
+        return try Fixture.response(["item": JSONSerialization.jsonObject(with: Fixture.conversation())])
+    }
+    let client = try chatClient(transport)
+    let model = MessagingModel(client: client, sockets: ChatActionSockets(), hiddenMessages: MemoryHiddenChatMessagesStore())
+    await model.open(Fixture.conversationID)
+    let confirmedDestination = try await model.forward([message], to: destination, requestID: requestID)
+    #expect(confirmedDestination == destination)
+    #expect(model.timeline.messages.map(\.id) == [message.id])
+    await model.close()
+    _ = try await client.close()
+}

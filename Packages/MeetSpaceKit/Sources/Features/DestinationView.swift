@@ -10,7 +10,7 @@ struct DestinationView: View {
             switch route {
             case .thread(let index): ThreadView(model: model, personIndex: index)
             case .conversation(let id):
-                if let messaging = model.identity.messaging { LiveThreadView(model: messaging, id: id, calls: model.identity.calls) }
+                if let messaging = model.identity.messaging { LiveThreadView(model: messaging, id: id, calls: model.identity.calls, openRecipient: { model.navigate(.conversation($0)) }).id(id) }
             case .interfaceCatalog: ScreenCatalog(model: model)
             case .calendar:
                 if model.isDemo { CalendarScreen(model: model) }
@@ -29,7 +29,12 @@ struct DestinationView: View {
             case .meetingDetails(let id): MeetingDetailView(model: model, meetingID: id)
             case .newMeeting, .scheduleMeeting, .joinMeeting: MeetingFormView(model: model, route: route)
             case .prejoin, .call, .personalCall: CallPreviewView(model: model, route: route)
-            case .audioSettings, .videoSettings, .notificationSettings, .appearance, .connection, .accounts:
+            case .notificationSettings:
+                if model.isDemo { SettingsDetailView(model: model, route: route) }
+                else if let settings = model.identity.settings {
+                    AccountSettingsContent(model: settings, section: .notifications).task { await settings.load() }
+                }
+            case .audioSettings, .videoSettings, .appearance, .connection, .accounts:
                 SettingsDetailView(model: model, route: route)
             case .deploy, .fingerprint, .preflight, .install, .complete, .installError:
                 InstallerCatalogNotice(model: model)
