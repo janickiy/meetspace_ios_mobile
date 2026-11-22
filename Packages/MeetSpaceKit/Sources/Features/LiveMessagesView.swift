@@ -359,7 +359,7 @@ struct LiveThreadView: View {
             if !message.isDeleted { ForEach(message.attachments) { attachment in attachmentRow(attachment) } }
         } actions: {
                 if message.isActionable && !model.selectingMessages {
-                    ChatMenuShareButton(text: message.shareText)
+                    Button(tr("Ответить"), systemImage: "arrowshape.turn.up.left") { model.reply = message; model.editing = nil }
                     Button(tr("Копировать"), systemImage: "doc.on.doc") {
                         #if canImport(UIKit)
                         UIPasteboard.general.string = message.shareText
@@ -371,7 +371,7 @@ struct LiveThreadView: View {
                         .accessibilityIdentifier("message.forwardAction")
                     Button(tr("Выбрать"), systemImage: "checkmark.circle") { beginSelection(message) }
                     Button(tr(message.pinned ? "Открепить" : "Закрепить"), systemImage: "pin") { Task { await model.pin(message) } }
-                    Button(tr("Ответить"), systemImage: "arrowshape.turn.up.left") { model.reply = message; model.editing = nil }
+                    ChatMenuShareButton(text: message.shareText)
                 }
                 if message.canEdit(as: model.account.user.id) && !model.selectingMessages {
                     if model.uploads.isEmpty {
