@@ -215,7 +215,12 @@ import UIKit
         let first = app.staticTexts["Доброе утро! Материалы к встрече готовы. Посмотрите, когда будет минутка."].firstMatch
         reveal(first, in: app, towardTop: true)
         first.press(forDuration: 0.8)
-        app.buttons["message.forwardAction"].tap()
+        let forward = app.buttons["message.forwardAction"]
+        XCTAssertTrue(forward.waitForExistence(timeout: 5))
+        let actionable = XCTNSPredicateExpectation(predicate: NSPredicate(format: "hittable == true"), object: forward)
+        XCTAssertEqual(XCTWaiter.wait(for: [actionable], timeout: 5), .completed)
+        capture(app, name: "comment-actions")
+        forward.tap()
         let group = app.buttons["message.forward.1"]
         XCTAssertTrue(group.waitForExistence(timeout: 5)); group.tap()
         let attribution = app.staticTexts.matching(NSPredicate(format: "label BEGINSWITH %@", "Переслано")).firstMatch

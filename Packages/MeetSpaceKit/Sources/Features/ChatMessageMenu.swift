@@ -14,10 +14,31 @@ private struct ChatMenuItem: Identifiable {
     let actions: AnyView
 }
 
-@MainActor @Observable private final class ChatMenuPresentation {
-    var item: ChatMenuItem?
+@MainActor @Observable final class ChatMenuPresentation {
+    fileprivate var item: ChatMenuItem?
+    var isPresented: Bool { item != nil }
     #if os(iOS)
     var sharing: MessageShareRequest?
+    @ObservationIgnored private var afterDismiss: (() -> Void)?
+    #endif
+
+    func choose(_ action: @escaping () -> Void) {
+        guard item != nil else { return }
+        #if os(iOS)
+        afterDismiss = action
+        item = nil
+        #else
+        item = nil
+        action()
+        #endif
+    }
+
+    #if os(iOS)
+    func finishDismissal() {
+        let action = afterDismiss
+        afterDismiss = nil
+        action?()
+    }
     #endif
 
     func share(_ text: String) {
@@ -36,7 +57,7 @@ private struct ChatMenuEnvironmentKey: EnvironmentKey {
     static let defaultValue: ChatMenuPresentation? = nil
 }
 
-private extension EnvironmentValues {
+extension EnvironmentValues {
     var chatMenu: ChatMenuPresentation? {
         get { self[ChatMenuEnvironmentKey.self] }
         set { self[ChatMenuEnvironmentKey.self] = newValue }
@@ -79,7 +100,9 @@ struct MessageMenuTrigger<Actions: View>: ViewModifier {
                             .accessibilityIdentifier("message.actions.\(identifier)")
                     }
                 }
+                #if os(macOS)
                 .onDisappear { if presentation?.item?.id == identifier { presentation?.item = nil } }
+                #endif
         } else { content }
     }
 
@@ -89,12 +112,25 @@ struct MessageMenuTrigger<Actions: View>: ViewModifier {
     }
 }
 
-/// Screen-level overlay avoids a nested system presentation when a command opens the forward picker or share sheet.
+/// On iPad the UIKit-backed tab/navigation hierarchy can win hit testing under a SwiftUI overlay.
+/// Present the panel in its own native controller, and open any next sheet only after it dismisses.
 private struct ChatMessageMenuHost: ViewModifier {
     @State private var presentation = ChatMenuPresentation()
     func body(content: Content) -> some View {
         content
             .blur(radius: presentation.item == nil ? 0 : 3)
+            #if os(iOS)
+            .fullScreenCover(item: $presentation.item, onDismiss: presentation.finishDismissal) { item in
+                ChatMessageMenu(item: item, close: { presentation.item = nil })
+                    .presentationBackground(.clear)
+                    .interactiveDismissDisabled()
+                    .environment(\.chatMenu, presentation)
+            }
+            .sheet(item: $presentation.sharing) { request in
+                MessageActivitySheet(request: request) { presentation.sharing = nil }
+                    .presentationDetents([.medium, .large]).presentationDragIndicator(.visible)
+            }
+            #else
             .allowsHitTesting(presentation.item == nil)
             .accessibilityHidden(presentation.item != nil)
             .overlay {
@@ -102,13 +138,8 @@ private struct ChatMessageMenuHost: ViewModifier {
                     ChatMessageMenu(item: item, close: { presentation.item = nil }).id(item.id)
                 }
             }
-            .environment(\.chatMenu, presentation)
-            #if os(iOS)
-            .sheet(item: $presentation.sharing) { request in
-                MessageActivitySheet(request: request) { presentation.sharing = nil }
-                    .presentationDetents([.medium, .large]).presentationDragIndicator(.visible)
-            }
             #endif
+            .environment(\.chatMenu, presentation)
     }
 }
 
@@ -120,7 +151,8 @@ struct ChatMenuShareButton: View {
     let text: String
     @Environment(\.chatMenu) private var presentation
     var body: some View {
-        Button(tr("Поделиться"), systemImage: "square.and.arrow.up") { presentation?.share(text) }
+        let menu = presentation
+        ChatMessageCommand("Поделиться", systemImage: "square.and.arrow.up") { menu?.share(text) }
     }
 }
 
@@ -140,63 +172,69 @@ private struct ChatMessageMenu: View {
             ZStack(alignment: .topLeading) {
                 Color(red: 0.075, green: 0.125, blue: 0.224).opacity(0.48)
                     .ignoresSafeArea().onTapGesture(perform: close).accessibilityHidden(true)
-                ScrollView {
-                    VStack(spacing: 9) {
-                        HStack {
-                            Text(tr("Действия с сообщением")).font(MSTheme.font(12, weight: .semibold))
-                                .accessibilityAddTraits(.isHeader).accessibilityFocused($focused)
-                            Spacer()
-                            Button(action: close) {
-                                Image(systemName: "xmark").font(.system(size: 14)).frame(width: 32, height: 32)
-                                    .background(.white.opacity(0.12), in: Circle()).frame(width: 44, height: 44)
-                            }.buttonStyle(.plain).accessibilityLabel(tr("Закрыть действия с сообщением"))
-                        }.foregroundStyle(.white).padding(.leading, 12)
-                        VStack(alignment: .leading, spacing: 5) {
-                            Text(item.author).font(MSTheme.font(12, weight: .semibold)).foregroundStyle(MSTheme.accent)
-                            Text(item.summary).font(MSTheme.font(13)).lineLimit(4)
-                            Text(item.time).font(MSTheme.font(10)).foregroundStyle(MSTheme.muted)
-                                .frame(maxWidth: .infinity, alignment: .trailing)
-                        }.padding(14).frame(maxWidth: .infinity, alignment: .leading)
-                            .background(item.own ? MSTheme.accentSoft : MSTheme.surface, in: RoundedRectangle(cornerRadius: 16))
-                            .accessibilityElement(children: .combine)
-                        VStack(spacing: 0) { item.actions }
-                            .buttonStyle(ChatMenuCommandStyle(close: close))
-                            .padding(5).background(MSTheme.surface, in: RoundedRectangle(cornerRadius: 16))
-                            .overlay(RoundedRectangle(cornerRadius: 16).strokeBorder(MSTheme.line))
-                    }
-                    .onGeometryChange(for: CGFloat.self) { $0.size.height } action: { contentHeight = $0 }
-                }.scrollIndicators(.hidden).scrollBounceBehavior(.basedOnSize)
-                    .frame(width: width, height: height).offset(x: x, y: y)
-            }.frame(maxWidth: .infinity, maxHeight: .infinity)
+                Group {
+                    if contentHeight > bounds.height - 32 {
+                        ScrollView { panel }.scrollIndicators(.hidden)
+                    } else { panel }
+                }
+                .frame(width: width, height: height, alignment: .top)
+                .padding(.leading, x).padding(.top, y)
+            }.frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
         }
-        .accessibilityAddTraits(.isModal).accessibilityAction(.escape, close)
-        .accessibilityIdentifier("message.actionMenu")
+        .accessibilityAction(.escape, close)
         .onAppear { focused = true }
     }
-}
 
-/// Commands can open other sheets. Remove this overlay before triggering the original action.
-private struct ChatMenuCommandStyle: PrimitiveButtonStyle {
-    let close: () -> Void
-    func makeBody(configuration: Configuration) -> some View {
-        Button(role: configuration.role) {
-            close()
-            configuration.trigger()
-        } label: {
-            configuration.label.labelStyle(ChatMenuLabelStyle())
-                .font(MSTheme.font(13)).foregroundStyle(configuration.role == .destructive ? MSTheme.danger : MSTheme.ink)
-                .padding(.horizontal, 12).frame(maxWidth: .infinity, minHeight: 44, alignment: .leading)
-                .overlay(alignment: .bottom) { Rectangle().fill(MSTheme.line.opacity(0.7)).frame(height: 0.5) }
-                .contentShape(Rectangle())
-        }.buttonStyle(.plain)
+    private var panel: some View {
+        VStack(spacing: 9) {
+            HStack {
+                Text(tr("Действия с сообщением")).font(MSTheme.font(12, weight: .semibold))
+                    .accessibilityAddTraits(.isHeader).accessibilityFocused($focused)
+                Spacer()
+                Button(action: close) {
+                    Image(systemName: "xmark").font(.system(size: 14)).frame(width: 32, height: 32)
+                        .background(.white.opacity(0.12), in: Circle()).frame(width: 44, height: 44)
+                }.buttonStyle(.plain).accessibilityLabel(tr("Закрыть действия с сообщением"))
+            }.foregroundStyle(.white).padding(.leading, 12)
+            VStack(alignment: .leading, spacing: 5) {
+                Text(item.author).font(MSTheme.font(12, weight: .semibold)).foregroundStyle(MSTheme.accent)
+                Text(item.summary).font(MSTheme.font(13)).lineLimit(4)
+                Text(item.time).font(MSTheme.font(10)).foregroundStyle(MSTheme.muted)
+                    .frame(maxWidth: .infinity, alignment: .trailing)
+            }.padding(14).frame(maxWidth: .infinity, alignment: .leading)
+                .background(item.own ? MSTheme.accentSoft : MSTheme.surface, in: RoundedRectangle(cornerRadius: 16))
+                .accessibilityElement(children: .combine)
+            VStack(spacing: 0) { item.actions }
+                .padding(5).background(MSTheme.surface, in: RoundedRectangle(cornerRadius: 16))
+                .overlay(RoundedRectangle(cornerRadius: 16).strokeBorder(MSTheme.line))
+        }
+        .fixedSize(horizontal: false, vertical: true)
+        .onGeometryChange(for: CGFloat.self) { $0.size.height } action: { contentHeight = $0 }
+        .accessibilityElement(children: .contain)
+        .accessibilityIdentifier("message.actionMenu")
     }
 }
 
-private struct ChatMenuLabelStyle: LabelStyle {
-    func makeBody(configuration: Configuration) -> some View {
-        HStack(spacing: 12) {
-            configuration.icon.font(.system(size: 17)).frame(width: 20)
-            configuration.title
-        }
+/// Store the actual command, rather than a transient Button configuration from the dismissed cover.
+struct ChatMessageCommand: View {
+    let title: String
+    let symbol: String
+    let role: ButtonRole?
+    let action: () -> Void
+    @Environment(\.chatMenu) private var presentation
+    init(_ title: String, systemImage: String, role: ButtonRole? = nil, action: @escaping () -> Void) {
+        self.title = title; symbol = systemImage; self.role = role; self.action = action
+    }
+    var body: some View {
+        Button(role: role) { presentation?.choose(action) } label: {
+            HStack(spacing: 12) {
+                Image(systemName: symbol).font(.system(size: 17)).frame(width: 20).accessibilityHidden(true)
+                Text(tr(title)).font(MSTheme.font(13))
+            }
+            .foregroundStyle(role == .destructive ? MSTheme.danger : MSTheme.ink)
+            .padding(.horizontal, 12).frame(maxWidth: .infinity, minHeight: 44, alignment: .leading)
+            .overlay(alignment: .bottom) { Rectangle().fill(MSTheme.line.opacity(0.7)).frame(height: 0.5) }
+            .contentShape(Rectangle())
+        }.buttonStyle(.plain)
     }
 }

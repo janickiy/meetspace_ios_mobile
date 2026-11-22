@@ -12,6 +12,7 @@ struct LiveProfileView: View {
     @Bindable var app: AppModel
     @State private var removing: AccountRecord?
     @State private var licenses = false
+    @State private var showingAccountSettings = false
     @State private var deleting: AccountRecord?
     var body: some View {
         Group {
@@ -29,18 +30,21 @@ struct LiveProfileView: View {
                     }
                 } extras: {
                     VStack(alignment: .leading, spacing: 12) {
-                        NavigationLink { AccountSettingsView(model: settings) } label: {
-                            Label(tr("Дополнительные настройки"), systemImage: "gearshape").frame(maxWidth: .infinity, minHeight: 44, alignment: .leading)
-                        }.buttonStyle(.plain).accessibilityIdentifier("openAccountSettings")
-                        workspaceLink("Календарь", icon: "calendar", route: .calendar, id: "openCalendar")
-                        workspaceLink("Записи встреч", icon: "play.rectangle", route: .recordings, id: "openRecordings")
-                        workspaceLink("Личные папки", icon: "folder", route: .folders, id: "openFolders")
+                        navigationRow("Дополнительные настройки", icon: "gearshape", id: "openAccountSettings") {
+                            showingAccountSettings = true
+                        }
+                        navigationRow("Календарь", icon: "calendar", id: "openCalendar") { app.navigate(.calendar) }
+                        navigationRow("Записи встреч", icon: "play.rectangle", id: "openRecordings") { app.navigate(.recordings) }
+                        navigationRow("Личные папки", icon: "folder", id: "openFolders") { app.navigate(.folders) }
                         notificationSettings
                         Button(tr("Лицензии компонентов")) { licenses = true }.frame(minHeight: 44)
                         Button(tr("Удалить аккаунт на сервере"), role: .destructive) {
                             app.identity.error = nil; deleting = account
                         }.frame(minHeight: 44).accessibilityIdentifier("openDeleteAccount")
                     }
+                }
+                .navigationDestination(isPresented: $showingAccountSettings) {
+                    AccountSettingsView(model: settings)
                 }
                 .task(id: account.id) { if !settings.loaded { await settings.load() } }
             }
@@ -92,11 +96,19 @@ struct LiveProfileView: View {
         }.frame(maxWidth: 680, alignment: .leading).frame(maxWidth: .infinity, alignment: .leading)
     }
 
-    private func workspaceLink(_ title: String, icon: String, route: AppRoute, id: String) -> some View {
-        Button { app.navigate(route) } label: {
-            HStack { Label(tr(title), systemImage: icon); Spacer(); Image(systemName: "chevron.right") }
-                .frame(minHeight: 44).contentShape(Rectangle())
-        }.buttonStyle(.plain).accessibilityIdentifier(id)
+    private func navigationRow(_ title: String, icon: String, id: String, action: @escaping () -> Void) -> some View {
+        Button(action: action) {
+            HStack {
+                Label(tr(title), systemImage: icon)
+                Spacer(minLength: 8)
+                Image(systemName: "chevron.right").accessibilityHidden(true)
+            }
+            .frame(maxWidth: .infinity, minHeight: 44, alignment: .leading)
+            .contentShape([.interaction, .accessibility], Rectangle())
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel(tr(title))
+        .accessibilityIdentifier(id)
     }
     private var notificationSettings: some View {
         VStack(alignment: .leading, spacing: 12) {

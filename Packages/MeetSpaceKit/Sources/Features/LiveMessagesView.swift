@@ -123,6 +123,8 @@ struct LiveThreadView: View {
     var openRecipient: ((UUID) -> Void)?
     var newChat: (() -> Void)?
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.chatMenu) private var chatMenu
+    @State private var coveredConversation: UUID?
     @State private var contactDetails = false
     @State private var importing = false
     @State private var groupDetails = false
@@ -242,9 +244,16 @@ struct LiveThreadView: View {
                 composer
             }
         }.background(MSTheme.background).toolbar(.hidden)
-            .task(id: id) { await model.open(id) }
+            .task(id: id) {
+                if coveredConversation == id { coveredConversation = nil }
+                else { await model.open(id) }
+            }
             .onDisappear {
-                if model.conversation?.id == id { model.hide(id); model.cancelMessageSelection() }
+                guard model.conversation?.id == id else { return }
+                // A message action temporarily covers this thread. Preserve its history and search results,
+                // including older pages to which the pending reply, edit or selection refers.
+                if chatMenu?.isPresented == true { coveredConversation = id }
+                else { model.hide(id); model.cancelMessageSelection() }
             }
             .task(id: query) {
                 do { try await Task.sleep(for: .milliseconds(350)) } catch { return }
@@ -359,27 +368,27 @@ struct LiveThreadView: View {
             if !message.isDeleted { ForEach(message.attachments) { attachment in attachmentRow(attachment) } }
         } actions: {
                 if message.isActionable && !model.selectingMessages {
-                    Button(tr("Ответить"), systemImage: "arrowshape.turn.up.left") { model.reply = message; model.editing = nil }
-                    Button(tr("Копировать"), systemImage: "doc.on.doc") {
+                    ChatMessageCommand("Ответить", systemImage: "arrowshape.turn.up.left") { model.reply = message; model.editing = nil }
+                    ChatMessageCommand("Копировать", systemImage: "doc.on.doc") {
                         #if canImport(UIKit)
                         UIPasteboard.general.string = message.shareText
                         #elseif canImport(AppKit)
                         NSPasteboard.general.clearContents(); NSPasteboard.general.setString(message.shareText, forType: .string)
                         #endif
                     }
-                    Button(tr("Переслать"), systemImage: "arrowshape.turn.up.right") { forwardingMessage = message }
+                    ChatMessageCommand("Переслать", systemImage: "arrowshape.turn.up.right") { forwardingMessage = message }
                         .accessibilityIdentifier("message.forwardAction")
-                    Button(tr("Выбрать"), systemImage: "checkmark.circle") { beginSelection(message) }
-                    Button(tr(message.pinned ? "Открепить" : "Закрепить"), systemImage: "pin") { Task { await model.pin(message) } }
+                    ChatMessageCommand("Выбрать", systemImage: "checkmark.circle") { beginSelection(message) }
+                    ChatMessageCommand(message.pinned ? "Открепить" : "Закрепить", systemImage: "pin") { Task { await model.pin(message) } }
                     ChatMenuShareButton(text: message.shareText)
                 }
                 if message.canEdit(as: model.account.user.id) && !model.selectingMessages {
                     if model.uploads.isEmpty {
-                        Button(tr("Редактировать"), systemImage: "pencil") { model.editing = message; model.reply = nil; model.text = message.text }
+                        ChatMessageCommand("Редактировать", systemImage: "pencil") { model.editing = message; model.reply = nil; model.text = message.text }
                     }
                 }
                 if own && message.isActionable && !model.selectingMessages {
-                    Button(tr("Удалить для всех"), systemImage: "trash", role: .destructive) { deleting = message }
+                    ChatMessageCommand("Удалить для всех", systemImage: "trash", role: .destructive) { deleting = message }
                 }
         }
     }

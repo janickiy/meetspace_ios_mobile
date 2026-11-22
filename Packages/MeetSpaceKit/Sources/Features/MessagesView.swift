@@ -135,9 +135,9 @@ struct ThreadView: View {
                                 ChatMessageText(text: message.text)
                                 if !message.files.isEmpty { DemoChatAttachments(files: message.files) }
                             } actions: {
-                                Button(tr("Переслать"), systemImage: "arrow.right") { recipientQuery = ""; forwarding = message }
+                                ChatMessageCommand("Переслать", systemImage: "arrow.right") { recipientQuery = ""; forwarding = message }
                                     .accessibilityIdentifier("message.forwardAction")
-                                Button(tr("Выбрать"), systemImage: "checkmark.circle") { select(message.id) }
+                                ChatMessageCommand("Выбрать", systemImage: "checkmark.circle") { select(message.id) }
                                 ChatMenuShareButton(text: message.shareText)
                             }.id(message.id)
                         }

@@ -7,7 +7,7 @@ on:
       scope:
         description: Test scope
         type: choice
-        options: [full, audit, deletion, regression, push-recovery, beta, beta-ui, beta-package]
+        options: [full, audit, deletion, regression, push-recovery, beta, beta-ui, beta-package, workspace]
         default: full
 
 permissions:
@@ -22,7 +22,7 @@ concurrency:
 
 jobs:
   package:
-    if: inputs.scope != 'deletion' && inputs.scope != 'beta-ui'
+    if: inputs.scope != 'deletion' && inputs.scope != 'beta-ui' && inputs.scope != 'workspace'
     runs-on: macos-15
     timeout-minutes: 75
     steps:
@@ -72,7 +72,7 @@ jobs:
     timeout-minutes: 90
     strategy:
       fail-fast: false
-      max-parallel: ${{ (inputs.scope == 'beta' || inputs.scope == 'beta-ui') && 4 || 2 }}
+      max-parallel: ${{ (inputs.scope == 'beta' || inputs.scope == 'beta-ui' || inputs.scope == 'workspace') && 4 || 2 }}
       matrix:
         include:
           - {family: iPhone, runtime: 26, label: iPhone26, scope: full, device: 'iPhone 17 Pro Max'}
@@ -88,9 +88,9 @@ jobs:
       - name: App, Keychain and UI tests
         # Audit diagnosis covers two devices; deletion/regression/full use all four.
         if: inputs.scope != 'audit' || matrix.label == 'iPhone18' || matrix.label == 'iPad26'
-        run: python3 scripts/ci_simulators.py --family '${{ matrix.family }}' --runtime-major '${{ matrix.runtime }}' --label '${{ matrix.label }}' --preferred-device '${{ matrix.device }}' --scope '${{ inputs.scope == 'audit' && 'audit' || inputs.scope == 'deletion' && 'deletion' || inputs.scope == 'regression' && 'regression' || inputs.scope == 'push-recovery' && 'push-recovery' || (inputs.scope == 'beta' || inputs.scope == 'beta-ui') && 'beta' || matrix.scope }}'
+        run: python3 scripts/ci_simulators.py --family '${{ matrix.family }}' --runtime-major '${{ matrix.runtime }}' --label '${{ matrix.label }}' --preferred-device '${{ matrix.device }}' --scope '${{ inputs.scope == 'audit' && 'audit' || inputs.scope == 'deletion' && 'deletion' || inputs.scope == 'regression' && 'regression' || inputs.scope == 'push-recovery' && 'push-recovery' || inputs.scope == 'workspace' && 'workspace' || (inputs.scope == 'beta' || inputs.scope == 'beta-ui') && 'beta' || matrix.scope }}'
       - name: Diagnostic Instruments baseline (reported separately)
-        if: always() && matrix.label == 'iPhone18' && inputs.scope != 'deletion' && inputs.scope != 'push-recovery' && inputs.scope != 'beta' && inputs.scope != 'beta-ui'
+        if: always() && matrix.label == 'iPhone18' && inputs.scope != 'deletion' && inputs.scope != 'push-recovery' && inputs.scope != 'beta' && inputs.scope != 'beta-ui' && inputs.scope != 'workspace'
         # Profiling capability is a separate gate. Preserve its exact failure/blocker
         # in receipt.json; it must never replace the native test result above.
         continue-on-error: true
