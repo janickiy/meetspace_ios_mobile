@@ -64,7 +64,8 @@ import MeetSpaceCalling
             guard existing != nil || index.accounts.filter({ $0.server == server }).count < 5 else { throw ClientError.accountLimit }
             var cookie: String?
             if let existing, let saved = try await dependencies.credentials.read(existing.key) {
-                cookie = try WireJSON.decoder().decode(SessionCredentials.self, from: saved).validated().sessionCookie
+                // Reuse a valid cookie to rotate the old session. A password login can replace an unreadable session.
+                cookie = try? WireJSON.decoder().decode(SessionCredentials.self, from: saved).validated().sessionCookie
             }
             let signed = try await AuthenticationGateway(origin: server, transport: dependencies.transport())
                 .login(email: normalized, password: password, previousCookie: cookie)

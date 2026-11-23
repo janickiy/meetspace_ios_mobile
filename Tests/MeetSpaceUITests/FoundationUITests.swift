@@ -1283,6 +1283,56 @@ import UIKit
         XCTAssertFalse(app.buttons["Войти"].isEnabled)
     }
 
+    func testServerCheckWithKeyboardAndLoginRetryReachProfile() {
+        XCUIDevice.shared.orientation = .portrait
+        let app = launch(["-auth-retry"])
+        let connect = app.buttons["connectServer"]
+        reveal(connect, in: app)
+        connect.tap()
+        let address = app.textFields["serverURL"]
+        XCTAssertTrue(address.waitForExistence(timeout: 5))
+        address.tap()
+        address.typeText("https://fixture.example")
+        let keyboard = app.keyboards.firstMatch
+        XCTAssertTrue(keyboard.waitForExistence(timeout: 5))
+        capture(app, name: "connect-with-software-keyboard")
+        let window = app.windows.firstMatch
+        XCTAssertTrue(keyboard.frame.intersects(window.frame), "Keyboard \(keyboard.frame) must be visible in \(window.frame)")
+        let check = app.buttons["checkServer"]
+        reveal(check, in: app)
+        check.tap()
+
+        let next = app.buttons["Перейти ко входу"]
+        XCTAssertTrue(next.waitForExistence(timeout: 5))
+        let unobstructed = XCTNSPredicateExpectation(predicate: NSPredicate { _, _ in
+            MainActor.assumeIsolated {
+                next.isHittable && window.frame.contains(next.frame) &&
+                    (!keyboard.exists || !keyboard.frame.intersects(next.frame))
+            }
+        }, object: next)
+        XCTAssertEqual(XCTWaiter.wait(for: [unobstructed], timeout: 5), .completed,
+                       "Continuation \(next.frame) must be completely visible inside \(window.frame)")
+        capture(app, name: "connect-verified")
+        next.tap()
+
+        let email = app.textFields["Электронная почта"]
+        XCTAssertTrue(email.waitForExistence(timeout: 5))
+        email.tap()
+        email.typeText("first@fixture.example\n")
+        let password = app.secureTextFields["Пароль"]
+        password.typeText("78291607\n")
+        XCTAssertTrue(app.staticTexts["authenticationError"].waitForExistence(timeout: 5))
+        XCTAssertEqual(email.value as? String, "first@fixture.example")
+        XCTAssertEqual((password.value as? String)?.count, 8)
+        password.tap()
+        password.typeText(String(repeating: XCUIKeyboardKey.delete.rawValue, count: 8))
+        password.typeText("48291607\n")
+        finishSuccessfulLogin(app)
+        openProfile(in: app)
+        XCTAssertTrue(app.buttons["profileMenu.accounts"].exists)
+        capture(app, name: "profile-after-login-retry")
+    }
+
     private func authentication(_ app: XCUIApplication) {
         XCTAssertTrue(app.buttons["connectServer"].waitForExistence(timeout: 10))
         reveal(app.buttons["connectServer"], in: app)

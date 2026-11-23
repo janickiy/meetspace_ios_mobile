@@ -74,9 +74,16 @@ struct OnboardingView: View {
             let wide = proxy.size.width >= 800 && !typeSize.isAccessibilitySize
             HStack(spacing: 0) {
                 if wide { OnboardingAside().frame(maxWidth: .infinity, maxHeight: .infinity) }
-                ScrollView {
-                    VStack(alignment: .leading, spacing: 24) {
-                        if !wide || model.onboarding != .welcome {
+                form(wide: wide, size: proxy.size)
+            }.background(MSTheme.background)
+        }
+    }
+
+    private func form(wide: Bool, size: CGSize) -> some View {
+        ScrollViewReader { scroll in
+            ScrollView {
+                VStack(alignment: .leading, spacing: 24) {
+                    if !wide || model.onboarding != .welcome {
                         HStack(spacing: 9) {
                             BrandMark().frame(width: 27, height: 29)
                             (Text("MeetSpace") + Text(".").foregroundColor(MSTheme.accent)).font(MSTheme.font(21, weight: .semibold))
@@ -92,20 +99,28 @@ struct OnboardingView: View {
                             }
                         }
                         .padding(.bottom, wide ? 30 : 12)
-                        }
-                        switch model.onboarding {
-                        case .welcome: WelcomeView(model: model, showArtwork: !wide, compactPhone: proxy.size.width <= 375)
-                        case .connect: ConnectView(model: model)
-                        case .login: AuthenticationView(model: model, registration: false).id("login")
-                        case .register: AuthenticationView(model: model, registration: true).id("register")
-                        }
-                    }.frame(minHeight: wide && model.onboarding == .welcome ? max(0, proxy.size.height - 88) : nil,
-                            alignment: wide && model.onboarding == .welcome ? .center : .top)
-                        .padding(wide ? 44 : 24).frame(maxWidth: 510)
-                        .frame(maxWidth: .infinity, alignment: .center)
-                }.frame(maxWidth: .infinity, maxHeight: .infinity).background(MSTheme.surface)
-            }.background(MSTheme.background)
+                    }
+                    switch model.onboarding {
+                    case .welcome: WelcomeView(model: model, showArtwork: !wide, compactPhone: size.width <= 375)
+                    case .connect: ConnectView(model: model)
+                    case .login: AuthenticationView(model: model, registration: false)
+                    case .register: AuthenticationView(model: model, registration: true)
+                    }
+                }.frame(minHeight: wide && model.onboarding == .welcome ? max(0, size.height - 88) : nil,
+                        alignment: wide && model.onboarding == .welcome ? .center : .top)
+                    .padding(wide ? 44 : 24).frame(maxWidth: 510)
+                    .frame(maxWidth: .infinity)
+            }
+            .scrollDismissesKeyboard(.interactively)
+            .onChange(of: model.probeState) { _, state in
+                if model.onboarding == .connect && state == .content {
+                    scroll.scrollTo(ConnectView.continueID, anchor: .bottom)
+                }
+            }
         }
+        .id(model.onboarding)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(MSTheme.surface)
     }
 }
 
@@ -282,17 +297,20 @@ private struct WelcomeArtwork: View {
 }
 
 private struct ConnectView: View {
+    static let continueID = "continueToLogin"
     @Bindable var model: AppModel
-    @State private var address: String = ""
+    @State private var address = ""
+    @FocusState private var editingAddress: Bool
     var body: some View {
         VStack(alignment: .leading, spacing: 22) {
             StepHeading(step: "01 / ПОДКЛЮЧЕНИЕ", title: "Где ваша\nкоманда?", subtitle: "Введите адрес сервера MeetSpace. Его можно узнать у администратора команды.")
             VStack(alignment: .leading, spacing: 8) {
                 Text(tr("Адрес сервера")).font(MSTheme.font(12, weight: .semibold))
                 TextField("https://meet.example.com", text: $address).msURLInput()
+                    .focused($editingAddress).submitLabel(.go)
                     .textFieldStyle(.plain).padding(14).background(MSTheme.surfaceSecondary, in: RoundedRectangle(cornerRadius: 12))
                     .accessibilityLabel(tr("Адрес сервера")).accessibilityIdentifier("serverURL")
-                    .onSubmit { model.checkServer(address) }
+                    .onSubmit(checkAddress)
                     .onChange(of: address) { _, _ in model.addressChanged() }
                 Label(tr("Защищённое подключение по HTTPS"), systemImage: "lock.shield").font(MSTheme.font(11)).foregroundStyle(MSTheme.muted)
             }
@@ -307,14 +325,23 @@ private struct ConnectView: View {
                 Label(tr("Сервер ответил. Можно перейти ко входу."), systemImage: "checkmark.shield")
                     .foregroundStyle(MSTheme.success).accessibilityIdentifier("serverVerified")
                 Text(tr("Проверка версии не подтверждает доступность всех функций.")).font(MSTheme.font(11)).foregroundStyle(MSTheme.muted)
-                Button(tr("Перейти ко входу")) { Task { await model.continueToLogin() } }.buttonStyle(MSButtonStyle())
+                Button(tr("Перейти ко входу")) {
+                    editingAddress = false
+                    Task { await model.continueToLogin() }
+                }.buttonStyle(MSButtonStyle()).id(Self.continueID)
             } else {
-                Button(tr("Проверить адрес")) { model.checkServer(address) }.buttonStyle(MSButtonStyle())
+                Button(tr("Проверить адрес"), action: checkAddress).buttonStyle(MSButtonStyle())
                     .disabled(model.probeState == .loading || address.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
                     .accessibilityIdentifier("checkServer")
             }
             Button(tr("Назад")) { model.show(.welcome) }.frame(minHeight: 44)
         }.onAppear { if address.isEmpty { address = model.connectionPrefill?.url.absoluteString ?? "" } }
+    }
+
+    private func checkAddress() {
+        editingAddress = false
+        guard model.probeState != .loading, !address.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return }
+        model.checkServer(address)
     }
 }
 
@@ -335,6 +362,8 @@ extension AppModel.ConnectionError {
 private struct AuthenticationView: View {
     @Bindable var model: AppModel
     let registration: Bool
+    private enum Field: Hashable { case name, email, password, confirmation }
+    @FocusState private var focusedField: Field?
     // Passwords live only in the form and the in-flight request.
     @State private var name: String = ""
     @State private var email: String = ""
@@ -347,26 +376,42 @@ private struct AuthenticationView: View {
                 Label(model.authenticationServer?.displayName ?? "MeetSpace", systemImage: "checkmark.shield")
                 Spacer(); Button(tr("Изменить")) { model.show(.connect, server: model.authenticationServer) }
             }.font(MSTheme.font(12)).msCard(padding: 12)
-            if registration { field("Имя") { TextField(tr("Имя"), text: $name) } }
-            field("Электронная почта") { TextField("name@example.com", text: $email).msEmailInput().textContentType(.emailAddress) }
-            field("Пароль") { SecureField(tr("Пароль"), text: $password) }
-            if registration { field("Повторите пароль") { SecureField(tr("Повторите пароль"), text: $confirmation) } }
+            if registration {
+                field("Имя") {
+                    TextField(tr("Имя"), text: $name)
+                        .focused($focusedField, equals: .name).submitLabel(.next)
+                        .onSubmit { focusedField = .email }
+                }
+            }
+            field("Электронная почта") {
+                TextField("name@example.com", text: $email).msEmailInput()
+                    .textContentType(registration ? .emailAddress : .username)
+                    .focused($focusedField, equals: .email).submitLabel(.next)
+                    .onSubmit { focusedField = .password }
+            }
+            field("Пароль") {
+                SecureField(tr("Пароль"), text: $password)
+                    .textContentType(registration ? .newPassword : .password)
+                    .focused($focusedField, equals: .password).submitLabel(registration ? .next : .go)
+                    .onSubmit {
+                        if registration { focusedField = .confirmation }
+                        else { submit() }
+                    }
+            }
+            if registration {
+                field("Повторите пароль") {
+                    SecureField(tr("Повторите пароль"), text: $confirmation)
+                        .textContentType(.newPassword)
+                        .focused($focusedField, equals: .confirmation).submitLabel(.go)
+                        .onSubmit(submit)
+                }
+            }
             if registration { Text(tr("Пароль: от 8 до 128 символов. Имя: до 100 символов.")).font(MSTheme.font(12)).foregroundStyle(MSTheme.muted) }
             if let error = model.identity.error { Text(tr(error)).foregroundStyle(MSTheme.danger).accessibilityIdentifier("authenticationError") }
             if let information = model.identity.information { Text(tr(information)).foregroundStyle(MSTheme.success) }
             if model.identity.busy { ProgressView().accessibilityLabel(tr("Выполняем вход…")) }
-            Button(tr(registration ? "Зарегистрироваться" : "Войти")) {
-                Task {
-                    if registration {
-                        if await model.identity.register(server: model.authenticationServer, email: email, password: password, confirmation: confirmation, name: name) {
-                            password = ""; confirmation = ""; model.show(.login)
-                        }
-                    } else {
-                        await model.identity.login(server: model.authenticationServer, email: email, password: password)
-                        password = ""
-                    }
-                }
-            }.buttonStyle(MSButtonStyle()).disabled(email.isEmpty || password.isEmpty || (registration && (confirmation != password || password.unicodeScalars.count < 8)))
+            Button(tr(registration ? "Зарегистрироваться" : "Войти"), action: submit)
+                .buttonStyle(MSButtonStyle()).disabled(!canSubmit)
                 .accessibilityIdentifier("authenticationSubmit")
             Button(tr(registration ? "У меня уже есть аккаунт" : "Создать аккаунт")) { model.show(registration ? .login : .register) }.frame(minHeight: 44)
             if !registration, !model.identity.index.accounts.isEmpty {
@@ -379,8 +424,32 @@ private struct AuthenticationView: View {
                 }.frame(minHeight: 44)
             }
         }.disabled(model.identity.busy)
+            .onChange(of: focusedField) { _, field in
+                if field != nil { model.identity.error = nil }
+            }
             .onDisappear { password = ""; confirmation = "" }
     }
+
+    private var canSubmit: Bool {
+        !model.identity.busy && !email.isEmpty && !password.isEmpty &&
+            (!registration || (confirmation == password && password.unicodeScalars.count >= 8))
+    }
+
+    private func submit() {
+        guard canSubmit else { return }
+        // Capture what was submitted before the keyboard or a screen transition can change the fields.
+        Task { [server = model.authenticationServer, email, password, name, confirmation] in
+            if registration {
+                if await model.identity.register(server: server, email: email, password: password, confirmation: confirmation, name: name) {
+                    model.show(.login)
+                }
+            } else {
+                await model.identity.login(server: server, email: email, password: password)
+            }
+        }
+        focusedField = nil
+    }
+
     private func field<Content: View>(_ label: String, @ViewBuilder content: () -> Content) -> some View {
         VStack(alignment: .leading, spacing: 8) {
             Text(tr(label)).font(MSTheme.font(12, weight: .semibold))

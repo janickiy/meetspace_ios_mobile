@@ -363,6 +363,10 @@ enum UITestDependencies {
             if path.hasSuffix("/auth/register") { return try response(["status": "ok", "user": user(first)], status: 201) }
             if path.hasSuffix("/auth/login") || path.hasSuffix("/auth/refresh") {
                 if ProcessInfo.processInfo.arguments.contains("-auth-error") { return NetworkResponse(status: 401) }
+                if path.hasSuffix("/auth/login"), ProcessInfo.processInfo.arguments.contains("-auth-retry"),
+                   body?["password"] as? String != "48291607" {
+                    return NetworkResponse(status: 401)
+                }
                 let id = (body?["email"] as? String)?.hasPrefix("second") == true || body?["userId"] as? String == second ? second : first
                 if deletedAccounts.contains(id) { return NetworkResponse(status: 401) }
                 return try response(["accessToken": "ui-fixture-\(id)", "tokenType": "Bearer", "expiresIn": 3600, "user": user(id)],

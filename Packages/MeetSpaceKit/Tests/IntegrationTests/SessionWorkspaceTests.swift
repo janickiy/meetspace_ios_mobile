@@ -76,6 +76,33 @@ private func waitFor(_ condition: @escaping @Sendable () async -> Bool) async th
     await identity.logout(a)
 }
 
+@Test @MainActor func passwordLoginCanReplaceAnUnreadableSavedSessionAfterRetry() async throws {
+    let account = try Fixture.account()
+    let index = MemoryAccountIndexStore(), secrets = TestSecrets()
+    let unreadable = Data("invalid stored session".utf8)
+    await secrets.write(unreadable, for: account.key)
+    try await index.save(AccountIndex(accounts: [account], activeID: account.id))
+    let transport = RoutedTransport { request, _ in
+        guard request.url?.path == "/api/v1/auth/login" else { throw APIError.offline }
+        #expect(request.value(forHTTPHeaderField: "Cookie") == nil)
+        let body = try JSONDecoder().decode([String: String].self, from: #require(request.httpBody))
+        #expect(body["email"] == account.user.email.lowercased())
+        return body["password"] == "corrected-fixture" ? try Fixture.login() : NetworkResponse(status: 401)
+    }
+    let identity = IdentityModel(dependencies: AppDependencies(serverProbe: WorkspaceProbe(), configuration: WorkspacePreferences(),
+        credentials: secrets, accounts: index, transport: { transport }, sockets: WorkspaceSockets()))
+    await identity.restore()
+    #expect(identity.messaging == nil)
+    await identity.login(server: account.server, email: account.user.email, password: "rejected-fixture")
+    #expect(identity.error == userMessage(APIError.httpStatus(401)))
+    #expect(await secrets.read(account.key) == unreadable)
+    await identity.login(server: account.server, email: account.user.email, password: "corrected-fixture")
+    #expect(identity.messaging?.account.id == account.id && identity.error == nil)
+    let saved = try #require(await secrets.read(account.key))
+    #expect(try WireJSON.decoder().decode(SessionCredentials.self, from: saved).validated().sessionCookie == "fixture-cookie")
+    await identity.logout(account)
+}
+
 @Test @MainActor func lateHistoryCannotReplaceAnotherSelectedConversation() async throws {
     let a = Fixture.conversationID, b = UUID(), gate = Gate()
     let messageA = try Fixture.message(), messageB = try Fixture.message(id: UUID(), conversation: b)
