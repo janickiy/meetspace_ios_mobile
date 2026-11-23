@@ -25,7 +25,13 @@ struct DestinationView: View {
                 }
             case .recordings, .recording:
                 if model.isDemo { LibraryView(model: model, route: route) }
-                else if let recordings = model.identity.recordings { LiveRecordingsView(model: recordings) }
+                else if let recordings = model.identity.recordings {
+                    LiveRecordingsView(model: recordings) { model.navigate(.liveRecording($0)) }
+                }
+            case .liveRecording(let id):
+                if let recordings = model.identity.recordings {
+                    LiveRecordingDetail(model: recordings, id: id)
+                }
             case .meetingDetails(let id): MeetingDetailView(model: model, meetingID: id)
             case .newMeeting, .scheduleMeeting, .joinMeeting: MeetingFormView(model: model, route: route)
             case .prejoin, .call, .personalCall: CallPreviewView(model: model, route: route)
@@ -68,7 +74,7 @@ extension AppRoute {
         switch self {
         case .calendar: "Календарь"
         case .recordings: "Записи встреч"
-        case .recording: "Запись встречи"
+        case .recording, .liveRecording: "Просмотр записи"
         case .folders: "Папки"
         case .prejoin: "Перед встречей"
         case .call: "Встреча"

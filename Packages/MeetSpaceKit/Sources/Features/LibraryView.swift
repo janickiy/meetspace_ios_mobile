@@ -7,19 +7,24 @@ struct LibraryView: View {
     let route: AppRoute
     @State private var query: String = ""
     @Environment(\.horizontalSizeClass) private var sizeClass
-    private let recordings = ["Продукт. Следующая глава", "Дизайн-ревью мобильного приложения", "Планы на октябрь"]
+    @Environment(\.dismiss) private var dismiss
+
     var body: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: 20) {
-                if case .recording(let index) = route {
-                    Text(tr(recordings[index])).font(MSTheme.font(25, weight: .semibold, relativeTo: .title))
-                    cover.largeCover
-                    Label("00:00 / 42:18", systemImage: "play.circle").foregroundStyle(MSTheme.muted)
-                    FeatureNotice("Видеоплеер будет подключён к серверным записям. Демо не содержит медиафайла.")
-                    Text(tr("Участники")).font(MSTheme.font(18, weight: .semibold))
-                    HStack { Avatar("АС"); Avatar("АК"); Avatar("МП"); Avatar("ДВ") }
-                    FeatureNotice("Расшифровка и ИИ-итоги отсутствуют в текущем API.")
-                } else if route == .folders {
+        switch route {
+        case .recording(let index):
+            RecordingPage(title: "Просмотр записи", onBack: { dismiss() }) {
+                if let entry = model.demoRecording(at: index) {
+                    RecordingDetailContent(entry: entry, onAllRecordings: allRecordings)
+                } else {
+                    ContentUnavailableView(tr("Запись недоступна"), systemImage: "film")
+                    Button(tr("Все записи"), action: allRecordings).buttonStyle(MSTextButtonStyle())
+                }
+            }
+        case .recordings:
+            RecordingPage(title: "Записи встреч", onBack: { dismiss() }) { recordingsLibrary }
+        default:
+            ScrollView {
+                VStack(alignment: .leading, spacing: 20) {
                     libraryHeading("ЛИЧНОЕ ПРОСТРАНСТВО", title: "Всё нужное — вместе", subtitle: "Соберите встречи и чаты по проектам.")
                     SearchBox(text: $query, placeholder: "Поиск папок")
                     ForEach(["Команда продукта", "Запуск продукта", "Личное"].filter { query.isEmpty || tr($0).localizedCaseInsensitiveContains(query) }, id: \.self) { title in
@@ -34,28 +39,31 @@ struct LibraryView: View {
                         }.buttonStyle(.plain)
                     }
                     FeatureNotice("Папки видны только вам. Чаты и встречи могут находиться сразу в нескольких папках.")
-                } else {
-                    libraryHeading("БИБЛИОТЕКА ВСТРЕЧ", title: "Важное остаётся с вами", subtitle: "Видео, аудио и материалы ваших встреч.")
-                    SearchBox(text: $query, placeholder: "Поиск записей")
-                    ForEach(recordings.indices, id: \.self) { index in
-                        if query.isEmpty || tr(recordings[index]).localizedCaseInsensitiveContains(query) {
-                            Button { model.navigate(.recording(index)) } label: {
-                                HStack(spacing: 14) {
-                                    cover.frame(width: 84, height: 84)
-                                    VStack(alignment: .leading, spacing: 8) {
-                                        Text(tr(recordings[index])).font(MSTheme.font(14, weight: .semibold))
-                                        Text(tr("15 октября 2026 · 42:18")).font(MSTheme.font(11)).foregroundStyle(MSTheme.muted)
-                                    }
-                                    Spacer(minLength: 0)
-                                }.msCard(padding: 10).contentShape(Rectangle())
-                            }.buttonStyle(.plain)
-                        }
-                    }
-                    FeatureNotice("Готовые записи хранятся 7 дней. Данные ниже — пример из макетов.")
-                }
-            }.padding(.horizontal, sizeClass == .compact ? 16 : 24).padding(.vertical, 16)
-                .frame(maxWidth: 1000).frame(maxWidth: .infinity)
-        }.background(MSTheme.background)
+                }.padding(.horizontal, sizeClass == .compact ? 16 : 24).padding(.vertical, 16)
+                    .frame(maxWidth: 1000).frame(maxWidth: .infinity)
+            }.background(MSTheme.background)
+        }
+    }
+    private var recordingsLibrary: some View {
+        VStack(alignment: .leading, spacing: 16) {
+            RecordingLibraryContent(entries: model.demoRecordings, demo: true, open: { entry in
+                if let index = Int(entry.id) { model.navigate(.recording(index)) }
+            }, remove: { entry in
+                if let index = Int(entry.id) { model.deleteDemoRecording(at: index) }
+            })
+            RecordingListRetention(demo: true)
+        }
+    }
+
+    private func allRecordings() {
+        let path: ReferenceWritableKeyPath<AppModel, [AppRoute]> = switch model.tab {
+        case .meetings: \.meetingsPath
+        case .messages: \.messagesPath
+        case .profile: \.profilePath
+        }
+        let previous = model[keyPath: path].dropLast()
+        if previous.last == .recordings { dismiss() }
+        else { model[keyPath: path] = Array(previous) + [.recordings] }
     }
     private func libraryHeading(_ label: String, title: String, subtitle: String) -> some View {
         VStack(alignment: .leading, spacing: 7) {
@@ -64,13 +72,4 @@ struct LibraryView: View {
             Text(tr(subtitle)).font(MSTheme.font(12)).foregroundStyle(MSTheme.muted)
         }
     }
-    private var cover: some View {
-        RoundedRectangle(cornerRadius: 12).fill(Color(red: 0.14, green: 0.17, blue: 0.26))
-            .overlay { Image(systemName: "play.circle").font(.system(size: 28)).foregroundStyle(.white) }
-            .accessibilityHidden(true)
-    }
-}
-
-private extension View {
-    var largeCover: some View { self.aspectRatio(16 / 9, contentMode: .fit) }
 }

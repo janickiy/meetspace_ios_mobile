@@ -51,10 +51,25 @@ struct LiveConferenceView: View {
             }
         }.interactiveDismissDisabled()
             .onChange(of: session.phase) { _, phase in
-                if phase == .ended || phase == .failed { closePanel() }
+                if phase == .ended || phase == .failed {
+                    showRecording = false
+                    closePanel()
+                }
             }
-            .sheet(isPresented: $showRecording) {
-                if let recordings { ConferenceRecordingSheet(session: session, model: recordings) }
+            .accessibilityHidden(showRecording)
+            .allowsHitTesting(!showRecording)
+            .overlay {
+                if showRecording, let recordings {
+                    ConferenceRecordingSheet(session: session, model: recordings) { showRecording = false }
+                        .environment(\.colorScheme, workspaceTheme)
+                }
+            }
+            .task(id: session.phase) {
+                guard session.phase == .connected, let recordings else { return }
+                while !Task.isCancelled {
+                    await recordings.loadConference(session.conferenceID)
+                    do { try await Task.sleep(for: .seconds(5)) } catch { return }
+                }
             }
             .sheet(isPresented: $showMore) {
                 moreOptions
@@ -72,11 +87,12 @@ struct LiveConferenceView: View {
     }
 
     @ViewBuilder private func headerActions(wide: Bool) -> some View {
-        if recordings != nil {
-            Button { showRecording = true } label: {
-                ConferenceRoomHeaderLabel(title: "Запись", icon: "circle", expanded: wide)
-            }.buttonStyle(.plain).disabled(session.phase != .connected)
-                .accessibilityLabel(tr("Запись встречи")).accessibilityIdentifier("conferenceRecordings")
+        if let recordings {
+            let records = recordings.conferenceItems[session.conferenceID] ?? []
+            let active = records.first(where: \.active)
+            ConferenceRoomRecordingButton(title: active?.statusTitle ?? "Запись", status: active?.status, wide: wide) {
+                showRecording = true
+            }.disabled(session.phase != .connected)
         }
         Button { showInvitation = true } label: {
             ConferenceRoomHeaderLabel(title: "Пригласить", icon: "link", expanded: wide)
@@ -264,17 +280,15 @@ struct LiveConferenceView: View {
                     LazyVStack(alignment: .leading, spacing: 10) {
                         ConferenceRoomDate(date: session.messages.first?.createdAt)
                         ForEach(session.messages) { message in
-                            VStack(alignment: .leading, spacing: 8) {
+                            let own = message.senderId == session.participant.userId || message.senderId == session.participant.id
+                            ConferenceRoomMessageBubble(own: own, time: message.createdAt.formatted(date: .omitted, time: .shortened)) {
                                 Text(message.senderName).font(MSTheme.font(11, weight: .semibold)).foregroundStyle(ConferenceRoomPanelColors.accent)
                                     .accessibilityIdentifier("conferenceMessageSender.\(message.id.uuidString.lowercased())")
                                 Text(message.isDeleted ? tr("Сообщение удалено") : message.text).font(MSTheme.font(12))
                                 ForEach(message.attachments) { attachment in
                                     Label(attachment.filename, systemImage: "doc").font(MSTheme.font(12))
                                 }
-                                Text(message.createdAt, style: .time).font(MSTheme.font(10)).foregroundStyle(ConferenceRoomPanelColors.muted)
-                            }.padding(12).frame(maxWidth: .infinity, alignment: .leading)
-                                .background(ConferenceRoomPanelColors.card, in: RoundedRectangle(cornerRadius: 14))
-                                .id(message.id)
+                            }.id(message.id)
                         }
                     }.padding(14)
                 }.background(ConferenceRoomPanelColors.feed).onChange(of: session.messages.last?.id) { _, id in if let id { proxy.scrollTo(id, anchor: .bottom) } }
@@ -286,45 +300,66 @@ struct LiveConferenceView: View {
     }
     private var participantsPanel: some View {
         ScrollView {
-            LazyVStack(alignment: .leading, spacing: 10) {
+            LazyVStack(alignment: .leading, spacing: 0) {
                 ForEach(session.participants) { participant in
                     VStack(alignment: .leading, spacing: 8) {
-                        HStack {
-                            Text(participant.displayName).font(.headline)
-                            Spacer()
-                            Text(tr(role(participant.role))).font(.caption).foregroundStyle(.secondary)
+                        HStack(spacing: 8) {
+                            ConferenceRoomPersonLabel(name: participant.displayName, initials: callInitials(participant.displayName),
+                                                      subtitle: participantSubtitle(participant), own: participant.id == session.participant.id)
+                            if session.participant.canModerate(participant, action: "kick") {
+                                moderationMenu(for: participant)
+                            }
                         }
                         if participant.isWaiting, session.participant.canAdmit {
                             HStack {
                                 Button(tr("Допустить")) { Task { await session.admit(participant, decision: "admit") } }
                                 Button(tr("Отклонить"), role: .destructive) { Task { await session.admit(participant, decision: "reject") } }
-                            }.buttonStyle(.bordered)
-                        } else if session.participant.canModerate(participant, action: "kick") {
-                            Menu(tr("Управление участником")) {
-                                Button(tr(participant.microphoneBlocked ? "Разрешить микрофон" : "Заблокировать микрофон")) {
-                                    Task { await session.moderate(participant, action: "mute", blocked: !participant.microphoneBlocked) }
-                                }
-                                if session.participant.canModerate(participant, action: "camera") {
-                                    Button(tr(participant.cameraBlocked ? "Разрешить камеру" : "Заблокировать камеру")) {
-                                        Task { await session.moderate(participant, action: "camera", blocked: !participant.cameraBlocked) }
-                                    }
-                                }
-                                Button(tr(participant.screenBlocked ? "Разрешить демонстрацию" : "Заблокировать демонстрацию")) {
-                                    Task { await session.moderate(participant, action: "screen", blocked: !participant.screenBlocked) }
-                                }
-                                if session.participant.canModerate(participant, action: "role") {
-                                    Button(tr(participant.role == "co_host" ? "Сделать участником" : "Назначить соведущим")) {
-                                        Task { await session.moderate(participant, action: "role", role: participant.role == "co_host" ? "participant" : "co_host") }
-                                    }
-                                }
-                                Button(tr("Удалить из встречи"), role: .destructive) { Task { await session.moderate(participant, action: "kick") } }
-                            }.disabled(session.busy)
+                            }.buttonStyle(.bordered).disabled(session.busy)
                         }
-                    }.padding(12).background(ConferenceRoomPanelColors.card, in: RoundedRectangle(cornerRadius: 12))
+                    }.padding(.vertical, 11)
+                    Divider()
                 }
-            }.padding(12)
+            }.padding(.horizontal, 14)
         }.background(ConferenceRoomPanelColors.feed)
             .refreshable { await session.refreshParticipants() }
+    }
+    private func participantSubtitle(_ participant: ConferenceParticipant) -> String {
+        [tr(role(participant.role)),
+         participant.isWaiting ? tr("Ожидает допуска") : nil,
+         participant.microphoneBlocked ? tr("Микрофон заблокирован") : nil,
+         participant.cameraBlocked ? tr("Камера заблокирована") : nil,
+         participant.screenBlocked ? tr("Демонстрация заблокирована") : nil]
+            .compactMap { $0 }.joined(separator: " · ")
+    }
+
+    private func moderationMenu(for participant: ConferenceParticipant) -> some View {
+        Menu {
+            if session.participant.canModerate(participant, action: "mute") {
+                Button(tr(participant.microphoneBlocked ? "Разрешить микрофон" : "Заблокировать микрофон")) {
+                    Task { await session.moderate(participant, action: "mute", blocked: !participant.microphoneBlocked) }
+                }
+            }
+            if session.participant.canModerate(participant, action: "camera") {
+                Button(tr(participant.cameraBlocked ? "Разрешить камеру" : "Заблокировать камеру")) {
+                    Task { await session.moderate(participant, action: "camera", blocked: !participant.cameraBlocked) }
+                }
+            }
+            if session.participant.canModerate(participant, action: "screen") {
+                Button(tr(participant.screenBlocked ? "Разрешить демонстрацию" : "Заблокировать демонстрацию")) {
+                    Task { await session.moderate(participant, action: "screen", blocked: !participant.screenBlocked) }
+                }
+            }
+            if session.participant.canModerate(participant, action: "role") {
+                Button(tr(participant.role == "co_host" ? "Сделать участником" : "Назначить соведущим")) {
+                    Task { await session.moderate(participant, action: "role", role: participant.role == "co_host" ? "participant" : "co_host") }
+                }
+            }
+            Button(tr("Удалить из встречи"), role: .destructive) { Task { await session.moderate(participant, action: "kick") } }
+        } label: {
+            WorkspaceIcon("ellipsis", size: 18).frame(width: 44, height: 44)
+        }.buttonStyle(.plain).menuStyle(.button).menuIndicator(.hidden)
+            .accessibilityLabel(tr("Управление участником") + ": " + participant.displayName)
+            .disabled(session.busy)
     }
     private func role(_ value: String) -> String {
         switch value { case "owner": "Организатор"; case "co_host": "Соведущий"; case "guest": "Гость"; default: "Участник" }

@@ -27,7 +27,6 @@ struct AccountAudioSettingsView: View {
                 Text(tr(notice)).font(MSTheme.font(11.5)).fixedSize(horizontal: false, vertical: true)
                     .foregroundStyle(MSTheme.danger).accessibilityIdentifier("audioNotice")
             }
-            hint("Настройки применяются автоматически.").padding(.top, 10)
         }.frame(maxWidth: .infinity, alignment: .leading)
             .foregroundStyle(MSTheme.ink).tint(MSTheme.accent)
             .onAppear { audio.appear() }.onDisappear { audio.disappear() }

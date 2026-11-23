@@ -137,10 +137,11 @@ struct ConferenceRoomHeaderLabel: View {
     let title: String
     let icon: String
     var expanded = false
+    var iconColor: Color = ConferenceRoomColors.text
 
     var body: some View {
         HStack(spacing: 8) {
-            WorkspaceIcon(icon, size: 19)
+            WorkspaceIcon(icon, size: 19).foregroundStyle(iconColor)
             if expanded {
                 Text(tr(title)).font(MSTheme.font(12)).fixedSize(horizontal: true, vertical: false)
             }
@@ -150,6 +151,23 @@ struct ConferenceRoomHeaderLabel: View {
             .background(ConferenceRoomColors.surface, in: RoundedRectangle(cornerRadius: 10))
             .overlay(RoundedRectangle(cornerRadius: 10).strokeBorder(ConferenceRoomColors.line))
             .contentShape(Rectangle())
+    }
+}
+
+struct ConferenceRoomRecordingButton: View {
+    let title: String
+    let status: String?
+    let wide: Bool
+    let open: () -> Void
+
+    var body: some View {
+        let recording = status == "recording" || status == "degraded"
+        let color = recording ? Color(red: 1, green: 0.53, blue: 0.61) :
+            (status == nil ? ConferenceRoomColors.text : Color(red: 0.93, green: 0.77, blue: 0.53))
+        Button(action: open) {
+            ConferenceRoomHeaderLabel(title: title, icon: recording ? "record.circle" : "circle", expanded: wide, iconColor: color)
+        }.buttonStyle(.plain).accessibilityLabel(tr("Запись встречи")).accessibilityValue(tr(title))
+            .accessibilityIdentifier("conferenceRecordings")
     }
 }
 
@@ -331,6 +349,7 @@ struct ConferenceRoomStage<Visual: View, ScreenShare: View>: View {
                 if ownCamera, !attendee.own, let own = attendees.first(where: \.own) {
                     ZStack {
                         backdrop(own)
+                        avatar(own, size: 30)
                         visual(own, true).allowsHitTesting(false)
                     }.frame(width: wide ? 96 : 69, height: wide ? 64 : 46)
                         .clipShape(RoundedRectangle(cornerRadius: 8))
@@ -358,9 +377,9 @@ struct ConferenceRoomStage<Visual: View, ScreenShare: View>: View {
 
     @ViewBuilder private func speakerRail(_ people: [ConferenceRoomAttendee], width: CGFloat) -> some View {
         if !people.isEmpty {
-            let pageSize = wide ? 4 : 3
+            let pageSize = 3
             let gap: CGFloat = wide ? 10 : 7
-            let railWidth = width
+            let railWidth = wide ? min(width, 3 * 82 * 16 / 9 + 2 * gap) : width
             let tileWidth = (railWidth - CGFloat(pageSize - 1) * gap) / CGFloat(pageSize)
             let pages = stride(from: 0, to: people.count, by: pageSize).map { start in
                 Array(people[start..<min(start + pageSize, people.count)])
@@ -372,10 +391,10 @@ struct ConferenceRoomStage<Visual: View, ScreenShare: View>: View {
                             ForEach(page) { person in
                                 tile(person, width: tileWidth, height: wide ? min(92, tileWidth * 9 / 16) : tileWidth, gallery: false)
                             }
-                        }.frame(width: railWidth, alignment: pages.count > 1 ? .leading : .center).id(index)
+                        }.frame(width: railWidth, alignment: .leading).id(index)
                     }
                 }.scrollTargetLayout()
-            }.scrollIndicators(.hidden).scrollTargetBehavior(.paging).scrollPosition(id: $railPage)
+            }.frame(width: railWidth).scrollIndicators(.hidden).scrollTargetBehavior(.paging).scrollPosition(id: $railPage)
                 .accessibilityIdentifier("conferenceSpeakerRail")
             if pages.count > 1 {
                 HStack(spacing: 2) {

@@ -246,6 +246,7 @@ enum UITestDependencies {
         private var conferenceJoined = false
         private var conferenceMicrophone = false, conferenceCamera = false
         private var conferenceMessages: [[String: Any]] = []
+        private var roomRecording: [String: Any]?
         private var messages: [String: [[String: Any]]] = [:]
         private var groups: [String: [String: Any]] = [:]
         private var profileNames: [String: String] = [:]
@@ -472,6 +473,25 @@ enum UITestDependencies {
             }
             if parts.count >= 5, parts[2] == "conferences", parts[4] == "recordings" {
                 if ProcessInfo.processInfo.arguments.contains("-recording-access-denied") { return NetworkResponse(status: 403) }
+                if parts[3] == conferenceID {
+                    if parts.count == 5, method == "GET" { return try response(["items": roomRecording.map { [$0] } ?? []]) }
+                    guard method == "POST", conferenceJoined else { return NetworkResponse(status: 403) }
+                    if parts.count == 5, roomRecording == nil,
+                       let mode = body?["mode"] as? String, ["composite", "audio_only"].contains(mode) {
+                        let item: [String: Any] = ["id": 5, "uuid": UUID().uuidString.lowercased(), "conferenceId": conferenceID,
+                            "mode": mode, "status": "recording", "requestedBy": first,
+                            "createdAt": ISO8601DateFormatter().string(from: Date()), "files": []]
+                        roomRecording = item
+                        return try response(["item": item], status: 202)
+                    }
+                    if parts.count == 7, parts[6] == "stop", var item = roomRecording,
+                       item["uuid"] as? String == parts[5], item["status"] as? String == "recording" {
+                        item["status"] = "processing"
+                        roomRecording = item
+                        return try response(["item": item], status: 202)
+                    }
+                    return NetworkResponse(status: 409)
+                }
                 if parts.count == 5 { return try response(["items": []]) }
                 return try response(["item": recordingFixture(parts[5])])
             }

@@ -293,6 +293,61 @@ private actor DelayedRecordingCancellation: RecordingDownloading {
     await model.close()
 }
 
+@Test @MainActor func recordingDetailDropsPlaybackOnRevokedRefreshAndCanRetry() async throws {
+    actor Access {
+        private(set) var allowed = true
+        func setAllowed(_ value: Bool) { allowed = value }
+    }
+    let access = Access()
+    let downloads = RevokeAfterDownload(url: URL(fileURLWithPath: "/tmp/recording-refresh-fixture.mp4"))
+    let transport = RoutedTransport { _, _ in
+        guard await access.allowed else { return NetworkResponse(status: 403) }
+        return try Fixture.response(["item": RecordingFixture.card()])
+    }
+    let model = RecordingsModel(client: try RecordingFixture.client(transport), downloads: downloads)
+    let row = RecordingLibraryItem(conference: RecordingFixture.meeting(), recording: MeetingRecording(
+        id: RecordingFixture.recording, conferenceID: RecordingFixture.conference,
+        mode: "composite", status: "ready", createdAt: Date()))
+    await model.select(row)
+    await model.download(fileID: RecordingFixture.file, play: true)
+    #expect(model.playbackURL != nil)
+    await access.setAllowed(false)
+    await model.select(row)
+    #expect(model.selected == nil && model.playbackURL == nil && model.error != nil)
+    #expect(await downloads.removed)
+    await access.setAllowed(true)
+    await model.select(row)
+    #expect(model.selected?.id == row.id && model.playbackURL == nil && model.error == nil)
+    await model.close()
+}
+
+@Test @MainActor func recordingDetailExportsTrackArchivesWithoutPlayingThem() async throws {
+    let archiveURL = URL(fileURLWithPath: "/tmp/recording-tracks-fixture.zip")
+    let downloads = RevokeAfterDownload(url: archiveURL)
+    let transport = RoutedTransport { _, _ in
+        var card = RecordingFixture.card(status: "partial_ready")
+        card["mode"] = "individual_tracks"
+        card["files"] = [["uuid": RecordingFixture.file.uuidString, "recordId": 42,
+                          "fileType": "tracks_archive", "fileName": "tracks.zip",
+                          "mimeType": "application/zip", "url": "https://storage.fixture/archive"]]
+        return try Fixture.response(["item": card])
+    }
+    let model = RecordingsModel(client: try RecordingFixture.client(transport), downloads: downloads)
+    let row = RecordingLibraryItem(conference: RecordingFixture.meeting(), recording: MeetingRecording(
+        id: RecordingFixture.recording, conferenceID: RecordingFixture.conference,
+        mode: "individual_tracks", status: "partial_ready", createdAt: Date()))
+    await model.select(row)
+    #expect(model.selected?.recording.media == nil)
+    await model.download(fileID: RecordingFixture.file, play: true)
+    #expect(await !downloads.started)
+    await model.download(fileID: RecordingFixture.file, play: false)
+    #expect(model.exportURL == archiveURL && model.playbackURL == nil)
+    await model.dismissExport()
+    #expect(model.exportURL == nil)
+    #expect(await downloads.removed)
+    await model.close()
+}
+
 @Test func recordingPermissionsFollowActualParticipantAndRequesterPolicy() {
     let conference = RecordingFixture.meeting()
     let memberID = UUID()
@@ -307,4 +362,47 @@ private actor DelayedRecordingCancellation: RecordingDownloading {
     #expect(!RecordingPermissions.canStop(recording, conference: conference, participant: guest, accountID: memberID))
     let unknown = MeetingRecording(id: UUID(), conferenceID: conference.id, mode: "future", status: "future", createdAt: Date())
     #expect(!unknown.ready && !unknown.active && unknown.media == nil)
+}
+
+@Test @MainActor func recordingLibraryDeleteChecksOwnershipStatusAndServerResult() async throws {
+    for status in [403, 200] {
+        let transport = RoutedTransport { request, _ in
+            switch (request.httpMethod, request.url?.path) {
+            case ("GET", "/api/v1/recordings"):
+                return try Fixture.response(["items": [RecordingFixture.row()]])
+            case ("DELETE", RecordingFixture.path + "/" + RecordingFixture.recording.uuidString.lowercased()):
+                return NetworkResponse(status: status)
+            default: throw APIError.invalidResponse
+            }
+        }
+        let model = RecordingsModel(client: try RecordingFixture.client(transport))
+        await model.load()
+        let row = try #require(model.items.first)
+        #expect(model.selected == nil)
+        #expect(!RecordingPermissions.canDelete(row, accountID: UUID()))
+        let inProgress = MeetingRecording(id: row.id, conferenceID: row.conference.id, mode: "composite", status: "processing", createdAt: Date())
+        #expect(!RecordingPermissions.canDelete(RecordingLibraryItem(conference: row.conference, recording: inProgress), accountID: model.account.user.id))
+        await model.delete(row)
+        #expect(model.items.isEmpty == (status == 200))
+        #expect((model.error != nil) == (status == 403))
+        if status == 200 { await model.delete(row) }
+        let requests = await transport.requests
+        #expect(requests.map(\.httpMethod) == ["GET", "DELETE"])
+    }
+}
+
+@Test func recordingLibraryPreviewDistinguishesActiveMeetingFromOngoingRecording() throws {
+    let account = try Fixture.account()
+    let activeMeeting = RecordingFixture.meeting()
+    func entry(status: String, duration: Int? = nil) -> RecordingLibraryEntry {
+        let record = MeetingRecording(id: RecordingFixture.recording, conferenceID: activeMeeting.id, mode: "composite",
+                                      status: status, createdAt: Date(), durationSec: duration)
+        return RecordingLibraryEntry(row: RecordingLibraryItem(conference: activeMeeting, recording: record), account: account)
+    }
+    let completed = entry(status: "ready", duration: 120)
+    #expect(completed.isLive && !completed.isCapturing && completed.durationText == "02:00")
+    let missingDuration = entry(status: "ready")
+    #expect(!missingDuration.isCapturing && missingDuration.durationText == nil)
+    #expect(entry(status: "recording").isCapturing)
+    #expect(!entry(status: "processing").isCapturing)
 }

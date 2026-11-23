@@ -18,6 +18,7 @@ enum ConferenceRoomPanelColors {
     static let feed = Color(light: 0xF4EFF6, dark: 0x24202C)
     static let muted = MSTheme.muted
     static let accent = Color(light: 0x6E477C, dark: 0xD5B2E4)
+    static let outgoing = Color(light: 0xF0E6F4, dark: 0x45344E)
 }
 
 private extension Color {
@@ -200,6 +201,45 @@ struct ConferenceRoomComposer: View {
             .padding(.horizontal, 8).padding(.vertical, 6)
             .background(ConferenceRoomPanelColors.card)
             .overlay(alignment: .top) { Rectangle().fill(MSTheme.line).frame(height: 1) }
+    }
+}
+
+struct ConferenceRoomMessageBubble<Content: View>: View {
+    let own: Bool
+    let time: String
+    @ViewBuilder let content: () -> Content
+
+    var body: some View {
+        let shape = UnevenRoundedRectangle(topLeadingRadius: 14, bottomLeadingRadius: own ? 14 : 4,
+                                           bottomTrailingRadius: own ? 4 : 14, topTrailingRadius: 14)
+        VStack(alignment: .trailing, spacing: 5) {
+            VStack(alignment: .leading, spacing: 4) { content() }
+            Text(time).font(MSTheme.font(10)).foregroundStyle(ConferenceRoomPanelColors.muted)
+        }.padding(.horizontal, 11).padding(.vertical, 9)
+            .background(own ? ConferenceRoomPanelColors.outgoing : ConferenceRoomPanelColors.card, in: shape)
+            .overlay(shape.strokeBorder(MSTheme.line))
+            .padding(own ? .leading : .trailing, 10)
+            .frame(maxWidth: .infinity, alignment: own ? .trailing : .leading)
+    }
+}
+
+struct ConferenceRoomPersonLabel: View {
+    let name: String
+    let initials: String
+    let subtitle: String
+    let own: Bool
+
+    var body: some View {
+        let tone: ConferenceRoomAttendee.Tone = own ? .blue : .mint
+        HStack(spacing: 12) {
+            Text(initials).font(MSTheme.font(12, weight: .semibold))
+                .foregroundStyle(tone.avatarText).frame(width: 36, height: 36)
+                .background(tone.avatarBackground, in: Circle()).accessibilityHidden(true)
+            VStack(alignment: .leading, spacing: 3) {
+                Text(name).font(MSTheme.font(13, weight: .semibold))
+                Text(subtitle).font(MSTheme.font(11)).foregroundStyle(ConferenceRoomPanelColors.muted)
+            }.frame(maxWidth: .infinity, alignment: .leading)
+        }
     }
 }
 

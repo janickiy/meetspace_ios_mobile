@@ -58,6 +58,8 @@ public struct AppDependencies: Sendable {
     public enum Onboarding: Hashable { case welcome, connect, login, register }
     public private(set) var onboarding: Onboarding = .welcome
     private(set) var demoChats = DemoChatStore()
+    private(set) var demoDeletedRecordings: Set<Int> = []
+    private var demoCreatedRecordings: [RecordingLibraryEntry] = []
     private(set) var demoProfile = DemoAccountProfile()
     private(set) var demoPrejoinTitle: String?
     var demoConferenceEntry: DemoConferenceEntry?
@@ -218,6 +220,8 @@ public struct AppDependencies: Sendable {
     public func enterDemo() {
         guard identity.messaging == nil, !identity.busy else { return }
         demoChats = DemoChatStore()
+        demoDeletedRecordings = []
+        demoCreatedRecordings = []
         demoProfile = DemoAccountProfile()
         showingWorkspaceNotifications = false
         cancelProbe(); isDemo = true; tab = .meetings
@@ -228,6 +232,36 @@ public struct AppDependencies: Sendable {
         isDemo = false; onboarding = .welcome
         demoPrejoinTitle = nil; demoConferenceEntry = nil
         meetingsPath = []; messagesPath = []; profilePath = []
+    }
+
+    var demoRecordings: [RecordingLibraryEntry] {
+        let samples = RecordingLibraryEntry.demoSamples(ownerName: demoProfile.name)
+        let created = demoCreatedRecordings.map { entry in
+            var current = entry
+            current.owner = RecordingLibraryEntry.ownName(demoProfile.name)
+            return current
+        }
+        return (samples + created).enumerated().compactMap { demoDeletedRecordings.contains($0.offset) ? nil : $0.element }
+    }
+
+    func demoRecording(at index: Int) -> RecordingLibraryEntry? {
+        demoRecordings.first { $0.id == String(index) }
+    }
+
+    func deleteDemoRecording(at index: Int) {
+        if demoRecording(at: index)?.canDelete == true { demoDeletedRecordings.insert(index) }
+    }
+
+    @discardableResult
+    func addDemoMeetingRecording(title: String, mode: RecordingMode, duration: TimeInterval,
+                                 participantCount: Int? = nil, meetingID: UUID? = nil) -> Int {
+        let index = RecordingLibraryEntry.demoSamples(ownerName: demoProfile.name).count + demoCreatedRecordings.count
+        let seconds = duration.isFinite ? Int(max(0, min(duration, Double(Int32.max)))) : nil
+        let entry = RecordingLibraryEntry(id: String(index), meetingID: meetingID?.uuidString ?? "demo-call-\(index)", kind: RecordingPreviewKind(mode: mode),
+                                          title: title, date: Date(), duration: seconds, owner: RecordingLibraryEntry.ownName(demoProfile.name),
+                                          participantCount: participantCount, initials: [], isLive: false, statusTitle: nil, canDelete: true)
+        demoCreatedRecordings.append(entry)
+        return index
     }
 
     func showDemoPrejoin(title: String? = nil) {
@@ -250,4 +284,5 @@ struct DemoConferenceEntry {
     let microphone: Bool
     let camera: Bool
     let title: String?
+    var guest = false
 }

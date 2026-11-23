@@ -45,7 +45,7 @@ private struct DemoMeetingPrejoin: View {
                 Button {
                     let participant = name.trimmingCharacters(in: .whitespacesAndNewlines)
                     model.demoConferenceEntry = DemoConferenceEntry(name: participant, microphone: microphone, camera: camera,
-                                                                     title: model.demoPrejoinTitle)
+                                                                     title: model.demoPrejoinTitle, guest: guest)
                     model.navigate(.call)
                 } label: {
                     Label(tr("Присоединиться"), systemImage: "arrow.right").labelStyle(MeetingNextLabelStyle())

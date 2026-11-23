@@ -233,6 +233,58 @@ import UIKit
         XCTAssertTrue(first.waitForExistence(timeout: 5))
     }
 
+    func testRecordingLibraryDemoFiltersAndDeletion() {
+        let app = launch(["-demo"])
+        let library = app.buttons["Записи встреч"]
+        XCTAssertTrue(library.waitForExistence(timeout: 5))
+        library.tap()
+        let count = app.staticTexts["recordings.count"]
+        let tracks = app.buttons["recording.4"]
+        let video = app.buttons["recording.0"]
+        XCTAssertTrue(tracks.waitForExistence(timeout: 5))
+        XCTAssertEqual(count.label, "Найдено: 5")
+        XCTAssertLessThan(tracks.frame.minY, video.frame.minY)
+        XCTAssertFalse(app.buttons["recording.delete.1"].exists)
+        capture(app, name: "recordings-library-completed")
+
+        app.buttons["recordings.live"].tap()
+        XCTAssertTrue(app.buttons["recording.5"].waitForExistence(timeout: 5))
+        XCTAssertEqual(count.label, "Найдено: 1")
+        XCTAssertFalse(app.buttons["recording.delete.5"].exists)
+        app.buttons["recordings.past"].tap()
+
+        app.buttons["recordings.meeting"].tap()
+        app.buttons["Продукт. Следующая глава"].tap()
+        XCTAssertEqual(count.label, "Найдено: 2")
+        app.buttons["recordings.sort"].tap()
+        app.buttons["Сначала старые"].tap()
+        XCTAssertLessThan(video.frame.minY, tracks.frame.minY)
+        app.buttons["recordings.period"].tap()
+        app.buttons["За 7 дней"].tap()
+        XCTAssertEqual(count.label, "Найдено: 2")
+
+        let search = app.textFields["recordings.search"]
+        search.tap()
+        search.typeText("zzzz\n")
+        XCTAssertEqual(count.label, "Найдено: 0")
+        let reset = app.buttons["recordings.reset"]
+        reveal(reset, in: app)
+        reset.tap()
+        XCTAssertEqual(count.label, "Найдено: 5")
+
+        let remove = app.buttons["recording.delete.3"]
+        reveal(remove, in: app)
+        remove.tap()
+        XCTAssertTrue(app.buttons["Удалить запись"].waitForExistence(timeout: 5))
+        app.buttons["Удалить запись"].tap()
+        XCTAssertEqual(count.label, "Найдено: 4")
+        XCTAssertFalse(app.buttons["recording.3"].exists)
+        app.buttons["recordings.back"].tap()
+        library.tap()
+        XCTAssertTrue(count.waitForExistence(timeout: 5))
+        XCTAssertEqual(count.label, "Найдено: 4")
+    }
+
     func testWorkspaceNotificationFiltersKeepTheirLabelsAndToggle() {
         let app = launch(["-demo"])
         let bell = app.buttons["Уведомления"]
@@ -314,6 +366,54 @@ import UIKit
             XCTAssertTrue(control.isHittable)
             XCTAssertGreaterThanOrEqual(control.frame.height, 44)
         }
+
+        capture(app, name: "demo-conference-gallery")
+        app.buttons["conferenceParticipantTile.maria"].tap()
+        XCTAssertTrue(speaker.isSelected)
+        let unpin = app.buttons["conferenceUnpin"]
+        XCTAssertTrue(unpin.waitForExistence(timeout: 5))
+        unpin.tap()
+        gallery.tap()
+
+        let recording = app.buttons["conferenceRecordings"]
+        recording.tap()
+        let composite = app.buttons["conferenceRecordingMode.composite"]
+        let audio = app.buttons["conferenceRecordingMode.audio_only"]
+        let tracks = app.buttons["conferenceRecordingMode.individual_tracks"]
+        XCTAssertTrue(composite.waitForExistence(timeout: 5))
+        XCTAssertTrue(composite.isSelected)
+        if app.frame.width >= 375 {
+            XCTAssertEqual(composite.frame.minY, audio.frame.minY, accuracy: 2)
+            XCTAssertEqual(composite.frame.minX, tracks.frame.minX, accuracy: 2)
+            XCTAssertGreaterThan(tracks.frame.minY, composite.frame.maxY)
+        }
+        capture(app, name: "demo-conference-recording-formats")
+        audio.tap()
+        XCTAssertTrue(audio.isSelected)
+        let start = app.buttons["startServerRecording"]
+        reveal(start, in: app)
+        start.tap()
+        let stop = app.buttons["conferenceRecordingStop"]
+        XCTAssertTrue(stop.waitForExistence(timeout: 6))
+        let close = app.buttons["conferenceRecordingClose"]
+        close.tap()
+        waitForValue("Идёт запись", of: recording)
+        recording.tap()
+        XCTAssertTrue(app.staticTexts["Записывается: Только аудио"].exists)
+        capture(app, name: "demo-conference-recording-active")
+        stop.tap()
+        app.buttons["conferenceRecordingCancelStop"].tap()
+        XCTAssertTrue(stop.isHittable)
+        stop.tap()
+        app.buttons["conferenceRecordingConfirmStop"].tap()
+        let open = app.buttons["conferenceRecordingOpen"]
+        XCTAssertTrue(open.waitForExistence(timeout: 6))
+        capture(app, name: "demo-conference-recording-ready")
+        open.tap()
+        let recordingTitle = app.staticTexts["recordingTitle"]
+        XCTAssertTrue(recordingTitle.waitForExistence(timeout: 5))
+        XCTAssertEqual(recordingTitle.label, "Дизайн-синхронизация")
+        XCTAssertEqual(app.staticTexts["recordingKind"].label, "Аудиозапись")
     }
 
     func testForwardCommentFromAnnaToGroup() {
@@ -401,6 +501,7 @@ import UIKit
         capture(app, name: "beta-audio-compact-switches")
         let signals = app.staticTexts["Звонки и уведомления"].firstMatch
         revealEntireText(signals, in: app)
+        XCTAssertFalse(app.staticTexts["Настройки применяются автоматически."].exists)
         capture(app, name: "beta-audio-speaker-signals")
     }
 
@@ -577,8 +678,7 @@ import UIKit
             guard issue.auditType == .dynamicType,
                   issue.summary == "Dynamic Type font sizes are partially unsupported" else { return nil }
             let menus: [String: [String: String]] = [
-                "calendar": ["Все встречи": "calendar.scope", "GMT": "calendar.timeZone"],
-                "recordings": ["Все форматы": "recordingModeFilter", "Все статусы": "recordingStatusFilter"]]
+                "calendar": ["Все встречи": "calendar.scope", "GMT": "calendar.timeZone"]]
             if let controlID = menus[screen]?[label], let frame = issue.frame,
                app.buttons[controlID].exists, app.buttons[controlID].frame.contains(frame) {
                 return "reviewed: menu title inside exact control; measured font scaling and AX5 multiline layout"
@@ -586,7 +686,7 @@ import UIKit
             let exact: [String: Set<String>] = [
                 "messages": ["messages.connectionStatus"],
                 "calendar": ["calendar.heading", "calendar.periodTitle", "calendar.today", "calendar.scopeTitle", "calendar.timeZoneTitle"],
-                "recordings": ["recordings.filterHint", "recordings.modeTitle", "recordings.statusTitle"], "folders": ["folders.subtitle"]]
+                "folders": ["folders.subtitle"]]
             let calendarIDs = Set((0...6).map { "calendar.weekday.\($0)" } +
                                   (0...23).map { "calendar.hour.\($0)" })
             let recordingIDs = Set((1...4).flatMap { index in
@@ -756,7 +856,7 @@ import UIKit
         openMeetingsFeature("meetingsRecordings", in: app)
         XCTAssertTrue(app.buttons["recording.77777777-7777-4777-8777-777777777771"].waitForExistence(timeout: 10))
         try audit("recordings")
-        app.navigationBars.buttons.firstMatch.tap()
+        app.buttons["recordings.back"].tap()
         openMeetingsFeature("meetingsFolders", in: app)
         XCTAssertTrue(app.buttons["createFolder"].waitForExistence(timeout: 5))
         try audit("folders")
@@ -872,7 +972,8 @@ import UIKit
                 revealEntireText(app.staticTexts["recordings.retentionNotice"], in: app)
                 capture(app, name: "stage08-large-text-recordings-footer")
             }
-            app.navigationBars.buttons.firstMatch.tap()
+            if title == "recordings" { app.buttons["recordings.back"].tap() }
+            else { app.navigationBars.buttons.firstMatch.tap() }
         }
         openProfile(in: app)
         selectAccountSection("profile", in: app)
@@ -986,11 +1087,16 @@ import UIKit
         openMeetingsFeature("meetingsRecordings", in: app)
         let ready = app.buttons["recording.77777777-7777-4777-8777-777777777771"]
         XCTAssertTrue(ready.waitForExistence(timeout: 10)); capture(app, name: "stage07-recordings")
-        app.buttons["recording.77777777-7777-4777-8777-777777777772"].tap()
+        let processing = app.buttons["recording.77777777-7777-4777-8777-777777777772"]
+        reveal(processing, in: app); processing.tap()
         XCTAssertTrue(app.staticTexts["recordingStatus"].waitForExistence(timeout: 5))
         XCTAssertEqual(app.staticTexts["recordingStatus"].label, "Обрабатывается")
         XCTAssertFalse(app.buttons["playRecording"].exists)
-        app.buttons["Все записи"].tap(); ready.tap()
+        capture(app, name: "recording-detail-processing")
+        app.buttons["Все записи"].tap()
+        reveal(ready, in: app, towardTop: true); ready.tap()
+        XCTAssertTrue(app.staticTexts["recordingKind"].waitForExistence(timeout: 5))
+        XCTAssertEqual(app.staticTexts["recordingKind"].label, "Видеозапись")
         XCTAssertTrue(app.buttons["playRecording"].waitForExistence(timeout: 5)); app.buttons["playRecording"].tap()
         let player = app.descendants(matching: .any)["recordingPlayer"].firstMatch
         XCTAssertTrue(player.waitForExistence(timeout: 10))
@@ -1001,6 +1107,9 @@ import UIKit
         app.buttons["Все записи"].tap()
         let audio = app.buttons["recording.77777777-7777-4777-8777-777777777774"]
         reveal(audio, in: app); audio.tap()
+        XCTAssertTrue(app.staticTexts["recordingKind"].waitForExistence(timeout: 5))
+        XCTAssertEqual(app.staticTexts["recordingKind"].label, "Аудиозапись")
+        capture(app, name: "recording-detail-audio")
         XCTAssertTrue(app.buttons["playRecording"].waitForExistence(timeout: 5)); app.buttons["playRecording"].tap()
         XCTAssertTrue(player.waitForExistence(timeout: 10))
         Thread.sleep(forTimeInterval: 3)
@@ -1014,14 +1123,42 @@ import UIKit
         let app = launch(["-recording-access-denied"]); login(app)
         openMeetingsFeature("meetingsRecordings", in: app)
         let ready = app.buttons["recording.77777777-7777-4777-8777-777777777771"]
-        XCTAssertTrue(ready.waitForExistence(timeout: 10)); ready.tap()
+        reveal(ready, in: app); ready.tap()
         XCTAssertTrue(app.staticTexts["recordingsError"].waitForExistence(timeout: 5))
         let errorVisible = XCTNSPredicateExpectation(predicate: NSPredicate(format: "hittable == true"), object: app.staticTexts["recordingsError"])
         XCTAssertEqual(XCTWaiter.wait(for: [errorVisible], timeout: 5), .completed)
         XCTAssertLessThan(app.staticTexts["recordingsError"].frame.maxY, app.buttons["tab.profile"].frame.minY)
         XCTAssertFalse(app.buttons["playRecording"].exists)
         XCTAssertFalse(app.buttons["downloadRecording"].exists)
+        XCTAssertTrue(app.buttons["recording.retry"].isEnabled)
+        app.buttons["recording.retry"].tap()
+        XCTAssertTrue(app.staticTexts["recordingsError"].waitForExistence(timeout: 5))
+        XCTAssertFalse(app.buttons["downloadRecording"].exists)
         capture(app, name: "stage07-recording-denied")
+    }
+
+    func testRecordingDetailDemoTracksAndMaterials() {
+        let app = launch(["-demo"])
+        let library = app.buttons["meetingsRecordings"]
+        reveal(library, in: app)
+        library.tap()
+        let tracks = app.buttons["recording.4"]
+        reveal(tracks, in: app)
+        tracks.tap()
+        let title = app.staticTexts["recordingTitle"]
+        XCTAssertTrue(title.waitForExistence(timeout: 5))
+        XCTAssertEqual(title.label, "Продукт. Следующая глава")
+        XCTAssertEqual(app.staticTexts["recordingKind"].label, "Дорожки участников")
+        XCTAssertTrue(app.staticTexts["Отдельная дорожка каждого участника"].isHittable)
+        XCTAssertFalse(app.buttons["playRecording"].exists)
+        capture(app, name: "recording-detail-tracks")
+        let summary = app.buttons["recording.shareDetails"]
+        reveal(summary, in: app)
+        XCTAssertTrue(app.staticTexts["Архив дорожек"].isHittable)
+        XCTAssertFalse(app.buttons["downloadRecording"].exists)
+        capture(app, name: "recording-detail-materials")
+        app.buttons["recordings.back"].tap()
+        XCTAssertTrue(tracks.waitForExistence(timeout: 5))
     }
 
     func testFirstLaunchDoesNotImplyAuthentication() {
@@ -1421,6 +1558,35 @@ import UIKit
         XCTAssertEqual(XCTWaiter.wait(for: [chatClosed, keyboardClosed], timeout: 10), .completed)
         XCTAssertTrue(camera.isEnabled && camera.isHittable)
         camera.tap(); waitForValue("Выключен", of: camera)
+        leaveConference(app)
+    }
+
+    func testConferenceRecordingOffersServerFormatsAndStopsWithConfirmation() {
+        let app = launch()
+        createConference(app, title: "Дизайн-синхронизация")
+        joinConference(app)
+        let recording = app.buttons["conferenceRecordings"]
+        XCTAssertTrue(recording.waitForExistence(timeout: 10))
+        recording.tap()
+        let composite = app.buttons["conferenceRecordingMode.composite"]
+        let audio = app.buttons["conferenceRecordingMode.audio_only"]
+        XCTAssertTrue(composite.waitForExistence(timeout: 10))
+        XCTAssertTrue(composite.isSelected)
+        XCTAssertFalse(app.buttons["conferenceRecordingMode.individual_tracks"].exists)
+        audio.tap()
+        XCTAssertTrue(audio.isSelected)
+        capture(app, name: "conference-recording-server-formats")
+        app.buttons["startServerRecording"].tap()
+        let stop = app.buttons["conferenceRecordingStop"]
+        XCTAssertTrue(stop.waitForExistence(timeout: 10))
+        stop.tap()
+        let confirm = app.buttons["conferenceRecordingConfirmStop"]
+        XCTAssertTrue(confirm.waitForExistence(timeout: 5))
+        confirm.tap()
+        let status = app.staticTexts["conferenceRecordingStatus"]
+        let processing = XCTNSPredicateExpectation(predicate: NSPredicate(format: "label CONTAINS[c] %@", "обрабат"), object: status)
+        XCTAssertEqual(XCTWaiter.wait(for: [processing], timeout: 10), .completed)
+        app.buttons["conferenceRecordingClose"].tap()
         leaveConference(app)
     }
 

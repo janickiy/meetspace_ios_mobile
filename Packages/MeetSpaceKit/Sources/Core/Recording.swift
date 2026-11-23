@@ -84,6 +84,12 @@ public enum RecordingAccessError: Error, Equatable, Sendable {
 }
 
 public enum RecordingPermissions {
+    public static func canDelete(_ row: RecordingLibraryItem, accountID: UUID) -> Bool {
+        row.recording.conferenceID == row.conference.id &&
+            ["ready", "partial_ready", "failed", "cancelled"].contains(row.recording.status) &&
+            (row.conference.ownerId == accountID || row.recording.requestedBy == accountID)
+    }
+
     public static func canStart(conference: Conference, participant: ConferenceParticipant, accountID: UUID) -> Bool {
         conference.status == "active" && participant.conferenceId == conference.id && participant.userId == accountID && participant.canParticipate && participant.role != "guest"
     }

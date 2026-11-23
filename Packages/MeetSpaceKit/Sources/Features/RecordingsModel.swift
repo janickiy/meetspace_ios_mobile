@@ -24,7 +24,7 @@ import MeetSpaceAPI
     private let downloads: any RecordingDownloading
     private var transfer: Task<URL, Error>?
     private var transferID = UUID()
-    private var selectionID = UUID()
+    private var selectionID: UUID?
     private var generation = UUID()
     private var closed = false
 
@@ -39,17 +39,24 @@ import MeetSpaceAPI
     }
     public var canDeleteSelected: Bool {
         guard let selected else { return false }
-        return ["ready", "partial_ready", "failed", "cancelled"].contains(selected.recording.status) &&
-            (selected.conference.ownerId == account.user.id || selected.recording.requestedBy == account.user.id)
+        return RecordingPermissions.canDelete(selected, accountID: account.user.id)
     }
     public func deleteSelected() async {
-        guard !closed, !loading, !downloading, canDeleteSelected, let row = selected else { return }
+        guard let selected else { return }
+        await delete(selected)
+    }
+    public func delete(_ row: RecordingLibraryItem) async {
+        guard !closed, !loading, !downloading,
+              let current = selected?.id == row.id ? selected : items.first(where: { $0.id == row.id }),
+              RecordingPermissions.canDelete(current, accountID: account.user.id) else { return }
         let epoch = generation; loading = true; error = nil
         defer { if epoch == generation { loading = false } }
         do {
-            try await repository.delete(conferenceID: row.conference.id, recordingID: row.id)
+            try await repository.delete(conferenceID: current.conference.id, recordingID: current.id)
             guard valid(epoch) else { return }
-            await clearLocalFiles(); selected = nil; items.removeAll { $0.id == row.id }
+            items.removeAll { $0.id == current.id }
+            conferenceItems[current.conference.id]?.removeAll { $0.id == current.id }
+            if selected?.id == current.id { selected = nil; await clearLocalFiles() }
         } catch { if valid(epoch) { self.error = Self.message(error) } }
     }
     public func load(more: Bool = false) async {
@@ -68,28 +75,38 @@ import MeetSpaceAPI
         guard !closed, !loading, !downloading else { return }
         let requestID = UUID(); selectionID = requestID
         let epoch = generation; loading = true; error = nil
+        selected = nil
         await clearLocalFiles()
-        defer { if epoch == generation { loading = false } }
+        defer {
+            if generation == epoch, selectionID == requestID { loading = false; selectionID = nil }
+        }
+        guard valid(epoch), selectionID == requestID else { return }
         do {
             let recording = try await repository.read(conferenceID: row.conference.id, recordingID: row.id)
             guard valid(epoch), selectionID == requestID else { return }
             selected = RecordingLibraryItem(conference: row.conference, recording: recording)
         } catch { if valid(epoch), selectionID == requestID { self.error = Self.message(error) } }
     }
-    public func back() async {
+    public func back() async { await releaseSelection().value }
+
+    @discardableResult func releaseSelection() -> Task<Void, Never> {
         // Detach the old operation and its files before suspension. The user can select
         // another recording while a cancelled transfer drains; never clear that new state.
         let pending = transfer
         let urls = [playbackURL, exportURL].compactMap { $0 }
-        selectionID = UUID(); transferID = UUID(); transfer = nil; selected = nil
+        if selectionID != nil { loading = false; selectionID = nil }
+        transferID = UUID(); transfer = nil; selected = nil
         playbackURL = nil; exportURL = nil; downloading = false; progress = 0; error = nil
         pending?.cancel()
-        if let pending, let url = try? await pending.value { await downloads.remove(url) }
-        for url in urls { await downloads.remove(url) }
+        return Task { [downloads] in
+            if let pending, let url = try? await pending.value { await downloads.remove(url) }
+            for url in urls { await downloads.remove(url) }
+        }
     }
     public func download(fileID: UUID, play: Bool) async {
-        guard !closed, !downloading, let row = selected,
-              let file = row.recording.files.first(where: { $0.id == fileID }), !play || file.playable else { return }
+        guard !closed, !loading, !downloading, let row = selected, row.recording.ready,
+              let file = row.recording.files.first(where: { $0.id == fileID }), file.available,
+              !play || file.playable else { return }
         let epoch = generation; let operationID = UUID(); transferID = operationID
         downloading = true; progress = 0; error = nil
         await clearLocalFiles()
@@ -115,9 +132,10 @@ import MeetSpaceAPI
     public func dismissExport() async {
         if let exportURL { self.exportURL = nil; await downloads.remove(exportURL) }
     }
-    public func playbackFailed() {
-        let failedURL = playbackURL; playbackURL = nil
-        if let failedURL { Task { await downloads.remove(failedURL) } }
+    public func playbackFailed(url: URL? = nil) {
+        guard let failedURL = playbackURL, url == nil || url == failedURL else { return }
+        playbackURL = nil
+        Task { await downloads.remove(failedURL) }
         error = "Этот файл не удалось воспроизвести. Можно скачать его и открыть в другом приложении."
     }
     public func loadConference(_ id: UUID) async {
@@ -127,12 +145,19 @@ import MeetSpaceAPI
         do {
             let supported = try await repository.capabilities()
             let records = try await repository.list(conferenceID: id)
-            guard valid(epoch) else { return }; modes = supported; conferenceItems[id] = records
-        } catch { if valid(epoch) { self.error = Self.message(error) } }
+            guard valid(epoch) else { return }
+            modes = supported
+            conferenceItems[id] = records
+            self.error = nil
+        } catch {
+            guard valid(epoch) else { return }
+            conferenceItems[id] = nil
+            self.error = Self.message(error)
+        }
     }
     public func start(conference: Conference, participant: ConferenceParticipant, mode: RecordingMode) async {
         guard RecordingPermissions.canStart(conference: conference, participant: participant, accountID: account.user.id),
-              modes.contains(mode), !(conferenceItems[conference.id] ?? []).contains(where: \.active) else { return }
+              modes.contains(mode), let records = conferenceItems[conference.id], !records.contains(where: \.active) else { return }
         await mutate(conference.id) { [repository] in _ = try await repository.start(conferenceID: conference.id, mode: mode) }
     }
     public func stop(_ recording: MeetingRecording, conference: Conference, participant: ConferenceParticipant) async {
@@ -150,7 +175,8 @@ import MeetSpaceAPI
             guard valid(epoch) else { return }
             // Never blindly retry a start/stop after an uncertain response.
             self.error = Self.message(error)
-            if let records = try? await repository.list(conferenceID: id), valid(epoch) { conferenceItems[id] = records }
+            let records = try? await repository.list(conferenceID: id)
+            if valid(epoch) { conferenceItems[id] = records }
         }
     }
     public func close() async {
