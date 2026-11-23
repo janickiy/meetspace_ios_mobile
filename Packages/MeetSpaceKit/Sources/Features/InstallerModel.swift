@@ -51,6 +51,37 @@ import MeetSpaceInstaller
         self.repository = InstallerRepository()
     }
     public var stepNumber: Int { switch step { case .server: 1; case .fingerprint: 2; case .access: 3; case .complete: 5; default: 4 } }
+    var hasPreviousStep: Bool {
+        !busy && ticket == nil && [.fingerprint, .access, .preflight, .options, .plan].contains(step)
+    }
+
+    /// Returning to an editable server or plan invalidates the previous confirmation.
+    func goBack() -> Bool {
+        guard hasPreviousStep else { return false }
+        error = nil
+        switch step {
+        case .fingerprint, .access:
+            clearSecrets()
+            key = nil
+            keyChanged = false
+            facts = [:]
+            options.publicIpv4 = ""
+            trustConfirmed = false
+            step = .server
+        case .preflight:
+            clearSecrets()
+            step = .access
+        case .options:
+            step = .preflight
+        case .plan:
+            plan = nil
+            adminPassword = ""; adminRepeat = ""; smtpPassword = ""
+            planConfirmed = false; dockerConfirmed = false; acmeConfirmed = false
+            step = .options
+        default: return false
+        }
+        return true
+    }
     public var serverURL: String { "https://" + (ticket?.plan.options.domain ?? options.domain) }
     private func endpoint() throws -> InstallerEndpoint {
         guard let number = Int(port) else { throw InstallerFailure.invalid("SSH-порт должен быть числом от 1 до 65535.") }

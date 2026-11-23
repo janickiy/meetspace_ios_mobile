@@ -1,4 +1,5 @@
 import SwiftUI
+import MeetSpaceAPI
 import MeetSpaceCore
 import MeetSpaceDesignSystem
 
@@ -298,8 +299,10 @@ struct GroupDetailsView: View {
     private func reload() async {
         do {
             let item = try await model.repository.conversation(id)
+            guard item.id == id, item.isGroup else { throw APIError.invalidResponse }
             let people = try await model.repository.members(id)
             try Task.checkCancellation(); guard model.active else { return }
+            model.updateCachedConversation(item)
             conversation = item; name = item.name ?? ""; detail = item.description; members = people
         } catch is CancellationError { }
         catch { self.error = userMessage(error) }

@@ -41,6 +41,28 @@ private func until(_ condition: @escaping @Sendable () async -> Bool) async thro
 }
 private struct Timeout: Error {}
 
+@Test @MainActor func installerBackNavigationRequiresFreshConsentAndAccess() {
+    let wizard = InstallerModel()
+    wizard.step = .plan
+    wizard.planConfirmed = true
+    wizard.dockerConfirmed = true
+    wizard.acmeConfirmed = true
+    wizard.adminPassword = "sample"
+    wizard.adminRepeat = "sample"
+    wizard.smtpPassword = "sample"
+    #expect(wizard.goBack() && wizard.step == .options)
+    #expect(!wizard.planConfirmed && !wizard.dockerConfirmed && !wizard.acmeConfirmed)
+    #expect(wizard.adminPassword.isEmpty && wizard.adminRepeat.isEmpty && wizard.smtpPassword.isEmpty)
+
+    #expect(wizard.goBack() && wizard.step == .preflight)
+    #expect(wizard.goBack() && wizard.step == .access)
+    wizard.password = "sample"
+    wizard.trustConfirmed = true
+    #expect(wizard.goBack() && wizard.step == .server)
+    #expect(wizard.password.isEmpty && !wizard.trustConfirmed)
+    #expect(!wizard.goBack())
+}
+
 @Test @MainActor func staleResponseCannotReplaceNewServer() async throws {
     let (model, probe, _) = fixture()
     model.checkServer("https://old.example")

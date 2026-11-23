@@ -236,7 +236,7 @@ enum UITestDependencies {
         private let conferenceID = "33333333-3333-4333-8333-333333333333"
         private let participantID = "44444444-4444-4444-8444-444444444444"
         private let remoteParticipantID = "44444444-4444-4444-8444-444444444445"
-        private let callID = "55555555-5555-4555-8555-555555555555"
+        private var lastCallRequestID: String?
         private let callRoomID = "33333333-3333-4333-8333-333333333334"
         private var call: [String: Any]?
         private var incomingCreated = false
@@ -316,7 +316,7 @@ enum UITestDependencies {
             return result
         }
         private func newCall(incoming: Bool, clientID: String) -> [String: Any] {
-            ["id": callID, "conversationId": direct, "callerUserId": incoming ? peer : first,
+            ["id": UUID().uuidString.lowercased(), "conversationId": direct, "callerUserId": incoming ? peer : first,
              "calleeUserId": incoming ? first : peer, "callerClientId": clientID,
              "caller": ["id": incoming ? peer : first, "displayName": incoming ? "Тестовый собеседник" : "Первый аккаунт"],
              "callee": ["id": incoming ? first : peer, "displayName": incoming ? "Первый аккаунт" : "Тестовый собеседник"],
@@ -391,17 +391,21 @@ enum UITestDependencies {
                 pushDevice = nil; return NetworkResponse(status: 204)
             }
             if path == "/api/v1/calls", request.httpMethod == "POST" {
+                let requestID = body?["clientRequestId"] as? String
+                if let requestID, requestID == lastCallRequestID, let call { return try response(["item": call]) }
+                lastCallRequestID = requestID
                 call = newCall(incoming: false, clientID: body?["clientId"] as? String ?? UUID().uuidString.lowercased())
                 return try response(["item": call!], status: 201)
             }
             if path == "/api/v1/calls/active" {
                 if !incomingCreated, ProcessInfo.processInfo.arguments.contains("-call-incoming") {
+                    lastCallRequestID = nil
                     incomingCreated = true; call = newCall(incoming: true, clientID: "77777777-7777-4777-8777-777777777777")
                 }
                 let active = ["ringing", "accepted"].contains(call?["status"] as? String ?? "")
                 return try response(["item": active ? call! : NSNull()])
             }
-            if parts.count >= 4, parts[2] == "calls", parts[3] == callID, call != nil {
+            if parts.count >= 4, parts[2] == "calls", parts[3] == call?["id"] as? String {
                 if path.hasSuffix("/accept") {
                     call?["status"] = "accepted"; call?["version"] = 2; call?["conferenceId"] = callRoomID
                     call?["acceptedAt"] = ISO8601DateFormatter().string(from: Date())

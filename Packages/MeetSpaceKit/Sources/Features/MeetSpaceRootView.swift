@@ -94,7 +94,7 @@ struct OnboardingView: View {
                         .padding(.bottom, wide ? 30 : 12)
                         }
                         switch model.onboarding {
-                        case .welcome: WelcomeView(model: model, showArtwork: !wide)
+                        case .welcome: WelcomeView(model: model, showArtwork: !wide, compactPhone: proxy.size.width <= 375)
                         case .connect: ConnectView(model: model)
                         case .login: AuthenticationView(model: model, registration: false).id("login")
                         case .register: AuthenticationView(model: model, registration: true).id("register")
@@ -112,6 +112,7 @@ struct OnboardingView: View {
 private struct WelcomeView: View {
     @Bindable var model: AppModel
     let showArtwork: Bool
+    let compactPhone: Bool
     @Environment(\.dynamicTypeSize) private var typeSize
     @State private var guestForm = false
     private var welcomeTitle: AttributedString {
@@ -123,14 +124,17 @@ private struct WelcomeView: View {
         VStack(alignment: .leading, spacing: 0) {
             Text(tr("ЕДИНОЕ ПРОСТРАНСТВО")).font(MSTheme.font(showArtwork ? 8 : 10, weight: .semibold, relativeTo: .caption))
                 .tracking(1.8).foregroundStyle(MSTheme.muted).padding(.bottom, 14)
-            Text(welcomeTitle).font(MSTheme.font(showArtwork ? 34 : 43, weight: .semibold, relativeTo: .largeTitle))
+            Text(welcomeTitle).font(MSTheme.font(showArtwork ? (compactPhone ? 34 : 37) : 43, weight: .semibold, relativeTo: .largeTitle))
                 .tracking(showArtwork ? -1.7 : -1.9).fixedSize(horizontal: false, vertical: true)
                 .accessibilityIdentifier("welcome.heading").padding(.bottom, 14)
             Text(tr("MeetSpace — единое пространство для встреч и общения."))
                 .font(MSTheme.font(showArtwork ? 12 : 15)).lineSpacing(5).foregroundStyle(MSTheme.muted)
                 .padding(.bottom, showArtwork ? 4 : 30)
             if showArtwork && !typeSize.isAccessibilitySize {
-                WelcomeArtwork().frame(height: 199).padding(.bottom, 18)
+                WelcomeArtwork()
+                    .frame(height: compactPhone ? 179 : 207)
+                    .background(RadialGradient(colors: [MSTheme.accentSoft.opacity(0.6), MSTheme.surface], center: .center, startRadius: 10, endRadius: 155))
+                    .padding(.horizontal, -8).padding(.bottom, compactPhone ? 17 : 20)
             }
             VStack(spacing: showArtwork ? 10 : 13) {
                 connectionChoice("Подключиться к серверу", subtitle: "У меня уже есть адрес MeetSpace", icon: "link", primary: true) { model.show(.connect) }
@@ -157,8 +161,8 @@ private struct WelcomeView: View {
     }
     private func connectionChoice(_ title: String, subtitle: String, icon: String, primary: Bool, action: @escaping () -> Void) -> some View {
         Button(action: action) {
-            HStack(spacing: 14) {
-                Image(systemName: icon).font(.system(size: 20)).frame(width: showArtwork ? 35 : 40, height: 40)
+            HStack(spacing: showArtwork ? 12 : 14) {
+                Image(systemName: icon).font(.system(size: 20)).frame(width: showArtwork ? 35 : 40, height: showArtwork ? 36 : 40)
                     .background(primary ? Color.white.opacity(0.13) : MSTheme.surfaceSecondary, in: RoundedRectangle(cornerRadius: 11))
                     .accessibilityHidden(true)
                 VStack(alignment: .leading, spacing: 4) {
@@ -168,10 +172,10 @@ private struct WelcomeView: View {
                         .accessibilityIdentifier(primary ? "welcome.connectSubtitle" : "welcome.deploySubtitle")
                 }.fixedSize(horizontal: false, vertical: true)
                 Spacer(minLength: 0); Image(systemName: "arrow.up.right").font(.system(size: 17)).accessibilityHidden(true)
-            }.padding(showArtwork ? 14 : 17).frame(maxWidth: .infinity, minHeight: showArtwork ? 79 : 90)
+            }.padding(showArtwork ? 14 : 17).frame(maxWidth: .infinity, minHeight: showArtwork ? (compactPhone ? 74 : 79) : 90)
                 .foregroundStyle(primary ? MSTheme.surface : MSTheme.ink)
-                .background(primary ? MSTheme.accent : MSTheme.surface, in: RoundedRectangle(cornerRadius: 14))
-                .overlay(RoundedRectangle(cornerRadius: 14).stroke(primary ? Color.clear : MSTheme.line))
+                .background(primary ? MSTheme.accent : MSTheme.surface, in: RoundedRectangle(cornerRadius: showArtwork ? 12 : 14))
+                .overlay(RoundedRectangle(cornerRadius: showArtwork ? 12 : 14).stroke(primary ? Color.clear : MSTheme.line))
                 .contentShape(Rectangle()).accessibilityElement(children: .combine)
         }.buttonStyle(.plain)
     }
@@ -193,17 +197,20 @@ struct OnboardingAside: View {
             }
             Spacer(minLength: 25)
             Text(install ? tr("ВАШ СЕРВЕР. ВАШИ ПРАВИЛА.") : tr("БЛИЖЕ К КОМАНДЕ.")).font(MSTheme.font(10, weight: .semibold)).tracking(1.8).foregroundStyle(MSTheme.muted)
-            Text(install ? tr("Своё пространство.\nПолный контроль.") : tr("Быть на одной\nволне.")).font(MSTheme.font(43, weight: .semibold, relativeTo: .largeTitle)).tracking(-1.8)
+            Text(install ? tr("Своё пространство.\nПолный контроль.") : tr("Быть на одной\nволне.")).font(MSTheme.font(install ? 32 : 43, weight: .semibold, relativeTo: .largeTitle)).tracking(install ? -1.2 : -1.8)
                 .fixedSize(horizontal: false, vertical: true)
             Text(install ? tr("Подключите удалённый сервер, а мы покажем каждый шаг настройки.") : tr("Встречи, сообщения и идеи — в одном пространстве."))
-                .font(MSTheme.font(15)).lineSpacing(5).foregroundStyle(MSTheme.muted)
+                .font(MSTheme.font(install ? 14 : 15)).lineSpacing(5).foregroundStyle(MSTheme.muted)
+                .fixedSize(horizontal: false, vertical: true)
             WelcomeArtwork().frame(height: 285).padding(.horizontal, -18)
             Spacer(minLength: 25)
             ViewThatFits(in: .horizontal) {
                 HStack { Label(tr("На вашей инфраструктуре"), systemImage: "checkmark.shield"); Spacer(); Text(tr("MeetSpace для iOS")) }
                 VStack(alignment: .leading, spacing: 8) { Label(tr("На вашей инфраструктуре"), systemImage: "checkmark.shield"); Text(tr("MeetSpace для iOS")) }
             }.font(MSTheme.font(10)).foregroundStyle(MSTheme.muted)
-        }.padding(36).background(MSTheme.surfaceSecondary)
+        }.padding(install ? 26 : 36)
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
+            .background(install ? MSTheme.accentSoft : MSTheme.surfaceSecondary)
     }
 }
 

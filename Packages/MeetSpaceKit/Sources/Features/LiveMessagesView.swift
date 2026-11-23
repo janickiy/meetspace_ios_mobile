@@ -158,7 +158,9 @@ struct LiveThreadView: View {
     @Environment(\.chatMenu) private var chatMenu
     @FocusState private var composerFocused: Bool
     @State private var coveredConversation: UUID?
-    @State private var contactDetails = false
+    @State private var chatInfo = false
+    private enum AfterInfo { case edit, call(DirectCallPeer, video: Bool) }
+    @State private var afterInfo: AfterInfo?
     @State private var menuOpen = false
     @State private var ownCard = false
     @State private var folders = false
@@ -236,8 +238,9 @@ struct LiveThreadView: View {
         }
     }
     private func showDetails() {
-        guard let item = model.conversation else { return }
-        if item.isGroup { groupDetails = true } else if item.peer != nil { contactDetails = true }
+        guard let item = model.conversation, item.id == id, item.isGroup || item.peer != nil else { return }
+        composerFocused = false
+        chatInfo = true
     }
     private func beginSelection(_ message: ChatMessage? = nil) {
         // Resign the native input before replacing it with the selection toolbar.
@@ -328,14 +331,14 @@ struct LiveThreadView: View {
                             perform: chooseHeaderAction)
             .confirmChatAction($pendingChatAction, perform: applyHeaderAction)
             .task(id: id) {
-                if coveredConversation == id { coveredConversation = nil }
-                else { await model.open(id) }
+                let resuming = coveredConversation == id
+                coveredConversation = nil
+                if !resuming || model.historyState == .loading { await model.open(id) }
             }
             .onDisappear {
                 guard model.conversation?.id == id else { return }
-                // A message action temporarily covers this thread. Preserve its history and search results,
-                // including older pages to which the pending reply, edit or selection refers.
-                if chatMenu?.isPresented == true { coveredConversation = id }
+                // Full-screen chat sheets cover the thread temporarily. Keep its loaded history and selection.
+                if chatMenu?.isPresented == true || chatInfo { coveredConversation = id }
                 else { model.hide(id); model.cancelMessageSelection() }
             }
             .task(id: query) {
@@ -358,9 +361,30 @@ struct LiveThreadView: View {
                 }
             }
             .sheet(isPresented: $groupDetails) { GroupDetailsView(model: model, id: id) }
-            .sheet(isPresented: $contactDetails) {
-                if let conversation = model.conversation, let peer = conversation.peer {
-                    LiveChatContactSheet(model: model, conversation: conversation, peer: peer, calls: calls)
+            .workspaceFormPresentation(isPresented: $chatInfo, onDismiss: {
+                let next = afterInfo
+                afterInfo = nil
+                guard model.active, model.conversation?.id == id else { return }
+                switch next {
+                case .edit: groupDetails = model.conversation?.canManage == true
+                case .call(let peer, let video): Task { await calls?.startOutgoing(peer: peer, isVideo: video) }
+                case nil: break
+                }
+            }) {
+                if let conversation = model.conversation, conversation.id == id {
+                    if conversation.isGroup {
+                        LiveChatGroupSheet(model: model, conversation: conversation) {
+                            afterInfo = .edit
+                            chatInfo = false
+                        }
+                    } else if let peer = conversation.peer {
+                        LiveChatContactSheet(model: model, conversation: conversation, peer: peer, startCall: calls == nil ? nil : { video in
+                            afterInfo = .call(DirectCallPeer(id: peer.id, displayName: peer.displayName), video: video)
+                            chatInfo = false
+                        })
+                    }
+                } else {
+                    Color.clear.onAppear { afterInfo = nil; chatInfo = false }
                 }
             }
             .sheet(item: $forwardingMessage, onDismiss: {

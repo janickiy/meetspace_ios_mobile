@@ -134,6 +134,7 @@ struct ThreadView: View {
     @State private var forwarding: DemoChatStore.Message?
     @State private var forwardedDestination: Int?
     @State private var info = false
+    @State private var callAfterInfo = false
     @State private var menuOpen = false
     @State private var ownCard = false
     @State private var folders = false
@@ -224,17 +225,15 @@ struct ThreadView: View {
                 }
                 Button(tr("Отмена"), role: .cancel) {}
             }
-            .sheet(isPresented: $info) {
-                if contact.group {
-                    VStack(alignment: .leading, spacing: 16) {
-                        ChatAvatar(name: contact.name, initials: contact.initials, size: 60, group: true)
-                        Text(contact.name).font(MSTheme.font(21, weight: .semibold))
-                        Text(tr("Участники")).font(MSTheme.font(13, weight: .semibold))
-                        ForEach(contact.members, id: \.self) { Text($0) }
-                        Button(tr("Закрыть")) { info = false }
-                    }.padding(24).presentationDetents([.medium, .large])
-                } else {
-                    DemoChatContactSheet(name: contact.name, initials: contact.initials, messages: messages, call: { info = false; model.navigate(.personalCall) })
+            .workspaceFormPresentation(isPresented: $info, onDismiss: {
+                if callAfterInfo {
+                    callAfterInfo = false
+                    model.navigate(.personalCall)
+                }
+            }) {
+                DemoChatInfoSheet(contact: contact, messages: messages) {
+                    callAfterInfo = true
+                    info = false
                 }
             }
     }

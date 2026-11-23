@@ -490,14 +490,19 @@ public struct DownloadState: Identifiable {
         listState = .content
         await refreshConversations()
     }
+    func updateCachedConversation(_ item: Conversation) {
+        guard active else { return }
+        if conversation?.id == item.id { conversation = item }
+        if let index = conversations.firstIndex(where: { $0.id == item.id }) { conversations[index] = item }
+    }
+
     func applyHeaderAction(_ action: ChatHeaderAction, to id: UUID) async throws {
         guard active, let item = conversation, item.id == id else { throw CancellationError() }
         switch action {
         case .mute where !item.isGroup:
             let updated = try await repository.setNotifications(id, enabled: !item.notificationsEnabled)
             guard active else { return }
-            if conversation?.id == id { conversation = updated }
-            if let index = conversations.firstIndex(where: { $0.id == id }) { conversations[index] = updated }
+            updateCachedConversation(updated)
             scheduleListRefresh()
         case .clear where !item.isGroup:
             try await repository.clearDirectHistory(id)

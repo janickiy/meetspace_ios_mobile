@@ -10,6 +10,7 @@ import Observation
         let members: [String]
         let preview: String
         let time: String
+        var description = ""
         var unread = 0
         var group: Bool { !members.isEmpty }
         var subtitle: String? { group ? chatGroupSubtitle(members.count) : nil }
@@ -33,11 +34,11 @@ import Observation
     }
 
     static let contacts = [
-        Contact(id: 1, name: "Команда продукта", initials: "П", members: ["Вы", "Мария Полякова", "Анна Кузнецова", "Максим Петров", "Дмитрий Волков"], preview: "Мария: собрала всё в одном файле", time: "09:38", unread: 3),
+        Contact(id: 1, name: "Команда продукта", initials: "П", members: ["Вы", "Мария Полякова", "Анна Кузнецова", "Максим Петров", "Дмитрий Волков"], preview: "Мария: собрала всё в одном файле", time: "09:38", description: "Обсуждаем планы команды, макеты и материалы к встречам.", unread: 3),
         Contact(id: 0, name: "Анна Кузнецова", initials: "АК", members: [], preview: "Да, до встречи!", time: "09:24", unread: 1),
-        Contact(id: 3, name: "Разработка", initials: "Р", members: ["Вы", "Дмитрий Волков", "Анна Кузнецова", "Максим Петров"], preview: "Дмитрий: обновление готово", time: "Вчера"),
+        Contact(id: 3, name: "Разработка", initials: "Р", members: ["Вы", "Дмитрий Волков", "Анна Кузнецова", "Максим Петров"], preview: "Дмитрий: обновление готово", time: "Вчера", description: "Согласуем задачи разработки и делимся обновлениями проекта."),
         Contact(id: 2, name: "Максим Петров", initials: "МП", members: [], preview: "Вы: Спасибо, посмотрю сегодня", time: "Вчера"),
-        Contact(id: 4, name: "Дизайн-команда", initials: "Д", members: ["Вы", "Анна Кузнецова", "Мария Полякова"], preview: "Анна: новая версия макетов в папке", time: "Пт")
+        Contact(id: 4, name: "Дизайн-команда", initials: "Д", members: ["Вы", "Анна Кузнецова", "Мария Полякова"], preview: "Анна: новая версия макетов в папке", time: "Пт", description: "Обсуждаем дизайн MeetSpace и делимся макетами для ревью.")
     ]
 
     private(set) var history: [Int: [Message]]

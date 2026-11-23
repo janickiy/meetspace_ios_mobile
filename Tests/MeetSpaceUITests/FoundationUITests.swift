@@ -1527,8 +1527,12 @@ import UIKit
         XCTAssertTrue(app.textFields["messageComposer"].waitForExistence(timeout: 10))
         app.buttons["chat.menu"].tap()
         app.buttons["chat.action.info"].tap()
+        let members = app.buttons["chatGroupSheet.members"]
+        XCTAssertTrue(members.waitForExistence(timeout: 5)); members.tap()
         XCTAssertTrue(app.staticTexts["Тестовый собеседник"].waitForExistence(timeout: 5))
         capture(app, name: "stage03-group-members")
+        app.buttons["Редактировать группу"].tap()
+        XCTAssertTrue(app.textFields["Название группы"].waitForExistence(timeout: 5))
     }
 
     private func createConference(_ app: XCUIApplication, title: String) {
@@ -1794,7 +1798,12 @@ import UIKit
         XCTAssertTrue(app.textFields["messageComposer"].waitForExistence(timeout: 10))
         app.buttons["chat.menu"].tap()
         app.buttons["chat.action.info"].tap()
+        let callOptions = app.buttons["chatInfo.call"]
+        XCTAssertTrue(callOptions.waitForExistence(timeout: 5)); callOptions.tap()
         XCTAssertTrue(videoCall.waitForExistence(timeout: 5) && videoCall.isHittable)
+        videoCall.tap()
+        XCTAssertTrue(app.staticTexts["screen.directCall"].waitForExistence(timeout: 10))
+        callControl(app, "directCallEnd").tap()
     }
 
     func testDirectCallAcceptedOnOtherDeviceHasNoCaptureControls() {
@@ -1877,6 +1886,58 @@ import UIKit
 }
 
 extension FoundationUITests {
+    func testContactInfoCardAndCompactTabs() {
+        let app = launch(["-demo"])
+        let chats = app.buttons["tab.messages"]
+        XCTAssertTrue(chats.waitForExistence(timeout: 5))
+        for id in ["tab.meetings", "tab.messages", "tab.profile"] {
+            let tab = app.buttons[id]
+            XCTAssertGreaterThanOrEqual(tab.frame.height, 44)
+            XCTAssertLessThanOrEqual(tab.frame.height, 48)
+        }
+        chats.tap()
+        app.buttons["chat.0"].tap()
+        app.buttons["chat.info"].tap()
+
+        let close = app.buttons["chatContactSheet.close"]
+        XCTAssertTrue(close.waitForExistence(timeout: 5))
+        XCTAssertTrue(app.staticTexts["О контакте"].exists)
+        let media = app.buttons["chatInfo.tab.media"]
+        XCTAssertTrue(media.isSelected)
+        capture(app, name: "contact-info-card")
+        app.buttons["chatInfo.tab.file"].tap()
+        let file = app.buttons.matching(NSPredicate(format: "label CONTAINS %@", "Обзор продукта.pdf")).firstMatch
+        XCTAssertTrue(file.waitForExistence(timeout: 5))
+        app.buttons["chatInfo.tab.link"].tap()
+        XCTAssertTrue(app.staticTexts["В этом чате пока нет ссылок."].exists)
+        close.tap()
+        XCTAssertTrue(app.buttons["chat.info"].waitForExistence(timeout: 5))
+    }
+
+    func testGroupInfoCardAndMembership() {
+        let app = launch(["-demo"])
+        app.buttons["tab.messages"].tap()
+        let group = app.buttons["chat.3"]
+        reveal(group, in: app); group.tap()
+        app.buttons["chat.menu"].tap()
+        app.buttons["chat.action.info"].tap()
+
+        let members = app.buttons["chatGroupSheet.members"]
+        XCTAssertTrue(members.waitForExistence(timeout: 5))
+        XCTAssertTrue(app.staticTexts["О группе"].exists)
+        XCTAssertTrue(app.buttons["chatInfo.tab.media"].isSelected)
+        capture(app, name: "group-info-card")
+        members.tap()
+        XCTAssertTrue(app.staticTexts["Дмитрий Волков"].firstMatch.waitForExistence(timeout: 5))
+        members.tap()
+        app.buttons["chatInfo.tab.file"].tap()
+        let file = app.buttons.matching(NSPredicate(format: "label CONTAINS %@", "Обзор продукта.pdf")).firstMatch
+        XCTAssertTrue(file.waitForExistence(timeout: 5))
+        app.buttons["Перейти в чат"].tap()
+        XCTAssertTrue(app.buttons["chat.info"].waitForExistence(timeout: 5))
+        XCTAssertFalse(app.buttons["chatGroupSheet.close"].exists)
+    }
+
     private func assertActions(_ ids: [String], in app: XCUIApplication,
                                file: StaticString = #filePath, line: UInt = #line) {
         var lastY: CGFloat = -.infinity

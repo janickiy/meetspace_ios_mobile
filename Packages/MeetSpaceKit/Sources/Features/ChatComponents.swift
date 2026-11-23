@@ -310,13 +310,17 @@ private struct ChatDeliveryMark: View {
 }
 
 func chatGroupSubtitle(_ count: Int) -> String {
+    "\(tr("Группа")) · \(chatMemberCount(count))"
+}
+
+func chatMemberCount(_ count: Int) -> String {
     let noun: String = switch (count % 100, count % 10) {
     case (11...14, _): "участников"
     case (_, 1): "участник"
     case (_, 2...4): "участника"
     default: "участников"
     }
-    return "\(tr("Группа")) · \(count) \(tr(noun))"
+    return "\(count) \(tr(noun))"
 }
 
 struct ChatListRow: View {

@@ -7,7 +7,7 @@ if not re.fullmatch(r"[0-9]+\.[0-9]+\.[0-9]+(?:-[0-9A-Za-z]+(?:[.-][0-9A-Za-z]+)
     raise ValueError("VERSION must contain a three-part version with an optional prerelease suffix")
 
 MARKETING_VERSION = RELEASE_VERSION.split("-", 1)[0]
-BUILD_NUMBER = "7"
+BUILD_NUMBER = "8"
 
 
 def matches_release(info):

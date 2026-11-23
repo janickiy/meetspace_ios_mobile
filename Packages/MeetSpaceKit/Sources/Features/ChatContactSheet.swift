@@ -7,16 +7,18 @@ struct LiveChatContactSheet: View {
     let model: MessagingModel
     let conversation: Conversation
     let peer: Peer
-    let calls: DirectCallCoordinator?
+    let startCall: ((Bool) -> Void)?
     @State private var profile: ContactProfile?
     @State private var error: String?
     @State private var loading = true
     @State private var requestID = UUID()
 
     var body: some View {
-        ChatContactSheet(name: profile?.displayName ?? peer.displayName, email: profile?.email, bio: profile?.bio,
-                         call: calls.map { coordinator in { Task { await coordinator.startOutgoing(peer: DirectCallPeer(id: peer.id, displayName: peer.displayName)) } } },
-                         videoCall: calls.map { coordinator in { Task { await coordinator.startOutgoing(peer: DirectCallPeer(id: peer.id, displayName: peer.displayName), isVideo: true) } } }) {
+        let name = profile?.displayName ?? peer.displayName
+        ChatInfoSheet(name: name, status: tr("Личный чат"),
+                      call: startCall.map { start in { start(false) } },
+                      videoCall: startCall.map { start in { start(true) } }) {
+            contactDetails(name, bio: profile?.bio, email: profile?.email)
             if loading { ProgressView().accessibilityLabel(tr("Загрузка профиля")) }
             if let error {
                 Text(tr(error)).font(MSTheme.font(12)).foregroundStyle(MSTheme.muted)
@@ -40,119 +42,128 @@ struct LiveChatContactSheet: View {
     }
 }
 
-struct DemoChatContactSheet: View {
-    let name: String
-    let initials: String
+struct LiveChatGroupSheet: View {
+    let model: MessagingModel
+    let conversation: Conversation
+    let edit: () -> Void
+    @State private var members: [GroupMember]?
+    @State private var error: String?
+    @State private var requestID = UUID()
+
+    var body: some View {
+        let count = members?.count ?? conversation.memberCount
+        ChatInfoSheet(name: conversation.title, status: count.map(chatMemberCount) ?? tr("Групповой чат"),
+                      group: true, edit: conversation.canManage ? edit : nil) {
+            groupDetails(conversation.title, description: conversation.description)
+            ChatInfoMembers(count: count) {
+                if let members {
+                    ForEach(members) { member in
+                        let role = switch member.role { case "owner": "Владелец"; case "admin": "Администратор"; default: "Участник" }
+                        ChatInfoMember(name: member.displayName, role: role)
+                    }
+                } else if let error {
+                    Text(tr(error)).font(MSTheme.font(12)).foregroundStyle(MSTheme.muted)
+                    Button(tr("Повторить")) { requestID = UUID() }.frame(minHeight: 44)
+                } else { ProgressView() }
+            }
+        } materials: { kind in
+            ContactMaterials(model: model, conversation: conversation.id, kind: kind).id(kind)
+        }
+        .task(id: requestID) {
+            error = nil
+            do {
+                let result = try await model.repository.members(conversation.id)
+                guard !Task.isCancelled, model.active, model.conversation?.id == conversation.id else { return }
+                members = result
+            } catch { if !Task.isCancelled { self.error = userMessage(error) } }
+        }
+    }
+}
+
+private func contactDetails(_ name: String, bio: String?, email: String?) -> some View {
+    ChatInfoDetails(fields: [("Имя", name), ("О себе", bio.flatMap { $0.isEmpty ? nil : $0 } ?? tr("Не указано")),
+                             ("Email", email.flatMap { $0.isEmpty ? nil : $0 } ?? tr("Не указан"))])
+}
+
+private func groupDetails(_ name: String, description: String) -> some View {
+    ChatInfoDetails(fields: [("Название", name), ("Описание", description.isEmpty ? tr("Описание не добавлено") : description)])
+}
+
+struct DemoChatInfoSheet: View {
+    let contact: DemoChatStore.Contact
     let messages: [DemoChatStore.Message]
     let call: () -> Void
 
     var body: some View {
-        let info: (email: String?, bio: String?) = switch name {
-        case "Анна Кузнецова": ("anna@example.org", "Занимаюсь дизайном продукта и исследованиями интерфейсов.")
-        case "Максим Петров": ("max@example.org", "Разрабатываю MeetSpace и поддерживаю интеграции команды.")
-        default: (nil, nil)
-        }
-        let filenames = messages.reversed().flatMap(\.files)
-        let links = messages.reversed().flatMap { ContactLink.inText($0.text) }
-        ChatContactSheet(name: name, initials: initials, email: info.email, bio: info.bio,
-                         status: "В сети", call: call) { EmptyView() } materials: { kind in
-            let files = filenames.filter { filename in
-                let ext = (filename as NSString).pathExtension.lowercased()
-                return ["jpg", "jpeg", "png", "heic", "webp", "gif", "mp4", "mov"].contains(ext) == (kind == .media)
+        ChatInfoSheet(name: contact.name, initials: contact.initials,
+                      status: contact.group ? chatMemberCount(contact.members.count) : tr("В сети"),
+                      group: contact.group, call: contact.group ? nil : call) {
+            if contact.group {
+                groupDetails(contact.name, description: contact.description)
+                ChatInfoMembers(count: contact.members.count) {
+                    ForEach(contact.members, id: \.self) { ChatInfoMember(name: $0) }
+                }
+            } else {
+                let info: (email: String?, bio: String?) = switch contact.name {
+                case "Анна Кузнецова": ("anna@example.org", "Занимаюсь дизайном продукта и исследованиями интерфейсов.")
+                case "Максим Петров": ("max@example.org", "Разрабатываю MeetSpace и поддерживаю интеграции команды.")
+                default: (nil, nil)
+                }
+                contactDetails(contact.name, bio: info.bio, email: info.email)
             }
+        } materials: { kind in
+            let visible = messages.reversed().filter { !$0.deleted }
             if kind == .link {
+                let links = uniqueContactItems(visible.flatMap { ContactLink.inText($0.text) })
                 if links.isEmpty { contactEmpty(kind) }
-                ForEach(uniqueContactItems(links), id: \.self) { url in
-                    Link(destination: url) { Label(url.absoluteString, systemImage: "link") }
+                else { ChatInfoLinks(links: links) }
+            } else {
+                let files = uniqueContactItems(visible.flatMap(\.files)).filter { filename in
+                    let ext = (filename as NSString).pathExtension.lowercased()
+                    return ["jpg", "jpeg", "png", "heic", "webp", "gif", "mp4", "mov"].contains(ext) == (kind == .media)
                 }
-            } else if files.isEmpty { contactEmpty(kind) }
-            else {
-                ForEach(uniqueContactItems(files), id: \.self) { name in
-                    Label(name, systemImage: kind.symbol).font(MSTheme.font(14)).frame(maxWidth: .infinity, minHeight: 44, alignment: .leading)
-                }
+                if files.isEmpty { contactEmpty(kind) }
+                else { DemoChatAttachments(files: files, gallery: true) }
             }
         }
     }
 }
 
-private struct ChatContactSheet<Status: View, Materials: View>: View {
-    let name: String
-    var initials: String?
-    let email: String?
-    let bio: String?
-    var status: String?
-    var call: (() -> Void)?
-    var videoCall: (() -> Void)?
-    @ViewBuilder var loadStatus: () -> Status
-    @ViewBuilder var materials: (ChatMaterialKind) -> Materials
-    @Environment(\.dismiss) private var dismiss
-    @Environment(\.horizontalSizeClass) private var sizeClass
-    @Environment(\.dynamicTypeSize) private var typeSize
-    @State private var kind = ChatMaterialKind.media
+private struct ChatInfoLinks: View {
+    let links: [URL]
     var body: some View {
-        VStack(spacing: 0) {
-            HStack {
-                Text(tr("О контакте")).font(MSTheme.font(14, weight: .semibold)).foregroundStyle(MSTheme.muted)
-                Spacer(); IconButton("xmark", label: "Закрыть") { dismiss() }
-            }.padding(.horizontal, 16).frame(minHeight: 56)
-            ScrollView {
-                VStack(spacing: sizeClass == .regular ? 18 : 16) {
-                    ChatAvatar(name: name, initials: initials, size: sizeClass == .regular ? 72 : 60).clipShape(Circle())
-                    VStack(spacing: 4) {
-                        Text(name).font(MSTheme.font(23, weight: .semibold)).accessibilityAddTraits(.isHeader)
-                        if let status { Text(tr(status)).font(MSTheme.font(13)).foregroundStyle(MSTheme.muted) }
-                    }.multilineTextAlignment(.center)
-                    ViewThatFits(in: .horizontal) {
-                        HStack(spacing: 8) { actions }
-                        VStack(spacing: 8) { actions }
-                    }
-                    VStack(alignment: .leading, spacing: 12) {
-                        detail("Имя", name)
-                        detail("О себе", bio.flatMap { $0.isEmpty ? nil : $0 } ?? tr("Не указано"))
-                        detail("Email", email.flatMap { $0.isEmpty ? nil : $0 } ?? tr("Не указан"))
-                        loadStatus()
-                    }.padding(16).background(MSTheme.background, in: RoundedRectangle(cornerRadius: 16))
-                    HStack(spacing: 0) {
-                        ForEach(ChatMaterialKind.allCases, id: \.self) { item in
-                            Button { kind = item } label: {
-                                Text(tr(item.title)).font(MSTheme.font(13, weight: .semibold)).padding(.horizontal, 4)
-                                    .frame(maxWidth: .infinity, minHeight: 44)
-                                    .foregroundStyle(item == kind ? MSTheme.accent : MSTheme.muted)
-                                    .background(item == kind ? MSTheme.surface : .clear, in: Capsule())
-                            }.buttonStyle(.plain).accessibilityAddTraits(kind == item ? .isSelected : [])
-                        }
-                    }.padding(4).frame(maxWidth: 332).background(MSTheme.surfaceSecondary, in: Capsule())
-                    materials(kind)
-                }.padding(.horizontal, sizeClass == .regular ? 24 : 16).padding(.bottom, 24)
-                    .frame(maxWidth: 560).frame(maxWidth: .infinity)
+        VStack(spacing: 2) {
+            ForEach(links, id: \.self) { url in
+                Link(destination: url) {
+                    ChatInfoFileRow(icon: "link", title: url.host ?? url.absoluteString,
+                                    subtitle: url.absoluteString, trailing: "arrow.up.right")
+                }
             }
-        }.background(MSTheme.surface).accessibilityIdentifier("chatContactSheet")
-            .presentationDetents([.large])
-    }
-    @ViewBuilder private var actions: some View {
-        action("Сообщение", icon: "message") { dismiss() }
-        if let call { action("Позвонить", icon: "phone") { dismiss(); call() } }
-        if let videoCall {
-            action("Видеозвонок", icon: "video") { dismiss(); videoCall() }.accessibilityIdentifier("startVideoCall")
-        }
-    }
-    private func action(_ title: String, icon: String, perform: @escaping () -> Void) -> some View {
-        Button(action: perform) { Label(tr(title), systemImage: icon).font(MSTheme.font(13, weight: .semibold))
-            .padding(.horizontal, 16).frame(minHeight: 44).background(MSTheme.accentSoft, in: RoundedRectangle(cornerRadius: 14))
-        }.buttonStyle(.plain).foregroundStyle(MSTheme.accent)
-    }
-    private func detail(_ key: String, _ value: String) -> some View {
-        let layout = typeSize.isAccessibilitySize ? AnyLayout(VStackLayout(alignment: .leading, spacing: 4)) :
-            AnyLayout(HStackLayout(alignment: .firstTextBaseline, spacing: 12))
-        return layout {
-            Text(tr(key)).font(MSTheme.font(12)).foregroundStyle(MSTheme.muted)
-                .frame(width: typeSize.isAccessibilitySize ? nil : 70, alignment: .leading)
-            Text(value).font(MSTheme.font(14)).frame(maxWidth: .infinity, alignment: .leading).textSelection(.enabled)
-        }.accessibilityElement(children: .combine)
+        }.buttonStyle(.plain)
     }
 }
 
-private extension ChatMaterialKind {
+struct ChatInfoFileRow: View {
+    let icon: String
+    let title: String
+    let subtitle: String
+    let trailing: String
+    var body: some View {
+        HStack(spacing: 10) {
+            WorkspaceIcon(icon, size: 17).foregroundStyle(MSTheme.brandAccent)
+                .frame(width: 36, height: 36).background(MSTheme.accentSoft, in: RoundedRectangle(cornerRadius: 9))
+            VStack(alignment: .leading, spacing: 2) {
+                Text(title).font(MSTheme.font(13, weight: .semibold)).foregroundStyle(MSTheme.ink)
+                Text(subtitle).font(MSTheme.font(11)).foregroundStyle(MSTheme.muted)
+            }
+            Spacer(minLength: 0)
+            WorkspaceIcon(trailing, size: 17).foregroundStyle(MSTheme.brandAccent)
+        }.padding(.horizontal, 6).frame(maxWidth: .infinity, minHeight: 52, alignment: .leading)
+            .contentShape(Rectangle())
+    }
+}
+
+extension ChatMaterialKind {
     var title: String { switch self { case .media: "Медиа"; case .file: "Файлы"; case .link: "Ссылки" } }
     var symbol: String { switch self { case .media: "photo"; case .file: "doc"; case .link: "link" } }
     var empty: String {
@@ -164,11 +175,12 @@ private extension ChatMaterialKind {
     }
 }
 
-private func contactEmpty(_ kind: ChatMaterialKind) -> some View {
+@MainActor private func contactEmpty(_ kind: ChatMaterialKind) -> some View {
     VStack(spacing: 8) {
-        Image(systemName: kind.symbol).font(.title2).accessibilityHidden(true)
+        WorkspaceIcon(kind.symbol, size: 22).frame(width: 42, height: 42)
+            .background(MSTheme.background, in: Circle()).accessibilityHidden(true)
         Text(tr(kind.empty)).font(MSTheme.font(13))
-    }.foregroundStyle(MSTheme.muted).frame(maxWidth: .infinity, minHeight: 96)
+    }.foregroundStyle(MSTheme.muted).frame(maxWidth: .infinity, minHeight: 100)
 }
 
 private func uniqueContactItems<T: Hashable>(_ items: [T]) -> [T] {
@@ -217,23 +229,13 @@ private struct ContactMaterials: View {
         let links = legacy ? history.flatMap { ContactLink.inText($0.text) } : visible.compactMap { $0.url.flatMap(ContactLink.safe) }
         VStack(spacing: 8) {
             if kind == .link {
-                ForEach(uniqueContactItems(links), id: \.self) { url in
-                    Link(destination: url) { Label(url.absoluteString, systemImage: "link").frame(maxWidth: .infinity, minHeight: 44, alignment: .leading) }
+                ChatInfoLinks(links: uniqueContactItems(links))
+            } else if kind == .media {
+                LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 5), count: 3), spacing: 5) {
+                    ForEach(files) { attachment($0) }
                 }
             } else {
-                ForEach(files) { file in
-                    if let url = model.downloads[file.id]?.url {
-                        ShareLink(item: url) { Label(file.filename, systemImage: "square.and.arrow.up") }
-                            .frame(maxWidth: .infinity, minHeight: 44, alignment: .leading)
-                    } else {
-                        Button { model.download(file) } label: { Label(file.filename, systemImage: kind.symbol)
-                            .frame(maxWidth: .infinity, minHeight: 44, alignment: .leading) }
-                        if let transfer = model.downloads[file.id] {
-                            if let error = transfer.error { Text(tr(error)).font(MSTheme.font(12)).foregroundStyle(MSTheme.danger) }
-                            else { ProgressView(value: transfer.progress) }
-                        }
-                    }
-                }
+                ForEach(files) { attachment($0) }
             }
             if loading { ProgressView() }
             else if let error {
@@ -260,4 +262,45 @@ private struct ContactMaterials: View {
                 } catch { if !Task.isCancelled { self.error = userMessage(error) } }
             }
     }
+
+    private func attachment(_ file: Attachment) -> some View {
+        let download = model.downloads[file.id]
+        return VStack(spacing: 4) {
+            if let url = download?.url {
+                ShareLink(item: url) { fileLabel(file, url: url) }
+                    .accessibilityLabel("\(tr("Поделиться")) \(file.filename)")
+            } else {
+                Button { model.download(file) } label: { fileLabel(file, url: nil) }
+                    .accessibilityLabel(file.filename)
+                if let download {
+                    if let error = download.error { Text(tr(error)).font(MSTheme.font(12)).foregroundStyle(MSTheme.danger) }
+                    else { ProgressView(value: download.progress) }
+                }
+            }
+        }
+    }
+
+    @ViewBuilder private func fileLabel(_ file: Attachment, url: URL?) -> some View {
+        if kind == .media {
+            RoundedRectangle(cornerRadius: 9).fill(MSTheme.surfaceSecondary)
+                .aspectRatio(1, contentMode: .fit)
+                .overlay {
+                    if let url, file.mimeType.hasPrefix("image/") {
+                        AsyncImage(url: url) { image in image.resizable().scaledToFill() } placeholder: { mediaLabel(file) }
+                    } else { mediaLabel(file) }
+                }.clipShape(RoundedRectangle(cornerRadius: 9))
+        } else {
+            ChatInfoFileRow(icon: "doc.text", title: file.filename,
+                            subtitle: ByteCountFormatter.string(fromByteCount: file.size, countStyle: .file),
+                            trailing: url == nil ? "arrow.down.to.line" : "square.and.arrow.up")
+        }
+    }
+
+    private func mediaLabel(_ file: Attachment) -> some View {
+        VStack(spacing: 5) {
+            WorkspaceIcon(file.mimeType.hasPrefix("video/") ? "video" : "photo", size: 18)
+            Text(file.filename).font(MSTheme.font(10)).foregroundStyle(MSTheme.ink).lineLimit(1)
+        }.padding(8)
+    }
+
 }

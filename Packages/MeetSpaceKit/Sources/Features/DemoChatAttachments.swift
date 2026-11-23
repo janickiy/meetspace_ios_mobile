@@ -8,6 +8,7 @@ import AppKit
 
 struct DemoChatAttachments: View {
     let files: [String]
+    var gallery = false
     @State private var opened: File?
     private struct File: Identifiable {
         let name: String
@@ -35,7 +36,14 @@ struct DemoChatAttachments: View {
         let attachments = files.map(File.init(name:))
         let photos = attachments.filter { $0.url != nil }
         VStack(spacing: 6) {
-            if let first = photos.first {
+            if gallery && !photos.isEmpty {
+                LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 5), count: 3), spacing: 5) {
+                    ForEach(photos) { file in
+                        photo(file).aspectRatio(1, contentMode: .fit)
+                            .clipShape(RoundedRectangle(cornerRadius: 9))
+                    }
+                }
+            } else if let first = photos.first {
                 HStack(spacing: 6) {
                     photo(first)
                     if photos.count > 1 {
@@ -48,10 +56,12 @@ struct DemoChatAttachments: View {
             }
             ForEach(attachments.filter { $0.url == nil }) { file in
                 Button { opened = file } label: {
-                    ChatFileCard(name: file.name, size: "2,4 МБ")
+                    if gallery {
+                        ChatInfoFileRow(icon: "doc.text", title: file.name, subtitle: "2,4 МБ", trailing: "chevron.right")
+                    } else { ChatFileCard(name: file.name, size: "2,4 МБ") }
                 }.buttonStyle(.plain)
             }
-        }.padding(.top, photos.isEmpty ? 5 : 7).sheet(item: $opened) { file in
+        }.padding(.top, gallery ? 0 : (photos.isEmpty ? 5 : 7)).sheet(item: $opened) { file in
             NavigationStack {
                 VStack(alignment: .leading, spacing: 15) {
                     if let image = file.image, let url = file.url {
