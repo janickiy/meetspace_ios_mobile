@@ -10,8 +10,8 @@ MeetSpace — приложение для чатов, звонков и виде
 
 ## Пакет для Device Hub
 
-Чтобы собрать ZIP из текущего кода, откройте [GitHub Actions](https://github.com/janickiy/meetspace_ios_mobile/actions/workflows/ios.yml), нажмите **Run workflow** и выберите `release-package` в поле **Test scope**.
+Один ZIP подходит для симуляторов iPhone и iPad. Скачайте пакет, распакуйте его и перетащите `MeetSpace.app` в окно запущенного симулятора в Device Hub. [Готовые сборки](https://github.com/janickiy/meetspace_ios_mobile/releases)
 
-Скачайте артефакт `release-simulator`, распакуйте вложенный ZIP для симулятора и перетащите `MeetSpace.app` в окно запущенного iPhone в Device Hub.
+Для сборки из текущего кода запустите **Run workflow** с вариантом `release-package` в поле **Test scope**. ZIP будет в артефакте `release-simulator`. [GitHub Actions](https://github.com/janickiy/meetspace_ios_mobile/actions/workflows/ios.yml)
 
-[Опубликованные сборки](https://github.com/janickiy/meetspace_ios_mobile/releases) · [Документация проекта](https://github.com/janickiy/meetspace_ios_mobile/tree/main/docs)
+[Документация проекта](https://github.com/janickiy/meetspace_ios_mobile/tree/main/docs)
