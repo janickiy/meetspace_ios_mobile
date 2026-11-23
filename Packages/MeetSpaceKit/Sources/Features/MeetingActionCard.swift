@@ -104,7 +104,7 @@ struct MeetingActionCard<Value: Identifiable>: View {
                     }
                     if membership == .none || active && membership == .left {
                         command(active ? "Войти во встречу" : "Зарегистрироваться на встречу",
-                                active ? "arrow.right.to.line" : "calendar", "join",
+                                active ? "door.left.hand.open" : "calendar.badge.checkmark", "join",
                                 primary: !canCall, action: toggleMembership)
                     }
                     if item.mine && !active { command("Начать встречу", "play", "start", primary: true, action: call) }
@@ -120,7 +120,7 @@ struct MeetingActionCard<Value: Identifiable>: View {
                     command("Записи и материалы", "play.circle", "materials", action: materials)
                 }
                 if open && item.mine && membershipReady {
-                    command(finishTitle, active ? "phone.down" : "calendar.badge.minus", "finish", destructive: true) {
+                    command(finishTitle, active ? "phone.slash" : "calendar.badge.xmark", "finish", destructive: true) {
                         confirmingFinish = true
                     }
                 }
@@ -143,12 +143,19 @@ struct MeetingActionCard<Value: Identifiable>: View {
     }
 
     private func actionLabel(_ title: String, _ icon: String, primary: Bool = false, destructive: Bool = false) -> some View {
-        HStack(spacing: 8) {
+        let tint = destructive ? MSTheme.danger : MSTheme.accent
+        let tile = primary ? MSTheme.surface.opacity(0.16) : destructive ? MSTheme.danger.opacity(0.10) : MSTheme.accentSoft
+        return HStack(spacing: 11) {
             WorkspaceIcon(icon, size: 20)
+                .foregroundStyle(primary ? MSTheme.surface : tint)
+                .frame(width: 32, height: 32)
+                .background(tile, in: RoundedRectangle(cornerRadius: 10))
             Text(tr(title)).fixedSize(horizontal: false, vertical: true)
+                .multilineTextAlignment(.leading)
         }.font(MSTheme.font(14, weight: .semibold))
-            .foregroundStyle(primary ? Color.white : destructive ? MSTheme.danger : MSTheme.ink)
-            .padding(.horizontal, 12).padding(.vertical, 7).frame(maxWidth: .infinity, minHeight: 48)
+            .foregroundStyle(primary ? MSTheme.surface : destructive ? MSTheme.danger : MSTheme.ink)
+            .padding(.horizontal, 12).padding(.vertical, 7)
+            .frame(maxWidth: .infinity, minHeight: 48, alignment: .leading)
             .background(primary ? MSTheme.accent : .clear, in: RoundedRectangle(cornerRadius: 12))
             .overlay { if !primary && !destructive { RoundedRectangle(cornerRadius: 12).strokeBorder(MSTheme.line) } }
             .contentShape(Rectangle())
