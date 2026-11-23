@@ -704,9 +704,11 @@ import UIKit
                 : CGPoint(x: center.x, y: center.y + (delta > 0 ? distance / 2 : -distance / 2))
             let end = horizontal ? CGPoint(x: start.x - (delta > 0 ? distance : -distance), y: start.y)
                 : CGPoint(x: start.x, y: start.y - (delta > 0 ? distance : -distance))
-            let origin = app.coordinate(withNormalizedOffset: .zero)
-            origin.withOffset(CGVector(dx: start.x, dy: start.y)).press(forDuration: 0.1,
-                thenDragTo: origin.withOffset(CGVector(dx: end.x, dy: end.y)),
+            let window = app.windows.firstMatch
+            let origin = window.coordinate(withNormalizedOffset: .zero)
+            let bounds = window.frame
+            origin.withOffset(CGVector(dx: start.x - bounds.minX, dy: start.y - bounds.minY)).press(forDuration: 0.1,
+                thenDragTo: origin.withOffset(CGVector(dx: end.x - bounds.minX, dy: end.y - bounds.minY)),
                 withVelocity: .slow, thenHoldForDuration: 0.3)
         }
         XCTAssertTrue(self.contentViewport(for: element, in: app).contains(element.frame), "Target must be fully visible")
