@@ -342,11 +342,25 @@ import UIKit
 
     func testBetaAudioSettingsLayout() {
         let app = launch(); login(app)
-        openProfileFeature("openAccountSettings", in: app)
-        let audio = app.buttons["settingsSection.audio"]
-        XCTAssertTrue(audio.waitForExistence(timeout: 5)); audio.tap()
+        openProfile(in: app)
+        capture(app, name: "account-settings-menu")
+        let audio = app.buttons["profileMenu.audio"]
+        revealEntireText(audio, in: app); audio.tap()
         XCTAssertTrue(app.staticTexts["Микрофон"].firstMatch.waitForExistence(timeout: 5))
         capture(app, name: "beta-audio-microphone")
+        for identifier in ["audio.mutedOnJoin", "audio.noiseSuppression"] {
+            let toggle = app.switches[identifier]
+            revealEntireText(toggle, in: app)
+            XCTAssertGreaterThanOrEqual(toggle.frame.height, 44)
+            let original = toggle.value as? String
+            XCTAssertTrue(original == "1" || original == "0")
+            // The track is compact and tapping the text should work as well.
+            toggle.coordinate(withNormalizedOffset: CGVector(dx: 0.15, dy: 0.5)).tap()
+            XCTAssertEqual(toggle.value as? String, original == "1" ? "0" : "1")
+            toggle.coordinate(withNormalizedOffset: CGVector(dx: 0.94, dy: 0.5)).tap()
+            XCTAssertEqual(toggle.value as? String, original)
+        }
+        capture(app, name: "beta-audio-compact-switches")
         let signals = app.staticTexts["Звонки и уведомления"].firstMatch
         revealEntireText(signals, in: app)
         capture(app, name: "beta-audio-speaker-signals")
@@ -904,7 +918,7 @@ import UIKit
         let toggle = app.switches["notificationEmail"]
         reveal(toggle, in: app)
         let control = toggle.switches.firstMatch
-        if control.exists { control.tap() } else { toggle.coordinate(withNormalizedOffset: CGVector(dx: 0.9, dy: 0.5)).tap() }
+        if control.isHittable { control.tap() } else { toggle.coordinate(withNormalizedOffset: CGVector(dx: 0.9, dy: 0.5)).tap() }
         let saveNotifications = app.buttons["saveNotificationPreferences"]; reveal(saveNotifications, in: app); saveNotifications.tap()
         let saved = XCTNSPredicateExpectation(predicate: NSPredicate(format: "label == %@", "Настройки уведомлений сохранены"), object: app.staticTexts["settingsSaved"])
         XCTAssertEqual(XCTWaiter.wait(for: [saved], timeout: 5), .completed)
@@ -1479,12 +1493,16 @@ import UIKit
     func testOrdinaryPushOptInAndDisableWithFixtureToken() {
         let app = launch(); login(app)
         openProfile(in: app)
+        if app.frame.width >= 780 {
+            XCTAssertTrue(app.staticTexts["Ваш профиль"].firstMatch.waitForExistence(timeout: 5))
+            XCTAssertFalse(app.buttons["profileMenu.back"].exists)
+        }
+        capture(app, name: app.frame.width >= 780 ? "account-home-tablet" : "account-home-phone")
         let toggle = app.switches["pushNotificationsToggle"]
-        XCTAssertTrue(toggle.waitForExistence(timeout: 10))
-        for _ in 0..<4 where !toggle.isHittable { app.swipeUp() }
+        revealEntireText(toggle, in: app)
         XCTAssertTrue(toggle.isHittable)
         func tapToggle() {
-            if toggle.switches.firstMatch.exists { toggle.switches.firstMatch.tap() }
+            if toggle.switches.firstMatch.isHittable { toggle.switches.firstMatch.tap() }
             else { toggle.coordinate(withNormalizedOffset: CGVector(dx: 0.9, dy: 0.5)).tap() }
         }
         tapToggle()
@@ -1492,7 +1510,7 @@ import UIKit
             object: app.staticTexts["pushNotificationsStatus"])
         XCTAssertEqual(XCTWaiter.wait(for: [registered], timeout: 10), .completed)
         let status = app.staticTexts["pushNotificationsStatus"]
-        for _ in 0..<3 where status.frame.maxY > app.buttons["tab.profile"].frame.minY { app.swipeUp() }
+        revealEntireText(status, in: app)
         capture(app, name: "stage05-push-enabled")
         tapToggle()
         let disabled = XCTNSPredicateExpectation(predicate: NSPredicate(format: "label CONTAINS %@", "выключены"),
@@ -1530,5 +1548,10 @@ import UIKit
         XCTAssertTrue(dark.isHittable); dark.tap()
         XCTAssertTrue(dark.isSelected)
         capture(app, name: "appearance-dark-large-text")
+        let back = app.buttons["profileMenu.back"]
+        XCTAssertTrue(back.isHittable)
+        XCTAssertGreaterThanOrEqual(back.frame.height, 44)
+        back.tap()
+        XCTAssertTrue(app.buttons["profileMenu.profile"].waitForExistence(timeout: 5))
     }
 }

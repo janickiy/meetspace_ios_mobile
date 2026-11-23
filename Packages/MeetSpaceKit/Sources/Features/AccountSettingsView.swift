@@ -14,6 +14,15 @@ enum AccountSettingsSection: String, CaseIterable, Identifiable {
         case .server: "server.rack"
         }
     }
+    var hint: String {
+        switch self {
+        case .profile: ProfileSection.profile.label.hint
+        case .audio: ProfileSection.audio.label.hint
+        case .notifications: ProfileSection.notifications.label.hint
+        case .devices: "Доставка на этот iPhone и другие устройства"
+        case .server: "Версия и доступные функции"
+        }
+    }
 }
 
 /// Phone sections open individually; tablets keep the section menu beside the editor.
@@ -24,47 +33,72 @@ struct AccountSettingsView: View {
     var body: some View {
         GeometryReader { geometry in
             if geometry.size.width >= 700 && !typeSize.isAccessibilitySize {
-                HStack(alignment: .top, spacing: 24) {
-                    VStack(alignment: .leading, spacing: 8) {
-                        HStack(spacing: 12) {
-                            ProfileAvatar(name: model.profile.name, size: 42, cornerRadius: 14)
-                            VStack(alignment: .leading, spacing: 4) {
-                                Text(model.profile.name).font(MSTheme.font(13, weight: .semibold))
-                                Text(model.profile.email).font(MSTheme.font(11)).foregroundStyle(MSTheme.muted)
-                                    .accessibilityLabel(tr("Электронная почта")).accessibilityValue(model.profile.email)
+                HStack(alignment: .top, spacing: 0) {
+                    ScrollView {
+                        VStack(alignment: .leading, spacing: 5) {
+                            HStack(spacing: 12) {
+                                ProfileAvatar(name: model.profile.name, size: 42, cornerRadius: 14, photo: model.photo)
+                                VStack(alignment: .leading, spacing: 4) {
+                                    Text(model.profile.name).font(MSTheme.font(13, weight: .semibold))
+                                    Text(model.profile.email).font(MSTheme.font(11)).foregroundStyle(MSTheme.muted)
+                                        .accessibilityLabel(tr("Электронная почта")).accessibilityValue(model.profile.email)
+                                }.fixedSize(horizontal: false, vertical: true)
+                            }.padding(.bottom, 20)
+                            ForEach(AccountSettingsSection.allCases) { section in
+                                Button { selection = section } label: {
+                                    sectionRow(section, wide: true, selected: selection == section)
+                                }.buttonStyle(.plain).accessibilityLabel(tr(section.rawValue))
+                                    .accessibilityAddTraits(selection == section ? .isSelected : [])
+                                    .accessibilityIdentifier("settingsSection.\(section)")
                             }
-                        }.padding(.bottom, 20)
-                        ForEach(AccountSettingsSection.allCases) { section in
-                            Button { selection = section } label: {
-                                Label(tr(section.rawValue), systemImage: section.icon).frame(maxWidth: .infinity, minHeight: 44, alignment: .leading)
-                                    .padding(.horizontal, 10)
-                                    .background(selection == section ? MSTheme.accentSoft : Color.clear, in: RoundedRectangle(cornerRadius: 10))
-                                    .contentShape(Rectangle())
-                            }.buttonStyle(.plain).foregroundStyle(selection == section ? MSTheme.accent : MSTheme.ink)
-                                .accessibilityAddTraits(selection == section ? .isSelected : [])
-                                .accessibilityIdentifier("settingsSection.\(section)")
                         }
-                    }.padding(16).frame(width: 230).msCard()
+                        .padding(.horizontal, 16).padding(.vertical, 22)
+                    }.frame(width: geometry.size.width >= 1100 ? 270 : 240).background(MSTheme.surface)
+                    Divider()
                     AccountSettingsContent(model: model, section: selection, wide: true)
-                }.padding(24)
+                }.padding(.horizontal, 24)
             } else {
                 ScrollView {
-                    VStack(alignment: .leading, spacing: 12) {
+                    VStack(alignment: .leading, spacing: 5) {
                         ForEach(AccountSettingsSection.allCases) { section in
                             NavigationLink {
                                 AccountSettingsContent(model: model, section: section)
                                     .navigationTitle(tr(section == .audio ? "Настройки аккаунта" : section.rawValue)).msInlineTitle()
                             } label: {
-                                HStack { Label(tr(section.rawValue), systemImage: section.icon); Spacer(); Image(systemName: "chevron.right").accessibilityHidden(true) }
-                                    .frame(minHeight: 44).msCard().contentShape(Rectangle())
-                                    .accessibilityElement(children: .combine)
-                            }.buttonStyle(.plain).accessibilityIdentifier("settingsSection.\(section)")
+                                sectionRow(section, wide: false, selected: false)
+                            }.buttonStyle(.plain).accessibilityLabel(tr(section.rawValue))
+                                .accessibilityIdentifier("settingsSection.\(section)")
                         }
-                    }.padding(24)
-                }
+                    }.padding(.horizontal, 20).padding(.vertical, 24)
+                }.background(MSTheme.surface)
             }
         }.background(MSTheme.background).navigationTitle(tr("Настройки аккаунта")).msInlineTitle()
             .task { await model.load() }
+    }
+
+    private func sectionRow(_ section: AccountSettingsSection, wide: Bool, selected: Bool) -> some View {
+        HStack(spacing: 13) {
+            Image(systemName: section.icon).font(.system(size: wide ? 18 : 20))
+                .foregroundStyle(selected || !wide ? MSTheme.accent : MSTheme.muted)
+                .frame(width: wide ? 25 : 40, height: wide ? 28 : 40)
+                .background(wide ? .clear : MSTheme.accentSoft, in: RoundedRectangle(cornerRadius: 13))
+                .accessibilityHidden(true)
+            VStack(alignment: .leading, spacing: 4) {
+                Text(tr(section.rawValue)).font(MSTheme.font(wide ? 13 : 15, weight: .semibold))
+                if !wide { Text(tr(section.hint)).font(MSTheme.font(12)).foregroundStyle(MSTheme.muted) }
+            }.fixedSize(horizontal: false, vertical: true)
+            Spacer(minLength: 1)
+            if !wide {
+                Image(systemName: "chevron.right").font(.system(size: 13)).foregroundStyle(MSTheme.muted)
+                    .accessibilityHidden(true)
+            }
+        }
+        .foregroundStyle(selected ? MSTheme.accent : MSTheme.ink)
+        .padding(.vertical, wide ? 8 : 12).padding(.horizontal, wide ? 10 : 0)
+        .frame(minHeight: wide ? 48 : 64)
+        .background(selected ? MSTheme.accentSoft : .clear, in: RoundedRectangle(cornerRadius: 10))
+        .overlay(alignment: .bottom) { if !wide { Rectangle().fill(MSTheme.line).frame(height: 1) } }
+        .contentShape(Rectangle())
     }
 }
 
@@ -77,7 +111,10 @@ struct AccountSettingsContent: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 20) {
-                if section != .profile && section != .audio { Text(tr(section.rawValue)).font(MSTheme.font(24, weight: .semibold)) }
+                if section == .devices || section == .server {
+                    Text(tr(section.rawValue)).font(MSTheme.font(21, weight: .semibold, relativeTo: .title2))
+                        .accessibilityAddTraits(.isHeader)
+                }
                 switch section {
                 case .profile: profile
                 case .audio: AccountAudioSettingsView(wide: wide)
@@ -97,8 +134,8 @@ struct AccountSettingsContent: View {
                     }
                         .buttonStyle(MSButtonStyle(primary: false)).disabled(model.busy)
                 }
-            }.padding(.horizontal, wide && section == .profile ? 48 : 24).padding(.vertical, wide && section == .profile ? 36 : 24)
-                .frame(maxWidth: section == .profile ? 860 : 720).frame(maxWidth: .infinity, alignment: .topLeading)
+            }.padding(.horizontal, wide ? 48 : 20).padding(.vertical, wide ? 36 : 18)
+                .frame(maxWidth: 860).frame(maxWidth: .infinity, alignment: .topLeading)
         }.background(MSTheme.background)
             .scrollDismissesKeyboard(.interactively)
             .accessibilityIdentifier("accountSettingsScroll")
@@ -141,7 +178,7 @@ struct AccountSettingsContent: View {
                 nativeProfileNameFocused = false
                 Task { await model.saveProfile() }
             }
-                .buttonStyle(MSButtonStyle()).fixedSize(horizontal: true, vertical: false).disabled(!model.canSaveProfile).accessibilityIdentifier("saveProfile")
+                .buttonStyle(MSButtonStyle()).disabled(!model.canSaveProfile).accessibilityIdentifier("saveProfile")
             Divider()
             LabeledContent(tr("Регистрация")) {
                 Text(model.profile.createdAt, format: .dateTime.day().month().year())
@@ -149,23 +186,43 @@ struct AccountSettingsContent: View {
         }
     }
     private var preferences: some View {
-        VStack(alignment: .leading, spacing: 16) {
-            Text(tr("Эти настройки сохраняются на сервере и действуют на всех устройствах аккаунта."))
-                .font(MSTheme.font(12)).foregroundStyle(MSTheme.muted)
-            VStack(spacing: 16) {
-                Toggle(tr("Приглашения и изменения встреч"), isOn: $model.preferences.invitation).accessibilityIdentifier("notificationInvitation")
-                Toggle(tr("Напоминания о встречах"), isOn: $model.preferences.reminder).accessibilityIdentifier("notificationReminder")
-                Toggle(tr("Готовность записей"), isOn: $model.preferences.recording).accessibilityIdentifier("notificationRecording")
+        VStack(alignment: .leading, spacing: 24) {
+            AccountDetailHeading(title: "Уведомления", subtitle: "Выберите события и каналы доставки.")
+            VStack(alignment: .leading, spacing: 0) {
+                preferenceHeading("События")
+                Toggle(tr("Приглашения и изменения встреч"), isOn: $model.preferences.invitation)
+                    .accessibilityIdentifier("notificationInvitation").padding(.vertical, 7)
                 Divider()
-                Toggle(tr("По электронной почте"), isOn: $model.preferences.email).accessibilityIdentifier("notificationEmail")
-                Toggle(tr("Push на устройства аккаунта"), isOn: $model.preferences.push).accessibilityIdentifier("notificationAccountPush")
-            }.msCard().disabled(model.busy || model.savedPreferences == nil)
+                Toggle(tr("Напоминания о встречах"), isOn: $model.preferences.reminder)
+                    .accessibilityIdentifier("notificationReminder").padding(.vertical, 7)
+                Divider()
+                Toggle(tr("Готовность записей"), isOn: $model.preferences.recording)
+                    .accessibilityIdentifier("notificationRecording").padding(.vertical, 7)
+            }.disabled(model.busy || model.savedPreferences == nil)
+            Divider()
+            VStack(alignment: .leading, spacing: 0) {
+                preferenceHeading("Каналы доставки")
+                Toggle(isOn: $model.preferences.email) {
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text(tr("Email"))
+                        Text(tr("Получать выбранные события по электронной почте."))
+                            .font(MSTheme.font(11)).foregroundStyle(MSTheme.muted)
+                    }
+                }.accessibilityIdentifier("notificationEmail").padding(.vertical, 7)
+                Divider()
+                Toggle(tr("Push на устройства аккаунта"), isOn: $model.preferences.push)
+                    .accessibilityIdentifier("notificationAccountPush").padding(.vertical, 7)
+            }.disabled(model.busy || model.savedPreferences == nil)
+            if let error = model.preferencesError { errorMessage(error) }
+            Button(tr("Сохранить настройки")) { Task { await model.saveNotifications() } }
+                .buttonStyle(MSButtonStyle()).disabled(!model.canSavePreferences).accessibilityIdentifier("saveNotificationPreferences")
             Text(tr("Доставка зависит от настройки провайдера на сервере. Разрешение уведомлений этого iPhone или iPad включается отдельно в профиле."))
                 .font(MSTheme.font(12)).foregroundStyle(MSTheme.muted)
-            if let error = model.preferencesError { errorMessage(error) }
-            Button(tr("Сохранить уведомления")) { Task { await model.saveNotifications() } }
-                .buttonStyle(MSButtonStyle()).disabled(!model.canSavePreferences).accessibilityIdentifier("saveNotificationPreferences")
-        }
+        }.toggleStyle(AccountSwitchStyle())
+    }
+    private func preferenceHeading(_ title: String) -> some View {
+        Text(tr(title)).font(MSTheme.font(15, weight: .semibold)).padding(.bottom, 10)
+            .accessibilityAddTraits(.isHeader)
     }
     private var devices: some View {
         VStack(alignment: .leading, spacing: 16) {
@@ -222,4 +279,17 @@ struct AccountSettingsContent: View {
         return LabeledContent(tr(title), value: tr(label))
     }
     private func errorMessage(_ value: String) -> some View { Text(tr(value)).font(MSTheme.font(13)).foregroundStyle(MSTheme.danger) }
+}
+
+struct AccountDetailHeading: View {
+    let title: String
+    let subtitle: String
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text(tr(title)).font(MSTheme.font(21, weight: .semibold, relativeTo: .title2))
+                .accessibilityAddTraits(.isHeader)
+            Text(tr(subtitle)).font(MSTheme.font(13)).foregroundStyle(MSTheme.muted)
+        }.fixedSize(horizontal: false, vertical: true)
+    }
 }

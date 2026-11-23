@@ -16,6 +16,7 @@ import subprocess
 import struct
 import sys
 import xml.etree.ElementTree as ET
+from release_version import BUILD_NUMBER, MARKETING_VERSION, RELEASE_VERSION, matches_release
 
 ROOT = Path(__file__).resolve().parents[1]
 SDK_FLOOR = 26
@@ -128,10 +129,15 @@ def source_checks():
     check("source.dependency_pin", pinned == expected and
           any(p["identity"] == "webrtc" and p["state"] == {"revision": "3cc466ea040e5dcd1344697bf211dc4c079d1a0c", "version": "156.0.0"} for p in pinned) and
           'exact: "156.0.0"' in package, "Resolved dependencies match the reviewed beta pins, including unchanged WebRTC")
-    check("source.beta_version", (ROOT / "VERSION").read_text().strip() == "0.2.0-beta" and
-          app["MARKETING_VERSION"] == "0.2.0" and app["CURRENT_PROJECT_VERSION"] == "2" and
-          info.get("MeetSpaceReleaseVersion") == extension_info.get("MeetSpaceReleaseVersion") == "0.2.0-beta",
-          "Beta label and Apple numeric app/extension versions match")
+    version_settings_match = all(
+        settings.get("MARKETING_VERSION") == MARKETING_VERSION and settings.get("CURRENT_PROJECT_VERSION") == BUILD_NUMBER
+        and settings.get("MEETSPACE_RELEASE_VERSION") == RELEASE_VERSION for settings in (app, ext))
+    plist_versions_linked = all(
+        plist.get("MeetSpaceReleaseVersion") == "$(MEETSPACE_RELEASE_VERSION)"
+        and plist.get("CFBundleShortVersionString") == "$(MARKETING_VERSION)"
+        and plist.get("CFBundleVersion") == "$(CURRENT_PROJECT_VERSION)" for plist in (info, extension_info))
+    check("source.release_version", version_settings_match and plist_versions_linked,
+          f"App and extension use release {RELEASE_VERSION}, build {BUILD_NUMBER}")
     audit = json.loads((ROOT / "docs/ios/evidence/stage04/webrtc-library.json").read_text())
     check("source.binary_checksum", audit.get("artifactSHA256") == "43c2a6f7a650185bbc911d7605a979589671886e8fc0ac283f54fdf3f511dc46",
           "Audited M156 binary checksum recorded; SPM verifies downloaded artifact")
@@ -214,9 +220,8 @@ def product_checks(bundle, require_signing):
     check("product.webrtc", (framework / "WebRTC").is_file() and (framework / "PrivacyInfo.xcprivacy").is_file(), "Native WebRTC binary and its own privacy manifest embedded")
     for filename in ("WebRTC-LICENSE.txt", "WebRTC-PATENTS.txt", "WebRTC-THIRD-PARTY-NOTICES.txt", "WebRTC-Distribution-LICENSE.txt", "Inter-OFL.txt"):
         check("product.notice." + filename, any(bundle.rglob(filename)), "Bundled dependency notice: " + filename)
-    check("product.beta_version", info.get("CFBundleShortVersionString") == "0.2.0" and
-          info.get("CFBundleVersion") == "2" and info.get("MeetSpaceReleaseVersion") == ext_info.get("MeetSpaceReleaseVersion") == "0.2.0-beta",
-          "Actual app and extension carry beta release 0.2.0 (2)")
+    check("product.release_version", matches_release(info) and matches_release(ext_info),
+          f"Actual app and extension carry release {RELEASE_VERSION}, build {BUILD_NUMBER}")
     for filename in ("runner.py", "release.sig", "trust-root.pem", "preflight.sh"):
         original = ROOT / "Packages/MeetSpaceKit/Sources/Installer/Resources" / filename
         check("product.installer." + filename,
@@ -264,7 +269,8 @@ def main():
                       "BroadcastExtension/Info.plist", "BroadcastExtension/MeetSpaceBroadcast.entitlements",
                       "BroadcastExtension/PrivacyInfo.xcprivacy", "MeetSpace.xcodeproj/project.pbxproj",
                       "Packages/MeetSpaceKit/Package.swift", "Packages/MeetSpaceKit/Package.resolved",
-                      "scripts/generate_xcode_project.py", "scripts/verify_release.py", "VERSION", "docs/beta-0.2.0/dependencies.json"]
+                      "scripts/generate_xcode_project.py", "scripts/release_version.py", "scripts/verify_release.py",
+                      "VERSION", "docs/beta-0.2.0/dependencies.json"]
     source_hashes = {path: hashlib.sha256((ROOT / path).read_bytes()).hexdigest()
                      for path in tracked_inputs if (ROOT / path).is_file()}
     report = {"schema": 1, "checkedAt": dt.datetime.now(dt.timezone.utc).isoformat(),

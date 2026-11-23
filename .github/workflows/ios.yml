@@ -7,7 +7,7 @@ on:
       scope:
         description: Test scope
         type: choice
-        options: [full, audit, deletion, regression, push-recovery, beta, beta-ui, beta-package, workspace]
+        options: [full, audit, deletion, regression, push-recovery, beta, beta-ui, beta-package, release-package, workspace]
         default: full
 
 permissions:
@@ -25,6 +25,10 @@ jobs:
     if: inputs.scope != 'deletion' && inputs.scope != 'beta-ui' && inputs.scope != 'workspace'
     runs-on: macos-15
     timeout-minutes: 75
+    env:
+      PACKAGE_DOWNLOADS: ${{ inputs.scope == 'beta' || inputs.scope == 'beta-package' || inputs.scope == 'release-package' }}
+      DOWNLOAD_DIR: ${{ inputs.scope == 'release-package' && 'artifacts/release' || 'artifacts/beta' }}
+      SIMULATOR_ONLY: ${{ inputs.scope == 'release-package' }}
     steps:
       - uses: actions/checkout@v4
       - name: Verify generated project and audit
@@ -37,34 +41,43 @@ jobs:
       - name: Unit tests on host
         run: swift test --package-path Packages/MeetSpaceKit
       - name: Unsigned device Release archive
+        if: inputs.scope != 'release-package'
         run: xcodebuild -project MeetSpace.xcodeproj -scheme MeetSpace-Release -configuration Release -destination 'generic/platform=iOS' -archivePath artifacts/MeetSpace-Unsigned.xcarchive CODE_SIGNING_ALLOWED=NO archive
       - name: Verify actual device product
+        if: inputs.scope != 'release-package'
         run: python3 scripts/verify_release.py --archive artifacts/MeetSpace-Unsigned.xcarchive --report artifacts/release-verification.json
-      - name: Build beta simulator application
-        if: inputs.scope == 'beta' || inputs.scope == 'beta-package'
+      - name: Build Release simulator application
+        if: env.PACKAGE_DOWNLOADS == 'true'
         run: xcodebuild -project MeetSpace.xcodeproj -scheme MeetSpace-Release -configuration Release -destination 'generic/platform=iOS Simulator' -derivedDataPath artifacts/BetaSimulator build
-      - name: Package beta downloads
-        if: inputs.scope == 'beta' || inputs.scope == 'beta-package'
+      - name: Package release downloads
+        if: env.PACKAGE_DOWNLOADS == 'true'
         # Retain the exact signed .app ZIP if CoreSimulator fails before install.
         # A ZIP is publishable only after the following smoke check passes.
-        run: python3 scripts/package_beta.py --archive artifacts/MeetSpace-Unsigned.xcarchive --simulator-app artifacts/BetaSimulator/Build/Products/Release-iphonesimulator/MeetSpace.app --output artifacts/beta
-      - name: Install and launch the actual beta simulator product
-        if: inputs.scope == 'beta' || inputs.scope == 'beta-package'
-        run: python3 scripts/smoke_beta_simulator.py --app artifacts/BetaSimulator/Build/Products/Release-iphonesimulator/MeetSpace.app --output artifacts/beta-smoke
-      - name: Remove beta intermediate build products
-        if: always() && (inputs.scope == 'beta' || inputs.scope == 'beta-package')
+        run: |
+          archive_args=()
+          if [[ "$SIMULATOR_ONLY" != "true" ]]; then
+            archive_args+=(--archive artifacts/MeetSpace-Unsigned.xcarchive)
+          fi
+          python3 scripts/package_beta.py "${archive_args[@]}" --simulator-app artifacts/BetaSimulator/Build/Products/Release-iphonesimulator/MeetSpace.app --output "$DOWNLOAD_DIR"
+      - name: Install and launch the packaged simulator app
+        if: env.PACKAGE_DOWNLOADS == 'true'
+        run: |
+          ditto -x -k "$DOWNLOAD_DIR/MeetSpace-$(cat VERSION)-simulator.zip" "$RUNNER_TEMP/meetspace-simulator"
+          python3 scripts/smoke_beta_simulator.py --app "$RUNNER_TEMP/meetspace-simulator/MeetSpace.app" --output "${DOWNLOAD_DIR}-smoke"
+      - name: Remove simulator intermediate build products
+        if: always() && env.PACKAGE_DOWNLOADS == 'true'
         run: rm -rf artifacts/BetaSimulator
       - name: Upload archive and verification
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: release-unsigned
+          name: ${{ inputs.scope == 'release-package' && 'release-simulator' || 'release-unsigned' }}
           path: |
             artifacts/
             !artifacts/BetaSimulator/**
           retention-days: 7
   simulators:
-    if: inputs.scope != 'beta-package'
+    if: inputs.scope != 'beta-package' && inputs.scope != 'release-package'
     # Intel CI14 hit XCTest AX initialization and audit-engine timeouts.
     # Recheck on Apple's native architecture; keep the runtime/device matrix intact.
     runs-on: macos-15

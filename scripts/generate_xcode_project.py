@@ -5,6 +5,7 @@ import argparse
 import hashlib
 import json
 import xml.etree.ElementTree as ET
+from release_version import BUILD_NUMBER, MARKETING_VERSION, RELEASE_VERSION
 
 ROOT = Path(__file__).resolve().parents[1]
 PROJECT = ROOT / "MeetSpace.xcodeproj"
@@ -90,15 +91,18 @@ def make_project():
         settings = dict(PRODUCT_NAME="$(TARGET_NAME)", PRODUCT_BUNDLE_IDENTIFIER="com.meetspace.ios" + ("" if name == "MeetSpace" else "." + name),
                         CODE_SIGN_STYLE="Automatic", GENERATE_INFOPLIST_FILE="YES", TARGETED_DEVICE_FAMILY="1,2",
                         SUPPORTED_PLATFORMS="iphoneos iphonesimulator", SUPPORTS_MACCATALYST="NO", SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD="NO")
+        if name in ("MeetSpace", "BroadcastUpload"):
+            settings.update(MARKETING_VERSION=MARKETING_VERSION, CURRENT_PROJECT_VERSION=BUILD_NUMBER,
+                            MEETSPACE_RELEASE_VERSION=RELEASE_VERSION)
         if name == "MeetSpace":
-            settings.update(CODE_SIGN_ENTITLEMENTS="App/MeetSpace.entitlements", INFOPLIST_FILE="App/Info.plist", GENERATE_INFOPLIST_FILE="NO", MARKETING_VERSION="0.2.0",
-                            CURRENT_PROJECT_VERSION="2", ASSETCATALOG_COMPILER_APPICON_NAME="AppIcon",
+            settings.update(CODE_SIGN_ENTITLEMENTS="App/MeetSpace.entitlements", INFOPLIST_FILE="App/Info.plist", GENERATE_INFOPLIST_FILE="NO",
+                            ASSETCATALOG_COMPILER_APPICON_NAME="AppIcon",
                             LD_RUNPATH_SEARCH_PATHS=["$(inherited)", "@executable_path/Frameworks"])
         elif name == "BroadcastUpload":
             settings.update(CODE_SIGN_ENTITLEMENTS="BroadcastExtension/MeetSpaceBroadcast.entitlements",
                             INFOPLIST_FILE="BroadcastExtension/Info.plist", GENERATE_INFOPLIST_FILE="NO",
-                            APPLICATION_EXTENSION_API_ONLY="YES", SKIP_INSTALL="YES", MARKETING_VERSION="0.2.0",
-                            CURRENT_PROJECT_VERSION="2", LD_RUNPATH_SEARCH_PATHS=["$(inherited)", "@executable_path/Frameworks", "@executable_path/../../Frameworks"])
+                            APPLICATION_EXTENSION_API_ONLY="YES", SKIP_INSTALL="YES",
+                            LD_RUNPATH_SEARCH_PATHS=["$(inherited)", "@executable_path/Frameworks", "@executable_path/../../Frameworks"])
         elif name == "MeetSpaceTests":
             settings.update(TEST_HOST="$(BUILT_PRODUCTS_DIR)/MeetSpace.app/MeetSpace",
                             BUNDLE_LOADER="$(TEST_HOST)", LD_RUNPATH_SEARCH_PATHS=["$(inherited)", "@executable_path/Frameworks", "@loader_path/Frameworks"])

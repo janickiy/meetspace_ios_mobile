@@ -21,26 +21,37 @@ struct LiveProfileView: View {
                             demo: false, photo: settings.photo, logout: { removing = account }) { section, wide in
                     switch section {
                     case .profile: AccountSettingsContent(model: settings, section: .profile, wide: wide)
-                    case .accounts: ScrollView { accounts.padding(20) }
+                    case .accounts: ScrollView { accounts(wide: wide) }.background(MSTheme.background)
                     case .audio: AccountSettingsContent(model: settings, section: .audio, wide: wide)
-                    case .video: CameraDevicesView()
+                    case .video: CameraDevicesView(wide: wide)
                     case .notifications: AccountSettingsContent(model: settings, section: .notifications, wide: wide)
-                    case .appearance: SettingsDetailView(model: app, route: .appearance)
+                    case .appearance: SettingsDetailView(model: app, route: .appearance, wide: wide)
                     case .connection: AccountSettingsContent(model: settings, section: .server, wide: wide)
                     }
                 } extras: {
                     VStack(alignment: .leading, spacing: 12) {
-                        navigationRow("Дополнительные настройки", icon: "gearshape", id: "openAccountSettings") {
-                            showingAccountSettings = true
+                        VStack(spacing: 0) {
+                            AccountShortcutRow(title: "Дополнительные настройки", symbol: "gearshape", identifier: "openAccountSettings") {
+                                showingAccountSettings = true
+                            }
+                            shortcutDivider
+                            AccountShortcutRow(title: "Календарь", symbol: "calendar", identifier: "openCalendar") { app.navigate(.calendar) }
+                            shortcutDivider
+                            AccountShortcutRow(title: "Записи встреч", symbol: "play.circle", identifier: "openRecordings") { app.navigate(.recordings) }
+                            shortcutDivider
+                            AccountShortcutRow(title: "Личные папки", symbol: "folder", identifier: "openFolders") { app.navigate(.folders) }
                         }
-                        navigationRow("Календарь", icon: "calendar", id: "openCalendar") { app.navigate(.calendar) }
-                        navigationRow("Записи встреч", icon: "play.rectangle", id: "openRecordings") { app.navigate(.recordings) }
-                        navigationRow("Личные папки", icon: "folder", id: "openFolders") { app.navigate(.folders) }
+                        .msCard(padding: 0)
                         notificationSettings
-                        Button(tr("Лицензии компонентов")) { licenses = true }.frame(minHeight: 44)
-                        Button(tr("Удалить аккаунт на сервере"), role: .destructive) {
-                            app.identity.error = nil; deleting = account
-                        }.frame(minHeight: 44).accessibilityIdentifier("openDeleteAccount")
+                        VStack(spacing: 0) {
+                            AccountShortcutRow(title: "Лицензии компонентов", symbol: "doc.text", identifier: "openComponentLicenses") {
+                                licenses = true
+                            }
+                            shortcutDivider
+                            AccountShortcutRow(title: "Удалить аккаунт на сервере", symbol: "trash", identifier: "openDeleteAccount", destructive: true) {
+                                app.identity.error = nil; deleting = account
+                            }
+                        }.msCard(padding: 0)
                     }
                 }
                 .navigationDestination(isPresented: $showingAccountSettings) {
@@ -53,8 +64,8 @@ struct LiveProfileView: View {
             .sheet(isPresented: $licenses) {
                 NavigationStack {
                     ScrollView { Text(WebRTCLibrary.licenseText + "\n\n" + InstallerLibrary.licenseText).font(.system(size: 11, design: .monospaced)).textSelection(.enabled).padding() }
-                        .navigationTitle(tr("Лицензии компонентов"))
-                        .toolbar { ToolbarItem(placement: .confirmationAction) { Button(tr("Готово")) { licenses = false } } }
+                        .navigationTitle(tr("Лицензии компонентов")).msInlineTitle()
+                        .toolbar { ToolbarItem(placement: .confirmationAction) { IconButton("xmark", label: "Готово") { licenses = false } } }
                 }
             }
             .confirmationDialog(tr("Выйти из аккаунта на этом устройстве?"), isPresented: Binding(get: { removing != nil }, set: { if !$0 { removing = nil } })) {
@@ -63,64 +74,71 @@ struct LiveProfileView: View {
                 }
             }
     }
-    private var accounts: some View {
-        VStack(alignment: .leading, spacing: 16) {
-            Text(tr("Аккаунты")).font(MSTheme.font(21, weight: .semibold))
+    private func accounts(wide: Bool) -> some View {
+        VStack(alignment: .leading, spacing: 14) {
+            AccountDetailHeading(title: "Аккаунты", subtitle: "Выберите аккаунт для встреч и общения.")
+                .padding(.bottom, 16)
             ForEach(app.identity.index.accounts) { account in
-                HStack {
+                let current = app.identity.messaging?.account.id == account.id
+                let shape = RoundedRectangle(cornerRadius: wide ? 18 : 15)
+                HStack(spacing: 4) {
                     Button {
                         Task { await app.identity.switchAccount(account) }
                     } label: {
-                        HStack {
-                            VStack(alignment: .leading, spacing: 5) {
-                                Text(account.user.name)
-                                Text(account.server.displayName).font(MSTheme.font(11)).foregroundStyle(MSTheme.muted)
-                                    .fixedSize(horizontal: false, vertical: true)
-                                    .accessibilityLabel(tr("Адрес сервера")).accessibilityValue(account.server.displayName)
-                            }
-                            Spacer()
-                            if app.identity.messaging?.account.id == account.id { Image(systemName: "checkmark.circle.fill") }
-                        }.frame(minHeight: 44).contentShape(Rectangle()).accessibilityElement(children: .combine)
-                    }.buttonStyle(.plain)
+                        HStack(spacing: 10) {
+                            ProfileAvatar(name: account.user.name, size: 42, cornerRadius: 14,
+                                          photo: current ? app.identity.settings?.photo : nil)
+                            VStack(alignment: .leading, spacing: 4) {
+                                Text(account.user.name).font(MSTheme.font(14, weight: .semibold))
+                                Text(account.user.email).font(MSTheme.font(12)).foregroundStyle(MSTheme.muted)
+                                Label(account.server.displayName, systemImage: "server.rack")
+                                    .font(MSTheme.font(11)).foregroundStyle(MSTheme.muted).padding(.top, 4)
+                            }.fixedSize(horizontal: false, vertical: true)
+                            Spacer(minLength: 0)
+                            Image(systemName: current ? "checkmark.circle" : "arrow.right")
+                                .font(.system(size: 16)).foregroundStyle(current ? MSTheme.accent : MSTheme.muted)
+                                .accessibilityHidden(true)
+                        }.padding(.vertical, 14).padding(.leading, 12)
+                            .frame(minHeight: 44).contentShape(Rectangle()).accessibilityElement(children: .combine)
+                    }.buttonStyle(.plain).accessibilityAddTraits(current ? .isSelected : [])
                     IconButton("rectangle.portrait.and.arrow.right", label: "Выйти из аккаунта") { removing = account }
-                }.msCard()
+                }.padding(.trailing, 6)
+                    .background(current ? MSTheme.accentSoft : MSTheme.surface, in: shape)
+                    .overlay(shape.strokeBorder(current ? MSTheme.accent : MSTheme.line).allowsHitTesting(false))
             }
-            Button(tr("Добавить аккаунт")) {
+            Button {
                 app.identity.error = nil; app.identity.information = nil
                 app.identity.addingAccount = true; app.show(.connect)
-            }.buttonStyle(MSButtonStyle(primary: false)).accessibilityIdentifier("addAccount")
+            } label: {
+                Label(tr("Добавить аккаунт"), systemImage: "plus").frame(maxWidth: wide ? nil : .infinity, minHeight: 26)
+            }.buttonStyle(MSButtonStyle()).accessibilityIdentifier("addAccount")
+                .padding(.top, 4)
             Text(tr("До 5 аккаунтов на каждом сервере.")).font(MSTheme.font(12)).foregroundStyle(MSTheme.muted)
             if app.identity.busy { ProgressView() }
             if let error = app.identity.error { Text(tr(error)).foregroundStyle(MSTheme.danger) }
             if let information = app.identity.information { Text(tr(information)).foregroundStyle(MSTheme.muted) }
-        }.frame(maxWidth: 680, alignment: .leading).frame(maxWidth: .infinity, alignment: .leading)
+        }.padding(.horizontal, wide ? 48 : 20).padding(.vertical, wide ? 36 : 18)
+            .frame(maxWidth: 860).frame(maxWidth: .infinity, alignment: .topLeading)
     }
 
-    private func navigationRow(_ title: String, icon: String, id: String, action: @escaping () -> Void) -> some View {
-        Button(action: action) {
-            HStack {
-                Label(tr(title), systemImage: icon)
-                Spacer(minLength: 8)
-                Image(systemName: "chevron.right").accessibilityHidden(true)
-            }
-            .frame(maxWidth: .infinity, minHeight: 44, alignment: .leading)
-            .contentShape([.interaction, .accessibility], Rectangle())
-        }
-        .buttonStyle(.plain)
-        .accessibilityLabel(tr(title))
-        .accessibilityIdentifier(id)
+    private var shortcutDivider: some View {
+        Rectangle().fill(MSTheme.line).frame(height: 1).padding(.leading, 55).accessibilityHidden(true)
     }
     private var notificationSettings: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text(tr("Уведомления на этом устройстве")).font(MSTheme.font(18, weight: .semibold))
-            Toggle(tr("Уведомления о встречах"), isOn: Binding(
+            Text(tr("Уведомления на этом устройстве")).font(MSTheme.font(15, weight: .semibold))
+                .fixedSize(horizontal: false, vertical: true).accessibilityAddTraits(.isHeader)
+            Toggle(isOn: Binding(
                 get: { app.identity.notifications.enabled },
                 set: { enabled in Task {
                     if enabled { await app.identity.notifications.enable() }
                     else { await app.identity.notifications.disable() }
-                } }))
+                } })) {
+                    Text(tr("Уведомления о встречах")).font(MSTheme.font(13, weight: .semibold))
+                }.toggleStyle(AccountSwitchStyle())
                 .disabled(app.identity.notifications.busy).accessibilityIdentifier("pushNotificationsToggle")
             Text(tr(app.identity.notifications.status)).font(MSTheme.font(12)).foregroundStyle(MSTheme.muted)
+                .fixedSize(horizontal: false, vertical: true)
                 .accessibilityIdentifier("pushNotificationsStatus")
             if let error = app.identity.notifications.error {
                 Text(tr(error)).font(MSTheme.font(12)).foregroundStyle(MSTheme.danger)
@@ -128,32 +146,45 @@ struct LiveProfileView: View {
                     .frame(minHeight: 44).disabled(app.identity.notifications.busy)
             }
             Text(tr("Входящие звонки доступны, пока приложение открыто. Вызовы при закрытом приложении ещё не настроены на сервере."))
-                .font(MSTheme.font(12)).foregroundStyle(MSTheme.muted)
-        }.msCard()
+                .font(MSTheme.font(12)).foregroundStyle(MSTheme.muted).fixedSize(horizontal: false, vertical: true)
+        }.msCard(padding: 14)
     }
 }
 
 private struct CameraDevicesView: View {
+    let wide: Bool
     @Environment(\.scenePhase) private var scenePhase
+    @Environment(\.dynamicTypeSize) private var typeSize
     @State private var cameras: [String] = []
     @State private var permission = AVCaptureDevice.authorizationStatus(for: .video)
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: 18) {
-                Text(tr("Видео")).font(MSTheme.font(21, weight: .semibold))
-                Text(tr("Камера")).font(MSTheme.font(16, weight: .semibold))
-                if cameras.isEmpty { Text(tr("Камера недоступна")).foregroundStyle(MSTheme.muted) }
-                ForEach(Array(cameras.enumerated()), id: \.offset) { _, name in Label(name, systemImage: "video") }
+            VStack(alignment: .leading, spacing: 24) {
+                AccountDetailHeading(title: "Видео", subtitle: "Доступ к камере для встреч.")
+                VStack(spacing: 12) {
+                    Image(systemName: "video.slash").font(.system(size: 28)).accessibilityHidden(true)
+                    Text(tr(cameras.isEmpty ? "Камера недоступна" : "Камера выключена"))
+                        .font(MSTheme.font(13)).multilineTextAlignment(.center).fixedSize(horizontal: false, vertical: true)
+                }.foregroundStyle(.white).padding(16).frame(maxWidth: .infinity, minHeight: 144)
+                    .aspectRatio(typeSize.isAccessibilitySize ? nil : 16 / 9, contentMode: .fit)
+                    .background(Color(red: 0.14, green: 0.13, blue: 0.15), in: RoundedRectangle(cornerRadius: 16))
+                if !cameras.isEmpty {
+                    ProfileField(label: "Камера") {
+                        Text(cameras.formatted(.list(type: .and))).profileInput(readOnly: true)
+                    }
+                }
                 if permission == .denied || permission == .restricted {
-                    Text(tr("Доступ к камере отключён")).foregroundStyle(MSTheme.muted)
+                    Text(tr("Доступ к камере отключён")).font(MSTheme.font(13)).foregroundStyle(MSTheme.muted)
                     #if os(iOS)
                     if let url = URL(string: UIApplication.openSettingsURLString) {
                         Link(tr("Открыть настройки"), destination: url).frame(minHeight: 44)
                     }
                     #endif
                 }
-            }.padding(24).frame(maxWidth: .infinity, alignment: .leading)
-        }.onAppear(perform: refresh).onChange(of: scenePhase) { _, value in if value == .active { refresh() } }
+            }.padding(.horizontal, wide ? 48 : 20).padding(.vertical, wide ? 36 : 18)
+                .frame(maxWidth: 860).frame(maxWidth: .infinity, alignment: .topLeading)
+        }.background(MSTheme.background).onAppear(perform: refresh)
+            .onChange(of: scenePhase) { _, value in if value == .active { refresh() } }
     }
     private func refresh() {
         permission = AVCaptureDevice.authorizationStatus(for: .video)
