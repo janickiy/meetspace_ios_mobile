@@ -92,7 +92,7 @@ struct AccountHome<Detail: View, Extras: View>: View {
             }
             detail(selection ?? .profile, wide)
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-        }.background(MSTheme.surface)
+        }.background(MSTheme.background)
     }
 
     private func menu(wide: Bool, inset: CGFloat) -> some View {
