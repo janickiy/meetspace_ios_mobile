@@ -68,6 +68,22 @@ import MeetSpaceAPI
     await #expect(throws: APIError.invalidResponse) { try await repository.materials(UUID(), kind: .link, cursor: nil) }
 }
 
+@Test(arguments: [true, false]) func peerPresenceChecksBothIdentitiesAndPreservesOffline(_ online: Bool) async throws {
+    let conversation = Fixture.conversationID, peer = UUID()
+    let transport = RoutedTransport { request, _ in
+        #expect(request.httpMethod == "GET")
+        #expect(request.url?.path.hasSuffix("/peer-presence") == true)
+        #expect(request.value(forHTTPHeaderField: "Authorization") == "Bearer fixture-token")
+        return try Fixture.response(["status": "success", "item": ["conversationId": conversation.uuidString,
+                                                                     "peerId": peer.uuidString, "online": online]])
+    }
+    let repository = MessagingRepository(client: AuthenticatedClient(account: try Fixture.account(), credentials: Fixture.credentials(),
+                                                                       secureStore: TestSecrets(), transport: transport))
+    #expect(try await repository.peerOnline(conversation, user: peer) == online)
+    await #expect(throws: APIError.invalidResponse) { try await repository.peerOnline(conversation, user: UUID()) }
+    await #expect(throws: APIError.invalidResponse) { try await repository.peerOnline(UUID(), user: peer) }
+}
+
 @Test func profilePhotoUsesAuthenticatedBinaryRoutesAndChecksReturnedOwner() async throws {
     let jpeg = Data([0xff, 0xd8, 0xff, 0xd9])
     let account = try Fixture.account()

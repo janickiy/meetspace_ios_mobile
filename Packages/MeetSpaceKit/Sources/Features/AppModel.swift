@@ -62,7 +62,8 @@ public struct AppDependencies: Sendable {
     private(set) var demoMeetings = DemoMeetingsState()
     private(set) var demoDeletedRecordings: Set<Int> = []
     private var demoCreatedRecordings: [RecordingLibraryEntry] = []
-    private(set) var demoProfile = DemoAccountProfile()
+    private(set) var demoAccounts = DemoAccounts()
+    var demoProfile: DemoAccountProfile { demoAccounts.current }
     private(set) var demoPrejoinTitle: String?
     var demoConferenceEntry: DemoConferenceEntry?
     public private(set) var isDemo = false
@@ -248,7 +249,7 @@ public struct AppDependencies: Sendable {
         demoMeetings = DemoMeetingsState()
         demoDeletedRecordings = []
         demoCreatedRecordings = []
-        demoProfile = DemoAccountProfile()
+        demoAccounts = DemoAccounts(server: configuration.server)
         showingWorkspaceNotifications = false
         cancelProbe(); isDemo = true; tab = .meetings
         meetingsPath = []; messagesPath = []; profilePath = []; contentState = .content

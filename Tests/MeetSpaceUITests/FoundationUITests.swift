@@ -1583,7 +1583,7 @@ import UIKit
     /// Exercises the real SwiftUI/session flow through DEBUG REST/signaling/media doubles.
     /// Camera frames and permissions here are deterministic fixtures, not physical-device validation.
     func testConferenceCreateMediaControlsChatAndLeave() {
-        let app = launch()
+        let app = launch(["-conference-three-participants"])
         createConference(app, title: "Встреча команды")
         capture(app, name: "stage04-prejoin")
         joinConference(app)
@@ -1597,6 +1597,21 @@ import UIKit
         capture(app, name: "conference-gallery")
         speaker.tap()
         XCTAssertTrue(speaker.isSelected)
+        let featured = app.descendants(matching: .any).matching(identifier: "conferenceFeaturedParticipant").firstMatch
+        let guestTile = app.buttons["conferenceParticipantTile.44444444-4444-4444-8444-444444444446"]
+        let ownTile = app.buttons["conferenceParticipantTile.44444444-4444-4444-8444-444444444444"]
+        XCTAssertTrue(featured.waitForExistence(timeout: 5))
+        XCTAssertTrue(guestTile.waitForExistence(timeout: 5))
+        XCTAssertTrue(ownTile.waitForExistence(timeout: 5))
+        let guestFrame = guestTile.frame, ownFrame = ownTile.frame
+        XCTAssertEqual(guestFrame.width, ownFrame.width, accuracy: 1)
+        XCTAssertEqual(guestFrame.minY, ownFrame.minY, accuracy: 1)
+        XCTAssertGreaterThan(ownFrame.minX, guestFrame.maxX)
+        XCTAssertEqual(guestFrame.union(ownFrame).midX, featured.frame.midX, accuracy: 2)
+        if app.frame.width < 780 {
+            XCTAssertEqual(guestFrame.minX, featured.frame.minX, accuracy: 2)
+            XCTAssertEqual(ownFrame.maxX, featured.frame.maxX, accuracy: 2)
+        }
         capture(app, name: "conference-speaker")
 
         let microphone = app.buttons["conferenceMic"]
@@ -1799,6 +1814,8 @@ import UIKit
         app.buttons["chat.menu"].tap()
         app.buttons["chat.action.info"].tap()
         let callOptions = app.buttons["chatInfo.call"]
+        let online = app.staticTexts.matching(identifier: "chatInfo.status").matching(NSPredicate(format: "label == %@", "В сети")).firstMatch
+        XCTAssertTrue(online.waitForExistence(timeout: 5))
         XCTAssertTrue(callOptions.waitForExistence(timeout: 5)); callOptions.tap()
         XCTAssertTrue(videoCall.waitForExistence(timeout: 5) && videoCall.isHittable)
         videoCall.tap()
@@ -1886,6 +1903,30 @@ import UIKit
 }
 
 extension FoundationUITests {
+    func testAccountCardsShowAndSwitchCurrentWorkspace() {
+        let app = launch(["-demo"])
+        openProfile(in: app)
+        selectAccountSection("accounts", in: app)
+        let count = app.staticTexts["accounts.count"]
+        XCTAssertTrue(count.waitForExistence(timeout: 5))
+        XCTAssertEqual(count.value as? String, "2")
+        let personal = app.buttons["accounts.row.personal"], studio = app.buttons["accounts.row.studio"]
+        XCTAssertTrue(personal.isSelected)
+        XCTAssertFalse(studio.isSelected)
+        XCTAssertLessThan(personal.frame.maxY, studio.frame.minY)
+        capture(app, name: "settings-account-cards")
+        studio.tap()
+        XCTAssertTrue(studio.isSelected)
+        XCTAssertFalse(personal.isSelected)
+        let add = app.buttons["addAccount"]
+        revealEntireText(add, in: app)
+        XCTAssertTrue(add.isHittable)
+        let remove = app.buttons["openDeleteAccount"]
+        revealEntireText(remove, in: app)
+        XCTAssertTrue(remove.isHittable)
+        XCTAssertTrue(app.staticTexts["accounts.deleteSummary"].label.contains("alex@studio.example.org"))
+    }
+
     func testContactInfoCardAndCompactTabs() {
         let app = launch(["-demo"])
         let chats = app.buttons["tab.messages"]

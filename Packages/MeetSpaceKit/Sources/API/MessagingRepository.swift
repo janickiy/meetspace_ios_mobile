@@ -59,6 +59,23 @@ public struct MessagingRepository: Sendable {
         guard profile.id == user else { throw APIError.invalidResponse }
         return profile
     }
+    public func peerOnline(_ conversation: UUID, user: UUID) async throws -> Bool {
+        struct Presence: Decodable {
+            let conversationId: UUID
+            let peerId: UUID
+            let online: Bool
+        }
+        struct Response: Decodable {
+            let status: String
+            let item: Presence
+        }
+        let response = try await client.request("GET", path: scope(conversation) + ["peer-presence"])
+        let result = try decodeJSON(Response.self, from: response)
+        guard result.status == "success", result.item.conversationId == conversation, result.item.peerId == user else {
+            throw APIError.invalidResponse
+        }
+        return result.item.online
+    }
     public func materials(_ conversation: UUID, kind: ChatMaterialKind, cursor: String?) async throws -> ChatMaterialPage {
         let query = pageQuery(cursor) + [URLQueryItem(name: "kind", value: kind.rawValue)]
         let response = try await client.request("GET", path: scope(conversation) + ["materials"], query: query)

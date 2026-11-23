@@ -5,11 +5,11 @@ import MeetSpaceDesignSystem
 struct ProfileView: View {
     @Bindable var model: AppModel
     var body: some View {
-        AccountHome(name: model.demoProfile.name, email: "alex@example.org", server: (model.demoProfile.server ?? model.configuration.server)?.displayName ?? "meet.example.org",
+        AccountHome(name: model.demoProfile.name, email: model.demoProfile.email, server: (model.demoProfile.server ?? model.configuration.server)?.displayName ?? "meet.example.org",
                     demo: true, photo: model.demoProfile.photo, logout: { model.leaveDemo() }) { section, wide in
             switch section {
             case .profile: DemoProfileEditor(profile: model.demoProfile, wide: wide)
-            case .accounts: SettingsDetailView(model: model, route: .accounts)
+            case .accounts: AccountSwitcherView(app: model, wide: wide)
             case .audio: ScrollView { AccountAudioSettingsView(wide: wide).padding(20) }
             case .video: SettingsDetailView(model: model, route: .videoSettings, wide: wide)
             case .notifications: SettingsDetailView(model: model, route: .notificationSettings, wide: wide)
@@ -38,7 +38,7 @@ private struct DemoProfileEditor: View {
                         .profileInput(multiline: true)
                 }
                 ProfileField(label: "Email", hint: "Адрес используется для входа. Изменение email недоступно.") {
-                    Text(verbatim: "alex@example.org").profileInput(readOnly: true)
+                    Text(verbatim: profile.email).profileInput(readOnly: true)
                 }
                 Button(tr("Сохранить профиль")) {
                     if let validName = try? ProfileValidation.displayName(name), let validBio = try? ProfileValidation.bio(bio) {
@@ -111,9 +111,6 @@ struct SettingsDetailView: View {
                             .foregroundStyle(MSTheme.muted)
                     }
                     if model.isDemo { demoTools }
-                case .accounts:
-                    HStack { Avatar("АС"); Text(tr("Демо-профиль")); Spacer(); Image(systemName: "checkmark.circle.fill").foregroundStyle(MSTheme.accent) }.msCard()
-                    FeatureNotice("Добавление аккаунтов станет доступно после подключения авторизации.")
                 case .audioSettings:
                     settingPreview("Микрофон", "mic", "Устройство по умолчанию")
                     settingPreview("Динамики", "speaker.wave.2", "Устройство по умолчанию")

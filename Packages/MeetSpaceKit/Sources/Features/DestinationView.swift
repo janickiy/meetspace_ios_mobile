@@ -44,7 +44,9 @@ struct DestinationView: View {
                         .task { if !settings.loaded { await settings.load() } }
                 }
             case .connection: AccountConnectionPage(app: model, wide: false)
-            case .audioSettings, .videoSettings, .appearance, .accounts:
+            case .accounts:
+                ScrollView { AccountSwitcherView(app: model, wide: false) }.background(MSTheme.background)
+            case .audioSettings, .videoSettings, .appearance:
                 SettingsDetailView(model: model, route: route)
             case .deploy, .fingerprint, .preflight, .install, .complete, .installError:
                 InstallerCatalogNotice(model: model)

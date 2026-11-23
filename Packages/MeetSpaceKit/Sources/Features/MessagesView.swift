@@ -202,7 +202,7 @@ struct ThreadView: View {
             .chatHeaderMenu(open: $menuOpen, group: contact.group, muted: model.demoChats.muted.contains(personIndex), perform: chooseHeaderAction)
             .confirmChatAction($pendingChatAction, perform: confirmHeaderAction)
             .sheet(isPresented: $ownCard) {
-                ChatOwnCard(name: model.demoProfile.name, email: "alex@example.org", bio: model.demoProfile.bio, photo: model.demoProfile.photo)
+                ChatOwnCard(name: model.demoProfile.name, email: model.demoProfile.email, bio: model.demoProfile.bio, photo: model.demoProfile.photo)
             }
             .sheet(isPresented: $folders) {
                 WorkspaceFolderPicker(demo: model.demoFolders, item: .chat(personIndex), title: contact.name)

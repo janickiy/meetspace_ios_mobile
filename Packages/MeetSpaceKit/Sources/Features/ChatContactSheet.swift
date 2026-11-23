@@ -8,6 +8,8 @@ struct LiveChatContactSheet: View {
     let conversation: Conversation
     let peer: Peer
     let startCall: ((Bool) -> Void)?
+    @Environment(\.scenePhase) private var scenePhase
+    @State private var presence = "Проверяем статус…"
     @State private var profile: ContactProfile?
     @State private var error: String?
     @State private var loading = true
@@ -15,7 +17,8 @@ struct LiveChatContactSheet: View {
 
     var body: some View {
         let name = profile?.displayName ?? peer.displayName
-        ChatInfoSheet(name: name, status: tr("Личный чат"),
+        let visible = scenePhase == .active && model.active && model.conversation?.id == conversation.id
+        ChatInfoSheet(name: name, status: tr(presence),
                       call: startCall.map { start in { start(false) } },
                       videoCall: startCall.map { start in { start(true) } }) {
             contactDetails(name, bio: profile?.bio, email: profile?.email)
@@ -26,6 +29,22 @@ struct LiveChatContactSheet: View {
             }
         } materials: { kind in
             ContactMaterials(model: model, conversation: conversation.id, kind: kind).id(kind)
+        }
+        .task(id: visible) {
+            presence = "Проверяем статус…"
+            guard visible else { return }
+            while !Task.isCancelled {
+                do {
+                    let online = try await model.repository.peerOnline(conversation.id, user: peer.id)
+                    try Task.checkCancellation()
+                    presence = online ? "В сети" : "Не в сети"
+                } catch {
+                    guard !Task.isCancelled else { return }
+                    presence = "Статус недоступен"
+                    if case APIError.httpStatus(let code) = error, [401, 403, 404, 405, 501].contains(code) { return }
+                }
+                do { try await Task.sleep(for: .seconds(5)) } catch { return }
+            }
         }
         .task(id: requestID) {
             loading = true; error = nil

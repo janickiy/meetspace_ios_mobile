@@ -23,7 +23,8 @@ struct ChatInfoSheet<Details: View, Materials: View>: View {
     var body: some View {
         GeometryReader { geometry in
             let compact = geometry.size.width <= 600
-            let inset: CGFloat = compact ? 14 : 20
+            let bottomSheet = geometry.size.width < 780
+            let inset: CGFloat = bottomSheet ? 14 : 20
             let available = max(0, geometry.size.height - 2 * inset - headerHeight)
             ZStack {
                 Color(red: 15 / 255, green: 27 / 255, blue: 60 / 255).opacity(96 / 255)
@@ -34,9 +35,14 @@ struct ChatInfoSheet<Details: View, Materials: View>: View {
                             .font(MSTheme.font(14, weight: .semibold)).foregroundStyle(MSTheme.muted)
                             .accessibilityAddTraits(.isHeader)
                         Spacer()
-                        IconButton("xmark", label: "Закрыть") { dismiss() }
+                        Button { dismiss() } label: {
+                            WorkspaceIcon("xmark", size: 20)
+                                .frame(width: 44, height: 44).contentShape(Rectangle())
+                        }.buttonStyle(.plain).foregroundStyle(MSTheme.ink)
+                            .accessibilityLabel(tr("Закрыть"))
                             .accessibilityIdentifier("\(identifier).close")
                     }.padding(.leading, compact ? 16 : 24).padding(.trailing, compact ? 8 : 16)
+                        .padding(.top, compact ? 4 : 8).padding(.bottom, 4)
                         .frame(minHeight: compact ? 52 : 56)
                         .onGeometryChange(for: CGFloat.self) { $0.size.height } action: { headerHeight = $0 }
                     ScrollView {
@@ -45,14 +51,17 @@ struct ChatInfoSheet<Details: View, Materials: View>: View {
                                 ChatAvatar(name: name, initials: initials, size: compact ? 60 : 72).clipShape(Circle())
                                 VStack(spacing: 4) {
                                     Text(name).font(MSTheme.font(compact ? 21 : 24, weight: .semibold))
-                                        .tracking(-0.4).accessibilityAddTraits(.isHeader)
+                                        .tracking(compact ? -0.525 : -0.6).accessibilityAddTraits(.isHeader)
                                     Text(status).font(MSTheme.font(13)).foregroundStyle(MSTheme.muted)
+                                        .padding(.vertical, 1)
+                                        .accessibilityIdentifier("chatInfo.status")
                                 }.multilineTextAlignment(.center)
                             }.padding(.top, 2)
                             actionRow(compact: compact)
                             details()
                             VStack(spacing: 12) {
-                                tabs
+                                tabs.frame(maxWidth: compact ? .infinity : 332)
+                                    .background(MSTheme.surfaceSecondary, in: RoundedRectangle(cornerRadius: 24))
                                 materials(kind)
                             }
                         }.padding(.horizontal, compact ? 16 : 24).padding(.bottom, compact ? 18 : 24)
@@ -63,16 +72,18 @@ struct ChatInfoSheet<Details: View, Materials: View>: View {
                 }
                 .frame(maxWidth: 560)
                 .background(MSTheme.surface)
-                .clipShape(RoundedRectangle(cornerRadius: compact ? 23 : 24))
+                .clipShape(RoundedRectangle(cornerRadius: bottomSheet ? 23 : 24))
                 .shadow(color: .black.opacity(0.13), radius: 20, y: 10)
                 .accessibilityElement(children: .contain)
                 .accessibilityIdentifier(identifier)
                 .padding(inset)
-                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: compact ? .bottom : .center)
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: bottomSheet ? .bottom : .center)
             }
+            .environment(\.workspaceWidth, geometry.size.width)
         }.foregroundStyle(MSTheme.ink).tint(MSTheme.accent)
             .accessibilityAction(.escape) { dismiss() }
         #if os(iOS)
+            .ignoresSafeArea(.container, edges: .bottom)
             .presentationBackground(.clear)
         #else
             .frame(minWidth: 410, minHeight: 580)
@@ -132,27 +143,34 @@ struct ChatInfoSheet<Details: View, Materials: View>: View {
                 }.buttonStyle(.plain).accessibilityAddTraits(kind == item ? .isSelected : [])
                     .accessibilityIdentifier("chatInfo.tab.\(item.rawValue)")
             }
-        }.padding(4).frame(maxWidth: 332)
-            .background(MSTheme.surfaceSecondary, in: RoundedRectangle(cornerRadius: 24))
+        }.padding(4)
     }
 }
 
 struct ChatInfoDetails: View {
     let fields: [(String, String)]
     @Environment(\.dynamicTypeSize) private var typeSize
+    @Environment(\.workspaceWidth) private var width
+    @ScaledMetric(relativeTo: .body) private var detailLeading: CGFloat = 3.4
+    @State private var rowWidth: CGFloat = 0
     var body: some View {
+        let compact = width <= 600
+        let labelWidth = compact ? max(64, rowWidth * 0.25) : max(80, rowWidth * 0.22)
         VStack(alignment: .leading, spacing: 12) {
             ForEach(fields, id: \.0) { key, value in
                 let layout = typeSize.isAccessibilitySize ? AnyLayout(VStackLayout(alignment: .leading, spacing: 4)) :
-                    AnyLayout(HStackLayout(alignment: .firstTextBaseline, spacing: 8))
+                    AnyLayout(HStackLayout(alignment: .firstTextBaseline, spacing: compact ? 8 : 16))
                 layout {
                     Text(tr(key)).font(MSTheme.font(12)).foregroundStyle(MSTheme.muted)
-                        .frame(width: typeSize.isAccessibilitySize ? nil : 76, alignment: .leading)
-                    Text(value).font(MSTheme.font(14)).lineSpacing(3).textSelection(.enabled)
+                        .frame(width: typeSize.isAccessibilitySize ? nil : labelWidth, alignment: .leading)
+                    Text(value).font(MSTheme.font(14)).lineSpacing(detailLeading).textSelection(.enabled)
+                        .padding(.vertical, detailLeading / 2).fixedSize(horizontal: false, vertical: true)
                         .frame(maxWidth: .infinity, alignment: .leading)
                 }.accessibilityElement(children: .combine)
             }
-        }.padding(15).frame(maxWidth: .infinity, alignment: .leading)
+        }.frame(maxWidth: .infinity, alignment: .leading)
+            .onGeometryChange(for: CGFloat.self) { $0.size.width } action: { rowWidth = $0 }
+            .padding(.horizontal, compact ? 15 : 20).padding(.vertical, compact ? 15 : 18)
             .background(MSTheme.background, in: RoundedRectangle(cornerRadius: 16))
     }
 }
@@ -161,6 +179,7 @@ struct ChatInfoMembers<Members: View>: View {
     let count: Int?
     @ViewBuilder let members: () -> Members
     @State private var expanded = false
+    @Environment(\.workspaceWidth) private var width
 
     var body: some View {
         VStack(spacing: 0) {
@@ -177,7 +196,7 @@ struct ChatInfoMembers<Members: View>: View {
                 VStack(alignment: .leading, spacing: 8) { members() }
                     .frame(maxWidth: .infinity, alignment: .leading).padding(.bottom, 12)
             }
-        }.padding(.horizontal, 15).background(MSTheme.background, in: RoundedRectangle(cornerRadius: 16))
+        }.padding(.horizontal, width <= 600 ? 15 : 20).background(MSTheme.background, in: RoundedRectangle(cornerRadius: 16))
     }
 }
 

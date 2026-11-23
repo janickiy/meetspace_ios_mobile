@@ -249,8 +249,9 @@ struct ConferenceRoomStage<Visual: View, ScreenShare: View>: View {
                     VStack(spacing: wide ? 10 : 8) {
                         if remoteScreen { screenShare() }
                         if mode == .speaker, let featured {
-                            speakerTile(featured, width: featuredWidth(width, height: geometry.size.height))
-                            speakerRail(ordered.filter { $0.id != featured.id }, width: width)
+                            let stageWidth = featuredWidth(width, height: geometry.size.height)
+                            speakerTile(featured, width: stageWidth)
+                            speakerRail(ordered.filter { $0.id != featured.id }, width: stageWidth)
                         } else {
                             gallery(width: width, height: geometry.size.height)
                         }
@@ -381,8 +382,10 @@ struct ConferenceRoomStage<Visual: View, ScreenShare: View>: View {
         if !people.isEmpty {
             let pageSize = 3
             let gap: CGFloat = wide ? 10 : 7
-            let railWidth = wide ? min(width, 3 * 82 * 16 / 9 + 2 * gap) : width
-            let tileWidth = (railWidth - CGFloat(pageSize - 1) * gap) / CGFloat(pageSize)
+            let columns = min(pageSize, max(2, people.count))
+            let gaps = CGFloat(columns - 1) * gap
+            let railWidth = wide ? min(width, CGFloat(columns) * 82 * 16 / 9 + gaps) : width
+            let tileWidth = max(0, (railWidth - gaps) / CGFloat(columns))
             let pages = stride(from: 0, to: people.count, by: pageSize).map { start in
                 Array(people[start..<min(start + pageSize, people.count)])
             }
@@ -393,11 +396,14 @@ struct ConferenceRoomStage<Visual: View, ScreenShare: View>: View {
                             ForEach(page) { person in
                                 tile(person, width: tileWidth, height: wide ? min(92, tileWidth * 9 / 16) : tileWidth, gallery: false)
                             }
-                        }.frame(width: railWidth, alignment: .leading).id(index)
+                        }.frame(width: railWidth).id(index)
                     }
                 }.scrollTargetLayout()
             }.frame(width: railWidth).scrollIndicators(.hidden).scrollTargetBehavior(.paging).scrollPosition(id: $railPage)
                 .accessibilityIdentifier("conferenceSpeakerRail")
+                .onChange(of: pages.count, initial: true) { _, count in
+                    railPage = min(railPage ?? 0, count - 1)
+                }
             if pages.count > 1 {
                 HStack(spacing: 2) {
                     ForEach(pages.indices, id: \.self) { index in

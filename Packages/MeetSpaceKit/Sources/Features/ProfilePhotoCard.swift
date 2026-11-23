@@ -7,13 +7,19 @@ import MeetSpaceCore
 import MeetSpaceDesignSystem
 
 @MainActor @Observable final class DemoAccountProfile {
-    var name = "Александр Соколов"
+    let id: String
+    let email: String
+    var name: String
     var bio = ""
     var server: ServerOrigin?
     var photo: Data?
     var notificationDraft = NotificationPreferences()
     var savedNotifications = NotificationPreferences()
     var notificationSound = true
+
+    init(id: String, name: String, email: String, server: ServerOrigin?) {
+        self.id = id; self.name = name; self.email = email; self.server = server
+    }
 }
 
 private struct SelectedPortrait: Transferable, Identifiable {

@@ -310,6 +310,18 @@ enum UITestDependencies {
              "screenSharing": false, "microphoneBlocked": false, "cameraBlocked": false, "screenBlocked": false,
              "mediaPolicyVersion": 1, "admissionState": "admitted", "admissionVersion": 1]
         }
+        private func conferenceMembers() -> [[String: Any]] {
+            let remote = member(remote: true)
+            var members = [member(), remote]
+            if ProcessInfo.processInfo.arguments.contains("-conference-three-participants") {
+                var guest = remote
+                guest["id"] = "44444444-4444-4444-8444-444444444446"
+                guest["userId"] = second
+                guest["displayName"] = "Гость"
+                members.append(guest)
+            }
+            return members
+        }
         private func callMember(remote: Bool = false) -> [String: Any] {
             var result = member(remote: remote)
             result["conferenceId"] = callRoomID; result["status"] = "joined"; result["role"] = "participant"
@@ -332,12 +344,15 @@ enum UITestDependencies {
                              "status": "active", "participants": [own, remote]]])
             }
             guard id.uuidString.lowercased() == conferenceID, conferenceJoined else { throw APIError.httpStatus(403) }
-            var own = member(), remote = member(remote: true)
-            own["online"] = true; remote["online"] = true
+            let participants = conferenceMembers().map { member in
+                var online = member
+                online["online"] = true
+                return online
+            }
             return try JSONSerialization.data(withJSONObject: ["version": 1, "id": UUID().uuidString.lowercased(),
                 "type": "conference.state", "conferenceId": conferenceID, "timestamp": "2026-11-05T10:00:00Z",
                 "data": ["connectionId": UUID().uuidString.lowercased(), "participantId": participantID,
-                         "status": "active", "participants": [own, remote]]])
+                         "status": "active", "participants": participants]])
         }
         func send(_ request: URLRequest, limit: Int, uploadFile: URL?, progress: TransferProgress?) async throws -> NetworkResponse {
             guard request.url?.host == "fixture.example" else { throw APIError.offline }
@@ -449,7 +464,7 @@ enum UITestDependencies {
                     conferenceCamera = body?["cameraEnabled"] as? Bool ?? false
                     return try response(["status": "success", "item": member()])
                 }
-                if path.hasSuffix("/participants") { return try response(["status": "success", "items": [member(), member(remote: true)]]) }
+                if path.hasSuffix("/participants") { return try response(["status": "success", "items": conferenceMembers()]) }
                 if path.hasSuffix("/reactions") { return try response(["status": "success"]) }
                 if path.hasSuffix("/chat/read") { return try response(["status": "success", "item": ["unreadCount": 0]]) }
                 if path.hasSuffix("/messages"), request.httpMethod == "POST" {
@@ -480,6 +495,15 @@ enum UITestDependencies {
             if parts.count >= 4, parts[2] == "conversations" {
                 let id = parts[3]
                 if parts.count == 4 { return try response(["status": "ok", "item": conversation(id, account: selected)]) }
+                if id == direct, request.httpMethod == "GET" {
+                    if parts.count == 5, parts[4] == "peer-presence" {
+                        return try response(["status": "success", "item": ["conversationId": direct, "peerId": peer, "online": true]])
+                    }
+                    if parts.count == 6, parts[4] == "profiles", parts[5] == peer {
+                        return try response(["item": ["id": peer, "displayName": "Тестовый собеседник",
+                                                       "email": "peer@example.org", "bio": "Команда проекта."]])
+                    }
+                }
                 if id == direct, path.hasSuffix("/preferences"), request.httpMethod == "PATCH" {
                     guard let enabled = body?["notificationsEnabled"] as? Bool else { return NetworkResponse(status: 400) }
                     directNotifications[selected] = enabled

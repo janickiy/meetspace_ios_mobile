@@ -5,10 +5,11 @@ import MeetSpaceDesignSystem
 struct ProfileAvatar: View {
     let name: String
     let size: CGFloat
+    var height: CGFloat?
     var cornerRadius: CGFloat?
     var photo: Data?
     var body: some View {
-        let initials = name.split(whereSeparator: \.isWhitespace).prefix(2).compactMap(\.first)
+        let initials = name.split(whereSeparator: \.isWhitespace).compactMap { $0.first(where: { $0.isLetter || $0.isNumber }) }.prefix(2)
         Group {
             if let photo, let source = CGImageSourceCreateWithData(photo as CFData, nil),
                let image = CGImageSourceCreateThumbnailAtIndex(source, 0, [
@@ -17,7 +18,7 @@ struct ProfileAvatar: View {
                 Image(decorative: image, scale: 1).resizable().scaledToFill()
             } else { Text(String(initials).uppercased()) }
         }.font(MSTheme.font(size * 0.36, weight: .semibold))
-            .foregroundStyle(MSTheme.accent).frame(width: size, height: size)
+            .foregroundStyle(MSTheme.accent).frame(width: size, height: height ?? size)
             .background(MSTheme.accentSoft, in: RoundedRectangle(cornerRadius: cornerRadius ?? size / 2))
             .clipShape(RoundedRectangle(cornerRadius: cornerRadius ?? size / 2)).accessibilityHidden(true)
     }
@@ -77,23 +78,34 @@ struct AccountHome<Detail: View>: View {
             .accessibilityElement(children: .contain).accessibilityIdentifier("screen.profile")
     }
 
-    private func detailPanel(wide: Bool, inset: CGFloat) -> some View {
-        VStack(alignment: .leading, spacing: 0) {
-            if !wide {
-                Button { selection = nil } label: {
-                    HStack(spacing: 8) {
-                        WorkspaceIcon("arrow.left", size: 19)
-                        Text(tr("Все настройки")).fixedSize(horizontal: false, vertical: true)
-                    }.font(MSTheme.font(13)).frame(minHeight: 44).contentShape(Rectangle())
-                }.buttonStyle(.plain).foregroundStyle(MSTheme.accent)
-                    .accessibilityLabel(tr("Все настройки"))
-                    .accessibilityIdentifier("profileMenu.back")
-                    .padding(.horizontal, inset).padding(.top, 18).padding(.bottom, 4)
-            }
-            detail(selection ?? .profile, wide)
-                .id(selection ?? .profile)
-                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-        }.background(MSTheme.background)
+    @ViewBuilder private func detailPanel(wide: Bool, inset: CGFloat) -> some View {
+        if selection == .accounts {
+            ScrollView {
+                VStack(alignment: .leading, spacing: 0) {
+                    if !wide { back(inset: inset) }
+                    detail(.accounts, wide)
+                }
+            }.background(MSTheme.background)
+        } else {
+            VStack(alignment: .leading, spacing: 0) {
+                if !wide { back(inset: inset) }
+                detail(selection ?? .profile, wide)
+                    .id(selection ?? .profile)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+            }.background(MSTheme.background)
+        }
+    }
+
+    private func back(inset: CGFloat) -> some View {
+        Button { selection = nil } label: {
+            HStack(spacing: 8) {
+                WorkspaceIcon("arrow.left", size: 19)
+                Text(tr("Все настройки")).fixedSize(horizontal: false, vertical: true)
+            }.font(MSTheme.font(13)).frame(minHeight: 44).contentShape(Rectangle())
+        }.buttonStyle(.plain).foregroundStyle(MSTheme.accent)
+            .accessibilityLabel(tr("Все настройки"))
+            .accessibilityIdentifier("profileMenu.back")
+            .padding(.horizontal, inset).padding(.top, 18).padding(.bottom, 4)
     }
 
     private func menu(wide: Bool, inset: CGFloat) -> some View {
