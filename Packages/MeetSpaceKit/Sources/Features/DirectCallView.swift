@@ -41,7 +41,7 @@ struct DirectCallView: View {
                     }
             }
         } local: {
-            if !call.otherDevice, call.currentCall?.isTerminal != true {
+            if !call.otherDevice, call.currentCall?.isTerminal != true, call.showsSelfVideo {
                 PersonalSelfPreview(name: localName, compact: compact, short: short, camera: camera, microphone: microphone) {
                     if camera, let session = call.mediaSession, let media = session.media,
                        let local = session.videoTracks.first(where: { $0.isLocal && !session.isScreenTrack($0) }) {

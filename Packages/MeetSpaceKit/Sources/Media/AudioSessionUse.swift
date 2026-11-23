@@ -7,6 +7,7 @@ import Foundation
     public private(set) static var systemAudioActive = false
     private static var stopProbe: (() -> Void)?
     private static var probeOwner: UUID?
+    public static var idle: Bool { !conferenceActive && probeOwner == nil }
     public static var conferenceActive: Bool { !conferenceOwners.isEmpty || !systemCallOwners.isEmpty || systemAudioActive }
     public static func beginConference(_ owner: UUID) {
         stopCurrentProbe()

@@ -68,7 +68,7 @@ import MeetSpaceMedia
         catch { notice = "Не удалось изменить громкость микрофона." }
         #endif
     }
-    func test(_ kind: Check) async {
+    func test(_ kind: Check, respectingSilentMode: Bool = false) async {
         if check == kind { stop(); return }
         stop(); notice = nil
         let current = generation
@@ -107,7 +107,7 @@ import MeetSpaceMedia
                 tapInstalled = true
                 engine.prepare(); try engine.start()
             } else {
-                try prepare(recording: false)
+                try prepare(recording: false, respectingSilentMode: respectingSilentMode)
                 let player = try AVAudioPlayer(data: Self.testTone(signals: kind == .signals))
                 player.isMeteringEnabled = true
                 self.player = player
@@ -149,10 +149,11 @@ import MeetSpaceMedia
         return min(1, max(0, pow(10, decibels / 20)))
     }
     #if os(iOS)
-    private func prepare(recording: Bool) throws {
+    private func prepare(recording: Bool, respectingSilentMode: Bool = false) throws {
         let audio = AVAudioSession.sharedInstance()
         if previousSession == nil { previousSession = (audio.category, audio.mode, audio.categoryOptions) }
-        try audio.setCategory(recording ? .playAndRecord : .playback,
+        let category: AVAudioSession.Category = recording ? .playAndRecord : (respectingSilentMode ? .ambient : .playback)
+        try audio.setCategory(category,
                               mode: recording ? .voiceChat : .default,
                               options: recording ? [.allowBluetooth, .defaultToSpeaker] : [])
         try audio.setActive(true)

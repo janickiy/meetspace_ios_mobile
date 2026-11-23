@@ -17,17 +17,22 @@ public struct ConferenceMediaConfiguration: Sendable {
     public var cameraAllowed: Bool
     public var screenAllowed: Bool
     public var audioActivation: ConferenceAudioActivation
+    public var preferFrontCamera: Bool
+    public var receiveVideo: Bool
     public init(iceServers: [ICEServer], iceTransportPolicy: String = "all", maxPeers: Int = 8,
                 mediaPeerID: UUID, maxWidth: Int = 1280, maxHeight: Int = 720, maxFrameRate: Int = 30,
                 microphoneAllowed: Bool = true, cameraAllowed: Bool = true,
                 screenAllowed: Bool = false,
-                audioActivation: ConferenceAudioActivation = .application) {
+                audioActivation: ConferenceAudioActivation = .application,
+                preferFrontCamera: Bool = true, receiveVideo: Bool = true) {
         self.iceServers = iceServers; self.iceTransportPolicy = iceTransportPolicy
         self.maxPeers = maxPeers; self.mediaPeerID = mediaPeerID
         self.maxWidth = maxWidth; self.maxHeight = maxHeight; self.maxFrameRate = maxFrameRate
         self.microphoneAllowed = microphoneAllowed; self.cameraAllowed = cameraAllowed
         self.screenAllowed = screenAllowed
         self.audioActivation = audioActivation
+        self.preferFrontCamera = preferFrontCamera
+        self.receiveVideo = receiveVideo
     }
 }
 

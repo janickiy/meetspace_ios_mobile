@@ -214,6 +214,13 @@ private actor DelayedSecrets: SecureStore {
     let event = try Fixture.data(["version": 1, "id": UUID().uuidString, "type": "message.created",
                                  "data": ["conversationId": Fixture.conversationID.uuidString, "message": payload]])
     #expect(try UserEvent.decode(event)?.message?.id == message.id)
+    #expect(try UserEvent.decode(event)?.notificationsEnabled == nil)
+    for enabled in [false, true] {
+        let delivery = try Fixture.data(["version": 1, "id": UUID().uuidString, "type": "message.created",
+            "data": ["conversationId": Fixture.conversationID.uuidString, "message": payload,
+                     "notificationsEnabled": enabled]])
+        #expect(try UserEvent.decode(delivery)?.notificationsEnabled == enabled)
+    }
     let unknown = try Fixture.data(["version": 1, "type": "user.presence", "data": ["arbitrary": 7]])
     #expect(try UserEvent.decode(unknown) == nil)
     let mismatched = try Fixture.data(["version": 1, "id": UUID().uuidString, "type": "message.updated",

@@ -19,7 +19,7 @@ private struct DemoMeetingPrejoin: View {
     let model: AppModel
     @State private var name = ""
     @State private var microphone = true
-    @State private var camera = false
+    @State private var camera = !AccountVideoPreferences.load(for: nil).cameraOff
     @State private var guest = false
     @Environment(\.dismiss) private var dismiss
 
@@ -217,6 +217,7 @@ struct MeetingNextLabelStyle: LabelStyle {
 
 private struct DemoPersonalCall: View {
     let model: AppModel
+    private let showSelf = AccountVideoPreferences.load(for: nil).selfVideo
     @State private var connectedAt: Date?
     @State private var microphone = true
     @State private var camera = false
@@ -241,8 +242,10 @@ private struct DemoPersonalCall: View {
                                   peerName: peer, status: connectedAt == nil ? "Вы звоните…" : "На связи", demo: true) {
                     EmptyView()
                 } local: {
-                    PersonalSelfPreview(name: model.demoProfile.name, compact: compact, short: short, camera: camera, microphone: microphone) {
-                        EmptyView()
+                    if showSelf {
+                        PersonalSelfPreview(name: model.demoProfile.name, compact: compact, short: short, camera: camera, microphone: microphone) {
+                            EmptyView()
+                        }
                     }
                 }.overlay(alignment: .bottom) {
                     if sharing {

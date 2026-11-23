@@ -9,6 +9,7 @@ struct DemoConferenceView: View {
     private let meetingTitle: String
     private let displayName: String
     private let guest: Bool
+    private let videoPreferences: AccountVideoPreferences
     @Environment(\.dismiss) private var dismiss
     @Environment(\.colorScheme) private var theme
     @State private var microphone = true
@@ -57,11 +58,13 @@ struct DemoConferenceView: View {
     init(model: AppModel) {
         self.model = model
         let entry = model.demoConferenceEntry
+        let preferences = AccountVideoPreferences.load(for: nil)
+        videoPreferences = preferences
         guest = entry?.guest ?? false
         meetingTitle = entry?.title ?? tr("Дизайн-синхронизация")
         displayName = entry?.name ?? model.demoProfile.name
         _microphone = State(initialValue: entry?.microphone ?? true)
-        _camera = State(initialValue: entry?.camera ?? false)
+        _camera = State(initialValue: entry?.camera ?? !preferences.cameraOff)
     }
 
     private var attendees: [ConferenceRoomAttendee] {
@@ -97,8 +100,9 @@ struct DemoConferenceView: View {
         } notice: {
             EmptyView()
         } video: { wide in
-            ConferenceRoomStage(attendees: attendees, ownCamera: camera, wide: wide, remoteScreen: false) { person, focused in
-                if person.id == "dmitry", let image = Self.previewFrame {
+            ConferenceRoomStage(roster: attendees, showSelf: videoPreferences.selfVideo, ownCamera: camera,
+                                wide: wide, remoteScreen: false) { person, focused in
+                if !videoPreferences.hideVideo, person.id == "dmitry", let image = Self.previewFrame {
                     Color.clear.overlay {
                         Image(decorative: image, scale: 1).resizable()
                             .aspectRatio(contentMode: focused || wide ? .fit : .fill)

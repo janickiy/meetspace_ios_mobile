@@ -28,6 +28,11 @@ import MeetSpaceCalling
     public var otherDevice: Bool { currentCall?.isActive == true && !isIncoming && !ownsMedia }
     public var peer: DirectCallPeer? { currentCall?.peer(for: repository.userID) ?? pendingPeer }
     public var systemAvailable: Bool { system.isAvailable }
+    var showsSelfVideo: Bool {
+        mediaSession?.videoPreferences.selfVideo ?? AccountVideoPreferences.load(
+            for: CredentialKey(server: conferenceRepository.origin, accountID: repository.userID)
+        ).selfVideo
+    }
 
     @ObservationIgnored private let repository: any DirectCallsServing
     @ObservationIgnored private let conferenceRepository: ConferenceRepository

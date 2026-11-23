@@ -38,11 +38,11 @@ struct DestinationView: View {
             case .notificationSettings:
                 if model.isDemo { SettingsDetailView(model: model, route: route) }
                 else if let settings = model.identity.settings {
-                    AccountSettingsContent(model: settings, section: .notifications) {
-                        DeviceNotificationSettings(model: model.identity.notifications)
-                    }.task { await settings.load() }
+                    LiveAccountNotificationSettings(settings: settings, push: model.identity.notifications)
+                        .task { if !settings.loaded { await settings.load() } }
                 }
-            case .audioSettings, .videoSettings, .appearance, .connection, .accounts:
+            case .connection: AccountConnectionPage(app: model, wide: false)
+            case .audioSettings, .videoSettings, .appearance, .accounts:
                 SettingsDetailView(model: model, route: route)
             case .deploy, .fingerprint, .preflight, .install, .complete, .installError:
                 InstallerCatalogNotice(model: model)

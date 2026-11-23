@@ -210,7 +210,8 @@ struct ConferenceRoomAttendee: Identifiable, Equatable {
 }
 
 struct ConferenceRoomStage<Visual: View, ScreenShare: View>: View {
-    let attendees: [ConferenceRoomAttendee]
+    let roster: [ConferenceRoomAttendee]
+    let showSelf: Bool
     var ownCamera = false
     let wide: Bool
     let remoteScreen: Bool
@@ -221,6 +222,7 @@ struct ConferenceRoomStage<Visual: View, ScreenShare: View>: View {
     @State private var railPage: Int? = 0
 
     private enum Layout { case gallery, speaker }
+    private var attendees: [ConferenceRoomAttendee] { showSelf ? roster : roster.filter { !$0.own } }
     private var mode: Layout { selectedLayout ?? (wide ? .gallery : .speaker) }
     private var pinned: ConferenceRoomAttendee? { attendees.first { $0.id == pinnedID } }
     private var featured: ConferenceRoomAttendee? {
@@ -230,7 +232,7 @@ struct ConferenceRoomStage<Visual: View, ScreenShare: View>: View {
         attendees.filter(\.speaking) + attendees.filter { !$0.speaking && !$0.own } + attendees.filter { !$0.speaking && $0.own }
     }
     private var countLabel: String {
-        let count = attendees.count, tens = count % 100, ones = count % 10
+        let count = roster.count, tens = count % 100, ones = count % 10
         let noun = if (11...14).contains(tens) { "участников" }
             else if ones == 1 { "участник" }
             else if (2...4).contains(ones) { "участника" }

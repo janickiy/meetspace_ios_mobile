@@ -32,7 +32,8 @@ struct LiveConferenceView: View {
                         ScreenShareControls(session: session)
                     }
                 } video: { wide in
-                    ConferenceRoomStage(attendees: roster, ownCamera: session.camera, wide: wide, remoteScreen: !screenTracks.isEmpty) { attendee, focused in
+                    ConferenceRoomStage(roster: roster, showSelf: session.videoPreferences.selfVideo, ownCamera: session.camera,
+                                        wide: wide, remoteScreen: !screenTracks.isEmpty) { attendee, focused in
                         participantVisual(attendee, focused: focused)
                     } screenShare: {
                         remoteScreenViews

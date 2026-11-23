@@ -307,11 +307,11 @@ private struct ConnectView: View {
                     .accessibilityIdentifier("checkServer")
             }
             Button(tr("Назад")) { model.show(.welcome) }.frame(minHeight: 44)
-        }.onAppear { if address.isEmpty { address = model.configuration.server?.url.absoluteString ?? "" } }
+        }.onAppear { if address.isEmpty { address = model.connectionPrefill?.url.absoluteString ?? "" } }
     }
 }
 
-private extension AppModel.ConnectionError {
+extension AppModel.ConnectionError {
     var message: String {
         switch self {
         case .invalidURL: "Укажите HTTPS-адрес без логина, пути, параметров и фрагмента."
@@ -337,8 +337,8 @@ private struct AuthenticationView: View {
         VStack(alignment: .leading, spacing: 20) {
             StepHeading(step: "02 / ВХОД В ПРОСТРАНСТВО", title: registration ? "Создайте аккаунт." : "С возвращением.", subtitle: "Ваша команда уже здесь.")
             HStack {
-                Label(model.configuration.server?.displayName ?? "MeetSpace", systemImage: "checkmark.shield")
-                Spacer(); Button(tr("Изменить")) { model.show(.connect) }
+                Label(model.authenticationServer?.displayName ?? "MeetSpace", systemImage: "checkmark.shield")
+                Spacer(); Button(tr("Изменить")) { model.show(.connect, server: model.authenticationServer) }
             }.font(MSTheme.font(12)).msCard(padding: 12)
             if registration { field("Имя") { TextField(tr("Имя"), text: $name) } }
             field("Электронная почта") { TextField("name@example.com", text: $email).msEmailInput().textContentType(.emailAddress) }
@@ -351,11 +351,11 @@ private struct AuthenticationView: View {
             Button(tr(registration ? "Зарегистрироваться" : "Войти")) {
                 Task {
                     if registration {
-                        if await model.identity.register(server: model.configuration.server, email: email, password: password, confirmation: confirmation, name: name) {
+                        if await model.identity.register(server: model.authenticationServer, email: email, password: password, confirmation: confirmation, name: name) {
                             password = ""; confirmation = ""; model.show(.login)
                         }
                     } else {
-                        await model.identity.login(server: model.configuration.server, email: email, password: password)
+                        await model.identity.login(server: model.authenticationServer, email: email, password: password)
                         password = ""
                     }
                 }

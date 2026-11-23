@@ -1,6 +1,7 @@
 import UIKit
 import UserNotifications
 import MeetSpaceCalling
+import MeetSpaceCore
 
 /// The provider exists for the process lifetime, before account restoration or network access.
 @MainActor final class AppPlatformRuntime {
@@ -39,7 +40,7 @@ import MeetSpaceCalling
     nonisolated func userNotificationCenter(_ center: UNUserNotificationCenter,
         willPresent notification: UNNotification) async -> UNNotificationPresentationOptions {
         // Ordinary APNs only; never interpret it as a call or a command to switch account.
-        [.banner, .list, .sound]
+        ForegroundNotificationSound.enabled ? [.banner, .list, .sound] : [.banner, .list]
     }
     nonisolated func userNotificationCenter(_ center: UNUserNotificationCenter,
         didReceive response: UNNotificationResponse) async {

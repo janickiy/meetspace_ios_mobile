@@ -67,6 +67,7 @@ public struct DirectConferenceContext: Sendable {
     public private(set) var busy = false
     public private(set) var departureUncertain = false
     public var error: String?
+    let videoPreferences: AccountVideoPreferences
     public var wantsMicrophone = false
     public var wantsCamera = false
     public var chatText = ""
@@ -153,7 +154,12 @@ public struct DirectConferenceContext: Sendable {
         let invite = invitationCode.flatMap { try? ConferenceInviteGateway.inviteCode(from: $0, origin: repository.origin) }
         invitationURL = invite.map { repository.origin.url.appendingPathComponent("i").appendingPathComponent($0) }
         self.directContext = directContext
-        if directContext == nil { wantsMicrophone = !DeviceAudioPreferences.load().mutedOnJoin && !participant.microphoneBlocked }
+        let preferences = AccountVideoPreferences.load(for: CredentialKey(server: repository.origin, accountID: repository.userID))
+        videoPreferences = preferences
+        if directContext == nil {
+            wantsMicrophone = !DeviceAudioPreferences.load().mutedOnJoin && !participant.microphoneBlocked
+            wantsCamera = !preferences.cameraOff && !participant.cameraBlocked
+        }
         conferenceID = participant.conferenceId; self.sockets = sockets; self.makeMedia = makeMedia; self.makeBroadcast = makeBroadcast; self.sleep = sleep
         phase = participant.isWaiting ? .waiting : .prejoin
         microphoneBlocked = participant.microphoneBlocked; cameraBlocked = participant.cameraBlocked; screenBlocked = participant.screenBlocked
@@ -348,7 +354,8 @@ public struct DirectConferenceContext: Sendable {
                 maxPeers: joined.maxPeers, mediaPeerID: joined.mediaPeerId,
                 maxWidth: capture.maxWidth, maxHeight: capture.maxHeight, maxFrameRate: capture.maxFrameRate,
                 microphoneAllowed: !microphoneBlocked, cameraAllowed: !cameraBlocked,
-                audioActivation: directContext?.usesSystemAudio == true ? .callKit : .application))
+                audioActivation: directContext?.usesSystemAudio == true ? .callKit : .application,
+                preferFrontCamera: videoPreferences.camera != .back, receiveVideo: !videoPreferences.hideVideo))
             try ensure(epoch)
             needsOffer = true
             try await negotiate(epoch)
@@ -1014,7 +1021,7 @@ public struct DirectConferenceContext: Sendable {
                 }
                 return true
             }
-            guard let mid = video.mid, let binding = answerTracks[mid],
+            guard !videoPreferences.hideVideo, let mid = video.mid, let binding = answerTracks[mid],
                   let track = tracks.first(where: { $0.id == binding.trackID && $0.streamId == binding.streamID && $0.kind == "video" }) else { return false }
             videoParticipants[video.id] = track.participantId
             if track.source == "video/screen" { screenVideoIDs.insert(video.id) }

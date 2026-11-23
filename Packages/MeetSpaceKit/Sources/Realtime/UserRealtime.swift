@@ -9,6 +9,7 @@ public struct UserEvent: Sendable {
     public let conversationID: UUID?
     public let userID: UUID?
     public let message: ChatMessage?
+    public let notificationsEnabled: Bool?
     public let readState: ReadState?
     public let call: DirectCall?
     private struct Envelope: Decodable {
@@ -21,6 +22,7 @@ public struct UserEvent: Sendable {
         let conversationId: UUID?
         let userId: UUID?
         let message: ChatMessage?
+        let notificationsEnabled: Bool?
         let state: ReadState?
         let call: DirectCall?
     }
@@ -41,14 +43,15 @@ public struct UserEvent: Sendable {
         if envelope.type == "call.updated" {
             guard let call = envelope.data.call else { throw RealtimeError.invalidEvent }
             return UserEvent(id: envelope.id, type: envelope.type, conversationID: nil, userID: nil,
-                             message: nil, readState: nil, call: call)
+                             message: nil, notificationsEnabled: nil, readState: nil, call: call)
         }
         guard let scope = envelope.data.conversationId else { throw RealtimeError.invalidEvent }
         if envelope.type.hasPrefix("message.") {
             guard let message = envelope.data.message, message.conversationId == scope else { throw RealtimeError.invalidEvent }
         }
         return UserEvent(id: envelope.id, type: envelope.type, conversationID: scope, userID: envelope.data.userId,
-                         message: envelope.data.message, readState: envelope.data.state, call: nil)
+                         message: envelope.data.message, notificationsEnabled: envelope.data.notificationsEnabled,
+                         readState: envelope.data.state, call: nil)
     }
 }
 

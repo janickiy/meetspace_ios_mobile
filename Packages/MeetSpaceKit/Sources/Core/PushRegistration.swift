@@ -14,6 +14,12 @@ public struct IntegrationCapabilities: Codable, Equatable, Sendable {
     }
 }
 
+/// Foreground sounds for incoming messages and ordinary push. Background presentation is controlled by iOS.
+public enum ForegroundNotificationSound {
+    public static let defaultsKey = "meetspace.notifications.foregroundSound"
+    public static var enabled: Bool { UserDefaults.standard.object(forKey: defaultsKey) as? Bool ?? true }
+}
+
 public struct NotificationPreferences: Codable, Equatable, Sendable {
     public var invitation: Bool
     public var reminder: Bool

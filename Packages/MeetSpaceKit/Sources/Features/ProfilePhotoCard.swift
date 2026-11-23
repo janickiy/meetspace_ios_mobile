@@ -9,7 +9,11 @@ import MeetSpaceDesignSystem
 @MainActor @Observable final class DemoAccountProfile {
     var name = "Александр Соколов"
     var bio = ""
+    var server: ServerOrigin?
     var photo: Data?
+    var notificationDraft = NotificationPreferences()
+    var savedNotifications = NotificationPreferences()
+    var notificationSound = true
 }
 
 private struct SelectedPortrait: Transferable, Identifiable {

@@ -4,6 +4,7 @@ import MeetSpaceCore
 import MeetSpaceAPI
 import MeetSpaceStorage
 import MeetSpaceRealtime
+import MeetSpaceMedia
 
 public struct PendingMessage: Identifiable {
     public var id: UUID { draft.id }
@@ -80,6 +81,7 @@ public struct DownloadState: Identifiable {
     @ObservationIgnored private var foreground = true
     @ObservationIgnored private var callActive = false
     @ObservationIgnored private var visible = false
+    @ObservationIgnored private let notificationAudio = AudioSettingsModel()
 
     public init(client: AuthenticatedClient, downloads: any RequestTransport = URLSessionRequestTransport(),
                 sockets: any RealtimeSocketFactory = URLSessionSocketFactory(), files: AccountFileStore? = nil,
@@ -118,6 +120,7 @@ public struct DownloadState: Identifiable {
 
     public func setForeground(_ value: Bool) async {
         foreground = value
+        if !value { notificationAudio.stop() }
         guard active else { return }
         if value { await realtime.start(); scheduleListRefresh(); markVisibleRead() }
         else { readTask?.cancel(); if !callActive { await realtime.stop() } }
@@ -130,6 +133,7 @@ public struct DownloadState: Identifiable {
     }
     public func close() async {
         guard active else { return }
+        notificationAudio.stop()
         active = false; visible = false; cancelMessageSelection()
         listEpoch = UUID(); historyEpoch = UUID(); searchEpoch = UUID()
         selectionEpoch = UUID()
@@ -505,6 +509,14 @@ public struct DownloadState: Identifiable {
             return
         }
         if let id = event.conversationID, let message = event.message {
+            if event.type == "message.created", message.isActionable, message.senderId != account.user.id,
+               event.notificationsEnabled == true, !(visible && conversation?.id == id) {
+                Task { [weak self] in
+                    guard let self, self.active, self.foreground, !self.callActive,
+                          ForegroundNotificationSound.enabled, AudioSessionUse.idle else { return }
+                    await self.notificationAudio.test(.signals, respectingSilentMode: true)
+                }
+            }
             if conversation?.id == id { merge([message], in: id); markVisibleRead() }
             if message.senderId == account.user.id { pending.removeAll { $0.id == message.clientRequestId } }
         } else if let id = event.conversationID, id == conversation?.id,

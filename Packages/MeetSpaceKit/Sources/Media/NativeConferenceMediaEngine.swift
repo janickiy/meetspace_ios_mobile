@@ -62,6 +62,7 @@ import MeetSpaceCore
         try Task.checkCancellation()
         AudioSessionUse.beginConference(callAudioOwner)
         self.configuration = configuration
+        frontCamera = configuration.preferFrontCamera
         let audio = RTCAudioSession.sharedInstance()
         audio.useManualAudio = true; audio.isAudioEnabled = false
         audio.add(self)

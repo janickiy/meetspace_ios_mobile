@@ -425,6 +425,10 @@ import UIKit
         reveal(first, in: app, towardTop: true)
         first.tap()
         let forward = app.buttons["message.forwardAction"]
+        XCTAssertFalse(forward.exists)
+        first.press(forDuration: 0.6)
+        XCTAssertFalse(forward.exists)
+        first.press(forDuration: 1.1)
         XCTAssertTrue(forward.waitForExistence(timeout: 5))
         let actionable = XCTNSPredicateExpectation(predicate: NSPredicate(format: "hittable == true"), object: forward)
         XCTAssertEqual(XCTWaiter.wait(for: [actionable], timeout: 5), .completed)
@@ -455,7 +459,7 @@ import UIKit
 
         let message = app.staticTexts["Доброе утро! Материалы к встрече готовы. Посмотрите, когда будет минутка."].firstMatch
         reveal(message, in: app, towardTop: true)
-        message.tap()
+        message.press(forDuration: 1.1)
         let select = app.buttons["Выбрать"]
         XCTAssertTrue(select.waitForExistence(timeout: 5))
         select.tap()
@@ -467,6 +471,61 @@ import UIKit
         XCTAssertEqual(row.value as? String, "Не выбрано")
         XCTAssertFalse(app.buttons["message.forwardAction"].exists)
         XCTAssertFalse(app.staticTexts["Демонстрационная карточка вложения."].exists)
+    }
+
+    func testAccountVideoSettingsLayoutAndPreferences() {
+        let app = launch(); login(app)
+        openProfile(in: app)
+        selectAccountSection("video", in: app)
+        let camera = app.buttons["video.camera"]
+        XCTAssertTrue(camera.waitForExistence(timeout: 5))
+        XCTAssertTrue(app.descendants(matching: .any)["video.preview"].firstMatch.exists)
+        capture(app, name: "account-video")
+        camera.tap()
+        app.buttons["Основная камера"].tap()
+        let ownVideo = app.switches["video.selfVideo"]
+        revealEntireText(ownVideo, in: app)
+        let original = ownVideo.value as? String
+        XCTAssertTrue(["0", "1"].contains(original ?? ""))
+        ownVideo.tap()
+        XCTAssertEqual(ownVideo.value as? String, original == "1" ? "0" : "1")
+        XCTAssertTrue(app.switches["video.cameraOff"].exists)
+        XCTAssertTrue(app.switches["video.hideVideo"].exists)
+        selectAccountSection("video", in: app)
+        XCTAssertEqual(camera.value as? String, "Основная камера")
+        revealEntireText(ownVideo, in: app)
+        XCTAssertEqual(ownVideo.value as? String, original == "1" ? "0" : "1")
+        ownVideo.tap()
+        reveal(camera, in: app, towardTop: true)
+        camera.tap()
+        app.buttons["По умолчанию"].tap()
+        XCTAssertFalse(app.staticTexts["Настройки применяются автоматически."].exists)
+    }
+
+    func testDemoConnectionValidatesAndKeepsAddress() {
+        let app = launch(["-demo"])
+        openProfile(in: app)
+        selectAccountSection("connection", in: app)
+        let address = app.textFields["accountConnectionAddress"]
+        let save = app.buttons["accountConnectionSave"]
+        XCTAssertTrue(address.waitForExistence(timeout: 5))
+        XCTAssertFalse(save.isEnabled)
+        capture(app, name: "account-connection-demo")
+        func replaceAddress(with text: String) {
+            address.tap()
+            let value = address.value as? String ?? ""
+            address.typeText(String(repeating: XCUIKeyboardKey.delete.rawValue, count: value.count) + text)
+        }
+        replaceAddress(with: "http://team.example.org")
+        XCTAssertFalse(save.isEnabled)
+        XCTAssertTrue(app.staticTexts["accountConnectionError"].exists)
+        replaceAddress(with: "https://team.example.org/")
+        XCTAssertTrue(save.isEnabled)
+        save.tap()
+        XCTAssertTrue(app.staticTexts["accountConnectionSaved"].waitForExistence(timeout: 5))
+        selectAccountSection("connection", in: app)
+        XCTAssertEqual(address.value as? String, "https://team.example.org")
+        XCTAssertFalse(save.isEnabled)
     }
 
     func testBetaAudioSettingsLayout() {
@@ -1066,6 +1125,16 @@ import UIKit
         let refresh = app.buttons["Обновить настройки"]; reveal(refresh, in: app); refresh.tap()
         XCTAssertEqual(name.value as? String, "Имя iOS")
         selectAccountSection("notifications", in: app)
+        XCTAssertTrue(app.switches["notificationInvitation"].waitForExistence(timeout: 5))
+        capture(app, name: "account-notifications")
+        let sound = app.buttons["notificationTestSound"]
+        let soundSwitch = app.switches["notificationSound"]
+        revealEntireText(sound, in: app)
+        if soundSwitch.value as? String == "0" { soundSwitch.tap() }
+        sound.tap()
+        XCTAssertTrue(sound.label.contains("Воспроизводится"))
+        soundSwitch.tap()
+        XCTAssertFalse(sound.isEnabled)
         let toggle = app.switches["notificationEmail"]
         reveal(toggle, in: app)
         let control = toggle.switches.firstMatch
@@ -1073,11 +1142,20 @@ import UIKit
         let saveNotifications = app.buttons["saveNotificationPreferences"]; reveal(saveNotifications, in: app); saveNotifications.tap()
         let saved = XCTNSPredicateExpectation(predicate: NSPredicate(format: "label == %@", "Настройки уведомлений сохранены"), object: app.staticTexts["settingsSaved"])
         XCTAssertEqual(XCTWaiter.wait(for: [saved], timeout: 5), .completed)
-        reveal(refresh, in: app); refresh.tap()
+        selectAccountSection("notifications", in: app)
         let enabled = XCTNSPredicateExpectation(predicate: NSPredicate(format: "value == %@", "1"), object: toggle)
         XCTAssertEqual(XCTWaiter.wait(for: [enabled], timeout: 5), .completed)
+        XCTAssertEqual(soundSwitch.value as? String, "0")
+        revealEntireText(soundSwitch, in: app); soundSwitch.tap()
         capture(app, name: "stage07-settings-notifications")
         selectAccountSection("connection", in: app)
+        let address = app.textFields["accountConnectionAddress"]
+        XCTAssertTrue(address.waitForExistence(timeout: 5))
+        XCTAssertEqual(address.value as? String, "https://fixture.example")
+        XCTAssertFalse(app.buttons["accountConnectionSave"].isEnabled)
+        capture(app, name: "account-connection")
+        let details = app.buttons["accountConnectionDetails"]
+        revealEntireText(details, in: app); details.tap()
         XCTAssertTrue(app.staticTexts["installerAvailable"].waitForExistence(timeout: 5))
         capture(app, name: "stage07-settings-server")
     }
@@ -1356,6 +1434,8 @@ import UIKit
         capture(app, name: "stage03-live-thread")
         sent.tap()
         let closeActions = app.buttons["Закрыть действия с сообщением"]
+        XCTAssertFalse(closeActions.exists)
+        sent.press(forDuration: 1.1)
         XCTAssertTrue(closeActions.waitForExistence(timeout: 5))
         for action in ["Ответить", "Переслать", "Редактировать", "Удалить для всех"] {
             XCTAssertTrue(app.buttons.matching(NSPredicate(format: "label == %@", action)).firstMatch.exists, action)
@@ -1735,6 +1815,8 @@ import UIKit
         }
         capture(app, name: app.frame.width >= 780 ? "account-home-tablet" : "account-home-phone")
         selectAccountSection("notifications", in: app)
+        let devices = app.buttons["notificationDevicesDetails"]
+        revealEntireText(devices, in: app); devices.tap()
         let toggle = app.switches["pushNotificationsToggle"]
         revealEntireText(toggle, in: app)
         XCTAssertTrue(toggle.isHittable)

@@ -72,6 +72,10 @@ public struct AppDependencies: Sendable {
     public var configuration = AppConfiguration()
     public private(set) var probeState: LoadState = .empty
     public private(set) var checkedServer: ServerOrigin?
+    private(set) var connectionPrefill: ServerOrigin?
+    var authenticationServer: ServerOrigin? {
+        identity.addingAccount ? checkedServer : configuration.server
+    }
     public private(set) var serverVersion: ServerVersion?
     public private(set) var connectionError: ConnectionError?
     var showingWorkspaceNotifications = false
@@ -106,9 +110,12 @@ public struct AppDependencies: Sendable {
         }
     }
 
-    public func show(_ screen: Onboarding) {
+    public func show(_ screen: Onboarding, server: ServerOrigin? = nil) {
         guard !identity.busy else { return }
-        if screen == .connect { addressChanged() } else { cancelProbe() }
+        if screen == .connect {
+            connectionPrefill = server ?? configuration.server
+            addressChanged()
+        } else { cancelProbe() }
         onboarding = screen
     }
     public func sessionEnded() { cancelProbe(); onboarding = .login }
@@ -194,6 +201,8 @@ public struct AppDependencies: Sendable {
 
     public func continueToLogin() async {
         guard probeState == .content, let server = checkedServer else { return }
+        // Sign in with a separate account before changing the active workspace's origin.
+        if identity.addingAccount { show(.login); return }
         let generation = probeGeneration
         var next = configuration; next.server = server
         do {
@@ -204,6 +213,19 @@ public struct AppDependencies: Sendable {
             guard probeGeneration == generation else { return }
             connectionError = .storage; probeState = .failed
         }
+    }
+
+    func openLoginForServer(_ server: ServerOrigin, from account: AccountRecord) async {
+        guard identity.messaging?.account.id == account.id, !identity.busy, !isDemo else { return }
+        checkServer(server.url.absoluteString)
+        let generation = probeGeneration
+        await probeTask?.value
+        guard !Task.isCancelled, generation == probeGeneration, checkedServer == server,
+              identity.messaging?.account.id == account.id, !identity.busy else { return }
+        identity.error = nil
+        identity.information = nil
+        identity.addingAccount = true
+        show(.login)
     }
 
     public func setAppearance(_ appearance: Appearance) {

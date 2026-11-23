@@ -1,8 +1,4 @@
 import SwiftUI
-import AVFoundation
-#if os(iOS)
-import UIKit
-#endif
 import MeetSpaceCore
 import MeetSpaceDesignSystem
 import MeetSpaceMedia
@@ -22,18 +18,12 @@ struct LiveProfileView: View {
                     case .profile: AccountSettingsContent(model: settings, section: .profile, wide: wide) { EmptyView() }
                     case .accounts: ScrollView { accounts(currentAccount: account, wide: wide) }.background(MSTheme.background)
                     case .audio: AccountSettingsContent(model: settings, section: .audio, wide: wide) { EmptyView() }
-                    case .video: CameraDevicesView(wide: wide)
+                    case .video: SettingsDetailView(model: app, route: .videoSettings, wide: wide).id(account.key)
                     case .notifications:
-                        AccountSettingsContent(model: settings, section: .notifications, wide: wide) {
-                            DeviceNotificationSettings(model: app.identity.notifications)
-                        }
+                        LiveAccountNotificationSettings(settings: settings, push: app.identity.notifications, wide: wide)
                     case .appearance: SettingsDetailView(model: app, route: .appearance, wide: wide)
                     case .connection:
-                        AccountSettingsContent(model: settings, section: .server, wide: wide) {
-                            AccountShortcutRow(title: "Лицензии компонентов", symbol: "doc.text", identifier: "openComponentLicenses") {
-                                licenses = true
-                            }.msCard(padding: 0)
-                        }
+                        AccountConnectionPage(app: app, wide: wide, openLicenses: { licenses = true })
                     }
                 }
                 .task(id: account.id) { if !settings.loaded { await settings.load() } }
@@ -132,47 +122,5 @@ struct DeviceNotificationSettings: View {
             Text(tr("Входящие звонки доступны, пока приложение открыто. Вызовы при закрытом приложении ещё не настроены на сервере."))
                 .font(MSTheme.font(12)).foregroundStyle(MSTheme.muted).fixedSize(horizontal: false, vertical: true)
         }.msCard(padding: 14)
-    }
-}
-
-private struct CameraDevicesView: View {
-    let wide: Bool
-    @Environment(\.scenePhase) private var scenePhase
-    @Environment(\.dynamicTypeSize) private var typeSize
-    @State private var cameras: [String] = []
-    @State private var permission = AVCaptureDevice.authorizationStatus(for: .video)
-    var body: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: 24) {
-                AccountDetailHeading(title: "Видео", subtitle: "Доступ к камере для встреч.")
-                VStack(spacing: 12) {
-                    Image(systemName: "video.slash").font(.system(size: 28)).accessibilityHidden(true)
-                    Text(tr(cameras.isEmpty ? "Камера недоступна" : "Камера выключена"))
-                        .font(MSTheme.font(13)).multilineTextAlignment(.center).fixedSize(horizontal: false, vertical: true)
-                }.foregroundStyle(.white).padding(16).frame(maxWidth: .infinity, minHeight: 144)
-                    .aspectRatio(typeSize.isAccessibilitySize ? nil : 16 / 9, contentMode: .fit)
-                    .background(Color(red: 0.14, green: 0.13, blue: 0.15), in: RoundedRectangle(cornerRadius: 16))
-                if !cameras.isEmpty {
-                    ProfileField(label: "Камера") {
-                        Text(cameras.formatted(.list(type: .and))).profileInput(readOnly: true)
-                    }
-                }
-                if permission == .denied || permission == .restricted {
-                    Text(tr("Доступ к камере отключён")).font(MSTheme.font(13)).foregroundStyle(MSTheme.muted)
-                    #if os(iOS)
-                    if let url = URL(string: UIApplication.openSettingsURLString) {
-                        Link(tr("Открыть настройки"), destination: url).frame(minHeight: 44)
-                    }
-                    #endif
-                }
-            }.padding(.horizontal, wide ? 48 : 20).padding(.vertical, wide ? 36 : 18)
-                .frame(maxWidth: 860).frame(maxWidth: .infinity, alignment: .topLeading)
-        }.background(MSTheme.background).onAppear(perform: refresh)
-            .onChange(of: scenePhase) { _, value in if value == .active { refresh() } }
-    }
-    private func refresh() {
-        permission = AVCaptureDevice.authorizationStatus(for: .video)
-        cameras = AVCaptureDevice.DiscoverySession(deviceTypes: [.builtInWideAngleCamera, .external],
-                                                    mediaType: .video, position: .unspecified).devices.map(\.localizedName)
     }
 }

@@ -32,6 +32,7 @@ private final class RTCReference<Value>: @unchecked Sendable {
     private var makingOffer = false
     private var publicationRevision = 0
     private let streamID: String
+    private let receiveVideo: Bool
     private let emit: @MainActor (ConferenceMediaEvent) -> Void
     private let receivedVideo: @MainActor (RTCVideoTrack, ConferenceVideoTrack) -> Void
     private let removedVideo: @MainActor (String) -> Void
@@ -44,6 +45,7 @@ private final class RTCReference<Value>: @unchecked Sendable {
         factory = RTCPeerConnectionFactory(encoderFactory: RTCDefaultVideoEncoderFactory(),
                                           decoderFactory: RTCDefaultVideoDecoderFactory())
         streamID = configuration.mediaPeerID.uuidString.lowercased()
+        receiveVideo = configuration.receiveVideo
         let noise = DeviceAudioPreferences.load().noiseSuppression ? "true" : "false"
         let source = factory.audioSource(with: RTCMediaConstraints(mandatoryConstraints: nil, optionalConstraints: ["googNoiseSuppression": noise]))
         audioTrack = factory.audioTrack(with: source, trackId: "microphone-" + streamID)
@@ -67,12 +69,13 @@ private final class RTCReference<Value>: @unchecked Sendable {
         do {
             // Match Android's offer shape: microphone/camera, screen video/audio, then remote slots.
             microphone = try transceiver(type: .audio, direction: .recvOnly)
-            camera = try transceiver(type: .video, direction: .recvOnly)
-            screen = try transceiver(type: .video, direction: .recvOnly)
+            let videoDirection: RTCRtpTransceiverDirection = receiveVideo ? .recvOnly : .inactive
+            camera = try transceiver(type: .video, direction: videoDirection)
+            screen = try transceiver(type: .video, direction: videoDirection)
             _ = try transceiver(type: .audio, direction: .recvOnly)
             for _ in 0..<(2 * (configuration.maxPeers - 1)) {
                 _ = try transceiver(type: .audio, direction: .recvOnly)
-                _ = try transceiver(type: .video, direction: .recvOnly)
+                _ = try transceiver(type: .video, direction: videoDirection)
             }
         } catch {
             connection.close(); self.connection = nil
@@ -130,12 +133,12 @@ private final class RTCReference<Value>: @unchecked Sendable {
             publications.append(ConferenceMediaPublication(mid: microphone.mid, source: "microphone",
                 trackId: try wireTrackID(mid: microphone.mid, sdp: localSDP)))
         }
-        if let camera, camera.direction == .sendRecv {
+        if let camera, camera.direction == .sendRecv || camera.direction == .sendOnly {
             guard !camera.mid.isEmpty else { throw ConferenceMediaError.negotiation }
             publications.append(ConferenceMediaPublication(mid: camera.mid, source: "camera",
                 trackId: try wireTrackID(mid: camera.mid, sdp: localSDP)))
         }
-        if let screen, screen.direction == .sendRecv, let screenTrack {
+        if let screen, screen.direction == .sendRecv || screen.direction == .sendOnly, let screenTrack {
             guard !screen.mid.isEmpty else { throw ConferenceMediaError.negotiation }
             // The server treats this as an opaque capture-generation identifier, independent
             // of WebRTC's stable sender msid. A new capture must never reuse the old generation.
@@ -217,7 +220,12 @@ private final class RTCReference<Value>: @unchecked Sendable {
 
     private func setSource(_ transceiver: RTCRtpTransceiver?, track: RTCMediaStreamTrack?, streamID: String? = nil) throws {
         guard connection != nil, let transceiver else { throw ConferenceMediaError.notConfigured }
-        let direction: RTCRtpTransceiverDirection = track == nil ? .recvOnly : .sendRecv
+        let direction: RTCRtpTransceiverDirection
+        if transceiver.mediaType == .audio || receiveVideo {
+            direction = track == nil ? .recvOnly : .sendRecv
+        } else {
+            direction = track == nil ? .inactive : .sendOnly
+        }
         if transceiver.sender.track?.trackId != track?.trackId || transceiver.direction != direction { publicationRevision += 1 }
         transceiver.sender.track = track
         transceiver.sender.streamIds = [streamID ?? self.streamID]

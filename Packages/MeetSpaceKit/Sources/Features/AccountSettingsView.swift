@@ -3,7 +3,7 @@ import MeetSpaceCore
 import MeetSpaceDesignSystem
 
 enum AccountSettingsSection {
-    case profile, audio, notifications, server
+    case profile, audio
 }
 
 struct AccountSettingsContent<Controls: View>: View {
@@ -19,8 +19,6 @@ struct AccountSettingsContent<Controls: View>: View {
                 switch section {
                 case .profile: profile
                 case .audio: AccountAudioSettingsView(wide: wide)
-                case .notifications: preferences
-                case .server: server
                 }
                 if section != .audio {
                     if model.busy { ProgressView().accessibilityIdentifier("settingsLoading") }
@@ -35,7 +33,6 @@ struct AccountSettingsContent<Controls: View>: View {
                         .buttonStyle(MSButtonStyle(primary: false)).disabled(model.busy)
                 }
                 controls()
-                if section == .notifications { devices }
             }.padding(.horizontal, wide ? 48 : 20).padding(.vertical, wide ? 36 : 18)
                 .frame(maxWidth: 860).frame(maxWidth: .infinity, alignment: .topLeading)
         }.background(MSTheme.background)
@@ -86,100 +83,6 @@ struct AccountSettingsContent<Controls: View>: View {
                 Text(model.profile.createdAt, format: .dateTime.day().month().year())
             }.font(MSTheme.font(12)).foregroundStyle(MSTheme.muted)
         }
-    }
-    private var preferences: some View {
-        VStack(alignment: .leading, spacing: 24) {
-            AccountDetailHeading(title: "Уведомления", subtitle: "Выберите события и каналы доставки.")
-            VStack(alignment: .leading, spacing: 0) {
-                preferenceHeading("События")
-                Toggle(tr("Приглашения и изменения встреч"), isOn: $model.preferences.invitation)
-                    .accessibilityIdentifier("notificationInvitation").padding(.vertical, 7)
-                Divider()
-                Toggle(tr("Напоминания о встречах"), isOn: $model.preferences.reminder)
-                    .accessibilityIdentifier("notificationReminder").padding(.vertical, 7)
-                Divider()
-                Toggle(tr("Готовность записей"), isOn: $model.preferences.recording)
-                    .accessibilityIdentifier("notificationRecording").padding(.vertical, 7)
-            }.disabled(model.busy || model.savedPreferences == nil)
-            Divider()
-            VStack(alignment: .leading, spacing: 0) {
-                preferenceHeading("Каналы доставки")
-                Toggle(isOn: $model.preferences.email) {
-                    VStack(alignment: .leading, spacing: 4) {
-                        Text(tr("Email"))
-                        Text(tr("Получать выбранные события по электронной почте."))
-                            .font(MSTheme.font(11)).foregroundStyle(MSTheme.muted)
-                    }
-                }.accessibilityIdentifier("notificationEmail").padding(.vertical, 7)
-                Divider()
-                Toggle(tr("Push на устройства аккаунта"), isOn: $model.preferences.push)
-                    .accessibilityIdentifier("notificationAccountPush").padding(.vertical, 7)
-            }.disabled(model.busy || model.savedPreferences == nil)
-            if let error = model.preferencesError { errorMessage(error) }
-            Button(tr("Сохранить настройки")) { Task { await model.saveNotifications() } }
-                .buttonStyle(MSButtonStyle()).disabled(!model.canSavePreferences).accessibilityIdentifier("saveNotificationPreferences")
-            Text(tr("Доставка зависит от настройки провайдера на сервере."))
-                .font(MSTheme.font(12)).foregroundStyle(MSTheme.muted)
-        }.toggleStyle(AccountSwitchStyle())
-    }
-    private func preferenceHeading(_ title: String) -> some View {
-        Text(tr(title)).font(MSTheme.font(15, weight: .semibold)).padding(.bottom, 10)
-            .accessibilityAddTraits(.isHeader)
-    }
-    private var devices: some View {
-        VStack(alignment: .leading, spacing: 16) {
-            Text(tr("Устройства уведомлений")).font(MSTheme.font(15, weight: .semibold))
-                .accessibilityAddTraits(.isHeader)
-            Text(tr("Зарегистрированные устройства доставки уведомлений. Это не список активных входов в аккаунт."))
-                .font(MSTheme.font(12)).foregroundStyle(MSTheme.muted)
-            if let error = model.devicesError { errorMessage(error) }
-            else if model.loaded && model.devices.isEmpty { Text(tr("Устройства не зарегистрированы")) }
-            ForEach(model.devices) { device in
-                VStack(alignment: .leading, spacing: 8) {
-                    HStack {
-                        Label(device.platform.uppercased(), systemImage: device.platform == "web" ? "desktopcomputer" : "iphone")
-                        Spacer()
-                        Text(tr(device.revokedAt != nil ? "Отозвано" : device.disabledAt != nil ? "Отключено" : "Активно"))
-                            .foregroundStyle(device.isActive ? MSTheme.accent : MSTheme.muted)
-                    }
-                    Text(device.id.uuidString.lowercased()).font(MSTheme.font(11)).textSelection(.enabled)
-                    Text(device.updatedAt, format: .dateTime.day().month().year().hour().minute()).font(MSTheme.font(12)).foregroundStyle(MSTheme.muted)
-                }.msCard()
-            }
-        }
-    }
-    private var server: some View {
-        VStack(alignment: .leading, spacing: 16) {
-            AccountDetailHeading(title: "Подключение", subtitle: "Адрес сервера вашего MeetSpace.")
-            Text(model.account.server.displayName).font(MSTheme.font(16, weight: .semibold))
-            if let error = model.capabilitiesError { errorMessage(error) }
-            if let value = model.capabilities {
-                LabeledContent(tr("Версия сервера"), value: value.buildVersion)
-                LabeledContent(tr("Режимы записи"), value: value.recordingModes.isEmpty ? tr("Недоступны") : value.recordingModes.joined(separator: ", "))
-            }
-            if let integrations = model.integrations {
-                capabilityRow("Почтовый провайдер", value: integrations.email)
-                capabilityRow("Push-провайдер", value: integrations.push)
-                capabilityRow("Внешний календарь", value: integrations.calendar)
-            }
-            Text(tr("Возможности сообщает выбранный сервер. Они не подтверждают работоспособность внешней доставки или установку провайдера."))
-                .font(MSTheme.font(12)).foregroundStyle(MSTheme.muted)
-            Divider()
-            Label(tr("Установка сервера по SSH"), systemImage: "terminal").font(MSTheme.font(16, weight: .semibold))
-            Text(tr("Откройте мастер «Развернуть свой сервер» на первом экране."))
-                .font(MSTheme.font(13)).foregroundStyle(MSTheme.muted).accessibilityIdentifier("installerAvailable")
-        }
-    }
-    private func capabilityRow(_ title: String, value: String) -> some View {
-        // Provider identifiers are bounded categories, never endpoint URLs or credentials.
-        let label = switch value {
-        case "noop": "Не настроен"
-        case "mock": "Тестовый режим"
-        case "http": "Внешний шлюз"
-        case "smtp": "SMTP"
-        default: "Неизвестный режим"
-        }
-        return LabeledContent(tr(title), value: tr(label))
     }
     private func errorMessage(_ value: String) -> some View { Text(tr(value)).font(MSTheme.font(13)).foregroundStyle(MSTheme.danger) }
 }

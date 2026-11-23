@@ -90,16 +90,12 @@ struct MessageMenuTrigger<Actions: View>: ViewModifier {
         if enabled {
             content
                 .onGeometryChange(for: CGRect.self) { $0.frame(in: .global) } action: { anchor.bounds = $0 }
-                .background {
-                    // An independent hit target lets file buttons and links in front handle their own taps.
-                    Button(action: open) {
-                        Color.clear.contentShape(Rectangle())
-                    }
-                    .buttonStyle(.plain)
-                    .accessibilityLabel(([author, time, summary] + attachments).filter { !$0.isEmpty }.joined(separator: ", "))
-                    .accessibilityHint(tr("Действия с сообщением"))
-                    .accessibilityIdentifier("message.actions.\(identifier)")
-                }
+                .contentShape(Rectangle())
+                .highPriorityGesture(
+                    LongPressGesture(minimumDuration: 1, maximumDistance: 10)
+                        .onEnded { _ in open() }
+                )
+                .accessibilityElement(children: .contain)
                 .accessibilityAction(named: tr("Действия с сообщением")) { open() }
                 #if os(macOS)
                 .onDisappear { if presentation?.item?.id == identifier { presentation?.item = nil } }

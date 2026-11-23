@@ -72,6 +72,30 @@ import MeetSpaceBroadcast
         }
     }
 
+    func testHidingParticipantVideoPreservesIncomingAudioAndOwnScreenSharing() async throws {
+        let media = ConferenceMediaFactory.make()
+        do {
+            try await media.configure(ConferenceMediaConfiguration(iceServers: [], maxPeers: 2, mediaPeerID: UUID(),
+                screenAllowed: true, receiveVideo: false))
+            let offer = try await media.makeOffer(iceRestart: false)
+            let sections = offer.sdp.components(separatedBy: "\r\nm=").dropFirst()
+            let audio = sections.filter { $0.hasPrefix("audio ") }
+            let video = sections.filter { $0.hasPrefix("video ") }
+            XCTAssertEqual(audio.count, 4)
+            XCTAssertTrue(audio.allSatisfy { $0.contains("a=recvonly") })
+            XCTAssertEqual(video.count, 4)
+            XCTAssertTrue(video.allSatisfy { $0.contains("a=inactive") })
+            try await media.rollbackLocalOffer()
+            try await media.setScreenEnabled(true)
+            let sharing = try await media.makeOffer(iceRestart: false)
+            XCTAssertEqual(sharing.publications.map(\.source), ["video/screen"])
+            let sharingVideo = sharing.sdp.components(separatedBy: "\r\nm=").filter { $0.hasPrefix("video ") }
+            XCTAssertEqual(sharingVideo.filter { $0.contains("a=sendonly") }.count, 1)
+            XCTAssertEqual(sharingVideo.filter { $0.contains("a=inactive") }.count, 3)
+            await media.close()
+        } catch { await media.close(); throw error }
+    }
+
     func testScreenGenerationRollbackAndPolicyWithCaptureOff() async throws {
         let media = ConferenceMediaFactory.make()
         do {

@@ -5,16 +5,16 @@ import MeetSpaceDesignSystem
 struct ProfileView: View {
     @Bindable var model: AppModel
     var body: some View {
-        AccountHome(name: model.demoProfile.name, email: "alex@example.org", server: model.configuration.server?.displayName ?? "meet.example.org",
+        AccountHome(name: model.demoProfile.name, email: "alex@example.org", server: (model.demoProfile.server ?? model.configuration.server)?.displayName ?? "meet.example.org",
                     demo: true, photo: model.demoProfile.photo, logout: { model.leaveDemo() }) { section, wide in
             switch section {
             case .profile: DemoProfileEditor(profile: model.demoProfile, wide: wide)
             case .accounts: SettingsDetailView(model: model, route: .accounts)
             case .audio: ScrollView { AccountAudioSettingsView(wide: wide).padding(20) }
-            case .video: SettingsDetailView(model: model, route: .videoSettings)
-            case .notifications: SettingsDetailView(model: model, route: .notificationSettings)
+            case .video: SettingsDetailView(model: model, route: .videoSettings, wide: wide)
+            case .notifications: SettingsDetailView(model: model, route: .notificationSettings, wide: wide)
             case .appearance: SettingsDetailView(model: model, route: .appearance, wide: wide)
-            case .connection: SettingsDetailView(model: model, route: .connection)
+            case .connection: AccountConnectionPage(app: model, wide: wide)
             }
         }.toolbar(.hidden)
     }
@@ -111,9 +111,6 @@ struct SettingsDetailView: View {
                             .foregroundStyle(MSTheme.muted)
                     }
                     if model.isDemo { demoTools }
-                case .connection:
-                    Label(model.configuration.server?.url.absoluteString ?? tr("Сервер не выбран"), systemImage: "lock.shield").msCard()
-                    Button(tr("Подключиться к серверу")) { model.leaveDemo(); model.show(.connect) }.buttonStyle(MSButtonStyle())
                 case .accounts:
                     HStack { Avatar("АС"); Text(tr("Демо-профиль")); Spacer(); Image(systemName: "checkmark.circle.fill").foregroundStyle(MSTheme.accent) }.msCard()
                     FeatureNotice("Добавление аккаунтов станет доступно после подключения авторизации.")
@@ -122,13 +119,10 @@ struct SettingsDetailView: View {
                     settingPreview("Динамики", "speaker.wave.2", "Устройство по умолчанию")
                     FeatureNotice("Медиа-устройства будут подключены на этапе звонков. Разрешения пока не запрашиваются.")
                 case .videoSettings:
-                    RoundedRectangle(cornerRadius: 16).fill(MSTheme.surfaceSecondary).aspectRatio(16 / 9, contentMode: .fit)
-                        .overlay { Label(tr("Камера выключена"), systemImage: "video.slash") }
-                    settingPreview("Камера", "video", "Устройство по умолчанию")
-                    FeatureNotice("Медиа-устройства будут подключены на этапе звонков. Разрешения пока не запрашиваются.")
-                default:
-                    settingPreview("Уведомления", "bell", "Не подключены")
-                    FeatureNotice("Push-уведомления требуют отдельной интеграции APNs и проверки на устройстве.")
+                    AccountVideoSettingsView(account: model.isDemo ? nil : model.identity.messaging?.account.key, wide: wide)
+                case .notificationSettings:
+                    DemoAccountNotificationForm(profile: model.demoProfile, wide: wide)
+                default: EmptyView()
                 }
             }.padding(.horizontal, wide ? 48 : 20).padding(.vertical, wide ? 36 : 18)
                 .frame(maxWidth: 860).frame(maxWidth: .infinity, alignment: .topLeading)

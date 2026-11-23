@@ -80,3 +80,65 @@ private func stage07IdentityUser(name: String) throws -> AccountUser {
     #expect(model.profile == account.user && model.displayName == account.user.displayName)
     model.close()
 }
+
+@Test @MainActor func accountConnectionChecksNewOriginWithoutMovingSessionOrSendingExistingCredentials() async throws {
+    let current = try Fixture.account(UUID())
+    let unavailable = try ServerOrigin("https://offline.fixture")
+    let candidate = try ServerOrigin("https://new.fixture")
+    let credentials = try WireJSON.encoder().encode(Fixture.credentials())
+    let secrets = TestSecrets(), accounts = MemoryAccountIndexStore()
+    await secrets.write(credentials, for: current.key)
+    try await accounts.save(AccountIndex(accounts: [current], activeID: current.id))
+    let probe = SettingsConnectionProbeTransport(available: candidate)
+    let transport = RoutedTransport { request, _ in
+        if request.url?.host == current.server.url.host, request.url?.path == "/api/v1/auth/me" {
+            return try Fixture.response(["status": "success", "user": Fixture.user(current.user.id)])
+        }
+        if request.url?.host == candidate.url.host, request.url?.path == "/api/v1/auth/login" {
+            return NetworkResponse(status: 401)
+        }
+        throw APIError.offline
+    }
+    let model = AppModel(dependencies: AppDependencies(serverProbe: ServerProbe(transport: probe),
+        configuration: Stage07IdentityPreferences(), credentials: secrets, accounts: accounts,
+        transport: { transport }, sockets: Stage07IdentitySockets()))
+    await model.restore()
+    #expect(model.identity.messaging?.account.id == current.id)
+
+    await model.openLoginForServer(unavailable, from: current)
+    #expect(model.connectionError == .offline)
+    #expect(!model.identity.addingAccount)
+    #expect(model.configuration.server == current.server && model.authenticationServer == current.server)
+    #expect(model.identity.messaging?.account.id == current.id)
+
+    await model.openLoginForServer(candidate, from: current)
+    #expect(await probe.urls == [unavailable, candidate].map { $0.url.appendingPathComponent("version") })
+    #expect(model.identity.addingAccount && model.onboarding == .login)
+    #expect(model.configuration.server == current.server && model.authenticationServer == candidate)
+    #expect(await transport.requests.allSatisfy { $0.url?.host == current.server.url.host })
+    await model.identity.login(server: model.authenticationServer, email: current.user.email, password: "new-server-password")
+    let attempts = await transport.requests.filter { $0.url?.host == candidate.url.host }
+    #expect(attempts.count == 1)
+    let request = try #require(attempts.first)
+    #expect(request.url?.path == "/api/v1/auth/login")
+    #expect(request.value(forHTTPHeaderField: "Authorization") == nil)
+    #expect(request.value(forHTTPHeaderField: "Cookie") == nil)
+    #expect(model.identity.error != nil && model.identity.messaging?.account.id == current.id)
+    #expect(await accounts.load().activeID == current.id)
+    #expect(await secrets.read(current.key) == credentials)
+    model.identity.addingAccount = false
+    #expect(model.authenticationServer == current.server)
+    await model.identity.logout(current)
+}
+
+private actor SettingsConnectionProbeTransport: HTTPTransport {
+    let available: ServerOrigin
+    private(set) var urls: [URL] = []
+    init(available: ServerOrigin) { self.available = available }
+    func get(_ url: URL) async throws -> HTTPResponse {
+        urls.append(url)
+        guard url == available.url.appendingPathComponent("version") else { throw APIError.offline }
+        let data = try JSONEncoder().encode(ServerVersion(version: "1", commit: "fixture", buildTime: "fixture"))
+        return HTTPResponse(status: 200, contentType: "application/json", data: data)
+    }
+}
