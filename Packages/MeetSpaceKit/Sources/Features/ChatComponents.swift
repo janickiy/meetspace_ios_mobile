@@ -77,6 +77,7 @@ struct ChatMessageText: View {
     let text: String
     var body: some View {
         Text(text).font(MSTheme.font(12)).lineSpacing(5).padding(.vertical, 2.5)
+            .allowsHitTesting(false)
     }
 }
 
@@ -221,31 +222,39 @@ struct ChatMessageRow<Content: View, Actions: View>: View {
     private var messageContent: some View {
         let wide = width >= 780
         let compactLogWidth = max(0, width - 24)
+        let bubbleInset: CGFloat = wide ? 16 : 13
         return HStack(alignment: .top, spacing: wide ? 10 : 7) {
             if own { Spacer(minLength: selecting ? 0 : (wide ? 44 : max(0, compactLogWidth * 0.12 - 7))) }
             else { ChatAvatar(name: author, size: wide ? 30 : 25).padding(.top, 3) }
-            VStack(alignment: .leading, spacing: 5) {
-                if let forwarded {
-                    Label("\(tr("Переслано от")) \(forwarded)", systemImage: "arrow.right")
-                        .font(MSTheme.font(11)).foregroundStyle(MSTheme.muted)
+            Grid(alignment: .leading, verticalSpacing: 8) {
+                GridRow {
+                    VStack(alignment: .leading, spacing: 5) {
+                        if let forwarded {
+                            Label("\(tr("Переслано от")) \(forwarded)", systemImage: "arrow.right")
+                                .font(MSTheme.font(11)).foregroundStyle(MSTheme.muted).allowsHitTesting(false)
+                        }
+                        if !own {
+                            Text(author).font(MSTheme.font(11, weight: .semibold)).foregroundStyle(MSTheme.accent)
+                                .frame(minHeight: 18).allowsHitTesting(false)
+                        }
+                        content().font(MSTheme.font(12))
+                    }.frame(minWidth: 100 - 2 * bubbleInset, alignment: .leading)
                 }
-                if !own { Text(author).font(MSTheme.font(11, weight: .semibold)).foregroundStyle(MSTheme.accent).frame(minHeight: 18) }
-                content().font(MSTheme.font(12))
+                GridRow {
+                    HStack(spacing: 5) {
+                        if pinned { Image(systemName: "pin").accessibilityLabel(tr("Закреплено")) }
+                        if edited { Text(tr("изменено")) }
+                        Text(time)
+                        if own { ChatDeliveryMark().accessibilityLabel(tr("Отправлено")) }
+                    }.font(MSTheme.font(9)).foregroundStyle(MSTheme.muted)
+                        .fixedSize().gridCellAnchor(.trailing).allowsHitTesting(false)
+                }
             }
-            .padding(.horizontal, wide ? 16 : 13).padding(.top, wide ? 14 : 12).padding(.bottom, wide ? 37 : 35)
-            .frame(minWidth: 100, alignment: .leading)
-            .overlay(alignment: .bottomTrailing) {
-                HStack(spacing: 5) {
-                    if pinned { Image(systemName: "pin").accessibilityLabel(tr("Закреплено")) }
-                    if edited { Text(tr("изменено")) }
-                    Text(time)
-                    if own { ChatDeliveryMark().accessibilityLabel(tr("Отправлено")) }
-                }.font(MSTheme.font(9)).foregroundStyle(MSTheme.muted).padding(.trailing, 12).padding(.bottom, 10)
-            }
-            .background(own ? MSTheme.accentSoft : MSTheme.surface, in: shape)
-            .overlay { shape.strokeBorder(own ? .clear : MSTheme.line) }
+            .padding(.horizontal, bubbleInset).padding(.top, wide ? 14 : 12).padding(.bottom, 10)
             .modifier(MessageMenuTrigger(enabled: actionable && !selecting, own: own, author: author, time: time, summary: summary,
-                                         attachments: attachments, reaction: reaction, react: react, identifier: identifier, wide: wide, actions: actions))
+                                         attachments: attachments, reaction: reaction, react: react, identifier: identifier, actions: actions))
+            .background(own ? MSTheme.accentSoft : MSTheme.surface, in: shape)
+            .overlay { shape.strokeBorder(own ? .clear : MSTheme.line).allowsHitTesting(false) }
             .padding(.bottom, reaction == nil ? 0 : 34)
             .overlay(alignment: own ? .bottomTrailing : .bottomLeading) {
                 if let reaction, let react {
@@ -300,6 +309,16 @@ private struct ChatDeliveryMark: View {
     }
 }
 
+func chatGroupSubtitle(_ count: Int) -> String {
+    let noun: String = switch (count % 100, count % 10) {
+    case (11...14, _): "участников"
+    case (_, 1): "участник"
+    case (_, 2...4): "участника"
+    default: "участников"
+    }
+    return "\(tr("Группа")) · \(count) \(tr(noun))"
+}
+
 struct ChatListRow: View {
     let name: String
     var initials: String?
@@ -308,6 +327,7 @@ struct ChatListRow: View {
     let preview: String
     let time: String
     let unread: Int
+    var muted = false
     var selected = false
     @Environment(\.dynamicTypeSize) private var typeSize
     @Environment(\.workspaceWidth) private var width
@@ -319,8 +339,14 @@ struct ChatListRow: View {
             HStack(spacing: 10) {
                 ChatAvatar(name: name, initials: initials, group: group, listRow: true)
                 VStack(alignment: .leading, spacing: 0) {
-                    Text(name).font(MSTheme.font(15, weight: .semibold))
-                        .lineLimit(typeSize.isAccessibilitySize ? nil : 1).frame(minHeight: 21.75)
+                    HStack(spacing: 5) {
+                        Text(name).font(MSTheme.font(15, weight: .semibold))
+                            .lineLimit(typeSize.isAccessibilitySize ? nil : 1)
+                        if muted {
+                            Image(systemName: "bell.slash").font(.system(size: 12)).foregroundStyle(MSTheme.muted)
+                                .accessibilityLabel(tr("Уведомления выключены"))
+                        }
+                    }.frame(minHeight: 21.75)
                     if let subtitle {
                         Text(subtitle).font(MSTheme.font(10)).foregroundStyle(MSTheme.muted)
                             .frame(minHeight: 15).padding(.top, 1)
@@ -356,7 +382,7 @@ enum ChatFilter: String, CaseIterable { case all = "Все", direct = "Личн�
 
 struct ChatFilterBar: View {
     @Binding var filter: ChatFilter
-    var unread: Int?
+    let unread: String
     let folders: () -> Void
     @Environment(\.workspaceWidth) private var width
     var body: some View {
@@ -366,14 +392,15 @@ struct ChatFilterBar: View {
                     Button { filter = value } label: {
                         HStack(spacing: 5) {
                             Text(tr(value.rawValue)).font(MSTheme.font(14, weight: .semibold))
-                            if value == .unread, let unread {
-                                Text("\(unread)").font(MSTheme.font(11)).padding(.horizontal, 5).frame(minHeight: 18.5)
+                            if value == .unread {
+                                Text(unread).font(MSTheme.font(11)).padding(.horizontal, 5).frame(minHeight: 18.5)
                                     .background(MSTheme.surfaceSecondary, in: Capsule()).foregroundStyle(MSTheme.muted)
                             }
                         }.frame(minHeight: 51)
                             .foregroundStyle(filter == value ? MSTheme.ink : MSTheme.muted)
                             .overlay(alignment: .bottom) { if filter == value { Rectangle().fill(MSTheme.brandAccent).frame(height: 3) } }
                     }.buttonStyle(.plain).accessibilityAddTraits(filter == value ? .isSelected : [])
+                        .accessibilityIdentifier("messages.filter.\(String(describing: value))")
                 }
                 Menu {
                     Button(tr("Папки"), systemImage: "folder", action: folders)
@@ -386,21 +413,24 @@ struct ChatFilterBar: View {
                 }.menuStyle(.button).buttonStyle(.plain).menuIndicator(.hidden).foregroundStyle(filter == .groups ? MSTheme.ink : MSTheme.muted)
             }.padding(.horizontal, width >= 780 ? 16 : 17).padding(.bottom, 1)
         }.scrollIndicators(.hidden).overlay(alignment: .bottom) { Rectangle().fill(MSTheme.line).frame(height: 1) }
+            .padding(.bottom, width >= 780 ? 16 : 15)
     }
 }
 
 struct ChatNewButton: View {
     var compact = false
     let action: () -> Void
+    @Environment(\.colorScheme) private var scheme
     var body: some View {
         Button(action: action) {
             let layout = compact ? AnyLayout(VStackLayout(spacing: 3)) : AnyLayout(HStackLayout(spacing: 8))
             layout {
-                Image(systemName: "plus").font(.system(size: compact ? 20 : 17))
+                Image(systemName: "plus").font(.system(size: compact ? 23 : 17)).accessibilityHidden(true)
                 Text(tr("Новый чат")).font(MSTheme.font(13, weight: .semibold))
             }.padding(.horizontal, 17)
-                .frame(minHeight: compact ? 53 : 46).foregroundStyle(.white)
+                .frame(minHeight: compact ? 53 : 46).foregroundStyle(scheme == .dark ? MSTheme.background : Color.white)
                 .background(MSTheme.accent, in: RoundedRectangle(cornerRadius: compact ? 18 : 15))
+                .shadow(color: Color.black.opacity(compact ? 0.12 : 0), radius: 11, y: 6)
         }.buttonStyle(.plain).accessibilityIdentifier("newChat")
     }
 }
@@ -451,7 +481,7 @@ struct ForwardPreview: View {
 struct ChatGestureHint: View {
     let selecting: Bool
     var body: some View {
-        Text(tr(selecting ? "Нажмите на сообщения для выбора" : "Удерживайте сообщение, чтобы открыть действия"))
+        Text(tr(selecting ? "Нажмите на сообщения для выбора" : "Нажмите на сообщение, чтобы открыть действия"))
             .font(MSTheme.font(11)).foregroundStyle(MSTheme.muted).frame(maxWidth: .infinity)
     }
 }
@@ -472,7 +502,7 @@ struct ChatInviteCard: View {
                     }.frame(maxWidth: .infinity, alignment: .leading)
                     WorkspaceIcon("person.badge.plus", size: 30).foregroundStyle(MSTheme.brandAccent)
                 }.padding(.horizontal, 15).padding(.vertical, 19).frame(minHeight: 84).contentShape(Rectangle())
-            }.buttonStyle(.plain)
+            }.buttonStyle(.plain).accessibilityIdentifier("messages.invite")
                 .background(MSTheme.surfaceSecondary, in: RoundedRectangle(cornerRadius: 18, style: .circular))
                 .overlay(alignment: .topTrailing) {
                     Button { hidden = true } label: {
@@ -481,7 +511,7 @@ struct ChatInviteCard: View {
                             .contentShape(Rectangle())
                     }.buttonStyle(.plain).accessibilityLabel(tr("Скрыть приглашение")).offset(x: 13.5, y: -13.5)
                 }.padding(.leading, width >= 780 ? 0 : -1).padding(.trailing, width >= 780 ? 1 : 0)
-                .padding(.top, width >= 780 ? 16 : 15).padding(.bottom, 14)
+                .padding(.bottom, 14)
         }
     }
 }

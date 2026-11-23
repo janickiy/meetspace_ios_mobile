@@ -16,23 +16,6 @@ struct ProfileView: View {
             case .appearance: SettingsDetailView(model: model, route: .appearance, wide: wide)
             case .connection: SettingsDetailView(model: model, route: .connection)
             }
-        } extras: {
-            VStack(alignment: .leading, spacing: 12) {
-                AccountShortcutRow(title: "Каталог экранов", symbol: "square.grid.2x2", identifier: "profileMenu.demoCatalog") {
-                    model.navigate(.interfaceCatalog)
-                }.msCard(padding: 0)
-                VStack(alignment: .leading, spacing: 4) {
-                    Text(tr("Состояния интерфейса")).font(MSTheme.font(13, weight: .semibold))
-                        .fixedSize(horizontal: false, vertical: true).accessibilityAddTraits(.isHeader)
-                    Picker(tr("Состояние"), selection: $model.contentState) {
-                        Text(tr("Данные")).tag(LoadState.content)
-                        Text(tr("Загрузка")).tag(LoadState.loading)
-                        Text(tr("Пусто")).tag(LoadState.empty)
-                        Text(tr("Ошибка")).tag(LoadState.failed)
-                        Text(tr("Офлайн")).tag(LoadState.offline)
-                    }.frame(minHeight: 44).accessibilityIdentifier("demoStatePicker")
-                }.frame(maxWidth: .infinity, alignment: .leading).msCard(padding: 14)
-            }
         }.toolbar(.hidden)
     }
 }
@@ -127,6 +110,7 @@ struct SettingsDetailView: View {
                         Text(tr("Размер текста определяется настройками устройства.")).font(MSTheme.font(12))
                             .foregroundStyle(MSTheme.muted)
                     }
+                    if model.isDemo { demoTools }
                 case .connection:
                     Label(model.configuration.server?.url.absoluteString ?? tr("Сервер не выбран"), systemImage: "lock.shield").msCard()
                     Button(tr("Подключиться к серверу")) { model.leaveDemo(); model.show(.connect) }.buttonStyle(MSButtonStyle())
@@ -150,6 +134,25 @@ struct SettingsDetailView: View {
                 .frame(maxWidth: 860).frame(maxWidth: .infinity, alignment: .topLeading)
         }.background(MSTheme.background).navigationTitle(tr(route.title)).msInlineTitle()
     }
+    private var demoTools: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            AccountShortcutRow(title: "Каталог экранов", symbol: "square.grid.2x2", identifier: "profileMenu.demoCatalog") {
+                model.navigate(.interfaceCatalog)
+            }.msCard(padding: 0)
+            VStack(alignment: .leading, spacing: 4) {
+                Text(tr("Состояния интерфейса")).font(MSTheme.font(13, weight: .semibold))
+                    .fixedSize(horizontal: false, vertical: true).accessibilityAddTraits(.isHeader)
+                Picker(tr("Состояние"), selection: $model.contentState) {
+                    Text(tr("Данные")).tag(LoadState.content)
+                    Text(tr("Загрузка")).tag(LoadState.loading)
+                    Text(tr("Пусто")).tag(LoadState.empty)
+                    Text(tr("Ошибка")).tag(LoadState.failed)
+                    Text(tr("Офлайн")).tag(LoadState.offline)
+                }.frame(minHeight: 44).accessibilityIdentifier("demoStatePicker")
+            }.frame(maxWidth: .infinity, alignment: .leading).msCard(padding: 14)
+        }
+    }
+
     private func settingPreview(_ title: String, _ icon: String, _ value: String) -> some View {
         HStack { Label(tr(title), systemImage: icon); Spacer(); Text(tr(value)).font(MSTheme.font(12)).foregroundStyle(MSTheme.muted) }.msCard()
     }

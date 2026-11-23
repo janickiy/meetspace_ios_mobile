@@ -12,7 +12,7 @@ import Observation
         let time: String
         var unread = 0
         var group: Bool { !members.isEmpty }
-        var subtitle: String? { group ? "Группа · \(members.count) \(members.count == 5 ? "участников" : "участника")" : nil }
+        var subtitle: String? { group ? chatGroupSubtitle(members.count) : nil }
     }
 
     struct Message: Identifiable, Equatable {

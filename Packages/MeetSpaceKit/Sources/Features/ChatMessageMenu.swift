@@ -82,30 +82,25 @@ struct MessageMenuTrigger<Actions: View>: ViewModifier {
     let reaction: String?
     let react: ((String) -> Void)?
     let identifier: String
-    let wide: Bool
     @ViewBuilder var actions: () -> Actions
     @Environment(\.chatMenu) private var presentation
-    @Environment(\.accessibilityVoiceOverEnabled) private var voiceOver
-    @State private var reveal = false
     @State private var anchor = ChatMenuAnchor()
 
     func body(content: Content) -> some View {
         if enabled {
             content
                 .onGeometryChange(for: CGRect.self) { $0.frame(in: .global) } action: { anchor.bounds = $0 }
-                .simultaneousGesture(LongPressGesture(minimumDuration: 0.45).onEnded { _ in open() })
-                .simultaneousGesture(TapGesture().onEnded { reveal.toggle() })
-                .onHover { reveal = $0 }
-                .accessibilityAction(named: tr("Действия с сообщением")) { open() }
-                .overlay(alignment: wide && own ? .topLeading : .topTrailing) {
-                    if reveal || voiceOver {
-                        Button(action: open) {
-                            Image(systemName: "ellipsis").font(.system(size: 15)).frame(width: 32, height: 32)
-                                .background(MSTheme.surface, in: Circle()).frame(width: 44, height: 44).contentShape(Rectangle())
-                        }.buttonStyle(.plain).foregroundStyle(MSTheme.muted).accessibilityLabel(tr("Действия с сообщением"))
-                            .accessibilityIdentifier("message.actions.\(identifier)")
+                .background {
+                    // An independent hit target lets file buttons and links in front handle their own taps.
+                    Button(action: open) {
+                        Color.clear.contentShape(Rectangle())
                     }
+                    .buttonStyle(.plain)
+                    .accessibilityLabel(([author, time, summary] + attachments).filter { !$0.isEmpty }.joined(separator: ", "))
+                    .accessibilityHint(tr("Действия с сообщением"))
+                    .accessibilityIdentifier("message.actions.\(identifier)")
                 }
+                .accessibilityAction(named: tr("Действия с сообщением")) { open() }
                 #if os(macOS)
                 .onDisappear { if presentation?.item?.id == identifier { presentation?.item = nil } }
                 #endif

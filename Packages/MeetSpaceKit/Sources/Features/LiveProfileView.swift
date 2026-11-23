@@ -12,7 +12,6 @@ struct LiveProfileView: View {
     @Bindable var app: AppModel
     @State private var removing: AccountRecord?
     @State private var licenses = false
-    @State private var showingAccountSettings = false
     @State private var deleting: AccountRecord?
     var body: some View {
         Group {
@@ -20,42 +19,22 @@ struct LiveProfileView: View {
                 AccountHome(name: settings.profile.name, email: account.user.email, server: account.server.displayName,
                             demo: false, photo: settings.photo, logout: { removing = account }) { section, wide in
                     switch section {
-                    case .profile: AccountSettingsContent(model: settings, section: .profile, wide: wide)
-                    case .accounts: ScrollView { accounts(wide: wide) }.background(MSTheme.background)
-                    case .audio: AccountSettingsContent(model: settings, section: .audio, wide: wide)
+                    case .profile: AccountSettingsContent(model: settings, section: .profile, wide: wide) { EmptyView() }
+                    case .accounts: ScrollView { accounts(currentAccount: account, wide: wide) }.background(MSTheme.background)
+                    case .audio: AccountSettingsContent(model: settings, section: .audio, wide: wide) { EmptyView() }
                     case .video: CameraDevicesView(wide: wide)
-                    case .notifications: AccountSettingsContent(model: settings, section: .notifications, wide: wide)
-                    case .appearance: SettingsDetailView(model: app, route: .appearance, wide: wide)
-                    case .connection: AccountSettingsContent(model: settings, section: .server, wide: wide)
-                    }
-                } extras: {
-                    VStack(alignment: .leading, spacing: 12) {
-                        VStack(spacing: 0) {
-                            AccountShortcutRow(title: "Дополнительные настройки", symbol: "gearshape", identifier: "openAccountSettings") {
-                                showingAccountSettings = true
-                            }
-                            shortcutDivider
-                            AccountShortcutRow(title: "Календарь", symbol: "calendar", identifier: "openCalendar") { app.navigate(.calendar) }
-                            shortcutDivider
-                            AccountShortcutRow(title: "Записи встреч", symbol: "play.circle", identifier: "openRecordings") { app.navigate(.recordings) }
-                            shortcutDivider
-                            AccountShortcutRow(title: "Личные папки", symbol: "folder", identifier: "openFolders") { app.navigate(.folders) }
+                    case .notifications:
+                        AccountSettingsContent(model: settings, section: .notifications, wide: wide) {
+                            DeviceNotificationSettings(model: app.identity.notifications)
                         }
-                        .msCard(padding: 0)
-                        notificationSettings
-                        VStack(spacing: 0) {
+                    case .appearance: SettingsDetailView(model: app, route: .appearance, wide: wide)
+                    case .connection:
+                        AccountSettingsContent(model: settings, section: .server, wide: wide) {
                             AccountShortcutRow(title: "Лицензии компонентов", symbol: "doc.text", identifier: "openComponentLicenses") {
                                 licenses = true
-                            }
-                            shortcutDivider
-                            AccountShortcutRow(title: "Удалить аккаунт на сервере", symbol: "trash", identifier: "openDeleteAccount", destructive: true) {
-                                app.identity.error = nil; deleting = account
-                            }
-                        }.msCard(padding: 0)
+                            }.msCard(padding: 0)
+                        }
                     }
-                }
-                .navigationDestination(isPresented: $showingAccountSettings) {
-                    AccountSettingsView(model: settings)
                 }
                 .task(id: account.id) { if !settings.loaded { await settings.load() } }
             }
@@ -74,7 +53,7 @@ struct LiveProfileView: View {
                 }
             }
     }
-    private func accounts(wide: Bool) -> some View {
+    private func accounts(currentAccount: AccountRecord, wide: Bool) -> some View {
         VStack(alignment: .leading, spacing: 14) {
             AccountDetailHeading(title: "Аккаунты", subtitle: "Выберите аккаунт для встреч и общения.")
                 .padding(.bottom, 16)
@@ -114,6 +93,10 @@ struct LiveProfileView: View {
             }.buttonStyle(MSButtonStyle()).accessibilityIdentifier("addAccount")
                 .padding(.top, 4)
             Text(tr("До 5 аккаунтов на каждом сервере.")).font(MSTheme.font(12)).foregroundStyle(MSTheme.muted)
+            AccountShortcutRow(title: "Удалить аккаунт на сервере", symbol: "trash", identifier: "openDeleteAccount", destructive: true) {
+                app.identity.error = nil
+                deleting = currentAccount
+            }.msCard(padding: 0)
             if app.identity.busy { ProgressView() }
             if let error = app.identity.error { Text(tr(error)).foregroundStyle(MSTheme.danger) }
             if let information = app.identity.information { Text(tr(information)).foregroundStyle(MSTheme.muted) }
@@ -121,29 +104,30 @@ struct LiveProfileView: View {
             .frame(maxWidth: 860).frame(maxWidth: .infinity, alignment: .topLeading)
     }
 
-    private var shortcutDivider: some View {
-        Rectangle().fill(MSTheme.line).frame(height: 1).padding(.leading, 55).accessibilityHidden(true)
-    }
-    private var notificationSettings: some View {
+}
+
+struct DeviceNotificationSettings: View {
+    let model: PushRegistrationModel
+    var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             Text(tr("Уведомления на этом устройстве")).font(MSTheme.font(15, weight: .semibold))
                 .fixedSize(horizontal: false, vertical: true).accessibilityAddTraits(.isHeader)
             Toggle(isOn: Binding(
-                get: { app.identity.notifications.enabled },
+                get: { model.enabled },
                 set: { enabled in Task {
-                    if enabled { await app.identity.notifications.enable() }
-                    else { await app.identity.notifications.disable() }
+                    if enabled { await model.enable() }
+                    else { await model.disable() }
                 } })) {
                     Text(tr("Уведомления о встречах")).font(MSTheme.font(13, weight: .semibold))
                 }.toggleStyle(AccountSwitchStyle())
-                .disabled(app.identity.notifications.busy).accessibilityIdentifier("pushNotificationsToggle")
-            Text(tr(app.identity.notifications.status)).font(MSTheme.font(12)).foregroundStyle(MSTheme.muted)
+                .disabled(model.busy).accessibilityIdentifier("pushNotificationsToggle")
+            Text(tr(model.status)).font(MSTheme.font(12)).foregroundStyle(MSTheme.muted)
                 .fixedSize(horizontal: false, vertical: true)
                 .accessibilityIdentifier("pushNotificationsStatus")
-            if let error = app.identity.notifications.error {
+            if let error = model.error {
                 Text(tr(error)).font(MSTheme.font(12)).foregroundStyle(MSTheme.danger)
-                Button(tr("Повторить проверку")) { Task { await app.identity.notifications.retryCleanup() } }
-                    .frame(minHeight: 44).disabled(app.identity.notifications.busy)
+                Button(tr("Повторить проверку")) { Task { await model.retryCleanup() } }
+                    .frame(minHeight: 44).disabled(model.busy)
             }
             Text(tr("Входящие звонки доступны, пока приложение открыто. Вызовы при закрытом приложении ещё не настроены на сервере."))
                 .font(MSTheme.font(12)).foregroundStyle(MSTheme.muted).fixedSize(horizontal: false, vertical: true)

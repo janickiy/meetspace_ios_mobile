@@ -39,7 +39,7 @@ enum ProfileSection: String, CaseIterable {
     }
 }
 
-struct AccountHome<Detail: View, Extras: View>: View {
+struct AccountHome<Detail: View>: View {
     let name: String
     let email: String
     let server: String
@@ -48,7 +48,6 @@ struct AccountHome<Detail: View, Extras: View>: View {
     var sections = ProfileSection.allCases.filter { $0 != .connection }
     let logout: () -> Void
     @ViewBuilder var detail: (ProfileSection, Bool) -> Detail
-    @ViewBuilder var extras: () -> Extras
     @State private var selection: ProfileSection?
     @Environment(\.dynamicTypeSize) private var typeSize
 
@@ -92,6 +91,7 @@ struct AccountHome<Detail: View, Extras: View>: View {
                     .padding(.horizontal, inset).padding(.top, 18).padding(.bottom, 4)
             }
             detail(selection ?? .profile, wide)
+                .id(selection ?? .profile)
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
         }.background(MSTheme.background)
     }
@@ -112,12 +112,10 @@ struct AccountHome<Detail: View, Extras: View>: View {
                         }
                     }
                     if wide {
-                        extras().padding(.top, 24)
                         Spacer(minLength: 40)
                         footer(wide: true)
                     } else {
                         footer(wide: false).padding(.top, 26)
-                        extras().padding(.top, 24)
                     }
                 }.frame(maxWidth: .infinity, alignment: .leading)
                     .padding(.horizontal, inset).padding(.top, wide ? 26 : 24).padding(.bottom, 20)
@@ -193,9 +191,12 @@ struct AccountHome<Detail: View, Extras: View>: View {
                 }.font(MSTheme.font(13)).frame(maxWidth: .infinity, minHeight: 48).contentShape(Rectangle())
             }.buttonStyle(.plain).foregroundStyle(MSTheme.muted).padding(.top, 12)
                 .accessibilityIdentifier(demo ? "exitDemo" : "account.logout")
-            if demo {
-                Text(tr("MeetSpace · Демо")).font(MSTheme.font(11)).foregroundStyle(MSTheme.muted)
+            if let version = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String,
+               let build = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String {
+                Text(verbatim: String(format: tr("Версия %@ · сборка %@"), version, build))
+                    .font(MSTheme.font(11)).foregroundStyle(MSTheme.muted)
                     .multilineTextAlignment(.center).padding(.top, 12)
+                    .accessibilityIdentifier("account.version")
             }
         }
     }

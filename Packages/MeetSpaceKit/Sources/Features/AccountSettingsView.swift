@@ -2,124 +2,24 @@ import SwiftUI
 import MeetSpaceCore
 import MeetSpaceDesignSystem
 
-enum AccountSettingsSection: String, CaseIterable, Identifiable {
-    case profile = "Профиль", audio = "Аудио", notifications = "Уведомления аккаунта", devices = "Устройства уведомлений", server = "Возможности сервера"
-    var id: Self { self }
-    var icon: String {
-        switch self {
-        case .profile: "person.crop.circle"
-        case .audio: "mic"
-        case .notifications: "bell"
-        case .devices: "iphone.and.arrow.forward"
-        case .server: "server.rack"
-        }
-    }
-    var hint: String {
-        switch self {
-        case .profile: ProfileSection.profile.label.hint
-        case .audio: ProfileSection.audio.label.hint
-        case .notifications: ProfileSection.notifications.label.hint
-        case .devices: "Доставка на этот iPhone и другие устройства"
-        case .server: "Версия и доступные функции"
-        }
-    }
+enum AccountSettingsSection {
+    case profile, audio, notifications, server
 }
 
-/// Phone sections open individually; tablets keep the section menu beside the editor.
-struct AccountSettingsView: View {
-    @Bindable var model: SettingsModel
-    @State private var selection = AccountSettingsSection.profile
-    @Environment(\.dynamicTypeSize) private var typeSize
-    var body: some View {
-        GeometryReader { geometry in
-            if geometry.size.width >= 700 && !typeSize.isAccessibilitySize {
-                HStack(alignment: .top, spacing: 0) {
-                    ScrollView {
-                        VStack(alignment: .leading, spacing: 5) {
-                            HStack(spacing: 12) {
-                                ProfileAvatar(name: model.profile.name, size: 42, cornerRadius: 14, photo: model.photo)
-                                VStack(alignment: .leading, spacing: 4) {
-                                    Text(model.profile.name).font(MSTheme.font(13, weight: .semibold))
-                                    Text(model.profile.email).font(MSTheme.font(11)).foregroundStyle(MSTheme.muted)
-                                        .accessibilityLabel(tr("Электронная почта")).accessibilityValue(model.profile.email)
-                                }.fixedSize(horizontal: false, vertical: true)
-                            }.padding(.bottom, 20)
-                            ForEach(AccountSettingsSection.allCases) { section in
-                                Button { selection = section } label: {
-                                    sectionRow(section, wide: true, selected: selection == section)
-                                }.buttonStyle(.plain).accessibilityLabel(tr(section.rawValue))
-                                    .accessibilityAddTraits(selection == section ? .isSelected : [])
-                                    .accessibilityIdentifier("settingsSection.\(section)")
-                            }
-                        }
-                        .padding(.horizontal, 16).padding(.vertical, 22)
-                    }.frame(width: geometry.size.width >= 1100 ? 270 : 240).background(MSTheme.surface)
-                    Divider()
-                    AccountSettingsContent(model: model, section: selection, wide: true)
-                }.padding(.horizontal, 24)
-            } else {
-                ScrollView {
-                    VStack(alignment: .leading, spacing: 5) {
-                        ForEach(AccountSettingsSection.allCases) { section in
-                            NavigationLink {
-                                AccountSettingsContent(model: model, section: section)
-                                    .navigationTitle(tr(section == .audio ? "Настройки аккаунта" : section.rawValue)).msInlineTitle()
-                            } label: {
-                                sectionRow(section, wide: false, selected: false)
-                            }.buttonStyle(.plain).accessibilityLabel(tr(section.rawValue))
-                                .accessibilityIdentifier("settingsSection.\(section)")
-                        }
-                    }.padding(.horizontal, 20).padding(.vertical, 24)
-                }.background(MSTheme.surface)
-            }
-        }.background(MSTheme.background).navigationTitle(tr("Настройки аккаунта")).msInlineTitle()
-            .task { await model.load() }
-    }
-
-    private func sectionRow(_ section: AccountSettingsSection, wide: Bool, selected: Bool) -> some View {
-        HStack(spacing: 13) {
-            Image(systemName: section.icon).font(.system(size: wide ? 18 : 20))
-                .foregroundStyle(selected || !wide ? MSTheme.accent : MSTheme.muted)
-                .frame(width: wide ? 25 : 40, height: wide ? 28 : 40)
-                .background(wide ? .clear : MSTheme.accentSoft, in: RoundedRectangle(cornerRadius: 13))
-                .accessibilityHidden(true)
-            VStack(alignment: .leading, spacing: 4) {
-                Text(tr(section.rawValue)).font(MSTheme.font(wide ? 13 : 15, weight: .semibold))
-                if !wide { Text(tr(section.hint)).font(MSTheme.font(12)).foregroundStyle(MSTheme.muted) }
-            }.fixedSize(horizontal: false, vertical: true)
-            Spacer(minLength: 1)
-            if !wide {
-                Image(systemName: "chevron.right").font(.system(size: 13)).foregroundStyle(MSTheme.muted)
-                    .accessibilityHidden(true)
-            }
-        }
-        .foregroundStyle(selected ? MSTheme.accent : MSTheme.ink)
-        .padding(.vertical, wide ? 8 : 12).padding(.horizontal, wide ? 10 : 0)
-        .frame(minHeight: wide ? 48 : 64)
-        .background(selected ? MSTheme.accentSoft : .clear, in: RoundedRectangle(cornerRadius: 10))
-        .overlay(alignment: .bottom) { if !wide { Rectangle().fill(MSTheme.line).frame(height: 1) } }
-        .contentShape(Rectangle())
-    }
-}
-
-struct AccountSettingsContent: View {
+struct AccountSettingsContent<Controls: View>: View {
     @Bindable var model: SettingsModel
     let section: AccountSettingsSection
     var wide = false
+    @ViewBuilder var controls: () -> Controls
     @FocusState private var profileNameFocused: Bool
     @State private var nativeProfileNameFocused = false
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 20) {
-                if section == .devices || section == .server {
-                    Text(tr(section.rawValue)).font(MSTheme.font(21, weight: .semibold, relativeTo: .title2))
-                        .accessibilityAddTraits(.isHeader)
-                }
                 switch section {
                 case .profile: profile
                 case .audio: AccountAudioSettingsView(wide: wide)
                 case .notifications: preferences
-                case .devices: devices
                 case .server: server
                 }
                 if section != .audio {
@@ -134,6 +34,8 @@ struct AccountSettingsContent: View {
                     }
                         .buttonStyle(MSButtonStyle(primary: false)).disabled(model.busy)
                 }
+                controls()
+                if section == .notifications { devices }
             }.padding(.horizontal, wide ? 48 : 20).padding(.vertical, wide ? 36 : 18)
                 .frame(maxWidth: 860).frame(maxWidth: .infinity, alignment: .topLeading)
         }.background(MSTheme.background)
@@ -216,7 +118,7 @@ struct AccountSettingsContent: View {
             if let error = model.preferencesError { errorMessage(error) }
             Button(tr("Сохранить настройки")) { Task { await model.saveNotifications() } }
                 .buttonStyle(MSButtonStyle()).disabled(!model.canSavePreferences).accessibilityIdentifier("saveNotificationPreferences")
-            Text(tr("Доставка зависит от настройки провайдера на сервере. Разрешение уведомлений этого iPhone или iPad включается отдельно в профиле."))
+            Text(tr("Доставка зависит от настройки провайдера на сервере."))
                 .font(MSTheme.font(12)).foregroundStyle(MSTheme.muted)
         }.toggleStyle(AccountSwitchStyle())
     }
@@ -226,6 +128,8 @@ struct AccountSettingsContent: View {
     }
     private var devices: some View {
         VStack(alignment: .leading, spacing: 16) {
+            Text(tr("Устройства уведомлений")).font(MSTheme.font(15, weight: .semibold))
+                .accessibilityAddTraits(.isHeader)
             Text(tr("Зарегистрированные устройства доставки уведомлений. Это не список активных входов в аккаунт."))
                 .font(MSTheme.font(12)).foregroundStyle(MSTheme.muted)
             if let error = model.devicesError { errorMessage(error) }
@@ -242,12 +146,11 @@ struct AccountSettingsContent: View {
                     Text(device.updatedAt, format: .dateTime.day().month().year().hour().minute()).font(MSTheme.font(12)).foregroundStyle(MSTheme.muted)
                 }.msCard()
             }
-            Text(tr("Чтобы отключить уведомления этого устройства, используйте переключатель в профиле."))
-                .font(MSTheme.font(12)).foregroundStyle(MSTheme.muted)
         }
     }
     private var server: some View {
         VStack(alignment: .leading, spacing: 16) {
+            AccountDetailHeading(title: "Подключение", subtitle: "Адрес сервера вашего MeetSpace.")
             Text(model.account.server.displayName).font(MSTheme.font(16, weight: .semibold))
             if let error = model.capabilitiesError { errorMessage(error) }
             if let value = model.capabilities {

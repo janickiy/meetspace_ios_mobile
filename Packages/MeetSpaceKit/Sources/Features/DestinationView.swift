@@ -32,7 +32,9 @@ struct DestinationView: View {
             case .notificationSettings:
                 if model.isDemo { SettingsDetailView(model: model, route: route) }
                 else if let settings = model.identity.settings {
-                    AccountSettingsContent(model: settings, section: .notifications).task { await settings.load() }
+                    AccountSettingsContent(model: settings, section: .notifications) {
+                        DeviceNotificationSettings(model: model.identity.notifications)
+                    }.task { await settings.load() }
                 }
             case .audioSettings, .videoSettings, .appearance, .connection, .accounts:
                 SettingsDetailView(model: model, route: route)

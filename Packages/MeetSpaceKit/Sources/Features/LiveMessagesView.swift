@@ -20,6 +20,15 @@ struct LiveMessagesView: View {
         Binding(get: { model.onlyUnread ? .unread : model.groupFilter ? .groups : model.directFilter ? .direct : .all },
                 set: { value in model.onlyUnread = value == .unread; model.groupFilter = value == .groups; model.directFilter = value == .direct })
     }
+
+    private var unreadChatBadge: String {
+        let chats = model.conversations.filter { $0.unreadCount > 0 }
+        // The server total counts messages. A filter or a page can hide other unread chats.
+        let unlistedMessages = model.unreadCount - chats.reduce(0) { $0 + $1.unreadCount }
+        if unlistedMessages <= 0 { return String(chats.count) }
+        let minimumChats = chats.count + 1
+        return unlistedMessages == 1 ? String(minimumChats) : "\(minimumChats)+"
+    }
     var body: some View {
         GeometryReader { proxy in
             let wide = proxy.size.width >= 780 && !typeSize.isAccessibilitySize
@@ -59,16 +68,21 @@ struct LiveMessagesView: View {
     }
 
     @ViewBuilder private func conversationColumn(wide: Bool) -> some View {
-        VStack(spacing: 0) {
-            if typeSize.isAccessibilitySize {
-                ScrollView {
-                    VStack(spacing: 0) { listControls; conversationRows(wide: wide) }
-                }.refreshable { await model.refreshConversations() }
-            } else {
-                listControls
-                ScrollView { conversationRows(wide: wide) }.refreshable { await model.refreshConversations() }
+        ScrollView {
+            VStack(spacing: 0) {
+                ChatFilterBar(filter: filter, unread: unreadChatBadge) { app.navigate(.folders) }
+                if searching {
+                    SearchBox(text: $model.listSearch, placeholder: "Найти человека или чат")
+                        .padding(.horizontal, wide ? 16 : 15).padding(.bottom, 16)
+                }
+                if model.realtimeState == .reconnecting {
+                    Label(tr("Переподключение…"), systemImage: "arrow.triangle.2.circlepath")
+                        .font(MSTheme.font(11)).foregroundStyle(MSTheme.muted)
+                        .padding(.bottom, 8).accessibilityIdentifier("messages.connectionStatus")
+                }
+                conversationRows(wide: wide)
             }
-        }
+        }.refreshable { await model.refreshConversations() }
         .overlay(alignment: .bottomTrailing) {
             if !wide {
                 ChatNewButton(compact: true) { creating = true }
@@ -77,16 +91,6 @@ struct LiveMessagesView: View {
         }
     }
 
-    private var listControls: some View {
-        VStack(spacing: 0) {
-            ChatFilterBar(filter: filter) { app.navigate(.folders) }
-            if searching { SearchBox(text: $model.listSearch, placeholder: "Поиск чатов").padding(12) }
-            ViewThatFits(in: .horizontal) {
-                HStack { serverName; Spacer(); connectionStatus }
-                VStack(alignment: .leading, spacing: 6) { serverName; connectionStatus }
-            }.font(MSTheme.font(11)).foregroundStyle(MSTheme.muted).padding(.horizontal, 16).padding(.vertical, 8)
-        }
-    }
     private func conversationRows(wide: Bool) -> some View {
         LazyVStack(spacing: 0) {
             ChatInviteCard(url: model.account.server.url)
@@ -95,10 +99,11 @@ struct LiveMessagesView: View {
                     Button { select(item.id, wide: wide) } label: {
                         let preview = model.conversationPreview(item)
                         ChatListRow(name: item.title, group: item.isGroup,
-                                    subtitle: item.isGroup ? tr("Групповой чат") : nil,
+                                    subtitle: item.isGroup ? item.memberCount.map(chatGroupSubtitle) ?? tr("Групповой чат") : nil,
                                     preview: preview.isEmpty ? tr("Пока нет сообщений") : preview,
-                                    time: item.lastMessageAt?.formatted(date: .omitted, time: .shortened) ?? "",
-                                    unread: item.unreadCount, selected: wide && (selected ?? model.conversations.first?.id) == item.id)
+                                    time: item.lastMessageAt.map(listTime) ?? "",
+                                    unread: item.unreadCount, muted: !item.notificationsEnabled,
+                                    selected: wide && (selected ?? model.conversations.first?.id) == item.id)
                     }.buttonStyle(.plain).accessibilityIdentifier("conversation.\(item.id.uuidString.lowercased())")
                 }
                 if model.listCursor != nil {
@@ -110,19 +115,19 @@ struct LiveMessagesView: View {
             }
         }.padding(.horizontal, 16).padding(.bottom, wide ? 20 : compactListBottomSpace)
     }
+    private func listTime(_ date: Date) -> String {
+        let calendar = Calendar.current
+        if calendar.isDateInToday(date) { return date.formatted(date: .omitted, time: .shortened) }
+        if calendar.isDateInYesterday(date) { return tr("Вчера") }
+        let today = calendar.startOfDay(for: .now)
+        let daysAgo = calendar.dateComponents([.day], from: calendar.startOfDay(for: date), to: today).day ?? 0
+        if (2...6).contains(daysAgo) { return date.formatted(.dateTime.weekday(.abbreviated)) }
+        return date.formatted(date: .numeric, time: .omitted)
+    }
+
     private func select(_ id: UUID, wide: Bool) {
         if wide { selected = id }
         else { app.navigate(.conversation(id)) }
-    }
-    private var serverName: some View {
-        Text(model.account.server.displayName).fixedSize(horizontal: false, vertical: true)
-            .accessibilityLabel(tr("Адрес сервера")).accessibilityValue(model.account.server.displayName)
-    }
-    private var connectionStatus: some View {
-        Label(tr(model.realtimeState == .connected ? "Подключено" : "Переподключение…"),
-              systemImage: model.realtimeState == .connected ? "checkmark.circle" : "arrow.triangle.2.circlepath")
-            .fixedSize(horizontal: false, vertical: true)
-            .accessibilityIdentifier("messages.connectionStatus")
     }
 }
 
@@ -385,6 +390,7 @@ struct LiveThreadView: View {
                     Text(reply.senderName).font(MSTheme.font(11, weight: .semibold))
                     Text(reply.deleted ? tr("Сообщение удалено") : reply.text).font(MSTheme.font(12)).lineLimit(3)
                 }.padding(8).frame(maxWidth: .infinity, alignment: .leading).background(MSTheme.line.opacity(0.4), in: RoundedRectangle(cornerRadius: 8))
+                    .allowsHitTesting(false)
             }
             ChatMessageText(text: message.isDeleted ? tr("Сообщение удалено") : message.text)
             if !message.isDeleted { ForEach(message.attachments) { attachment in attachmentRow(attachment) } }

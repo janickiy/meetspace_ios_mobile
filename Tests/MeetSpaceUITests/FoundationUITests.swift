@@ -290,8 +290,9 @@ import UIKit
         let profile = app.buttons["tab.profile"]
         XCTAssertTrue(profile.waitForExistence(timeout: 10))
         profile.tap()
-        let catalog = app.buttons["Каталог экранов"]
-        reveal(catalog, in: app)
+        selectAccountSection("appearance", in: app)
+        let catalog = app.buttons["profileMenu.demoCatalog"]
+        revealEntireText(catalog, in: app)
         catalog.tap()
         let prejoin = app.buttons["Перед встречей"]
         reveal(prejoin, in: app)
@@ -322,7 +323,7 @@ import UIKit
         app.buttons["chat.0"].tap()
         let first = app.staticTexts["Доброе утро! Материалы к встрече готовы. Посмотрите, когда будет минутка."].firstMatch
         reveal(first, in: app, towardTop: true)
-        first.press(forDuration: 0.8)
+        first.tap()
         let forward = app.buttons["message.forwardAction"]
         XCTAssertTrue(forward.waitForExistence(timeout: 5))
         let actionable = XCTNSPredicateExpectation(predicate: NSPredicate(format: "hittable == true"), object: forward)
@@ -340,10 +341,47 @@ import UIKit
         capture(app, name: "forwarded-comment-group")
     }
 
+    func testMessageAttachmentAndSelectionHaveIndependentTapTargets() {
+        let app = launch(["-demo"])
+        app.buttons["tab.messages"].tap()
+        app.buttons["chat.0"].tap()
+
+        let attachment = app.buttons.matching(NSPredicate(format: "label BEGINSWITH %@", "Обзор продукта.pdf")).firstMatch
+        reveal(attachment, in: app, towardTop: true)
+        attachment.tap()
+        XCTAssertTrue(app.staticTexts["Демонстрационная карточка вложения."].waitForExistence(timeout: 5))
+        XCTAssertFalse(app.buttons["message.forwardAction"].exists)
+        app.buttons["Закрыть"].tap()
+
+        let message = app.staticTexts["Доброе утро! Материалы к встрече готовы. Посмотрите, когда будет минутка."].firstMatch
+        reveal(message, in: app, towardTop: true)
+        message.tap()
+        let select = app.buttons["Выбрать"]
+        XCTAssertTrue(select.waitForExistence(timeout: 5))
+        select.tap()
+        let row = app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH %@ AND label CONTAINS %@",
+                                                   "message.select.", "Обзор продукта.pdf")).firstMatch
+        XCTAssertTrue(row.waitForExistence(timeout: 5))
+        XCTAssertEqual(row.value as? String, "Выбрано")
+        row.tap()
+        XCTAssertEqual(row.value as? String, "Не выбрано")
+        XCTAssertFalse(app.buttons["message.forwardAction"].exists)
+        XCTAssertFalse(app.staticTexts["Демонстрационная карточка вложения."].exists)
+    }
+
     func testBetaAudioSettingsLayout() {
         let app = launch(); login(app)
         openProfile(in: app)
         capture(app, name: "account-settings-menu")
+        let version = app.staticTexts["account.version"]
+        revealEntireText(version, in: app)
+        XCTAssertNotNil(version.label.range(of: #"^Версия [0-9]+(?:[.][0-9]+)+ · сборка [0-9]+$"#, options: .regularExpression))
+        XCTAssertGreaterThanOrEqual(version.frame.minY, app.buttons["account.logout"].frame.maxY)
+        for extra in ["openCalendar", "openRecordings", "openFolders", "openAccountSettings", "openDeleteAccount", "openComponentLicenses"] {
+            XCTAssertFalse(app.buttons[extra].exists)
+        }
+        XCTAssertFalse(app.switches["pushNotificationsToggle"].exists)
+        capture(app, name: "account-settings-version")
         let audio = app.buttons["profileMenu.audio"]
         revealEntireText(audio, in: app); audio.tap()
         XCTAssertTrue(app.staticTexts["Микрофон"].firstMatch.waitForExistence(timeout: 5))
@@ -382,14 +420,20 @@ import UIKit
         XCTAssertTrue(element.isHittable)
     }
 
-    private func openProfileFeature(_ identifier: String, in app: XCUIApplication) {
-        openProfile(in: app)
+    private func openMeetingsFeature(_ identifier: String, in app: XCUIApplication) {
         let link = app.buttons[identifier]
-        // Returning to this tab preserves its scroll offset, including after an
-        // audit has sampled a lower row. Reveal in either direction from its frame.
+        tapAfterLogin(app.buttons["tab.meetings"], in: app, expecting: link, unchanged: { !link.exists })
         revealEntireText(link, in: app)
-        XCTAssertGreaterThanOrEqual(link.frame.height, 44, "The entire navigation row must be tappable")
+        XCTAssertGreaterThanOrEqual(link.frame.height, 44)
         link.tap()
+    }
+
+    private func selectAccountSection(_ section: String, in app: XCUIApplication) {
+        let back = app.buttons["profileMenu.back"]
+        if back.exists { back.tap() }
+        let row = app.buttons["profileMenu." + section]
+        revealEntireText(row, in: app)
+        row.tap()
     }
 
     private func openProfile(in app: XCUIApplication) {
@@ -703,22 +747,23 @@ import UIKit
         XCTAssertTrue(app.buttons["conversation.22222222-2222-4222-8222-222222222222"].waitForExistence(timeout: 10))
         try audit("messages")
         openProfile(in: app)
-        XCTAssertTrue(app.buttons["openAccountSettings"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.buttons["profileMenu.accounts"].waitForExistence(timeout: 5))
         try audit("profile")
-        openProfileFeature("openCalendar", in: app)
+        openMeetingsFeature("meetingsCalendar", in: app)
         XCTAssertTrue(app.segmentedControls["calendar.mode"].waitForExistence(timeout: 10))
         try audit("calendar")
         app.navigationBars.buttons.firstMatch.tap()
-        openProfileFeature("openRecordings", in: app)
+        openMeetingsFeature("meetingsRecordings", in: app)
         XCTAssertTrue(app.buttons["recording.77777777-7777-4777-8777-777777777771"].waitForExistence(timeout: 10))
         try audit("recordings")
         app.navigationBars.buttons.firstMatch.tap()
-        openProfileFeature("openFolders", in: app)
+        openMeetingsFeature("meetingsFolders", in: app)
         XCTAssertTrue(app.buttons["createFolder"].waitForExistence(timeout: 5))
         try audit("folders")
         app.navigationBars.buttons.firstMatch.tap()
-        openProfileFeature("openAccountSettings", in: app)
-        XCTAssertTrue(app.buttons["settingsSection.profile"].waitForExistence(timeout: 5))
+        openProfile(in: app)
+        selectAccountSection("profile", in: app)
+        XCTAssertTrue(app.textFields["profileDisplayName"].waitForExistence(timeout: 5))
         try audit("settings")
         // XCTest can stop a failing test before Swift defer executes. Save evidence first.
         attachIssues()
@@ -728,7 +773,11 @@ import UIKit
 
     func testStage08AccountDeletionRequiresPasswordAndConfirmation() {
         let app = launch(); login(app)
-        openProfileFeature("openDeleteAccount", in: app)
+        openProfile(in: app)
+        selectAccountSection("accounts", in: app)
+        let remove = app.buttons["openDeleteAccount"]
+        revealEntireText(remove, in: app)
+        remove.tap()
         let password = app.secureTextFields["deleteAccount.password"]
         let submit = app.buttons["deleteAccount.submit"]
         XCTAssertTrue(password.waitForExistence(timeout: 5))
@@ -806,9 +855,9 @@ import UIKit
         capture(app, name: "stage08-large-text-messages-conversation")
         app.buttons["tab.profile"].tap()
         capture(app, name: "stage08-large-text-profile")
-        for (identifier, title) in [("openCalendar", "calendar"), ("openRecordings", "recordings"),
-                                    ("openFolders", "folders"), ("openAccountSettings", "settings")] {
-            openProfileFeature(identifier, in: app)
+        for (identifier, title) in [("meetingsCalendar", "calendar"), ("meetingsRecordings", "recordings"),
+                                    ("meetingsFolders", "folders")] {
+            openMeetingsFeature(identifier, in: app)
             capture(app, name: "stage08-large-text-" + title)
             if title == "calendar" {
                 for hour in [9, 12, 18] {
@@ -825,11 +874,14 @@ import UIKit
             }
             app.navigationBars.buttons.firstMatch.tap()
         }
+        openProfile(in: app)
+        selectAccountSection("profile", in: app)
+        capture(app, name: "stage08-large-text-settings")
     }
 
     func testStage07CalendarCreateRescheduleCancelAndViews() {
         let app = launch(); login(app)
-        openProfileFeature("openCalendar", in: app)
+        openMeetingsFeature("meetingsCalendar", in: app)
         let schedule = app.buttons["calendar.schedule"]
         XCTAssertTrue(schedule.waitForExistence(timeout: 10)); schedule.tap()
         let title = app.textFields["schedule.title"]
@@ -875,7 +927,7 @@ import UIKit
 
     func testStage07FolderRemovalPreservesChat() {
         let app = launch(); login(app)
-        openProfileFeature("openFolders", in: app)
+        openMeetingsFeature("meetingsFolders", in: app)
         XCTAssertTrue(app.buttons["createFolder"].waitForExistence(timeout: 5)); app.buttons["createFolder"].tap()
         let field = app.textFields["folderName"]
         XCTAssertTrue(field.waitForExistence(timeout: 5)); field.tap(); field.typeText("Проект Альфа")
@@ -900,9 +952,8 @@ import UIKit
 
     func testStage07SettingsPersistProfilePreferencesAndSSHDisabled() {
         let app = launch(); login(app)
-        openProfileFeature("openAccountSettings", in: app)
-        let profile = app.buttons["settingsSection.profile"]
-        XCTAssertTrue(profile.waitForExistence(timeout: 5)); profile.tap()
+        openProfile(in: app)
+        selectAccountSection("profile", in: app)
         let name = app.textFields["profileDisplayName"]
         XCTAssertTrue(name.waitForExistence(timeout: 5)); name.tap()
         name.typeText(String(repeating: XCUIKeyboardKey.delete.rawValue, count: (name.value as? String ?? "").count) + "Имя iOS\n")
@@ -913,8 +964,7 @@ import UIKit
         capture(app, name: "stage07-settings-profile")
         let refresh = app.buttons["Обновить настройки"]; reveal(refresh, in: app); refresh.tap()
         XCTAssertEqual(name.value as? String, "Имя iOS")
-        if !app.buttons["settingsSection.notifications"].exists { app.navigationBars.buttons.firstMatch.tap() }
-        app.buttons["settingsSection.notifications"].tap()
+        selectAccountSection("notifications", in: app)
         let toggle = app.switches["notificationEmail"]
         reveal(toggle, in: app)
         let control = toggle.switches.firstMatch
@@ -926,15 +976,14 @@ import UIKit
         let enabled = XCTNSPredicateExpectation(predicate: NSPredicate(format: "value == %@", "1"), object: toggle)
         XCTAssertEqual(XCTWaiter.wait(for: [enabled], timeout: 5), .completed)
         capture(app, name: "stage07-settings-notifications")
-        if !app.buttons["settingsSection.server"].exists { app.navigationBars.buttons.firstMatch.tap() }
-        app.buttons["settingsSection.server"].tap()
+        selectAccountSection("connection", in: app)
         XCTAssertTrue(app.staticTexts["installerAvailable"].waitForExistence(timeout: 5))
         capture(app, name: "stage07-settings-server")
     }
 
     func testStage07RecordingsStatusAndNativePlayerWithLocalFixture() {
         let app = launch(); login(app)
-        openProfileFeature("openRecordings", in: app)
+        openMeetingsFeature("meetingsRecordings", in: app)
         let ready = app.buttons["recording.77777777-7777-4777-8777-777777777771"]
         XCTAssertTrue(ready.waitForExistence(timeout: 10)); capture(app, name: "stage07-recordings")
         app.buttons["recording.77777777-7777-4777-8777-777777777772"].tap()
@@ -963,7 +1012,7 @@ import UIKit
 
     func testStage07RecordingAccessDeniedNeverStartsPlayer() {
         let app = launch(["-recording-access-denied"]); login(app)
-        openProfileFeature("openRecordings", in: app)
+        openMeetingsFeature("meetingsRecordings", in: app)
         let ready = app.buttons["recording.77777777-7777-4777-8777-777777777771"]
         XCTAssertTrue(ready.waitForExistence(timeout: 10)); ready.tap()
         XCTAssertTrue(app.staticTexts["recordingsError"].waitForExistence(timeout: 5))
@@ -1149,12 +1198,33 @@ import UIKit
         let chat = app.buttons["conversation.22222222-2222-4222-8222-222222222222"]
         XCTAssertTrue(chat.waitForExistence(timeout: 10))
         XCTAssertFalse(app.staticTexts["demoBanner"].exists)
+        XCTAssertFalse(app.staticTexts["Адрес сервера"].exists)
+        XCTAssertFalse(app.staticTexts["fixture.example"].exists)
+        XCTAssertFalse(app.staticTexts["Подключено"].exists)
+        XCTAssertFalse(app.descendants(matching: .any)["messages.connectionStatus"].exists)
+        let unreadFilter = app.buttons["messages.filter.unread"]
+        XCTAssertTrue(unreadFilter.exists)
+        XCTAssertTrue(unreadFilter.label.contains("0"))
+        let invitation = app.buttons["messages.invite"]
+        XCTAssertTrue(invitation.exists)
+        // XCTest can report only the centered label inside the prototype's 52-point filter bar.
+        let filterBarBottom = unreadFilter.frame.midY + 26
+        XCTAssertEqual(invitation.frame.minY - filterBarBottom, 16, accuracy: 3)
         capture(app, name: "stage03-live-chats")
         let composer = app.textFields["messageComposer"]
         typeMessage("Проверка сообщения", into: composer, in: app)
         app.buttons["sendMessage"].tap()
-        XCTAssertTrue(app.staticTexts["Проверка сообщения"].waitForExistence(timeout: 5))
+        let sent = app.staticTexts["Проверка сообщения"]
+        XCTAssertTrue(sent.waitForExistence(timeout: 5))
         capture(app, name: "stage03-live-thread")
+        sent.tap()
+        let closeActions = app.buttons["Закрыть действия с сообщением"]
+        XCTAssertTrue(closeActions.waitForExistence(timeout: 5))
+        for action in ["Ответить", "Переслать", "Редактировать", "Удалить для всех"] {
+            XCTAssertTrue(app.buttons.matching(NSPredicate(format: "label == %@", action)).firstMatch.exists, action)
+        }
+        closeActions.tap()
+        XCTAssertTrue(closeActions.waitForNonExistence(timeout: 5))
         if !app.buttons["tab.profile"].isHittable { app.buttons["chat.back"].tap() }
         app.buttons["tab.profile"].tap()
         XCTAssertTrue(app.buttons["profileMenu.accounts"].waitForExistence(timeout: 5))
@@ -1498,6 +1568,7 @@ import UIKit
             XCTAssertFalse(app.buttons["profileMenu.back"].exists)
         }
         capture(app, name: app.frame.width >= 780 ? "account-home-tablet" : "account-home-phone")
+        selectAccountSection("notifications", in: app)
         let toggle = app.switches["pushNotificationsToggle"]
         revealEntireText(toggle, in: app)
         XCTAssertTrue(toggle.isHittable)

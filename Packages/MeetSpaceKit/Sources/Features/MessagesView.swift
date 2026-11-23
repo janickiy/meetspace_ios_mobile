@@ -40,10 +40,13 @@ struct MessagesView: View {
                     WorkspaceBell { model.presentWorkspaceNotifications() }
                 }
                 HStack(spacing: 0) {
-                    VStack(spacing: 0) {
-                        ChatFilterBar(filter: $filter, unread: DemoChatStore.contacts.filter { $0.unread > 0 }.count) { model.navigate(.folders) }
-                        if searching { SearchBox(text: $query, placeholder: "Найти человека или чат").padding(12) }
-                        ScrollView {
+                    ScrollView {
+                        VStack(spacing: 0) {
+                            ChatFilterBar(filter: $filter, unread: String(DemoChatStore.contacts.filter { $0.unread > 0 }.count)) { model.navigate(.folders) }
+                            if searching {
+                                SearchBox(text: $query, placeholder: "Найти человека или чат")
+                                    .padding(.horizontal, wide ? 16 : 15).padding(.bottom, 16)
+                            }
                             StateContent(state: model.contentState, retry: { model.contentState = .content }) {
                                 LazyVStack(spacing: 0) {
                                     if let demoInvite = URL(string: "https://meet.example.org/room/design") {
@@ -66,9 +69,9 @@ struct MessagesView: View {
                                     if contacts.isEmpty { Text(tr("Чат не найден")).font(MSTheme.font(13)).padding() }
                                 }.padding(.horizontal, 16).padding(.bottom, wide ? 0 : 80)
                             }
-                        }.overlay(alignment: .bottomTrailing) {
-                            if !wide { newChat.padding(.trailing, 18).padding(.bottom, 17) }
                         }
+                    }.overlay(alignment: .bottomTrailing) {
+                        if !wide { newChat.padding(.trailing, 18).padding(.bottom, 17) }
                     }.frame(width: wide ? 340 : nil).background(MSTheme.surface)
                     if wide {
                         Divider()
@@ -217,6 +220,7 @@ struct ThreadView: View {
                     Text(original.author).font(MSTheme.font(11, weight: .semibold))
                     Text(original.displayText).font(MSTheme.font(12)).lineLimit(3)
                 }.padding(8).frame(maxWidth: .infinity, alignment: .leading).background(MSTheme.line.opacity(0.4), in: RoundedRectangle(cornerRadius: 8))
+                    .allowsHitTesting(false)
             }
             ChatMessageText(text: message.displayText)
             if !message.files.isEmpty { DemoChatAttachments(files: message.files) }
