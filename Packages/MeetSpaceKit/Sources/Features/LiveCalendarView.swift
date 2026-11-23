@@ -65,7 +65,7 @@ struct LiveCalendarView: View {
         }.background(MSTheme.background).foregroundStyle(MSTheme.ink)
             .accessibilityIdentifier("screen.liveCalendar")
             .task { await model.initialize() }
-            .sheet(isPresented: $creating) { ScheduleMeetingForm(model: model) }
+            .workspaceFormPresentation(isPresented: $creating) { ScheduleMeetingForm(model: model) }
             .sheet(item: $selected) { meeting in CalendarMeetingDetail(model: model, meeting: meeting, onJoin: onJoin) }
             .sheet(isPresented: $choosingZone) {
                 CalendarTimeZonePicker(selected: model.preferences.timeZoneIdentifier) { identifier in Task { await model.selectTimeZone(identifier) } }
@@ -257,65 +257,192 @@ struct LiveCalendarView: View {
 }
 
 struct ScheduleMeetingForm: View {
-    @Bindable var model: CalendarModel
-    var meeting: Conference? = nil
+    var model: CalendarModel?
+    var workspace: ConferenceWorkspace?
+    var initiallyPlanned = true
+    var meeting: Conference?
     var didSave: () -> Void = {}
     @State private var title = ""
     @State private var startsAt = Date().addingTimeInterval(3600)
     @State private var duration = 30
     @State private var hasDuration = true
+    @State private var customDuration = false
     @State private var waitingRoom = false
+    @State private var planned = true
     @State private var choosingZone = false
     @State private var initialized = false
     @FocusState private var titleFocused: Bool
     @Environment(\.dismiss) private var dismiss
+
+    private var zone: TimeZone { model?.zone ?? .current }
+    private var busy: Bool { model?.busy == true || workspace?.busy == true }
+    private var error: String? { planned ? model?.error : workspace?.error }
+    private var name: String { title.trimmingCharacters(in: .whitespacesAndNewlines) }
+    private var canSubmit: Bool {
+        if busy || (planned && model == nil) { return false }
+        if meeting != nil { return true }
+        let validName = (1...200).contains(name.unicodeScalars.count)
+        return validName && (!planned || model?.creationUncertain != true)
+    }
+
     var body: some View {
-        NavigationStack {
-            Form {
-                if meeting == nil {
-                    TextField(tr("Название встречи"), text: $title)
-                        .focused($titleFocused).submitLabel(.done)
-                        .onSubmit { titleFocused = false }
-                        .accessibilityIdentifier("schedule.title")
+        WorkspaceFormSheet(
+            title: meeting != nil ? "Перенести встречу" : (initiallyPlanned ? "Запланировать встречу" : "Новая встреча"),
+            identifier: "schedule", closeLabel: "Отмена", busy: busy, close: { dismiss() }
+        ) {
+            if let meeting { Text(meeting.title).font(MSTheme.font(15, weight: .semibold)) }
+            else {
+                WorkspaceFormField(title: "Название встречи") {
+                    TextField(tr("Например, обсуждение проекта"), text: $title)
+                        .textFieldStyle(.plain).workspaceFormInput().focused($titleFocused)
+                        .submitLabel(.done).onSubmit { titleFocused = false }
+                        .accessibilityLabel(tr("Название встречи")).accessibilityIdentifier(initiallyPlanned ? "schedule.title" : "conferenceTitle")
                 }
-                else { Text(meeting?.title ?? "").font(.headline) }
-                DatePicker(tr("Дата и время"), selection: $startsAt, in: Date()..., displayedComponents: [.date, .hourAndMinute])
-                    .environment(\.timeZone, model.zone).accessibilityIdentifier("schedule.date")
-                Button { choosingZone = true } label: { Label(model.zone.identifier, systemImage: "clock") }
-                Text(calendarText(startsAt, format: "d MMMM yyyy, HH:mm ZZZZ", zone: model.zone)).font(.footnote).foregroundStyle(.secondary)
-                Toggle(tr("Указать длительность"), isOn: $hasDuration)
-                if hasDuration {
-                    Stepper(value: $duration, in: 1...1440, step: 5) { Text(tr("Длительность, мин") + ": \(duration)") }
-                        .accessibilityIdentifier("schedule.duration")
+                if workspace != nil && model != nil {
+                    formSwitch("Запланировать встречу", detail: "Выберите дату и время заранее", isOn: $planned)
                 }
-                if meeting == nil { Toggle(tr("Комната ожидания"), isOn: $waitingRoom) }
-                if let error = model.error { Text(tr(error)).foregroundStyle(MSTheme.danger) }
-                Button(tr(meeting == nil ? "Запланировать встречу" : "Сохранить время")) {
-                    titleFocused = false
-                    Task {
-                        let saved: Bool
-                        if let meeting { saved = await model.reschedule(meeting, at: startsAt, duration: hasDuration ? duration : nil) }
-                        else { saved = await model.create(title: title, at: startsAt, duration: hasDuration ? duration : nil, waitingRoom: waitingRoom) }
-                        if saved { dismiss(); didSave() }
+            }
+            if planned {
+                VStack(alignment: .leading, spacing: 14) {
+                    ViewThatFits(in: .horizontal) {
+                        HStack(alignment: .top, spacing: 12) { dateField; timeField }
+                        VStack(alignment: .leading, spacing: 12) { dateField; timeField }
                     }
-                }.disabled(model.busy || (meeting == nil && (title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || model.creationUncertain)))
-                    .accessibilityIdentifier("schedule.submit")
-            }.scrollDismissesKeyboard(.interactively)
-                .navigationTitle(tr(meeting == nil ? "Запланировать" : "Перенести встречу")).msInlineTitle()
-                .toolbar { ToolbarItem(placement: .cancellationAction) { Button(tr("Отмена")) { dismiss() }.disabled(model.busy) } }
-                .disabled(model.busy).interactiveDismissDisabled(model.busy)
-                .onAppear {
-                    guard !initialized else { return }; initialized = true
-                    if let meeting {
-                        title = meeting.title; startsAt = max(meeting.scheduledAt ?? startsAt, Date().addingTimeInterval(60))
-                        duration = meeting.plannedDurationMin ?? 30; hasDuration = meeting.plannedDurationMin != nil
+                    if meeting != nil {
+                        Toggle(tr("Указать длительность"), isOn: $hasDuration).toggleStyle(.switch)
+                        if hasDuration { durationStepper }
                     } else {
-                        startsAt = max(model.calendar.date(bySettingHour: 10, minute: 0, second: 0, of: model.selectedDay) ?? startsAt, Date().addingTimeInterval(3600))
+                        durationPicker
+                    }
+                    Button {
+                        titleFocused = false
+                        choosingZone = true
+                    } label: {
+                        Text(MeetingDateText.zoneLabel(zone)).font(MSTheme.font(11))
+                            .frame(minHeight: 44, alignment: .leading).contentShape(Rectangle())
+                    }.buttonStyle(.plain).foregroundStyle(MSTheme.muted).accessibilityIdentifier("schedule.zone")
+                    .accessibilityLabel(tr("Часовой пояс")).accessibilityValue(MeetingDateText.zoneLabel(zone))
+                }
+            }
+            if meeting == nil {
+                formSwitch("Зал ожидания", detail: "Участники с действующей ссылкой входят без ожидания", isOn: $waitingRoom)
+                Text(tr("Пригласите коллег по ссылке после создания. Встречу запускает организатор."))
+                    .font(MSTheme.font(11)).foregroundStyle(MSTheme.muted)
+            }
+            if let error { Text(tr(error)).font(MSTheme.font(12)).foregroundStyle(MSTheme.danger) }
+            if busy { ProgressView().frame(maxWidth: .infinity) }
+            Button(action: submit) {
+                Text(tr(meeting != nil ? "Сохранить время" : (planned ? "Запланировать" : "Создать встречу")))
+                    .multilineTextAlignment(.center).fixedSize(horizontal: false, vertical: true).padding(.vertical, 7)
+            }.buttonStyle(MSButtonStyle()).disabled(!canSubmit)
+                .accessibilityIdentifier(initiallyPlanned ? "schedule.submit" : "conferenceCreateSubmit")
+        }
+        .onAppear(perform: initialize)
+        .onChange(of: workspace?.call?.id) { _, call in
+            if !planned && call != nil { dismiss() }
+        }
+        .sheet(isPresented: $choosingZone) {
+            if let model {
+                CalendarTimeZonePicker(selected: model.preferences.timeZoneIdentifier) { zone in
+                    Task { await model.selectTimeZone(zone) }
+                }
+            }
+        }
+    }
+
+    private var dateField: some View {
+        WorkspaceFormField(title: "Дата") {
+            DatePicker(selection: $startsAt, in: Date()..., displayedComponents: .date) { Text(tr("Дата")) }
+                .labelsHidden().datePickerStyle(.compact).fixedSize().workspaceFormInput()
+                .environment(\.timeZone, zone).accessibilityLabel(tr("Дата")).accessibilityIdentifier("schedule.date")
+        }
+    }
+
+    private var timeField: some View {
+        WorkspaceFormField(title: "Время") {
+            DatePicker(selection: $startsAt, in: Date()..., displayedComponents: .hourAndMinute) { Text(tr("Время")) }
+                .labelsHidden().datePickerStyle(.compact).fixedSize().workspaceFormInput()
+                .environment(\.timeZone, zone).accessibilityLabel(tr("Время")).accessibilityIdentifier("schedule.time")
+        }
+    }
+
+    private var durationPicker: some View {
+        WorkspaceFormField(title: "Длительность") {
+            Menu {
+                ForEach([30, 45, 60, 90], id: \.self) { value in
+                    Button {
+                        duration = value; hasDuration = true; customDuration = false
+                    } label: {
+                        if hasDuration && !customDuration && duration == value { Label(durationLabel(value), systemImage: "checkmark") }
+                        else { Text(durationLabel(value)) }
                     }
                 }
-                .sheet(isPresented: $choosingZone) {
-                    CalendarTimeZonePicker(selected: model.preferences.timeZoneIdentifier) { zone in Task { await model.selectTimeZone(zone) } }
-                }
+                Button(tr("Другая длительность")) { hasDuration = true; customDuration = true }
+                Button(tr("Без длительности")) { hasDuration = false; customDuration = false }
+            } label: {
+                HStack {
+                    Text(hasDuration ? durationLabel(duration) : tr("Без длительности")).fixedSize(horizontal: false, vertical: true)
+                    Spacer()
+                    Image(systemName: "chevron.down").accessibilityHidden(true)
+                }.workspaceFormInput().foregroundStyle(MSTheme.ink).contentShape(Rectangle())
+            }.menuStyle(.button).menuIndicator(.hidden).buttonStyle(.plain)
+                .accessibilityIdentifier("schedule.durationOptions")
+            if customDuration { durationStepper }
+        }
+    }
+
+    private var durationStepper: some View {
+        Stepper(value: $duration, in: 1...1440, step: 5) {
+            Text(tr("Длительность, мин") + ": \(duration)").fixedSize(horizontal: false, vertical: true)
+        }.accessibilityValue(String(duration)).accessibilityIdentifier("schedule.duration")
+    }
+
+    private func durationLabel(_ value: Int) -> String {
+        switch value {
+        case 30: tr("30 минут")
+        case 45: tr("45 минут")
+        case 60: tr("1 час")
+        case 90: tr("1,5 часа")
+        default: "\(value) \(tr("мин"))"
+        }
+    }
+
+    private func formSwitch(_ title: String, detail: String, isOn: Binding<Bool>) -> some View {
+        Toggle(isOn: isOn) {
+            VStack(alignment: .leading, spacing: 5) {
+                Text(tr(title)).font(MSTheme.font(13, weight: .semibold))
+                Text(tr(detail)).font(MSTheme.font(11)).foregroundStyle(MSTheme.muted)
+            }.fixedSize(horizontal: false, vertical: true)
+        }.toggleStyle(.switch).frame(minHeight: 44)
+    }
+
+    private func initialize() {
+        guard !initialized else { return }
+        initialized = true
+        planned = meeting != nil || (initiallyPlanned && model != nil)
+        if let meeting {
+            title = meeting.title
+            startsAt = max(meeting.scheduledAt ?? startsAt, Date().addingTimeInterval(60))
+            duration = meeting.plannedDurationMin ?? 30; hasDuration = meeting.plannedDurationMin != nil
+        } else if let model {
+            startsAt = max(model.calendar.date(bySettingHour: 10, minute: 0, second: 0, of: model.selectedDay) ?? startsAt,
+                           Date().addingTimeInterval(3600))
+        }
+    }
+
+    private func submit() {
+        guard canSubmit else { return }
+        titleFocused = false
+        Task {
+            let saved: Bool
+            if let meeting, let model {
+                saved = await model.reschedule(meeting, at: startsAt, duration: hasDuration ? duration : nil)
+            } else if planned, let model {
+                saved = await model.create(title: name, at: startsAt, duration: hasDuration ? duration : nil, waitingRoom: waitingRoom)
+            } else if let workspace {
+                saved = await workspace.create(title: name, waitingRoom: waitingRoom)
+            } else { return }
+            if saved && planned { dismiss(); didSave() }
         }
     }
 }
@@ -325,6 +452,7 @@ private struct CalendarMeetingDetail: View {
     let meeting: Conference
     let onJoin: (Conference) -> Void
     @State private var editing = false
+    @State private var rescheduled = false
     @State private var cancelling = false
     @Environment(\.dismiss) private var dismiss
     var body: some View {
@@ -344,7 +472,9 @@ private struct CalendarMeetingDetail: View {
                 }
             }.navigationTitle(tr("Встреча")).msInlineTitle().disabled(model.busy)
                 .toolbar { ToolbarItem(placement: .cancellationAction) { Button(tr("Закрыть")) { dismiss() } } }
-                .sheet(isPresented: $editing) { ScheduleMeetingForm(model: model, meeting: meeting, didSave: { dismiss() }) }
+                .workspaceFormPresentation(isPresented: $editing, onDismiss: {
+                    if rescheduled { dismiss() }
+                }) { ScheduleMeetingForm(model: model, meeting: meeting, didSave: { rescheduled = true }) }
                 .confirmationDialog(tr("Отменить запланированную встречу?"), isPresented: $cancelling) {
                     Button(tr("Отменить встречу"), role: .destructive) { Task { await model.cancel(meeting); if model.error == nil { dismiss() } } }
                 }
@@ -365,7 +495,7 @@ private struct CalendarTimeZonePicker: View {
                 }.accessibilityIdentifier("calendar.zone.\(identifier)")
             }.searchable(text: $query, prompt: tr("Поиск часового пояса"))
                 .navigationTitle(tr("Часовой пояс")).msInlineTitle()
-                .toolbar { ToolbarItem(placement: .cancellationAction) { Button(tr("Отмена")) { dismiss() } } }
+                .toolbar { ToolbarItem(placement: .cancellationAction) { IconButton("xmark", label: "Отмена") { dismiss() } } }
         }
     }
 }

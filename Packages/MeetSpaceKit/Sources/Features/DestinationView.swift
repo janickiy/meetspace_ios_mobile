@@ -102,7 +102,10 @@ private struct ScreenCatalog: View {
             VStack(alignment: .leading, spacing: 16) {
                 FeatureNotice("Каталог демо-экранов. Незавершённые сценарии отмечены внутри; операции с сервером не выполняются.")
                 ForEach(routes, id: \.self) { route in
-                    Button { model.navigate(route) } label: {
+                    Button {
+                        if route == .prejoin { model.showDemoPrejoin() }
+                        else { model.navigate(route) }
+                    } label: {
                         HStack { Text(tr(route.title)); Spacer(); Image(systemName: "chevron.right") }.frame(minHeight: 44).msCard(padding: 10)
                     }.buttonStyle(.plain)
                 }
@@ -125,7 +128,7 @@ private struct MeetingDetailView: View {
                 Label("\(meeting.count)", systemImage: "person.2")
                 HStack { Text(tr(meeting.owner)); Spacer(); Text(tr("Организатор")).foregroundStyle(MSTheme.muted) }.msCard()
                 FeatureNotice()
-                Button(tr("Перед встречей")) { model.navigate(.prejoin) }.buttonStyle(MSButtonStyle())
+                Button(tr("Перед встречей")) { model.showDemoPrejoin(title: tr(meeting.title)) }.buttonStyle(MSButtonStyle())
                 Button(tr("Записи встречи")) { model.navigate(.recordings) }.buttonStyle(MSButtonStyle(primary: false))
             }.padding(24).frame(maxWidth: 720).frame(maxWidth: .infinity)
         }.background(MSTheme.background)

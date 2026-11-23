@@ -89,7 +89,9 @@ public struct MSButtonStyle: ButtonStyle {
     public init(primary: Bool = true) { self.primary = primary }
     public func makeBody(configuration: Configuration) -> some View {
         configuration.label.font(MSTheme.font(14, weight: .semibold))
-            .frame(minHeight: 44).frame(maxWidth: .infinity).padding(.horizontal, 14)
+            .multilineTextAlignment(.center).fixedSize(horizontal: false, vertical: true)
+            .padding(.horizontal, 14).padding(.vertical, 6)
+            .frame(maxWidth: .infinity, minHeight: 44).contentShape(Rectangle())
             .foregroundStyle(primary ? MSTheme.surface : MSTheme.ink)
             .background(primary ? MSTheme.accent : MSTheme.surfaceSecondary, in: RoundedRectangle(cornerRadius: 12))
             .opacity(isEnabled ? (configuration.isPressed ? 0.75 : 1) : 0.45)
@@ -100,7 +102,8 @@ public struct MSTextButtonStyle: ButtonStyle {
     @Environment(\.isEnabled) private var isEnabled
     public init() {}
     public func makeBody(configuration: Configuration) -> some View {
-        configuration.label.frame(minWidth: 44, minHeight: 44).contentShape(Rectangle())
+        configuration.label.fixedSize(horizontal: false, vertical: true)
+            .frame(minWidth: 44, minHeight: 44).contentShape(Rectangle())
             .foregroundStyle(MSTheme.accent)
             .opacity(isEnabled ? (configuration.isPressed ? 0.65 : 1) : 0.45)
     }

@@ -2,6 +2,7 @@ import SwiftUI
 
 private struct ConferencePresentation: ViewModifier {
     @Bindable var model: AppModel
+    @Environment(\.colorScheme) private var colorScheme
     @State private var presented: ConferenceSession?
     @State private var presentationTask: Task<Void, Never>?
     func body(content: Content) -> some View {
@@ -20,11 +21,11 @@ private struct ConferencePresentation: ViewModifier {
     @ViewBuilder private func presentation(_ content: Content) -> some View {
         #if os(iOS)
         content.fullScreenCover(item: $presented) { session in
-            LiveConferenceView(session: session, recordings: model.identity.recordings) { await model.dismissConference() }
+            LiveConferenceView(session: session, recordings: model.identity.recordings, workspaceTheme: colorScheme) { await model.dismissConference() }
         }
         #else
         content.sheet(item: $presented) { session in
-            LiveConferenceView(session: session, recordings: model.identity.recordings) { await model.dismissConference() }
+            LiveConferenceView(session: session, recordings: model.identity.recordings, workspaceTheme: colorScheme) { await model.dismissConference() }
                 .frame(minWidth: 700, minHeight: 650)
         }
         #endif

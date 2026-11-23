@@ -196,8 +196,18 @@ struct WorkspaceInboxView: View {
                     .accessibilityFocused($closeFocused)
             }.padding(.leading, compact ? 16 : 20).padding(.trailing, 10).frame(minHeight: compact ? 65 : 70)
             ViewThatFits(in: .horizontal) {
-                HStack(spacing: 4) { filters; Spacer(minLength: 0); readAll }
-                VStack(alignment: .leading, spacing: 2) { filters; readAll }
+                HStack(spacing: 4) {
+                    fixedFilters
+                    Spacer(minLength: 0)
+                    readAll.fixedSize(horizontal: true, vertical: false)
+                }
+                VStack(alignment: .leading, spacing: 2) {
+                    ViewThatFits(in: .horizontal) {
+                        fixedFilters
+                        VStack(alignment: .leading, spacing: 3) { filter(false); filter(true) }
+                    }
+                    readAll
+                }
             }.padding(.horizontal, compact ? 12 : 16).padding(.bottom, compact ? 11 : 13)
             Rectangle().fill(MSTheme.line).frame(height: 1)
             ScrollView {
@@ -232,7 +242,9 @@ struct WorkspaceInboxView: View {
                     Image(systemName: "chevron.right").font(.caption)
                 }.frame(maxWidth: .infinity, minHeight: 44).foregroundStyle(MSTheme.muted).contentShape(Rectangle())
             }.buttonStyle(.plain).padding(.vertical, 6).accessibilityIdentifier("workspaceInbox.settings")
-        }.foregroundStyle(MSTheme.ink).accessibilityIdentifier("workspaceInbox")
+        }.foregroundStyle(MSTheme.ink)
+            .accessibilityElement(children: .contain)
+            .accessibilityIdentifier("workspaceInbox")
             .task { closeFocused = true; await inbox.refresh(using: app.identity.messaging?.client, demo: app.isDemo) }
     }
 
@@ -242,25 +254,32 @@ struct WorkspaceInboxView: View {
         return "\(n) \(tr(n % 10 == 1 && n % 100 != 11 ? "новое" : "новых"))"
     }
 
-    private var filters: some View {
-        HStack(spacing: 3) {
-            ForEach([false, true], id: \.self) { unread in
-                Button {
-                    onlyUnread = unread
-                    if unread { Task { await inbox.loadUntilUnread() } }
-                } label: {
-                    Text(tr(unread ? "Непрочитанные" : "Все")).font(MSTheme.font(12, weight: .semibold))
-                        .padding(.horizontal, compact ? 9 : 11).frame(minWidth: 53, minHeight: 44)
-                        .foregroundStyle(unread == onlyUnread ? MSTheme.accent : MSTheme.muted)
-                        .background(unread == onlyUnread ? MSTheme.surface : .clear, in: RoundedRectangle(cornerRadius: 9))
-                }.buttonStyle(.plain).accessibilityAddTraits(onlyUnread == unread ? .isSelected : [])
-            }
-        }.padding(3).background(MSTheme.surfaceSecondary, in: RoundedRectangle(cornerRadius: 12))
+    private var fixedFilters: some View {
+        HStack(spacing: 3) { filter(false); filter(true) }
+            .fixedSize(horizontal: true, vertical: false)
+            .padding(3).background(MSTheme.surfaceSecondary, in: RoundedRectangle(cornerRadius: 12))
+    }
+
+    private func filter(_ unread: Bool) -> some View {
+        Button {
+            onlyUnread = unread
+            if unread { Task { await inbox.loadUntilUnread() } }
+        } label: {
+            Text(tr(unread ? "Непрочитанные" : "Все"))
+                .font(MSTheme.font(12, weight: .semibold))
+                .fixedSize(horizontal: false, vertical: true)
+                .padding(.horizontal, compact ? 9 : 11).frame(minWidth: 53, minHeight: 44)
+                .foregroundStyle(unread == onlyUnread ? MSTheme.accent : MSTheme.muted)
+                .background(unread == onlyUnread ? MSTheme.surface : .clear, in: RoundedRectangle(cornerRadius: 9))
+                .contentShape(Rectangle())
+        }.buttonStyle(.plain).accessibilityAddTraits(onlyUnread == unread ? .isSelected : [])
+            .accessibilityIdentifier(unread ? "workspaceInbox.unread" : "workspaceInbox.all")
     }
 
     private var readAll: some View {
         Button { Task { await inbox.readAll() } } label: {
-            Label(tr("Прочитать все"), systemImage: "checkmark").font(MSTheme.font(11, weight: .semibold)).frame(minHeight: 44)
+            Label(tr("Прочитать все"), systemImage: "checkmark").font(MSTheme.font(11, weight: .semibold))
+                .fixedSize(horizontal: false, vertical: true).frame(minHeight: 44).contentShape(Rectangle())
         }.buttonStyle(.plain).foregroundStyle(inbox.unread > 0 ? MSTheme.accent : MSTheme.muted)
             .disabled(inbox.unread == 0 || inbox.busy).accessibilityLabel(tr("Прочитать все уведомления"))
             .accessibilityIdentifier("workspaceInbox.readAll")

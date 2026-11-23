@@ -149,7 +149,7 @@ private struct WelcomeView: View {
             }.contentShape(Rectangle()).accessibilityIdentifier("openDemo")
             Button(tr("Войти как гость")) { guestForm = true }
                 .font(MSTheme.font(11)).frame(maxWidth: .infinity, minHeight: 44).accessibilityIdentifier("guestConference")
-                .sheet(isPresented: $guestForm) { GuestConferenceForm(app: model, completed: { guestForm = false }) }
+                .workspaceFormPresentation(isPresented: $guestForm) { GuestConferenceForm(app: model, completed: { guestForm = false }) }
             Label(tr("Ваше общение остаётся в вашем пространстве"), systemImage: "lock")
                 .font(MSTheme.font(10, relativeTo: .caption)).foregroundStyle(MSTheme.muted)
                 .frame(maxWidth: .infinity).padding(.top, 22)

@@ -40,7 +40,7 @@ let package = Package(
             .copy("Resources/docker.asc"), .copy("Resources/preflight.sh"),
             .copy("Resources/provenance.json"), .copy("Resources/SSH-THIRD-PARTY-NOTICES.txt")
         ]),
-        .target(name: "MeetSpaceFeatures", dependencies: ["MeetSpaceInstaller", "MeetSpaceCore", "MeetSpaceAPI", "MeetSpaceStorage", "MeetSpaceRealtime", "MeetSpaceMedia", "MeetSpaceCalling", "MeetSpaceBroadcast", "MeetSpaceDesignSystem"], path: "Sources/Features", resources: [.copy("ChatPhotos")]),
+        .target(name: "MeetSpaceFeatures", dependencies: ["MeetSpaceInstaller", "MeetSpaceCore", "MeetSpaceAPI", "MeetSpaceStorage", "MeetSpaceRealtime", "MeetSpaceMedia", "MeetSpaceCalling", "MeetSpaceBroadcast", "MeetSpaceDesignSystem"], path: "Sources/Features", resources: [.copy("ChatPhotos"), .copy("ConferencePhotos")]),
         .executableTarget(name: "FoundationPreviewRenderer", dependencies: ["MeetSpaceFeatures", "MeetSpaceDesignSystem", "MeetSpaceCore"], path: "Tools/PreviewRenderer"),
         .testTarget(name: "InstallerTests", dependencies: ["MeetSpaceInstaller"]),
         .testTarget(name: "CoreTests", dependencies: ["MeetSpaceCore", "MeetSpaceRealtime"]),

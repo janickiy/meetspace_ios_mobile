@@ -59,6 +59,8 @@ public struct AppDependencies: Sendable {
     public private(set) var onboarding: Onboarding = .welcome
     private(set) var demoChats = DemoChatStore()
     private(set) var demoProfile = DemoAccountProfile()
+    private(set) var demoPrejoinTitle: String?
+    var demoConferenceEntry: DemoConferenceEntry?
     public private(set) var isDemo = false
     public var tab: AppTab = .meetings
     public var meetingsPath: [AppRoute] = []
@@ -224,7 +226,14 @@ public struct AppDependencies: Sendable {
 
     public func leaveDemo() {
         isDemo = false; onboarding = .welcome
+        demoPrejoinTitle = nil; demoConferenceEntry = nil
         meetingsPath = []; messagesPath = []; profilePath = []
+    }
+
+    func showDemoPrejoin(title: String? = nil) {
+        demoPrejoinTitle = title
+        demoConferenceEntry = nil
+        navigate(.prejoin)
     }
 
     public func navigate(_ route: AppRoute) {
@@ -234,4 +243,11 @@ public struct AppDependencies: Sendable {
         case .profile: profilePath.append(route)
         }
     }
+}
+
+struct DemoConferenceEntry {
+    let name: String
+    let microphone: Bool
+    let camera: Bool
+    let title: String?
 }

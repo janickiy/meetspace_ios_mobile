@@ -14,9 +14,7 @@ struct LiveMeetingsView: View {
     @State private var selected: Conference?
     @State private var creating = false
     @State private var joining = false
-    @State private var title = ""
     @State private var invitation = ""
-    @State private var waitingRoom = false
     @State private var openRecordingAfterDismiss = false
     var body: some View {
         MeetingsDashboard(items: model.meetings.map(listItem), zone: calendar?.zone ?? .current,
@@ -31,14 +29,16 @@ struct LiveMeetingsView: View {
                 if meeting.isClosed { selected = meeting }
                 else { Task { await model.join(meeting) } }
             }, details: { selected = $0 }, identifier: { "conference.\($0.id.uuidString.lowercased())" })
-            .disabled(model.busy).accessibilityIdentifier("screen.liveMeetings")
+            .disabled(model.busy)
+            .accessibilityElement(children: .contain)
+            .accessibilityIdentifier("screen.liveMeetings")
             .refreshable { await model.load() }
             .task {
                 await calendar?.restorePreferences()
                 await model.load()
             }
-            .sheet(isPresented: $scheduling) {
-                if let calendar { ScheduleMeetingForm(model: calendar, didSave: { Task { await model.load() } }) }
+            .workspaceFormPresentation(isPresented: $scheduling) {
+                ScheduleMeetingForm(model: calendar, workspace: model, didSave: { Task { await model.load() } })
             }
             .sheet(item: $selected, onDismiss: {
                 if openRecordingAfterDismiss { openRecordingAfterDismiss = false; openRecordings() }
@@ -46,35 +46,29 @@ struct LiveMeetingsView: View {
                 LiveMeetingDetails(item: listItem(meeting), zone: calendar?.zone ?? .current, workspace: model,
                     recordings: recordings, openRecording: { openRecordingAfterDismiss = true; selected = nil })
             }
-            .sheet(isPresented: $creating) {
-                NavigationStack {
-                    Form {
-                        TextField(tr("Название встречи"), text: $title).accessibilityIdentifier("conferenceTitle")
-                        Toggle(tr("Комната ожидания"), isOn: $waitingRoom)
-                        Text(tr("Допуск участников определяется настройками и приглашением сервера."))
-                            .font(.footnote).foregroundStyle(.secondary)
-                        if let error = model.error { Text(tr(error)).foregroundStyle(MSTheme.danger) }
-                        Button(tr("Создать встречу")) {
-                            Task { if await model.create(title: title, waitingRoom: waitingRoom) { creating = false; title = "" } }
-                        }.disabled(title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || model.busy)
-                            .accessibilityIdentifier("conferenceCreateSubmit")
-                    }.navigationTitle(tr("Новая встреча")).msInlineTitle()
-                        .toolbar { ToolbarItem(placement: .cancellationAction) { Button(tr("Отмена")) { creating = false } } }
-                        .disabled(model.busy).interactiveDismissDisabled(model.busy)
-                }
+            .workspaceFormPresentation(isPresented: $creating) {
+                ScheduleMeetingForm(model: calendar, workspace: model, initiallyPlanned: false,
+                                    didSave: { Task { await model.load() } })
             }
-            .sheet(isPresented: $joining) {
-                NavigationStack {
-                    Form {
-                        TextField(tr("Ссылка или код приглашения"), text: $invitation).msURLInput()
-                            .accessibilityIdentifier("conferenceInvitation")
-                        if let error = model.error { Text(tr(error)).foregroundStyle(MSTheme.danger) }
-                        Button(tr("Продолжить")) {
-                            Task { if await model.joinInvitation(invitation) { joining = false; invitation = "" } }
-                        }.disabled(invitation.isEmpty || model.busy).accessibilityIdentifier("invitationJoinSubmit")
-                    }.navigationTitle(tr("Встреча по приглашению")).msInlineTitle()
-                        .toolbar { ToolbarItem(placement: .cancellationAction) { Button(tr("Отмена")) { joining = false } } }
-                        .disabled(model.busy).interactiveDismissDisabled(model.busy)
+            .workspaceFormPresentation(isPresented: $joining) {
+                WorkspaceFormSheet(title: "Подключиться по ссылке", identifier: "invitation", closeLabel: "Отмена",
+                                   busy: model.busy, close: { joining = false }) {
+                    Text(tr("Вставьте ссылку, которую прислал организатор встречи.")).foregroundStyle(MSTheme.muted)
+                    WorkspaceFormField(title: "Ссылка на встречу") {
+                        TextField(tr("https://meet.example.org/…"), text: $invitation).msURLInput()
+                            .textFieldStyle(.plain).workspaceFormInput()
+                            .accessibilityLabel(tr("Ссылка или код приглашения")).accessibilityIdentifier("conferenceInvitation")
+                    }
+                    if let error = model.error { Text(tr(error)).foregroundStyle(MSTheme.danger) }
+                    Button {
+                        Task { if await model.joinInvitation(invitation) { joining = false; invitation = "" } }
+                    } label: {
+                        HStack {
+                            Text(tr("Продолжить")).fixedSize(horizontal: false, vertical: true)
+                            Image(systemName: "arrow.right").accessibilityHidden(true)
+                        }
+                    }.buttonStyle(MSButtonStyle()).disabled(invitation.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || model.busy)
+                        .accessibilityIdentifier("invitationJoinSubmit")
                 }
             }
 
@@ -106,26 +100,27 @@ struct GuestConferenceForm: View {
     @State private var name = ""
     @Environment(\.dismiss) private var dismiss
     var body: some View {
-        NavigationStack {
-            Form {
-                TextField(tr("HTTPS-адрес сервера"), text: $server).msURLInput()
-                TextField(tr("Ссылка или код приглашения"), text: $invitation).msURLInput()
-                TextField(tr("Ваше имя"), text: $name)
-                Text(tr("Гостевой доступ действует только для этой встречи."))
-                    .font(.footnote).foregroundStyle(.secondary)
-                if let error = app.guestError { Text(tr(error)).foregroundStyle(MSTheme.danger) }
-                Button(tr("Продолжить")) {
-                    Task {
-                        if await app.joinGuest(server: server, invitation: invitation, name: name) {
-                            dismiss(); completed()
-                        }
+        WorkspaceFormSheet(title: "Войти как гость", identifier: "guest", closeLabel: "Отмена",
+                           busy: app.guestBusy, close: { dismiss() }) {
+            WorkspaceFormField(title: "HTTPS-адрес сервера") {
+                TextField(tr("HTTPS-адрес сервера"), text: $server).msURLInput().textFieldStyle(.plain).workspaceFormInput()
+            }
+            WorkspaceFormField(title: "Ссылка или код приглашения") {
+                TextField(tr("Ссылка или код приглашения"), text: $invitation).msURLInput().textFieldStyle(.plain).workspaceFormInput()
+            }
+            WorkspaceFormField(title: "Ваше имя") {
+                TextField(tr("Ваше имя"), text: $name).textFieldStyle(.plain).workspaceFormInput()
+            }
+            Text(tr("Гостевой доступ действует только для этой встречи.")).font(MSTheme.font(11)).foregroundStyle(MSTheme.muted)
+            if let error = app.guestError { Text(tr(error)).foregroundStyle(MSTheme.danger) }
+            Button(tr("Продолжить")) {
+                Task {
+                    if await app.joinGuest(server: server, invitation: invitation, name: name) {
+                        dismiss(); completed()
                     }
-                }.disabled(app.guestBusy || server.isEmpty || invitation.isEmpty || name.isEmpty)
-                if app.guestBusy { ProgressView() }
-            }.navigationTitle(tr("Войти как гость")).msInlineTitle()
-                .toolbar { ToolbarItem(placement: .cancellationAction) { Button(tr("Отмена")) { dismiss() }.disabled(app.guestBusy) } }
-                .interactiveDismissDisabled(app.guestBusy)
-                .onAppear { server = app.configuration.server?.url.absoluteString ?? "" }
-        }
+                }
+            }.buttonStyle(MSButtonStyle()).disabled(app.guestBusy || server.isEmpty || invitation.isEmpty || name.isEmpty)
+            if app.guestBusy { ProgressView().frame(maxWidth: .infinity) }
+        }.onAppear { server = app.configuration.server?.url.absoluteString ?? "" }
     }
 }

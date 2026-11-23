@@ -7,6 +7,7 @@ import MeetSpaceDesignSystem
 struct LiveRecordingsView: View {
     @Bindable var model: RecordingsModel
     @Environment(\.dynamicTypeSize) private var typeSize
+    @Environment(\.horizontalSizeClass) private var sizeClass
     @State private var confirmingDelete = false
     private let scrollTopID = "recordingsScrollTop"
     var body: some View {
@@ -15,7 +16,8 @@ struct LiveRecordingsView: View {
                 VStack(alignment: .leading, spacing: 20) {
                     if let selected = model.selected { detail(selected) } else { library }
                     if model.loading { ProgressView().frame(maxWidth: .infinity) }
-                }.padding(24).frame(maxWidth: 1140).frame(maxWidth: .infinity).id(scrollTopID)
+                }.padding(.horizontal, sizeClass == .compact ? 16 : 24).padding(.vertical, 16)
+                    .frame(maxWidth: 1140).frame(maxWidth: .infinity).id(scrollTopID)
             }
             .onChange(of: model.selected?.id) { _, _ in
                 proxy.scrollTo(scrollTopID, anchor: .top)
@@ -44,11 +46,17 @@ struct LiveRecordingsView: View {
     }
     private var library: some View {
         VStack(alignment: .leading, spacing: 16) {
-            Text(tr("Записи встреч")).font(MSTheme.font(26, weight: .semibold))
+            VStack(alignment: .leading, spacing: 7) {
+                Text(tr("БИБЛИОТЕКА ВСТРЕЧ")).font(MSTheme.font(10, weight: .semibold)).tracking(1.2).foregroundStyle(MSTheme.accent)
+                Text(tr("Важное остаётся с вами"))
+                    .font(MSTheme.font(sizeClass == .compact ? 24 : 26, weight: .semibold, relativeTo: .title2))
+                    .accessibilityAddTraits(.isHeader)
+                Text(tr("Видео, аудио и материалы ваших встреч.")).font(MSTheme.font(12)).foregroundStyle(MSTheme.muted)
+            }
             SearchBox(text: $model.query, placeholder: "Поиск записей")
             ViewThatFits(in: .horizontal) {
-                HStack(spacing: 16) { filters }.fixedSize(horizontal: true, vertical: false)
-                VStack(alignment: .leading, spacing: 12) { filters }
+                HStack(spacing: 8) { filters }.fixedSize(horizontal: true, vertical: false)
+                VStack(alignment: .leading, spacing: 8) { filters }
             }
             Text(tr("Поиск и фильтры применяются к загруженным записям.")).font(MSTheme.font(11)).foregroundStyle(MSTheme.muted)
                 .fixedSize(horizontal: false, vertical: true).accessibilityIdentifier("recordings.filterHint")
@@ -62,15 +70,14 @@ struct LiveRecordingsView: View {
                             recordingSummary(row)
                         } else {
                             HStack(spacing: 16) {
-                                RoundedRectangle(cornerRadius: 10).fill(MSTheme.accentSoft).frame(width: 90, height: 64)
-                                    .overlay { Image(systemName: row.recording.mode == "audio_only" ? "waveform" : "play.rectangle").font(.system(size: 26)).foregroundStyle(MSTheme.accent) }
-                                    .accessibilityHidden(true)
+                                recordingCover(for: row).frame(width: sizeClass == .compact ? 84 : 128, height: 84)
                                 recordingSummary(row)
                                 Spacer(minLength: 0); Image(systemName: "chevron.right").foregroundStyle(MSTheme.muted).accessibilityHidden(true)
                             }
                         }
                     }.frame(maxWidth: .infinity, minHeight: 44, alignment: .leading)
-                        .msCard().contentShape(Rectangle()).accessibilityElement(children: .combine)
+                        .msCard(padding: sizeClass == .compact ? 10 : 12)
+                        .contentShape(Rectangle()).accessibilityElement(children: .combine)
                 }.buttonStyle(.plain).disabled(model.loading).accessibilityIdentifier("recording.\(row.id.uuidString)")
             }
             if model.nextCursor != nil {
@@ -83,17 +90,24 @@ struct LiveRecordingsView: View {
     }
     private func recordingSummary(_ row: RecordingLibraryItem) -> some View {
         VStack(alignment: .leading, spacing: 6) {
-            Text(row.conference.title).font(MSTheme.font(14, weight: .semibold)).foregroundStyle(MSTheme.ink)
-            if typeSize.isAccessibilitySize {
-                Text(tr(RecordingMode(rawValue: row.recording.mode)?.title ?? row.recording.mode))
-                    .font(MSTheme.font(11)).foregroundStyle(MSTheme.muted)
-                    .accessibilityIdentifier("recording.mode.\(row.id.uuidString.lowercased())")
-            }
+            Text(tr(RecordingMode(rawValue: row.recording.mode)?.title ?? row.recording.mode))
+                .font(MSTheme.font(10, weight: .semibold)).foregroundStyle(MSTheme.accent)
+                .accessibilityIdentifier("recording.mode.\(row.id.uuidString.lowercased())")
+            Text(row.conference.title).font(MSTheme.font(13, weight: .semibold)).foregroundStyle(MSTheme.ink)
             Text(row.recording.createdAt, format: .dateTime.day().month().year()).font(MSTheme.font(11)).foregroundStyle(MSTheme.muted)
                 .accessibilityIdentifier("recording.date.\(row.id.uuidString.lowercased())")
             Text(tr(row.recording.statusTitle)).font(MSTheme.font(11)).foregroundStyle(row.recording.ready ? MSTheme.accent : MSTheme.muted)
                 .accessibilityIdentifier("recording.status.\(row.id.uuidString.lowercased())")
         }.fixedSize(horizontal: false, vertical: true).multilineTextAlignment(.leading)
+    }
+    private func recordingCover(for row: RecordingLibraryItem) -> some View {
+        let audio = row.recording.mode == "audio_only"
+        return RoundedRectangle(cornerRadius: 10)
+            .fill(audio ? Color(red: 0.14, green: 0.29, blue: 0.32) : Color(red: 0.14, green: 0.17, blue: 0.26))
+            .overlay {
+                Image(systemName: audio ? "waveform" : "play.circle")
+                    .font(.system(size: 27)).foregroundStyle(.white)
+            }.accessibilityHidden(true)
     }
     @ViewBuilder private var filters: some View {
         Menu {
@@ -126,10 +140,13 @@ struct LiveRecordingsView: View {
     }
     private func filterLabel(_ title: String, identifier: String) -> some View {
         HStack(alignment: .firstTextBaseline, spacing: 8) {
-            Text(tr(title)).font(MSTheme.font(17)).fixedSize(horizontal: false, vertical: true).multilineTextAlignment(.leading)
+            Text(tr(title)).font(MSTheme.font(12)).fixedSize(horizontal: false, vertical: true).multilineTextAlignment(.leading)
                 .accessibilityIdentifier(identifier)
             Image(systemName: "chevron.up.chevron.down").font(MSTheme.font(10)).accessibilityHidden(true)
-        }.frame(minHeight: 44).contentShape(Rectangle())
+        }.padding(.horizontal, 12).frame(minHeight: 48)
+            .background(MSTheme.surface, in: RoundedRectangle(cornerRadius: 10))
+            .overlay { RoundedRectangle(cornerRadius: 10).strokeBorder(MSTheme.line) }
+            .contentShape(Rectangle())
     }
     @ViewBuilder private func detail(_ row: RecordingLibraryItem) -> some View {
         Button { Task { await model.back() } } label: { Label(tr("Все записи"), systemImage: "arrow.left") }.frame(minHeight: 44)

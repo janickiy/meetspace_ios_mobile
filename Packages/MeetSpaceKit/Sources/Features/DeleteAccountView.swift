@@ -39,7 +39,7 @@ struct DeleteAccountView: View {
                 if identity.busy { ProgressView() }
             }.scrollDismissesKeyboard(.interactively)
                 .navigationTitle(tr("Удаление аккаунта")).msInlineTitle()
-                .toolbar { ToolbarItem(placement: .cancellationAction) { Button(tr("Отмена")) { dismiss() }.disabled(identity.busy) } }
+                .toolbar { ToolbarItem(placement: .cancellationAction) { IconButton("xmark", label: "Отмена") { dismiss() }.disabled(identity.busy) } }
                 .disabled(identity.busy).interactiveDismissDisabled(identity.busy)
                 .alert(tr("Удалить этот аккаунт на сервере без возможности восстановления?"),
                     isPresented: Binding(get: { pendingPassword != nil }, set: { if !$0 { pendingPassword = nil } }),

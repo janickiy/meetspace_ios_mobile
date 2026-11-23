@@ -5,57 +5,92 @@ import ReplayKit
 #endif
 
 struct ScreenShareControls: View {
+    enum Style { case banner, personal }
+
     @Bindable var session: ConferenceSession
+    var compact = true
+    var style = Style.banner
     @State private var showingPicker = false
     private var needsStop: Bool { [.preparing, .awaitingSystem, .starting, .active, .paused, .stopping].contains(session.screenShareState) }
     var body: some View {
-        VStack(spacing: 8) {
-            if let error = session.screenShareError {
-                Text(tr(error)).font(MSTheme.font(12)).foregroundStyle(Color(red: 1, green: 0.65, blue: 0.67))
-                    .fixedSize(horizontal: false, vertical: true).accessibilityIdentifier("screenShareError")
-            }
-            HStack(spacing: 12) {
-                Label(tr(status), systemImage: "rectangle.on.rectangle")
-                    .font(MSTheme.font(12)).fixedSize(horizontal: false, vertical: true)
-                    .accessibilityIdentifier("screenShareStatus")
-                Spacer(minLength: 0)
-                if needsStop {
-                    Button(tr("Остановить")) { Task { await session.stopScreenShare() } }
-                        .disabled(session.screenShareState == .stopping)
-                        .accessibilityIdentifier("screenShareStop").frame(minHeight: 44)
-                } else {
-                    Button(tr("Показать экран")) {
-                        Task {
-                            await session.prepareScreenShare()
-                            if session.screenShareState == .awaitingSystem { showingPicker = true }
+        Group {
+            if style == .personal {
+                PersonalCallControl(actionLabel, icon: "display", id: actionID, compact: compact,
+                                    active: needsStop, displayLabel: "Экран", action: performAction)
+                    .disabled(actionDisabled)
+                    .accessibilityValue(Text(tr(status)))
+            } else {
+                VStack(spacing: 8) {
+                    if let error = session.screenShareError {
+                        Text(tr(error)).font(MSTheme.font(12)).foregroundStyle(PersonalCallColors.warning)
+                            .fixedSize(horizontal: false, vertical: true).accessibilityIdentifier("screenShareError")
+                    }
+                    ViewThatFits(in: .horizontal) {
+                        HStack(spacing: 12) {
+                            statusLabel.fixedSize(horizontal: true, vertical: false)
+                            Spacer(minLength: 0)
+                            actionButton.fixedSize(horizontal: true, vertical: false)
                         }
-                    }.disabled(!session.canStartScreenShare)
-                        .accessibilityIdentifier("screenShareStart").frame(minHeight: 44)
+                        VStack(spacing: 4) {
+                            statusLabel
+                            actionButton
+                        }.frame(maxWidth: .infinity)
+                    }
+                    .padding(.horizontal, 12).padding(.vertical, 4)
+                    .background(Color(red: 0.176, green: 0.271, blue: 0.439), in: RoundedRectangle(cornerRadius: 12))
+                    .overlay(RoundedRectangle(cornerRadius: 12).strokeBorder(Color(red: 0.392, green: 0.498, blue: 0.71)))
                 }
-            }.padding(.horizontal, 12).padding(.vertical, 4)
-                .background(Color(red: 0.176, green: 0.271, blue: 0.439), in: RoundedRectangle(cornerRadius: 12))
-                .overlay(RoundedRectangle(cornerRadius: 12).stroke(Color(red: 0.392, green: 0.498, blue: 0.71), lineWidth: 1))
+            }
         }.sheet(isPresented: $showingPicker, onDismiss: {
             if [.preparing, .awaitingSystem].contains(session.screenShareState) { Task { await session.stopScreenShare() } }
         }) {
-            VStack(spacing: 24) {
-                Text(tr("Демонстрация экрана")).font(.headline)
-                Text(tr("Будет виден весь экран, включая другие приложения. Системный звук не передаётся."))
-                    .multilineTextAlignment(.center)
-                #if os(iOS)
-                if let identifier = session.screenPickerExtensionBundleID {
-                    SystemBroadcastPicker(identifier: identifier).frame(width: 64, height: 64)
-                }
-                #endif
-                Text(tr("Нажмите системную кнопку и подтвердите начало трансляции."))
-                    .font(.callout).multilineTextAlignment(.center)
-                Button(tr("Отмена")) { Task { await session.stopScreenShare(); showingPicker = false } }
-                    .frame(minHeight: 44).accessibilityIdentifier("screenShareCancel")
-            }.padding(24).presentationDetents([.medium])
+            ScrollView {
+                VStack(spacing: 24) {
+                    Text(tr("Демонстрация экрана")).font(.headline)
+                    Text(tr("Будет виден весь экран, включая другие приложения. Системный звук не передаётся."))
+                        .multilineTextAlignment(.center)
+                    #if os(iOS)
+                    if let identifier = session.screenPickerExtensionBundleID {
+                        SystemBroadcastPicker(identifier: identifier).frame(width: 64, height: 64)
+                    }
+                    #endif
+                    Text(tr("Нажмите системную кнопку и подтвердите начало трансляции."))
+                        .font(.callout).multilineTextAlignment(.center)
+                    Button(tr("Отмена")) { Task { await session.stopScreenShare(); showingPicker = false } }
+                        .frame(minHeight: 44).accessibilityIdentifier("screenShareCancel")
+                }.padding(24).frame(maxWidth: .infinity)
+            }.presentationDetents([.medium, .large])
         }.onChange(of: session.screenShareState) { _, state in
             if ![.preparing, .awaitingSystem].contains(state) { showingPicker = false }
         }
     }
+
+    private var actionID: String { needsStop ? "screenShareStop" : "screenShareStart" }
+    private var actionLabel: String { needsStop ? "Остановить" : "Показать экран" }
+    private var actionDisabled: Bool { needsStop ? session.screenShareState == .stopping : !session.canStartScreenShare }
+    private var actionButton: some View {
+        Button(tr(actionLabel), action: performAction)
+            .font(MSTheme.font(12, weight: .semibold))
+            .frame(minHeight: 44).disabled(actionDisabled).accessibilityIdentifier(actionID)
+    }
+    private var statusLabel: some View {
+        Label(tr(status), systemImage: "rectangle.on.rectangle")
+            .font(MSTheme.font(12)).fixedSize(horizontal: false, vertical: true)
+            .accessibilityIdentifier("screenShareStatus")
+    }
+
+    private func performAction() {
+        let stop = needsStop
+        Task {
+            if stop {
+                await session.stopScreenShare()
+            } else {
+                await session.prepareScreenShare()
+                if session.screenShareState == .awaitingSystem { showingPicker = true }
+            }
+        }
+    }
+
     private var status: String {
         switch session.screenShareState {
         case .preparing: "Готовим демонстрацию…"

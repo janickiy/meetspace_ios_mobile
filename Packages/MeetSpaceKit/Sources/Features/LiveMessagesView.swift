@@ -11,6 +11,7 @@ struct LiveMessagesView: View {
     @Bindable var app: AppModel
     @Bindable var model: MessagingModel
     @State private var creating = false
+    @State private var createdConversation: UUID?
     @State private var selected: UUID?
     @State private var searching = false
     @ScaledMetric(relativeTo: .body) private var compactListBottomSpace: CGFloat = 84
@@ -45,7 +46,10 @@ struct LiveMessagesView: View {
                     }
                 }.padding(.horizontal, wide ? 24 : 0)
             }.background(MSTheme.background)
-                .sheet(isPresented: $creating) { NewConversationView(model: model) { id in select(id, wide: wide) } }
+                .workspaceFormPresentation(isPresented: $creating, onDismiss: {
+                    if let createdConversation { select(createdConversation, wide: wide) }
+                    createdConversation = nil
+                }) { NewConversationView(model: model) { createdConversation = $0 } }
         }.toolbar(.hidden)
         .ignoresSafeArea(model.selectingMessages && !searching ? .keyboard : [], edges: .bottom)
         .task(id: "\(model.listSearch)|\(model.onlyUnread)|\(model.groupFilter)|\(model.directFilter)") {

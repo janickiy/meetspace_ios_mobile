@@ -15,7 +15,7 @@ struct WorkspaceView: View {
             let wide = geometry.size.width >= 780
             VStack(spacing: 0) {
                 tabs
-                if (wide && !typeSize.isAccessibilitySize) || !showingThread {
+                if !showingCall && ((wide && !typeSize.isAccessibilitySize) || !showingThread) {
                     WorkspaceTabBar(model: model, wide: wide)
                 }
             }
@@ -34,14 +34,18 @@ struct WorkspaceView: View {
         .task { await inbox.refresh(using: model.identity.messaging?.client, demo: model.isDemo) }
     }
 
-    private var showingThread: Bool {
-        let path: [AppRoute]
+    private var activeRoute: AppRoute? {
         switch model.tab {
-        case .meetings: path = model.meetingsPath
-        case .messages: path = model.messagesPath
-        case .profile: path = model.profilePath
+        case .meetings: model.meetingsPath.last
+        case .messages: model.messagesPath.last
+        case .profile: model.profilePath.last
         }
-        switch path.last {
+    }
+
+    private var showingCall: Bool { activeRoute == .call || activeRoute == .personalCall }
+
+    private var showingThread: Bool {
+        switch activeRoute {
         case .thread, .conversation: return true
         default: return false
         }
@@ -258,18 +262,20 @@ struct SearchBox: View {
     @Binding var text: String
     @Environment(\.dynamicTypeSize) private var typeSize
     let placeholder: String
+    var identifier: String? = nil
     var onSubmit: () -> Void = {}
+    private var fieldID: String { identifier ?? "searchField.\(placeholder)" }
     var body: some View {
         HStack(spacing: 10) {
             Image(systemName: "magnifyingglass").foregroundStyle(MSTheme.muted).accessibilityHidden(true)
             #if os(iOS)
             AccessibleTextField(text: $text, placeholder: tr(typeSize.isAccessibilitySize ? "Поиск" : placeholder),
-                                label: tr(placeholder), identifier: "searchField.\(placeholder)", onSubmit: onSubmit)
+                                label: tr(placeholder), identifier: fieldID, onSubmit: onSubmit)
                 .frame(minHeight: 44)
             #else
             TextField(tr(typeSize.isAccessibilitySize ? "Поиск" : placeholder), text: $text)
                 .textFieldStyle(.plain).frame(minHeight: 44)
-                .accessibilityLabel(tr(placeholder)).accessibilityIdentifier("searchField.\(placeholder)").onSubmit(onSubmit)
+                .accessibilityLabel(tr(placeholder)).accessibilityIdentifier(fieldID).onSubmit(onSubmit)
             #endif
             if !text.isEmpty { Button { text = "" } label: { Image(systemName: "xmark.circle.fill") }.accessibilityLabel(tr("Очистить поиск")) }
         }.padding(.horizontal, 12).frame(minHeight: 44).background(MSTheme.surface, in: RoundedRectangle(cornerRadius: 12))

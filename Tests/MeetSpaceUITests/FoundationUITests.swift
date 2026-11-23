@@ -233,6 +233,88 @@ import UIKit
         XCTAssertTrue(first.waitForExistence(timeout: 5))
     }
 
+    func testWorkspaceNotificationFiltersKeepTheirLabelsAndToggle() {
+        let app = launch(["-demo"])
+        let bell = app.buttons["Уведомления"]
+        XCTAssertTrue(bell.waitForExistence(timeout: 10))
+        bell.tap()
+        let unread = app.buttons["workspaceInbox.unread"]
+        reveal(unread, in: app)
+        XCTAssertEqual(unread.label, "Непрочитанные")
+        if app.frame.width >= 375 {
+            XCTAssertGreaterThan(unread.frame.width, 105, "The unread filter must reserve room for its full title")
+            XCTAssertLessThanOrEqual(unread.frame.height, 50, "The title should fit on one line at the default text size")
+        }
+        unread.tap()
+        XCTAssertTrue(unread.isSelected)
+        XCTAssertFalse(app.staticTexts["Вас упомянули в группе"].exists)
+        capture(app, name: "workspace-notifications-unread")
+
+        let readAll = app.buttons["workspaceInbox.readAll"]
+        XCTAssertTrue(readAll.isHittable && readAll.isEnabled)
+        readAll.tap()
+        XCTAssertTrue(app.staticTexts["Всё прочитано"].firstMatch.waitForExistence(timeout: 5))
+        XCTAssertFalse(readAll.isEnabled)
+        let all = app.buttons["workspaceInbox.all"]
+        all.tap()
+        XCTAssertTrue(all.isSelected)
+    }
+
+    func testMobileScheduleShowsSeparateDateAndTimeControls() {
+        let app = launch()
+        login(app)
+        let meetings = app.buttons["tab.meetings"]
+        XCTAssertTrue(meetings.waitForExistence(timeout: 10))
+        meetings.tap()
+        let schedule = app.buttons["scheduleMeeting"]
+        XCTAssertTrue(schedule.waitForExistence(timeout: 10))
+        schedule.tap()
+
+        let close = app.buttons["schedule.close"]
+        XCTAssertTrue(close.waitForExistence(timeout: 5))
+        XCTAssertGreaterThanOrEqual(close.frame.width, 44)
+        XCTAssertGreaterThanOrEqual(close.frame.height, 44)
+        for identifier in ["schedule.title", "schedule.date", "schedule.time"] {
+            let control = app.descendants(matching: .any).matching(identifier: identifier).firstMatch
+            XCTAssertTrue(control.exists, "The schedule form must display \(identifier)")
+            XCTAssertTrue(app.frame.insetBy(dx: -1, dy: -1).contains(control.frame))
+        }
+        XCTAssertFalse(app.buttons["schedule.submit"].isEnabled)
+        capture(app, name: "workspace-schedule-form")
+        close.tap()
+        XCTAssertTrue(schedule.isHittable)
+    }
+
+    func testMobileDemoPrejoinAndConferenceLayout() {
+        let app = launch(["-demo"])
+        let profile = app.buttons["tab.profile"]
+        XCTAssertTrue(profile.waitForExistence(timeout: 10))
+        profile.tap()
+        let catalog = app.buttons["Каталог экранов"]
+        reveal(catalog, in: app)
+        catalog.tap()
+        let prejoin = app.buttons["Перед встречей"]
+        reveal(prejoin, in: app)
+        prejoin.tap()
+        let join = app.buttons["conferencePreviewJoin"]
+        reveal(join, in: app)
+        capture(app, name: "demo-prejoin-mobile")
+        join.tap()
+
+        let speaker = app.buttons["conferenceLayoutSpeaker"]
+        XCTAssertTrue(speaker.waitForExistence(timeout: 5))
+        if app.frame.width < 780 { XCTAssertTrue(speaker.isSelected) }
+        capture(app, name: "demo-conference-mobile")
+        let gallery = app.buttons["conferenceLayoutGallery"]
+        gallery.tap()
+        XCTAssertTrue(gallery.isSelected)
+        for identifier in ["conferenceMic", "conferenceCamera", "conferenceParticipants", "conferenceChat", "conferenceLeave"] {
+            let control = app.buttons[identifier]
+            XCTAssertTrue(control.isHittable)
+            XCTAssertGreaterThanOrEqual(control.frame.height, 44)
+        }
+    }
+
     func testForwardCommentFromAnnaToGroup() {
         let app = launch(["-demo"])
         let chats = app.buttons["tab.messages"]
@@ -737,7 +819,14 @@ import UIKit
         let schedule = app.buttons["calendar.schedule"]
         XCTAssertTrue(schedule.waitForExistence(timeout: 10)); schedule.tap()
         let title = app.textFields["schedule.title"]
-        XCTAssertTrue(title.waitForExistence(timeout: 5)); title.tap(); title.typeText("План команды\n")
+        XCTAssertTrue(title.waitForExistence(timeout: 5))
+        let close = app.buttons["schedule.close"]
+        XCTAssertTrue(close.isHittable)
+        XCTAssertGreaterThanOrEqual(close.frame.width, 44)
+        XCTAssertTrue(app.descendants(matching: .any)["schedule.date"].firstMatch.exists)
+        XCTAssertTrue(app.descendants(matching: .any)["schedule.time"].firstMatch.exists)
+        capture(app, name: "workspace-phone-schedule-form")
+        title.tap(); title.typeText("План команды\n")
         let submit = app.buttons["schedule.submit"]; reveal(submit, in: app); submit.tap()
         let event = app.buttons["calendar.event.33333333-3333-4333-8333-333333333333"]
         reveal(app.segmentedControls["calendar.mode"], in: app, towardTop: true)
@@ -747,7 +836,7 @@ import UIKit
         event.tap(); app.buttons["calendar.reschedule"].tap()
         let duration = app.steppers["schedule.duration"]
         XCTAssertTrue(duration.waitForExistence(timeout: 5)); duration.buttons.element(boundBy: 1).tap()
-        XCTAssertTrue(app.staticTexts["Длительность, мин: 35"].exists)
+        waitForValue("35", of: duration)
         XCTAssertTrue(app.buttons["schedule.submit"].waitForExistence(timeout: 5)); app.buttons["schedule.submit"].tap()
         XCTAssertTrue(event.waitForExistence(timeout: 5))
         reveal(app.segmentedControls["calendar.mode"], in: app, towardTop: true)
@@ -1120,19 +1209,19 @@ import UIKit
         let app = launch(); login(app)
         let newChat = app.buttons["newChat"]
         XCTAssertTrue(newChat.waitForExistence(timeout: 10)); newChat.tap()
-        let toggle = app.switches["Групповой чат"]
-        XCTAssertTrue(toggle.waitForExistence(timeout: 5))
-        // SwiftUI Form exposes both the row and the actual UISwitch. Tap the thumb control.
-        let control = toggle.switches.firstMatch
-        if control.exists { control.tap() }
-        else { toggle.coordinate(withNormalizedOffset: CGVector(dx: 0.9, dy: 0.5)).tap() }
-        let name = app.textFields["Название группы"]
+        let group = app.buttons["newConversation.group"]
+        XCTAssertTrue(group.waitForExistence(timeout: 5))
+        let close = app.buttons["newConversation.close"]
+        XCTAssertTrue(close.isHittable)
+        XCTAssertGreaterThanOrEqual(close.frame.width, 44)
+        capture(app, name: "workspace-phone-new-conversation")
+        group.tap()
+        let name = app.textFields["newConversation.groupName"]
         XCTAssertTrue(name.waitForExistence(timeout: 5)); name.tap(); name.typeText("Команда iOS")
-        app.buttons["Выбрать участников"].tap()
         let peer = app.buttons["peer.11111111-1111-4111-8111-111111111113"]
-        XCTAssertTrue(peer.waitForExistence(timeout: 5)); peer.tap()
-        app.buttons["Готово"].tap()
-        app.buttons["createConversation"].tap()
+        reveal(peer, in: app); peer.tap()
+        let create = app.buttons["createConversation"]
+        reveal(create, in: app); create.tap()
         XCTAssertTrue(app.staticTexts["Команда iOS"].firstMatch.waitForExistence(timeout: 10))
         XCTAssertTrue(app.textFields["messageComposer"].waitForExistence(timeout: 10))
         app.buttons["chat.menu"].tap()
@@ -1176,6 +1265,11 @@ import UIKit
     private func leaveConference(_ app: XCUIApplication) {
         let leave = app.buttons["conferenceLeave"]
         XCTAssertTrue(leave.waitForExistence(timeout: 5)); leave.tap()
+        // SwiftUI on iPadOS 27 can expose nested AX representations of the same action.
+        let confirm = app.buttons["conferenceConfirmLeave"].firstMatch
+        let confirmationReady = XCTNSPredicateExpectation(predicate: NSPredicate(format: "hittable == true"), object: confirm)
+        XCTAssertEqual(XCTWaiter.wait(for: [confirmationReady], timeout: 8), .completed)
+        confirm.tap()
         XCTAssertTrue(app.buttons["createConference"].waitForExistence(timeout: 10))
         XCTAssertFalse(app.buttons["conferenceMic"].exists)
         XCTAssertFalse(app.buttons["conferenceCamera"].exists)
@@ -1188,6 +1282,17 @@ import UIKit
         createConference(app, title: "Встреча команды")
         capture(app, name: "stage04-prejoin")
         joinConference(app)
+
+        let gallery = app.buttons["conferenceLayoutGallery"]
+        let speaker = app.buttons["conferenceLayoutSpeaker"]
+        reveal(gallery, in: app)
+        XCTAssertTrue(speaker.exists)
+        gallery.tap()
+        XCTAssertTrue(gallery.isSelected)
+        capture(app, name: "conference-gallery")
+        speaker.tap()
+        XCTAssertTrue(speaker.isSelected)
+        capture(app, name: "conference-speaker")
 
         let microphone = app.buttons["conferenceMic"]
         microphone.tap(); waitForValue("Включён", of: microphone)
@@ -1305,6 +1410,9 @@ import UIKit
         let app = launch()
         createConference(app, title: "Демонстрация экрана")
         joinConference(app)
+        app.buttons["conferenceReconnect"].tap()
+        let mediaOptions = app.buttons["conferenceMediaOptions"]
+        XCTAssertTrue(mediaOptions.waitForExistence(timeout: 5)); mediaOptions.tap()
         let start = app.buttons["screenShareStart"]
         XCTAssertTrue(start.waitForExistence(timeout: 10)); start.tap()
         XCTAssertTrue(app.staticTexts["Вы демонстрируете экран"].waitForExistence(timeout: 10))
@@ -1318,6 +1426,7 @@ import UIKit
         app.buttons["screenShareStop"].tap()
         XCTAssertTrue(start.waitForExistence(timeout: 10))
         capture(app, name: "stage06-meeting-stopped")
+        app.buttons["conferenceMediaOptionsClose"].tap()
         leaveConference(app)
     }
 

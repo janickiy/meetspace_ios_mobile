@@ -6,67 +6,215 @@ import MeetSpaceDesignSystem
 struct LiveConferenceView: View {
     @Bindable var session: ConferenceSession
     var recordings: RecordingsModel? = nil
+    var workspaceTheme: ColorScheme = .light
     let close: () async -> Void
-    @State private var showParticipants = false
+    @State private var sidePanel: ConferenceRoomPanelTab?
     @State private var showRecording = false
-    @Environment(\.dynamicTypeSize) private var typeSize
-    private let background = Color(red: 0.106, green: 0.125, blue: 0.180)
-    private let panel = Color(red: 0.137, green: 0.176, blue: 0.235)
+    @State private var showMore = false
+    @State private var confirmLeave = false
+    @State private var showInvitation = false
+    private let panel = ConferenceRoomColors.surface
+
     var body: some View {
-        GeometryReader { proxy in
-            let wide = proxy.size.width >= 780 && !typeSize.isAccessibilitySize
-            VStack(spacing: 12) {
-                HStack {
-                    VStack(alignment: .leading, spacing: 5) {
-                        Text(session.title).font(MSTheme.font(17, weight: .semibold)).lineLimit(2)
-                            .accessibilityAddTraits(.isHeader).accessibilityIdentifier("screen.conference")
-                        Text(tr(status)).font(MSTheme.font(12)).foregroundStyle(.white.opacity(0.7))
-                            .accessibilityIdentifier("conferenceStatus")
+        Group {
+            if [.prejoin, .waiting, .failed, .ended, .suspended].contains(session.phase) {
+                prejoin
+            } else {
+                ConferenceRoomLayout(title: session.title, status: status, startedAt: session.startedAt,
+                                     panelVisible: sidePanel != nil, back: { confirmLeave = true }, actions: roomActions) { wide in
+                    headerActions(wide: wide)
+                } notice: {
+                    if let error = session.error {
+                        Text(tr(error)).font(MSTheme.font(12)).foregroundStyle(Color(red: 1, green: 0.65, blue: 0.67))
+                            .fixedSize(horizontal: false, vertical: true).padding(.vertical, 5).accessibilityIdentifier("conferenceError")
                     }
-                    Spacer()
-                    if let reaction = session.lastReaction { Text(reaction).font(.title) }
-                    if session.phase == .connected {
-                        if recordings != nil {
-                            Button { showRecording = true } label: { Image(systemName: "record.circle").frame(width: 44, height: 44) }
-                                .accessibilityLabel(tr("Запись встречи")).accessibilityIdentifier("conferenceRecordings")
+                    if !showMore, session.hasScreenBroadcast || session.screenShareError != nil {
+                        ScreenShareControls(session: session)
+                    }
+                } video: { wide in
+                    ConferenceRoomStage(attendees: roster, ownCamera: session.camera, wide: wide, remoteScreen: !screenTracks.isEmpty) { attendee, focused in
+                        participantVisual(attendee, focused: focused)
+                    } screenShare: {
+                        remoteScreenViews
+                    }.overlay(alignment: .topTrailing) {
+                        if let reaction = session.lastReaction {
+                            Text(reaction).font(.title2).padding(.top, 48).padding(.trailing, 8)
+                                .allowsHitTesting(false).accessibilityAddTraits(.updatesFrequently)
                         }
-                        Menu {
-                            ForEach(["👍", "👏", "❤️", "😂"], id: \.self) { emoji in
-                                Button(emoji) { Task { await session.react(emoji) } }
-                            }
-                        } label: { Image(systemName: "face.smiling").frame(width: 44, height: 44) }
-                            .accessibilityLabel(tr("Отправить реакцию"))
                     }
-                }.padding(.horizontal, 20)
-                if let error = session.error {
-                    Text(tr(error)).font(MSTheme.font(12)).foregroundStyle(Color(red: 1, green: 0.65, blue: 0.67))
-                        .padding(.horizontal, 20).fixedSize(horizontal: false, vertical: true).accessibilityIdentifier("conferenceError")
+                } panel: {
+                    ConferenceRoomPanel(selected: sidePanel ?? .chat, participantCount: roster.count, select: { showPanel($0) }, close: closePanel) {
+                        if sidePanel == .participants { participantsPanel } else { chatPanel }
+                    }.environment(\.colorScheme, workspaceTheme)
                 }
-                if [.prejoin, .waiting, .failed, .ended, .suspended].contains(session.phase) {
-                    prejoin.frame(maxWidth: 600).frame(maxWidth: .infinity)
-                } else {
-                    HStack(spacing: 12) {
-                        if wide || !session.chatVisible { videoGrid }
-                        if session.chatVisible { chatPanel.frame(maxWidth: wide ? 350 : .infinity) }
-                    }.padding(.horizontal, 12)
-                    controls(compact: session.chatVisible && proxy.size.height < 550)
-                }
-            }.padding(.top, 16).padding(.bottom, 12)
-                .frame(maxWidth: .infinity, maxHeight: .infinity).background(background.ignoresSafeArea())
-        }.foregroundStyle(.white).tint(Color(red: 0.67, green: 0.73, blue: 1))
-            .preferredColorScheme(.dark).interactiveDismissDisabled()
-            .sheet(isPresented: $showParticipants) { participantsPanel }
+                .preferredColorScheme(.dark)
+            }
+        }.interactiveDismissDisabled()
+            .onChange(of: session.phase) { _, phase in
+                if phase == .ended || phase == .failed { closePanel() }
+            }
             .sheet(isPresented: $showRecording) {
                 if let recordings { ConferenceRecordingSheet(session: session, model: recordings) }
             }
+            .sheet(isPresented: $showMore) {
+                moreOptions
+            }
+            .sheet(isPresented: $showInvitation) {
+                if let invitation = session.invitationURL { ConferenceInvitationSheet(title: session.title, url: invitation) }
+            }
+            .confirmationDialog(tr("Выйти из встречи?"), isPresented: $confirmLeave, titleVisibility: .visible) {
+                Button(tr("Выйти из встречи"), role: .destructive) { Task { await close() } }
+                    .accessibilityIdentifier("conferenceConfirmLeave")
+                Button(tr("Остаться"), role: .cancel) {}
+            } message: {
+                Text(tr("Остальные участники смогут продолжить разговор."))
+            }
     }
 
+    @ViewBuilder private func headerActions(wide: Bool) -> some View {
+        if recordings != nil {
+            Button { showRecording = true } label: {
+                ConferenceRoomHeaderLabel(title: "Запись", icon: "circle", expanded: wide)
+            }.buttonStyle(.plain).disabled(session.phase != .connected)
+                .accessibilityLabel(tr("Запись встречи")).accessibilityIdentifier("conferenceRecordings")
+        }
+        Button { showInvitation = true } label: {
+            ConferenceRoomHeaderLabel(title: "Пригласить", icon: "link", expanded: wide)
+        }.buttonStyle(.plain).disabled(session.invitationURL == nil)
+            .accessibilityLabel(tr("Пригласить")).accessibilityIdentifier("conferenceInvite")
+        Menu {
+            Button(tr("Переподключиться"), systemImage: "arrow.clockwise") { session.reconnect() }
+                .disabled(session.phase != .connected)
+            Button(tr("Дополнительно"), systemImage: "ellipsis") { showMore = true }
+                .accessibilityIdentifier("conferenceMediaOptions")
+        } label: {
+            ConferenceRoomHeaderLabel(title: "Управление встречей", icon: "arrow.clockwise")
+        }.buttonStyle(.plain).menuStyle(.button).menuIndicator(.hidden)
+            .accessibilityLabel(tr("Управление встречей")).accessibilityIdentifier("conferenceReconnect")
+    }
+
+    private var roomActions: [ConferenceRoomAction] {
+        [
+            ConferenceRoomAction(id: "conferenceMic", title: "Микрофон", icon: session.microphone ? "mic" : "mic.slash",
+                                 active: session.microphone, disabled: session.microphoneBlocked || session.busy || session.phase != .connected) {
+                Task { await session.toggleMicrophone() }
+            },
+            ConferenceRoomAction(id: "conferenceCamera", title: "Камера", icon: session.camera ? "video" : "video.slash",
+                                 active: session.camera, disabled: session.cameraBlocked || session.busy || session.phase != .connected) {
+                Task { await session.toggleCamera() }
+            },
+            ConferenceRoomAction(id: "conferenceParticipants", title: "Участники", icon: "person.2", active: sidePanel == .participants) {
+                togglePanel(.participants)
+            },
+            ConferenceRoomAction(id: "conferenceChat", title: "Чат", icon: "bubble.left", active: sidePanel == .chat) {
+                togglePanel(.chat)
+            },
+            ConferenceRoomAction(id: "conferenceLeave", title: "Выйти", icon: "rectangle.portrait.and.arrow.right",
+                                 destructive: true) {
+                confirmLeave = true
+            }
+        ]
+    }
+
+    private func showPanel(_ tab: ConferenceRoomPanelTab) {
+        sidePanel = tab
+        session.chatVisible = tab == .chat
+        Task {
+            if tab == .chat { await session.refreshChat() } else { await session.refreshParticipants() }
+        }
+    }
+
+    private func togglePanel(_ tab: ConferenceRoomPanelTab) {
+        if sidePanel == tab { closePanel() } else { showPanel(tab) }
+    }
+
+    private func closePanel() {
+        sidePanel = nil
+        session.chatVisible = false
+    }
+
+    private var roster: [ConferenceRoomAttendee] {
+        var current = session.participants.filter(\.canParticipate)
+        if !current.contains(where: { $0.id == session.participant.id }) { current.append(session.participant) }
+        let tones: [ConferenceRoomAttendee.Tone] = [.amber, .mint, .violet]
+        return current.enumerated().map { index, person in
+            let own = person.id == session.participant.id
+            return ConferenceRoomAttendee(id: person.id.uuidString.lowercased(), name: own ? tr("Вы") : person.displayName,
+                                          initials: callInitials(person.displayName), tone: own ? .blue : tones[index % tones.count],
+                                          own: own, microphone: own ? session.microphone : person.microphoneEnabled)
+        }
+    }
+
+    private var screenTracks: [ConferenceVideoTrack] {
+        session.videoTracks.filter { session.isScreenTrack($0) && !$0.isLocal }
+    }
+
+    @ViewBuilder private func participantVisual(_ attendee: ConferenceRoomAttendee, focused: Bool) -> some View {
+        if let media = session.media,
+           let participant = (session.participants + [session.participant]).first(where: { $0.id.uuidString.lowercased() == attendee.id }),
+           attendee.own ? session.camera : participant.cameraEnabled,
+           let track = session.videoTracks.first(where: {
+               !session.isScreenTrack($0) && (attendee.own ? $0.isLocal : session.participantID(for: $0) == participant.id)
+           }) {
+            media.videoView(trackID: track.id, mirrored: attendee.own && session.frontCamera, fit: focused)
+        }
+    }
+
+    private var remoteScreenViews: some View {
+        ForEach(screenTracks) { track in
+            if let media = session.media {
+                VStack(alignment: .leading, spacing: 8) {
+                    Text((session.participants.first { $0.id == session.participantID(for: track) }?.displayName ?? tr("Участник")) + " · " + tr("Демонстрация экрана"))
+                        .font(MSTheme.font(12)).fixedSize(horizontal: false, vertical: true)
+                    Color.clear.aspectRatio(16 / 9, contentMode: .fit)
+                        .overlay { media.videoView(trackID: track.id, mirrored: false, fit: true) }
+                        .background(panel).clipShape(RoundedRectangle(cornerRadius: 15))
+                }.accessibilityIdentifier("remoteScreenStage")
+            }
+        }
+    }
+
+    private var moreOptions: some View {
+        ScrollView {
+            VStack(alignment: .leading, spacing: 16) {
+                HStack {
+                    Text(tr("Дополнительно")).font(MSTheme.font(19, weight: .semibold)).accessibilityAddTraits(.isHeader)
+                    Spacer()
+                    Button { showMore = false } label: { WorkspaceIcon("xmark").frame(width: 44, height: 44) }
+                        .accessibilityLabel(tr("Закрыть")).accessibilityIdentifier("conferenceMediaOptionsClose")
+                }
+                ScreenShareControls(session: session).foregroundStyle(.white)
+                ViewThatFits(in: .horizontal) {
+                    HStack(spacing: 12) { mediaOptions }
+                    VStack(alignment: .leading, spacing: 8) { mediaOptions }
+                }
+                if !session.audioRoute.isEmpty {
+                    Text(session.audioRoute).font(MSTheme.font(11)).foregroundStyle(MSTheme.muted)
+                }
+                Divider()
+                Text(tr("Отправить реакцию")).font(MSTheme.font(13, weight: .semibold))
+                HStack {
+                    ForEach(["👍", "👏", "❤️", "😂"], id: \.self) { emoji in
+                        Button(emoji) { Task { await session.react(emoji) }; showMore = false }.frame(minWidth: 44, minHeight: 44)
+                    }
+                }
+            }.padding(22)
+        }.presentationDetents([.medium, .large])
+    }
+
+    @ViewBuilder private var mediaOptions: some View {
+        Button { Task { await session.switchCamera() } } label: { Label(tr("Сменить камеру"), systemImage: "arrow.triangle.2.circlepath.camera") }
+            .disabled(!session.camera || session.busy).frame(minHeight: 44)
+        Button { session.toggleSpeaker() } label: {
+            Label(tr(session.speaker ? "Динамик" : "Аудиовыход"), systemImage: "speaker.wave.2")
+        }.frame(minHeight: 44)
+    }
     private var status: String {
         switch session.phase {
         case .prejoin: "Перед входом во встречу"
         case .waiting: "Ожидаем допуска"
         case .connecting: "Подключение…"
-        case .connected: "Вы во встрече"
+        case .connected: "Встреча в эфире"
         case .reconnecting: "Восстанавливаем соединение…"
         case .suspended: "Медиа приостановлено"
         case .failed: "Не удалось подключиться"
@@ -74,165 +222,71 @@ struct LiveConferenceView: View {
         }
     }
     private var prejoin: some View {
-        ScrollView {
-            VStack(spacing: 22) {
-                Spacer(minLength: 20)
-                ZStack {
-                    RoundedRectangle(cornerRadius: 20).fill(panel)
-                    VStack(spacing: 16) {
-                        Avatar(String(session.participant.displayName.prefix(2)).uppercased(), size: 80)
-                        Text(session.participant.displayName).font(MSTheme.font(18, weight: .semibold))
-                        Label(tr("Камера и микрофон ещё не включены"), systemImage: "video.slash")
-                            .font(MSTheme.font(12)).foregroundStyle(.white.opacity(0.7))
-                    }.padding()
-                }.frame(height: 230)
-                if session.phase == .prejoin {
-                    Toggle(tr("Включить микрофон при входе"), isOn: $session.wantsMicrophone).disabled(session.microphoneBlocked)
-                    Toggle(tr("Включить камеру при входе"), isOn: $session.wantsCamera).disabled(session.cameraBlocked)
-                    Button(tr("Присоединиться")) { session.start() }.buttonStyle(MSButtonStyle())
-                        .accessibilityIdentifier("conferenceJoin")
-                } else if session.phase == .waiting {
-                    ProgressView().tint(.white)
-                    Text(tr("Организатор должен разрешить вход. Камера и микрофон выключены."))
-                        .multilineTextAlignment(.center)
-                } else if session.phase == .failed || session.phase == .suspended {
-                    Button(tr("Повторить")) { session.start() }.buttonStyle(MSButtonStyle())
-                        .accessibilityIdentifier("conferenceJoin")
+        MeetingPrejoinLayout(onBack: { Task { await close() } }) {
+            MeetingCameraPreview(name: session.participant.displayName, camera: session.wantsCamera,
+                                 microphone: session.wantsMicrophone,
+                                 cameraDisabled: session.cameraBlocked || session.phase != .prejoin,
+                                 microphoneDisabled: session.microphoneBlocked || session.phase != .prejoin,
+                                 toggleCamera: { session.wantsCamera.toggle() },
+                                 toggleMicrophone: { session.wantsMicrophone.toggle() })
+        } details: {
+            MeetingPrejoinHeading(title: session.title, subtitle: tr(status))
+            if let error = session.error {
+                Text(tr(error)).font(MSTheme.font(13)).foregroundStyle(MSTheme.danger)
+                    .fixedSize(horizontal: false, vertical: true).accessibilityIdentifier("conferenceError")
+            }
+            if session.phase == .prejoin {
+                MeetingPrejoinName(name: .constant(session.participant.displayName)).disabled(true)
+                if !session.audioRoute.isEmpty {
+                    MeetingMicrophoneRow(route: session.audioRoute) { showMore = true }
                 }
+                Button { session.start() } label: {
+                    Label(tr("Присоединиться"), systemImage: "arrow.right").labelStyle(MeetingNextLabelStyle())
+                }.buttonStyle(MSButtonStyle()).accessibilityIdentifier("conferenceJoin")
+            } else if session.phase == .waiting {
+                ProgressView()
+                Text(tr("Организатор должен разрешить вход. Камера и микрофон выключены."))
+                    .font(MSTheme.font(13)).fixedSize(horizontal: false, vertical: true)
+            } else if session.phase == .failed || session.phase == .suspended {
+                Button(tr("Повторить")) { session.start() }.buttonStyle(MSButtonStyle())
+                    .accessibilityIdentifier("conferenceJoin")
+            }
+            if session.phase != .prejoin {
                 Button(tr("Выйти")) { Task { await close() } }.frame(minHeight: 44)
                     .accessibilityIdentifier("conferenceLeave")
-            }.padding(24)
-        }
-    }
-    private var videoGrid: some View {
-        ScrollView {
-            VStack(spacing: 12) {
-                ForEach(session.videoTracks.filter { session.isScreenTrack($0) && !$0.isLocal }) { track in
-                    if let media = session.media {
-                        VStack(alignment: .leading, spacing: 8) {
-                            Text((session.participants.first { $0.id == session.participantID(for: track) }?.displayName ?? tr("Участник")) + " · " + tr("Демонстрация экрана"))
-                                .font(MSTheme.font(12))
-                            media.videoView(trackID: track.id, mirrored: false, fit: true)
-                                .frame(minHeight: 260).background(panel).clipShape(RoundedRectangle(cornerRadius: 16))
-                        }.accessibilityIdentifier("remoteScreenStage")
-                    }
-                }
-            LazyVGrid(columns: [GridItem(.adaptive(minimum: typeSize.isAccessibilitySize ? 260 : 160))], spacing: 12) {
-                let roster = session.participants.filter { $0.canParticipate }
-                if roster.isEmpty { participantTile(session.participant) }
-                ForEach(roster) { participantTile($0) }
-            }
             }
         }
-    }
-    private func participantTile(_ participant: ConferenceParticipant) -> some View {
-        let own = participant.id == session.participant.id
-        let video = session.videoTracks.first {
-            !session.isScreenTrack($0) && (own ? $0.isLocal : session.participantID(for: $0) == participant.id)
-        }
-        return ZStack(alignment: .bottomLeading) {
-            panel
-            if let media = session.media, let video, (own ? session.camera : participant.cameraEnabled) {
-                media.videoView(trackID: video.id, mirrored: own && session.frontCamera)
-            } else {
-                Avatar(String(participant.displayName.prefix(2)).uppercased(), size: 66)
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-            }
-            HStack(spacing: 8) {
-                Text(own ? tr("Вы") : participant.displayName).lineLimit(1)
-                Spacer(minLength: 0)
-                Image(systemName: (own ? session.microphone : participant.microphoneEnabled) ? "mic" : "mic.slash")
-            }.font(MSTheme.font(12)).padding(12).background(.black.opacity(0.35))
-        }.frame(height: 200).clipShape(RoundedRectangle(cornerRadius: 18))
-    }
-    private func controls(compact: Bool) -> some View {
-        VStack(spacing: 6) {
-            ScreenShareControls(session: session).padding(.horizontal, 12)
-            HStack(spacing: 12) {
-                control(session.microphone ? "mic.fill" : "mic.slash", "Микрофон", id: "conferenceMic", compact: compact,
-                        active: session.microphone, disabled: session.microphoneBlocked || session.busy || session.phase != .connected) {
-                    Task { await session.toggleMicrophone() }
-                }
-                control(session.camera ? "video.fill" : "video.slash", "Камера", id: "conferenceCamera", compact: compact,
-                        active: session.camera, disabled: session.cameraBlocked || session.busy || session.phase != .connected) {
-                    Task { await session.toggleCamera() }
-                }
-                control("person.2", "Участники", id: "conferenceParticipants", compact: compact) {
-                    showParticipants = true; Task { await session.refreshParticipants() }
-                }
-                control("bubble.left", "Чат", id: "conferenceChat", compact: compact, active: session.chatVisible) {
-                    session.chatVisible.toggle(); if session.chatVisible { Task { await session.refreshChat() } }
-                }
-                control("phone.down.fill", "Выйти", id: "conferenceLeave", compact: compact, destructive: true) { Task { await close() } }
-            }.padding(.horizontal, 12)
-            if !compact {
-                HStack(spacing: 24) {
-                    Button { Task { await session.switchCamera() } } label: { Label(tr("Сменить камеру"), systemImage: "arrow.triangle.2.circlepath.camera") }
-                        .disabled(!session.camera || session.busy)
-                    Button { session.toggleSpeaker() } label: {
-                        Label(tr(session.speaker ? "Динамик" : "Аудиовыход"), systemImage: "speaker.wave.2")
-                    }
-                }.font(MSTheme.font(11)).frame(minHeight: 44)
-                if !session.audioRoute.isEmpty { Text(session.audioRoute).font(MSTheme.font(10)).foregroundStyle(.white.opacity(0.6)) }
-            }
-        }
-    }
-    private func control(_ icon: String, _ label: String, id: String, compact: Bool = false, active: Bool = false,
-                         disabled: Bool = false, destructive: Bool = false, action: @escaping () -> Void) -> some View {
-        Button(action: action) {
-            VStack(spacing: 6) {
-                Image(systemName: icon).font(.system(size: 20))
-                    .frame(maxWidth: .infinity, minHeight: 44)
-                    .background(destructive ? Color(red: 0.8, green: 0.31, blue: 0.38) : active ? Color(red: 0.28, green: 0.38, blue: 0.64) : panel,
-                                in: RoundedRectangle(cornerRadius: 14))
-                if !compact { Text(tr(label)).font(MSTheme.font(10)).lineLimit(1).minimumScaleFactor(0.8) }
-            }.frame(maxWidth: .infinity)
-        }.buttonStyle(.plain).disabled(disabled).opacity(disabled ? 0.45 : 1)
-            .accessibilityLabel(tr(label)).accessibilityValue(tr(active ? "Включён" : "Выключен"))
-            .accessibilityIdentifier(id)
     }
     private var chatPanel: some View {
         VStack(spacing: 0) {
-            HStack {
-                Text(tr("Чат встречи")).font(MSTheme.font(17, weight: .semibold))
-                    .accessibilityIdentifier("conferenceChatHeading")
-                Spacer()
-                Button { session.chatVisible = false } label: { Image(systemName: "xmark").frame(width: 44, height: 44) }
-                    .accessibilityLabel(tr("Закрыть")).accessibilityIdentifier("conferencePanelClose")
-            }.padding(.horizontal, 16)
-            Divider()
             ScrollViewReader { proxy in
                 ScrollView {
-                    LazyVStack(alignment: .leading, spacing: 14) {
+                    LazyVStack(alignment: .leading, spacing: 10) {
+                        ConferenceRoomDate(date: session.messages.first?.createdAt)
                         ForEach(session.messages) { message in
                             VStack(alignment: .leading, spacing: 8) {
-                                Text(message.senderName).font(MSTheme.font(11, weight: .semibold)).foregroundStyle(Color(red: 0.7, green: 0.76, blue: 1))
+                                Text(message.senderName).font(MSTheme.font(11, weight: .semibold)).foregroundStyle(ConferenceRoomPanelColors.accent)
                                     .accessibilityIdentifier("conferenceMessageSender.\(message.id.uuidString.lowercased())")
-                                Text(message.isDeleted ? tr("Сообщение удалено") : message.text).font(MSTheme.font(14))
+                                Text(message.isDeleted ? tr("Сообщение удалено") : message.text).font(MSTheme.font(12))
                                 ForEach(message.attachments) { attachment in
                                     Label(attachment.filename, systemImage: "doc").font(MSTheme.font(12))
                                 }
-                                Text(message.createdAt, style: .time).font(MSTheme.font(10)).foregroundStyle(.white.opacity(0.55))
+                                Text(message.createdAt, style: .time).font(MSTheme.font(10)).foregroundStyle(ConferenceRoomPanelColors.muted)
                             }.padding(12).frame(maxWidth: .infinity, alignment: .leading)
-                                .background(Color(red: 0.176, green: 0.224, blue: 0.302), in: RoundedRectangle(cornerRadius: 14))
+                                .background(ConferenceRoomPanelColors.card, in: RoundedRectangle(cornerRadius: 14))
                                 .id(message.id)
                         }
                     }.padding(14)
-                }.onChange(of: session.messages.last?.id) { _, id in if let id { proxy.scrollTo(id, anchor: .bottom) } }
+                }.background(ConferenceRoomPanelColors.feed).onChange(of: session.messages.last?.id) { _, id in if let id { proxy.scrollTo(id, anchor: .bottom) } }
             }
-            Divider()
-            HStack(alignment: .bottom, spacing: 8) {
-                TextField(tr("Написать сообщение…"), text: $session.chatText, axis: .vertical)
-                    .lineLimit(1...4).textFieldStyle(.plain).accessibilityIdentifier("conferenceChatInput")
-                Button { Task { await session.sendMessage() } } label: { Image(systemName: "arrow.up").frame(width: 44, height: 44) }
-                    .disabled(session.busy || session.chatText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
-                    .accessibilityLabel(tr("Отправить сообщение")).accessibilityIdentifier("conferenceChatSend")
-            }.padding(14)
-        }.background(panel).clipShape(RoundedRectangle(cornerRadius: 20))
+            ConferenceRoomComposer(draft: $session.chatText, disabled: session.busy || session.phase != .connected) {
+                Task { await session.sendMessage() }
+            }
+        }.background(ConferenceRoomPanelColors.card)
     }
     private var participantsPanel: some View {
-        NavigationStack {
-            List {
+        ScrollView {
+            LazyVStack(alignment: .leading, spacing: 10) {
                 ForEach(session.participants) { participant in
                     VStack(alignment: .leading, spacing: 8) {
                         HStack {
@@ -266,14 +320,11 @@ struct LiveConferenceView: View {
                                 Button(tr("Удалить из встречи"), role: .destructive) { Task { await session.moderate(participant, action: "kick") } }
                             }.disabled(session.busy)
                         }
-                    }.padding(.vertical, 5)
+                    }.padding(12).background(ConferenceRoomPanelColors.card, in: RoundedRectangle(cornerRadius: 12))
                 }
-            }.navigationTitle(tr("Участники")).msInlineTitle()
-                .toolbar { ToolbarItem(placement: .confirmationAction) {
-                    Button(tr("Готово")) { showParticipants = false }.accessibilityIdentifier("conferencePanelClose")
-                } }
-                .refreshable { await session.refreshParticipants() }
-        }
+            }.padding(12)
+        }.background(ConferenceRoomPanelColors.feed)
+            .refreshable { await session.refreshParticipants() }
     }
     private func role(_ value: String) -> String {
         switch value { case "owner": "Организатор"; case "co_host": "Соведущий"; case "guest": "Гость"; default: "Участник" }

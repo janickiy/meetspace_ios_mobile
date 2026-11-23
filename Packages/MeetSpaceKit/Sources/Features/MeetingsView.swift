@@ -68,8 +68,12 @@ struct MeetingsView: View {
                 join: { model.navigate(.joinMeeting) }, calendar: { model.navigate(.calendar) },
                 recordings: { model.navigate(.recordings) }, folders: { model.navigate(.folders) },
                 notifications: { model.presentWorkspaceNotifications() }),
-            open: { model.navigate($0.status == .past ? .meetingDetails($0.id) : .prejoin) },
+            open: { meeting in
+                if meeting.status == .past { model.navigate(.meetingDetails(meeting.id)) }
+                else { model.showDemoPrejoin(title: meeting.title) }
+            },
             details: { model.navigate(.meetingDetails($0.id)) }, identifier: { "meeting.\($0.id)" })
+            .accessibilityElement(children: .contain)
             .accessibilityIdentifier("screen.meetings")
     }
 }

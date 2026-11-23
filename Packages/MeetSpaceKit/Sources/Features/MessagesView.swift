@@ -332,7 +332,7 @@ struct ThreadView: View {
                     if targets.isEmpty { Text(tr("Чат не найден")).foregroundStyle(MSTheme.muted) }
                 }.padding(18)
             }.navigationTitle(tr("Переслать сообщение")).msInlineTitle()
-                .toolbar { ToolbarItem(placement: .cancellationAction) { Button(tr("Отмена")) { forwarding = nil } } }
+                .toolbar { ToolbarItem(placement: .cancellationAction) { IconButton("xmark", label: "Отмена") { forwarding = nil } } }
         }.presentationDetents([.medium, .large])
     }
 }

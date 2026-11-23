@@ -129,7 +129,7 @@ private struct PortraitCropView: View {
                     }.buttonStyle(MSButtonStyle())
                 }.padding(24)
             }.disabled(saving).navigationTitle(tr("Фото профиля")).msInlineTitle()
-                .toolbar { ToolbarItem(placement: .cancellationAction) { Button(tr("Отмена")) { dismiss() }.disabled(saving) } }
+                .toolbar { ToolbarItem(placement: .cancellationAction) { IconButton("xmark", label: "Отмена") { dismiss() }.disabled(saving) } }
         }.interactiveDismissDisabled(saving)
     }
     private func slider(_ label: String, _ value: Binding<Double>, _ range: ClosedRange<Double>) -> some View {

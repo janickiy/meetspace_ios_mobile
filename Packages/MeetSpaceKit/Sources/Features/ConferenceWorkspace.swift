@@ -121,6 +121,7 @@ import MeetSpaceBroadcast
     }
     private func install(_ conference: Conference, membership: ConferenceParticipant) {
         call = ConferenceSession(repository: repository, title: conference.title, participant: membership,
+                                 startedAt: conference.startedAt, invitationCode: conference.inviteCode,
                                  sockets: sockets, makeMedia: makeMedia, makeBroadcast: makeBroadcast)
         call?.observeLobby()
     }

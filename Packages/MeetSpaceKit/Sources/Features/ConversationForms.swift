@@ -10,57 +10,86 @@ struct NewConversationView: View {
     @State private var name = ""
     @State private var detail = ""
     @State private var selection: [Peer] = []
-    @State private var choosing = false
     @State private var requestID = UUID()
     @State private var busy = false
     @State private var error: String?
     @State private var operation: Task<Void, Never>?
+    @FocusState private var editingInput: Bool
+
     var body: some View {
-        NavigationStack {
-            Form {
-                Toggle(tr("Групповой чат"), isOn: $group)
-                if group {
-                    TextField(tr("Название группы"), text: $name)
-                    TextField(tr("Описание"), text: $detail, axis: .vertical)
-                    Text(tr("Название: до 50 символов. Описание: до 200.")).font(MSTheme.font(12)).foregroundStyle(MSTheme.muted)
-                }
-                Section(tr(group ? "Участники" : "Собеседник")) {
-                    ForEach(selection) { peer in
-                        HStack { Text(peer.displayName); Spacer(); Button(tr("Убрать")) { selection.removeAll { $0.id == peer.id } } }
+        WorkspaceFormSheet(title: group ? "Создать группу" : "Новая беседа", identifier: "newConversation",
+                           closeLabel: "Отменить", busy: busy, close: { dismiss() }) {
+            if group {
+                groupFields
+            } else {
+                Button {
+                    group = true
+                } label: {
+                    Label(tr("Создать группу"), systemImage: "person.2")
+                        .multilineTextAlignment(.center).fixedSize(horizontal: false, vertical: true).padding(.vertical, 7)
+                }.buttonStyle(MSButtonStyle(primary: false)).accessibilityIdentifier("newConversation.group")
+                Text(tr("Или начните личную переписку.")).foregroundStyle(MSTheme.muted)
+            }
+            WorkspacePeopleList(model: model, excluded: [], retained: selection, showSeparators: !group) { peer in
+                let picked = selection.contains { $0.id == peer.id }
+                WorkspacePersonButton(peer: peer, multiple: group, selected: picked) {
+                    editingInput = false
+                    if group {
+                        if picked { selection.removeAll { $0.id == peer.id } }
+                        else if selection.count < 99 { selection.append(peer) }
+                    } else {
+                        create(peer)
                     }
-                    Button(tr("Выбрать участников")) { choosing = true }
                 }
-                if let error { Text(tr(error)).foregroundStyle(MSTheme.danger) }
-                if busy { ProgressView() }
-                Button(tr(group ? "Создать группу" : "Открыть чат")) { create() }
-                    .disabled(selection.isEmpty || (group && (name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || name.unicodeScalars.count > 50 || detail.unicodeScalars.count > 200)))
+            }
+            if group {
+                Text(tr("Вы будете администратором группы. Она появится во вкладке «Все»."))
+                    .font(MSTheme.font(12)).foregroundStyle(MSTheme.muted)
+            }
+            if let error { Text(tr(error)).foregroundStyle(MSTheme.danger) }
+            if busy { ProgressView().frame(maxWidth: .infinity) }
+            if group {
+                Button { create(nil) } label: {
+                    Text(tr("Создать группу")).fixedSize(horizontal: false, vertical: true).padding(.vertical, 7)
+                }.buttonStyle(MSButtonStyle())
+                    .disabled(selection.isEmpty || !(1...50).contains(name.trimmingCharacters(in: .whitespacesAndNewlines).unicodeScalars.count)
+                              || detail.unicodeScalars.count > 200)
                     .accessibilityIdentifier("createConversation")
-            }.disabled(busy).navigationTitle(tr("Новый чат"))
-                .toolbar { ToolbarItem(placement: .cancellationAction) { Button(tr("Отменить")) { dismiss() }.disabled(busy) } }
-                .sheet(isPresented: $choosing) {
-                    UserChooser(model: model, multiple: group, excluding: Set(selection.map(\.id))) { peers in
-                        selection = group ? selection + peers : peers
-                    }
-                }
-                .onChange(of: name) { _, _ in requestID = UUID() }
-                .onChange(of: detail) { _, _ in requestID = UUID() }
-                .onChange(of: selection.map(\.id)) { _, _ in requestID = UUID() }
-                .onChange(of: group) { _, value in requestID = UUID(); if !value { selection = Array(selection.prefix(1)) } }
-                .onDisappear { operation?.cancel() }
-                .interactiveDismissDisabled(busy)
-        }.tint(MSTheme.accent).font(MSTheme.font())
+            }
+        }
+        .onChange(of: name) { _, _ in requestID = UUID() }
+        .onChange(of: detail) { _, _ in requestID = UUID() }
+        .onChange(of: selection.map(\.id)) { _, _ in requestID = UUID() }
+        .onDisappear { operation?.cancel() }
     }
-    private func create() {
-        guard !busy else { return }; busy = true; error = nil
+
+    private var groupFields: some View {
+        Group {
+            WorkspaceFormField(title: "Название группы") {
+                TextField(tr("Например, Команда проекта"), text: $name)
+                    .textFieldStyle(.plain).workspaceFormInput().focused($editingInput)
+                    .accessibilityLabel(tr("Название группы")).accessibilityIdentifier("newConversation.groupName")
+            }
+            WorkspaceFormField(title: "Описание") {
+                TextField(tr("Описание"), text: $detail, axis: .vertical).lineLimit(2...4)
+                    .textFieldStyle(.plain).workspaceFormInput(minHeight: 68)
+            }
+            Text(tr("Участники")).font(MSTheme.font(13, weight: .semibold)).accessibilityAddTraits(.isHeader)
+        }
+    }
+
+    private func create(_ peer: Peer?) {
+        guard !busy else { return }
+        busy = true; error = nil
+        editingInput = false
         operation = Task {
             defer { busy = false }
             do {
                 let conversation: Conversation
-                if group {
-                    conversation = try await model.repository.createGroup(id: requestID, name: name, description: detail, members: selection.map(\.id))
-                } else {
-                    guard let peer = selection.first else { return }
+                if let peer {
                     conversation = try await model.repository.direct(userID: peer.id)
+                } else {
+                    conversation = try await model.repository.createGroup(id: requestID, name: name, description: detail, members: selection.map(\.id))
                 }
                 try Task.checkCancellation(); guard model.active else { return }
                 await model.acceptConversation(conversation)
@@ -71,53 +100,105 @@ struct NewConversationView: View {
     }
 }
 
+private struct WorkspacePeopleList<Row: View>: View {
+    let model: MessagingModel
+    let excluded: Set<UUID>
+    let retained: [Peer]
+    var showSeparators = false
+    @ViewBuilder let row: (Peer) -> Row
+    @State private var query = ""
+    @State private var peers: [Peer] = []
+    @State private var loading = true
+    @State private var error: String?
+
+    private var choices: [Peer] {
+        var seen = excluded
+        seen.insert(model.account.user.id)
+        return (peers + retained).filter { seen.insert($0.id).inserted }
+    }
+
+    var body: some View {
+        let available = choices
+        VStack(alignment: .leading, spacing: 12) {
+            SearchBox(text: $query, placeholder: "Поиск пользователей", identifier: "userSearch")
+            if let error { Text(tr(error)).foregroundStyle(MSTheme.danger) }
+            else if loading { ProgressView().frame(maxWidth: .infinity, minHeight: 48) }
+            else if available.isEmpty { Text(tr("Пользователи не найдены")).foregroundStyle(MSTheme.muted) }
+            else {
+                VStack(spacing: 0) {
+                    ForEach(available) { peer in
+                        row(peer)
+                        if showSeparators && peer.id != available.last?.id { Divider() }
+                    }
+                }
+            }
+        }
+        .task(id: query) {
+            loading = true; error = nil
+            do {
+                try await Task.sleep(for: .milliseconds(300))
+                let result = try await model.repository.users(search: String(query.prefix(100)))
+                try Task.checkCancellation()
+                peers = result
+                loading = false
+            } catch is CancellationError { }
+            catch {
+                guard !Task.isCancelled else { return }
+                self.error = userMessage(error); loading = false
+            }
+        }
+    }
+}
+
+private struct WorkspacePersonButton: View {
+    let peer: Peer
+    let multiple: Bool
+    let selected: Bool
+    let action: () -> Void
+
+    var body: some View {
+        Button(action: action) {
+            HStack(spacing: 11) {
+                ChatAvatar(name: peer.displayName, size: 40)
+                Text(peer.displayName).font(MSTheme.font(13)).fixedSize(horizontal: false, vertical: true)
+                Spacer(minLength: 0)
+                Image(systemName: multiple ? (selected ? "checkmark.square.fill" : "square") : "arrow.right")
+                    .font(.system(size: 18)).frame(width: 24).foregroundStyle(selected ? MSTheme.accent : MSTheme.muted)
+                    .accessibilityHidden(true)
+            }.padding(.vertical, 10).frame(maxWidth: .infinity, minHeight: 64).contentShape(Rectangle())
+        }.buttonStyle(.plain).accessibilityLabel(peer.displayName)
+            .accessibilityAddTraits(selected ? .isSelected : [])
+            .accessibilityIdentifier("peer.\(peer.id.uuidString.lowercased())")
+    }
+}
+
 struct UserChooser: View {
     let model: MessagingModel
     let multiple: Bool
     let excluding: Set<UUID>
     let selected: ([Peer]) -> Void
     @Environment(\.dismiss) private var dismiss
-    @State private var query = ""
-    @State private var peers: [Peer] = []
-    @State private var selection: [UUID: Peer] = [:]
-    @State private var loading = false
-    @State private var error: String?
+    @State private var selection: [Peer] = []
+
     var body: some View {
-        NavigationStack {
-            List {
-                TextField(tr("Поиск пользователей"), text: $query).accessibilityIdentifier("userSearch")
-                if loading { ProgressView() }
-                if let error { Text(tr(error)).foregroundStyle(MSTheme.danger) }
-                ForEach(peers.filter { !excluding.contains($0.id) && $0.id != model.account.user.id }) { peer in
-                    Button {
-                        if multiple {
-                            if selection[peer.id] != nil { selection[peer.id] = nil }
-                            else if selection.count < 99 { selection[peer.id] = peer }
-                        } else { selected([peer]); dismiss() }
-                    } label: {
-                        HStack { Text(peer.displayName); Spacer(); if selection[peer.id] != nil { Image(systemName: "checkmark") } }
-                    }.accessibilityIdentifier("peer.\(peer.id.uuidString.lowercased())")
-                }
-                if !loading && peers.isEmpty { Text(tr("Пользователи не найдены")).foregroundStyle(MSTheme.muted) }
-            }.navigationTitle(tr("Участники"))
-                .toolbar {
-                    ToolbarItem(placement: .cancellationAction) { Button(tr("Отменить")) { dismiss() } }
+        WorkspaceFormSheet(title: multiple ? "Участники" : "Собеседник", identifier: "userChooser",
+                           closeLabel: "Отменить", close: { dismiss() }) {
+            WorkspacePeopleList(model: model, excluded: excluding, retained: selection) { peer in
+                let picked = selection.contains { $0.id == peer.id }
+                WorkspacePersonButton(peer: peer, multiple: multiple, selected: picked) {
                     if multiple {
-                        ToolbarItem(placement: .confirmationAction) {
-                            Button(tr("Готово")) { selected(Array(selection.values)); dismiss() }.disabled(selection.isEmpty)
-                        }
+                        if picked { selection.removeAll { $0.id == peer.id } }
+                        else if selection.count < 99 { selection.append(peer) }
+                    } else {
+                        selected([peer]); dismiss()
                     }
                 }
-                .task(id: query) {
-                    loading = true; error = nil
-                    do {
-                        try await Task.sleep(for: .milliseconds(300))
-                        let result = try await model.repository.users(search: String(query.prefix(100)))
-                        try Task.checkCancellation(); peers = result; loading = false
-                    } catch is CancellationError { }
-                    catch { self.error = userMessage(error); loading = false }
-                }
-        }.tint(MSTheme.accent).font(MSTheme.font())
+            }
+            if multiple {
+                Button(tr("Готово")) { selected(selection); dismiss() }
+                    .buttonStyle(MSButtonStyle()).disabled(selection.isEmpty)
+            }
+        }
     }
 }
 
@@ -190,7 +271,7 @@ struct GroupDetailsView: View {
                 .task { await reload() }
                 .onDisappear { operation?.cancel() }
                 .interactiveDismissDisabled(busy)
-                .sheet(isPresented: $choosing) {
+                .workspaceFormPresentation(isPresented: $choosing) {
                     UserChooser(model: model, multiple: true, excluding: Set(members.map(\.id))) { peers in
                         perform { try await model.repository.addMembers(id, users: peers.map(\.id)) }
                     }

@@ -32,6 +32,8 @@ public struct DirectConferenceContext: Sendable {
     public let id = UUID()
     public let conferenceID: UUID
     public let title: String
+    public let startedAt: Date?
+    public let invitationURL: URL?
     public let repository: ConferenceRepository
     public private(set) var phase: ConferencePhase { didSet { if oldValue != phase { onPhaseChanged?(phase) } } }
     @ObservationIgnored public var onPhaseChanged: (@MainActor (ConferencePhase) -> Void)?
@@ -140,11 +142,16 @@ public struct DirectConferenceContext: Sendable {
 
     public init(repository: ConferenceRepository, title: String, participant: ConferenceParticipant,
                 directContext: DirectConferenceContext? = nil,
+                startedAt: Date? = nil,
+                invitationCode: String? = nil,
                 sockets: any ConferenceSocketFactory = URLSessionConferenceSocketFactory(),
                 makeMedia: @escaping @MainActor @Sendable () -> any ConferenceMediaEngine = { ConferenceMediaFactory.make() },
                 makeBroadcast: @escaping @MainActor @Sendable () -> any ScreenBroadcastController = { BroadcastControllerFactory.make() },
                 sleep: @escaping @Sendable (Double) async throws -> Void = { try await Task.sleep(for: .seconds($0)) }) {
         self.repository = repository; self.title = title; self.participant = participant
+        self.startedAt = startedAt
+        let invite = invitationCode.flatMap { try? ConferenceInviteGateway.inviteCode(from: $0, origin: repository.origin) }
+        invitationURL = invite.map { repository.origin.url.appendingPathComponent("i").appendingPathComponent($0) }
         self.directContext = directContext
         if directContext == nil { wantsMicrophone = !DeviceAudioPreferences.load().mutedOnJoin && !participant.microphoneBlocked }
         conferenceID = participant.conferenceId; self.sockets = sockets; self.makeMedia = makeMedia; self.makeBroadcast = makeBroadcast; self.sleep = sleep
@@ -877,6 +884,12 @@ public struct DirectConferenceContext: Sendable {
         default: true
         }
     }
+    func reconnect() {
+        guard phase == .connected else { return }
+        reconnectCount = 0
+        recover(RealtimeError.disconnected)
+    }
+
     private func recover(_ failure: any Error) {
         guard !closed, (foreground || isDirectCall || hasScreenBroadcast), recoveryTask == nil, !(failure is CancellationError) else { return }
         if let connectedAt, Date().timeIntervalSince(connectedAt) > 30 { reconnectCount = 0 }

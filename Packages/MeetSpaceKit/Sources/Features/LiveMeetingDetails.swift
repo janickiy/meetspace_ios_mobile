@@ -47,7 +47,7 @@ struct LiveMeetingDetails: View {
             }.navigationTitle(tr(item.status == .past ? "Материалы встречи" : "О встрече")).msInlineTitle()
                 .toolbar {
                     ToolbarItem(placement: .cancellationAction) {
-                        Button(tr("Готово")) { dismiss() }.disabled(recordings?.loading == true)
+                        IconButton("xmark", label: "Готово") { dismiss() }.disabled(recordings?.loading == true)
                     }
                 }
                 .interactiveDismissDisabled(recordings?.loading == true)

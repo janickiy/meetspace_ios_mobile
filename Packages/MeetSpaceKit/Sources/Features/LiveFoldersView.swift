@@ -10,13 +10,18 @@ struct LiveFoldersView: View {
     @State private var renaming: PersonalFolder?
     @State private var name = ""
     @State private var deleting: PersonalFolder?
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    @Environment(\.dynamicTypeSize) private var typeSize
     @State private var showingItems = false
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 20) {
-                Text(tr("Личное пространство")).font(MSTheme.font(11, weight: .semibold)).foregroundStyle(MSTheme.accent)
+                Text(tr("ЛИЧНОЕ ПРОСТРАНСТВО")).font(MSTheme.font(10, weight: .semibold)).tracking(1.6).foregroundStyle(MSTheme.accent)
                     .accessibilityIdentifier("folders.subtitle")
-                Text(tr("Соберите встречи и чаты в удобные папки.")).foregroundStyle(MSTheme.muted)
+                Text(tr("Всё нужное — вместе"))
+                    .font(MSTheme.font(horizontalSizeClass == .compact ? 22 : 27, weight: .semibold, relativeTo: .title2))
+                    .accessibilityAddTraits(.isHeader)
+                Text(tr("Соберите встречи и чаты по проектам.")).font(MSTheme.font(13)).foregroundStyle(MSTheme.muted)
                 HStack {
                     Button { renaming = nil; name = ""; editing = true } label: { Label(tr("Создать папку"), systemImage: "folder.badge.plus") }
                         .buttonStyle(MSButtonStyle()).accessibilityIdentifier("createFolder")
@@ -29,7 +34,7 @@ struct LiveFoldersView: View {
                 if let error = model.error { Text(tr(error)).foregroundStyle(MSTheme.danger).accessibilityIdentifier("foldersError") }
                 if model.state == .loading { ProgressView() }
                 if model.state == .empty { Text(tr("Папок пока нет")).foregroundStyle(MSTheme.muted) }
-                LazyVGrid(columns: [GridItem(.adaptive(minimum: 280), spacing: 16)], spacing: 16) {
+                LazyVGrid(columns: folderColumns, spacing: 12) {
                     ForEach(model.folders) { folder in
                         HStack(spacing: 16) {
                             Button {
@@ -44,7 +49,7 @@ struct LiveFoldersView: View {
                                         Text("\(folder.conversationCount) \(tr("чатов")) · \(folder.conferenceCount) \(tr("встреч"))")
                                             .font(MSTheme.font(11)).foregroundStyle(MSTheme.muted)
                                     }.frame(maxWidth: .infinity, alignment: .leading)
-                                }.frame(minHeight: 78).contentShape(Rectangle()).accessibilityElement(children: .combine)
+                                }.frame(minHeight: 84).contentShape(Rectangle()).accessibilityElement(children: .combine)
                             }.buttonStyle(.plain).accessibilityIdentifier("folder.\(folder.id.uuidString.lowercased())")
                             Menu {
                                 Button(tr("Переименовать")) { renaming = folder; name = folder.name; editing = true }
@@ -57,12 +62,16 @@ struct LiveFoldersView: View {
                                 .accessibilityLabel(tr("Действия с папкой"))
                                 .accessibilityValue(folder.name)
                                 .accessibilityIdentifier("folderMenu.\(folder.id.uuidString.lowercased())")
-                        }.msCard(padding: 16).disabled(model.busy)
+                        }.padding(16)
+                            .background(MSTheme.surface, in: RoundedRectangle(cornerRadius: 20))
+                            .overlay { RoundedRectangle(cornerRadius: 20).strokeBorder(MSTheme.line) }
+                            .disabled(model.busy)
                     }
                 }
                 Label(tr("Папки видны только вам. Удаление папки не удаляет встречи и чаты."), systemImage: "lock")
-                    .font(MSTheme.font(12)).foregroundStyle(MSTheme.muted)
-            }.padding(20).frame(maxWidth: 1050).frame(maxWidth: .infinity)
+                    .font(MSTheme.font(horizontalSizeClass == .compact ? 11 : 12)).foregroundStyle(MSTheme.muted)
+            }.padding(.horizontal, horizontalSizeClass == .compact ? 16 : 24).padding(.vertical, 16)
+                .frame(maxWidth: 1050).frame(maxWidth: .infinity)
         }.background(MSTheme.background).accessibilityIdentifier("screen.liveFolders")
             .task { await model.load() }.refreshable { await model.load() }
             .navigationDestination(isPresented: $showingItems) {
@@ -78,7 +87,7 @@ struct LiveFoldersView: View {
                         }.disabled((try? FolderValidation.text(name, maximum: 50, required: true)) == nil)
                             .accessibilityIdentifier("folderSave")
                     }.disabled(model.busy).navigationTitle(tr(renaming == nil ? "Создать папку" : "Переименовать"))
-                        .toolbar { ToolbarItem(placement: .cancellationAction) { Button(tr("Отмена")) { editing = false }.disabled(model.busy) } }
+                        .toolbar { ToolbarItem(placement: .cancellationAction) { IconButton("xmark", label: "Отмена") { editing = false }.disabled(model.busy) } }
                         .interactiveDismissDisabled(model.busy)
                 }
             }
@@ -87,6 +96,11 @@ struct LiveFoldersView: View {
                     if let deleting { Task { _ = await model.delete(deleting) } }; deleting = nil
                 }
             }
+    }
+
+    private var folderColumns: [GridItem] {
+        if horizontalSizeClass == .compact || typeSize.isAccessibilitySize { return [GridItem(.flexible())] }
+        return [GridItem(.adaptive(minimum: 286), spacing: 16)]
     }
 }
 
