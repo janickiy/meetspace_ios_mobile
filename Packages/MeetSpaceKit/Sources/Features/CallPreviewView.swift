@@ -21,26 +21,23 @@ private struct DemoMeetingPrejoin: View {
     @State private var microphone = true
     @State private var camera = !AccountVideoPreferences.load(for: nil).cameraOff
     @State private var guest = false
+    @State private var cameraChoice = AccountVideoPreferences.load(for: nil).camera
     @Environment(\.dismiss) private var dismiss
 
     var body: some View {
         MeetingPrejoinLayout(onBack: { dismiss() }) {
             MeetingCameraPreview(name: name.isEmpty ? model.demoProfile.name : name, camera: camera, microphone: microphone,
+                                 photo: guest ? nil : model.demoProfile.photo, cameraOnLabel: "Предпросмотр камеры в макете",
                                  toggleCamera: { camera.toggle() }, toggleMicrophone: { microphone.toggle() })
         } details: {
             MeetingPrejoinHeading(title: model.demoPrejoinTitle ?? tr("Дизайн-синхронизация"),
                                   subtitle: tr("Проверьте звук и камеру перед встречей"))
-            Button {
-                guest.toggle()
-            } label: {
-                Label(tr(guest ? "Вход без аккаунта · гость" : "Присоединиться как гость"), systemImage: "person")
-                    .font(MSTheme.font(12)).fixedSize(horizontal: false, vertical: true)
-                    .padding(.horizontal, 14).frame(minHeight: 44).padding(.vertical, 1)
-                    .foregroundStyle(MSTheme.accent).background(MSTheme.accentSoft, in: RoundedRectangle(cornerRadius: 11))
+            Button { guest.toggle() } label: {
+                MeetingIdentityChip(title: guest ? "Вход без аккаунта · гость" : "Присоединиться как гость")
             }.buttonStyle(.plain).accessibilityAddTraits(guest ? .isSelected : [])
             MeetingPrejoinName(name: $name, guest: guest)
                 .padding(.top, 8)
-            MeetingMicrophoneRow(route: tr("Встроенный микрофон")) { model.navigate(.audioSettings) }
+            MeetingMicrophoneRow(camera: $cameraChoice, demo: true)
             VStack(spacing: 0) {
                 Button {
                     let participant = name.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -51,7 +48,10 @@ private struct DemoMeetingPrejoin: View {
                     Label(tr("Присоединиться"), systemImage: "arrow.right").labelStyle(MeetingNextLabelStyle())
                 }.buttonStyle(MSButtonStyle()).accessibilityIdentifier("conferencePreviewJoin")
                     .disabled(name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
-                Button(tr("Вернуться к встречам")) { dismiss() }.buttonStyle(MSTextButtonStyle())
+                MeetingPrejoinReturn {
+                    model.meetingsPath.removeAll()
+                    model.tab = .meetings
+                }
             }.padding(.top, 13)
             Text(tr("Демоэкраны · камера и микрофон устройства не используются"))
                 .font(MSTheme.font(10)).foregroundStyle(MSTheme.muted).multilineTextAlignment(.center)
@@ -68,7 +68,7 @@ struct MeetingPrejoinLayout<Preview: View, Details: View>: View {
 
     var body: some View {
         GeometryReader { proxy in
-            let wide = proxy.size.width >= 780 && !typeSize.isAccessibilitySize
+            let wide = proxy.size.width >= 840 && !typeSize.isAccessibilitySize
             VStack(spacing: 0) {
                 PageHeader(title: "Перед встречей") {
                     WorkspaceHeaderButton("arrow.left", label: "Вернуться к встречам", action: onBack)
@@ -86,16 +86,18 @@ struct MeetingPrejoinLayout<Preview: View, Details: View>: View {
                             .padding(.horizontal, 48).padding(.vertical, 24)
                             .frame(maxWidth: 1210).frame(maxWidth: .infinity, minHeight: available.size.height)
                         } else {
-                            let cameraWidth = max(0, min(available.size.width, 556) - 36)
+                            let phone = available.size.width < 600
+                            let inset: CGFloat = phone ? (available.size.width < 360 ? 14 : 18) : 24
+                            let cameraWidth = max(0, min(available.size.width - 2 * inset, 520))
                             VStack(spacing: 25) {
-                                preview().frame(height: max(typeSize.isAccessibilitySize ? 270 : 220, cameraWidth * 0.75))
+                                preview().frame(height: max(typeSize.isAccessibilitySize ? 270 : 220, cameraWidth * (phone ? 0.75 : 0.625)))
                                 info
-                            }.padding(.horizontal, 18).padding(.vertical, 22)
-                                .frame(maxWidth: 556).frame(maxWidth: .infinity)
+                            }.frame(maxWidth: 520).padding(.horizontal, inset).padding(.vertical, phone ? 22 : 24)
+                                .frame(maxWidth: .infinity)
                         }
-                    }.scrollBounceBehavior(.basedOnSize)
+                    }.scrollBounceBehavior(.basedOnSize).scrollDismissesKeyboard(.interactively)
                 }
-            }.background(MSTheme.background.ignoresSafeArea())
+            }.foregroundStyle(MSTheme.ink).background(MSTheme.background.ignoresSafeArea())
                 .environment(\.workspaceWidth, proxy.size.width)
         }.toolbar(.hidden)
     }
@@ -110,6 +112,8 @@ struct MeetingCameraPreview: View {
     let name: String
     let camera: Bool
     let microphone: Bool
+    var photo: Data?
+    var cameraOnLabel = "Камера включится при входе"
     var cameraDisabled = false
     var microphoneDisabled = false
     let toggleCamera: () -> Void
@@ -118,17 +122,21 @@ struct MeetingCameraPreview: View {
     @Environment(\.dynamicTypeSize) private var typeSize
 
     var body: some View {
-        let wide = width >= 780 && !typeSize.isAccessibilitySize
+        let wide = width >= 600 && !typeSize.isAccessibilitySize
         let size: CGFloat = wide ? 96 : 76
         let shape = RoundedRectangle(cornerRadius: wide ? 25 : 20)
         VStack(spacing: 0) {
             Spacer(minLength: 0)
-            Text(callInitials(name)).font(MSTheme.font(wide ? 30 : 25, weight: .semibold))
-                .lineLimit(1).minimumScaleFactor(0.6).foregroundStyle(Color(red: 0.28, green: 0.41, blue: 0.75))
-                .frame(width: size, height: size)
-                .background(Color(red: 0.87, green: 0.90, blue: 0.98), in: Circle())
-                .accessibilityHidden(true)
-            Text(tr(camera ? "Камера включится при входе" : "Камера выключена"))
+            if let photo {
+                ProfileAvatar(name: name, size: size, photo: photo)
+            } else {
+                Text(callInitials(name)).font(MSTheme.font(wide ? 30 : 25, weight: .semibold))
+                    .lineLimit(1).minimumScaleFactor(0.6).foregroundStyle(Color(red: 77 / 255, green: 113 / 255, blue: 197 / 255))
+                    .frame(width: size, height: size)
+                    .background(Color(red: 223 / 255, green: 232 / 255, blue: 1), in: Circle())
+                    .accessibilityHidden(true)
+            }
+            Text(tr(camera ? cameraOnLabel : "Камера выключена"))
                 .font(MSTheme.font(12)).foregroundStyle(Color(red: 0.75, green: 0.80, blue: 0.88))
                 .multilineTextAlignment(.center).padding(.top, wide ? 18 : 12)
             Spacer(minLength: 0)
@@ -164,14 +172,17 @@ struct MeetingPrejoinHeading: View {
     let subtitle: String
     @Environment(\.workspaceWidth) private var width
     var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            Label(tr("Ваша следующая встреча"), systemImage: "video")
+        VStack(alignment: .leading, spacing: width >= 600 ? 14 : 11) {
+            HStack(spacing: 6) {
+                WorkspaceIcon("video", size: 20)
+                Text(tr("Ваша следующая встреча"))
+            }
                 .font(MSTheme.font(11, weight: .semibold)).fixedSize(horizontal: false, vertical: true)
                 .padding(.horizontal, 9).padding(.vertical, 5).frame(minHeight: 30)
                 .foregroundStyle(MSTheme.accent).background(MSTheme.accentSoft, in: RoundedRectangle(cornerRadius: 8))
-            Text(title).font(MSTheme.font(width >= 780 ? 30 : 26, weight: .semibold, relativeTo: .title2))
+            Text(title).font(MSTheme.font(width >= 600 ? 30 : 26, weight: .semibold, relativeTo: .title2))
                 .tracking(-0.5).accessibilityAddTraits(.isHeader).accessibilityIdentifier("screen.conference")
-            Text(subtitle).font(MSTheme.font(13)).foregroundStyle(MSTheme.muted)
+            Text(subtitle).font(MSTheme.font(13)).frame(minHeight: 22).foregroundStyle(MSTheme.muted)
                 .fixedSize(horizontal: false, vertical: true)
         }
     }
@@ -180,29 +191,102 @@ struct MeetingPrejoinHeading: View {
 struct MeetingPrejoinName: View {
     @Binding var name: String
     var guest = false
+    var editable = true
     var body: some View {
         let label = tr(guest ? "Как вас представить?" : "Ваше имя")
-        VStack(alignment: .leading, spacing: 7) {
-            Text(label).font(MSTheme.font(13, weight: .semibold))
-            TextField(label, text: $name).textFieldStyle(.plain).font(MSTheme.font(15)).textContentType(.name)
-                .padding(.horizontal, 14).padding(.vertical, 8).frame(minHeight: 50)
-                .background(MSTheme.surface, in: RoundedRectangle(cornerRadius: 12))
-                .overlay(RoundedRectangle(cornerRadius: 12).strokeBorder(MSTheme.line))
-                .accessibilityIdentifier("prejoinName")
+        WorkspaceFormField(title: label) {
+            if editable {
+                TextField(label, text: $name).textFieldStyle(.plain).textContentType(.name)
+                    .submitLabel(.done)
+                    .workspaceFormInput().accessibilityIdentifier("prejoinName")
+            } else {
+                Text(name).workspaceFormInput().accessibilityIdentifier("prejoinName")
+            }
         }
     }
 }
 
-struct MeetingMicrophoneRow: View {
-    let route: String
-    let configure: () -> Void
+struct MeetingIdentityChip: View {
+    let title: String
     var body: some View {
         HStack(spacing: 8) {
-            WorkspaceIcon("mic", size: 17)
-            Text(route).font(MSTheme.font(11)).fixedSize(horizontal: false, vertical: true)
+            WorkspaceIcon("person", size: 20)
+            Text(tr(title)).font(MSTheme.font(12)).fixedSize(horizontal: false, vertical: true)
+        }.padding(.horizontal, 14).frame(minHeight: 44)
+            .foregroundStyle(MSTheme.accent).background(MSTheme.accentSoft, in: RoundedRectangle(cornerRadius: 10))
+    }
+}
+
+struct MeetingPrejoinReturn: View {
+    let action: () -> Void
+    var body: some View {
+        Button(action: action) {
+            Text(tr("Вернуться к встречам")).font(MSTheme.font(14, weight: .semibold))
+                .frame(maxWidth: .infinity, minHeight: 44).contentShape(Rectangle())
+        }.buttonStyle(.plain).foregroundStyle(MSTheme.accent).accessibilityIdentifier("prejoinReturn")
+    }
+}
+
+struct MeetingMicrophoneRow: View {
+    @Binding var camera: AccountCameraChoice
+    var cameraDisabled = false
+    var demo = false
+    @State private var audio = AudioSettingsModel()
+    @State private var showDevices = false
+    @State private var demoMicrophone = "Встроенный микрофон"
+
+    private var inputName: String {
+        if demo { return tr(demoMicrophone) }
+        if let selected = audio.inputs.first(where: { $0.id == audio.preferences.preferredInputUID }) { return selected.name }
+        return tr("Микрофон по умолчанию")
+    }
+
+    var body: some View {
+        HStack(spacing: 8) {
+            WorkspaceIcon("mic", size: 20)
+            Text(inputName).font(MSTheme.font(11)).fixedSize(horizontal: false, vertical: true)
             Spacer(minLength: 0)
-            IconButton("gearshape", label: "Настроить устройства", action: configure)
-        }.foregroundStyle(MSTheme.muted)
+            IconButton("gearshape", label: "Настроить устройства") {
+                if !demo { audio.refresh() }
+                showDevices = true
+            }
+                .accessibilityIdentifier("prejoinDevices")
+        }.frame(minHeight: 48).foregroundStyle(MSTheme.muted)
+            .onAppear { if !demo { audio.refresh() } }
+            .workspaceFormPresentation(isPresented: $showDevices) {
+                WorkspaceFormSheet(title: "Устройства", identifier: "prejoinDevices", centered: true, close: { showDevices = false }) {
+                    WorkspaceFormField(title: "Микрофон") {
+                        Menu {
+                            if demo {
+                                ForEach(["Встроенный микрофон", "Гарнитура (пример)"], id: \.self) { name in
+                                    Button(tr(name)) { demoMicrophone = name }
+                                }
+                            } else {
+                                Button(tr("Микрофон по умолчанию")) { audio.update { $0.preferredInputUID = nil } }
+                                ForEach(audio.inputs) { input in
+                                    Button(input.name) { audio.update { $0.preferredInputUID = input.id } }
+                                }
+                            }
+                        } label: { selector(inputName) }.buttonStyle(.plain)
+                    }
+                    WorkspaceFormField(title: "Камера") {
+                        Menu {
+                            Picker(tr("Камера"), selection: $camera) {
+                                ForEach(AccountCameraChoice.allCases, id: \.self) { choice in Text(tr(choice.title)).tag(choice) }
+                            }
+                        } label: { selector(tr(camera.title)) }.buttonStyle(.plain).disabled(cameraDisabled)
+                    }
+                    Button(tr("Готово")) { showDevices = false }.buttonStyle(MSButtonStyle())
+                }
+            }
+    }
+
+    private func selector(_ name: String) -> some View {
+        HStack {
+            Text(name)
+            Spacer()
+            WorkspaceIcon("chevron.down", size: 14)
+        }.workspaceFormInput()
     }
 }
 

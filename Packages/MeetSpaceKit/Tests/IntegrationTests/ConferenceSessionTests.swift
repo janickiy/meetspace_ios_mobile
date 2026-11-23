@@ -246,6 +246,17 @@ private actor SessionSockets: ConferenceSocketFactory {
     return try #require(await socket.last("media.ready"))
 }
 
+@Test @MainActor func conferenceSessionAppliesCameraChosenBeforeJoining() async throws {
+    let sockets = SessionSockets(), engine = SessionEngine()
+    let session = ConferenceSession(repository: try SessionFixture.repository(), title: "Fixture",
+                                    participant: SessionFixture.member, sockets: sockets, makeMedia: { engine })
+    session.choosePrejoinCamera(.back)
+    #expect(session.media == nil)
+    _ = try await joinSession(session, sockets: sockets)
+    #expect(engine.configuration?.preferFrontCamera == false)
+    await session.leave()
+}
+
 @Test @MainActor func conferenceSessionWaitsForReadyAcknowledgementAndRTCConnection() async throws {
     let sockets = SessionSockets(), engine = SessionEngine()
     let session = ConferenceSession(repository: try SessionFixture.repository(), title: "Fixture", participant: SessionFixture.member,

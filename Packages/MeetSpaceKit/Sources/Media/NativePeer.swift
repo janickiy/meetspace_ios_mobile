@@ -31,6 +31,7 @@ private final class RTCReference<Value>: @unchecked Sendable {
     private var hasRemoteDescription = false
     private var makingOffer = false
     private var publicationRevision = 0
+    private var speakerVolume: Double
     private let streamID: String
     private let receiveVideo: Bool
     private let emit: @MainActor (ConferenceMediaEvent) -> Void
@@ -46,7 +47,9 @@ private final class RTCReference<Value>: @unchecked Sendable {
                                           decoderFactory: RTCDefaultVideoDecoderFactory())
         streamID = configuration.mediaPeerID.uuidString.lowercased()
         receiveVideo = configuration.receiveVideo
-        let noise = DeviceAudioPreferences.load().noiseSuppression ? "true" : "false"
+        let preferences = DeviceAudioPreferences.load()
+        speakerVolume = Double(preferences.speakerVolume)
+        let noise = preferences.noiseSuppression ? "true" : "false"
         let source = factory.audioSource(with: RTCMediaConstraints(mandatoryConstraints: nil, optionalConstraints: ["googNoiseSuppression": noise]))
         audioTrack = factory.audioTrack(with: source, trackId: "microphone-" + streamID)
         videoSource = factory.videoSource()
@@ -170,9 +173,18 @@ private final class RTCReference<Value>: @unchecked Sendable {
         if !screen || !camera { try setScreenEnabled(false, trackID: nil) }
     }
 
-    func setMicrophoneEnabled(_ enabled: Bool) throws {
-        audioTrack.isEnabled = enabled
+    func setMicrophoneEnabled(_ enabled: Bool, inputGain: Float = 1) throws {
+        audioTrack.isEnabled = enabled && inputGain > 0
         try setSource(microphone, track: enabled ? audioTrack : nil)
+    }
+
+    func setSpeakerVolume(_ level: Float) {
+        let volume = Double(level)
+        guard volume != speakerVolume else { return }
+        speakerVolume = volume
+        for transceiver in connection?.transceivers ?? [] {
+            (transceiver.receiver.track as? RTCAudioTrack)?.source.volume = volume
+        }
     }
 
     func setCameraEnabled(_ enabled: Bool) throws {
@@ -251,6 +263,9 @@ private final class RTCReference<Value>: @unchecked Sendable {
         for candidate in queued { try await addRemoteCandidate(candidate) }
         // Unified Plan may reuse a receiver/MID. Refresh references after every answer as well.
         for transceiver in connection.transceivers {
+            if let audio = transceiver.receiver.track as? RTCAudioTrack {
+                audio.source.volume = speakerVolume
+            }
             if let track = transceiver.receiver.track as? RTCVideoTrack {
                 receivedVideo(track, ConferenceVideoTrack(id: track.trackId, mid: transceiver.mid, streamID: nil, isLocal: false))
             }
@@ -359,6 +374,14 @@ extension NativePeer: RTCPeerConnectionDelegate {
 
     nonisolated func peerConnection(_ peerConnection: RTCPeerConnection, didAdd rtpReceiver: RTCRtpReceiver,
                                   streams: [RTCMediaStream]) {
+        if let audio = rtpReceiver.track as? RTCAudioTrack {
+            let identity = ObjectIdentifier(peerConnection), reference = RTCReference(audio)
+            Task { @MainActor [weak self] in
+                guard let self, self.accepts(identity) else { return }
+                reference.value.source.volume = self.speakerVolume
+            }
+            return
+        }
         guard let track = rtpReceiver.track as? RTCVideoTrack else { return }
         let identity = ObjectIdentifier(peerConnection), reference = RTCReference(track)
         let mid = peerConnection.transceivers.first { $0.receiver.receiverId == rtpReceiver.receiverId }?.mid

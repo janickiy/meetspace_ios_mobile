@@ -1,6 +1,4 @@
 import SwiftUI
-import CoreImage
-import CoreImage.CIFilterBuiltins
 import MeetSpaceDesignSystem
 #if os(iOS)
 import UIKit
@@ -135,33 +133,12 @@ struct ConferenceInvitationSheet: View {
         }.font(MSTheme.font(12)).frame(maxWidth: .infinity, alignment: .leading)
     }
 
-    @ViewBuilder private var qrCode: some View {
-        if let image = encodedURL {
-            VStack(spacing: 6) {
-                Image(decorative: image, scale: 1).resizable().interpolation(.none)
-                    .scaledToFit().frame(width: 112, height: 112).padding(10)
-                    .background(.white, in: RoundedRectangle(cornerRadius: 10))
-                Text(tr("Подключиться с телефона")).font(MSTheme.font(11, weight: .semibold))
-                Text(tr("Наведите камеру на QR-код")).font(MSTheme.font(10)).foregroundStyle(MSTheme.muted)
-            }.multilineTextAlignment(.center)
-        }
-    }
-
-    private var encodedURL: CGImage? {
-        let filter = CIFilter.qrCodeGenerator()
-        filter.message = Data(url.absoluteString.utf8)
-        guard let image = filter.outputImage else { return nil }
-        return CIContext().createCGImage(image, from: image.extent)
+    private var qrCode: some View {
+        MeetingInviteQR(url: url, size: 132)
     }
 
     private func copy() {
-        #if os(iOS)
-        UIPasteboard.general.url = url
-        #else
-        NSPasteboard.general.clearContents()
-        NSPasteboard.general.setString(url.absoluteString, forType: .string)
-        #endif
-        copied = true
+        copied = copyMeetingLink(url)
     }
 }
 

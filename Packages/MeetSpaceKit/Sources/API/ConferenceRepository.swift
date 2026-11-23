@@ -50,6 +50,19 @@ public struct ConferenceRepository: Sendable {
     public func read(_ id: UUID) async throws -> Conference {
         try scopedConference(id, response: await perform("GET", scope(id), [], nil))
     }
+    public func invitationUsers(_ id: UUID, query: String) async throws -> [ConferenceInvitationUser] {
+        let query = query.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard (2...100).contains(query.unicodeScalars.count) else { throw ClientError.invalidInput }
+        let response = try await perform("GET", scope(id) + ["invitation-users"], [URLQueryItem(name: "query", value: query)], nil)
+        return try decodeJSON(ItemsResponse<ConferenceInvitationUser>.self, from: response).items
+    }
+    public func invite(_ id: UUID, emails: [String], userIDs: [UUID]) async throws -> [ConferenceInvitationResult] {
+        guard (1...20).contains(emails.count + userIDs.count) else { throw ClientError.invalidInput }
+        struct Body: Encodable { let emails: [String]; let userIds: [UUID] }
+        let response = try await perform("POST", scope(id) + ["invitations"], [],
+                                         WireJSON.encoder().encode(Body(emails: emails, userIds: userIDs)))
+        return try decodeJSON(ItemsResponse<ConferenceInvitationResult>.self, from: response).items
+    }
     public func transition(_ id: UUID, action: String) async throws -> Conference {
         guard ["start", "finish", "cancel"].contains(action) else { throw ClientError.invalidInput }
         return try scopedConference(id, response: await perform("POST", scope(id) + [action], [], empty))
@@ -168,6 +181,17 @@ public struct ConferenceInviteGateway: Sendable {
     private let transport: any RequestTransport
     public init(origin: ServerOrigin, transport: any RequestTransport = URLSessionRequestTransport()) {
         self.origin = origin; self.transport = transport
+    }
+    /// Servers can return a code, a same-origin web link, or a relative API link.
+    public static func shareURL(for meeting: Conference, origin: ServerOrigin) -> URL? {
+        guard !meeting.isClosed else { return nil }
+        for candidate in [meeting.inviteCode, meeting.inviteUrl] where !candidate.isEmpty {
+            let input = candidate.hasPrefix("/") ? origin.url.absoluteString + candidate : candidate
+            if let code = try? inviteCode(from: input, origin: origin) {
+                return origin.url.appendingPathComponent("i").appendingPathComponent(code)
+            }
+        }
+        return nil
     }
     /// Only plain invite codes and explicit links for this configured server are accepted.
     public static func inviteCode(from input: String, origin: ServerOrigin) throws -> String {

@@ -26,6 +26,17 @@ public struct Conference: Codable, Equatable, Sendable, Identifiable {
     }
 }
 
+public struct ConferenceInvitationUser: Decodable, Sendable, Identifiable {
+    public let id: UUID
+    public let email: String
+    public let displayName: String?
+}
+
+public struct ConferenceInvitationResult: Decodable, Sendable {
+    public let email: String
+    public let status: String
+}
+
 public struct ConferenceInvite: Decodable, Equatable, Sendable, Identifiable {
     public let id: UUID
     public let title: String

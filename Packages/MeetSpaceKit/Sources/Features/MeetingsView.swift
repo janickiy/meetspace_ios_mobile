@@ -133,7 +133,7 @@ struct DemoMeetingDetails: View {
             } else {
                 MeetingActionCard(item: item, scheduled: meeting.start, started: meeting.status == .active ? meeting.start : nil,
                     zone: DemoData.meetingZone, waitingRoom: false, membership: member,
-                    invitation: URL(string: "https://meet.example.org/i/demo-\(meeting.id)"),
+                    invitation: .demo(meeting.id),
                     call: {
                         if item.mine && item.status == .upcoming { model.demoMeetings.start(meeting.id) }
                         openCall()

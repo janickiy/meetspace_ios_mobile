@@ -8,41 +8,46 @@ struct WorkspaceFormSheet<Content: View>: View {
     var closeLabel = "Закрыть"
     var busy = false
     var centered = false
+    var dividedHeader = false
+    var maxWidth: CGFloat?
     let close: () -> Void
     @ViewBuilder let content: () -> Content
     @State private var contentHeight: CGFloat = 0
+    @State private var headerHeight: CGFloat = 0
 
     var body: some View {
         GeometryReader { geometry in
             let compact = geometry.size.width < 600
             let inset: CGFloat = compact ? 14 : 20
             let availableHeight = max(0, geometry.size.height - inset * 2)
+            let scrollHeight = max(0, availableHeight - (dividedHeader ? headerHeight : 0))
             ZStack {
                 #if os(iOS)
                 Color(red: 15 / 255, green: 27 / 255, blue: 60 / 255).opacity(96 / 255).ignoresSafeArea()
                     .onTapGesture { if !busy { close() } }
                     .accessibilityHidden(true)
                 #endif
-                ScrollView {
-                    VStack(alignment: .leading, spacing: 18) {
-                        HStack(spacing: 10) {
-                            Text(tr(title)).font(MSTheme.font(compact ? 20 : 21, weight: .semibold))
-                                .fixedSize(horizontal: false, vertical: true)
-                                .accessibilityAddTraits(.isHeader)
-                            Spacer(minLength: 0)
-                            IconButton("xmark", label: closeLabel, action: close)
-                                .accessibilityIdentifier("\(identifier).close")
-                        }.padding(.trailing, -8)
-                        content()
-                    }.padding(compact ? 21 : 24)
-                        .onGeometryChange(for: CGFloat.self) { $0.size.height } action: { contentHeight = $0 }
-                }.scrollDismissesKeyboard(.interactively)
-                    .frame(maxWidth: centered ? 510 : 440)
-                    .frame(height: contentHeight > 0 ? min(contentHeight, availableHeight) : availableHeight)
+                VStack(spacing: 0) {
+                    if dividedHeader {
+                        VStack(spacing: 0) {
+                            header(compact: compact).padding(.horizontal, compact ? 21 : 24).padding(.vertical, 8)
+                            Divider()
+                        }.onGeometryChange(for: CGFloat.self) { $0.size.height } action: { headerHeight = $0 }
+                    }
+                    ScrollView {
+                        VStack(alignment: .leading, spacing: 18) {
+                            if !dividedHeader { header(compact: compact) }
+                            content()
+                        }.padding(compact ? 21 : 24)
+                            .onGeometryChange(for: CGFloat.self) { $0.size.height } action: { contentHeight = $0 }
+                    }.scrollDismissesKeyboard(.interactively)
+                        .frame(height: contentHeight > 0 ? min(contentHeight, scrollHeight) : scrollHeight)
+                }.frame(maxWidth: maxWidth ?? (centered ? 510 : 440))
                     .background(MSTheme.surface, in: RoundedRectangle(cornerRadius: compact ? 23 : 24))
                     .clipShape(RoundedRectangle(cornerRadius: compact ? 23 : 24))
                     .overlay(RoundedRectangle(cornerRadius: compact ? 23 : 24).strokeBorder(MSTheme.line).allowsHitTesting(false))
                     .shadow(color: .black.opacity(0.15), radius: 25, y: 15)
+                    .accessibilityElement(children: .contain)
                     .accessibilityIdentifier("\(identifier).form")
                     .padding(inset)
                     .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: compact && !centered ? .bottom : .center)
@@ -60,6 +65,16 @@ struct WorkspaceFormSheet<Content: View>: View {
         #else
         .frame(minWidth: 410, minHeight: 580)
         #endif
+    }
+
+    private func header(compact: Bool) -> some View {
+        HStack(spacing: 10) {
+            Text(tr(title)).font(MSTheme.font(compact ? 20 : 21, weight: .semibold))
+                .fixedSize(horizontal: false, vertical: true).accessibilityAddTraits(.isHeader)
+            Spacer(minLength: 0)
+            IconButton("xmark", label: closeLabel, action: close)
+                .accessibilityIdentifier("\(identifier).close")
+        }.padding(.trailing, -8)
     }
 }
 

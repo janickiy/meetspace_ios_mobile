@@ -16,12 +16,14 @@ struct WorkspaceView: View {
     var body: some View {
         GeometryReader { geometry in
             let wide = WorkspaceLayout.usesColumns(width: geometry.size.width, sizeClass: sizeClass, typeSize: typeSize)
+            let showsTabBar = model.activeConference == nil && !showingCall && (wide || !showingThread)
             VStack(spacing: 0) {
                 tabs
-                if !showingCall && (wide || !showingThread) {
-                    WorkspaceTabBar(model: model, wide: wide)
+                if showsTabBar {
+                    WorkspaceTabBar(model: model, wide: wide, bottomInset: geometry.safeAreaInsets.bottom)
                 }
             }
+            .ignoresSafeArea(.container, edges: showsTabBar ? .bottom : [])
             .chatMessageMenuHost()
             .accessibilityHidden(model.showingWorkspaceNotifications)
             .overlayPreferenceValue(InboxBellAnchor.self) { anchor in
@@ -116,6 +118,9 @@ struct InlineChatVisible: PreferenceKey {
 struct WorkspaceTabBar: View {
     let model: AppModel
     let wide: Bool
+    var bottomInset: CGFloat = 0
+    var activeTab: AppTab?
+    var onSelect: ((AppTab) -> Void)?
     @Environment(\.dynamicTypeSize) private var typeSize
 
     var body: some View {
@@ -124,16 +129,21 @@ struct WorkspaceTabBar: View {
             tabButton(.messages, title: "Чаты", icon: "bubble.left.and.bubble.right")
             tabButton(.profile, title: "Профиль", icon: "person.crop.circle")
         }
-        .padding(.horizontal, 12).padding(.top, 2)
+        .padding(.horizontal, 12)
+        .padding(.vertical, 1 + bottomInset / 2)
         .frame(maxWidth: .infinity)
         .background(MSTheme.surface, ignoresSafeAreaEdges: .bottom)
         .overlay(alignment: .top) { Rectangle().fill(MSTheme.line).frame(height: 1) }
+        .accessibilityElement(children: .contain)
+        .accessibilityIdentifier("workspaceTabBar")
     }
 
     private func tabButton(_ tab: AppTab, title: String, icon: String) -> some View {
-        let selected = model.tab == tab
+        let selected = (activeTab ?? model.tab) == tab
         let layout = typeSize.isAccessibilitySize ? AnyLayout(HStackLayout(spacing: 4)) : AnyLayout(VStackLayout(spacing: 3))
-        return Button { model.tab = tab } label: {
+        return Button {
+            if let onSelect { onSelect(tab) } else { model.tab = tab }
+        } label: {
             layout {
                 if tab == .profile {
                     let name = model.isDemo ? model.demoProfile.name : model.identity.settings?.profile.name ?? model.identity.messaging?.account.user.name ?? ""

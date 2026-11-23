@@ -264,7 +264,7 @@ enum UITestDependencies {
             if ProcessInfo.processInfo.arguments.contains("-meeting-actions-fixture") {
                 let code = String(repeating: "a", count: 32)
                 conference = ["id": conferenceID, "ownerId": first, "title": "Проверка действий со встречей",
-                              "inviteCode": code, "inviteUrl": "https://fixture.example/i/" + code,
+                              "inviteCode": code, "inviteUrl": "/api/v1/conference-invites/" + code,
                               "status": "active", "waitingRoomEnabled": false, "scheduledAt": "2026-11-05T10:00:00Z",
                               "startedAt": "2026-11-05T10:00:00Z", "createdAt": "2026-11-05T09:00:00Z",
                               "updatedAt": "2026-11-05T10:00:00Z"]
@@ -455,10 +455,28 @@ enum UITestDependencies {
                     }
                     return try response(["status": "success", "item": conference!], status: 201)
                 }
-                return try response(["status": "success", "items": conference.map { [$0] } ?? []])
+                // The list redacts invitation fields; the individual conference retains them.
+                let rows = conference.map { detail in
+                    [detail.merging(["inviteCode": "", "inviteUrl": ""]) { _, redacted in redacted }]
+                } ?? []
+                return try response(["status": "success", "items": rows])
             }
             if parts.count >= 4, parts[2] == "conferences", parts[3] == conferenceID, conference != nil {
                 if parts.count == 4 { return try response(["status": "success", "item": conference!]) }
+                if path.hasSuffix("/invitation-users"), request.httpMethod == "GET" {
+                    let query = URLComponents(url: request.url!, resolvingAgainstBaseURL: false)?.queryItems?
+                        .first { $0.name == "query" }?.value ?? ""
+                    let person = ["id": peer, "displayName": "Анна", "email": "anna@fixture.example"]
+                    let matches = [person["displayName"]!, person["email"]!].contains { $0.localizedCaseInsensitiveContains(query) }
+                    return try response(["items": matches ? [person] : []])
+                }
+                if path.hasSuffix("/invitations"), request.httpMethod == "POST" {
+                    var emails = body?["emails"] as? [String] ?? []
+                    if (body?["userIds"] as? [String])?.contains(where: { $0.lowercased() == peer }) == true {
+                        emails.append("anna@fixture.example")
+                    }
+                    return try response(["items": emails.map { ["email": $0, "status": "queued"] }], status: 202)
+                }
                 if path.hasSuffix("/start") { conference?["status"] = "active"; return try response(["status": "success", "item": conference!]) }
                 if path.hasSuffix("/join") { conferenceJoined = true; return try response(["status": "success", "item": member()]) }
                 if path.hasSuffix("/leave") { conferenceJoined = false; return try response(["status": "success", "item": member()]) }

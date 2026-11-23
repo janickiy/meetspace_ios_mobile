@@ -3,6 +3,27 @@ import Testing
 import MeetSpaceMedia
 @testable import MeetSpaceFeatures
 
+@MainActor @Test func audioVolumeEditsSurviveRouteRefreshAndReopening() throws {
+    let suite = "meetspace.audio.controls." + UUID().uuidString
+    let defaults = try #require(UserDefaults(suiteName: suite))
+    defer { defaults.removePersistentDomain(forName: suite) }
+    let model = AudioSettingsModel(defaults: defaults)
+    model.setVolume(0.37, for: .microphone)
+    model.setVolume(0.72, for: .speaker)
+    model.setVolume(0.16, for: .signals)
+    model.refresh()
+    for controls in [model, AudioSettingsModel(defaults: defaults)] {
+        #expect(controls.volume(for: .microphone) == 0.37)
+        #expect(controls.volume(for: .speaker) == 0.72)
+        #expect(controls.volume(for: .signals) == 0.16)
+    }
+    model.setVolume(-1, for: .microphone)
+    model.setVolume(2, for: .speaker)
+    #expect(model.volume(for: .microphone) == 0)
+    #expect(model.volume(for: .speaker) == 1)
+    #expect(model.volume(for: .signals) == 0.16)
+}
+
 @MainActor @Test func audioChecksCannotStealAnActiveConferenceSession() {
     let first = UUID(), second = UUID(), conference = UUID()
     var stopped = 0
@@ -19,6 +40,10 @@ import MeetSpaceMedia
 }
 
 @MainActor @Test func audioChecksUseFiniteMeterAndBoundedInMemoryTone() {
+    #expect(AudioSettingsModel.microphoneProbeLevel(rms: 0.2, inputGain: 0.25, hardwareGain: false) == 0.25)
+    #expect(AudioSettingsModel.microphoneProbeLevel(rms: 0.1, inputGain: 0.25, hardwareGain: true) == 0.5)
+    #expect(AudioSettingsModel.microphoneProbeLevel(rms: 0.2, inputGain: 0, hardwareGain: true) == 0)
+    #expect(AudioSettingsModel.microphoneProbeLevel(rms: .nan, inputGain: 1, hardwareGain: false) == 0)
     #expect(AudioSettingsModel.normalizedLevel(-Float.infinity) == 0)
     #expect(AudioSettingsModel.normalizedLevel(.nan) == 0)
     #expect(AudioSettingsModel.normalizedLevel(-20) == 0.1)

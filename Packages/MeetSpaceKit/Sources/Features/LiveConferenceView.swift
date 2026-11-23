@@ -4,6 +4,7 @@ import MeetSpaceMedia
 import MeetSpaceDesignSystem
 
 struct LiveConferenceView: View {
+    let app: AppModel
     @Bindable var session: ConferenceSession
     var recordings: RecordingsModel? = nil
     var workspaceTheme: ColorScheme = .light
@@ -18,7 +19,7 @@ struct LiveConferenceView: View {
     var body: some View {
         Group {
             if [.prejoin, .waiting, .failed, .ended, .suspended].contains(session.phase) {
-                prejoin
+                prejoinWorkspace.environment(\.colorScheme, workspaceTheme)
             } else {
                 ConferenceRoomLayout(title: session.title, status: status, startedAt: session.startedAt,
                                      panelVisible: sidePanel != nil, back: { confirmLeave = true }, actions: roomActions) { wide in
@@ -238,28 +239,59 @@ struct LiveConferenceView: View {
         case .ended: "Участие завершено"
         }
     }
+    @ViewBuilder private var prejoinWorkspace: some View {
+        if session.phase == .prejoin, app.guestConference == nil {
+            GeometryReader { geometry in
+                VStack(spacing: 0) {
+                    prejoin
+                    WorkspaceTabBar(model: app, wide: geometry.size.width >= 780,
+                                    bottomInset: geometry.safeAreaInsets.bottom, activeTab: .meetings, onSelect: returnToWorkspace)
+                }.ignoresSafeArea(.container, edges: .bottom)
+            }
+        } else {
+            prejoin
+        }
+    }
+
+    private func returnToWorkspace(_ tab: AppTab) {
+        Task {
+            await close()
+            if tab == .meetings { app.meetingsPath.removeAll() }
+            app.tab = tab
+        }
+    }
+
     private var prejoin: some View {
         MeetingPrejoinLayout(onBack: { Task { await close() } }) {
             MeetingCameraPreview(name: session.participant.displayName, camera: session.wantsCamera,
-                                 microphone: session.wantsMicrophone,
+                                 microphone: session.wantsMicrophone, photo: app.guestConference == nil ? app.identity.settings?.photo : nil,
                                  cameraDisabled: session.cameraBlocked || session.phase != .prejoin,
                                  microphoneDisabled: session.microphoneBlocked || session.phase != .prejoin,
                                  toggleCamera: { session.wantsCamera.toggle() },
                                  toggleMicrophone: { session.wantsMicrophone.toggle() })
         } details: {
-            MeetingPrejoinHeading(title: session.title, subtitle: tr(status))
+            MeetingPrejoinHeading(title: session.title, subtitle: tr(session.phase == .prejoin ? "Проверьте звук и камеру перед встречей" : status))
             if let error = session.error {
                 Text(tr(error)).font(MSTheme.font(13)).foregroundStyle(MSTheme.danger)
                     .fixedSize(horizontal: false, vertical: true).accessibilityIdentifier("conferenceError")
             }
             if session.phase == .prejoin {
-                MeetingPrejoinName(name: .constant(session.participant.displayName)).disabled(true)
-                if !session.audioRoute.isEmpty {
-                    MeetingMicrophoneRow(route: session.audioRoute) { showMore = true }
-                }
-                Button { session.start() } label: {
-                    Label(tr("Присоединиться"), systemImage: "arrow.right").labelStyle(MeetingNextLabelStyle())
-                }.buttonStyle(MSButtonStyle()).accessibilityIdentifier("conferenceJoin")
+                let guest = app.guestConference != nil
+                MeetingIdentityChip(title: guest ? "Вход без аккаунта · гость" : "Вход с аккаунтом")
+                MeetingPrejoinName(name: .constant(session.participant.displayName), guest: guest, editable: false)
+                    .padding(.top, 8)
+                MeetingMicrophoneRow(camera: Binding(get: { session.videoPreferences.camera }, set: session.choosePrejoinCamera),
+                                     cameraDisabled: session.cameraBlocked)
+                VStack(spacing: 0) {
+                    Button { session.start() } label: {
+                        Label(tr("Присоединиться"), systemImage: "arrow.right").labelStyle(MeetingNextLabelStyle())
+                    }.buttonStyle(MSButtonStyle()).accessibilityIdentifier("conferenceJoin")
+                    if guest {
+                        Button(tr("Назад")) { Task { await close() } }.buttonStyle(MSTextButtonStyle())
+                    } else {
+                        MeetingPrejoinReturn { returnToWorkspace(.meetings) }
+                    }
+                }.padding(.top, 12)
             } else if session.phase == .waiting {
                 ProgressView()
                 Text(tr("Организатор должен разрешить вход. Камера и микрофон выключены."))

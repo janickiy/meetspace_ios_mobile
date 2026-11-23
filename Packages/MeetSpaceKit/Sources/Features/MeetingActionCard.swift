@@ -41,7 +41,8 @@ struct MeetingActionCard<Value: Identifiable>: View {
     var membershipFailed = false
     var error: String?
     var retry: (() -> Void)?
-    let invitation: URL?
+    let invitation: MeetingLinkInvitation
+    var cohostCanInvite = false
     let call: () -> Void
     let toggleMembership: () -> Void
     var folder: (() -> Void)?
@@ -49,6 +50,7 @@ struct MeetingActionCard<Value: Identifiable>: View {
     let finish: () -> Void
     let close: () -> Void
     @State private var confirmingFinish = false
+    @State private var showingInvitation = false
 
     private var active: Bool { item.status == .active }
     private var open: Bool { item.status != .past }
@@ -59,9 +61,18 @@ struct MeetingActionCard<Value: Identifiable>: View {
     private var finishTitle: String { active ? "Завершить для всех" : "Отменить встречу" }
 
     var body: some View {
-        WorkspaceFormSheet(title: "О встрече", identifier: "meetingActions", busy: busy, centered: true, close: close) {
-            Divider().padding(.horizontal, -21)
-            VStack(alignment: .leading, spacing: 6) {
+        if showingInvitation {
+            MeetingLinkInvitationSheet(title: item.title, invitation: invitation,
+                                       canInvitePeople: item.mine || cohostCanInvite) { showingInvitation = false }
+        } else {
+            details
+        }
+    }
+
+    private var details: some View {
+        WorkspaceFormSheet(title: "О встрече", identifier: "meetingActions", busy: busy, centered: true,
+                           dividedHeader: true, close: close) {
+            VStack(alignment: .leading, spacing: 7) {
                 Text(tr(active ? "Активна" : item.statusTitle)).font(MSTheme.font(11, weight: .semibold))
                     .foregroundStyle(active ? MSTheme.accent : MSTheme.muted)
                     .padding(.horizontal, 9).padding(.vertical, 4)
@@ -71,16 +82,16 @@ struct MeetingActionCard<Value: Identifiable>: View {
                 Text(tr(item.mine ? "Вы — организатор" : "Встреча вашего пространства"))
                     .font(MSTheme.font(13, weight: .semibold)).foregroundStyle(MSTheme.muted)
             }
-            VStack(alignment: .leading, spacing: 6) {
+            VStack(alignment: .leading, spacing: 7) {
                 if let scheduled { dateLine("Запланирована", date: scheduled) }
+                if let duration = item.duration { Text(tr("Плановая длительность") + ": \(duration) " + tr("мин")) }
                 if let started { dateLine("Началась", date: started) }
                 if let finished { dateLine("Завершилась", date: finished) }
-                if let duration = item.duration { Text(tr("Плановая длительность") + ": \(duration) " + tr("мин")) }
                 if open { Text(tr(waitingRoom ? "Зал ожидания включён." : "Зал ожидания отключён.")) }
-            }.font(MSTheme.font(12)).foregroundStyle(MSTheme.muted)
-                .frame(maxWidth: .infinity, alignment: .leading).padding(12)
-                .background(MSTheme.background, in: RoundedRectangle(cornerRadius: 12))
-            if open && membershipReady, let label = membership.label { Text(tr(label)).font(MSTheme.font(13)) }
+            }.font(MSTheme.font(13)).foregroundStyle(MSTheme.muted)
+                .frame(maxWidth: .infinity, alignment: .leading).padding(14)
+                .background(MSTheme.background, in: RoundedRectangle(cornerRadius: 14))
+            if open && membershipReady, let label = membership.label { Text(tr(label)).font(MSTheme.font(14)) }
             if loadingMembership { ProgressView() }
             if let error {
                 Text(tr(error)).foregroundStyle(MSTheme.danger)
@@ -97,11 +108,12 @@ struct MeetingActionCard<Value: Identifiable>: View {
                                 primary: !canCall, action: toggleMembership)
                     }
                     if item.mine && !active { command("Начать встречу", "play", "start", primary: true, action: call) }
-                    if canShare, let invitation {
-                        ShareLink(item: invitation) { actionLabel("Пригласить по ссылке", "link") }
-                            .buttonStyle(.plain).accessibilityIdentifier("meetingActions.invite")
-                    }
-                    if leave { command("Выйти из встречи", "rectangle.portrait.and.arrow.right", "leave", action: toggleMembership) }
+                }
+                if open && (item.mine || membershipReady && canShare) {
+                    command("Пригласить по ссылке", "link", "invite") { showingInvitation = true }
+                }
+                if open && membershipReady && leave {
+                    command("Выйти из встречи", "rectangle.portrait.and.arrow.right", "leave", action: toggleMembership)
                 }
                 if let folder { command("Добавить в папку", "folder.badge.plus", "folder", action: folder) }
                 if item.status == .past || active && membershipReady && canShare, let materials {
@@ -132,12 +144,12 @@ struct MeetingActionCard<Value: Identifiable>: View {
 
     private func actionLabel(_ title: String, _ icon: String, primary: Bool = false, destructive: Bool = false) -> some View {
         HStack(spacing: 8) {
-            Image(systemName: icon).accessibilityHidden(true)
+            WorkspaceIcon(icon, size: 20)
             Text(tr(title)).fixedSize(horizontal: false, vertical: true)
         }.font(MSTheme.font(14, weight: .semibold))
             .foregroundStyle(primary ? Color.white : destructive ? MSTheme.danger : MSTheme.ink)
-            .padding(.horizontal, 10).padding(.vertical, 5).frame(maxWidth: .infinity, minHeight: 44)
-            .background(primary ? MSTheme.accent : MSTheme.surface, in: RoundedRectangle(cornerRadius: 12))
+            .padding(.horizontal, 12).padding(.vertical, 7).frame(maxWidth: .infinity, minHeight: 48)
+            .background(primary ? MSTheme.accent : .clear, in: RoundedRectangle(cornerRadius: 12))
             .overlay { if !primary && !destructive { RoundedRectangle(cornerRadius: 12).strokeBorder(MSTheme.line) } }
             .contentShape(Rectangle())
     }

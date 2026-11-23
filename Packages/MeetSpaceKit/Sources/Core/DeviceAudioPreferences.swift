@@ -6,10 +6,27 @@ public struct DeviceAudioPreferences: Codable, Equatable, Sendable {
     public var noiseSuppression = true
     public var preferredInputUID: String?
     public var inputGain: Float = 1
+    public var speakerVolume: Float = 1
+    public var signalVolume: Float = 1
+    public static let levelsDidChange = Notification.Name("meetspace.audio.levelsDidChange")
     public init() {}
+
+    public init(from decoder: any Decoder) throws {
+        let values = try decoder.container(keyedBy: CodingKeys.self)
+        mutedOnJoin = try values.decode(Bool.self, forKey: .mutedOnJoin)
+        noiseSuppression = try values.decode(Bool.self, forKey: .noiseSuppression)
+        preferredInputUID = try values.decodeIfPresent(String.self, forKey: .preferredInputUID)
+        inputGain = try values.decode(Float.self, forKey: .inputGain)
+        speakerVolume = try values.decodeIfPresent(Float.self, forKey: .speakerVolume) ?? 1
+        signalVolume = try values.decodeIfPresent(Float.self, forKey: .signalVolume) ?? 1
+    }
+
     public func validated() -> Self {
         var value = self
-        value.inputGain = inputGain.isFinite ? min(1, max(0, inputGain)) : 1
+        func bounded(_ level: Float) -> Float { level.isFinite ? min(1, max(0, level)) : 1 }
+        value.inputGain = bounded(inputGain)
+        value.speakerVolume = bounded(speakerVolume)
+        value.signalVolume = bounded(signalVolume)
         if let uid = preferredInputUID, uid.isEmpty || uid.utf8.count > 512 || uid.unicodeScalars.contains(where: CharacterSet.controlCharacters.contains) { value.preferredInputUID = nil }
         return value
     }

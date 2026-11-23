@@ -3,10 +3,9 @@ import MeetSpaceCore
 import MeetSpaceDesignSystem
 #if os(iOS)
 import AVKit
-import MediaPlayer
 #endif
 
-/// The mockup's three audio blocks, with live iOS routes and public system volume controls.
+/// The mockup's three audio blocks, with live iOS routes and device-local MeetSpace levels.
 struct AccountAudioSettingsView: View {
     @State private var audio = AudioSettingsModel()
     @Environment(\.scenePhase) private var scenePhase
@@ -53,14 +52,9 @@ struct AccountAudioSettingsView: View {
             } test: { checkButton(.microphone) }
             hint(audio.check == .microphone ? "Говорите — индикатор показывает уровень микрофона." :
                     "Проверьте микрофон, чтобы увидеть уровень звука и названия устройств.").padding(.top, 10)
-            volume("Громкость микрофона", value: audio.inputGain) {
-                AccountAudioRange(value: Binding(get: { Double(audio.inputGain) }, set: { audio.setGain(Float($0)) }),
-                                  adjustable: audio.canSetInputGain, label: "Громкость микрофона",
-                                  identifier: "audioMicrophoneVolume")
-            }
-            if !audio.canSetInputGain {
-                hint("Громкость этого микрофона регулируется автоматически системой.").padding(.bottom, 3)
-            }
+            volume("Громкость микрофона", kind: .microphone, identifier: "audioMicrophoneVolume")
+            hint("При проверке можно выбрать любой уровень. Во время встречи усилением встроенного микрофона может управлять iOS. При 0% микрофон выключен.")
+                .padding(.bottom, 3)
             preference("Подключаться с выключенным микрофоном", identifier: "audio.mutedOnJoin", key: \.mutedOnJoin)
             rule
             preference("Шумоподавление", identifier: "audio.noiseSuppression", key: \.noiseSuppression)
@@ -71,7 +65,7 @@ struct AccountAudioSettingsView: View {
         VStack(alignment: .leading, spacing: 0) {
             heading(title, check: kind)
             if kind == .signals {
-                hint("Громкость сигнала вызова и уведомлений о сообщениях, приглашениях и скором начале встречи.")
+                hint("Громкость проверочного сигнала и звука новых сообщений внутри MeetSpace.")
                     .padding(.bottom, 12)
             }
             selectRow {
@@ -89,20 +83,9 @@ struct AccountAudioSettingsView: View {
                 selectorLabel(tr("По умолчанию"))
                 #endif
             } test: { checkButton(kind) }
-            volume(volumeLabel, value: audio.outputVolume) {
-                #if os(iOS) && !targetEnvironment(simulator)
-                SystemAudioVolume().frame(height: 44)
-                    .accessibilityLabel(tr(volumeLabel)).accessibilityIdentifier("audioVolume.\(kind.rawValue)")
-                #else
-                AccountAudioRange(value: .constant(Double(audio.outputVolume)), adjustable: false,
-                                  label: volumeLabel, identifier: "audioVolume.\(kind.rawValue)")
-                #endif
-            }
-            #if targetEnvironment(simulator)
-            hint("Громкость регулируется на iPhone или iPad.")
-            #endif
+            volume(volumeLabel, kind: kind, identifier: "audioVolume.\(kind.rawValue)")
             if kind == .signals {
-                hint("Громкость проверки — системная. Громкость звонков и уведомлений задаётся в настройках iOS.")
+                hint("Громкость системных звонков и push-уведомлений задаётся в настройках iOS.")
             }
             #if os(iOS)
             HStack(spacing: 8) {
@@ -161,8 +144,11 @@ struct AccountAudioSettingsView: View {
             .accessibilityIdentifier("audioTest.\(kind.rawValue)")
     }
 
-    private func volume<Track: View>(_ title: String, value: Float, @ViewBuilder track: () -> Track) -> some View {
-        VStack(spacing: 2) {
+    private func volume(_ title: String, kind: AudioSettingsModel.Check, identifier: String) -> some View {
+        let value = audio.volume(for: kind)
+        let binding = Binding(get: { Double(audio.volume(for: kind)) },
+                              set: { audio.setVolume(Float($0), for: kind) })
+        return VStack(spacing: 2) {
             HStack(spacing: 12) {
                 Text(tr(title)).font(MSTheme.font(12.6)).fixedSize(horizontal: false, vertical: true)
                 Spacer(minLength: 0)
@@ -172,7 +158,7 @@ struct AccountAudioSettingsView: View {
                     .foregroundStyle(MSTheme.accent)
                     .background(MSTheme.accentSoft, in: RoundedRectangle(cornerRadius: 9))
             }
-            track()
+            AccountAudioRange(value: binding, title: title, identifier: identifier)
         }.padding(.top, 20)
     }
 
@@ -204,58 +190,53 @@ private struct AudioSelectorChrome: ViewModifier {
 
 private struct AccountAudioRange: View {
     @Binding var value: Double
-    let adjustable: Bool
-    let label: String
+    let title: String
     let identifier: String
     @Environment(\.layoutDirection) private var direction
-    private let thumbSize: CGFloat = 15
+    private let thumbSize: CGFloat = 16
 
     var body: some View {
         GeometryReader { bounds in
-            let travel = max(0, bounds.size.width - thumbSize)
-            let offset = travel * CGFloat(value)
-            let tint = MSTheme.brandAccent.opacity(adjustable ? 1 : 0.55)
+            let width = bounds.size.width
+            let travel = max(0, width - thumbSize)
+            let position = CGFloat(value) * travel
             ZStack(alignment: .leading) {
                 Capsule().fill(MSTheme.surfaceSecondary)
                     .overlay(Capsule().strokeBorder(MSTheme.muted.opacity(0.5)))
-                    .frame(height: 8).padding(.horizontal, 1)
-                if value > 0 {
-                    Capsule().fill(tint).frame(width: offset + thumbSize / 2, height: 8)
-                        .padding(.leading, 1)
-                }
-                Circle().fill(tint).frame(width: thumbSize, height: thumbSize)
-                    .offset(x: direction == .rightToLeft ? -offset : offset)
-            }.frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
-                .contentShape(Rectangle())
-                .gesture(DragGesture(minimumDistance: 4)
-                    .onChanged { event in setPosition(event.location.x, width: bounds.size.width) },
-                         including: adjustable ? .all : .none)
-                .simultaneousGesture(SpatialTapGesture()
-                    .onEnded { event in setPosition(event.location.x, width: bounds.size.width) },
-                                     including: adjustable ? .all : .none)
-        }.frame(height: 44)
-            .accessibilityRepresentation {
-                Slider(value: $value, in: 0...1, step: 0.01)
-                    .accessibilityLabel(tr(label)).accessibilityValue("\(Int((value * 100).rounded()))%")
-                    .disabled(!adjustable).accessibilityIdentifier(identifier)
+                    .frame(height: 8)
+                Capsule().fill(MSTheme.brandAccent)
+                    .frame(width: position + thumbSize / 2, height: 8)
+                Circle().fill(MSTheme.brandAccent).frame(width: thumbSize, height: thumbSize)
+                    .offset(x: direction == .rightToLeft ? -position : position)
             }
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
+            .contentShape(Rectangle())
+            .simultaneousGesture(DragGesture(minimumDistance: 4)
+                .onChanged { drag in
+                    guard abs(drag.translation.width) > abs(drag.translation.height) else { return }
+                    select(drag.location.x, width: width)
+                })
+            .simultaneousGesture(SpatialTapGesture().onEnded { tap in select(tap.location.x, width: width) })
+        }
+        .frame(height: 44)
+        .accessibilityRepresentation {
+            Slider(value: $value, in: 0...1, step: 0.01)
+                .accessibilityLabel(tr(title))
+                .accessibilityValue("\(Int((value * 100).rounded()))%")
+                .accessibilityIdentifier(identifier)
+        }
     }
 
-    private func setPosition(_ position: CGFloat, width: CGFloat) {
-        guard adjustable, width > thumbSize else { return }
-        let distance = direction == .rightToLeft ? width - position : position
-        let next = min(1, max(0, (distance - thumbSize / 2) / (width - thumbSize)))
-        value = Double((next * 100).rounded() / 100)
+    private func select(_ x: CGFloat, width: CGFloat) {
+        guard width > thumbSize else { return }
+        let distance = direction == .rightToLeft ? width - x : x
+        let fraction = min(1, max(0, (distance - thumbSize / 2) / (width - thumbSize)))
+        let percent = (Double(fraction) * 100).rounded()
+        if percent != (value * 100).rounded() { value = percent / 100 }
     }
 }
+
 #if os(iOS)
-private struct SystemAudioVolume: UIViewRepresentable {
-    func makeUIView(context: Context) -> MPVolumeView {
-        let view = MPVolumeView(); view.showsRouteButton = false
-        view.tintColor = UIColor(MSTheme.accent); return view
-    }
-    func updateUIView(_ uiView: MPVolumeView, context: Context) {}
-}
 private struct AudioRoutePicker: UIViewRepresentable {
     var selector = false
     func makeUIView(context: Context) -> AVRoutePickerView {

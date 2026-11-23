@@ -67,7 +67,7 @@ public struct DirectConferenceContext: Sendable {
     public private(set) var busy = false
     public private(set) var departureUncertain = false
     public var error: String?
-    let videoPreferences: AccountVideoPreferences
+    private(set) var videoPreferences: AccountVideoPreferences
     public var wantsMicrophone = false
     public var wantsCamera = false
     public var chatText = ""
@@ -163,6 +163,11 @@ public struct DirectConferenceContext: Sendable {
         conferenceID = participant.conferenceId; self.sockets = sockets; self.makeMedia = makeMedia; self.makeBroadcast = makeBroadcast; self.sleep = sleep
         phase = participant.isWaiting ? .waiting : .prejoin
         microphoneBlocked = participant.microphoneBlocked; cameraBlocked = participant.cameraBlocked; screenBlocked = participant.screenBlocked
+    }
+
+    func choosePrejoinCamera(_ choice: AccountCameraChoice) {
+        guard phase == .prejoin, !cameraBlocked else { return }
+        videoPreferences.camera = choice
     }
 
     public func participantID(for video: ConferenceVideoTrack) -> UUID? {

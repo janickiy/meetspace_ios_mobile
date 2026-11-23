@@ -9,14 +9,12 @@ import MeetSpaceMedia
 @MainActor @Observable final class AudioSettingsModel {
     enum Check: String { case microphone, speaker, signals }
     struct Input: Identifiable { let id: String; let name: String }
-    var preferences = DeviceAudioPreferences.load()
+    private(set) var preferences: DeviceAudioPreferences
+    @ObservationIgnored private let defaults: UserDefaults
     private(set) var check: Check?
     private(set) var level: Float = 0
     private(set) var inputs: [Input] = []
     private(set) var outputName = "По умолчанию"
-    private(set) var outputVolume: Float = 0
-    private(set) var inputGain: Float = 1
-    private(set) var canSetInputGain = false
     private(set) var notice: String?
     @ObservationIgnored private var generation = UUID()
     @ObservationIgnored private let audioOwner = UUID()
@@ -29,48 +27,79 @@ import MeetSpaceMedia
     @ObservationIgnored private var previousSession: (AVAudioSession.Category, AVAudioSession.Mode, AVAudioSession.CategoryOptions)?
     #endif
 
+    init(defaults: UserDefaults = .standard) {
+        self.defaults = defaults
+        preferences = DeviceAudioPreferences.load(defaults: defaults)
+    }
+
     func refresh() {
         #if os(iOS)
         let audio = AVAudioSession.sharedInstance()
         inputs = (audio.availableInputs ?? []).map { Input(id: $0.uid, name: $0.portName) }
         outputName = audio.currentRoute.outputs.map(\.portName).joined(separator: ", ")
         if outputName.isEmpty { outputName = "По умолчанию" }
-        outputVolume = audio.outputVolume
-        inputGain = audio.inputGain
-        canSetInputGain = audio.isInputGainSettable && !AudioSessionUse.conferenceActive
         #endif
     }
     func appear() {
+        preferences = DeviceAudioPreferences.load(defaults: defaults)
         refresh()
+        #if os(iOS)
         sampling?.cancel()
         sampling = Task { [weak self] in
             while !Task.isCancelled {
                 try? await Task.sleep(for: .milliseconds(200))
                 guard !Task.isCancelled, let self else { return }
-                self.refresh()
-                #if os(iOS)
                 if let player = self.player {
                     player.updateMeters()
-                    self.level = Self.normalizedLevel(player.averagePower(forChannel: 0))
+                    self.level = player.volume == 0 ? 0 : Self.normalizedLevel(player.averagePower(forChannel: 0))
                 }
-                #endif
             }
         }
+        #endif
     }
     func disappear() { sampling?.cancel(); sampling = nil; stop() }
     func update(_ change: (inout DeviceAudioPreferences) -> Void) {
-        stop(); change(&preferences); preferences = preferences.validated(); preferences.save()
+        stop()
+        preferences = DeviceAudioPreferences.load(defaults: defaults)
+        change(&preferences)
+        preferences = preferences.validated()
+        preferences.save(defaults: defaults)
     }
-    func setGain(_ value: Float) {
+    func volume(for kind: Check) -> Float {
+        switch kind {
+        case .microphone: preferences.inputGain
+        case .speaker: preferences.speakerVolume
+        case .signals: preferences.signalVolume
+        }
+    }
+
+    func setVolume(_ value: Float, for kind: Check) {
+        var next = DeviceAudioPreferences.load(defaults: defaults)
+        switch kind {
+        case .microphone: next.inputGain = value
+        case .speaker: next.speakerVolume = value
+        case .signals: next.signalVolume = value
+        }
+        preferences = next.validated()
+        preferences.save(defaults: defaults)
+        NotificationCenter.default.post(name: DeviceAudioPreferences.levelsDidChange, object: nil)
         #if os(iOS)
-        guard !AudioSessionUse.conferenceActive, canSetInputGain else { return }
-        do { try AVAudioSession.sharedInstance().setInputGain(value); preferences.inputGain = value; preferences.save(); refresh() }
-        catch { notice = "Не удалось изменить громкость микрофона." }
+        guard check == kind else { return }
+        if kind == .microphone {
+            let session = AVAudioSession.sharedInstance()
+            if session.isInputGainSettable {
+                do { try session.setInputGain(preferences.inputGain) }
+                catch { notice = "Не удалось изменить громкость микрофона." }
+            }
+        } else {
+            player?.volume = volume(for: kind)
+        }
         #endif
     }
     func test(_ kind: Check, respectingSilentMode: Bool = false) async {
         if check == kind { stop(); return }
         stop(); notice = nil
+        preferences = DeviceAudioPreferences.load(defaults: defaults)
         let current = generation
         guard AudioSessionUse.beginProbe(owner: audioOwner, stop: { [weak self] in self?.stop() }) else {
             notice = "Завершите звонок, чтобы проверить звук."; return
@@ -89,19 +118,22 @@ import MeetSpaceMedia
                     }
                     try session.setPreferredInput(input)
                 } else { try session.setPreferredInput(nil) }
-                if session.isInputGainSettable { try session.setInputGain(preferences.inputGain) }
                 let engine = AVAudioEngine()
                 self.engine = engine
                 try engine.inputNode.setVoiceProcessingEnabled(preferences.noiseSuppression)
+                let hardwareGain = session.isInputGainSettable
+                if hardwareGain { try session.setInputGain(preferences.inputGain) }
                 let format = engine.inputNode.outputFormat(forBus: 0)
                 guard format.channelCount > 0, format.sampleRate > 0 else { throw ConferenceMediaError.capture }
                 engine.inputNode.installTap(onBus: 0, bufferSize: 1024, format: format) { @Sendable [weak self] buffer, _ in
                     guard let samples = buffer.floatChannelData?[0], buffer.frameLength > 0 else { return }
                     var sum: Float = 0
                     for index in 0..<Int(buffer.frameLength) { sum += samples[index] * samples[index] }
-                    let value = min(1, sqrt(sum / Float(buffer.frameLength)) * 5)
+                    let rms = sqrt(sum / Float(buffer.frameLength))
                     Task { @MainActor [weak self] in
-                        guard let self, self.generation == current else { return }; self.level = value
+                        guard let self, self.generation == current else { return }
+                        self.level = Self.microphoneProbeLevel(rms: rms, inputGain: self.preferences.inputGain,
+                                                               hardwareGain: hardwareGain)
                     }
                 }
                 tapInstalled = true
@@ -109,6 +141,7 @@ import MeetSpaceMedia
             } else {
                 try prepare(recording: false, respectingSilentMode: respectingSilentMode)
                 let player = try AVAudioPlayer(data: Self.testTone(signals: kind == .signals))
+                player.volume = volume(for: kind)
                 player.isMeteringEnabled = true
                 self.player = player
                 guard player.play() else { throw ConferenceMediaError.audioSession }
@@ -147,6 +180,11 @@ import MeetSpaceMedia
     static func normalizedLevel(_ decibels: Float) -> Float {
         guard decibels.isFinite else { return 0 }
         return min(1, max(0, pow(10, decibels / 20)))
+    }
+    static func microphoneProbeLevel(rms: Float, inputGain: Float, hardwareGain: Bool) -> Float {
+        guard rms.isFinite, inputGain > 0 else { return 0 }
+        let adjusted = hardwareGain ? rms : rms * inputGain
+        return min(1, max(0, adjusted * 5))
     }
     #if os(iOS)
     private func prepare(recording: Bool, respectingSilentMode: Bool = false) throws {

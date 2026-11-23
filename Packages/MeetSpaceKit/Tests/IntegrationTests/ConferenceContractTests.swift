@@ -179,3 +179,46 @@ private enum ConferenceFixture {
     #expect(throws: ClientError.invalidInput) { try ICEConfiguration(iceServers: [], expiresAt: Date().addingTimeInterval(-1).timeIntervalSince1970).validated() }
     #expect(try ICEConfiguration(iceServers: []).validated().iceTransportPolicy == "all")
 }
+
+@Test func meetingShareLinkSupportsServerRepresentationsAndOnlyOpenMeetings() throws {
+    let code = ConferenceFixture.code
+    let display = "https://fixture.example/i/" + code
+    func link(_ code: String, _ path: String, status: String = "active") -> String? {
+        let meeting = Conference(id: ConferenceFixture.room, ownerId: Fixture.userID, title: "Fixture",
+                                 inviteCode: code, inviteUrl: path, status: status)
+        return ConferenceInviteGateway.shareURL(for: meeting, origin: Fixture.origin)?.absoluteString
+    }
+    #expect(link(code, "") == display)
+    #expect(link("", "/api/v1/conference-invites/" + code) == display)
+    #expect(link("", display) == display)
+    #expect(link("", "//other.example/i/" + code) == nil)
+    #expect(link("", "https://other.example/i/" + code) == nil)
+    #expect(link(code, "", status: "finished") == nil)
+}
+
+@Test func meetingInvitationDirectoryAndDeliveryUseConferenceScopedRequests() async throws {
+    let path = "/api/v1/conferences/" + ConferenceFixture.room.uuidString.lowercased()
+    let user = Fixture.userID
+    let transport = RoutedTransport { request, _ in
+        #expect(request.value(forHTTPHeaderField: "Authorization") == "Bearer fixture-token")
+        switch (request.httpMethod, request.url?.path) {
+        case ("GET", path + "/invitation-users"):
+            let parts = URLComponents(url: request.url!, resolvingAgainstBaseURL: false)
+            #expect(parts?.queryItems == [URLQueryItem(name: "query", value: "Анна")])
+            return try Fixture.response(["items": [["id": user.uuidString, "email": "anna@example.org", "displayName": "Анна"]]])
+        case ("POST", path + "/invitations"):
+            let data = try #require(request.httpBody)
+            let body = try #require(JSONSerialization.jsonObject(with: data) as? [String: [String]])
+            #expect(body["userIds"]?.compactMap(UUID.init(uuidString:)) == [user])
+            #expect(body["emails"] == ["guest@example.org"])
+            return try Fixture.response(["items": [["email": "guest@example.org", "status": "queued"],
+                                                  ["email": "anna@example.org", "status": "already_invited"]]])
+        default: throw APIError.invalidResponse
+        }
+    }
+    let repository = try ConferenceFixture.repository(transport)
+    let room = ConferenceFixture.room
+    #expect(try await repository.invitationUsers(room, query: " Анна ").first?.email == "anna@example.org")
+    #expect(try await repository.invite(room, emails: ["guest@example.org"], userIDs: [user]).map(\.status) == ["queued", "already_invited"])
+    await #expect(throws: ClientError.invalidInput) { try await repository.invite(room, emails: [], userIDs: []) }
+}

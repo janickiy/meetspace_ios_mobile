@@ -33,7 +33,8 @@ struct LiveMeetingDetails: View {
                     membership: MeetingMembership(participant), loadingMembership: loadingMembership && !item.value.isClosed,
                     busy: workspace.busy, membershipFailed: membershipError != nil, error: membershipError ?? transitionError,
                     retry: membershipError == nil ? nil : { Task { await loadMembership() } },
-                    invitation: invitation, call: openCall, toggleMembership: { Task { await toggleMembership() } },
+                    invitation: .live(item.value, workspace.repository), cohostCanInvite: item.status == .active && participant?.canAdmit == true,
+                    call: openCall, toggleMembership: { Task { await toggleMembership() } },
                     folder: folders == nil ? nil : { showingFolders = true },
                     materials: recordings == nil ? nil : { showingMaterials = true }, finish: {
                         Task {
@@ -46,12 +47,6 @@ struct LiveMeetingDetails: View {
         }.sheet(isPresented: $showingFolders) {
             if let folders { WorkspaceFolderPicker(model: folders, kind: .conference, id: item.id, title: item.title) }
         }
-    }
-
-    private var invitation: URL? {
-        let source = item.value.inviteCode.isEmpty ? item.value.inviteUrl : item.value.inviteCode
-        guard let code = try? ConferenceInviteGateway.inviteCode(from: source, origin: workspace.repository.origin) else { return nil }
-        return workspace.repository.origin.url.appendingPathComponent("i").appendingPathComponent(code)
     }
 
     private func loadMembership() async {

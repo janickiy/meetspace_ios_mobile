@@ -53,9 +53,11 @@ struct ConferenceRoomLayout<Header: View, Notice: View, Video: View, Panel: View
                         panel().frame(maxWidth: wide ? min(350, max(260, geometry.size.width * 0.25)) : .infinity,
                                       maxHeight: .infinity)
                     }
-                }.padding(.horizontal, inset).padding(.vertical, wide ? 16 : 10)
+                }.padding(.horizontal, inset).padding(.top, wide ? 10 : 8).padding(.bottom, 6)
                 toolbar(wide: wide).padding(.horizontal, inset)
+                    .padding(.bottom, min(12, geometry.safeAreaInsets.bottom))
             }.foregroundStyle(ConferenceRoomColors.text)
+                .ignoresSafeArea(.container, edges: .bottom)
         }.background(ConferenceRoomColors.background.ignoresSafeArea())
     }
 
@@ -78,7 +80,7 @@ struct ConferenceRoomLayout<Header: View, Notice: View, Video: View, Panel: View
                     .foregroundStyle(ConferenceRoomColors.muted)
             }
             HStack(spacing: wide ? 8 : 5) { headerActions(wide && !typeSize.isAccessibilitySize) }
-        }.padding(.top, wide ? 10 : 8).padding(.bottom, wide ? 15 : 12)
+        }.padding(.top, 6).padding(.bottom, 8)
             .overlay(alignment: .bottom) { Rectangle().fill(ConferenceRoomColors.line).frame(height: 1) }
     }
 
@@ -91,7 +93,7 @@ struct ConferenceRoomLayout<Header: View, Notice: View, Video: View, Panel: View
                 controls(wide: wide).frame(maxWidth: wide ? nil : 540)
                     .fixedSize(horizontal: wide, vertical: false)
             }
-        }.frame(maxWidth: .infinity).padding(.vertical, wide ? 11 : 9)
+        }.frame(maxWidth: .infinity).padding(.top, 5).padding(.bottom, 3)
             .overlay(alignment: .top) { Rectangle().fill(ConferenceRoomColors.line).frame(height: 1) }
     }
 
@@ -99,14 +101,14 @@ struct ConferenceRoomLayout<Header: View, Notice: View, Video: View, Panel: View
         HStack(spacing: wide ? 6 : 7) {
             ForEach(actions) { control in
                 Button(action: control.action) {
-                    VStack(spacing: 5) {
+                    VStack(spacing: 3) {
                         WorkspaceIcon(control.icon, size: 19)
                         Text(tr(control.title))
                             .font(MSTheme.font(wide ? 11 : 10, relativeTo: .caption2))
                             .lineLimit(1).minimumScaleFactor(0.75)
                             .allowsTightening(true)
                     }.padding(.horizontal, wide ? 7 : 2)
-                        .frame(minWidth: wide ? 76 : nil, maxWidth: wide ? nil : .infinity, minHeight: wide ? 55 : 53)
+                        .frame(minWidth: wide ? 76 : nil, maxWidth: wide ? nil : .infinity, minHeight: 46)
                         .background(control.destructive ? ConferenceRoomColors.leave :
                                         control.active ? ConferenceRoomColors.selected : ConferenceRoomColors.surface,
                                     in: RoundedRectangle(cornerRadius: wide ? 9 : 16))
@@ -123,7 +125,7 @@ struct ConferenceRoomLayout<Header: View, Notice: View, Video: View, Panel: View
                     .accessibilityIdentifier(control.id)
                     .accessibilityAddTraits(control.active ? .isSelected : [])
             }
-        }.padding(wide ? 5 : 4)
+        }.padding(wide ? 3 : 2)
             .background {
                 if wide {
                     RoundedRectangle(cornerRadius: 13).fill(ConferenceRoomColors.surface)
@@ -241,17 +243,18 @@ struct ConferenceRoomStage<Visual: View, ScreenShare: View>: View {
     }
 
     var body: some View {
-        VStack(spacing: wide ? 12 : 10) {
+        VStack(spacing: 8) {
             viewBar.frame(maxWidth: wide ? nil : 540)
             GeometryReader { geometry in
                 let width = min(geometry.size.width, wide ? geometry.size.width : 540)
                 ScrollView {
-                    VStack(spacing: wide ? 10 : 8) {
+                    VStack(spacing: stageGap) {
                         if remoteScreen { screenShare() }
                         if mode == .speaker, let featured {
-                            let stageWidth = featuredWidth(width, height: geometry.size.height)
-                            speakerTile(featured, width: stageWidth)
-                            speakerRail(ordered.filter { $0.id != featured.id }, width: stageWidth)
+                            let others = ordered.filter { $0.id != featured.id }
+                            let sizes = speakerSizes(width: width, height: geometry.size.height, others: others.count)
+                            speakerTile(featured, size: sizes.featured)
+                            speakerRail(others, width: sizes.featured.width, tileHeight: sizes.railHeight)
                         } else {
                             gallery(width: width, height: geometry.size.height)
                         }
@@ -314,20 +317,29 @@ struct ConferenceRoomStage<Visual: View, ScreenShare: View>: View {
             .accessibilityAddTraits(mode == option ? .isSelected : [])
     }
 
-    private func featuredWidth(_ width: CGFloat, height: CGFloat) -> CGFloat {
-        guard wide || height < 360 else { return width }
-        let hasRail = attendees.count > 1
-        let reserve: CGFloat = wide ? (hasRail ? 122 : 0) : (hasRail ? 90 : 0)
-        return min(width, max(140, (height - reserve) * 16 / 9))
+    private let railPageSize = 3
+    private var railGap: CGFloat { wide ? 10 : 7 }
+    private var stageGap: CGFloat { wide ? 10 : 8 }
+
+    private func speakerSizes(width: CGFloat, height: CGFloat, others: Int) -> (featured: CGSize, railHeight: CGFloat) {
+        let pagerHeight: CGFloat = others > railPageSize ? 22 + stageGap : 0
+        let available = max(0, height - pagerHeight - (others > 0 ? stageGap : 0))
+        let columns = CGFloat(min(railPageSize, max(2, others)))
+        let columnWidth = max(0, (width - (columns - 1) * railGap) / columns)
+        let railHeight: CGFloat = others == 0 ? 0 : min(wide ? columnWidth * 9 / 16 : columnWidth,
+                                                         max(56, available * (wide ? 0.24 : 0.32)))
+        let featuredHeight = min(width * (wide ? 9 / 16 : 0.8), max(80, available - railHeight))
+        let featuredWidth = min(width, featuredHeight * 16 / 9)
+        return (CGSize(width: featuredWidth, height: featuredHeight), railHeight)
     }
 
-    private func speakerTile(_ attendee: ConferenceRoomAttendee, width: CGFloat) -> some View {
+    private func speakerTile(_ attendee: ConferenceRoomAttendee, size: CGSize) -> some View {
         ZStack {
             backdrop(attendee)
-            avatar(attendee, size: min(wide ? 100 : 62, max(wide ? 60 : 42, width * 0.14)), featured: true)
+            avatar(attendee, size: min(wide ? 100 : 62, max(wide ? 60 : 42, size.width * 0.14)), featured: true)
             visual(attendee, true)
-                .frame(width: width, height: width * 9 / 16).allowsHitTesting(false)
-        }.frame(width: width, height: width * 9 / 16)
+                .frame(width: size.width, height: size.height).allowsHitTesting(false)
+        }.frame(width: size.width, height: size.height)
             .overlay(alignment: .bottomLeading) {
                 HStack(spacing: 7) {
                     Text(attendee.name).lineLimit(1)
@@ -378,23 +390,21 @@ struct ConferenceRoomStage<Visual: View, ScreenShare: View>: View {
             .padding(10)
     }
 
-    @ViewBuilder private func speakerRail(_ people: [ConferenceRoomAttendee], width: CGFloat) -> some View {
+    @ViewBuilder private func speakerRail(_ people: [ConferenceRoomAttendee], width: CGFloat, tileHeight: CGFloat) -> some View {
         if !people.isEmpty {
-            let pageSize = 3
-            let gap: CGFloat = wide ? 10 : 7
-            let columns = min(pageSize, max(2, people.count))
-            let gaps = CGFloat(columns - 1) * gap
-            let railWidth = wide ? min(width, CGFloat(columns) * 82 * 16 / 9 + gaps) : width
+            let columns = min(railPageSize, max(2, people.count))
+            let gaps = CGFloat(columns - 1) * railGap
+            let railWidth = wide ? min(width, CGFloat(columns) * tileHeight * 16 / 9 + gaps) : width
             let tileWidth = max(0, (railWidth - gaps) / CGFloat(columns))
-            let pages = stride(from: 0, to: people.count, by: pageSize).map { start in
-                Array(people[start..<min(start + pageSize, people.count)])
+            let pages = stride(from: 0, to: people.count, by: railPageSize).map { start in
+                Array(people[start..<min(start + railPageSize, people.count)])
             }
             ScrollView(.horizontal) {
                 HStack(spacing: 0) {
                     ForEach(Array(pages.enumerated()), id: \.offset) { index, page in
-                        HStack(spacing: gap) {
+                        HStack(spacing: railGap) {
                             ForEach(page) { person in
-                                tile(person, width: tileWidth, height: wide ? min(92, tileWidth * 9 / 16) : tileWidth, gallery: false)
+                                tile(person, width: tileWidth, height: tileHeight, gallery: false)
                             }
                         }.frame(width: railWidth).id(index)
                     }
@@ -426,11 +436,13 @@ struct ConferenceRoomStage<Visual: View, ScreenShare: View>: View {
         let fittingWidth = max(90, (height - CGFloat(rows - 1) * gap) * 16 / (9 * CGFloat(rows)))
         let proposedWidth = (width - CGFloat(columns - 1) * gap) / CGFloat(columns)
         let tileWidth = wide ? min(proposedWidth, fittingWidth) : proposedWidth
+        let rowHeight = (height - CGFloat(rows - 1) * gap) / CGFloat(rows)
+        let tileHeight = wide ? tileWidth * 9 / 16 : min(tileWidth, max(tileWidth * 9 / 16, rowHeight))
         return VStack(spacing: gap) {
             ForEach(Array(stride(from: 0, to: ordered.count, by: columns)), id: \.self) { offset in
                 HStack(spacing: gap) {
                     ForEach(ordered[offset..<min(offset + columns, ordered.count)]) { attendee in
-                        tile(attendee, width: tileWidth, height: tileWidth * 9 / 16, gallery: true)
+                        tile(attendee, width: tileWidth, height: tileHeight, gallery: true)
                     }
                 }
             }

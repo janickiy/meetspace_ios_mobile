@@ -221,6 +221,13 @@ import UIKit
         let app = launch(["-demo"])
         let first = app.buttons["meeting.1"]
         XCTAssertTrue(first.waitForExistence(timeout: 5))
+        let bar = app.descendants(matching: .any).matching(identifier: "workspaceTabBar").firstMatch
+        XCTAssertTrue(bar.exists)
+        for id in ["tab.meetings", "tab.messages", "tab.profile"] {
+            let item = app.buttons[id]
+            XCTAssertGreaterThanOrEqual(item.frame.height, 44)
+            XCTAssertEqual(item.frame.midY, bar.frame.midY, accuracy: 2)
+        }
         capture(app, name: "workspace-meetings")
         let active = app.buttons["Активные"]
         reveal(active, in: app)
@@ -564,6 +571,39 @@ import UIKit
         capture(app, name: "beta-audio-speaker-signals")
     }
 
+    func testAudioVolumeSlidersDragAndKeepTheirLevels() throws {
+        let app = launch()
+        login(app)
+        openProfile(in: app)
+        selectAccountSection("audio", in: app)
+        let ids = ["audioMicrophoneVolume", "audioVolume.speaker", "audioVolume.signals"]
+        var levels: [String: String] = [:]
+        for (index, id) in ids.enumerated() {
+            let slider = app.sliders[id]
+            revealEntireText(slider, in: app)
+            XCTAssertTrue(slider.isEnabled)
+            let target = 0.30 + CGFloat(index) * 0.15
+            let start = slider.coordinate(withNormalizedOffset: CGVector(dx: 0.75, dy: 0.5))
+            start.tap()
+            let tapped = try XCTUnwrap(slider.value as? String)
+            let tappedPercent = try XCTUnwrap(Int(tapped.filter(\.isNumber)))
+            XCTAssertEqual(Double(tappedPercent), 75, accuracy: 5)
+            start.press(forDuration: 0.1, thenDragTo: slider.coordinate(withNormalizedOffset: CGVector(dx: target, dy: 0.5)))
+            let level = try XCTUnwrap(slider.value as? String)
+            let percent = try XCTUnwrap(Int(level.filter(\.isNumber)))
+            XCTAssertEqual(Double(percent), Double(target * 100), accuracy: 5)
+            levels[id] = level
+        }
+        selectAccountSection("video", in: app)
+        selectAccountSection("audio", in: app)
+        for id in ids {
+            let slider = app.sliders[id]
+            revealEntireText(slider, in: app)
+            XCTAssertEqual(slider.value as? String, levels[id])
+        }
+        capture(app, name: "audio-adjusted-levels")
+    }
+
     private func revealDemoLink(_ app: XCUIApplication) -> XCUIElement {
         let link = app.buttons["openDemo"]
         for _ in 0..<4 where !link.isHittable { app.swipeUp() }
@@ -622,11 +662,12 @@ import UIKit
     }
 
     private func contentViewport(for element: XCUIElement, in app: XCUIApplication) -> CGRect {
-        contentViewport(identifier: element.identifier, label: element.label, in: app)
+        contentViewport(identifier: element.identifier, label: element.label, elementFrame: element.frame, in: app)
     }
 
-    private func contentViewport(identifier id: String, label: String, in app: XCUIApplication) -> CGRect {
-        var frame = app.frame
+    private func contentViewport(identifier id: String, label: String, elementFrame: CGRect?, in app: XCUIApplication) -> CGRect {
+        // The foreground window can occupy the Duo's inner display while the application frame describes the outer one.
+        var frame = app.windows.firstMatch.frame
         if app.navigationBars.firstMatch.exists {
             let top = app.navigationBars.firstMatch.frame.maxY
             frame = frame.intersection(CGRect(x: frame.minX, y: top, width: frame.width, height: max(0, frame.maxY - top)))
@@ -635,6 +676,9 @@ import UIKit
             frame.size.height = max(0, min(frame.maxY, app.buttons["tab.profile"].frame.minY) - frame.minY)
         }
         for scroll in app.scrollViews.allElementsBoundByIndex where scroll.frame.width > 0 && scroll.frame.height > 0 {
+            // SwiftUI can expose the detail controls under both scroll views of a split settings page.
+            if let elementFrame, !elementFrame.isEmpty,
+               elementFrame.maxX <= scroll.frame.minX || elementFrame.minX >= scroll.frame.maxX { continue }
             let child = id.isEmpty
                 ? scroll.descendants(matching: .any).matching(NSPredicate(format: "label == %@", label)).firstMatch
                 : scroll.descendants(matching: .any).matching(identifier: id).firstMatch
@@ -836,7 +880,7 @@ import UIKit
         }
         func contrastViewport(_ issue: AuditFinding) -> CGRect? {
             guard issue.auditType == .contrast, issue.frame != nil else { return nil }
-            return self.contentViewport(identifier: issue.identifier, label: issue.label, in: app)
+            return self.contentViewport(identifier: issue.identifier, label: issue.label, elementFrame: issue.frame, in: app)
         }
         func audit(_ screen: String) throws {
             var deferred: [(Int, String)] = []
@@ -1339,10 +1383,17 @@ import UIKit
         app.buttons["connectServer"].tap()
         let address = app.textFields["serverURL"]
         XCTAssertTrue(address.waitForExistence(timeout: 5))
-        address.tap(); address.typeText("https://fixture.example")
-        reveal(app.buttons["checkServer"], in: app)
-        app.buttons["checkServer"].tap()
+        address.tap()
+        address.typeText("https://fixture.example")
+        XCTAssertEqual(address.value as? String, "https://fixture.example")
+        address.typeText("\n")
         let next = app.buttons["Перейти ко входу"]
+        if !next.waitForExistence(timeout: 2) {
+            // On the Duo, Return can dismiss the keyboard before the visible check button is activated.
+            let verify = app.buttons["checkServer"]
+            revealEntireText(verify, in: app)
+            verify.tap()
+        }
         XCTAssertTrue(next.waitForExistence(timeout: 5)); reveal(next, in: app); next.tap()
     }
 
@@ -1608,7 +1659,9 @@ import UIKit
     }
 
     private func joinConference(_ app: XCUIApplication) {
-        app.buttons["conferenceJoin"].tap()
+        let join = app.buttons["conferenceJoin"]
+        revealEntireText(join, in: app)
+        join.tap()
         let microphone = app.buttons["conferenceMic"]
         XCTAssertTrue(microphone.waitForExistence(timeout: 10))
         let enabled = XCTNSPredicateExpectation(predicate: NSPredicate(format: "enabled == true"), object: microphone)
@@ -1636,6 +1689,11 @@ import UIKit
         let app = launch(["-conference-three-participants"])
         createConference(app, title: "Встреча команды")
         capture(app, name: "stage04-prejoin")
+        let devices = app.buttons["prejoinDevices"]
+        revealEntireText(devices, in: app)
+        devices.tap()
+        XCTAssertTrue(app.buttons["prejoinDevices.close"].waitForExistence(timeout: 5))
+        app.buttons["prejoinDevices.close"].tap()
         joinConference(app)
 
         let gallery = app.buttons["conferenceLayoutGallery"]
@@ -1662,6 +1720,9 @@ import UIKit
             XCTAssertEqual(guestFrame.minX, featured.frame.minX, accuracy: 2)
             XCTAssertEqual(ownFrame.maxX, featured.frame.maxX, accuracy: 2)
         }
+        let controls = app.buttons["conferenceMic"].frame
+        XCTAssertLessThanOrEqual(app.frame.maxY - controls.maxY, 26)
+        XCTAssertGreaterThanOrEqual(controls.minY, ownFrame.maxY)
         capture(app, name: "conference-speaker")
 
         let microphone = app.buttons["conferenceMic"]
@@ -2098,6 +2159,17 @@ extension FoundationUITests {
         let details = app.buttons["conference.33333333-3333-4333-8333-333333333333.details"]
         reveal(details, in: app); details.tap()
         assertActions(["call", "join", "invite", "folder", "materials", "finish"].map { "meetingActions." + $0 }, in: app)
+        capture(app, name: "live-meeting-actions")
+        app.buttons["meetingActions.invite"].tap()
+        let url = app.staticTexts["meetingInvite.url"]
+        XCTAssertTrue(url.waitForExistence(timeout: 5))
+        XCTAssertEqual(url.label, "https://fixture.example/i/" + String(repeating: "a", count: 32))
+        let copy = app.buttons["meetingInvite.copy"]
+        reveal(copy, in: app)
+        copy.tap()
+        XCTAssertEqual(copy.label, "Ссылка скопирована")
+        capture(app, name: "live-meeting-invitation")
+        app.buttons["meetingInvite.close"].tap()
         let join = app.buttons["meetingActions.join"], leave = app.buttons["meetingActions.leave"]
         join.tap()
         XCTAssertTrue(leave.waitForExistence(timeout: 5))
@@ -2111,6 +2183,40 @@ extension FoundationUITests {
         let call = app.buttons["meetingActions.call"]
         XCTAssertTrue(call.waitForExistence(timeout: 5)); call.tap()
         XCTAssertTrue(app.buttons["conferenceJoin"].waitForExistence(timeout: 10))
+    }
+
+    func testWideMeetingPrejoinAndSpeakerStage() throws {
+        let originalOrientation = XCUIDevice.shared.orientation
+        XCUIDevice.shared.orientation = .portrait
+        defer { XCUIDevice.shared.orientation = originalOrientation }
+        let app = launch(["-conference-three-participants"])
+        createConference(app, title: "Встреча команды")
+        let window = app.windows.firstMatch
+        if window.frame.width < 840 {
+            XCUIDevice.shared.orientation = .landscapeLeft
+            let deadline = Date().addingTimeInterval(4)
+            while window.frame.width < 840 && Date() < deadline { Thread.sleep(forTimeInterval: 0.1) }
+        }
+        guard window.frame.width >= 840, window.frame.height >= 450 else {
+            throw XCTSkip("This layout requires the expanded display, current window \(window.frame).")
+        }
+        let bar = app.descendants(matching: .any).matching(identifier: "workspaceTabBar").firstMatch
+        let tab = app.buttons["tab.meetings"]
+        XCTAssertEqual(tab.frame.midY, bar.frame.midY, accuracy: 2)
+        capture(app, name: "wide-prejoin")
+        joinConference(app)
+        let speaker = app.buttons["conferenceLayoutSpeaker"]
+        speaker.tap()
+        let featured = app.descendants(matching: .any).matching(identifier: "conferenceFeaturedParticipant").firstMatch
+        let tile = app.buttons["conferenceParticipantTile.44444444-4444-4444-8444-444444444446"]
+        let mic = app.buttons["conferenceMic"]
+        XCTAssertTrue(tile.waitForExistence(timeout: 5))
+        XCTAssertGreaterThan(featured.frame.height, tile.frame.height)
+        XCTAssertEqual(featured.frame.maxY, tile.frame.minY - 10, accuracy: 2)
+        XCTAssertLessThan(mic.frame.minY - tile.frame.maxY, 30)
+        XCTAssertLessThanOrEqual(window.frame.maxY - mic.frame.maxY, 26)
+        capture(app, name: "wide-conference-speaker")
+        leaveConference(app)
     }
 
     func testMeetingActionsMatchOrganizerAndParticipantRoles() {

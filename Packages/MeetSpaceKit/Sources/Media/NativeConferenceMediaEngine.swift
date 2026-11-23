@@ -76,6 +76,8 @@ import MeetSpaceCore
                 receivedVideo: { [weak self] track, reference in self?.receive(track, reference: reference) },
                 removedVideo: { [weak self] id in self?.removeVideo(id) })
             self.peer = peer
+            NotificationCenter.default.addObserver(self, selector: #selector(applyVolumeLevels(_:)),
+                                                   name: DeviceAudioPreferences.levelsDidChange, object: nil)
             peer.videoSource.adaptOutputFormat(toWidth: Int32(configuration.maxWidth),
                                                height: Int32(configuration.maxHeight), fps: Int32(configuration.maxFrameRate))
             enableAudioIfAllowed()
@@ -232,7 +234,7 @@ import MeetSpaceCore
         if session.isInputGainSettable { try session.setInputGain(preferences.inputGain) }
         enableAudioIfAllowed()
         do {
-            try peer.setMicrophoneEnabled(true); microphoneEnabled = true; captureChanged()
+            try peer.setMicrophoneEnabled(true, inputGain: preferences.inputGain); microphoneEnabled = true; captureChanged()
         } catch {
             peer.audioTrack.isEnabled = false; try? peer.setMicrophoneEnabled(false)
             microphoneEnabled = false; captureChanged()
@@ -337,6 +339,7 @@ import MeetSpaceCore
 
     private func finishClose() async {
         defer { AudioSessionUse.endConference(callAudioOwner) }
+        NotificationCenter.default.removeObserver(self, name: DeviceAudioPreferences.levelsDidChange, object: nil)
         pathMonitor?.cancel(); pathMonitor = nil
         peer?.audioTrack.isEnabled = false; peer?.videoTrack.isEnabled = false
         microphoneEnabled = false; cameraEnabled = false
@@ -404,6 +407,19 @@ import MeetSpaceCore
     private func enableAudioIfAllowed() {
         RTCAudioSession.sharedInstance().isAudioEnabled =
             configuration?.audioActivation == .callKit ? CallAudioSessionBridge.isActive : true
+    }
+
+    @objc private func applyVolumeLevels(_ notification: Notification? = nil) {
+        guard !closed, let peer else { return }
+        let preferences = DeviceAudioPreferences.load()
+        peer.setSpeakerVolume(preferences.speakerVolume)
+        guard microphoneEnabled else { return }
+        // A zero level sends silence even when the input route has automatic hardware gain.
+        peer.audioTrack.isEnabled = preferences.inputGain > 0
+        let session = AVAudioSession.sharedInstance()
+        if session.isInputGainSettable, session.inputGain != preferences.inputGain {
+            try? session.setInputGain(preferences.inputGain)
+        }
     }
 
     private func startCapture(_ capturer: RTCCameraVideoCapturer) async throws {
@@ -503,6 +519,8 @@ extension NativeConferenceMediaEngine: RTCAudioSessionDelegate {
                 self.microphoneGeneration = UUID(); self.peer?.audioTrack.isEnabled = false
                 try? self.peer?.setMicrophoneEnabled(false)
                 self.microphoneEnabled = false; self.captureChanged()
+            } else {
+                self.applyVolumeLevels()
             }
             self.emitRoute()
         }
