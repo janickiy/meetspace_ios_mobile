@@ -8,64 +8,72 @@ struct LiveMeetingDetails: View {
     let zone: TimeZone
     let workspace: ConferenceWorkspace
     let recordings: RecordingsModel?
-    let openRecording: () -> Void
-    @State private var confirmingFinish = false
-    @Environment(\.dismiss) private var dismiss
+    let folders: FoldersModel?
+    let openRecording: (UUID) -> Void
+    let openCall: () -> Void
+    let close: () -> Void
+    @State var showingMaterials: Bool
+    @State private var showingFolders = false
+    @State private var participant: ConferenceParticipant?
+    @State private var loadingMembership = true
+    @State private var membershipError: String?
+    @State private var transitionError: String?
 
     var body: some View {
-        NavigationStack {
-            ScrollView {
-                VStack(alignment: .leading, spacing: 16) {
-                    Text(tr(item.statusTitle)).font(MSTheme.font(11)).foregroundStyle(MSTheme.muted)
-                        .padding(6).background(MSTheme.surfaceSecondary, in: RoundedRectangle(cornerRadius: 5))
-                    Text(verbatim: item.title).font(MSTheme.font(21, weight: .semibold)).accessibilityAddTraits(.isHeader)
-                    VStack(alignment: .leading, spacing: 6) {
-                        if let date = item.date {
-                            Text(calendarText(date, format: "d MMMM yyyy · HH:mm", zone: zone))
-                        }
-                        if let duration = item.duration { Text("\(duration) " + tr("мин")) }
-                        Text(tr(item.mine ? "Вы организатор" : "Вы участник"))
-                        if item.value.waitingRoomEnabled { Text(tr("Зал ожидания включён")) }
-                    }.font(MSTheme.font(13)).foregroundStyle(MSTheme.muted)
-                    if item.status == .past {
-                        if let recordings { materials(recordings) }
-                    } else {
-                        Button(tr(item.status == .active ? "Подключиться" : "Открыть встречу")) {
-                            dismiss()
-                            Task { await workspace.join(item.value) }
-                        }.buttonStyle(MSButtonStyle())
-                        if let url = invitation {
-                            ShareLink(item: url) { Label(tr("Пригласить по ссылке"), systemImage: "link") }
-                                .buttonStyle(MSButtonStyle(primary: false))
-                        }
-                        if item.mine {
-                            Button(tr(finishTitle), role: .destructive) { confirmingFinish = true }
-                                .frame(maxWidth: .infinity, minHeight: 44)
-                        }
-                    }
-                }.padding(20).frame(maxWidth: 560).frame(maxWidth: .infinity)
-            }.navigationTitle(tr(item.status == .past ? "Материалы встречи" : "О встрече")).msInlineTitle()
-                .toolbar {
-                    ToolbarItem(placement: .cancellationAction) {
-                        IconButton("xmark", label: "Готово") { dismiss() }.disabled(recordings?.loading == true)
-                    }
+        Group {
+            if showingMaterials, let recordings {
+                WorkspaceFormSheet(title: "Материалы встречи", identifier: "meetingMaterials", centered: true, close: close) {
+                    Button(tr("О встрече")) { showingMaterials = false }
+                    Text(verbatim: item.title).font(MSTheme.font(18, weight: .semibold))
+                    materials(recordings)
                 }
-                .interactiveDismissDisabled(recordings?.loading == true)
-                .confirmationDialog(tr(item.status == .active ? "Завершить встречу для всех участников?" : "Отменить встречу?"),
-                                    isPresented: $confirmingFinish, titleVisibility: .visible) {
-                    Button(tr(finishTitle), role: .destructive) {
-                        dismiss()
-                        Task { await workspace.finish(item.value) }
-                    }
-                }
+            } else {
+                MeetingActionCard(item: item, scheduled: item.value.scheduledAt, started: item.value.startedAt,
+                    finished: item.value.finishedAt, zone: zone, waitingRoom: item.value.waitingRoomEnabled,
+                    membership: MeetingMembership(participant), loadingMembership: loadingMembership && !item.value.isClosed,
+                    busy: workspace.busy, membershipFailed: membershipError != nil, error: membershipError ?? transitionError,
+                    retry: membershipError == nil ? nil : { Task { await loadMembership() } },
+                    invitation: invitation, call: openCall, toggleMembership: { Task { await toggleMembership() } },
+                    folder: folders == nil ? nil : { showingFolders = true },
+                    materials: recordings == nil ? nil : { showingMaterials = true }, finish: {
+                        Task {
+                            if await workspace.finish(item.value) { close() }
+                            else { transitionError = workspace.error }
+                        }
+                    }, close: close)
+                    .task(id: item.id) { if !item.value.isClosed { await loadMembership() } }
+            }
+        }.sheet(isPresented: $showingFolders) {
+            if let folders { WorkspaceFolderPicker(model: folders, kind: .conference, id: item.id, title: item.title) }
         }
     }
 
-    private var finishTitle: String { item.status == .active ? "Завершить встречу" : "Отменить встречу" }
-
     private var invitation: URL? {
-        guard let code = try? ConferenceInviteGateway.inviteCode(from: item.value.inviteCode, origin: workspace.repository.origin) else { return nil }
+        let source = item.value.inviteCode.isEmpty ? item.value.inviteUrl : item.value.inviteCode
+        guard let code = try? ConferenceInviteGateway.inviteCode(from: source, origin: workspace.repository.origin) else { return nil }
         return workspace.repository.origin.url.appendingPathComponent("i").appendingPathComponent(code)
+    }
+
+    private func loadMembership() async {
+        loadingMembership = true
+        transitionError = nil
+        defer { loadingMembership = false }
+        do {
+            let value = try await workspace.repository.selfParticipant(item.id)
+            if !Task.isCancelled { participant = value; membershipError = nil }
+        } catch APIError.httpStatus(404) {
+            if !Task.isCancelled { participant = nil; membershipError = nil }
+        } catch {
+            if !Task.isCancelled { participant = nil; membershipError = userMessage(error) }
+        }
+    }
+
+    private func toggleMembership() async {
+        guard !loadingMembership, !workspace.busy else { return }
+        do {
+            participant = try await workspace.updateMembership(in: item.value, leave: participant?.canParticipate == true || participant?.isWaiting == true)
+            membershipError = nil
+        } catch { membershipError = userMessage(error) }
     }
 
     private func materials(_ model: RecordingsModel) -> some View {
@@ -75,14 +83,14 @@ struct LiveMeetingDetails: View {
                 Text(tr(error)).foregroundStyle(MSTheme.danger)
                 Button(tr("Повторить")) { Task { await loadMaterials(model) } }
             } else if let rows = model.conferenceItems[item.id], rows.isEmpty {
-                Text(tr(item.cancelled ? "Встреча была отменена. Записей и материалов нет." : "Встреча завершена без записи."))
+                Text(tr(item.cancelled ? "Встреча была отменена. Записей и материалов нет." : item.value.isClosed ? "Встреча завершена без записи." : "Для этой встречи пока нет записей."))
                     .font(MSTheme.font(13)).foregroundStyle(MSTheme.muted)
             }
             ForEach(model.conferenceItems[item.id] ?? []) { recording in
                 Button {
                     Task {
                         await model.select(RecordingLibraryItem(conference: item.value, recording: recording))
-                        if model.selected?.id == recording.id { openRecording() }
+                        if model.selected?.id == recording.id { openRecording(recording.id) }
                     }
                 } label: {
                     HStack {

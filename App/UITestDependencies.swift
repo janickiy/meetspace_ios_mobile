@@ -249,20 +249,53 @@ enum UITestDependencies {
         private var roomRecording: [String: Any]?
         private var messages: [String: [[String: Any]]] = [:]
         private var groups: [String: [String: Any]] = [:]
+        private var directNotifications: [String: Bool] = [:]
+        private var clearedDirectCount: [String: Int] = [:]
+        private var directHidden: Set<String> = []
         private var profileNames: [String: String] = [:]
         private var deletedAccounts: Set<String> = []
         private var folders: [[String: Any]] = []
-        private var folderMembers: [String: Set<String>] = [:]
+        private struct FolderMember: Hashable {
+            let kind: String
+            let id: String
+        }
+        private var folderMembers: [String: Set<FolderMember>] = [:]
+        init() {
+            if ProcessInfo.processInfo.arguments.contains("-meeting-actions-fixture") {
+                let code = String(repeating: "a", count: 32)
+                conference = ["id": conferenceID, "ownerId": first, "title": "Проверка действий со встречей",
+                              "inviteCode": code, "inviteUrl": "https://fixture.example/i/" + code,
+                              "status": "active", "waitingRoomEnabled": false, "scheduledAt": "2026-11-05T10:00:00Z",
+                              "startedAt": "2026-11-05T10:00:00Z", "createdAt": "2026-11-05T09:00:00Z",
+                              "updatedAt": "2026-11-05T10:00:00Z"]
+            }
+            if ProcessInfo.processInfo.arguments.contains("-chat-header-fixture") {
+                messages[direct] = [[
+                    "id": "88888888-8888-4888-8888-888888888888", "sequence": "1", "conversationId": direct,
+                    "senderId": peer, "senderName": "Тестовый собеседник", "clientRequestId": UUID().uuidString,
+                    "text": "Сообщение для проверки истории", "version": 1, "createdAt": "2026-11-05T10:00:00Z",
+                    "updatedAt": "2026-11-05T10:00:00Z", "attachments": []
+                ]]
+                folders = [["id": "77777777-7777-4777-8777-777777777777", "name": "Проверка", "position": 0,
+                            "createdAt": "2026-11-06T10:00:00Z", "updatedAt": "2026-11-06T10:00:00Z",
+                            "itemCount": 0, "conversationCount": 0, "conferenceCount": 0]]
+            }
+        }
         private func user(_ id: String) -> [String: Any] {
             ["id": id, "email": id == second ? "second@fixture.example" : "first@fixture.example",
              "displayName": profileNames[id] ?? (id == second ? "Второй аккаунт" : "Первый аккаунт"), "isAdmin": false,
              "createdAt": "2026-11-05T10:00:00Z", "updatedAt": "2026-11-05T10:00:00Z"]
         }
-        private func conversation(_ id: String) -> [String: Any] {
+        private func conversation(_ id: String, account: String? = nil) -> [String: Any] {
             if let group = groups[id] { return group }
+            let user = account ?? first
+            let preview: String
+            if let messages = messages[direct] {
+                preview = messages.dropFirst(clearedDirectCount[user] ?? 0).last?["text"] as? String ?? ""
+            } else { preview = "Проверка интерфейса чата" }
             return ["id": direct, "type": "direct", "peer": ["id": peer, "displayName": "Тестовый собеседник"],
-                    "description": "", "updatedAt": "2026-11-05T10:00:00Z", "preview": "Проверка интерфейса чата",
-                    "unreadCount": 0, "notificationsEnabled": true]
+                    "description": "", "updatedAt": "2026-11-05T10:00:00Z", "preview": preview,
+                    "unreadCount": 0, "notificationsEnabled": directNotifications[user] ?? true]
         }
         private func response(_ data: [String: Any], status: Int = 200, headers: [String: String] = [:]) throws -> NetworkResponse {
             var headers = headers; headers["content-type"] = "application/json"
@@ -426,9 +459,13 @@ enum UITestDependencies {
                 if path.hasSuffix("/messages") { return try response(["status": "success", "items": conferenceMessages, "unreadCount": 0]) }
             }
             if path == "/api/v1/conversations" {
-                return try response(["items": [conversation(direct)] + Array(groups.values), "unreadCount": 0])
+                let personal = directHidden.contains(selected) ? [] : [conversation(direct, account: selected)]
+                return try response(["items": personal + Array(groups.values), "unreadCount": 0])
             }
-            if path.hasSuffix("/conversations/direct") { return try response(["status": "ok", "item": conversation(direct)], status: 201) }
+            if path.hasSuffix("/conversations/direct") {
+                directHidden.remove(selected)
+                return try response(["status": "ok", "item": conversation(direct, account: selected)], status: 201)
+            }
             if path.hasSuffix("/conversations/group"), request.httpMethod == "POST" {
                 let group: [String: Any] = ["id": groupID, "type": "group", "name": body?["name"] ?? "Группа",
                     "description": body?["description"] ?? "", "memberCount": 2, "myRole": "owner",
@@ -438,7 +475,21 @@ enum UITestDependencies {
             }
             if parts.count >= 4, parts[2] == "conversations" {
                 let id = parts[3]
-                if parts.count == 4 { return try response(["status": "ok", "item": conversation(id)]) }
+                if parts.count == 4 { return try response(["status": "ok", "item": conversation(id, account: selected)]) }
+                if id == direct, path.hasSuffix("/preferences"), request.httpMethod == "PATCH" {
+                    guard let enabled = body?["notificationsEnabled"] as? Bool else { return NetworkResponse(status: 400) }
+                    directNotifications[selected] = enabled
+                    return try response(["status": "success", "item": conversation(id, account: selected)])
+                }
+                if id == direct, request.httpMethod == "POST", path.hasSuffix("/clear-history") || path.hasSuffix("/hide") {
+                    let cutoff = messages[id]?.count ?? 0
+                    clearedDirectCount[selected] = cutoff
+                    if path.hasSuffix("/hide") {
+                        directHidden.insert(selected)
+                        return try response(["status": "success", "hidden": true, "historyClearedThrough": cutoff])
+                    }
+                    return try response(["status": "success", "item": conversation(id, account: selected)])
+                }
                 if path.hasSuffix("/members") {
                     return try response(["status": "ok", "items": [
                         ["id": selected, "displayName": user(selected)["displayName"]!, "role": "owner"],
@@ -454,7 +505,8 @@ enum UITestDependencies {
                     return try response(["status": "ok", "item": message], status: 201)
                 }
                 if path.hasSuffix("/messages") || path.hasSuffix("/messages/search") {
-                    return try response(["status": "ok", "items": messages[id] ?? [], "unreadCount": 0])
+                    let visible = (messages[id] ?? []).dropFirst(id == direct ? clearedDirectCount[selected] ?? 0 : 0)
+                    return try response(["status": "ok", "items": Array(visible), "unreadCount": 0])
                 }
             }
             return NetworkResponse(status: 404)
@@ -519,6 +571,14 @@ enum UITestDependencies {
                         "itemCount": 0, "conversationCount": 0, "conferenceCount": 0]
                     folders.append(folder); return try response(["item": folder], status: 201)
                 }
+                if let itemID = query["itemId"], let kind = query["itemKind"] {
+                    let member = FolderMember(kind: kind, id: itemID)
+                    return try response(["items": folders.map { folder in
+                        var result = folder
+                        result["contains"] = folderMembers[folder["id"] as? String ?? ""]?.contains(member) == true
+                        return result
+                    }])
+                }
                 return try response(["items": folders])
             }
             if path == "/api/v1/folders/order", let ids = body?["ids"] as? [String] {
@@ -529,7 +589,7 @@ enum UITestDependencies {
                 return try response(["items": folders])
             }
             if path == "/api/v1/folder-items" {
-                let included = folderMembers[query["folderId"] ?? ""]?.contains(direct) == true
+                let included = folderMembers[query["folderId"] ?? ""]?.contains(FolderMember(kind: "conversation", id: direct)) == true
                 return try response(["items": [["type": "conversation", "item": conversation(direct), "inFolder": included]]])
             }
             if parts.count >= 4, parts[2] == "folders", let index = folders.firstIndex(where: { $0["id"] as? String == parts[3] }) {
@@ -538,13 +598,20 @@ enum UITestDependencies {
                     if method == "DELETE" { folders.remove(at: index); folderMembers[id] = nil; return try response(["status": "success"]) }
                     if method == "PATCH" { folders[index]["name"] = body?["name"] }
                 } else if parts.count == 5 {
-                    let items: [[String: Any]] = folderMembers[id]?.contains(direct) == true ? [["type": "conversation", "item": conversation(direct)]] : []
+                    let items: [[String: Any]] = (folderMembers[id] ?? []).sorted { $0.id < $1.id }.compactMap { member in
+                        if member.kind == "conversation" { return ["type": member.kind, "item": conversation(member.id)] }
+                        guard let conference, conference["id"] as? String == member.id else { return nil }
+                        return ["type": member.kind, "item": conference]
+                    }
                     return try response(["items": items])
                 } else if parts.count == 7 {
-                    if method == "PUT" { folderMembers[id, default: []].insert(parts[6]) }
-                    else { folderMembers[id]?.remove(parts[6]) }
-                    let count = folderMembers[id]?.count ?? 0
-                    folders[index]["itemCount"] = count; folders[index]["conversationCount"] = count
+                    let member = FolderMember(kind: parts[5], id: parts[6])
+                    if method == "PUT" { folderMembers[id, default: []].insert(member) }
+                    else { folderMembers[id]?.remove(member) }
+                    let members = folderMembers[id] ?? []
+                    folders[index]["itemCount"] = members.count
+                    folders[index]["conversationCount"] = members.filter { $0.kind == "conversation" }.count
+                    folders[index]["conferenceCount"] = members.filter { $0.kind == "conference" }.count
                 }
                 return try response(["item": folders[index]])
             }

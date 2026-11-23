@@ -141,6 +141,20 @@ public struct MessagingRepository: Sendable {
         return try decodeJSON(ItemResponse<ReadState>.self, from: await client.request("PUT", path: scope(conversation) + ["chat", "read"],
             body: WireJSON.encoder().encode(Body(messageId: message)))).item
     }
+    public func setNotifications(_ id: UUID, enabled: Bool) async throws -> Conversation {
+        struct Body: Encodable { let notificationsEnabled: Bool }
+        let data = try await client.request("PATCH", path: scope(id) + ["preferences"],
+                                            body: WireJSON.encoder().encode(Body(notificationsEnabled: enabled)))
+        let item = try decodeJSON(ItemResponse<Conversation>.self, from: data).item
+        guard item.id == id, item.notificationsEnabled == enabled else { throw APIError.invalidResponse }
+        return item
+    }
+    public func clearDirectHistory(_ id: UUID) async throws {
+        _ = try await client.request("POST", path: scope(id) + ["clear-history"])
+    }
+    public func hideDirectConversation(_ id: UUID) async throws {
+        _ = try await client.request("POST", path: scope(id) + ["hide"])
+    }
     public func members(_ conversation: UUID) async throws -> [GroupMember] {
         try decodeJSON(ItemsResponse<GroupMember>.self, from: await client.request("GET", path: scope(conversation) + ["members"])).items
     }

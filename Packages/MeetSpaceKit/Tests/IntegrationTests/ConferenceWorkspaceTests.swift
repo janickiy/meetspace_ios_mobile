@@ -113,6 +113,29 @@ private func conferenceWorkspaceWait(_ condition: @escaping @Sendable () async -
     }
     throw APIError.timeout
 }
+@Test @MainActor func meetingMembershipActionsDoNotOpenACall() async throws {
+    let backend = ConferenceWorkspaceBackend()
+    let workspace = try conferenceWorkspace(backend)
+    let room = await backend.conference()
+    let member = try await workspace.updateMembership(in: room, leave: false)
+    #expect(member.canParticipate)
+    #expect(workspace.call == nil)
+    let departed = try await workspace.updateMembership(in: room, leave: true)
+    #expect(departed.status == "left")
+    #expect(workspace.call == nil)
+    #expect(await backend.count("/join") == 1)
+    #expect(await backend.count("/leave") == 1)
+}
+
+@Test @MainActor func meetingDetailsKeepFailedFinishRecoverable() async throws {
+    let backend = ConferenceWorkspaceBackend()
+    let workspace = try conferenceWorkspace(backend)
+    let room = await backend.conference()
+    #expect(await workspace.finish(room) == false)
+    #expect(await backend.count("/finish") == 1)
+    #expect(workspace.error != nil && !workspace.busy)
+}
+
 @Test @MainActor func conferenceWorkspaceRepeatedDismissPreservesLateLeaveBarrier() async throws {
     let backend = ConferenceWorkspaceBackend(), gate = ConferenceWorkspaceGate()
     let workspace = try conferenceWorkspace(backend), room = await backend.conference()

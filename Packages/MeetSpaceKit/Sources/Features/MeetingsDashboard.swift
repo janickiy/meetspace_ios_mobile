@@ -30,6 +30,7 @@ struct MeetingsDashboard<Value: Identifiable>: View {
     @State private var draft = MeetingListFilter()
     @State private var editingFilters = false
     @Environment(\.dynamicTypeSize) private var typeSize
+    @Environment(\.horizontalSizeClass) private var sizeClass
     @Environment(\.colorScheme) private var scheme
 
     private var results: [MeetingListItem<Value>] {
@@ -50,9 +51,9 @@ struct MeetingsDashboard<Value: Identifiable>: View {
                 WorkspaceBell(action: actions.notifications)
             }
             GeometryReader { proxy in
-                let wide = proxy.size.width >= 780 && !typeSize.isAccessibilitySize
+                let wide = WorkspaceLayout.usesColumns(width: proxy.size.width, sizeClass: sizeClass, typeSize: typeSize)
                 let large = wide && proxy.size.width >= 1080
-                let inset: CGFloat = wide ? 54 : (proxy.size.width < 360 ? 12 : 16)
+                let inset: CGFloat = wide && proxy.size.width >= 780 ? 54 : (proxy.size.width < 360 ? 12 : 16)
                 let width = min(1200, max(0, proxy.size.width - 2 * inset))
                 ScrollView {
                     VStack(alignment: .leading, spacing: 0) {
@@ -60,7 +61,7 @@ struct MeetingsDashboard<Value: Identifiable>: View {
                         if wide { Rectangle().fill(MSTheme.line).frame(height: 1).padding(.top, 24) }
                         shortcuts(wide: wide).padding(.top, 8)
                         sectionHeading(wide: wide).padding(.top, 24)
-                        VStack(alignment: .leading, spacing: 0) { controls(wide: wide, large: large, width: width) }.padding(.top, 14)
+                        VStack(alignment: .leading, spacing: 0) { controls(wide: wide && width >= 650, large: large, width: width) }.padding(.top, 14)
                         if let error { Text(tr(error)).foregroundStyle(MSTheme.danger).padding(.top, 12) }
                         let filtered = results
                         Text(tr(tab.meetingsCaption) + " · \(filtered.count)").font(MSTheme.font(wide ? 11 : 10))

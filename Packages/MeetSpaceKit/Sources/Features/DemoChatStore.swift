@@ -42,6 +42,27 @@ import Observation
 
     private(set) var history: [Int: [Message]]
     private(set) var updated: Set<Int> = []
+    private(set) var muted: Set<Int> = []
+    private(set) var visibleContacts = contacts
+
+    func toggleMute(_ id: Int) {
+        if !muted.insert(id).inserted { muted.remove(id) }
+    }
+
+    func clearHistory(_ id: Int) {
+        guard let index = visibleContacts.firstIndex(where: { $0.id == id }) else { return }
+        visibleContacts[index].unread = 0
+        history[id] = []
+        updated.insert(id)
+    }
+
+    func removeConversation(_ id: Int) {
+        visibleContacts.removeAll { $0.id == id }
+        history.removeValue(forKey: id)
+        muted.remove(id)
+        updated.remove(id)
+    }
+
     init() {
         history = Dictionary(uniqueKeysWithValues: Self.contacts.map { contact in
             let authors = contact.members.dropFirst()

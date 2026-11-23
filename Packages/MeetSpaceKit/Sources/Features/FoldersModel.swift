@@ -96,6 +96,19 @@ import MeetSpaceAPI
             await loadItems()
         }
     }
+    func assignments(for kind: FolderItemKind, id: UUID) async throws -> [PersonalFolder] {
+        guard !closed else { throw CancellationError() }
+        let result = try await repository.list(containing: kind, item: id)
+        guard !closed else { throw CancellationError() }
+        return result.sorted { $0.position < $1.position }
+    }
+    func setAssignment(folder: UUID, kind: FolderItemKind, id: UUID, included: Bool) async throws {
+        guard !closed else { throw CancellationError() }
+        let updated = try await repository.setItem(folder, kind: kind, id: id, included: included)
+        guard !closed else { throw CancellationError() }
+        if let index = folders.firstIndex(where: { $0.id == folder }) { folders[index] = updated }
+        if selected?.id == folder { selected = updated; await loadItems() }
+    }
     private func mutate(_ operation: () async throws -> Void) async -> Bool {
         guard !busy, !closed else { return false }; busy = true; error = nil
         pageEpoch = UUID(); loadingItems = false

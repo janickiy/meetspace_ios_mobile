@@ -6,6 +6,8 @@ struct LiveMeetingsView: View {
     @Bindable var model: ConferenceWorkspace
     var calendar: CalendarModel?
     var recordings: RecordingsModel?
+    var folders: FoldersModel?
+    var openRecording: (UUID) -> Void = { _ in }
     var openCalendar: () -> Void = {}
     var openRecordings: () -> Void = {}
     var openFolders: () -> Void = {}
@@ -15,7 +17,8 @@ struct LiveMeetingsView: View {
     @State private var creating = false
     @State private var joining = false
     @State private var invitation = ""
-    @State private var openRecordingAfterDismiss = false
+    @State private var initialMaterials = false
+    @State private var afterDetails: (() -> Void)?
     var body: some View {
         MeetingsDashboard(items: model.meetings.map(listItem), zone: calendar?.zone ?? .current,
             state: model.state == .empty ? .content : model.state, error: model.error,
@@ -26,9 +29,9 @@ struct LiveMeetingsView: View {
             }, join: { joining = true }, calendar: openCalendar, recordings: openRecordings,
                 folders: openFolders, notifications: openNotifications),
             open: { meeting in
-                if meeting.isClosed { selected = meeting }
+                if meeting.isClosed { initialMaterials = true; selected = meeting }
                 else { Task { await model.join(meeting) } }
-            }, details: { selected = $0 }, identifier: { "conference.\($0.id.uuidString.lowercased())" })
+            }, details: { initialMaterials = false; selected = $0 }, identifier: { "conference.\($0.id.uuidString.lowercased())" })
             .disabled(model.busy)
             .accessibilityElement(children: .contain)
             .accessibilityIdentifier("screen.liveMeetings")
@@ -40,11 +43,16 @@ struct LiveMeetingsView: View {
             .workspaceFormPresentation(isPresented: $scheduling) {
                 ScheduleMeetingForm(model: calendar, workspace: model, didSave: { Task { await model.load() } })
             }
-            .sheet(item: $selected, onDismiss: {
-                if openRecordingAfterDismiss { openRecordingAfterDismiss = false; openRecordings() }
+            .workspaceFormPresentation(item: $selected, onDismiss: {
+                let action = afterDetails
+                afterDetails = nil
+                action?()
             }) { meeting in
                 LiveMeetingDetails(item: listItem(meeting), zone: calendar?.zone ?? .current, workspace: model,
-                    recordings: recordings, openRecording: { openRecordingAfterDismiss = true; selected = nil })
+                    recordings: recordings, folders: folders, openRecording: { id in endDetails { openRecording(id) } },
+                    openCall: { endDetails { Task { await model.join(meeting) } } },
+                    close: { selected = nil },
+                    showingMaterials: initialMaterials)
             }
             .workspaceFormPresentation(isPresented: $creating) {
                 ScheduleMeetingForm(model: calendar, workspace: model, initiallyPlanned: false,
@@ -73,6 +81,11 @@ struct LiveMeetingsView: View {
             }
 
     }
+    private func endDetails(then action: @escaping () -> Void) {
+        afterDetails = action
+        selected = nil
+    }
+
     private func listItem(_ meeting: Conference) -> MeetingListItem<Conference> {
         let status: ConferenceTimelineView = meeting.isClosed ? .past : meeting.status == "active" ? .active : .upcoming
         let date = meeting.scheduledAt ?? meeting.startedAt ?? meeting.finishedAt

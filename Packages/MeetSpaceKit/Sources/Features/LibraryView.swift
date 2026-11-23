@@ -22,18 +22,36 @@ struct LibraryView: View {
             }
         case .recordings:
             RecordingPage(title: "Записи встреч", onBack: { dismiss() }) { recordingsLibrary }
+        case .demoFolder(let id):
+            if let folder = model.demoFolders.folders.first(where: { $0.id == id }) {
+                List {
+                    ForEach(folder.items, id: \.self) { item in
+                        switch item {
+                        case .chat(let index):
+                            if let chat = model.demoChats.visibleContacts.first(where: { $0.id == index }) {
+                                Button { model.navigate(.thread(index)) } label: { Label(chat.name, systemImage: "bubble.left") }
+                            }
+                        case .meeting(let index):
+                            if let meeting = model.demoMeetings.meetings.first(where: { $0.id == index }) {
+                                Button { model.navigate(.meetingDetails(index)) } label: { Label(tr(meeting.title), systemImage: "video") }
+                            }
+                        }
+                    }
+                }.overlay { if folder.items.isEmpty { Text(tr("Папка пока пуста")).foregroundStyle(MSTheme.muted) } }
+                    .navigationTitle(Text(verbatim: folder.name))
+            }
         default:
             ScrollView {
                 VStack(alignment: .leading, spacing: 20) {
                     libraryHeading("ЛИЧНОЕ ПРОСТРАНСТВО", title: "Всё нужное — вместе", subtitle: "Соберите встречи и чаты по проектам.")
                     SearchBox(text: $query, placeholder: "Поиск папок")
-                    ForEach(["Команда продукта", "Запуск продукта", "Личное"].filter { query.isEmpty || tr($0).localizedCaseInsensitiveContains(query) }, id: \.self) { title in
-                        Button { model.notice = "Папки объединяют чаты и встречи. Серверные папки будут доступны после входа." } label: {
+                    ForEach(model.demoFolders.folders.filter { query.isEmpty || $0.name.localizedCaseInsensitiveContains(query) }) { folder in
+                        Button { model.navigate(.demoFolder(folder.id)) } label: {
                             HStack(spacing: 16) {
                                 WorkspaceIcon("folder", size: 25).foregroundStyle(MSTheme.accent)
                                     .frame(width: 48, height: 44)
                                     .background(MSTheme.accentSoft, in: RoundedRectangle(cornerRadius: 12))
-                                Text(tr(title)).font(MSTheme.font(15, weight: .semibold)); Spacer()
+                                Text(verbatim: folder.name).font(MSTheme.font(15, weight: .semibold)); Spacer()
                                 Image(systemName: "chevron.right").foregroundStyle(MSTheme.muted)
                             }.frame(minHeight: 84).msCard().contentShape(Rectangle())
                         }.buttonStyle(.plain)

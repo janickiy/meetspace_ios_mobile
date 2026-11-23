@@ -7,6 +7,7 @@ struct WorkspaceFormSheet<Content: View>: View {
     let identifier: String
     var closeLabel = "Закрыть"
     var busy = false
+    var centered = false
     let close: () -> Void
     @ViewBuilder let content: () -> Content
     @State private var contentHeight: CGFloat = 0
@@ -36,7 +37,7 @@ struct WorkspaceFormSheet<Content: View>: View {
                     }.padding(compact ? 21 : 24)
                         .onGeometryChange(for: CGFloat.self) { $0.size.height } action: { contentHeight = $0 }
                 }.scrollDismissesKeyboard(.interactively)
-                    .frame(maxWidth: 440)
+                    .frame(maxWidth: centered ? 510 : 440)
                     .frame(height: contentHeight > 0 ? min(contentHeight, availableHeight) : availableHeight)
                     .background(MSTheme.surface, in: RoundedRectangle(cornerRadius: compact ? 23 : 24))
                     .clipShape(RoundedRectangle(cornerRadius: compact ? 23 : 24))
@@ -44,7 +45,7 @@ struct WorkspaceFormSheet<Content: View>: View {
                     .shadow(color: .black.opacity(0.15), radius: 25, y: 15)
                     .accessibilityIdentifier("\(identifier).form")
                     .padding(inset)
-                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: compact ? .bottom : .center)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: compact && !centered ? .bottom : .center)
             }
         }
         .foregroundStyle(MSTheme.ink)
@@ -84,6 +85,17 @@ extension View {
             .fullScreenCover(isPresented: isPresented, onDismiss: onDismiss, content: content)
         #else
         self.sheet(isPresented: isPresented, onDismiss: onDismiss, content: content)
+        #endif
+    }
+
+    @ViewBuilder
+    func workspaceFormPresentation<Item: Identifiable, Content: View>(item: Binding<Item?>, onDismiss: (() -> Void)? = nil,
+            @ViewBuilder content: @escaping (Item) -> Content) -> some View {
+        #if os(iOS)
+        self.blur(radius: item.wrappedValue == nil ? 0 : 5)
+            .fullScreenCover(item: item, onDismiss: onDismiss, content: content)
+        #else
+        self.sheet(item: item, onDismiss: onDismiss, content: content)
         #endif
     }
 

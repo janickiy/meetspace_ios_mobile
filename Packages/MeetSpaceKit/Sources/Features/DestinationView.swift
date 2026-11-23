@@ -10,13 +10,15 @@ struct DestinationView: View {
             switch route {
             case .thread(let index): ThreadView(model: model, personIndex: index)
             case .conversation(let id):
-                if let messaging = model.identity.messaging { LiveThreadView(model: messaging, id: id, calls: model.identity.calls, openRecipient: { model.navigate(.conversation($0)) }).id(id) }
+                if let messaging = model.identity.messaging { LiveThreadView(model: messaging, app: model, id: id, calls: model.identity.calls, openRecipient: { model.navigate(.conversation($0)) }).id(id) }
             case .interfaceCatalog: ScreenCatalog(model: model)
             case .calendar:
                 if model.isDemo { CalendarScreen(model: model) }
                 else if let calendar = model.identity.calendar {
                     LiveCalendarView(model: calendar) { meeting in Task { await model.identity.conferences?.join(meeting) } }
                 }
+            case .demoFolder:
+                if model.isDemo { LibraryView(model: model, route: route) }
             case .folders:
                 if model.isDemo { LibraryView(model: model, route: route) }
                 else if let folders = model.identity.folders {
@@ -75,7 +77,7 @@ extension AppRoute {
         case .calendar: "Календарь"
         case .recordings: "Записи встреч"
         case .recording, .liveRecording: "Просмотр записи"
-        case .folders: "Папки"
+        case .folders, .demoFolder: "Папки"
         case .prejoin: "Перед встречей"
         case .call: "Встреча"
         case .personalCall: "Личный звонок"
@@ -127,19 +129,14 @@ private struct ScreenCatalog: View {
 private struct MeetingDetailView: View {
     @Bindable var model: AppModel
     let meetingID: Int
-    var meeting: DemoData.Meeting { DemoData.meetings.first { $0.id == meetingID } ?? DemoData.meetings[0] }
+    @Environment(\.dismiss) private var dismiss
     var body: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: 24) {
-                Text(tr(meeting.title)).font(MSTheme.font(28, weight: .semibold, relativeTo: .title))
-                Label("\(meeting.day) \(tr(meeting.month)) · \(meeting.time)", systemImage: "calendar")
-                Label("\(meeting.count)", systemImage: "person.2")
-                HStack { Text(tr(meeting.owner)); Spacer(); Text(tr("Организатор")).foregroundStyle(MSTheme.muted) }.msCard()
-                FeatureNotice()
-                Button(tr("Перед встречей")) { model.showDemoPrejoin(title: tr(meeting.title)) }.buttonStyle(MSButtonStyle())
-                Button(tr("Записи встречи")) { model.navigate(.recordings) }.buttonStyle(MSButtonStyle(primary: false))
-            }.padding(24).frame(maxWidth: 720).frame(maxWidth: .infinity)
-        }.background(MSTheme.background)
+        if let meeting = model.demoMeetings.meetings.first(where: { $0.id == meetingID }) {
+            DemoMeetingDetails(model: model, meeting: meeting, showingMaterials: false,
+                close: { dismiss() }, openCall: { model.showDemoPrejoin(title: tr(meeting.title)) },
+                openRecording: { model.navigate(.recording($0)) })
+                .msHideRootBar()
+        }
     }
 }
 

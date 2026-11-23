@@ -8,14 +8,17 @@ import UIKit
 struct WorkspaceView: View {
     @Bindable var model: AppModel
     @State private var inbox = WorkspaceInbox()
+    @State private var inlineThreadVisible = false
+    @State private var hasHinge = false
     @Environment(\.dynamicTypeSize) private var typeSize
+    @Environment(\.horizontalSizeClass) private var sizeClass
 
     var body: some View {
         GeometryReader { geometry in
-            let wide = geometry.size.width >= 780
+            let wide = WorkspaceLayout.usesColumns(width: geometry.size.width, sizeClass: sizeClass, typeSize: typeSize)
             VStack(spacing: 0) {
                 tabs
-                if !showingCall && ((wide && !typeSize.isAccessibilitySize) || !showingThread) {
+                if !showingCall && (wide || !showingThread) {
                     WorkspaceTabBar(model: model, wide: wide)
                 }
             }
@@ -28,8 +31,10 @@ struct WorkspaceView: View {
             }
             .environment(\.workspaceWidth, geometry.size.width)
             .environment(\.workspaceUnreadNotifications, inbox.unread)
+            .onPreferenceChange(InlineChatVisible.self) { inlineThreadVisible = $0 }
         }
         .background(MSTheme.background)
+        .observeWorkspaceHinge($hasHinge)
         .task(id: model.identity.settings?.account.id) { await model.identity.settings?.loadPhoto() }
         .task { await inbox.refresh(using: model.identity.messaging?.client, demo: model.isDemo) }
     }
@@ -45,6 +50,7 @@ struct WorkspaceView: View {
     private var showingCall: Bool { activeRoute == .call || activeRoute == .personalCall }
 
     private var showingThread: Bool {
+        if model.tab == .messages && model.messagesPath.isEmpty && inlineThreadVisible { return true }
         switch activeRoute {
         case .thread, .conversation: return true
         default: return false
@@ -57,14 +63,15 @@ struct WorkspaceView: View {
                 if model.isDemo { MeetingsView(model: model) }
                 else if let meetings = model.identity.conferences {
                     LiveMeetingsView(model: meetings, calendar: model.identity.calendar, recordings: model.identity.recordings,
+                        folders: model.identity.folders, openRecording: { model.navigate(.liveRecording($0)) },
                         openCalendar: { model.navigate(.calendar) },
                         openRecordings: { model.navigate(.recordings) }, openFolders: { model.navigate(.folders) },
                         openNotifications: { model.presentWorkspaceNotifications() })
                 }
             }
             stack(tab: .messages, path: $model.messagesPath) {
-                if let messaging = model.identity.messaging, !model.isDemo { LiveMessagesView(app: model, model: messaging) }
-                else { MessagesView(model: model) }
+                if let messaging = model.identity.messaging, !model.isDemo { LiveMessagesView(app: model, model: messaging, hasHinge: hasHinge) }
+                else { MessagesView(model: model, hasHinge: hasHinge) }
             }
             stack(tab: .profile, path: $model.profilePath) {
                 if model.isDemo { ProfileView(model: model) }
@@ -78,6 +85,32 @@ struct WorkspaceView: View {
             content().msHideRootBar().navigationDestination(for: AppRoute.self) { route in DestinationView(model: model, route: route) }
         }.tag(tab).msHideSystemTabBar()
     }
+}
+
+private extension View {
+    @ViewBuilder func observeWorkspaceHinge(_ hasHinge: Binding<Bool>) -> some View {
+        #if os(iOS) && compiler(>=6.4.1)
+        if #available(iOS 27.1, *) {
+            onHingeChange { _, context in hasHinge.wrappedValue = context.hinge != nil }
+        } else { self }
+        #else
+        self
+        #endif
+    }
+}
+
+enum WorkspaceLayout {
+    static func usesColumns(width: CGFloat, sizeClass: UserInterfaceSizeClass?, typeSize: DynamicTypeSize) -> Bool {
+        !typeSize.isAccessibilitySize && (width >= 780 || (sizeClass == .regular && width >= 620))
+    }
+
+    static func chatSidebarWidth(_ width: CGFloat) -> CGFloat { min(340, width * 0.38) }
+    static func chatGutter(_ width: CGFloat) -> CGFloat { width >= 780 ? 24 : 10 }
+}
+
+struct InlineChatVisible: PreferenceKey {
+    static let defaultValue = false
+    static func reduce(value: inout Bool, nextValue: () -> Bool) { value = value || nextValue() }
 }
 
 struct WorkspaceTabBar: View {
@@ -139,7 +172,7 @@ struct WorkspaceTabBar: View {
     }
 }
 
-private extension View {
+extension View {
     @ViewBuilder func msHideRootBar() -> some View {
         #if os(iOS)
         self.toolbar(.hidden, for: .navigationBar)
@@ -148,7 +181,7 @@ private extension View {
         #endif
     }
 
-    @ViewBuilder func msHideSystemTabBar() -> some View {
+    @ViewBuilder fileprivate func msHideSystemTabBar() -> some View {
         #if os(iOS)
         self.toolbar(.hidden, for: .tabBar)
         #else

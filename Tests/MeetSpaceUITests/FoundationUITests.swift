@@ -1526,7 +1526,7 @@ import UIKit
         XCTAssertTrue(app.staticTexts["Команда iOS"].firstMatch.waitForExistence(timeout: 10))
         XCTAssertTrue(app.textFields["messageComposer"].waitForExistence(timeout: 10))
         app.buttons["chat.menu"].tap()
-        app.buttons["О группе"].tap()
+        app.buttons["chat.action.info"].tap()
         XCTAssertTrue(app.staticTexts["Тестовый собеседник"].waitForExistence(timeout: 5))
         capture(app, name: "stage03-group-members")
     }
@@ -1793,6 +1793,7 @@ import UIKit
         callControl(app, "directCallDone").tap()
         XCTAssertTrue(app.textFields["messageComposer"].waitForExistence(timeout: 10))
         app.buttons["chat.menu"].tap()
+        app.buttons["chat.action.info"].tap()
         XCTAssertTrue(videoCall.waitForExistence(timeout: 5) && videoCall.isHittable)
     }
 
@@ -1872,5 +1873,170 @@ import UIKit
         XCTAssertGreaterThanOrEqual(back.frame.height, 44)
         back.tap()
         XCTAssertTrue(app.buttons["profileMenu.profile"].waitForExistence(timeout: 5))
+    }
+}
+
+extension FoundationUITests {
+    private func assertActions(_ ids: [String], in app: XCUIApplication,
+                               file: StaticString = #filePath, line: UInt = #line) {
+        var lastY: CGFloat = -.infinity
+        for id in ids {
+            let button = app.buttons[id]
+            XCTAssertTrue(button.waitForExistence(timeout: 5), id, file: file, line: line)
+            XCTAssertGreaterThan(button.frame.midY, lastY, id, file: file, line: line)
+            XCTAssertGreaterThanOrEqual(button.frame.height + 0.01, 44, id, file: file, line: line)
+            lastY = button.frame.midY
+        }
+    }
+
+    func testPersonalChatHeaderMenuAndFolderAssignment() {
+        let app = launch(["-demo"])
+        app.buttons["tab.messages"].tap()
+        let chat = app.buttons["chat.0"]
+        XCTAssertTrue(chat.waitForExistence(timeout: 5)); chat.tap()
+        let menu = app.buttons["chat.menu"]
+        menu.tap()
+        assertActions(["chat.action.info", "chat.action.selfCard", "message.selectMode", "chat.action.mute",
+                       "chat.action.folder", "chat.action.clear", "chat.action.hide"], in: app)
+        XCTAssertFalse(app.buttons["chat.action.leave"].exists)
+        capture(app, name: "chat-user-actions")
+        let mute = app.buttons["chat.action.mute"]
+        XCTAssertEqual(mute.label, "Без уведомлений"); mute.tap()
+        menu.tap()
+        XCTAssertEqual(mute.label, "Включить уведомления")
+        app.buttons["chat.action.folder"].tap()
+        let personal = app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH %@ AND label CONTAINS %@",
+                                                       "folderAssignment.option.", "Личное")).firstMatch
+        XCTAssertTrue(personal.waitForExistence(timeout: 5))
+        XCTAssertFalse(personal.isSelected); personal.tap()
+        app.buttons["folderAssignment.save"].tap()
+        XCTAssertTrue(menu.waitForExistence(timeout: 5)); menu.tap()
+        app.buttons["chat.action.folder"].tap()
+        XCTAssertTrue(personal.waitForExistence(timeout: 5))
+        XCTAssertTrue(personal.isSelected)
+    }
+
+    func testGroupChatHeaderMenu() {
+        let app = launch(["-demo"])
+        app.buttons["tab.messages"].tap()
+        let chat = app.buttons["chat.1"]
+        XCTAssertTrue(chat.waitForExistence(timeout: 5)); chat.tap()
+        app.buttons["chat.menu"].tap()
+        assertActions(["chat.action.info", "chat.action.selfCard", "message.selectMode",
+                       "chat.action.folder", "chat.action.leave"], in: app)
+        XCTAssertFalse(app.buttons["chat.action.mute"].exists)
+        XCTAssertFalse(app.buttons["chat.action.clear"].exists)
+        XCTAssertFalse(app.buttons["chat.action.hide"].exists)
+        capture(app, name: "chat-group-actions")
+        app.buttons["chat.action.leave"].tap()
+        let cancel = app.buttons["chat.confirm.cancel"]
+        XCTAssertTrue(cancel.waitForExistence(timeout: 5)); cancel.tap()
+        let menu = app.buttons["chat.menu"]
+        XCTAssertTrue(menu.waitForExistence(timeout: 5)); menu.tap()
+        app.buttons["chat.action.selfCard"].tap()
+        XCTAssertTrue(app.staticTexts["Моя карточка"].waitForExistence(timeout: 5))
+    }
+
+    func testLiveMeetingActionCard() {
+        let app = launch(["-meeting-actions-fixture"])
+        login(app)
+        let active = app.buttons["Активные"]
+        tapAfterLogin(app.buttons["tab.meetings"], in: app, expecting: active, unchanged: { !active.exists })
+        reveal(active, in: app); active.tap()
+        let details = app.buttons["conference.33333333-3333-4333-8333-333333333333.details"]
+        reveal(details, in: app); details.tap()
+        assertActions(["call", "join", "invite", "folder", "materials", "finish"].map { "meetingActions." + $0 }, in: app)
+        let join = app.buttons["meetingActions.join"], leave = app.buttons["meetingActions.leave"]
+        join.tap()
+        XCTAssertTrue(leave.waitForExistence(timeout: 5))
+        XCTAssertFalse(app.buttons["conferenceJoin"].exists)
+        leave.tap()
+        XCTAssertTrue(join.waitForExistence(timeout: 5))
+        XCTAssertFalse(app.buttons["conferenceJoin"].exists)
+        app.buttons["meetingActions.materials"].tap()
+        XCTAssertTrue(app.staticTexts["Для этой встречи пока нет записей."].waitForExistence(timeout: 5))
+        app.buttons["О встрече"].tap()
+        let call = app.buttons["meetingActions.call"]
+        XCTAssertTrue(call.waitForExistence(timeout: 5)); call.tap()
+        XCTAssertTrue(app.buttons["conferenceJoin"].waitForExistence(timeout: 10))
+    }
+
+    func testMeetingActionsMatchOrganizerAndParticipantRoles() {
+        let app = launch(["-demo"])
+        let active = app.buttons["Активные"]
+        revealEntireText(active, in: app)
+        active.tap()
+        XCTAssertTrue(active.isSelected)
+        func openMeeting(_ id: String, towardTop: Bool = false) {
+            let scroll = app.scrollViews.firstMatch
+            let button = app.buttons[id]
+            for _ in 0..<6 {
+                if button.exists && button.isHittable && scroll.frame.insetBy(dx: 0, dy: 2).contains(button.frame) {
+                    button.tap()
+                    return
+                }
+                // Drag from the scroll view's margin, away from the filter fields and buttons.
+                let upper = scroll.coordinate(withNormalizedOffset: CGVector(dx: 0.035, dy: 0.18))
+                let lower = scroll.coordinate(withNormalizedOffset: CGVector(dx: 0.035, dy: 0.82))
+                let scrollTowardTop = button.exists ? button.frame.midY < scroll.frame.midY : towardTop
+                (scrollTowardTop ? upper : lower).press(forDuration: 0.06, thenDragTo: scrollTowardTop ? lower : upper)
+            }
+            capture(app, name: "unreachable-" + id)
+            XCTFail("Meeting action must be visible: " + id + "\n" + app.debugDescription)
+        }
+        openMeeting("meeting.9.details")
+        assertActions(["call", "join", "invite", "folder", "materials", "finish"].map { "meetingActions." + $0 }, in: app)
+        capture(app, name: "meeting-organizer-actions")
+        let finish = app.buttons["meetingActions.finish"]
+        reveal(finish, in: app); finish.tap()
+        let cancel = app.buttons["Оставить встречу"]
+        XCTAssertTrue(cancel.waitForExistence(timeout: 5)); cancel.tap()
+        app.buttons["meetingActions.close"].tap()
+        openMeeting("meeting.4.details", towardTop: true)
+        XCTAssertTrue(app.buttons["meetingActions.call"].waitForExistence(timeout: 5))
+        XCTAssertFalse(app.buttons["meetingActions.finish"].exists)
+    }
+}
+
+extension FoundationUITests {
+    func testLiveChatHeaderPreferencesAndHistory() {
+        let app = launch(["-chat-header-fixture"])
+        login(app)
+        let chat = app.buttons["conversation.22222222-2222-4222-8222-222222222222"]
+        XCTAssertTrue(chat.waitForExistence(timeout: 10)); chat.tap()
+        let message = app.staticTexts["Сообщение для проверки истории"].firstMatch
+        XCTAssertTrue(message.waitForExistence(timeout: 8))
+
+        let menu = app.buttons["chat.menu"]
+        let mute = app.buttons["chat.action.mute"]
+        menu.tap()
+        XCTAssertEqual(mute.label, "Без уведомлений"); mute.tap()
+        menu.tap()
+        XCTAssertEqual(mute.label, "Включить уведомления"); mute.tap()
+        menu.tap()
+        XCTAssertEqual(mute.label, "Без уведомлений")
+
+        let option = app.buttons["folderAssignment.option.77777777-7777-4777-8777-777777777777"]
+        app.buttons["chat.action.folder"].tap()
+        XCTAssertTrue(option.waitForExistence(timeout: 5)); XCTAssertFalse(option.isSelected)
+        option.tap()
+        app.buttons["folderAssignment.save"].tap()
+        menu.tap()
+        app.buttons["chat.action.folder"].tap()
+        XCTAssertTrue(option.waitForExistence(timeout: 5)); XCTAssertTrue(option.isSelected)
+        app.buttons["folderAssignment.close"].tap()
+
+        menu.tap()
+        app.buttons["chat.action.clear"].tap()
+        app.buttons["chat.confirm.cancel"].tap()
+        XCTAssertTrue(message.exists)
+        menu.tap()
+        app.buttons["chat.action.clear"].tap()
+        let confirm = app.buttons["chat.confirm.apply"]
+        XCTAssertTrue(confirm.waitForExistence(timeout: 5)); confirm.tap()
+        XCTAssertTrue(app.staticTexts["Пока нет сообщений"].waitForExistence(timeout: 8))
+        XCTAssertFalse(message.exists)
+        app.buttons["chat.back"].tap()
+        XCTAssertTrue(chat.waitForExistence(timeout: 5))
     }
 }

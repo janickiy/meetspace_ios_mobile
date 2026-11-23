@@ -138,3 +138,22 @@ private actor FolderGate {
     #expect(model.selected == nil && model.items.isEmpty && !model.loadingItems && model.nextCursor == nil)
     model.close()
 }
+
+@Test func folderPickerRequiresMembershipForTheRequestedItem() async throws {
+    let transport = RoutedTransport { request, _ in
+        let url = try #require(request.url)
+        #expect(request.httpMethod == "GET" && url.path == "/api/v1/folders")
+        let query = try #require(URLComponents(url: url, resolvingAgainstBaseURL: false)?.queryItems)
+        #expect(query.contains(URLQueryItem(name: "itemId", value: Fixture.conversationID.uuidString.lowercased())))
+        let kind = query.first { $0.name == "itemKind" }?.value
+        var folder = FolderFixture.object()
+        if kind == FolderItemKind.conversation.rawValue { folder["contains"] = false }
+        return try Fixture.response(["items": [folder]])
+    }
+    let repository = try FolderFixture.repository(transport)
+    let result = try await repository.list(containing: .conversation, item: Fixture.conversationID)
+    #expect(result.map(\.contains) == [false])
+    await #expect(throws: APIError.invalidResponse) {
+        try await repository.list(containing: .conference, item: Fixture.conversationID)
+    }
+}

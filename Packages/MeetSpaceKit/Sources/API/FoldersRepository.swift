@@ -6,7 +6,16 @@ public struct FoldersRepository: Sendable {
     private let client: AuthenticatedClient
     public init(client: AuthenticatedClient) { self.client = client }
     public func list() async throws -> [PersonalFolder] {
-        try validatedList(decodeJSON(ItemsResponse<PersonalFolder>.self, from: await request("GET", path: ["folders"])).items)
+        try await list(query: [])
+    }
+    public func list(containing kind: FolderItemKind, item id: UUID) async throws -> [PersonalFolder] {
+        let folders = try await list(query: [URLQueryItem(name: "itemKind", value: kind.rawValue),
+                                             URLQueryItem(name: "itemId", value: id.uuidString.lowercased())])
+        guard folders.allSatisfy({ $0.contains != nil }) else { throw APIError.invalidResponse }
+        return folders
+    }
+    private func list(query: [URLQueryItem]) async throws -> [PersonalFolder] {
+        try validatedList(decodeJSON(ItemsResponse<PersonalFolder>.self, from: await request("GET", path: ["folders"], query: query)).items)
     }
     public func create(name: String) async throws -> PersonalFolder {
         struct Body: Encodable { let name: String }

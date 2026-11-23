@@ -15,7 +15,8 @@ struct LiveChatContactSheet: View {
 
     var body: some View {
         ChatContactSheet(name: profile?.displayName ?? peer.displayName, email: profile?.email, bio: profile?.bio,
-                         call: calls.map { coordinator in { Task { await coordinator.startOutgoing(peer: DirectCallPeer(id: peer.id, displayName: peer.displayName)) } } }) {
+                         call: calls.map { coordinator in { Task { await coordinator.startOutgoing(peer: DirectCallPeer(id: peer.id, displayName: peer.displayName)) } } },
+                         videoCall: calls.map { coordinator in { Task { await coordinator.startOutgoing(peer: DirectCallPeer(id: peer.id, displayName: peer.displayName), isVideo: true) } } }) {
             if loading { ProgressView().accessibilityLabel(tr("Загрузка профиля")) }
             if let error {
                 Text(tr(error)).font(MSTheme.font(12)).foregroundStyle(MSTheme.muted)
@@ -81,6 +82,7 @@ private struct ChatContactSheet<Status: View, Materials: View>: View {
     let bio: String?
     var status: String?
     var call: (() -> Void)?
+    var videoCall: (() -> Void)?
     @ViewBuilder var loadStatus: () -> Status
     @ViewBuilder var materials: (ChatMaterialKind) -> Materials
     @Environment(\.dismiss) private var dismiss
@@ -130,6 +132,9 @@ private struct ChatContactSheet<Status: View, Materials: View>: View {
     @ViewBuilder private var actions: some View {
         action("Сообщение", icon: "message") { dismiss() }
         if let call { action("Позвонить", icon: "phone") { dismiss(); call() } }
+        if let videoCall {
+            action("Видеозвонок", icon: "video") { dismiss(); videoCall() }.accessibilityIdentifier("startVideoCall")
+        }
     }
     private func action(_ title: String, icon: String, perform: @escaping () -> Void) -> some View {
         Button(action: perform) { Label(tr(title), systemImage: icon).font(MSTheme.font(13, weight: .semibold))

@@ -288,3 +288,26 @@ private actor DirectRecipientGate {
     await model.close()
     _ = try await client.close()
 }
+
+@Test func chatHeaderPersonalActionsUseAccountScopedEndpoints() async throws {
+    let id = Fixture.conversationID
+    let transport = RoutedTransport { request, _ in
+        if request.httpMethod == "PATCH" {
+            let payload = try JSONSerialization.jsonObject(with: #require(request.httpBody)) as? [String: Bool]
+            #expect(payload == ["notificationsEnabled": false])
+            var item = try #require(JSONSerialization.jsonObject(with: Fixture.conversation()) as? [String: Any])
+            item["notificationsEnabled"] = false
+            return try Fixture.response(["item": item])
+        }
+        return NetworkResponse(status: 204)
+    }
+    let repository = try MessagingRepository(client: chatClient(transport))
+    let updated = try await repository.setNotifications(id, enabled: false)
+    #expect(updated.id == id && !updated.notificationsEnabled)
+    try await repository.clearDirectHistory(id)
+    try await repository.hideDirectConversation(id)
+    let requests = await transport.requests
+    let path = "/api/v1/conversations/" + id.uuidString.lowercased()
+    #expect(requests.compactMap(\.httpMethod) == ["PATCH", "POST", "POST"])
+    #expect(requests.map { $0.url?.path } == [path + "/preferences", path + "/clear-history", path + "/hide"])
+}

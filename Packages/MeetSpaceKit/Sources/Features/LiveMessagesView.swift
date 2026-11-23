@@ -10,12 +10,14 @@ import AppKit
 struct LiveMessagesView: View {
     @Bindable var app: AppModel
     @Bindable var model: MessagingModel
+    var hasHinge = false
     @State private var creating = false
     @State private var createdConversation: UUID?
     @State private var selected: UUID?
     @State private var searching = false
     @ScaledMetric(relativeTo: .body) private var compactListBottomSpace: CGFloat = 84
     @Environment(\.dynamicTypeSize) private var typeSize
+    @Environment(\.horizontalSizeClass) private var sizeClass
     private var filter: Binding<ChatFilter> {
         Binding(get: { model.onlyUnread ? .unread : model.groupFilter ? .groups : model.directFilter ? .direct : .all },
                 set: { value in model.onlyUnread = value == .unread; model.groupFilter = value == .groups; model.directFilter = value == .direct })
@@ -31,30 +33,41 @@ struct LiveMessagesView: View {
     }
     var body: some View {
         GeometryReader { proxy in
-            let wide = proxy.size.width >= 780 && !typeSize.isAccessibilitySize
+            let width = proxy.size.width
+            let wide = WorkspaceLayout.usesColumns(width: width, sizeClass: sizeClass, typeSize: typeSize)
+            let detailID = selected ?? (wide && app.messagesPath.isEmpty ? model.conversations.first?.id : nil)
+            let detailOnly = !wide && selected != nil
+            let gutter = wide ? WorkspaceLayout.chatGutter(width) : 0
+            let sidebar = WorkspaceLayout.chatSidebarWidth(width)
             VStack(spacing: 0) {
-                PageHeader(title: "Чаты") {
-                    WorkspaceHeaderButton("magnifyingglass", label: "Поиск чатов") { searching.toggle(); model.listSearch = "" }
-                    WorkspaceBell { app.presentWorkspaceNotifications() }
+                if !detailOnly {
+                    PageHeader(title: "Чаты") {
+                        WorkspaceHeaderButton("magnifyingglass", label: "Поиск чатов") { searching.toggle(); model.listSearch = "" }
+                        WorkspaceBell { app.presentWorkspaceNotifications() }
+                    }
                 }
                 HStack(spacing: 0) {
-                    conversationColumn(wide: wide)
-                        .frame(width: wide ? 340 : nil).frame(maxWidth: wide ? 340 : .infinity)
-                        .background(MSTheme.surface)
-                    if wide {
-                        Divider()
-                        if let selected = selected ?? model.conversations.first?.id {
-                            LiveThreadView(model: model, id: selected, calls: app.identity.calls, embedded: true,
-                                           openRecipient: { self.selected = $0 }, newChat: { creating = true }).id(selected)
-                        } else {
-                            VStack {
-                                ContentUnavailableView(tr("Выберите чат"), systemImage: "bubble.left.and.bubble.right")
-                                ChatNewButton { creating = true }.padding()
-                            }
-                        }
+                    if !detailOnly {
+                        conversationColumn(wide: wide)
+                            .frame(width: wide ? sidebar : nil).background(MSTheme.surface)
                     }
-                }.padding(.horizontal, wide ? 24 : 0)
+                    if wide { Divider() }
+                    if let id = detailID {
+                        LiveThreadView(model: model, app: app, id: id, calls: app.identity.calls, embedded: true,
+                                       embeddedBack: wide ? nil : { selected = nil }, openRecipient: { selected = $0 },
+                                       newChat: wide ? { creating = true } : nil, removed: { selected = nil })
+                            .id(id).frame(maxWidth: .infinity)
+                            .environment(\.workspaceWidth, wide ? width - sidebar - 2 * gutter - 1 : width)
+                            .onAppear { if selected == nil && wide { selected = id } }
+                    } else if wide {
+                        VStack {
+                            ContentUnavailableView(tr("Выберите чат"), systemImage: "bubble.left.and.bubble.right")
+                            ChatNewButton { creating = true }.padding()
+                        }.frame(maxWidth: .infinity)
+                    }
+                }.padding(.horizontal, gutter)
             }.background(MSTheme.background)
+                .preference(key: InlineChatVisible.self, value: detailOnly)
                 .workspaceFormPresentation(isPresented: $creating, onDismiss: {
                     if let createdConversation { select(createdConversation, wide: wide) }
                     createdConversation = nil
@@ -126,23 +139,31 @@ struct LiveMessagesView: View {
     }
 
     private func select(_ id: UUID, wide: Bool) {
-        if wide { selected = id }
+        if wide || hasHinge || selected != nil { selected = id }
         else { app.navigate(.conversation(id)) }
     }
 }
 
 struct LiveThreadView: View {
     @Bindable var model: MessagingModel
+    let app: AppModel
     let id: UUID
     var calls: DirectCallCoordinator?
     var embedded = false
+    var embeddedBack: (() -> Void)?
     var openRecipient: ((UUID) -> Void)?
     var newChat: (() -> Void)?
+    var removed: (() -> Void)?
     @Environment(\.dismiss) private var dismiss
     @Environment(\.chatMenu) private var chatMenu
     @FocusState private var composerFocused: Bool
     @State private var coveredConversation: UUID?
     @State private var contactDetails = false
+    @State private var menuOpen = false
+    @State private var ownCard = false
+    @State private var folders = false
+    @State private var headerActionBusy = false
+    @State private var pendingChatAction: ChatHeaderAction?
     @State private var importing = false
     @State private var groupDetails = false
     @State private var query = ""
@@ -157,8 +178,8 @@ struct LiveThreadView: View {
     private var selectedShareText: String { model.selectedMessages.map { "\($0.senderName):\n\($0.shareText)" }.joined(separator: "\n\n") }
     private var threadHeader: some View {
         ChatThreadHeading(name: model.conversation?.title ?? tr("Чат"),
-                          subtitle: model.conversation?.memberCount.map { "\(tr("Участники")): \($0)" },
-                          group: model.conversation?.isGroup == true, back: embedded ? nil : { dismiss() },
+                          subtitle: model.conversation?.isGroup == true ? model.conversation?.memberCount.map(chatGroupSubtitle) : nil,
+                          group: model.conversation?.isGroup == true, back: embedded ? embeddedBack : { dismiss() },
                           info: showDetails) {
             if let peer = model.conversation?.peer, let calls {
                 Button {
@@ -168,17 +189,50 @@ struct LiveThreadView: View {
             }
             Button { showsSearch.toggle(); query = "" } label: { ChatHeaderIcon(name: "magnifyingglass") }
                 .buttonStyle(.plain).accessibilityLabel(tr("Поиск сообщений"))
-            Menu {
-                Button(tr(model.conversation?.isGroup == true ? "О группе" : "Информация о контакте"), systemImage: "info.circle", action: showDetails)
-                Button(tr("Выбрать сообщения"), systemImage: "checkmark.circle") { beginSelection() }
-                    .accessibilityIdentifier("message.selectMode")
-                if let peer = model.conversation?.peer, let calls {
-                    Button(tr("Видеозвонок"), systemImage: "video") {
-                        Task { await calls.startOutgoing(peer: DirectCallPeer(id: peer.id, displayName: peer.displayName), isVideo: true) }
-                    }.accessibilityIdentifier("startVideoCall")
+            ChatActionTrigger(active: menuOpen) {
+                composerFocused = false
+                menuOpen.toggle()
+            }.disabled(headerActionBusy || model.conversation?.id != id)
+        }
+    }
+    private func chooseHeaderAction(_ action: ChatHeaderAction) {
+        guard let item = model.conversation, item.id == id else { return }
+        switch action {
+        case .info: showDetails()
+        case .selfCard: ownCard = true
+        case .select: beginSelection()
+        case .edit: if item.canManage { groupDetails = true }
+        case .mute: applyHeaderAction(.mute)
+        case .folder: folders = true
+        case .leave where item.myRole == "owner": groupDetails = true
+        case .clear, .hide, .leave: pendingChatAction = action
+        }
+    }
+    private func applyHeaderAction(_ action: ChatHeaderAction) {
+        guard !headerActionBusy else { return }
+        headerActionBusy = true
+        let sourceTab = app.tab
+        Task {
+            defer { headerActionBusy = false }
+            do {
+                try await model.applyHeaderAction(action, to: id)
+                guard model.active else { return }
+                if action == .clear, model.conversation?.id == id { showsSearch = false; query = "" }
+                if action == .hide || action == .leave {
+                    if embedded {
+                        if model.conversation == nil { removed?() }
+                    } else {
+                        let route = AppRoute.conversation(id)
+                        switch sourceTab {
+                        case .messages where app.messagesPath.last == route: app.messagesPath.removeLast()
+                        case .meetings where app.meetingsPath.last == route: app.meetingsPath.removeLast()
+                        case .profile where app.profilePath.last == route: app.profilePath.removeLast()
+                        default: break
+                        }
+                    }
                 }
-            } label: { ChatHeaderIcon(name: "ellipsis") }
-                .menuStyle(.button).buttonStyle(.plain).menuIndicator(.hidden).accessibilityLabel(tr("Действия с чатом")).accessibilityIdentifier("chat.menu")
+            } catch is CancellationError { }
+            catch { if model.active, model.conversation?.id == id { model.error = userMessage(error) } }
         }
     }
     private func showDetails() {
@@ -269,6 +323,10 @@ struct LiveThreadView: View {
                 composer
             }
         }.background(MSTheme.background).toolbar(.hidden)
+            .chatHeaderMenu(open: $menuOpen, group: model.conversation?.isGroup == true,
+                            editable: model.conversation?.canManage == true, muted: model.conversation?.notificationsEnabled == false,
+                            perform: chooseHeaderAction)
+            .confirmChatAction($pendingChatAction, perform: applyHeaderAction)
             .task(id: id) {
                 if coveredConversation == id { coveredConversation = nil }
                 else { await model.open(id) }
@@ -288,6 +346,15 @@ struct LiveThreadView: View {
                 switch result {
                 case .success(let urls): Task { await model.importFiles(urls) }
                 case .failure(let error): model.error = userMessage(error)
+                }
+            }
+            .sheet(isPresented: $ownCard) {
+                let user = app.identity.settings?.profile ?? model.account.user
+                ChatOwnCard(name: user.name, email: user.email, bio: user.bio, photo: app.identity.settings?.photo)
+            }
+            .sheet(isPresented: $folders) {
+                if let folderModel = app.identity.folders, let item = model.conversation, item.id == id {
+                    WorkspaceFolderPicker(model: folderModel, kind: .conversation, id: id, title: item.title)
                 }
             }
             .sheet(isPresented: $groupDetails) { GroupDetailsView(model: model, id: id) }

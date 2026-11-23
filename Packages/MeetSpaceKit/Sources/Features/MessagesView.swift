@@ -13,14 +13,16 @@ private extension DemoChatStore.Message {
 
 struct MessagesView: View {
     @Bindable var model: AppModel
+    var hasHinge = false
     @State private var query = ""
     @State private var searching = false
     @State private var selected: Int?
     @State private var filter = ChatFilter.all
     @Environment(\.dynamicTypeSize) private var typeSize
+    @Environment(\.horizontalSizeClass) private var sizeClass
 
     private var contacts: [DemoChatStore.Contact] {
-        DemoChatStore.contacts.filter { item in
+        model.demoChats.visibleContacts.filter { item in
             let matchesFilter = switch filter {
             case .all: true
             case .direct: !item.group
@@ -33,54 +35,71 @@ struct MessagesView: View {
 
     var body: some View {
         GeometryReader { geometry in
-            let wide = geometry.size.width >= 780 && !typeSize.isAccessibilitySize
+            let width = geometry.size.width
+            let wide = WorkspaceLayout.usesColumns(width: width, sizeClass: sizeClass, typeSize: typeSize)
+            let selectedID = model.demoChats.visibleContacts.first(where: { $0.id == selected })?.id
+            let detailID = selectedID ?? (wide && model.messagesPath.isEmpty ? model.demoChats.visibleContacts.first?.id : nil)
+            let detailOnly = !wide && selectedID != nil
+            let gutter = wide ? WorkspaceLayout.chatGutter(width) : 0
+            let sidebar = WorkspaceLayout.chatSidebarWidth(width)
             VStack(spacing: 0) {
-                PageHeader(title: "Чаты") {
-                    WorkspaceHeaderButton("magnifyingglass", label: "Поиск чатов") { searching.toggle(); query = "" }
-                    WorkspaceBell { model.presentWorkspaceNotifications() }
+                if !detailOnly {
+                    PageHeader(title: "Чаты") {
+                        WorkspaceHeaderButton("magnifyingglass", label: "Поиск чатов") { searching.toggle(); query = "" }
+                        WorkspaceBell { model.presentWorkspaceNotifications() }
+                    }
                 }
                 HStack(spacing: 0) {
-                    ScrollView {
-                        VStack(spacing: 0) {
-                            ChatFilterBar(filter: $filter, unread: String(DemoChatStore.contacts.filter { $0.unread > 0 }.count)) { model.navigate(.folders) }
-                            if searching {
-                                SearchBox(text: $query, placeholder: "Найти человека или чат")
-                                    .padding(.horizontal, wide ? 16 : 15).padding(.bottom, 16)
+                    if !detailOnly {
+                        ScrollView {
+                            VStack(spacing: 0) {
+                                ChatFilterBar(filter: $filter, unread: String(model.demoChats.visibleContacts.filter { $0.unread > 0 }.count)) { model.navigate(.folders) }
+                                if searching {
+                                    SearchBox(text: $query, placeholder: "Найти человека или чат")
+                                        .padding(.horizontal, wide ? 16 : 15).padding(.bottom, 16)
+                                }
+                                StateContent(state: model.contentState, retry: { model.contentState = .content }) {
+                                    LazyVStack(spacing: 0) {
+                                        if let demoInvite = URL(string: "https://meet.example.org/room/design") {
+                                            ChatInviteCard(url: demoInvite)
+                                        }
+                                        ForEach(contacts) { item in
+                                            Button {
+                                                if wide || hasHinge { selected = item.id }
+                                                else { model.navigate(.thread(item.id)) }
+                                            } label: {
+                                                let last = model.demoChats.history[item.id]?.last
+                                                let changed = model.demoChats.updated.contains(item.id)
+                                                ChatListRow(name: item.name, initials: item.initials, group: item.group,
+                                                            subtitle: item.subtitle,
+                                                            preview: changed ? last?.displayText ?? tr("Пока нет сообщений") : item.preview,
+                                                            time: changed ? last?.time ?? "" : item.time,
+                                                            unread: item.unread, muted: model.demoChats.muted.contains(item.id),
+                                                            selected: wide && detailID == item.id)
+                                            }.buttonStyle(.plain).accessibilityIdentifier("chat.\(item.id)")
+                                        }
+                                        if contacts.isEmpty { Text(tr("Чат не найден")).font(MSTheme.font(13)).padding() }
+                                    }.padding(.horizontal, 16).padding(.bottom, wide ? 0 : 80)
+                                }
                             }
-                            StateContent(state: model.contentState, retry: { model.contentState = .content }) {
-                                LazyVStack(spacing: 0) {
-                                    if let demoInvite = URL(string: "https://meet.example.org/room/design") {
-                                        ChatInviteCard(url: demoInvite)
-                                    }
-                                    ForEach(contacts) { item in
-                                        Button {
-                                            selected = item.id
-                                            if !wide { model.navigate(.thread(item.id)) }
-                                        } label: {
-                                            let last = model.demoChats.history[item.id]?.last
-                                            let changed = model.demoChats.updated.contains(item.id)
-                                            ChatListRow(name: item.name, initials: item.initials, group: item.group,
-                                                        subtitle: item.subtitle,
-                                                        preview: changed ? last?.displayText ?? tr("Пока нет сообщений") : item.preview,
-                                                        time: changed ? last?.time ?? "" : item.time,
-                                                        unread: item.unread, selected: wide && selected == item.id)
-                                        }.buttonStyle(.plain).accessibilityIdentifier("chat.\(item.id)")
-                                    }
-                                    if contacts.isEmpty { Text(tr("Чат не найден")).font(MSTheme.font(13)).padding() }
-                                }.padding(.horizontal, 16).padding(.bottom, wide ? 0 : 80)
-                            }
-                        }
-                    }.overlay(alignment: .bottomTrailing) {
-                        if !wide { newChat.padding(.trailing, 18).padding(.bottom, 17) }
-                    }.frame(width: wide ? 340 : nil).background(MSTheme.surface)
-                    if wide {
-                        Divider()
-                        ThreadView(model: model, personIndex: selected ?? 0, embedded: true, openRecipient: { selected = $0 })
-                            .id(selected ?? 0).frame(maxWidth: .infinity)
+                        }.overlay(alignment: .bottomTrailing) {
+                            if !wide { newChat.padding(.trailing, 18).padding(.bottom, 17) }
+                        }.frame(width: wide ? sidebar : nil).background(MSTheme.surface)
                     }
-                }.padding(.horizontal, wide ? 24 : 0)
-            }
-        }.background(MSTheme.background).toolbar(.hidden).accessibilityIdentifier("screen.messages")
+                    if wide { Divider() }
+                    if let id = detailID {
+                        ThreadView(model: model, personIndex: id, embedded: true,
+                                   embeddedBack: wide ? nil : { selected = nil }, openRecipient: { selected = $0 },
+                                   removed: { selected = nil })
+                            .id(id).frame(maxWidth: .infinity)
+                            .environment(\.workspaceWidth, wide ? width - sidebar - 2 * gutter - 1 : width)
+                            .onAppear { if selected == nil && wide { selected = id } }
+                    } else if wide {
+                        ContentUnavailableView(tr("Выберите чат"), systemImage: "bubble.left.and.bubble.right")
+                    }
+                }.padding(.horizontal, gutter)
+            }.preference(key: InlineChatVisible.self, value: detailOnly)
+        }.background(MSTheme.background).toolbar(.hidden)
     }
 
     private var newChat: some View {
@@ -100,7 +119,9 @@ struct ThreadView: View {
     @Bindable var model: AppModel
     var personIndex = 0
     var embedded = false
+    var embeddedBack: (() -> Void)?
     var openRecipient: ((Int) -> Void)?
+    var removed: (() -> Void)?
     @Environment(\.dismiss) private var dismiss
     @State private var draft = ""
     @State private var draftBeforeEdit: String?
@@ -113,6 +134,10 @@ struct ThreadView: View {
     @State private var forwarding: DemoChatStore.Message?
     @State private var forwardedDestination: Int?
     @State private var info = false
+    @State private var menuOpen = false
+    @State private var ownCard = false
+    @State private var folders = false
+    @State private var pendingChatAction: ChatHeaderAction?
     @State private var searching = false
     @State private var query = ""
     @State private var recipientQuery = ""
@@ -129,19 +154,17 @@ struct ThreadView: View {
                                     cancel: endSelection, toggleAll: { selected = selected == selectableIDs ? [] : selectableIDs })
             } else {
                 ChatThreadHeading(name: contact.name, initials: contact.initials, subtitle: contact.subtitle ?? tr("В сети"),
-                                  group: contact.group, back: embedded ? nil : { dismiss() }, info: { info = true }) {
+                                  group: contact.group, back: embedded ? embeddedBack : { dismiss() }, info: { info = true }) {
                     if !contact.group {
                         Button { model.navigate(.personalCall) } label: { ChatHeaderIcon(name: "phone") }
                             .buttonStyle(.plain).accessibilityLabel(tr("Личный звонок"))
                     }
                     Button { searching.toggle(); query = "" } label: { ChatHeaderIcon(name: "magnifyingglass") }
                         .buttonStyle(.plain).accessibilityLabel(tr("Поиск сообщений"))
-                    Menu {
-                        Button(tr(contact.group ? "О группе" : "Информация о контакте"), systemImage: "info.circle") { info = true }
-                        Button(tr("Выбрать сообщения"), systemImage: "checkmark.circle") { select(nil) }
-                            .accessibilityIdentifier("message.selectMode")
-                    } label: { ChatHeaderIcon(name: "ellipsis") }
-                        .menuStyle(.button).buttonStyle(.plain).menuIndicator(.hidden).accessibilityLabel(tr("Действия с чатом")).accessibilityIdentifier("chat.menu")
+                    ChatActionTrigger(active: menuOpen) {
+                        composerFocused = false
+                        menuOpen.toggle()
+                    }
                 }
             }
             if searching { SearchBox(text: $query, placeholder: "Поиск сообщений").padding(10) }
@@ -168,13 +191,21 @@ struct ThreadView: View {
                         .accessibilityLabel(tr("Поделиться")).disabled(selected.isEmpty).accessibilityIdentifier("message.shareSelected")
                 }
             } else {
-                if embedded {
+                if embedded && embeddedBack == nil {
                     ChatNewButton { model.notice = "Новые чаты станут доступны после входа." }
                         .frame(maxWidth: .infinity, alignment: .trailing).padding(.horizontal, 24).padding(.vertical, 10)
                 }
                 composer
             }
-        }.background(MSTheme.background).toolbar(.hidden).accessibilityIdentifier("screen.thread")
+        }.background(MSTheme.background).toolbar(.hidden)
+            .chatHeaderMenu(open: $menuOpen, group: contact.group, muted: model.demoChats.muted.contains(personIndex), perform: chooseHeaderAction)
+            .confirmChatAction($pendingChatAction, perform: confirmHeaderAction)
+            .sheet(isPresented: $ownCard) {
+                ChatOwnCard(name: model.demoProfile.name, email: "alex@example.org", bio: model.demoProfile.bio, photo: model.demoProfile.photo)
+            }
+            .sheet(isPresented: $folders) {
+                WorkspaceFolderPicker(demo: model.demoFolders, item: .chat(personIndex), title: contact.name)
+            }
             .sheet(item: $forwarding, onDismiss: {
                 if let target = forwardedDestination, target != personIndex {
                     if let openRecipient { openRecipient(target) } else { model.navigate(.thread(target)) }
@@ -206,6 +237,33 @@ struct ThreadView: View {
                     DemoChatContactSheet(name: contact.name, initials: contact.initials, messages: messages, call: { info = false; model.navigate(.personalCall) })
                 }
             }
+    }
+
+    private func chooseHeaderAction(_ action: ChatHeaderAction) {
+        switch action {
+        case .info: info = true
+        case .selfCard: ownCard = true
+        case .select: select(nil)
+        case .mute: model.demoChats.toggleMute(personIndex)
+        case .folder: folders = true
+        case .clear, .hide, .leave: pendingChatAction = action
+        case .edit: break
+        }
+    }
+
+    private func confirmHeaderAction(_ action: ChatHeaderAction) {
+        switch action {
+        case .clear:
+            model.demoChats.clearHistory(personIndex)
+            clearComposerContext()
+            endSelection()
+            query = ""; searching = false
+        case .hide, .leave:
+            model.demoFolders.remove(.chat(personIndex))
+            model.demoChats.removeConversation(personIndex)
+            if embedded { removed?() } else { dismiss() }
+        default: break
+        }
     }
 
     private func bubble(_ message: DemoChatStore.Message) -> some View {
@@ -324,7 +382,7 @@ struct ThreadView: View {
                     Text(tr("Получатель")).font(MSTheme.font(12, weight: .semibold))
                     SearchBox(text: $recipientQuery, placeholder: "Найти чат или группу")
                     ForwardPreview(author: message.author, text: message.shareText)
-                    let targets = DemoChatStore.contacts.filter { recipientQuery.isEmpty || $0.name.localizedCaseInsensitiveContains(recipientQuery) }
+                    let targets = model.demoChats.visibleContacts.filter { recipientQuery.isEmpty || $0.name.localizedCaseInsensitiveContains(recipientQuery) }
                     ForEach(targets) { target in
                         Button {
                             guard model.demoChats.forward(message.id, from: personIndex, to: target.id) else { return }

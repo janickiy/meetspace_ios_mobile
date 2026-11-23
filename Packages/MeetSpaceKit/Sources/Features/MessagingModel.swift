@@ -490,6 +490,36 @@ public struct DownloadState: Identifiable {
         listState = .content
         await refreshConversations()
     }
+    func applyHeaderAction(_ action: ChatHeaderAction, to id: UUID) async throws {
+        guard active, let item = conversation, item.id == id else { throw CancellationError() }
+        switch action {
+        case .mute where !item.isGroup:
+            let updated = try await repository.setNotifications(id, enabled: !item.notificationsEnabled)
+            guard active else { return }
+            if conversation?.id == id { conversation = updated }
+            if let index = conversations.firstIndex(where: { $0.id == id }) { conversations[index] = updated }
+            scheduleListRefresh()
+        case .clear where !item.isGroup:
+            try await repository.clearDirectHistory(id)
+            guard active else { return }
+            if conversation?.id == id {
+                cancelMessageSelection()
+                searchEpoch = UUID(); searchResults = []; searchCursor = nil; searching = false
+                reply = nil; editing = nil
+                await reloadHistory(id)
+            }
+            scheduleListRefresh()
+        case .hide where !item.isGroup:
+            try await repository.hideDirectConversation(id)
+            if active { await removedConversation(id) }
+        case .leave where item.isGroup && item.myRole != "owner":
+            try await repository.leaveGroup(id)
+            if active { await removedConversation(id) }
+        default:
+            throw ClientError.invalidInput
+        }
+    }
+
     public func removedConversation(_ id: UUID) async {
         conversations.removeAll { $0.id == id }
         if conversation?.id == id {

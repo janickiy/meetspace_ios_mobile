@@ -58,6 +58,8 @@ public struct AppDependencies: Sendable {
     public enum Onboarding: Hashable { case welcome, connect, login, register }
     public private(set) var onboarding: Onboarding = .welcome
     private(set) var demoChats = DemoChatStore()
+    private(set) var demoFolders = DemoFolderStore()
+    private(set) var demoMeetings = DemoMeetingsState()
     private(set) var demoDeletedRecordings: Set<Int> = []
     private var demoCreatedRecordings: [RecordingLibraryEntry] = []
     private(set) var demoProfile = DemoAccountProfile()
@@ -242,6 +244,8 @@ public struct AppDependencies: Sendable {
     public func enterDemo() {
         guard identity.messaging == nil, !identity.busy else { return }
         demoChats = DemoChatStore()
+        demoFolders = DemoFolderStore()
+        demoMeetings = DemoMeetingsState()
         demoDeletedRecordings = []
         demoCreatedRecordings = []
         demoProfile = DemoAccountProfile()

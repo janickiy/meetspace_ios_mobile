@@ -93,6 +93,19 @@ import MeetSpaceBroadcast
             install(current, membership: membership)
         } catch { if !closed { self.error = userMessage(error) } }
     }
+    func updateMembership(in conference: Conference, leave: Bool) async throws -> ConferenceParticipant {
+        guard !closed, !busy, call == nil, !conference.isClosed else { throw ClientError.invalidInput }
+        busy = true
+        defer { busy = false }
+        guard await completeDeparture() else { throw ClientError.invalidInput }
+        let member = try await (leave ? repository.leave(conference.id) : repository.join(conference.id))
+        guard !closed else {
+            if !leave { _ = try? await repository.leave(conference.id) }
+            throw CancellationError()
+        }
+        return member
+    }
+
     public func joinInvitation(_ input: String) async -> Bool {
         guard !busy, !closed, call == nil, mediaAvailable() else { return false }
         busy = true; error = nil; defer { busy = false }
@@ -110,14 +123,21 @@ import MeetSpaceBroadcast
             install(conference, membership: membership); return true
         } catch { if !closed { self.error = userMessage(error) }; return false }
     }
-    public func finish(_ conference: Conference) async {
-        guard !busy, !closed, conference.ownerId == repository.userID else { return }
+    @discardableResult
+    public func finish(_ conference: Conference) async -> Bool {
+        guard !busy, !closed, conference.ownerId == repository.userID,
+              ["created", "scheduled", "active"].contains(conference.status) else { return false }
+        error = nil
         busy = true; defer { busy = false }
         do {
             _ = try await repository.transition(conference.id, action: ["created", "scheduled"].contains(conference.status) ? "cancel" : "finish")
             if call?.conferenceID == conference.id { await dismissCall() }
             await load()
-        } catch { self.error = userMessage(error) }
+            return true
+        } catch {
+            if !closed { self.error = userMessage(error) }
+            return false
+        }
     }
     private func install(_ conference: Conference, membership: ConferenceParticipant) {
         call = ConferenceSession(repository: repository, title: conference.title, participant: membership,

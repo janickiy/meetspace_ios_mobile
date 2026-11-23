@@ -115,10 +115,11 @@ struct MeetingListCard<Value: Identifiable>: View {
     private var detailsButton: some View {
         Button(action: details) { WorkspaceIcon("ellipsis", size: 20).frame(width: 44, height: 44).contentShape(Rectangle()) }
             .buttonStyle(.plain).accessibilityLabel(tr("Подробнее о встрече") + " " + item.title)
+            .accessibilityIdentifier("\(identifier).details")
     }
 
     private var materialsButton: some View {
-        Button(action: details) { Label(tr("Материалы"), systemImage: "folder")
+        Button(action: open) { Label(tr("Материалы"), systemImage: "folder")
             .font(MSTheme.font(11)).padding(.horizontal, 10).frame(minHeight: 34)
             .background(MSTheme.surfaceSecondary, in: RoundedRectangle(cornerRadius: 9))
         }.buttonStyle(.plain)
