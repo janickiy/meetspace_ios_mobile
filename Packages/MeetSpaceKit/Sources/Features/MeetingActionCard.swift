@@ -104,7 +104,7 @@ struct MeetingActionCard<Value: Identifiable>: View {
                     }
                     if membership == .none || active && membership == .left {
                         command(active ? "Войти во встречу" : "Зарегистрироваться на встречу",
-                                active ? "door.left.hand.open" : "calendar.badge.checkmark", "join",
+                                active ? "log-in" : "calendar.badge.checkmark", "join",
                                 primary: !canCall, action: toggleMembership)
                     }
                     if item.mine && !active { command("Начать встречу", "play", "start", primary: true, action: call) }
@@ -143,19 +143,14 @@ struct MeetingActionCard<Value: Identifiable>: View {
     }
 
     private func actionLabel(_ title: String, _ icon: String, primary: Bool = false, destructive: Bool = false) -> some View {
-        let tint = destructive ? MSTheme.danger : MSTheme.accent
-        let tile = primary ? MSTheme.surface.opacity(0.16) : destructive ? MSTheme.danger.opacity(0.10) : MSTheme.accentSoft
-        return HStack(spacing: 11) {
+        HStack(spacing: 8) {
             WorkspaceIcon(icon, size: 20)
-                .foregroundStyle(primary ? MSTheme.surface : tint)
-                .frame(width: 32, height: 32)
-                .background(tile, in: RoundedRectangle(cornerRadius: 10))
             Text(tr(title)).fixedSize(horizontal: false, vertical: true)
-                .multilineTextAlignment(.leading)
+                .multilineTextAlignment(.center)
         }.font(MSTheme.font(14, weight: .semibold))
             .foregroundStyle(primary ? MSTheme.surface : destructive ? MSTheme.danger : MSTheme.ink)
             .padding(.horizontal, 12).padding(.vertical, 7)
-            .frame(maxWidth: .infinity, minHeight: 48, alignment: .leading)
+            .frame(maxWidth: .infinity, minHeight: 48)
             .background(primary ? MSTheme.accent : .clear, in: RoundedRectangle(cornerRadius: 12))
             .overlay { if !primary && !destructive { RoundedRectangle(cornerRadius: 12).strokeBorder(MSTheme.line) } }
             .contentShape(Rectangle())
