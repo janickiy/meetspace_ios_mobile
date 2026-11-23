@@ -74,7 +74,8 @@ struct AccountHome<Detail: View, Extras: View>: View {
                 .overlay { if wide { panel.strokeBorder(MSTheme.line).allowsHitTesting(false) } }
                 .padding(.horizontal, wide ? 24 : 0)
             }
-        }.background(MSTheme.background).accessibilityIdentifier("screen.profile")
+        }.background(MSTheme.background)
+            .accessibilityElement(children: .contain).accessibilityIdentifier("screen.profile")
     }
 
     private func detailPanel(wide: Bool, inset: CGFloat) -> some View {
@@ -135,8 +136,7 @@ struct AccountHome<Detail: View, Extras: View>: View {
                         .fixedSize(horizontal: false, vertical: true)
                     Text(email).font(MSTheme.font(wide ? 11 : 13)).foregroundStyle(MSTheme.muted)
                         .fixedSize(horizontal: false, vertical: true)
-                }
-                Spacer(minLength: 0)
+                }.frame(maxWidth: .infinity, alignment: .leading)
                 WorkspaceIcon("chevron.down", size: 18).foregroundStyle(MSTheme.muted)
             }.padding(.horizontal, wide ? 7 : 0)
                 .frame(maxWidth: .infinity, minHeight: 44, alignment: .leading).contentShape(Rectangle())
@@ -242,7 +242,7 @@ struct AccountShortcutRow: View {
                     .background(destructive ? MSTheme.surfaceSecondary : MSTheme.accentSoft, in: RoundedRectangle(cornerRadius: 10))
                 Text(tr(title)).font(MSTheme.font(13, weight: .semibold))
                     .fixedSize(horizontal: false, vertical: true).layoutPriority(1)
-                Spacer(minLength: 0)
+                    .frame(maxWidth: .infinity, alignment: .leading)
                 WorkspaceIcon("chevron.right", size: 15).foregroundStyle(MSTheme.muted)
             }.padding(.horizontal, 12).padding(.vertical, 7)
                 .frame(maxWidth: .infinity, minHeight: 46, alignment: .leading)
