@@ -506,7 +506,7 @@ struct ForwardPreview: View {
 struct ChatGestureHint: View {
     let selecting: Bool
     var body: some View {
-        Text(tr(selecting ? "Нажмите на сообщения для выбора" : "Нажмите на сообщение, чтобы открыть действия"))
+        Text(tr(selecting ? "Нажмите на сообщения для выбора" : "Удерживайте сообщение, чтобы открыть действия"))
             .font(MSTheme.font(11)).foregroundStyle(MSTheme.muted).frame(maxWidth: .infinity)
     }
 }
