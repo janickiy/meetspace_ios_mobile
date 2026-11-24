@@ -1248,7 +1248,28 @@ import UIKit
         XCTAssertTrue(app.buttons["createFolder"].waitForExistence(timeout: 5)); app.buttons["createFolder"].tap()
         let field = app.textFields["folderName"]
         XCTAssertTrue(field.waitForExistence(timeout: 5)); field.tap(); field.typeText("Проект Альфа")
-        app.buttons["folderSave"].tap()
+        XCTAssertEqual(field.value as? String, "Проект Альфа")
+        let save = app.buttons["folderSave"]
+        if UIDevice.current.userInterfaceIdiom == .pad {
+            let keyboard = app.keyboards.firstMatch
+            var previous = CGRect.null
+            var stableSince = Date()
+            let deadline = Date().addingTimeInterval(12)
+            var settled = false
+            while !settled && Date() < deadline {
+                let frame = save.frame
+                if frame != previous {
+                    previous = frame
+                    stableSince = Date()
+                }
+                settled = save.isHittable && (!keyboard.exists || !frame.intersects(keyboard.frame))
+                    && Date().timeIntervalSince(stableSince) > 1
+                if !settled { Thread.sleep(forTimeInterval: 0.2) }
+            }
+            XCTAssertTrue(settled, "The folder save button must settle above the keyboard")
+            capture(app, name: "ipad-folder-save-with-keyboard")
+        }
+        save.tap()
         let folder = app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH %@", "folder.")).firstMatch
         XCTAssertTrue(folder.waitForExistence(timeout: 5)); capture(app, name: "stage07-folders")
         folder.tap(); app.buttons["folderCandidates"].tap()
