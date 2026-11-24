@@ -1515,10 +1515,19 @@ import UIKit
         let email = app.textFields["Электронная почта"]
         XCTAssertTrue(email.waitForExistence(timeout: 5)); email.tap(); email.typeText("first@fixture.example")
         let secret = app.secureTextFields["Пароль"]
-        secret.tap(); secret.typeText(password)
         let submit = app.buttons["authenticationSubmit"]
-        for _ in 0..<3 where !submit.isHittable { app.swipeUp() }
-        XCTAssertTrue(submit.isEnabled); submit.tap()
+        if UIDevice.current.userInterfaceIdiom == .pad {
+            // Follow the form's Next and Go actions. Expanding the iPad keyboard
+            // can move both the password field and submit button during a tap.
+            email.typeText("\n")
+            secret.typeText(password)
+            XCTAssertTrue(submit.isEnabled)
+            secret.typeText("\n")
+        } else {
+            secret.tap(); secret.typeText(password)
+            for _ in 0..<3 where !submit.isHittable { app.swipeUp() }
+            XCTAssertTrue(submit.isEnabled); submit.tap()
+        }
         guard !app.launchArguments.contains("-auth-error") else { return }
         finishSuccessfulLogin(app)
     }
