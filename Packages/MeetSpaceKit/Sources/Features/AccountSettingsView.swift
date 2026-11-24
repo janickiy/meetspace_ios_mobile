@@ -33,8 +33,7 @@ struct AccountSettingsContent<Controls: View>: View {
                         .buttonStyle(MSButtonStyle(primary: false)).disabled(model.busy)
                 }
                 controls()
-            }.padding(.horizontal, wide ? 48 : 20).padding(.vertical, wide ? 36 : 18)
-                .frame(maxWidth: 860).frame(maxWidth: .infinity, alignment: .topLeading)
+            }.modifier(AccountPanelLayout(wide: wide))
         }.background(MSTheme.background)
             .scrollDismissesKeyboard(.interactively)
             .accessibilityIdentifier("accountSettingsScroll")

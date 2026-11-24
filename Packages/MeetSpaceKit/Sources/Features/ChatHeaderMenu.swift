@@ -54,19 +54,20 @@ private struct ChatActionAnchor: PreferenceKey {
 struct ChatActionTrigger: View {
     let active: Bool
     let toggle: () -> Void
+    @Environment(\.workspaceWidth) private var width
 
     var body: some View {
         Button(action: toggle) {
-            WorkspaceIcon("ellipsis", size: 20)
+            WorkspaceIcon("ellipsis", size: width >= 780 ? 22 : 20)
                 .foregroundStyle(active ? MSTheme.brandAccent : MSTheme.ink)
-                .frame(width: 34, height: 48)
+                .frame(width: width >= 780 ? 44 : 34, height: width >= 780 ? 44 : 48)
                 .background(active ? MSTheme.accentSoft : .clear, in: RoundedRectangle(cornerRadius: 12))
                 .anchorPreference(key: ChatActionAnchor.self, value: .bounds) { $0 }
-                .padding(.horizontal, 5)
+                .padding(.horizontal, width >= 780 ? 0 : 5)
                 .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
-        .padding(.horizontal, -5)
+        .padding(.horizontal, width >= 780 ? 0 : -5)
         .accessibilityLabel(tr("Действия с чатом"))
         .accessibilityIdentifier("chat.menu")
     }

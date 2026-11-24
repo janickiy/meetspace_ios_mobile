@@ -20,7 +20,7 @@ struct InstallerView: View {
         GeometryReader { geometry in
             let wide = geometry.size.width > 1000 && !typeSize.isAccessibilitySize
             HStack(spacing: 0) {
-                if wide { OnboardingAside(install: true).frame(width: geometry.size.width * 0.30) }
+                if wide { OnboardingAside(windowWidth: geometry.size.width, install: true).frame(width: geometry.size.width * 0.30) }
                 ScrollView {
                     VStack(alignment: .leading, spacing: 20) {
                         wizardHeader(wide: wide)
@@ -40,7 +40,7 @@ struct InstallerView: View {
                         } else { content }
                     }
                     .frame(maxWidth: geometry.size.width < 760 ? 560 : 648, alignment: .leading)
-                    .padding(.horizontal, wide ? 40 : 20).padding(.top, 20).padding(.bottom, 28)
+                    .padding(.horizontal, wide ? min(56, geometry.size.width * 0.04) : geometry.size.width >= 760 ? 24 : 20).padding(.top, 20).padding(.bottom, 28)
                     .frame(maxWidth: .infinity)
                 }.id(model.step).scrollDismissesKeyboard(.interactively).accessibilityIdentifier("installer.scroll")
                     .frame(maxWidth: .infinity)

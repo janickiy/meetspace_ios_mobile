@@ -32,6 +32,10 @@ struct DemoChatAttachments: View {
         }
     }
 
+    static func containsPhoto(_ files: [String]) -> Bool {
+        files.contains { File(name: $0).url != nil }
+    }
+
     var body: some View {
         let attachments = files.map(File.init(name:))
         let photos = attachments.filter { $0.url != nil }

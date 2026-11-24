@@ -240,6 +240,112 @@ import UIKit
         XCTAssertTrue(first.waitForExistence(timeout: 5))
     }
 
+    private func checkIPadOrientations(_ app: XCUIApplication, screen: String, _ check: (CGRect) -> Void) {
+        let window = app.windows.firstMatch
+        for orientation: UIDeviceOrientation in [.portrait, .landscapeLeft] {
+            XCUIDevice.shared.orientation = orientation
+            let portrait = orientation == .portrait
+            let deadline = Date().addingTimeInterval(5)
+            while (window.frame.width < window.frame.height) != portrait && Date() < deadline {
+                Thread.sleep(forTimeInterval: 0.1)
+            }
+            let frame = window.frame
+            XCTAssertTrue(portrait ? frame.width < frame.height : frame.width > frame.height, "\(screen): \(frame)")
+            check(frame)
+            // Capture the full display. An app-relative landscape screenshot on iPad
+            // can crop the rotated window using its previous portrait coordinates.
+            let snapshot = XCTAttachment(screenshot: XCUIScreen.main.screenshot())
+            snapshot.name = "ipad-" + (portrait ? "portrait-" : "landscape-") + screen
+            snapshot.lifetime = .keepAlways
+            add(snapshot)
+        }
+    }
+
+    func testIPadWorkspaceAdaptsToRotation() throws {
+        try XCTSkipUnless(UIDevice.current.userInterfaceIdiom == .pad, "Requires an iPad window")
+        let device = XCUIDevice.shared
+        let original = device.orientation
+        defer { device.orientation = original }
+        let app = launch()
+
+        checkIPadOrientations(app, screen: "welcome") { _ in
+            XCTAssertTrue(app.buttons["connectServer"].isHittable)
+        }
+        revealDemoLink(app).tap()
+
+        let newMeeting = app.buttons["createConference"]
+        checkIPadOrientations(app, screen: "meetings") { frame in
+            XCTAssertTrue(newMeeting.isHittable)
+            if frame.width >= 780 {
+                let schedule = app.buttons["scheduleMeeting"]
+                let invite = app.buttons["joinInvitation"]
+                XCTAssertLessThanOrEqual(newMeeting.frame.maxX, schedule.frame.minX)
+                XCTAssertEqual(newMeeting.frame.midY, invite.frame.midY, accuracy: 3)
+                XCTAssertGreaterThanOrEqual(app.buttons["tab.meetings"].frame.height, 52)
+            }
+        }
+        app.buttons["meetingsRecordings"].tap()
+        checkIPadOrientations(app, screen: "recordings") { _ in
+            XCTAssertTrue(app.textFields["recordings.search"].isHittable)
+            XCTAssertTrue(app.buttons["recordings.live"].isHittable)
+        }
+        app.buttons["recordings.back"].tap()
+
+        let firstMeeting = app.buttons["meeting.1"]
+        reveal(firstMeeting, in: app)
+        firstMeeting.tap()
+        checkIPadOrientations(app, screen: "prejoin") { frame in
+            let join = app.buttons["conferencePreviewJoin"]
+            XCTAssertTrue(join.exists)
+            if frame.width >= 840 {
+                XCTAssertTrue(join.isHittable)
+                let deviceButton = app.buttons["prejoinDevices"]
+                XCTAssertGreaterThan(deviceButton.frame.midX, frame.midX)
+            }
+        }
+        app.buttons["prejoinBack"].tap()
+
+        app.buttons["tab.messages"].tap()
+        let firstChat = app.buttons["chat.0"]
+        firstChat.tap()
+        checkIPadOrientations(app, screen: "messages") { frame in
+            let heading = app.buttons["chat.info"]
+            XCTAssertTrue(heading.isHittable)
+            if frame.width >= 780 {
+                XCTAssertTrue(firstChat.isHittable)
+                XCTAssertLessThan(firstChat.frame.maxX, heading.frame.minX)
+            }
+        }
+
+        app.buttons["tab.profile"].tap()
+        selectAccountSection("accounts", in: app)
+        checkIPadOrientations(app, screen: "accounts") { frame in
+            let add = app.buttons["addAccount"]
+            XCTAssertTrue(add.isHittable)
+            if frame.width >= 780 {
+                let sidebar = app.buttons["profileMenu.accounts"]
+                XCTAssertTrue(sidebar.isHittable)
+                XCTAssertLessThan(sidebar.frame.maxX, add.frame.minX)
+            }
+        }
+    }
+
+    func testIPadDemoCallKeepsSelectedContactOnRotation() throws {
+        try XCTSkipUnless(UIDevice.current.userInterfaceIdiom == .pad, "Requires an iPad window")
+        let original = XCUIDevice.shared.orientation
+        defer { XCUIDevice.shared.orientation = original }
+        let app = launch(["-demo"])
+        app.buttons["tab.messages"].tap()
+        app.buttons["chat.2"].tap()
+        app.buttons["Личный звонок"].tap()
+        checkIPadOrientations(app, screen: "personal-call") { _ in
+            XCTAssertTrue(app.staticTexts["Максим Петров"].firstMatch.isHittable)
+            XCTAssertTrue(app.buttons["demoDirectCallEnd"].isHittable)
+        }
+        app.buttons["demoDirectCallEnd"].tap()
+        XCTAssertTrue(app.buttons["chat.info"].label.contains("Максим Петров"))
+    }
+
     func testRecordingLibraryDemoFiltersAndDeletion() {
         let app = launch(["-demo"])
         let library = app.buttons["Записи встреч"]
@@ -250,7 +356,12 @@ import UIKit
         let video = app.buttons["recording.0"]
         XCTAssertTrue(tracks.waitForExistence(timeout: 5))
         XCTAssertEqual(count.label, "Найдено: 5")
-        XCTAssertLessThan(tracks.frame.minY, video.frame.minY)
+        func appearsBefore(_ first: XCUIElement, _ second: XCUIElement) -> Bool {
+            let a = first.frame, b = second.frame
+            if a.maxY <= b.minY { return true }
+            return a.minY < b.maxY && a.maxX <= b.minX
+        }
+        XCTAssertTrue(appearsBefore(tracks, video))
         XCTAssertFalse(app.buttons["recording.delete.1"].exists)
         capture(app, name: "recordings-library-completed")
 
@@ -265,7 +376,7 @@ import UIKit
         XCTAssertEqual(count.label, "Найдено: 2")
         app.buttons["recordings.sort"].tap()
         app.buttons["Сначала старые"].tap()
-        XCTAssertLessThan(video.frame.minY, tracks.frame.minY)
+        XCTAssertTrue(appearsBefore(video, tracks))
         app.buttons["recordings.period"].tap()
         app.buttons["За 7 дней"].tap()
         XCTAssertEqual(count.label, "Найдено: 2")
@@ -2047,7 +2158,9 @@ extension FoundationUITests {
         for id in ["tab.meetings", "tab.messages", "tab.profile"] {
             let tab = app.buttons[id]
             XCTAssertGreaterThanOrEqual(tab.frame.height, 44)
-            XCTAssertLessThanOrEqual(tab.frame.height, 48)
+            if UIDevice.current.userInterfaceIdiom != .pad || app.frame.width < 780 {
+                XCTAssertLessThanOrEqual(tab.frame.height, 48)
+            }
         }
         chats.tap()
         app.buttons["chat.0"].tap()

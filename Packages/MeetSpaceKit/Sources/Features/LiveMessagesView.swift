@@ -34,7 +34,7 @@ struct LiveMessagesView: View {
     var body: some View {
         GeometryReader { proxy in
             let width = proxy.size.width
-            let wide = WorkspaceLayout.usesColumns(width: width, sizeClass: sizeClass, typeSize: typeSize)
+            let wide = WorkspaceLayout.usesColumns(width: width, sizeClass: sizeClass, typeSize: typeSize, hasHinge: hasHinge)
             let detailID = selected ?? (wide && app.messagesPath.isEmpty ? model.conversations.first?.id : nil)
             let detailOnly = !wide && selected != nil
             let gutter = wide ? WorkspaceLayout.chatGutter(width) : 0
@@ -57,7 +57,7 @@ struct LiveMessagesView: View {
                                        embeddedBack: wide ? nil : { selected = nil }, openRecipient: { selected = $0 },
                                        newChat: wide ? { creating = true } : nil, removed: { selected = nil })
                             .id(id).frame(maxWidth: .infinity)
-                            .environment(\.workspaceWidth, wide ? width - sidebar - 2 * gutter - 1 : width)
+                            .environment(\.chatPaneWidth, wide ? width - sidebar - 2 * gutter - 1 : width)
                             .onAppear { if selected == nil && wide { selected = id } }
                     } else if wide {
                         VStack {
@@ -65,7 +65,10 @@ struct LiveMessagesView: View {
                             ChatNewButton { creating = true }.padding()
                         }.frame(maxWidth: .infinity)
                     }
-                }.padding(.horizontal, gutter)
+                }
+                .clipShape(UnevenRoundedRectangle(topLeadingRadius: width >= 780 ? 24 : 0,
+                                                  topTrailingRadius: width >= 780 ? 24 : 0))
+                .padding(.horizontal, gutter)
             }.background(MSTheme.background)
                 .preference(key: InlineChatVisible.self, value: detailOnly)
                 .workspaceFormPresentation(isPresented: $creating, onDismiss: {
@@ -139,7 +142,7 @@ struct LiveMessagesView: View {
     }
 
     private func select(_ id: UUID, wide: Bool) {
-        if wide || hasHinge || selected != nil { selected = id }
+        if wide || hasHinge || ChatLayout.keepsSelectionInline || selected != nil { selected = id }
         else { app.navigate(.conversation(id)) }
     }
 }
@@ -155,6 +158,7 @@ struct LiveThreadView: View {
     var newChat: (() -> Void)?
     var removed: (() -> Void)?
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.workspaceWidth) private var width
     @Environment(\.chatMenu) private var chatMenu
     @FocusState private var composerFocused: Bool
     @State private var coveredConversation: UUID?
@@ -274,7 +278,7 @@ struct LiveThreadView: View {
                     ChatPinnedBar(preview: first.shareText, count: pins.count) { proxy.scrollTo(first.id, anchor: .center) }
                 }
                 ScrollView {
-                    LazyVStack(spacing: embedded ? 18 : 14) {
+                    LazyVStack(spacing: width >= 780 ? 18 : 14) {
                         if showsSearch && !query.isEmpty {
                             if model.searching { ProgressView() }
                             ForEach(model.searchResults) { message in bubble(message) }
@@ -294,7 +298,7 @@ struct LiveThreadView: View {
                             if model.historyState == .empty { Text(tr("Пока нет сообщений")).foregroundStyle(MSTheme.muted) }
                             if let first = model.timeline.messages.first {
                                 Text(first.createdAt.formatted(date: .long, time: .omitted)).font(MSTheme.font(10)).foregroundStyle(MSTheme.muted).frame(minHeight: 15)
-                                if !embedded || model.selectingMessages { ChatGestureHint(selecting: model.selectingMessages).padding(.vertical, 4) }
+                                if width < 780 || model.selectingMessages { ChatGestureHint(selecting: model.selectingMessages).padding(.vertical, 4) }
                             }
                             ForEach(model.timeline.messages) { message in bubble(message).id(message.id) }
                             ForEach(model.pending.filter { $0.conversation == id }) { pending in
@@ -308,7 +312,7 @@ struct LiveThreadView: View {
                             }
                             Color.clear.frame(height: 1).id("latest")
                         }
-                    }.padding(.horizontal, embedded ? 24 : 12).padding(.top, embedded ? 20 : 18).padding(.bottom, 8)
+                    }.padding(.horizontal, width >= 780 ? 24 : 12).padding(.top, width >= 780 ? 20 : 18).padding(.bottom, 8)
                 }.onChange(of: model.timeline.messages.last?.id) { _, _ in
                     if !showsSearch { proxy.scrollTo("latest", anchor: .bottom) }
                 }
@@ -465,7 +469,7 @@ struct LiveThreadView: View {
                     .disabled(!model.canSend).accessibilityIdentifier("sendMessage")
             }
             if !model.uploads.isEmpty { Text(tr("До 5 файлов, каждый до 10 МБ.")).font(MSTheme.font(10)).foregroundStyle(MSTheme.muted) }
-        }.padding(.horizontal, embedded ? 24 : 10).padding(.vertical, embedded ? 12 : 10).background(MSTheme.surface)
+        }.padding(.horizontal, width >= 780 ? 24 : 10).padding(.vertical, width >= 780 ? 12 : 10).background(MSTheme.surface)
             .overlay(alignment: .top) { Rectangle().fill(MSTheme.line).frame(height: 1) }
     }
     private func bubble(_ message: ChatMessage) -> some View {

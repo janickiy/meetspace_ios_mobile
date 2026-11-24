@@ -71,45 +71,64 @@ struct OnboardingView: View {
     @Environment(\.dynamicTypeSize) private var typeSize
     var body: some View {
         GeometryReader { proxy in
-            let wide = proxy.size.width >= 800 && !typeSize.isAccessibilitySize
+            let wide = proxy.size.width >= 760 && !typeSize.isAccessibilitySize
             HStack(spacing: 0) {
-                if wide { OnboardingAside().frame(maxWidth: .infinity, maxHeight: .infinity) }
+                if wide {
+                    let sideFraction: CGFloat = proxy.size.width <= 1000 ? 0.83 / 1.83 : 0.5
+                    OnboardingAside(windowWidth: proxy.size.width)
+                        .frame(width: proxy.size.width * sideFraction)
+                }
                 form(wide: wide, size: proxy.size)
             }.background(MSTheme.background)
         }
     }
 
     private func form(wide: Bool, size: CGSize) -> some View {
-        ScrollViewReader { scroll in
+        let narrowColumns = wide && size.width <= 1000
+        let inset: CGFloat = switch size.width {
+        case _ where !wide: 24
+        case ...1000: 30
+        case 1100...: 62
+        default: 44
+        }
+        return ScrollViewReader { scroll in
             ScrollView {
                 VStack(alignment: .leading, spacing: 24) {
-                    if !wide || model.onboarding != .welcome {
+                    if !wide {
                         HStack(spacing: 9) {
                             BrandMark().frame(width: 27, height: 29)
                             (Text("MeetSpace") + Text(".").foregroundColor(MSTheme.accent)).font(MSTheme.font(21, weight: .semibold))
                             Spacer()
                             if model.onboarding == .welcome {
                                 Text("iOS").font(MSTheme.font(8, weight: .semibold)).tracking(1.9).foregroundStyle(MSTheme.muted)
+                            } else {
+                                IconButton("xmark", label: "На главную", action: closeForm).disabled(model.identity.busy)
                             }
-                            if model.onboarding != .welcome {
-                                IconButton("xmark", label: "На главную") {
-                                    if model.identity.addingAccount { model.identity.addingAccount = false }
-                                    else { model.show(.welcome) }
-                                }.disabled(model.identity.busy)
-                            }
+                        }.padding(.bottom, 12)
+                    } else {
+                        if model.onboarding != .welcome {
+                            Button(action: closeForm) {
+                                Label(tr("На главную"), systemImage: "arrow.left").frame(minHeight: 44)
+                            }.disabled(model.identity.busy)
                         }
-                        .padding(.bottom, wide ? 30 : 12)
+                        Spacer(minLength: 0)
                     }
-                    switch model.onboarding {
-                    case .welcome: WelcomeView(model: model, showArtwork: !wide, compactPhone: size.width <= 375)
-                    case .connect: ConnectView(model: model)
-                    case .login: AuthenticationView(model: model, registration: false)
-                    case .register: AuthenticationView(model: model, registration: true)
-                    }
-                }.frame(minHeight: wide && model.onboarding == .welcome ? max(0, size.height - 88) : nil,
-                        alignment: wide && model.onboarding == .welcome ? .center : .top)
-                    .padding(wide ? 44 : 24).frame(maxWidth: 510)
-                    .frame(maxWidth: .infinity)
+                    Group {
+                        switch model.onboarding {
+                        case .welcome: WelcomeView(model: model, showArtwork: !wide, compactPhone: size.width <= 375, narrowColumns: narrowColumns)
+                        case .connect: ConnectView(model: model, showsBack: !wide)
+                        case .login: AuthenticationView(model: model, registration: false)
+                        case .register: AuthenticationView(model: model, registration: true)
+                        }
+                    }.frame(maxWidth: wide ? 418 : .infinity, alignment: .leading)
+                        .frame(maxWidth: .infinity)
+                    if wide { Spacer(minLength: 0) }
+                    if wide || model.onboarding == .welcome { privacyNote }
+                }
+                .frame(minHeight: wide ? max(0, size.height - 48) : nil)
+                .padding(.vertical, 24).padding(.horizontal, inset)
+                .frame(maxWidth: wide ? .infinity : 510)
+                .frame(maxWidth: .infinity)
             }
             .scrollDismissesKeyboard(.interactively)
             .onChange(of: model.probeState) { _, state in
@@ -122,12 +141,24 @@ struct OnboardingView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(MSTheme.surface)
     }
+
+    private var privacyNote: some View {
+        Label(tr("Ваше общение остаётся в вашем пространстве"), systemImage: "lock")
+            .font(MSTheme.font(10, relativeTo: .caption)).foregroundStyle(MSTheme.muted)
+            .frame(maxWidth: .infinity)
+    }
+
+    private func closeForm() {
+        if model.identity.addingAccount { model.identity.addingAccount = false }
+        else { model.show(.welcome) }
+    }
 }
 
 private struct WelcomeView: View {
     @Bindable var model: AppModel
     let showArtwork: Bool
     let compactPhone: Bool
+    let narrowColumns: Bool
     @Environment(\.dynamicTypeSize) private var typeSize
     @State private var guestForm = false
     private var welcomeTitle: AttributedString {
@@ -139,11 +170,11 @@ private struct WelcomeView: View {
         VStack(alignment: .leading, spacing: 0) {
             Text(tr("ЕДИНОЕ ПРОСТРАНСТВО")).font(MSTheme.font(showArtwork ? 8 : 10, weight: .semibold, relativeTo: .caption))
                 .tracking(1.8).foregroundStyle(MSTheme.muted).padding(.bottom, 14)
-            Text(welcomeTitle).font(MSTheme.font(showArtwork ? (compactPhone ? 34 : 37) : 43, weight: .semibold, relativeTo: .largeTitle))
+            Text(welcomeTitle).font(MSTheme.font(showArtwork ? (compactPhone ? 34 : 37) : (narrowColumns ? 38 : 43), weight: .semibold, relativeTo: .largeTitle))
                 .tracking(showArtwork ? -1.7 : -1.9).fixedSize(horizontal: false, vertical: true)
                 .accessibilityIdentifier("welcome.heading").padding(.bottom, 14)
-            Text(tr("MeetSpace — единое пространство для встреч и общения."))
-                .font(MSTheme.font(showArtwork ? 12 : 15)).lineSpacing(5).foregroundStyle(MSTheme.muted)
+            Text(tr(showArtwork ? "MeetSpace — единое пространство для встреч и общения." : "MeetSpace — единое пространство\nдля встреч и общения."))
+                .font(MSTheme.font(showArtwork ? 12 : (narrowColumns ? 13 : 15))).lineSpacing(5).foregroundStyle(MSTheme.muted)
                 .padding(.bottom, showArtwork ? 4 : 30)
             if showArtwork && !typeSize.isAccessibilitySize {
                 WelcomeArtwork()
@@ -169,9 +200,6 @@ private struct WelcomeView: View {
             Button(tr("Войти как гость")) { guestForm = true }
                 .font(MSTheme.font(11)).frame(maxWidth: .infinity, minHeight: 44).accessibilityIdentifier("guestConference")
                 .workspaceFormPresentation(isPresented: $guestForm) { GuestConferenceForm(app: model, completed: { guestForm = false }) }
-            Label(tr("Ваше общение остаётся в вашем пространстве"), systemImage: "lock")
-                .font(MSTheme.font(10, relativeTo: .caption)).foregroundStyle(MSTheme.muted)
-                .frame(maxWidth: .infinity).padding(.top, 22)
         }
     }
     private func connectionChoice(_ title: String, subtitle: String, icon: String, primary: Bool, action: @escaping () -> Void) -> some View {
@@ -181,8 +209,8 @@ private struct WelcomeView: View {
                     .background(primary ? Color.white.opacity(0.13) : MSTheme.surfaceSecondary, in: RoundedRectangle(cornerRadius: 11))
                     .accessibilityHidden(true)
                 VStack(alignment: .leading, spacing: 4) {
-                    Text(tr(title)).font(MSTheme.font(showArtwork ? 12 : 14, weight: .semibold))
-                    Text(tr(subtitle)).font(MSTheme.font(showArtwork ? 9 : 10.5, relativeTo: .caption))
+                    Text(tr(title)).font(MSTheme.font(showArtwork || narrowColumns ? 12 : 14, weight: .semibold))
+                    Text(tr(subtitle)).font(MSTheme.font(showArtwork || narrowColumns ? 9 : 10.5, relativeTo: .caption))
                         .foregroundStyle(primary ? MSTheme.surface : MSTheme.muted)
                         .accessibilityIdentifier(primary ? "welcome.connectSubtitle" : "welcome.deploySubtitle")
                 }.fixedSize(horizontal: false, vertical: true)
@@ -203,7 +231,20 @@ private struct WelcomeView: View {
 }
 
 struct OnboardingAside: View {
+    let windowWidth: CGFloat
     var install = false
+
+    private var horizontalInset: CGFloat {
+        if install { return min(40, max(24, windowWidth * 0.027)) }
+        if windowWidth <= 1000 { return 29 }
+        return windowWidth >= 1100 ? 55 : 42
+    }
+
+    private var titleSize: CGFloat {
+        if install { return min(38, max(30, windowWidth * 0.03)) }
+        return windowWidth <= 1000 ? 37 : min(52, windowWidth * 0.038)
+    }
+
     var body: some View {
         VStack(alignment: .leading, spacing: 18) {
             HStack(spacing: 9) {
@@ -212,20 +253,23 @@ struct OnboardingAside: View {
             }
             Spacer(minLength: 25)
             Text(install ? tr("ВАШ СЕРВЕР. ВАШИ ПРАВИЛА.") : tr("БЛИЖЕ К КОМАНДЕ.")).font(MSTheme.font(10, weight: .semibold)).tracking(1.8).foregroundStyle(MSTheme.muted)
-            Text(install ? tr("Своё пространство.\nПолный контроль.") : tr("Быть на одной\nволне.")).font(MSTheme.font(install ? 32 : 43, weight: .semibold, relativeTo: .largeTitle)).tracking(install ? -1.2 : -1.8)
+            Text(install ? tr("Своё пространство.\nПолный контроль.") : tr("Быть на одной\nволне.")).font(MSTheme.font(titleSize, weight: .semibold, relativeTo: .largeTitle)).tracking(install ? -1.2 : -1.8)
                 .fixedSize(horizontal: false, vertical: true)
-            Text(install ? tr("Подключите удалённый сервер, а мы покажем каждый шаг настройки.") : tr("Встречи, сообщения и идеи — в одном пространстве."))
-                .font(MSTheme.font(install ? 14 : 15)).lineSpacing(5).foregroundStyle(MSTheme.muted)
+            Text(install ? tr("Подключите удалённый сервер, а мы покажем каждый шаг настройки.") : tr("Встречи, сообщения и идеи —\nв одном пространстве."))
+                .font(MSTheme.font(install ? 14 : (windowWidth <= 1000 ? 12 : 15))).lineSpacing(5).foregroundStyle(MSTheme.muted)
                 .fixedSize(horizontal: false, vertical: true)
-            WelcomeArtwork().frame(height: 285).padding(.horizontal, -18)
+            WelcomeArtwork().frame(height: windowWidth <= 1000 ? 265 : 285)
+                .padding(.horizontal, -24).padding(.top, !install && windowWidth >= 1100 ? 24 : 0)
             Spacer(minLength: 25)
             ViewThatFits(in: .horizontal) {
                 HStack { Label(tr("На вашей инфраструктуре"), systemImage: "checkmark.shield"); Spacer(); Text(tr("MeetSpace для iOS")) }
                 VStack(alignment: .leading, spacing: 8) { Label(tr("На вашей инфраструктуре"), systemImage: "checkmark.shield"); Text(tr("MeetSpace для iOS")) }
             }.font(MSTheme.font(10)).foregroundStyle(MSTheme.muted)
-        }.padding(install ? 26 : 36)
+        }.padding(.horizontal, horizontalInset).padding(.vertical, install ? 32 : 28)
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
+            .clipped()
             .background(install ? MSTheme.accentSoft : MSTheme.surfaceSecondary)
+            .overlay(alignment: .trailing) { Rectangle().fill(MSTheme.line).frame(width: 1) }
     }
 }
 
@@ -299,6 +343,7 @@ private struct WelcomeArtwork: View {
 private struct ConnectView: View {
     static let continueID = "continueToLogin"
     @Bindable var model: AppModel
+    let showsBack: Bool
     @State private var address = ""
     @FocusState private var editingAddress: Bool
     var body: some View {
@@ -334,7 +379,7 @@ private struct ConnectView: View {
                     .disabled(model.probeState == .loading || address.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
                     .accessibilityIdentifier("checkServer")
             }
-            Button(tr("Назад")) { model.show(.welcome) }.frame(minHeight: 44)
+            if showsBack { Button(tr("Назад")) { model.show(.welcome) }.frame(minHeight: 44) }
         }.onAppear { if address.isEmpty { address = model.connectionPrefill?.url.absoluteString ?? "" } }
     }
 

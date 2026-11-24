@@ -9,23 +9,27 @@ struct RecordingListCard: View {
     let remove: () -> Void
     @Environment(\.dynamicTypeSize) private var typeSize
 
+    @Environment(\.workspaceWidth) private var width
+
     var body: some View {
         Group {
             if grid || typeSize.isAccessibilitySize {
                 VStack(alignment: .leading, spacing: 8) {
                     Button(action: open) {
                         VStack(alignment: .leading, spacing: 8) {
-                            if grid { RecordingPreview(entry: entry).aspectRatio(16 / 10, contentMode: .fit) }
+                            if grid { RecordingPreview(entry: entry).aspectRatio(16 / 9, contentMode: .fit) }
                             summary
                         }.frame(maxWidth: .infinity, alignment: .leading).contentShape(Rectangle())
                     }.buttonStyle(.plain).accessibilityIdentifier("recording.\(entry.id)")
+                    if grid { Rectangle().fill(MSTheme.line).frame(height: 1) }
                     HStack { if grid { watch }; Spacer(); delete }
                 }
             } else {
                 HStack(spacing: wide ? 14 : 4) {
                     Button(action: open) {
-                        HStack(spacing: wide ? 18 : 8) {
-                            RecordingPreview(entry: entry).frame(width: wide ? 150 : 84, height: wide ? 94 : 84)
+                        let coverWidth: CGFloat = wide ? (width <= 1000 ? 128 : 150) : 84
+                        HStack(spacing: wide ? (width <= 1000 ? 12 : 18) : 8) {
+                            RecordingPreview(entry: entry).frame(width: coverWidth, height: wide ? coverWidth * 10 / 16 : coverWidth)
                             summary
                         }.frame(maxWidth: .infinity, alignment: .leading).contentShape(Rectangle())
                     }.buttonStyle(.plain).accessibilityIdentifier("recording.\(entry.id)")
@@ -33,7 +37,7 @@ struct RecordingListCard: View {
                     delete
                 }
             }
-        }.msCard(padding: wide ? 12 : 10)
+        }.msCard(padding: wide && !grid ? 12 : 10)
     }
 
     private var summary: some View {
@@ -67,10 +71,10 @@ struct RecordingListCard: View {
         Button(action: open) {
             HStack(spacing: 6) {
                 WorkspaceIcon(entry.openAction.icon, size: 15)
-                Text(tr(entry.openAction.rawValue))
-            }.font(MSTheme.font(11)).padding(.horizontal, 10).frame(minHeight: 44)
+                if !grid || width > 1000 { Text(tr(entry.openAction.rawValue)) }
+            }.font(MSTheme.font(11)).padding(.horizontal, 10).frame(minWidth: 44, minHeight: 44)
                 .overlay { RoundedRectangle(cornerRadius: 9).strokeBorder(MSTheme.line) }
-        }.buttonStyle(.plain)
+        }.buttonStyle(.plain).accessibilityLabel(tr(entry.openAction.rawValue))
     }
 
     @ViewBuilder private var delete: some View {

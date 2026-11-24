@@ -36,7 +36,7 @@ struct MessagesView: View {
     var body: some View {
         GeometryReader { geometry in
             let width = geometry.size.width
-            let wide = WorkspaceLayout.usesColumns(width: width, sizeClass: sizeClass, typeSize: typeSize)
+            let wide = WorkspaceLayout.usesColumns(width: width, sizeClass: sizeClass, typeSize: typeSize, hasHinge: hasHinge)
             let selectedID = model.demoChats.visibleContacts.first(where: { $0.id == selected })?.id
             let detailID = selectedID ?? (wide && model.messagesPath.isEmpty ? model.demoChats.visibleContacts.first?.id : nil)
             let detailOnly = !wide && selectedID != nil
@@ -65,7 +65,7 @@ struct MessagesView: View {
                                         }
                                         ForEach(contacts) { item in
                                             Button {
-                                                if wide || hasHinge { selected = item.id }
+                                                if wide || hasHinge || ChatLayout.keepsSelectionInline { selected = item.id }
                                                 else { model.navigate(.thread(item.id)) }
                                             } label: {
                                                 let last = model.demoChats.history[item.id]?.last
@@ -92,12 +92,15 @@ struct MessagesView: View {
                                    embeddedBack: wide ? nil : { selected = nil }, openRecipient: { selected = $0 },
                                    removed: { selected = nil })
                             .id(id).frame(maxWidth: .infinity)
-                            .environment(\.workspaceWidth, wide ? width - sidebar - 2 * gutter - 1 : width)
+                            .environment(\.chatPaneWidth, wide ? width - sidebar - 2 * gutter - 1 : width)
                             .onAppear { if selected == nil && wide { selected = id } }
                     } else if wide {
                         ContentUnavailableView(tr("Выберите чат"), systemImage: "bubble.left.and.bubble.right")
                     }
-                }.padding(.horizontal, gutter)
+                }
+                .clipShape(UnevenRoundedRectangle(topLeadingRadius: width >= 780 ? 24 : 0,
+                                                  topTrailingRadius: width >= 780 ? 24 : 0))
+                .padding(.horizontal, gutter)
             }.preference(key: InlineChatVisible.self, value: detailOnly)
         }.background(MSTheme.background).toolbar(.hidden)
     }
@@ -123,6 +126,7 @@ struct ThreadView: View {
     var openRecipient: ((Int) -> Void)?
     var removed: (() -> Void)?
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.workspaceWidth) private var width
     @State private var draft = ""
     @State private var draftBeforeEdit: String?
     @State private var composerContext: ComposerContext?
@@ -157,7 +161,7 @@ struct ThreadView: View {
                 ChatThreadHeading(name: contact.name, initials: contact.initials, subtitle: contact.subtitle ?? tr("В сети"),
                                   group: contact.group, back: embedded ? embeddedBack : { dismiss() }, info: { info = true }) {
                     if !contact.group {
-                        Button { model.navigate(.personalCall) } label: { ChatHeaderIcon(name: "phone") }
+                        Button { model.navigate(.contactCall(personIndex)) } label: { ChatHeaderIcon(name: "phone") }
                             .buttonStyle(.plain).accessibilityLabel(tr("Личный звонок"))
                     }
                     Button { searching.toggle(); query = "" } label: { ChatHeaderIcon(name: "magnifyingglass") }
@@ -173,15 +177,15 @@ struct ThreadView: View {
                 let pins = messages.filter(\.pinned)
                 if let first = pins.first { ChatPinnedBar(preview: first.text, count: pins.count) { proxy.scrollTo(first.id, anchor: .center) } }
                 ScrollView {
-                    LazyVStack(spacing: embedded ? 18 : 14) {
+                    LazyVStack(spacing: width >= 780 ? 18 : 14) {
                         Text(tr("Сегодня, 16 октября")).font(MSTheme.font(10)).foregroundStyle(MSTheme.muted).frame(minHeight: 15)
-                        if !messages.isEmpty && (!embedded || selecting) { ChatGestureHint(selecting: selecting).padding(.vertical, 4) }
+                        if !messages.isEmpty && (width < 780 || selecting) { ChatGestureHint(selecting: selecting).padding(.vertical, 4) }
                         let results = messages.filter { query.isEmpty || (!$0.deleted && $0.shareText.localizedCaseInsensitiveContains(query)) }
                         ForEach(results) { message in
                             bubble(message).id(message.id)
                         }
                         if results.isEmpty { Text(tr(query.isEmpty ? "Пока нет сообщений" : "Сообщения не найдены")).foregroundStyle(MSTheme.muted) }
-                    }.padding(.horizontal, embedded ? 24 : 12).padding(.top, embedded ? 20 : 18).padding(.bottom, 8)
+                    }.padding(.horizontal, width >= 780 ? 24 : 12).padding(.top, width >= 780 ? 20 : 18).padding(.bottom, 8)
                 }.task(id: messages.last?.id) {
                     if let last = messages.last, last.forwarded != nil || last.replyTo != nil { proxy.scrollTo(last.id, anchor: .bottom) }
                 }
@@ -228,7 +232,7 @@ struct ThreadView: View {
             .workspaceFormPresentation(isPresented: $info, onDismiss: {
                 if callAfterInfo {
                     callAfterInfo = false
-                    model.navigate(.personalCall)
+                    model.navigate(.contactCall(personIndex))
                 }
             }) {
                 DemoChatInfoSheet(contact: contact, messages: messages) {
@@ -269,7 +273,7 @@ struct ThreadView: View {
         ChatMessageRow(own: message.own, author: message.author, time: message.time,
                        selecting: selecting, selected: selected.contains(message.id), actionable: !message.deleted,
                        pinned: message.pinned, edited: message.edited, forwarded: message.forwarded,
-                       identifier: message.id.uuidString.lowercased(), summary: message.displayText, attachments: message.files,
+                       identifier: message.id.uuidString.lowercased(), summary: message.displayText, attachments: message.files, photoAlbum: DemoChatAttachments.containsPhoto(message.files),
                        reaction: message.reaction, react: { emoji in model.demoChats.toggleReaction(emoji, for: message.id, in: personIndex) },
                        toggle: { if !selected.insert(message.id).inserted { selected.remove(message.id) } }) {
             if let id = message.replyTo, let original = messages.first(where: { $0.id == id }) {
@@ -340,7 +344,7 @@ struct ThreadView: View {
                     .buttonStyle(ChatSendButtonStyle()).accessibilityLabel(tr(composerContext?.editing == true ? "Сохранить" : "Отправить сообщение"))
                     .disabled(draft.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
             }
-        }.padding(.horizontal, embedded ? 24 : 10).padding(.vertical, embedded ? 12 : 10).background(MSTheme.surface)
+        }.padding(.horizontal, width >= 780 ? 24 : 10).padding(.vertical, width >= 780 ? 12 : 10).background(MSTheme.surface)
             .overlay(alignment: .top) { Rectangle().fill(MSTheme.line).frame(height: 1) }
     }
 

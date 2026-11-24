@@ -220,7 +220,8 @@ struct PersonalCallScreen<Stage: View, Footer: View>: View {
                     stage(compact, short).frame(height: max(minimum, proxy.size.height - headerHeight - footerHeight))
                         .padding(.horizontal, compact ? 12 : 24)
                     footer(compact).frame(maxWidth: .infinity).padding(.horizontal, compact ? 16 : 24)
-                        .padding(.top, short ? 13 : 16).padding(.bottom, 12)
+                        .padding(.top, compact ? (short ? 13 : 16) : 17)
+                        .padding(.bottom, compact ? 12 : max(0, 25 - proxy.safeAreaInsets.bottom))
                         .onGeometryChange(for: CGFloat.self) { $0.size.height } action: { footerHeight = $0 }
                 }
             }.scrollBounceBehavior(.basedOnSize)
@@ -259,8 +260,8 @@ struct PersonalCallScreen<Stage: View, Footer: View>: View {
                     .overlay(Capsule().strokeBorder(PersonalCallColors.stroke))
                     .accessibilityLabel(tr("Длительность звонка"))
             }
-        }.padding(.horizontal, compact ? 16 : 24).padding(.top, compact ? 7 : 12)
-            .padding(.bottom, compact ? 14 : 15)
+        }.padding(.horizontal, compact ? 16 : 25).padding(.top, compact ? 7 : 14)
+            .padding(.bottom, compact ? 14 : 17)
     }
 }
 
@@ -379,8 +380,8 @@ struct PersonalCallControlGroup<Buttons: View>: View {
         if typeSize.isAccessibilitySize {
             LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 12, content: buttons)
         } else {
-            HStack(alignment: .top, spacing: compact ? 0 : 20, content: buttons)
-                .frame(maxWidth: compact ? .infinity : 370)
+            HStack(alignment: .top, spacing: compact ? 0 : 25, content: buttons)
+                .frame(maxWidth: compact ? .infinity : 343)
         }
     }
 }
@@ -404,7 +405,7 @@ struct PersonalCallControl: View {
 
     var body: some View {
         Button(action: action) {
-            VStack(spacing: 8) {
+            VStack(spacing: compact ? 8 : 9) {
                 WorkspaceIcon(icon, size: 23).foregroundStyle(tint != nil ? .white : active ? PersonalCallColors.background : PersonalCallColors.secondary)
                     .frame(width: compact ? 54 : 58, height: compact ? 52 : 54)
                     .background(tint ?? (active ? PersonalCallColors.active : PersonalCallColors.control), in: RoundedRectangle(cornerRadius: 18))
@@ -413,7 +414,7 @@ struct PersonalCallControl: View {
                 Text(tr(displayLabel ?? label)).font(MSTheme.font(compact ? 9 : 10))
                     .multilineTextAlignment(.center).fixedSize(horizontal: false, vertical: true)
                     .foregroundStyle(tint == nil ? PersonalCallColors.secondary : PersonalCallColors.ink)
-            }.frame(maxWidth: .infinity, minHeight: 68, alignment: .top).contentShape(Rectangle())
+            }.frame(maxWidth: .infinity, minHeight: compact ? 68 : 78, alignment: .top).contentShape(Rectangle())
         }.buttonStyle(.plain).accessibilityLabel(tr(label)).accessibilityIdentifier(id)
     }
 }

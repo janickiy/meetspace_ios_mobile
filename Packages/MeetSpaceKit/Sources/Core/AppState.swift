@@ -8,6 +8,7 @@ public enum AppTab: String, CaseIterable, Sendable { case meetings, messages, pr
 
 public enum AppRoute: Hashable, Sendable {
     case calendar, recordings, folders, prejoin, call, personalCall
+    case contactCall(Int)
     case meetingDetails(Int), recording(Int), thread(Int)
     case conversation(UUID), liveRecording(UUID), demoFolder(UUID)
     case newMeeting, scheduleMeeting, joinMeeting

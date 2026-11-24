@@ -10,68 +10,43 @@ struct LiveFoldersView: View {
     @State private var renaming: PersonalFolder?
     @State private var name = ""
     @State private var deleting: PersonalFolder?
-    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
-    @Environment(\.dynamicTypeSize) private var typeSize
     @State private var showingItems = false
     var body: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: 20) {
-                Text(tr("ЛИЧНОЕ ПРОСТРАНСТВО")).font(MSTheme.font(10, weight: .semibold)).tracking(1.6).foregroundStyle(MSTheme.accent)
-                    .accessibilityIdentifier("folders.subtitle")
-                Text(tr("Всё нужное — вместе"))
-                    .font(MSTheme.font(horizontalSizeClass == .compact ? 22 : 27, weight: .semibold, relativeTo: .title2))
-                    .accessibilityAddTraits(.isHeader)
-                Text(tr("Соберите встречи и чаты по проектам.")).font(MSTheme.font(13)).foregroundStyle(MSTheme.muted)
-                HStack {
-                    Button { renaming = nil; name = ""; editing = true } label: { Label(tr("Создать папку"), systemImage: "folder.badge.plus") }
-                        .buttonStyle(MSButtonStyle()).accessibilityIdentifier("createFolder")
-                    Menu {
-                        Button(tr("По алфавиту")) { Task { await model.alphabetize() } }
-                        Button(tr("Обновить")) { Task { await model.load() } }
-                    } label: { Image(systemName: "arrow.up.arrow.down").frame(width: 44, height: 44) }
-                        .accessibilityLabel(tr("Порядок папок"))
-                }.disabled(model.busy)
-                if let error = model.error { Text(tr(error)).foregroundStyle(MSTheme.danger).accessibilityIdentifier("foldersError") }
-                if model.state == .loading { ProgressView() }
-                if model.state == .empty { Text(tr("Папок пока нет")).foregroundStyle(MSTheme.muted) }
-                LazyVGrid(columns: folderColumns, spacing: 12) {
-                    ForEach(model.folders) { folder in
-                        HStack(spacing: 16) {
-                            Button {
-                                Task { await model.open(folder); showingItems = model.selected != nil }
-                            } label: {
-                                HStack(spacing: 16) {
-                                    Image(systemName: "folder").font(.system(size: 25)).foregroundStyle(MSTheme.accent)
-                                        .frame(width: 48, height: 44).background(MSTheme.accentSoft, in: RoundedRectangle(cornerRadius: 12))
-                                        .accessibilityHidden(true)
-                                    VStack(alignment: .leading, spacing: 6) {
-                                        Text(folder.name).font(MSTheme.font(15, weight: .semibold)).foregroundStyle(MSTheme.ink)
-                                        Text("\(folder.conversationCount) \(tr("чатов")) · \(folder.conferenceCount) \(tr("встреч"))")
-                                            .font(MSTheme.font(11)).foregroundStyle(MSTheme.muted)
-                                    }.frame(maxWidth: .infinity, alignment: .leading)
-                                }.frame(minHeight: 84).contentShape(Rectangle()).accessibilityElement(children: .combine)
-                            }.buttonStyle(.plain).accessibilityIdentifier("folder.\(folder.id.uuidString.lowercased())")
-                            Menu {
-                                Button(tr("Переименовать")) { renaming = folder; name = folder.name; editing = true }
-                                Button(tr("Выше")) { Task { await model.move(folder, delta: -1) } }
-                                    .disabled(model.folders.first?.id == folder.id)
-                                Button(tr("Ниже")) { Task { await model.move(folder, delta: 1) } }
-                                    .disabled(model.folders.last?.id == folder.id)
-                                Button(tr("Удалить папку"), role: .destructive) { deleting = folder }
-                            } label: { Image(systemName: "ellipsis").frame(width: 44, height: 44) }
-                                .accessibilityLabel(tr("Действия с папкой"))
-                                .accessibilityValue(folder.name)
-                                .accessibilityIdentifier("folderMenu.\(folder.id.uuidString.lowercased())")
-                        }.padding(16)
-                            .background(MSTheme.surface, in: RoundedRectangle(cornerRadius: 20))
-                            .overlay { RoundedRectangle(cornerRadius: 20).strokeBorder(MSTheme.line) }
-                            .disabled(model.busy)
-                    }
+        FolderOverview {
+            HStack {
+                Button { renaming = nil; name = ""; editing = true } label: { Label(tr("Создать папку"), systemImage: "plus") }
+                    .buttonStyle(MSButtonStyle()).accessibilityIdentifier("createFolder")
+                Menu {
+                    Button(tr("По алфавиту")) { Task { await model.alphabetize() } }
+                    Button(tr("Обновить")) { Task { await model.load() } }
+                } label: { Image(systemName: "arrow.up.arrow.down").frame(width: 44, height: 44) }
+                    .accessibilityLabel(tr("Порядок папок"))
+            }.disabled(model.busy)
+        } content: { wide in
+            if let error = model.error { Text(tr(error)).foregroundStyle(MSTheme.danger).accessibilityIdentifier("foldersError") }
+            if model.state == .loading { ProgressView() }
+            if model.state == .empty { Text(tr("Папок пока нет")).foregroundStyle(MSTheme.muted) }
+            FolderGrid(wide: wide) {
+                ForEach(model.folders) { folder in
+                    FolderOverviewCard(name: folder.name, count: folder.itemCount, chats: folder.conversationCount,
+                                       meetings: folder.conferenceCount, wide: wide, identifier: "folder." + folder.id.uuidString.lowercased()) {
+                        Task { await model.open(folder); showingItems = model.selected != nil }
+                    } accessory: {
+                        Menu {
+                            Button(tr("Переименовать")) { renaming = folder; name = folder.name; editing = true }
+                            Button(tr("Выше")) { Task { await model.move(folder, delta: -1) } }
+                                .disabled(model.folders.first?.id == folder.id)
+                            Button(tr("Ниже")) { Task { await model.move(folder, delta: 1) } }
+                                .disabled(model.folders.last?.id == folder.id)
+                            Button(tr("Удалить папку"), role: .destructive) { deleting = folder }
+                        } label: { WorkspaceIcon("ellipsis", size: 20).frame(width: 44, height: 44) }
+                            .accessibilityLabel(tr("Действия с папкой")).accessibilityValue(folder.name)
+                            .accessibilityIdentifier("folderMenu." + folder.id.uuidString.lowercased())
+                    }.disabled(model.busy)
                 }
-                Label(tr("Папки видны только вам. Удаление папки не удаляет встречи и чаты."), systemImage: "lock")
-                    .font(MSTheme.font(horizontalSizeClass == .compact ? 11 : 12)).foregroundStyle(MSTheme.muted)
-            }.padding(.horizontal, horizontalSizeClass == .compact ? 16 : 24).padding(.vertical, 16)
-                .frame(maxWidth: 1050).frame(maxWidth: .infinity)
+            }
+            Label(tr("Папки видны только вам. Удаление папки не удаляет встречи и чаты."), systemImage: "lock")
+                .font(MSTheme.font(wide ? 12 : 11)).foregroundStyle(MSTheme.muted)
         }.background(MSTheme.background).accessibilityIdentifier("screen.liveFolders")
             .task { await model.load() }.refreshable { await model.load() }
             .navigationDestination(isPresented: $showingItems) {
@@ -98,9 +73,91 @@ struct LiveFoldersView: View {
             }
     }
 
-    private var folderColumns: [GridItem] {
-        if horizontalSizeClass == .compact || typeSize.isAccessibilitySize { return [GridItem(.flexible())] }
-        return [GridItem(.adaptive(minimum: 286), spacing: 16)]
+}
+
+struct FolderOverview<Actions: View, Content: View>: View {
+    @ViewBuilder let actions: () -> Actions
+    @ViewBuilder let content: (Bool) -> Content
+    @Environment(\.workspaceWidth) private var width
+    @Environment(\.dynamicTypeSize) private var typeSize
+
+    var body: some View {
+        let wide = width >= 700 && !typeSize.isAccessibilitySize
+        let layout = wide ? AnyLayout(HStackLayout(alignment: .center, spacing: 20))
+                          : AnyLayout(VStackLayout(alignment: .leading, spacing: 16))
+        ScrollView {
+            VStack(alignment: .leading, spacing: wide ? 24 : 20) {
+                layout {
+                    VStack(alignment: .leading, spacing: 6) {
+                        Text(tr("ЛИЧНОЕ ПРОСТРАНСТВО")).font(MSTheme.font(10, weight: .semibold)).tracking(1.6)
+                            .foregroundStyle(MSTheme.accent).accessibilityIdentifier("folders.subtitle")
+                        Text(tr("Всё нужное — вместе")).font(MSTheme.font(wide ? 27 : 22, weight: .semibold, relativeTo: .title2))
+                            .accessibilityAddTraits(.isHeader)
+                        Text(tr("Соберите встречи и чаты по проектам.")).font(MSTheme.font(13)).foregroundStyle(MSTheme.muted)
+                    }.frame(maxWidth: .infinity, alignment: .leading)
+                    actions().fixedSize(horizontal: wide, vertical: false)
+                }
+                content(wide)
+            }.frame(maxWidth: 1050, alignment: .leading)
+                .padding(.horizontal, width >= 780 ? 48 : wide ? 24 : 16)
+                .padding(.vertical, wide ? 32 : 16).frame(maxWidth: .infinity)
+        }.background(MSTheme.background).foregroundStyle(MSTheme.ink)
+    }
+}
+
+struct FolderGrid<Cards: View>: View {
+    let wide: Bool
+    @ViewBuilder let cards: () -> Cards
+    var body: some View {
+        LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 16), count: wide ? 3 : 1),
+                  spacing: wide ? 16 : 12, content: cards)
+    }
+}
+
+struct FolderOverviewCard<Accessory: View>: View {
+    let name: String
+    let count: Int
+    let chats: Int
+    let meetings: Int
+    let wide: Bool
+    let identifier: String
+    let open: () -> Void
+    @ViewBuilder let accessory: () -> Accessory
+
+    var body: some View {
+        let layout = wide ? AnyLayout(VStackLayout(alignment: .leading, spacing: 18)) : AnyLayout(HStackLayout(spacing: 16))
+        Button(action: open) {
+            layout {
+                WorkspaceIcon("folder", size: 25).foregroundStyle(MSTheme.accent)
+                    .frame(width: 48, height: 44).background(MSTheme.accentSoft, in: RoundedRectangle(cornerRadius: 12))
+                    .accessibilityHidden(true)
+                VStack(alignment: .leading, spacing: 6) {
+                    Text(verbatim: name).font(MSTheme.font(wide ? 16 : 15, weight: .semibold))
+                    Text(verbatim: counts).font(MSTheme.font(11)).foregroundStyle(MSTheme.muted)
+                }.frame(maxWidth: .infinity, alignment: .leading).multilineTextAlignment(.leading)
+            }.padding(.leading, wide ? 20 : 16).padding(.trailing, wide ? 20 : 60).padding(.vertical, wide ? 24 : 16)
+                .frame(maxWidth: .infinity, minHeight: wide ? 172 : 116, alignment: wide ? .topLeading : .leading)
+                .contentShape(Rectangle()).accessibilityElement(children: .combine)
+        }.buttonStyle(.plain).accessibilityIdentifier(identifier)
+            .background(MSTheme.surface, in: RoundedRectangle(cornerRadius: 20))
+            .overlay { RoundedRectangle(cornerRadius: 20).strokeBorder(MSTheme.line) }
+            .overlay(alignment: wide ? .topTrailing : .trailing) { accessory().padding(.trailing, 10).padding(.top, wide ? 13 : 0) }
+    }
+
+    private var counts: String {
+        [quantity(count, "элемент", "элемента", "элементов"),
+         quantity(chats, "чат", "чата", "чатов"),
+         quantity(meetings, "встреча", "встречи", "встреч")].joined(separator: " · ")
+    }
+
+    private func quantity(_ number: Int, _ one: String, _ few: String, _ many: String) -> String {
+        let form: String = switch (number % 100, number % 10) {
+        case (11...14, _): many
+        case (_, 1): one
+        case (_, 2...4): few
+        default: many
+        }
+        return "\(number) " + tr(form)
     }
 }
 

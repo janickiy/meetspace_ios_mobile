@@ -30,7 +30,6 @@ struct MeetingsDashboard<Value: Identifiable>: View {
     @State private var draft = MeetingListFilter()
     @State private var editingFilters = false
     @Environment(\.dynamicTypeSize) private var typeSize
-    @Environment(\.horizontalSizeClass) private var sizeClass
     @Environment(\.colorScheme) private var scheme
 
     private var results: [MeetingListItem<Value>] {
@@ -51,7 +50,7 @@ struct MeetingsDashboard<Value: Identifiable>: View {
                 WorkspaceBell(action: actions.notifications)
             }
             GeometryReader { proxy in
-                let wide = WorkspaceLayout.usesColumns(width: proxy.size.width, sizeClass: sizeClass, typeSize: typeSize)
+                let wide = proxy.size.width >= 780 && !typeSize.isAccessibilitySize
                 let large = wide && proxy.size.width >= 1080
                 let inset: CGFloat = wide && proxy.size.width >= 780 ? 54 : (proxy.size.width < 360 ? 12 : 16)
                 let width = min(1200, max(0, proxy.size.width - 2 * inset))

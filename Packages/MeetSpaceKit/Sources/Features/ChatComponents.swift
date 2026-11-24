@@ -1,5 +1,22 @@
 import SwiftUI
 import MeetSpaceDesignSystem
+#if os(iOS)
+import UIKit
+#endif
+
+enum ChatLayout {
+    @MainActor static var keepsSelectionInline: Bool {
+        #if os(iOS)
+        UIDevice.current.userInterfaceIdiom == .pad
+        #else
+        false
+        #endif
+    }
+}
+
+extension EnvironmentValues {
+    @Entry var chatPaneWidth: CGFloat? = nil
+}
 
 struct ChatAvatar: View {
     let name: String
@@ -58,7 +75,7 @@ struct ChatHeaderIcon: View {
     var body: some View {
         WorkspaceIcon(name, size: width >= 780 ? 22 : 20)
             .foregroundStyle(name == "phone" ? MSTheme.brandAccent : MSTheme.ink)
-            .frame(width: width >= 780 ? 44 : 34, height: 48)
+            .frame(width: width >= 780 ? 44 : 34, height: width >= 780 ? 44 : 48)
             .background(name == "phone" ? MSTheme.accentSoft : .clear, in: RoundedRectangle(cornerRadius: 12))
             .contentShape(Rectangle())
     }
@@ -192,10 +209,12 @@ struct ChatMessageRow<Content: View, Actions: View>: View {
     let identifier: String
     let summary: String
     var attachments: [String] = []
+    var photoAlbum = false
     var reaction: String?
     var react: ((String) -> Void)?
     let toggle: () -> Void
     @Environment(\.workspaceWidth) private var width
+    @Environment(\.chatPaneWidth) private var paneWidth
     @ViewBuilder let content: () -> Content
     @ViewBuilder let actions: () -> Actions
 
@@ -221,10 +240,11 @@ struct ChatMessageRow<Content: View, Actions: View>: View {
 
     private var messageContent: some View {
         let wide = width >= 780
-        let compactLogWidth = max(0, width - 24)
+        let logWidth = max(0, (paneWidth ?? width) - (wide ? 48 : 24))
+        let oppositeInset = wide ? max(36, logWidth * 0.12) - 10 : max(0, logWidth * (own ? 0.12 : 0.06) - 7)
         let bubbleInset: CGFloat = wide ? 16 : 13
         return HStack(alignment: .top, spacing: wide ? 10 : 7) {
-            if own { Spacer(minLength: selecting ? 0 : (wide ? 44 : max(0, compactLogWidth * 0.12 - 7))) }
+            if own { Spacer(minLength: selecting ? 0 : oppositeInset) }
             else { ChatAvatar(name: author, size: wide ? 30 : 25).padding(.top, 3) }
             Grid(alignment: .leading, verticalSpacing: 8) {
                 GridRow {
@@ -251,6 +271,7 @@ struct ChatMessageRow<Content: View, Actions: View>: View {
                 }
             }
             .padding(.horizontal, bubbleInset).padding(.top, wide ? 14 : 12).padding(.bottom, 10)
+            .frame(maxWidth: wide && photoAlbum ? 360 : nil, alignment: .leading)
             .modifier(MessageMenuTrigger(enabled: actionable && !selecting, own: own, author: author, time: time, summary: summary,
                                          attachments: attachments, reaction: reaction, react: react, identifier: identifier, actions: actions))
             .background(own ? MSTheme.accentSoft : MSTheme.surface, in: shape)
@@ -268,8 +289,7 @@ struct ChatMessageRow<Content: View, Actions: View>: View {
                     }.buttonStyle(.plain).disabled(selecting).accessibilityLabel("\(tr("Снять реакцию")) \(reaction)")
                 }
             }
-            .frame(maxWidth: wide ? 500 : nil, alignment: own ? .trailing : .leading)
-            if !own { Spacer(minLength: selecting ? 0 : (wide ? 22 : max(0, compactLogWidth * 0.06 - 7))) }
+            if !own { Spacer(minLength: selecting ? 0 : oppositeInset) }
         }.foregroundStyle(MSTheme.ink)
     }
 
@@ -283,6 +303,7 @@ struct ChatPinnedBar: View {
     let preview: String
     let count: Int
     let jump: () -> Void
+    @Environment(\.workspaceWidth) private var width
     var body: some View {
         Button(action: jump) {
             HStack(spacing: 11) {
@@ -294,7 +315,7 @@ struct ChatPinnedBar: View {
                 Spacer()
                 Text("\(count)").font(MSTheme.font(12))
                 Image(systemName: "chevron.right").font(.caption)
-            }.padding(.horizontal, 16).frame(minHeight: 61).foregroundStyle(MSTheme.accent)
+            }.padding(.horizontal, width >= 780 ? 24 : 16).frame(minHeight: 61).foregroundStyle(MSTheme.accent)
                 .background(MSTheme.accentSoft).contentShape(Rectangle())
         }.buttonStyle(.plain)
     }

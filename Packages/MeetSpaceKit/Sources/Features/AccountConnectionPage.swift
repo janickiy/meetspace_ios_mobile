@@ -67,8 +67,7 @@ struct AccountConnectionPage: View {
                 } else if let settings = app.identity.settings {
                     serverDetails(settings).padding(.top, 12)
                 }
-            }.padding(.horizontal, wide ? 48 : 20).padding(.vertical, wide ? 36 : 18)
-                .frame(maxWidth: 860).frame(maxWidth: .infinity, alignment: .topLeading)
+            }.modifier(AccountPanelLayout(wide: wide))
         }.background(MSTheme.background).foregroundStyle(MSTheme.ink)
             .scrollDismissesKeyboard(.interactively)
             .accessibilityIdentifier("accountSettingsScroll")

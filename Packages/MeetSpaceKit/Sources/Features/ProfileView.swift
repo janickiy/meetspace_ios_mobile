@@ -10,7 +10,7 @@ struct ProfileView: View {
             switch section {
             case .profile: DemoProfileEditor(profile: model.demoProfile, wide: wide)
             case .accounts: AccountSwitcherView(app: model, wide: wide)
-            case .audio: ScrollView { AccountAudioSettingsView(wide: wide).padding(20) }
+            case .audio: ScrollView { AccountAudioSettingsView(wide: wide).modifier(AccountPanelLayout(wide: wide)) }
             case .video: SettingsDetailView(model: model, route: .videoSettings, wide: wide)
             case .notifications: SettingsDetailView(model: model, route: .notificationSettings, wide: wide)
             case .appearance: SettingsDetailView(model: model, route: .appearance, wide: wide)
@@ -47,9 +47,8 @@ private struct DemoProfileEditor: View {
                 }.buttonStyle(MSButtonStyle()).fixedSize(horizontal: true, vertical: false)
                     .disabled((try? ProfileValidation.displayName(name)) == nil ||
                         (try? ProfileValidation.bio(bio)) == nil || (profile.name == name && profile.bio == bio))
-            }.padding(.horizontal, wide ? 48 : 20).padding(.vertical, wide ? 36 : 18)
-                .frame(maxWidth: 860).frame(maxWidth: .infinity, alignment: .topLeading)
-        }.background(MSTheme.surface).onAppear { name = profile.name; bio = profile.bio }
+            }.modifier(AccountPanelLayout(wide: wide))
+        }.background(wide ? MSTheme.background : MSTheme.surface).onAppear { name = profile.name; bio = profile.bio }
     }
 }
 
@@ -121,8 +120,7 @@ struct SettingsDetailView: View {
                     DemoAccountNotificationForm(profile: model.demoProfile, wide: wide)
                 default: EmptyView()
                 }
-            }.padding(.horizontal, wide ? 48 : 20).padding(.vertical, wide ? 36 : 18)
-                .frame(maxWidth: 860).frame(maxWidth: .infinity, alignment: .topLeading)
+            }.modifier(AccountPanelLayout(wide: wide))
         }.background(MSTheme.background).navigationTitle(tr(route.title)).msInlineTitle()
     }
     private var demoTools: some View {

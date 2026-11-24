@@ -50,8 +50,9 @@ struct ConferenceRoomLayout<Header: View, Notice: View, Video: View, Panel: View
                         .clipped().accessibilityHidden(!showStage)
                         .layoutPriority(wide ? 1 : 0)
                     if panelVisible {
-                        panel().frame(maxWidth: wide ? min(350, max(260, geometry.size.width * 0.25)) : .infinity,
-                                      maxHeight: .infinity)
+                        let panelWidth = min(350, max(260, (geometry.size.width - 2 * inset) * 0.25))
+                        panel().frame(width: wide ? panelWidth : nil)
+                            .frame(maxWidth: wide ? nil : .infinity, maxHeight: .infinity)
                     }
                 }.padding(.horizontal, inset).padding(.top, wide ? 10 : 8).padding(.bottom, 6)
                 toolbar(wide: wide).padding(.horizontal, inset)

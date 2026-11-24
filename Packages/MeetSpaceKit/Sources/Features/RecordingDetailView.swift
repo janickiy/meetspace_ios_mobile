@@ -4,6 +4,14 @@ import Combine
 import MeetSpaceCore
 import MeetSpaceDesignSystem
 
+private struct RecordingPageLayout {
+    let width: CGFloat
+
+    var wide: Bool { width > 700 }
+    var inset: CGFloat { width >= 780 ? 48 : wide ? 24 : 16 }
+    var contentWidth: CGFloat { min(1140, max(0, width - 2 * inset)) }
+}
+
 /// The scroll view belongs to each navigation destination, so returning to the library
 /// restores the search controls and the user's position in its results.
 struct RecordingPage<Content: View>: View {
@@ -11,10 +19,11 @@ struct RecordingPage<Content: View>: View {
     let onBack: () -> Void
     var error: String? = nil
     @ViewBuilder let content: () -> Content
-    @Environment(\.horizontalSizeClass) private var sizeClass
+    @Environment(\.workspaceWidth) private var width
 
     var body: some View {
-        VStack(spacing: 0) {
+        let layout = RecordingPageLayout(width: width)
+        return VStack(spacing: 0) {
             RecordingsPageHeader(title: title, onBack: onBack)
             if let error {
                 Text(tr(error)).font(MSTheme.font(13)).foregroundStyle(MSTheme.danger)
@@ -25,9 +34,10 @@ struct RecordingPage<Content: View>: View {
             }
             ScrollView {
                 VStack(alignment: .leading, spacing: 16) { content() }
-                    .padding(.horizontal, sizeClass == .compact ? 16 : 24)
-                    .padding(.top, sizeClass == .compact ? 6 : 20).padding(.bottom, 24)
-                    .frame(maxWidth: 1140, alignment: .leading).frame(maxWidth: .infinity)
+                    .frame(maxWidth: 1140, alignment: .leading)
+                    .padding(.horizontal, layout.inset)
+                    .padding(.top, layout.wide ? 22 : 6).padding(.bottom, layout.wide ? 30 : 24)
+                    .frame(maxWidth: .infinity)
             }
         }
         .foregroundStyle(MSTheme.ink).background(MSTheme.background)
@@ -101,7 +111,7 @@ struct RecordingDetailContent: View {
     let onAllRecordings: () -> Void
     @Environment(\.workspaceWidth) private var width
     @Environment(\.dynamicTypeSize) private var typeSize
-    private var wide: Bool { width >= 780 && !typeSize.isAccessibilitySize }
+    private var wide: Bool { width > 700 && !typeSize.isAccessibilitySize }
     private var files: [RecordingFile] { row?.recording.files.filter { $0.type != "preview_jpg" } ?? [] }
     private var dateText: String { entry.date.formatted(.dateTime.locale(Locale(identifier: "ru_RU")).day().month(.wide).year()) }
     private var timeText: String { entry.date.formatted(.dateTime.locale(Locale(identifier: "ru_RU")).hour().minute()) }
@@ -125,9 +135,11 @@ struct RecordingDetailContent: View {
                     .font(MSTheme.font(12)).foregroundStyle(MSTheme.muted)
             }
             if wide {
-                HStack(alignment: .top, spacing: 22) {
+                let gap: CGFloat = width <= 1000 ? 16 : 22
+                let ratio: CGFloat = width <= 1000 ? 1.35 : 1.65
+                HStack(alignment: .top, spacing: gap) {
                     playback.frame(maxWidth: .infinity)
-                    information.frame(width: min(365, width * 0.36))
+                    information.frame(width: (RecordingPageLayout(width: width).contentWidth - gap) / (1 + ratio))
                 }
             } else {
                 playback

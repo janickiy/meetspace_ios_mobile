@@ -9,7 +9,6 @@ struct LiveCalendarView: View {
     @State private var selected: Conference?
     @State private var choosingZone = false
     @Environment(\.dynamicTypeSize) private var typeSize
-    @ScaledMetric(relativeTo: .body) private var timeColumnWidth: CGFloat = 43
     @ScaledMetric(relativeTo: .body) private var dayMinimumWidth: CGFloat = 44
     var body: some View {
         GeometryReader { geometry in
@@ -41,13 +40,13 @@ struct LiveCalendarView: View {
                         Button(tr("Список проверен — разрешить новое создание")) { model.acknowledgeCreationCheck() }
                             .disabled(model.loading).accessibilityIdentifier("calendar.acknowledgeCreation")
                     }
-                    periodControls
                     if geometry.size.width >= 840 && !typeSize.isAccessibilitySize {
                         HStack(alignment: .top, spacing: 24) {
-                            calendarBody.frame(maxWidth: .infinity)
-                            sidePanel.frame(width: 250)
+                            VStack(alignment: .leading, spacing: 18) { periodControls; calendarBody }
+                                .frame(maxWidth: .infinity)
+                            sidePanel.frame(width: 280)
                         }
-                    } else { calendarBody }
+                    } else { periodControls; calendarBody }
                     if model.loading { ProgressView().frame(maxWidth: .infinity).accessibilityLabel(tr("Загрузка календаря")) }
                     if !model.feedErrors.isEmpty {
                         Text(tr("Не все данные загружены")).font(MSTheme.font(14, weight: .semibold))
@@ -60,7 +59,9 @@ struct LiveCalendarView: View {
                         Text(tr("В следующих страницах могут быть другие встречи выбранного периода."))
                             .font(MSTheme.font(11)).foregroundStyle(MSTheme.muted)
                     }
-                }.padding(20).frame(maxWidth: 1120).frame(maxWidth: .infinity)
+                }.padding(.horizontal, geometry.size.width >= 780 ? 48 : 20)
+                    .padding(.vertical, geometry.size.width >= 700 ? 24 : 20)
+                    .frame(maxWidth: .infinity)
             }.refreshable { await model.load() }
         }.background(MSTheme.background).foregroundStyle(MSTheme.ink)
             .accessibilityIdentifier("screen.liveCalendar")
@@ -155,11 +156,10 @@ struct LiveCalendarView: View {
         }
     }
     private var weekStrip: some View {
-        ScrollView(.horizontal, showsIndicators: false) {
-            HStack(spacing: 7) { ForEach(MeetingCalendar.days(in: model.interval, zone: model.zone), id: \.self) { day in dayButton(day) } }
-                .padding(10)
-        }.background(MSTheme.surface, in: RoundedRectangle(cornerRadius: 20))
-            .overlay(RoundedRectangle(cornerRadius: 20).stroke(MSTheme.line))
+        CalendarWeekStrip(selectedDay: model.selectedDay, zone: model.zone,
+                          eventDays: model.meetings.map(MeetingCalendar.timelineDate)) { day in
+            Task { await model.selectDay(day) }
+        }
     }
     private var monthGrid: some View {
         ViewThatFits(in: .horizontal) {
@@ -177,23 +177,18 @@ struct LiveCalendarView: View {
                     .accessibilityIdentifier("calendar.weekday.\(index)")
             }
             ForEach(0..<leading, id: \.self) { _ in Color.clear.frame(height: 44) }
-            ForEach(days, id: \.self) { day in dayButton(day, compact: true) }
+            ForEach(days, id: \.self) { day in dayButton(day) }
         }.frame(minWidth: dayMinimumWidth * 7 + 18).padding(10)
             .background(MSTheme.surface, in: RoundedRectangle(cornerRadius: 20))
     }
-    private func dayButton(_ day: Date, compact: Bool = false) -> some View {
+    private func dayButton(_ day: Date) -> some View {
         let selected = model.calendar.isDate(day, inSameDayAs: model.selectedDay)
         let hasEvent = model.meetings.contains { model.calendar.isDate(MeetingCalendar.timelineDate($0), inSameDayAs: day) }
         return Button { Task { await model.selectDay(day) } } label: {
-            VStack(spacing: compact ? 4 : 8) {
-                if !compact {
-                    Text(calendarText(day, format: "EE", zone: model.zone)).font(MSTheme.font(10))
-                        .accessibilityIdentifier("calendar.weekday.\((model.calendar.component(.weekday, from: day) + 5) % 7)")
-                }
+            VStack(spacing: 4) {
                 Text(calendarText(day, format: "d", zone: model.zone)).font(MSTheme.font(17, weight: .semibold))
                 Circle().fill(hasEvent ? (selected ? MSTheme.surface : MSTheme.accent) : .clear).frame(width: 4, height: 4)
-            }.frame(minWidth: dayMinimumWidth, maxWidth: compact ? .infinity : nil, minHeight: compact ? 44 : 70)
-                .padding(.horizontal, compact ? 0 : 4)
+            }.frame(minWidth: dayMinimumWidth, maxWidth: .infinity, minHeight: 44)
                 .background(selected ? MSTheme.accent : MSTheme.surface, in: RoundedRectangle(cornerRadius: 13))
                 .foregroundStyle(selected ? MSTheme.surface : MSTheme.ink)
         }.buttonStyle(.plain).accessibilityLabel(calendarText(day, format: "d MMMM yyyy", zone: model.zone))
@@ -201,21 +196,9 @@ struct LiveCalendarView: View {
     }
     private var agenda: some View {
         let events = model.dayMeetings
-        let hours = events.map { model.calendar.component(.hour, from: MeetingCalendar.timelineDate($0)) }
-        let first = min(9, hours.min() ?? 9), last = max(18, hours.max() ?? 18)
         return VStack(alignment: .leading, spacing: 0) {
             if events.isEmpty && !model.loading && model.feedErrors.isEmpty { emptyDay.padding(.bottom, 12) }
-            ForEach(first...last, id: \.self) { hour in
-                HStack(alignment: .top, spacing: 10) {
-                    Text(String(format: "%02d:00", hour)).font(MSTheme.font(10)).foregroundStyle(MSTheme.muted)
-                        .frame(width: timeColumnWidth, alignment: .leading).fixedSize(horizontal: false, vertical: true).padding(.top, 4)
-                        .accessibilityIdentifier("calendar.hour.\(hour)")
-                    VStack(spacing: 6) {
-                        Rectangle().fill(MSTheme.line).frame(height: 1)
-                        ForEach(events.filter { model.calendar.component(.hour, from: MeetingCalendar.timelineDate($0)) == hour }) { event in eventCard(event) }
-                    }.frame(maxWidth: .infinity, minHeight: 78, alignment: .top)
-                }
-            }
+            CalendarDayTimeline(events: events, zone: model.zone, time: MeetingCalendar.timelineDate, eventCard: eventCard)
         }
     }
     private var emptyDay: some View {

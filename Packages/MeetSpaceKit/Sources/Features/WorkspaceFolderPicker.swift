@@ -6,7 +6,7 @@ import MeetSpaceDesignSystem
     enum Item: Hashable { case chat(Int), meeting(Int) }
     struct Folder: Identifiable {
         let id = UUID()
-        let name: String
+        var name: String
         var items: [Item]
     }
     private(set) var folders = [
@@ -15,12 +15,22 @@ import MeetSpaceDesignSystem
         Folder(name: "Личное", items: [.chat(2)])
     ]
 
-    func create(_ name: String) throws {
+    func create(_ name: String) throws { try save(name, renaming: nil) }
+
+    func save(_ name: String, renaming id: UUID?) throws {
         let name = try FolderValidation.text(name, maximum: 50, required: true)
-        guard folders.count < 100, !folders.contains(where: { $0.name.localizedCaseInsensitiveCompare(name) == .orderedSame })
+        guard !folders.contains(where: { $0.id != id && $0.name.localizedCaseInsensitiveCompare(name) == .orderedSame })
         else { throw ClientError.invalidInput }
-        folders.append(Folder(name: name, items: []))
+        if let id {
+            guard let index = folders.firstIndex(where: { $0.id == id }) else { throw ClientError.invalidInput }
+            folders[index].name = name
+        } else {
+            guard folders.count < 100 else { throw ClientError.invalidInput }
+            folders.append(Folder(name: name, items: []))
+        }
     }
+
+    func deleteFolder(_ id: UUID) { folders.removeAll { $0.id == id } }
 
     func set(_ item: Item, in folder: UUID, included: Bool) {
         guard let index = folders.firstIndex(where: { $0.id == folder }) else { return }

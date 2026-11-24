@@ -32,7 +32,7 @@ struct RecordingLibraryContent: View {
     @State private var grid = false
     @State private var deleteTarget: RecordingLibraryEntry?
 
-    private var wide: Bool { width >= 700 && !typeSize.isAccessibilitySize }
+    private var wide: Bool { width > 700 && !typeSize.isAccessibilitySize }
     private var tabEntries: [RecordingLibraryEntry] { entries.filter { $0.isLive == live } }
     private var meetings: [RecordingLibraryEntry] {
         var ids = Set<String>()
@@ -102,7 +102,8 @@ struct RecordingLibraryContent: View {
                     if results.isEmpty {
                         if !loadFailed { emptyResults }
                     } else if wide && grid {
-                        LazyVGrid(columns: [GridItem(.adaptive(minimum: 260), spacing: 14)], alignment: .leading, spacing: 14) {
+                        let columns = Array(repeating: GridItem(.flexible(), spacing: 16), count: width <= 1000 ? 2 : 3)
+                        LazyVGrid(columns: columns, alignment: .leading, spacing: 16) {
                             cards(results)
                         }
                     } else {

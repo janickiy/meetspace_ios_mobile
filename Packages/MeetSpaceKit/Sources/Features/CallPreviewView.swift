@@ -8,7 +8,8 @@ struct CallPreviewView: View {
 
     var body: some View {
         switch route {
-        case .personalCall: DemoPersonalCall(model: model)
+        case .personalCall: DemoPersonalCall(model: model, contactID: 0)
+        case .contactCall(let contactID): DemoPersonalCall(model: model, contactID: contactID)
         case .prejoin: DemoMeetingPrejoin(model: model)
         default: DemoConferenceView(model: model)
         }
@@ -77,14 +78,14 @@ struct MeetingPrejoinLayout<Preview: View, Details: View>: View {
                 GeometryReader { available in
                     ScrollView {
                         if wide {
-                            let splitWidth = max(0, min(available.size.width, 1210) - 96 - 32)
+                            let splitWidth = max(0, available.size.width - 96 - 32)
                             let cameraWidth = splitWidth * 5 / 9
                             HStack(spacing: 32) {
                                 preview().frame(width: cameraWidth, height: cameraWidth * 0.75)
                                 info
                             }
                             .padding(.horizontal, 48).padding(.vertical, 24)
-                            .frame(maxWidth: 1210).frame(maxWidth: .infinity, minHeight: available.size.height)
+                            .frame(maxWidth: .infinity, minHeight: available.size.height)
                         } else {
                             let phone = available.size.width < 600
                             let inset: CGFloat = phone ? (available.size.width < 360 ? 14 : 18) : 24
@@ -301,6 +302,7 @@ struct MeetingNextLabelStyle: LabelStyle {
 
 private struct DemoPersonalCall: View {
     let model: AppModel
+    let contactID: Int
     private let showSelf = AccountVideoPreferences.load(for: nil).selfVideo
     @State private var connectedAt: Date?
     @State private var microphone = true
@@ -310,12 +312,7 @@ private struct DemoPersonalCall: View {
     @Environment(\.dismiss) private var dismiss
 
     private var peer: String {
-        for route in model.messagesPath.reversed() {
-            if case let .thread(index) = route, let contact = DemoChatStore.contacts.first(where: { $0.id == index }) {
-                return contact.name
-            }
-        }
-        return tr("Анна Кузнецова")
+        DemoChatStore.contacts.first { $0.id == contactID }?.name ?? tr("Личный звонок")
     }
 
     var body: some View {

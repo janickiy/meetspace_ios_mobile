@@ -36,7 +36,7 @@ struct DestinationView: View {
                 }
             case .meetingDetails(let id): MeetingDetailView(model: model, meetingID: id)
             case .newMeeting, .scheduleMeeting, .joinMeeting: MeetingFormView(model: model, route: route)
-            case .prejoin, .call, .personalCall: CallPreviewView(model: model, route: route)
+            case .prejoin, .call, .personalCall, .contactCall: CallPreviewView(model: model, route: route)
             case .notificationSettings:
                 if model.isDemo { SettingsDetailView(model: model, route: route) }
                 else if let settings = model.identity.settings {
@@ -82,7 +82,7 @@ extension AppRoute {
         case .folders, .demoFolder: "Папки"
         case .prejoin: "Перед встречей"
         case .call: "Встреча"
-        case .personalCall: "Личный звонок"
+        case .personalCall, .contactCall: "Личный звонок"
         case .meetingDetails: "О встрече"
         case .newMeeting: "Новая встреча"
         case .scheduleMeeting: "Запланировать встречу"
@@ -169,13 +169,88 @@ private struct MeetingFormView: View {
 private struct CalendarScreen: View {
     @Bindable var model: AppModel
     @State private var date: Date = Date(timeIntervalSince1970: 1_792_022_400)
+    @Environment(\.horizontalSizeClass) private var sizeClass
+    @Environment(\.dynamicTypeSize) private var typeSize
+
+    private var zone: TimeZone { DemoData.meetingZone }
+    private var calendar: Calendar { MeetingCalendar.calendar(in: zone) }
+    private var weekMeetings: [DemoData.Meeting] {
+        let interval = MeetingCalendar.interval(containing: date, mode: .week, in: zone)
+        return model.demoMeetings.meetings.filter { $0.start.map { MeetingCalendar.includes($0, interval: interval) } ?? false }
+            .sorted { ($0.start ?? date) < ($1.start ?? date) }
+    }
+
     var body: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: 24) {
-                DatePicker(tr("Выберите день"), selection: $date, displayedComponents: .date).datePickerStyle(.graphical).msCard()
-                FeatureNotice("Календарь показывает локальный выбор даты. Серверные встречи ещё не подключены.")
-                Button(tr("Запланировать встречу")) { model.navigate(.scheduleMeeting) }.buttonStyle(MSButtonStyle())
-            }.padding(24).frame(maxWidth: 720).frame(maxWidth: .infinity)
+        GeometryReader { geometry in
+            ScrollView {
+                if sizeClass == .regular && geometry.size.width >= 600 && !typeSize.isAccessibilitySize {
+                    tabletCalendar(width: geometry.size.width)
+                } else {
+                    VStack(alignment: .leading, spacing: 24) {
+                        DatePicker(tr("Выберите день"), selection: $date, displayedComponents: .date).datePickerStyle(.graphical).msCard()
+                        FeatureNotice("Календарь показывает локальный выбор даты. Серверные встречи ещё не подключены.")
+                        Button(tr("Запланировать встречу")) { model.navigate(.scheduleMeeting) }.buttonStyle(MSButtonStyle())
+                    }.padding(24).frame(maxWidth: 720).frame(maxWidth: .infinity)
+                }
+            }
         }.background(MSTheme.background)
+    }
+
+    private func tabletCalendar(width: CGFloat) -> some View {
+        VStack(alignment: .leading, spacing: 24) {
+            HStack {
+                VStack(alignment: .leading, spacing: 7) {
+                    Text(tr("Календарь")).font(MSTheme.font(28, weight: .semibold, relativeTo: .title)).accessibilityAddTraits(.isHeader)
+                    Text(tr("Время для важных разговоров.")).font(MSTheme.font(13)).foregroundStyle(MSTheme.muted)
+                }
+                Spacer()
+                IconButton("plus", label: "Запланировать встречу") { model.navigate(.scheduleMeeting) }
+            }
+            HStack(alignment: .top, spacing: 24) {
+                VStack(alignment: .leading, spacing: 18) {
+                    HStack {
+                        Text(calendarText(date, format: "LLLL yyyy", zone: zone).capitalized)
+                            .font(MSTheme.font(20, weight: .semibold))
+                        Spacer()
+                        Button(tr("Сегодня")) { date = Date() }.buttonStyle(MSTextButtonStyle())
+                        IconButton("chevron.left", label: "Предыдущая неделя") { moveWeek(-1) }
+                        IconButton("chevron.right", label: "Следующая неделя") { moveWeek(1) }
+                    }
+                    CalendarWeekStrip(selectedDay: date, zone: zone, eventDays: weekMeetings.compactMap(\.start)) { date = $0 }
+                    Text(calendarText(date, format: "d MMMM", zone: zone))
+                        .font(MSTheme.font(15, weight: .semibold)).accessibilityAddTraits(.isHeader)
+                    let events = weekMeetings.filter { $0.start.map { calendar.isDate($0, inSameDayAs: date) } ?? false }
+                    CalendarDayTimeline(events: events, zone: zone, time: { $0.start ?? date }) { meeting in
+                        Button { model.navigate(.meetingDetails(meeting.id)) } label: {
+                            VStack(alignment: .leading, spacing: 5) {
+                                Text(tr(meeting.title)).font(MSTheme.font(14, weight: .semibold))
+                                if let start = meeting.start {
+                                    Text(calendarText(start, format: "HH:mm", zone: zone)).font(MSTheme.font(11))
+                                        .foregroundStyle(MSTheme.muted)
+                                }
+                            }.padding(12).frame(maxWidth: .infinity, minHeight: 65, alignment: .leading)
+                                .background(MSTheme.accentSoft, in: RoundedRectangle(cornerRadius: 12))
+                        }.buttonStyle(.plain)
+                    }
+                }
+                if width >= 840 {
+                    VStack(alignment: .leading, spacing: 12) {
+                        Text(tr("На этой неделе")).font(MSTheme.font(11)).foregroundStyle(MSTheme.muted)
+                        Text(tr("Хороший ритм")).font(MSTheme.font(21, weight: .semibold))
+                        ForEach(weekMeetings.prefix(5)) { meeting in
+                            Button { model.navigate(.meetingDetails(meeting.id)) } label: {
+                                Text(tr(meeting.title)).frame(minHeight: 44).multilineTextAlignment(.leading)
+                            }.buttonStyle(.plain)
+                        }
+                        Label(MeetingDateText.zoneLabel(zone), systemImage: "clock")
+                            .font(MSTheme.font(12)).foregroundStyle(MSTheme.muted)
+                    }.frame(maxWidth: .infinity, alignment: .leading).msCard(padding: 22).frame(width: 280)
+                }
+            }
+        }.padding(.horizontal, width >= 780 ? 48 : 24).padding(.vertical, 24)
+    }
+
+    private func moveWeek(_ offset: Int) {
+        if let day = calendar.date(byAdding: .weekOfYear, value: offset, to: date) { date = day }
     }
 }

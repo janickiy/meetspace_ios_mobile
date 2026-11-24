@@ -15,7 +15,7 @@ struct WorkspaceView: View {
 
     var body: some View {
         GeometryReader { geometry in
-            let wide = WorkspaceLayout.usesColumns(width: geometry.size.width, sizeClass: sizeClass, typeSize: typeSize)
+            let wide = WorkspaceLayout.usesColumns(width: geometry.size.width, sizeClass: sizeClass, typeSize: typeSize, hasHinge: hasHinge)
             let showsTabBar = model.activeConference == nil && !showingCall && (wide || !showingThread)
             VStack(spacing: 0) {
                 tabs
@@ -49,7 +49,12 @@ struct WorkspaceView: View {
         }
     }
 
-    private var showingCall: Bool { activeRoute == .call || activeRoute == .personalCall }
+    private var showingCall: Bool {
+        switch activeRoute {
+        case .call, .personalCall, .contactCall: true
+        default: false
+        }
+    }
 
     private var showingThread: Bool {
         if model.tab == .messages && model.messagesPath.isEmpty && inlineThreadVisible { return true }
@@ -102,11 +107,11 @@ private extension View {
 }
 
 enum WorkspaceLayout {
-    static func usesColumns(width: CGFloat, sizeClass: UserInterfaceSizeClass?, typeSize: DynamicTypeSize) -> Bool {
-        !typeSize.isAccessibilitySize && (width >= 780 || (sizeClass == .regular && width >= 620))
+    static func usesColumns(width: CGFloat, sizeClass: UserInterfaceSizeClass?, typeSize: DynamicTypeSize, hasHinge: Bool = false) -> Bool {
+        !typeSize.isAccessibilitySize && (width >= 780 || (hasHinge && sizeClass == .regular && width >= 620))
     }
 
-    static func chatSidebarWidth(_ width: CGFloat) -> CGFloat { min(340, width * 0.38) }
+    static func chatSidebarWidth(_ width: CGFloat) -> CGFloat { width >= 780 ? 340 : width * 0.38 }
     static func chatGutter(_ width: CGFloat) -> CGFloat { width >= 780 ? 24 : 10 }
 }
 
@@ -123,6 +128,14 @@ struct WorkspaceTabBar: View {
     var onSelect: ((AppTab) -> Void)?
     @Environment(\.dynamicTypeSize) private var typeSize
 
+    private var tablet: Bool {
+        #if os(iOS)
+        wide && UIDevice.current.userInterfaceIdiom == .pad
+        #else
+        wide
+        #endif
+    }
+
     var body: some View {
         HStack(spacing: 0) {
             tabButton(.meetings, title: "Встречи", icon: "video")
@@ -130,7 +143,7 @@ struct WorkspaceTabBar: View {
             tabButton(.profile, title: "Профиль", icon: "person.crop.circle")
         }
         .padding(.horizontal, 12)
-        .padding(.vertical, 1 + bottomInset / 2)
+        .padding(.vertical, tablet ? max(13, bottomInset / 2) : 1 + bottomInset / 2)
         .frame(maxWidth: .infinity)
         .background(MSTheme.surface, ignoresSafeAreaEdges: .bottom)
         .overlay(alignment: .top) { Rectangle().fill(MSTheme.line).frame(height: 1) }
@@ -140,14 +153,14 @@ struct WorkspaceTabBar: View {
 
     private func tabButton(_ tab: AppTab, title: String, icon: String) -> some View {
         let selected = (activeTab ?? model.tab) == tab
-        let layout = typeSize.isAccessibilitySize ? AnyLayout(HStackLayout(spacing: 4)) : AnyLayout(VStackLayout(spacing: 3))
+        let layout = typeSize.isAccessibilitySize ? AnyLayout(HStackLayout(spacing: 4)) : AnyLayout(VStackLayout(spacing: tablet ? 5 : 3))
         return Button {
             if let onSelect { onSelect(tab) } else { model.tab = tab }
         } label: {
             layout {
                 if tab == .profile {
                     let name = model.isDemo ? model.demoProfile.name : model.identity.settings?.profile.name ?? model.identity.messaging?.account.user.name ?? ""
-                    ProfileAvatar(name: name, size: 24, photo: model.isDemo ? model.demoProfile.photo : model.identity.settings?.photo)
+                    ProfileAvatar(name: name, size: tablet ? 29 : 24, photo: model.isDemo ? model.demoProfile.photo : model.identity.settings?.photo)
                         .overlay { if selected { Circle().strokeBorder(MSTheme.accent, lineWidth: 2) } }
                         .overlay(alignment: .bottomTrailing) {
                             if model.isDemo || model.identity.messaging?.realtimeState == .connected {
@@ -155,11 +168,11 @@ struct WorkspaceTabBar: View {
                             }
                         }
                 } else {
-                    WorkspaceIcon(icon, size: 23)
+                    WorkspaceIcon(icon, size: tablet ? 27 : 23)
                         .background {
                             if selected {
                                 RoundedRectangle(cornerRadius: 8).fill(MSTheme.accentSoft)
-                                    .padding(.horizontal, -4).padding(.vertical, -2)
+                                    .padding(.horizontal, tablet ? -6 : -4).padding(.vertical, tablet ? -5 : -2)
                             }
                         }
                         .overlay(alignment: .topTrailing) {
@@ -170,7 +183,7 @@ struct WorkspaceTabBar: View {
                 }
                 Text(tr(title)).font(MSTheme.font(11, weight: selected ? .semibold : .regular, relativeTo: .caption))
                     .multilineTextAlignment(.center).fixedSize(horizontal: false, vertical: true)
-            }.frame(maxWidth: .infinity, minHeight: 44).contentShape(Rectangle())
+            }.frame(maxWidth: .infinity, minHeight: tablet ? 54 : 44).contentShape(Rectangle())
                 .foregroundStyle(selected ? MSTheme.accent : MSTheme.muted)
         }.buttonStyle(.plain).frame(maxWidth: wide ? 200 : 170)
             .accessibilityIdentifier("tab.\(tab.rawValue)").accessibilityLabel(tr(title))

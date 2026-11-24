@@ -239,6 +239,22 @@ struct AccountHome<Detail: View>: View {
     }
 }
 
+struct AccountPanelLayout: ViewModifier {
+    let wide: Bool
+    var compactBottom: CGFloat = 18
+    @Environment(\.workspaceWidth) private var width
+
+    func body(content: Content) -> some View {
+        content
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.horizontal, wide ? min(54, max(26, width * 0.04)) : 20)
+            .padding(.top, wide ? 36 : 18)
+            .padding(.bottom, wide ? 42 : compactBottom)
+            .frame(maxWidth: 860, alignment: .topLeading)
+            .frame(maxWidth: .infinity, alignment: .topLeading)
+    }
+}
+
 struct AccountShortcutRow: View {
     let title: String
     let symbol: String

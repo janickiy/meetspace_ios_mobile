@@ -77,9 +77,7 @@ struct AccountListPanel: View {
                 }
             }
         }.fixedSize(horizontal: false, vertical: true)
-            .foregroundStyle(MSTheme.ink).padding(.horizontal, wide ? 48 : 20)
-            .padding(.top, wide ? 36 : 18).padding(.bottom, wide ? 42 : 30)
-            .frame(maxWidth: 860, alignment: .leading).frame(maxWidth: .infinity, alignment: .leading)
+            .foregroundStyle(MSTheme.ink)
     }
 
     @ViewBuilder private func card(_ item: AccountListItem) -> some View {
@@ -139,6 +137,7 @@ struct AccountSwitcherView: View {
                                 server: host(profile.server ?? app.configuration.server), photo: profile.photo)
             }, currentID: accounts.current.id, wide: wide, select: { accounts.select($0.id) },
                              add: { addingDemo = true }, delete: { _ in deletingDemo = true })
+                .modifier(AccountPanelLayout(wide: wide, compactBottom: 30))
                 .sheet(isPresented: $addingDemo) {
                     DemoAddAccountView(accounts: accounts)
                 }
@@ -167,8 +166,9 @@ struct AccountSwitcherView: View {
                     if app.identity.busy { ProgressView() }
                     if let error = app.identity.error { Text(tr(error)).foregroundStyle(MSTheme.danger) }
                     if let information = app.identity.information { Text(tr(information)).foregroundStyle(MSTheme.muted) }
-                }.padding(.horizontal, wide ? 48 : 20)
+                }
             }
+            .modifier(AccountPanelLayout(wide: wide, compactBottom: 30))
             .disabled(app.identity.busy)
             .sheet(item: $deleteTarget) { account in DeleteAccountView(identity: app.identity, account: account) }
             .confirmationDialog(tr("Выйти из аккаунта на этом устройстве?"), isPresented: Binding(
