@@ -27,13 +27,13 @@ public struct FoundationPreviewScene: View {
                         default: ProfileView(model: model)
                         }
                     }.frame(maxHeight: .infinity)
-                    if screen != "thread" || wide { WorkspaceTabBar(model: model, wide: wide) }
+                    WorkspaceTabBar(model: model, wide: wide)
                 }
                 .chatMessageMenuHost()
                 .environment(\.workspaceWidth, geometry.size.width)
                 .environment(\.workspaceUnreadNotifications, 3)
                 // Reserve the prototype's system insets in this borderless macOS host only.
-                .padding(.top, wide ? 28 : 32).padding(.bottom, wide ? 16 : screen == "thread" ? 0 : 22)
+                .padding(.top, wide ? 28 : 32).padding(.bottom, wide ? 16 : 22)
                 .background(MSTheme.surface)
             } else { OnboardingView(model: model) }
         }.font(MSTheme.font()).foregroundStyle(MSTheme.ink).tint(MSTheme.accent).buttonStyle(MSTextButtonStyle()).background(MSTheme.background)

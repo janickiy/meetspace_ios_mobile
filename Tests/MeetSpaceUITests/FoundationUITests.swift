@@ -1686,7 +1686,7 @@ import UIKit
         }
         closeActions.tap()
         XCTAssertTrue(closeActions.waitForNonExistence(timeout: 5))
-        if !app.buttons["tab.profile"].isHittable { app.buttons["chat.back"].tap() }
+        XCTAssertTrue(app.buttons["tab.profile"].isHittable)
         app.buttons["tab.profile"].tap()
         XCTAssertTrue(app.buttons["profileMenu.accounts"].waitForExistence(timeout: 5))
         capture(app, name: "stage03-live-profile")
@@ -2209,6 +2209,75 @@ extension FoundationUITests {
         XCTAssertTrue(app.staticTexts["В этом чате пока нет ссылок."].exists)
         close.tap()
         XCTAssertTrue(app.buttons["chat.info"].waitForExistence(timeout: 5))
+    }
+
+    func testChatThreadsKeepWorkspaceTabs() {
+        let original = XCUIDevice.shared.orientation
+        XCUIDevice.shared.orientation = .portrait
+        defer { XCUIDevice.shared.orientation = original }
+        let app = launch(["-demo"])
+        let meetings = app.buttons["tab.meetings"]
+        let chats = app.buttons["tab.messages"]
+        let profile = app.buttons["tab.profile"]
+        let composer = app.textFields["messageDraft"]
+        let heading = app.buttons["chat.info"]
+        chats.tap()
+
+        for (id, name, tab, destination, screenshot) in [
+            ("chat.0", "Анна Кузнецова", meetings, app.buttons["createConference"], "personal-thread-tabs"),
+            ("chat.1", "Команда продукта", profile, app.buttons["profileMenu.profile"], "group-thread-tabs")
+        ] {
+            let chat = app.buttons[id]
+            reveal(chat, in: app)
+            chat.tap()
+            XCTAssertTrue(heading.waitForExistence(timeout: 5))
+            XCTAssertTrue(heading.label.contains(name))
+            XCTAssertTrue(composer.isHittable)
+            for workspaceTab in [meetings, chats, profile] {
+                XCTAssertTrue(workspaceTab.isHittable)
+                XCTAssertLessThanOrEqual(composer.frame.maxY, workspaceTab.frame.minY)
+            }
+            XCTAssertTrue(chats.isSelected)
+            capture(app, name: screenshot)
+
+            tab.tap()
+            XCTAssertTrue(destination.waitForExistence(timeout: 5))
+            XCTAssertTrue(tab.isSelected)
+            chats.tap()
+            XCTAssertTrue(heading.waitForExistence(timeout: 5))
+            XCTAssertTrue(heading.label.contains(name))
+            XCTAssertTrue(chats.isSelected)
+
+            let back = app.buttons["chat.back"]
+            if back.isHittable { back.tap() }
+        }
+
+        reveal(app.buttons["chat.1"], in: app)
+        app.buttons["chat.1"].tap()
+        XCTAssertTrue(composer.waitForExistence(timeout: 5))
+        composer.tap()
+        let keyboard = app.keyboards.firstMatch
+        XCTAssertTrue(keyboard.waitForExistence(timeout: 5))
+        composer.typeText("Проверка панели")
+        XCTAssertEqual(composer.value as? String, "Проверка панели")
+        // The keyboard's accessibility frame may exclude the prediction strip.
+        let settled = XCTNSPredicateExpectation(predicate: NSPredicate { _, _ in
+            MainActor.assumeIsolated {
+                guard keyboard.exists, keyboard.frame.height > 100, composer.isHittable else { return false }
+                return (0...140).contains(keyboard.frame.minY - composer.frame.maxY)
+            }
+        }, object: nil)
+        let result = XCTWaiter.wait(for: [settled], timeout: 5)
+        // An attached iPad hardware keyboard can leave an accessibility element with no height.
+        if UIDevice.current.userInterfaceIdiom == .pad, keyboard.frame.height == 0, result == .timedOut {
+            return
+        }
+        XCTAssertEqual(result, .completed,
+                       "The composer must stay above and near the keyboard after typing")
+        let snapshot = XCTAttachment(screenshot: XCUIScreen.main.screenshot())
+        snapshot.name = "group-thread-keyboard"
+        snapshot.lifetime = .keepAlways
+        add(snapshot)
     }
 
     func testGroupInfoCardAndMembership() {

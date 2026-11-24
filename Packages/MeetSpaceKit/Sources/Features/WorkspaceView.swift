@@ -8,19 +8,20 @@ import UIKit
 struct WorkspaceView: View {
     @Bindable var model: AppModel
     @State private var inbox = WorkspaceInbox()
-    @State private var inlineThreadVisible = false
     @State private var hasHinge = false
+    @State private var containerBottomInset: CGFloat = 0
     @Environment(\.dynamicTypeSize) private var typeSize
     @Environment(\.horizontalSizeClass) private var sizeClass
 
     var body: some View {
         GeometryReader { geometry in
             let wide = WorkspaceLayout.usesColumns(width: geometry.size.width, sizeClass: sizeClass, typeSize: typeSize, hasHinge: hasHinge)
-            let showsTabBar = model.activeConference == nil && !showingCall && (wide || !showingThread)
+            let showsTabBar = model.activeConference == nil && !showingCall
+            let keyboardVisible = geometry.safeAreaInsets.bottom > containerBottomInset
             VStack(spacing: 0) {
                 tabs
                 if showsTabBar {
-                    WorkspaceTabBar(model: model, wide: wide, bottomInset: geometry.safeAreaInsets.bottom)
+                    WorkspaceTabBar(model: model, wide: wide, bottomInset: keyboardVisible ? 0 : containerBottomInset)
                 }
             }
             .ignoresSafeArea(.container, edges: showsTabBar ? .bottom : [])
@@ -33,9 +34,17 @@ struct WorkspaceView: View {
             }
             .environment(\.workspaceWidth, geometry.size.width)
             .environment(\.workspaceUnreadNotifications, inbox.unread)
-            .onPreferenceChange(InlineChatVisible.self) { inlineThreadVisible = $0 }
         }
         .background(MSTheme.background)
+        .background {
+            // Measure the home-indicator inset separately from the keyboard's safe area.
+            GeometryReader { geometry in
+                Color.clear.onChange(of: geometry.safeAreaInsets.bottom, initial: true) { _, inset in
+                    containerBottomInset = inset
+                }
+            }
+            .ignoresSafeArea(.keyboard, edges: .bottom)
+        }
         .observeWorkspaceHinge($hasHinge)
         .task(id: model.identity.settings?.account.id) { await model.identity.settings?.loadPhoto() }
         .task { await inbox.refresh(using: model.identity.messaging?.client, demo: model.isDemo) }
@@ -53,14 +62,6 @@ struct WorkspaceView: View {
         switch activeRoute {
         case .call, .personalCall, .contactCall: true
         default: false
-        }
-    }
-
-    private var showingThread: Bool {
-        if model.tab == .messages && model.messagesPath.isEmpty && inlineThreadVisible { return true }
-        switch activeRoute {
-        case .thread, .conversation: return true
-        default: return false
         }
     }
 
@@ -113,11 +114,6 @@ enum WorkspaceLayout {
 
     static func chatSidebarWidth(_ width: CGFloat) -> CGFloat { width >= 780 ? 340 : width * 0.38 }
     static func chatGutter(_ width: CGFloat) -> CGFloat { width >= 780 ? 24 : 10 }
-}
-
-struct InlineChatVisible: PreferenceKey {
-    static let defaultValue = false
-    static func reduce(value: inout Bool, nextValue: () -> Bool) { value = value || nextValue() }
 }
 
 struct WorkspaceTabBar: View {

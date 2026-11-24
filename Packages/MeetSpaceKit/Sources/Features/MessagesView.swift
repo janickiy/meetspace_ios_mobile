@@ -101,7 +101,7 @@ struct MessagesView: View {
                 .clipShape(UnevenRoundedRectangle(topLeadingRadius: width >= 780 ? 24 : 0,
                                                   topTrailingRadius: width >= 780 ? 24 : 0))
                 .padding(.horizontal, gutter)
-            }.preference(key: InlineChatVisible.self, value: detailOnly)
+            }
         }.background(MSTheme.background).toolbar(.hidden)
     }
 

@@ -70,7 +70,6 @@ struct LiveMessagesView: View {
                                                   topTrailingRadius: width >= 780 ? 24 : 0))
                 .padding(.horizontal, gutter)
             }.background(MSTheme.background)
-                .preference(key: InlineChatVisible.self, value: detailOnly)
                 .workspaceFormPresentation(isPresented: $creating, onDismiss: {
                     if let createdConversation { select(createdConversation, wide: wide) }
                     createdConversation = nil
