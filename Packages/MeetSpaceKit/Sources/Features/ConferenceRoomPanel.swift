@@ -57,10 +57,9 @@ struct ConferenceRoomPanel<Content: View>: View {
                     .accessibilityAddTraits(.isHeader)
                     .accessibilityIdentifier(selected == .chat ? "conferenceChatHeading" : "conferenceParticipantsHeading")
                 Spacer(minLength: 0)
-                Button(action: close) { WorkspaceIcon("xmark").frame(width: 44, height: 44).contentShape(Rectangle()) }
-                    .buttonStyle(.plain).foregroundStyle(ConferenceRoomPanelColors.muted)
-                    .accessibilityLabel(tr("Закрыть")).accessibilityIdentifier("conferencePanelClose")
-            }.padding(.leading, 16).padding(.trailing, 6)
+                MSLiquidAction(.close, action: close)
+                    .accessibilityIdentifier("conferencePanelClose")
+            }.padding(.leading, 16).padding(.trailing, 8).padding(.vertical, 4)
             ScrollView(.horizontal) {
                 HStack(spacing: 18) {
                     ForEach(ConferenceRoomPanelTab.allCases, id: \.self) { tab in
@@ -150,11 +149,8 @@ struct ConferenceInvitationSheet: View {
                         .fixedSize(horizontal: false, vertical: true)
                         .accessibilityAddTraits(.isHeader).accessibilityFocused($headingFocused)
                     Spacer(minLength: 0)
-                    Button(action: close) {
-                        WorkspaceIcon("xmark", size: 20).frame(width: 44, height: 44).contentShape(Rectangle())
-                    }.buttonStyle(.plain).foregroundStyle(ConferenceInvitationColors.muted)
-                        .accessibilityLabel(tr("Закрыть")).accessibilityIdentifier("conferenceInviteClose")
-                        .padding(.trailing, -8).padding(.vertical, -7)
+                    MSLiquidAction(.close, action: close)
+                        .accessibilityIdentifier("conferenceInviteClose")
                 }
                 Text(verbatim: title).font(MSTheme.font(13)).foregroundStyle(ConferenceInvitationColors.muted)
                     .fixedSize(horizontal: false, vertical: true)

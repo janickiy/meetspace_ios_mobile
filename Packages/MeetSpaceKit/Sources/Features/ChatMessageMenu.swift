@@ -201,10 +201,9 @@ private struct ChatMessageMenu: View {
                 Text(tr("Действия с сообщением")).font(MSTheme.font(12, weight: .semibold))
                     .accessibilityAddTraits(.isHeader).accessibilityFocused($focused)
                 Spacer()
-                Button(action: close) {
-                    Image(systemName: "xmark").font(.system(size: 14)).frame(width: 32, height: 32)
-                        .background(.white.opacity(0.12), in: Circle()).frame(width: 44, height: 44)
-                }.buttonStyle(.plain).accessibilityLabel(tr("Закрыть действия с сообщением"))
+                MSLiquidAction(.close, action: close)
+                    .environment(\.colorScheme, .dark)
+                    .accessibilityLabel(tr("Закрыть действия с сообщением"))
             }.foregroundStyle(.white).padding(.leading, 12)
             if let react = item.react {
                 HStack(spacing: 2) {

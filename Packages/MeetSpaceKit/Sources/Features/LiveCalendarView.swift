@@ -275,7 +275,7 @@ struct ScheduleMeetingForm: View {
     var body: some View {
         WorkspaceFormSheet(
             title: meeting != nil ? "Перенести встречу" : (initiallyPlanned ? "Запланировать встречу" : "Новая встреча"),
-            identifier: "schedule", closeLabel: "Отмена", busy: busy, close: { dismiss() }
+            identifier: "schedule", closeAction: .cancel, busy: busy, close: { dismiss() }
         ) {
             if let meeting { Text(meeting.title).font(MSTheme.font(15, weight: .semibold)) }
             else {
@@ -469,7 +469,7 @@ private struct CalendarMeetingDetail: View {
             }.navigationTitle(tr("Встреча")).msInlineTitle().disabled(model.busy)
                 .toolbar {
                     ToolbarItem(placement: .primaryAction) {
-                        IconButton("xmark", label: "Закрыть") { dismiss() }
+                        MSLiquidAction(.close, inToolbar: true) { dismiss() }
                             .accessibilityIdentifier("calendar.meeting.close")
                     }
                 }
@@ -496,7 +496,7 @@ private struct CalendarTimeZonePicker: View {
                 }.accessibilityIdentifier("calendar.zone.\(identifier)")
             }.searchable(text: $query, prompt: tr("Поиск часового пояса"))
                 .navigationTitle(tr("Часовой пояс")).msInlineTitle()
-                .toolbar { ToolbarItem(placement: .cancellationAction) { IconButton("xmark", label: "Отмена") { dismiss() } } }
+                .toolbar { ToolbarItem(placement: .cancellationAction) { MSLiquidAction(.cancel, inToolbar: true) { dismiss() } } }
         }
     }
 }

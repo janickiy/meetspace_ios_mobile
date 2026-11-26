@@ -414,7 +414,12 @@ struct ThreadView: View {
                     if targets.isEmpty { Text(tr("Чат не найден")).foregroundStyle(MSTheme.muted) }
                 }.padding(18)
             }.navigationTitle(tr("Переслать сообщение")).msInlineTitle()
-                .toolbar { ToolbarItem(placement: .cancellationAction) { IconButton("xmark", label: "Отмена") { forwarding = nil } } }
+                .toolbar {
+                    ToolbarItem(placement: .cancellationAction) {
+                        MSLiquidAction(.close, inToolbar: true) { forwarding = nil }
+                            .accessibilityLabel(tr("Отмена"))
+                    }
+                }
         }.presentationDetents([.medium, .large])
     }
 }

@@ -68,7 +68,7 @@ struct MeetingFilterFields: View {
     let zone: TimeZone
     var inlineWidth: CGFloat?
     private var inline: Bool { inlineWidth != nil }
-    var reset: () -> Void
+    var reset: (() -> Void)?
 
     var body: some View {
         let layout = inline ? AnyLayout(HStackLayout(alignment: .bottom, spacing: 14)) : AnyLayout(VStackLayout(alignment: .leading, spacing: 16))
@@ -83,11 +83,12 @@ struct MeetingFilterFields: View {
                     }
                 } label: { control(filter.scopeTitle, "chevron.down") }
                     .buttonStyle(.plain).accessibilityLabel(tr("Моё участие")).accessibilityValue(tr(filter.scopeTitle))
+                    .accessibilityIdentifier("meetingFilters.scope")
             }
             .frame(width: inlineWidth.map { ($0 - 48 - 42) * 1.15 / 3.15 })
             dayField("С даты", selection: $filter.from, range: Date.distantPast...(filter.to ?? .distantFuture))
             dayField("По дату", selection: $filter.to, range: (filter.from ?? .distantPast)...Date.distantFuture)
-            if inline { IconButton("arrow.counterclockwise", label: "Сбросить фильтры", action: reset).frame(width: 48) }
+            if let reset { IconButton("arrow.counterclockwise", label: "Сбросить фильтры", action: reset).frame(width: 48) }
         }
         .environment(\.timeZone, zone)
     }
@@ -96,11 +97,15 @@ struct MeetingFilterFields: View {
     /// - Parameters:
     ///   - title: Название фильтра.
     ///   - content: Элемент выбора значения.
-    private func field<Content: View>(_ title: String, @ViewBuilder content: () -> Content) -> some View {
-        VStack(alignment: .leading, spacing: 7) {
-            Text(tr(title)).font(MSTheme.font(11, weight: .semibold))
-            content()
-        }.frame(maxWidth: .infinity, alignment: .leading)
+    @ViewBuilder private func field<Content: View>(_ title: String, @ViewBuilder content: @escaping () -> Content) -> some View {
+        if inline {
+            VStack(alignment: .leading, spacing: 7) {
+                Text(tr(title)).font(MSTheme.font(11, weight: .semibold))
+                content()
+            }.frame(maxWidth: .infinity, alignment: .leading)
+        } else {
+            WorkspaceFormField(title: title, content: content)
+        }
     }
 
     /// Показывает выбор необязательной даты в фильтре встреч.
@@ -120,15 +125,20 @@ struct MeetingFilterFields: View {
     /// - Parameters:
     ///   - title: Отображаемое значение.
     ///   - icon: Значок справа.
-    private func control(_ title: String, _ icon: String) -> some View {
-        HStack(spacing: 6) {
-            Text(verbatim: tr(title)).multilineTextAlignment(.leading)
+    @ViewBuilder private func control(_ title: String, _ icon: String) -> some View {
+        let value = HStack(spacing: 6) {
+            Text(verbatim: tr(title)).multilineTextAlignment(.leading).fixedSize(horizontal: false, vertical: true)
             Spacer(minLength: 2)
             WorkspaceIcon(icon, size: 14)
-        }.font(MSTheme.font(12)).padding(.horizontal, 12).frame(minHeight: 50)
-            .background(MSTheme.surface, in: RoundedRectangle(cornerRadius: 12))
-            .overlay { RoundedRectangle(cornerRadius: 12).strokeBorder(MSTheme.line) }
-            .contentShape(Rectangle())
+        }
+        if inline {
+            value.font(MSTheme.font(12)).padding(.horizontal, 12).frame(minHeight: 50)
+                .background(MSTheme.surface, in: RoundedRectangle(cornerRadius: 12))
+                .overlay { RoundedRectangle(cornerRadius: 12).strokeBorder(MSTheme.line).allowsHitTesting(false) }
+                .contentShape(Rectangle())
+        } else {
+            value.workspaceFormInput().contentShape(Rectangle())
+        }
     }
 }
 
@@ -140,6 +150,7 @@ private struct OptionalMeetingDay<Label: View>: View {
     @ViewBuilder var label: () -> Label
     @State private var presented = false
     @State private var draft = Date()
+    @Environment(\.dynamicTypeSize) private var typeSize
 
     var body: some View {
         Button {
@@ -148,15 +159,30 @@ private struct OptionalMeetingDay<Label: View>: View {
         } label: { label() }
             .buttonStyle(.plain).accessibilityLabel(tr(title)).accessibilityValue(selection.map { calendarText($0, format: "d MMMM yyyy", zone: zone) } ?? tr("Без даты"))
             .popover(isPresented: $presented) {
-                VStack(spacing: 12) {
-                    DatePicker(tr(title), selection: $draft, in: range, displayedComponents: .date)
-                        .datePickerStyle(.graphical).environment(\.timeZone, zone)
-                    HStack {
-                        Button(tr("Сбросить")) { selection = nil; presented = false }
-                        Spacer()
-                        Button(tr("Готово")) { selection = MeetingCalendar.calendar(in: zone).startOfDay(for: draft); presented = false }
-                    }
-                }.padding().frame(idealWidth: 320).presentationCompactAdaptation(.popover)
+                ViewThatFits(in: .vertical) {
+                    calendarForm.fixedSize(horizontal: false, vertical: true)
+                    ScrollView { calendarForm }
+                }.frame(idealWidth: 340, maxWidth: 420)
+                    .tint(MSTheme.accent)
+                    .presentationCompactAdaptation(horizontal: .popover, vertical: .sheet)
             }
+    }
+
+    private var calendarForm: some View {
+        VStack(spacing: 12) {
+            DatePicker(tr(title), selection: $draft, in: range, displayedComponents: .date)
+                .datePickerStyle(.graphical).environment(\.timeZone, zone)
+            let layout = typeSize.isAccessibilitySize ? AnyLayout(VStackLayout(spacing: 8)) : AnyLayout(HStackLayout(spacing: 8))
+            layout {
+                Button(tr("Сбросить")) {
+                    selection = nil
+                    presented = false
+                }.buttonStyle(MSButtonStyle(primary: false))
+                Button(tr("Готово")) {
+                    selection = MeetingCalendar.calendar(in: zone).startOfDay(for: draft)
+                    presented = false
+                }.buttonStyle(MSButtonStyle())
+            }
+        }.padding(16)
     }
 }

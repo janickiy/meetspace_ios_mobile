@@ -91,15 +91,14 @@ struct InstallerView: View {
                 }
             }
             HStack {
-                Button {
+                MSLiquidAction(.back, title: "Назад") {
                     if !model.goBack() { close() }
-                } label: {
-                    Label("Назад", systemImage: "arrow.left").frame(minHeight: 48)
                 }
                 .accessibilityIdentifier(model.hasPreviousStep ? "installer.back" : "installer.close")
                 Spacer()
                 if model.hasPreviousStep {
-                    IconButton("xmark", label: "Закрыть установщик", action: close)
+                    MSLiquidAction(.close, action: close)
+                        .accessibilityLabel(tr("Закрыть установщик"))
                         .accessibilityIdentifier("installer.close")
                 }
             }

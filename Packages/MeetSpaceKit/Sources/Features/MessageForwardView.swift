@@ -43,7 +43,12 @@ struct MessageForwardView: View {
                 }.padding(20).disabled(sending || model.forwarding)
             }.background(MSTheme.surface)
                 .navigationTitle(tr("Переслать сообщение")).msInlineTitle()
-                .toolbar { ToolbarItem(placement: .cancellationAction) { IconButton("xmark", label: "Отмена") { dismiss() }.disabled(sending || model.forwarding) } }
+                .toolbar {
+                    ToolbarItem(placement: .cancellationAction) {
+                        MSLiquidAction(.close, inToolbar: true) { dismiss() }
+                            .accessibilityLabel(tr("Отмена")).disabled(sending || model.forwarding)
+                    }
+                }
                 .interactiveDismissDisabled(sending || model.forwarding)
                 .onDisappear { forwardTask?.cancel(); forwardTask = nil }
                 .task(id: query) {

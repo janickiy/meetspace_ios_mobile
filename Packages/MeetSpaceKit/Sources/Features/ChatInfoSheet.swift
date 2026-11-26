@@ -35,11 +35,7 @@ struct ChatInfoSheet<Details: View, Materials: View>: View {
                             .font(MSTheme.font(14, weight: .semibold)).foregroundStyle(MSTheme.muted)
                             .accessibilityAddTraits(.isHeader)
                         Spacer()
-                        Button { dismiss() } label: {
-                            WorkspaceIcon("xmark", size: 20)
-                                .frame(width: 44, height: 44).contentShape(Rectangle())
-                        }.buttonStyle(.plain).foregroundStyle(MSTheme.ink)
-                            .accessibilityLabel(tr("Закрыть"))
+                        MSLiquidAction(.close) { dismiss() }
                             .accessibilityIdentifier("\(identifier).close")
                     }.padding(.leading, compact ? 16 : 24).padding(.trailing, compact ? 8 : 16)
                         .padding(.top, compact ? 4 : 8).padding(.bottom, 4)

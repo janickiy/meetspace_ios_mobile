@@ -83,7 +83,7 @@ struct DirectCallView: View {
             }
             if call.otherDevice {
                 Text(tr("Звонок продолжается на другом устройстве.")).multilineTextAlignment(.center)
-                Button(tr("Закрыть")) { call.minimize() }.buttonStyle(MSButtonStyle(primary: false))
+                MSLiquidAction(.close, title: "Закрыть") { call.minimize() }
             } else if call.currentCall?.isTerminal == true {
                 Button(tr("Готово")) { call.minimize() }.buttonStyle(MSButtonStyle()).accessibilityIdentifier("directCallDone")
             } else {

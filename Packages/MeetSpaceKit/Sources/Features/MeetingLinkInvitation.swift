@@ -49,7 +49,7 @@ struct MeetingLinkInvitationSheet: View {
         } else {
             GeometryReader { geometry in
                 let wide = geometry.size.width >= 780 && !typeSize.isAccessibilitySize
-                WorkspaceFormSheet(title: "Пригласить на встречу", identifier: "meetingInvite", maxWidth: wide ? 680 : 440, close: close) {
+                WorkspaceFormSheet(title: "Пригласить на встречу", identifier: "meetingInvite", closeAction: .back, maxWidth: wide ? 680 : 440, close: close) {
                     HStack(spacing: 24) {
                         VStack(alignment: .leading, spacing: 18) {
                             Text(verbatim: title).font(MSTheme.font(17, weight: .semibold))

@@ -185,7 +185,7 @@ struct ChatDeleteConfirmation: View {
                 HStack {
                     Text(tr("Удалить выбранные сообщения?")).font(MSTheme.font(20, weight: .semibold)).accessibilityAddTraits(.isHeader)
                     Spacer()
-                    IconButton("xmark", label: "Закрыть", action: cancel)
+                    MSLiquidAction(.close, action: cancel)
                 }
                 Text("\(tr("Выбрано сообщений")): \(count).")
                 Text(tr("Сообщения будут удалены из вашей истории на этом устройстве. У других участников они останутся."))
@@ -197,8 +197,9 @@ struct ChatDeleteConfirmation: View {
                         .frame(maxWidth: .infinity, minHeight: 48).foregroundStyle(.white)
                         .background(MSTheme.danger, in: RoundedRectangle(cornerRadius: 13))
                 }.buttonStyle(.plain).disabled(count == 0).accessibilityIdentifier("message.confirmLocalDelete")
-                Button(tr("Отмена"), action: cancel).buttonStyle(MSButtonStyle(primary: false))
+                MSLiquidAction(.cancel, action: cancel)
                     .accessibilityIdentifier("message.cancelLocalDelete")
+                    .frame(maxWidth: .infinity)
             }.padding(20).font(MSTheme.font(14)).foregroundStyle(MSTheme.ink)
         }.background(MSTheme.surface).disabled(busy).interactiveDismissDisabled(busy)
             .presentationDetents([.medium, .large]).presentationDragIndicator(.visible)

@@ -67,7 +67,11 @@ struct DemoAddAccountView: View {
                     dismiss()
                 }.disabled((try? ProfileValidation.displayName(name)) == nil || (try? AccountValidation.email(email)) == nil || (try? ServerOrigin(server)) == nil)
             }.navigationTitle(tr("Добавить аккаунт")).msInlineTitle()
-                .toolbar { ToolbarItem(placement: .cancellationAction) { Button(tr("Отмена")) { dismiss() } } }
+                .toolbar {
+                    ToolbarItem(placement: .cancellationAction) {
+                        MSLiquidAction(.cancel, inToolbar: true) { dismiss() }
+                    }
+                }
         }.onAppear { server = accounts.current.server?.url.absoluteString ?? "https://meet.example.org" }
     }
 }

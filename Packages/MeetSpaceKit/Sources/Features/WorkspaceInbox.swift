@@ -212,7 +212,8 @@ struct WorkspaceInboxView: View {
                 Text(unreadTitle).font(MSTheme.font(11, weight: .semibold)).padding(.horizontal, 7).frame(minHeight: 23)
                     .foregroundStyle(MSTheme.accent).background(MSTheme.accentSoft, in: Capsule())
                 Spacer(minLength: 0)
-                IconButton("xmark", label: "Закрыть уведомления") { app.showingWorkspaceNotifications = false }
+                MSLiquidAction(.close) { app.showingWorkspaceNotifications = false }
+                    .accessibilityLabel(tr("Закрыть уведомления"))
                     .accessibilityFocused($closeFocused)
             }.padding(.leading, compact ? 16 : 20).padding(.trailing, 10).frame(minHeight: compact ? 65 : 70)
             ViewThatFits(in: .horizontal) {

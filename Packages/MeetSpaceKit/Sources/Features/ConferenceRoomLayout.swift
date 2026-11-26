@@ -66,10 +66,8 @@ struct ConferenceRoomLayout<Header: View, Notice: View, Video: View, Panel: View
     /// - Parameter wide: Использовать ли компоновку для широкого экрана.
     private func heading(wide: Bool) -> some View {
         HStack(spacing: wide ? 12 : 7) {
-            Button(action: back) {
-                WorkspaceIcon("arrow.left", size: 21).frame(width: 44, height: 44).contentShape(Rectangle())
-            }.buttonStyle(.plain)
-                .foregroundStyle(ConferenceRoomColors.muted)
+            MSLiquidAction(.back, action: back)
+                .environment(\.colorScheme, .dark)
                 .accessibilityLabel(tr("К списку встреч"))
                 .accessibilityIdentifier("conferenceBack")
             VStack(alignment: .leading, spacing: 4) {

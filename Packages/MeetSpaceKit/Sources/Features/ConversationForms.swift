@@ -19,7 +19,7 @@ struct NewConversationView: View {
 
     var body: some View {
         WorkspaceFormSheet(title: group ? "Создать группу" : "Новая беседа", identifier: "newConversation",
-                           closeLabel: "Отменить", busy: busy, close: { dismiss() }) {
+                           closeAction: .cancel, closeLabel: "Отменить", busy: busy, close: { dismiss() }) {
             if group {
                 groupFields
             } else {
@@ -185,7 +185,7 @@ struct UserChooser: View {
 
     var body: some View {
         WorkspaceFormSheet(title: multiple ? "Участники" : "Собеседник", identifier: "userChooser",
-                           closeLabel: "Отменить", close: { dismiss() }) {
+                           closeAction: .cancel, closeLabel: "Отменить", close: { dismiss() }) {
             WorkspacePeopleList(model: model, excluded: excluding, retained: selection) { peer in
                 let picked = selection.contains { $0.id == peer.id }
                 WorkspacePersonButton(peer: peer, multiple: multiple, selected: picked) {

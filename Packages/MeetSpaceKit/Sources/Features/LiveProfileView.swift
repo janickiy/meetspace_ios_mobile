@@ -32,7 +32,12 @@ struct LiveProfileView: View {
                 NavigationStack {
                     ScrollView { Text(WebRTCLibrary.licenseText + "\n\n" + InstallerLibrary.licenseText).font(.system(size: 11, design: .monospaced)).textSelection(.enabled).padding() }
                         .navigationTitle(tr("Лицензии компонентов")).msInlineTitle()
-                        .toolbar { ToolbarItem(placement: .confirmationAction) { IconButton("xmark", label: "Готово") { licenses = false } } }
+                        .toolbar {
+                            ToolbarItem(placement: .confirmationAction) {
+                                MSLiquidAction(.close, inToolbar: true) { licenses = false }
+                                    .accessibilityLabel(tr("Готово"))
+                            }
+                        }
                 }
             }
             .confirmationDialog(tr("Выйти из аккаунта на этом устройстве?"), isPresented: Binding(get: { removing != nil }, set: { if !$0 { removing = nil } })) {

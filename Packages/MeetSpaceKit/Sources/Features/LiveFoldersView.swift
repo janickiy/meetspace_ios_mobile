@@ -62,7 +62,7 @@ struct LiveFoldersView: View {
                         }.disabled((try? FolderValidation.text(name, maximum: 50, required: true)) == nil)
                             .accessibilityIdentifier("folderSave")
                     }.disabled(model.busy).navigationTitle(tr(renaming == nil ? "Создать папку" : "Переименовать"))
-                        .toolbar { ToolbarItem(placement: .cancellationAction) { IconButton("xmark", label: "Отмена") { editing = false }.disabled(model.busy) } }
+                        .toolbar { ToolbarItem(placement: .cancellationAction) { MSLiquidAction(.cancel, inToolbar: true) { editing = false }.disabled(model.busy) } }
                         .interactiveDismissDisabled(model.busy)
                 }
             }

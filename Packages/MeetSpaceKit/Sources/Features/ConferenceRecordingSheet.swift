@@ -106,9 +106,7 @@ struct ConferenceRecordingDialog: View {
                 Text(tr("Запись встречи")).font(MSTheme.font(21, weight: .semibold, relativeTo: .title2))
                     .accessibilityAddTraits(.isHeader).accessibilityFocused($headingFocused)
                 Spacer(minLength: 0)
-                Button(action: close) {
-                    WorkspaceIcon("xmark", size: 19).frame(width: 44, height: 44).contentShape(Rectangle())
-                }.buttonStyle(.plain).accessibilityLabel(tr("Закрыть"))
+                MSLiquidAction(.close, action: close)
                     .accessibilityIdentifier("conferenceRecordingClose")
             }
             HStack(spacing: 12) {

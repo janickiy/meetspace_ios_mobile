@@ -88,19 +88,24 @@ struct MeetingsDashboard<Value: Identifiable>: View {
                 }
             }
         }.background(MSTheme.background).foregroundStyle(MSTheme.ink).toolbar(.hidden)
-            .sheet(isPresented: $editingFilters) {
-                NavigationStack {
-                    ScrollView {
-                        VStack(alignment: .leading, spacing: 18) {
-                            MeetingFilterFields(filter: $draft, zone: zone, reset: {})
-                            Text(tr("Дата включается в период. Встречи без даты доступны без фильтра по периоду."))
-                                .font(MSTheme.font(12)).foregroundStyle(MSTheme.muted)
-                            Button(tr("Применить")) { filter = draft; editingFilters = false }.buttonStyle(MSButtonStyle())
-                            Button(tr("Сбросить")) { reset(); editingFilters = false }.buttonStyle(MSButtonStyle(primary: false))
-                        }.padding(20)
-                    }.navigationTitle(tr("Фильтры встреч")).msInlineTitle()
-                        .toolbar { ToolbarItem(placement: .cancellationAction) { Button(tr("Отмена")) { editingFilters = false } } }
-                }.presentationDetents([.medium, .large])
+            .workspaceFormPresentation(isPresented: $editingFilters) {
+                WorkspaceFormSheet(title: "Фильтры встреч", identifier: "meetingFilters", closeAction: .cancel,
+                                   dividedHeader: true, close: { editingFilters = false }) {
+                    MeetingFilterFields(filter: $draft, zone: zone)
+                    Text(tr("Дата включается в период. Встречи без даты доступны без фильтра по периоду."))
+                        .font(MSTheme.font(12)).foregroundStyle(MSTheme.muted)
+                        .fixedSize(horizontal: false, vertical: true)
+                    VStack(spacing: 8) {
+                        Button(tr("Применить")) {
+                            filter = draft
+                            editingFilters = false
+                        }.buttonStyle(MSButtonStyle()).accessibilityIdentifier("meetingFilters.apply")
+                        Button(tr("Сбросить")) {
+                            reset()
+                            editingFilters = false
+                        }.buttonStyle(MSButtonStyle(primary: false)).accessibilityIdentifier("meetingFilters.reset")
+                    }
+                }
             }
     }
 
@@ -244,7 +249,7 @@ struct MeetingsDashboard<Value: Identifiable>: View {
                             if filter.count > 0 { Text("\(filter.count)").font(MSTheme.font(9)).foregroundStyle(.white)
                                 .padding(4).background(MSTheme.accent, in: Circle()).offset(x: 3, y: -4) }
                         }
-                }.buttonStyle(.plain).accessibilityLabel(tr("Фильтры встреч"))
+                }.buttonStyle(.plain).accessibilityLabel(tr("Фильтры встреч")).accessibilityIdentifier("meetingFilters.open")
             }
             tabs(large: false).padding(.top, 12)
             let layout = typeSize.isAccessibilitySize ? AnyLayout(VStackLayout(alignment: .leading, spacing: 7)) : AnyLayout(HStackLayout(spacing: 7))

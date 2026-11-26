@@ -56,8 +56,8 @@ struct ScreenShareControls: View {
                     #endif
                     Text(tr("Нажмите системную кнопку и подтвердите начало трансляции."))
                         .font(.callout).multilineTextAlignment(.center)
-                    Button(tr("Отмена")) { Task { await session.stopScreenShare(); showingPicker = false } }
-                        .frame(minHeight: 44).accessibilityIdentifier("screenShareCancel")
+                    MSLiquidAction(.cancel) { Task { await session.stopScreenShare(); showingPicker = false } }
+                        .accessibilityIdentifier("screenShareCancel")
                 }.padding(24).frame(maxWidth: .infinity)
             }.presentationDetents([.medium, .large])
         }.onChange(of: session.screenShareState) { _, state in

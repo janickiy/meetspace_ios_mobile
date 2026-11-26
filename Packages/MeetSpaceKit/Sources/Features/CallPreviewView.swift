@@ -39,7 +39,7 @@ private struct DemoMeetingPrejoin: View {
             MeetingPrejoinName(name: $name, guest: guest)
                 .padding(.top, 8)
             MeetingMicrophoneRow(camera: $cameraChoice, demo: true)
-            VStack(spacing: 0) {
+            VStack(spacing: 8) {
                 Button {
                     let participant = name.trimmingCharacters(in: .whitespacesAndNewlines)
                     model.demoConferenceEntry = DemoConferenceEntry(name: participant, microphone: microphone, camera: camera,
@@ -72,7 +72,8 @@ struct MeetingPrejoinLayout<Preview: View, Details: View>: View {
             let wide = proxy.size.width >= 840 && !typeSize.isAccessibilitySize
             VStack(spacing: 0) {
                 PageHeader(title: "Перед встречей") {
-                    WorkspaceHeaderButton("arrow.left", label: "Вернуться к встречам", action: onBack)
+                    MSLiquidAction(.back, action: onBack)
+                        .accessibilityLabel(tr("Вернуться к встречам"))
                         .accessibilityIdentifier("prejoinBack")
                 }
                 GeometryReader { available in
@@ -229,10 +230,12 @@ struct MeetingIdentityChip: View {
 struct MeetingPrejoinReturn: View {
     let action: () -> Void
     var body: some View {
-        Button(action: action) {
-            Text(tr("Вернуться к встречам")).font(MSTheme.font(14, weight: .semibold))
-                .frame(maxWidth: .infinity, minHeight: 44).contentShape(Rectangle())
-        }.buttonStyle(.plain).foregroundStyle(MSTheme.accent).accessibilityIdentifier("prejoinReturn")
+        ViewThatFits(in: .horizontal) {
+            MSLiquidAction(.back, title: "Вернуться к встречам", action: action)
+            MSLiquidAction(.back, title: "Назад", action: action)
+                .accessibilityLabel(tr("Вернуться к встречам"))
+        }.accessibilityIdentifier("prejoinReturn")
+            .frame(maxWidth: .infinity)
     }
 }
 

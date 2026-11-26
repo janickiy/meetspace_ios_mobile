@@ -33,7 +33,7 @@ struct MeetingInvitationRecipients: View {
     }
 
     var body: some View {
-        WorkspaceFormSheet(title: "Пригласить участников", identifier: "meetingInvitePeople", busy: sending, close: close) {
+        WorkspaceFormSheet(title: "Пригласить участников", identifier: "meetingInvitePeople", closeAction: .back, busy: sending, close: close) {
             Text(tr("Найдите коллегу или укажите email для приглашения.")).foregroundStyle(MSTheme.muted)
             WorkspaceFormField(title: "Имя или email") {
                 TextField(tr("Например, Мария"), text: $query).msEmailInput().textFieldStyle(.plain).workspaceFormInput()

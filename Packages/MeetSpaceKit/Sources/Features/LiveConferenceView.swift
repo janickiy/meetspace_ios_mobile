@@ -212,8 +212,8 @@ struct LiveConferenceView: View {
                 HStack {
                     Text(tr("Дополнительно")).font(MSTheme.font(19, weight: .semibold)).accessibilityAddTraits(.isHeader)
                     Spacer()
-                    Button { showMore = false } label: { WorkspaceIcon("xmark").frame(width: 44, height: 44) }
-                        .accessibilityLabel(tr("Закрыть")).accessibilityIdentifier("conferenceMediaOptionsClose")
+                    MSLiquidAction(.close) { showMore = false }
+                        .accessibilityIdentifier("conferenceMediaOptionsClose")
                 }
                 ScreenShareControls(session: session).foregroundStyle(.white)
                 ViewThatFits(in: .horizontal) {
@@ -298,12 +298,12 @@ struct LiveConferenceView: View {
                     .padding(.top, 8)
                 MeetingMicrophoneRow(camera: Binding(get: { session.videoPreferences.camera }, set: session.choosePrejoinCamera),
                                      cameraDisabled: session.cameraBlocked)
-                VStack(spacing: 0) {
+                VStack(spacing: 8) {
                     Button { session.start() } label: {
                         Label(tr("Присоединиться"), systemImage: "arrow.right").labelStyle(MeetingNextLabelStyle())
                     }.buttonStyle(MSButtonStyle()).accessibilityIdentifier("conferenceJoin")
                     if guest {
-                        Button(tr("Назад")) { Task { await close() } }.buttonStyle(MSTextButtonStyle())
+                        MSLiquidAction(.back, title: "Назад") { Task { await close() } }
                     } else {
                         MeetingPrejoinReturn { returnToWorkspace(.meetings) }
                     }

@@ -251,6 +251,61 @@ import UIKit
         XCTAssertTrue(first.waitForExistence(timeout: 5))
     }
 
+    /// Проверяет ширину кнопки отмены и применение фильтров только после подтверждения.
+    func testMeetingFiltersCancelAndApplyOnPhone() throws {
+        try XCTSkipUnless(UIDevice.current.userInterfaceIdiom == .phone, "Requires compact meeting filters")
+        let app = launch(["-demo"])
+        let open = app.buttons["meetingFilters.open"]
+        reveal(open, in: app)
+        open.tap()
+
+        let cancel = app.buttons["meetingFilters.close"]
+        let scope = app.buttons["meetingFilters.scope"]
+        XCTAssertTrue(cancel.waitForExistence(timeout: 5))
+        XCTAssertEqual(cancel.label, "Отмена")
+        XCTAssertGreaterThanOrEqual(cancel.frame.height, 44)
+        XCTAssertGreaterThan(cancel.frame.width, cancel.frame.height * 1.4)
+        XCTAssertLessThanOrEqual(cancel.frame.maxY, scope.frame.minY)
+        capture(app, name: "meeting-filters-phone")
+
+        scope.tap()
+        app.buttons["Я организатор"].tap()
+        cancel.tap()
+        open.tap()
+        XCTAssertEqual(scope.value as? String, "Все мои встречи")
+
+        scope.tap()
+        app.buttons["Я организатор"].tap()
+        app.buttons["meetingFilters.apply"].tap()
+        open.tap()
+        XCTAssertEqual(scope.value as? String, "Я организатор")
+        app.buttons["meetingFilters.reset"].tap()
+        open.tap()
+        XCTAssertEqual(scope.value as? String, "Все мои встречи")
+        cancel.tap()
+    }
+
+    /// Проверяет выбор даты крупным шрифтом и отмену черновика фильтров.
+    func testMeetingFiltersDateWithLargeText() {
+        let app = launch(["-demo", "-UIPreferredContentSizeCategoryName", "UICTContentSizeCategoryAccessibilityXXXL"])
+        let open = app.buttons["meetingFilters.open"]
+        reveal(open, in: app)
+        open.tap()
+
+        let from = app.buttons["С даты"]
+        reveal(from, in: app)
+        from.tap()
+        let done = app.buttons["Готово"]
+        reveal(done, in: app)
+        done.tap()
+        XCTAssertNotEqual(from.value as? String, "Без даты")
+        let cancel = app.buttons["meetingFilters.close"]
+        XCTAssertTrue(cancel.isHittable)
+        cancel.tap()
+        open.tap()
+        XCTAssertEqual(from.value as? String, "Без даты")
+    }
+
     /// Выполняет геометрические проверки и сохраняет снимок окна в портретной и альбомной ориентациях.
     /// - Parameters:
     ///   - app: Запущенное приложение, окно которого поворачивается.

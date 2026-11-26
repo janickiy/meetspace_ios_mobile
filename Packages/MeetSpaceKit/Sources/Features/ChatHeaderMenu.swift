@@ -140,8 +140,9 @@ extension View {
                             .frame(maxWidth: .infinity, minHeight: 48).foregroundStyle(.white)
                             .background(MSTheme.danger, in: RoundedRectangle(cornerRadius: 13))
                     }.buttonStyle(.plain).accessibilityIdentifier("chat.confirm.apply")
-                    Button(tr("Отмена")) { pending.wrappedValue = nil }
-                        .buttonStyle(MSButtonStyle(primary: false)).accessibilityIdentifier("chat.confirm.cancel")
+                    MSLiquidAction(.cancel) { pending.wrappedValue = nil }
+                        .accessibilityIdentifier("chat.confirm.cancel")
+                        .frame(maxWidth: .infinity)
                 }.padding(20).frame(maxWidth: 540).frame(maxWidth: .infinity)
             }.background(MSTheme.surface).foregroundStyle(MSTheme.ink)
                 .presentationDetents([.medium, .large]).presentationDragIndicator(.visible)
@@ -200,7 +201,7 @@ struct ChatOwnCard: View {
             HStack {
                 Text(tr("Моя карточка")).font(MSTheme.font(17, weight: .semibold))
                 Spacer()
-                IconButton("xmark", label: "Закрыть") { dismiss() }
+                MSLiquidAction(.close) { dismiss() }
             }.padding(.horizontal, 16).frame(minHeight: 56)
             ScrollView {
                 VStack(spacing: 12) {

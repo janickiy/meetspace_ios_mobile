@@ -5,7 +5,8 @@ import MeetSpaceDesignSystem
 struct WorkspaceFormSheet<Content: View>: View {
     let title: String
     let identifier: String
-    var closeLabel = "Закрыть"
+    var closeAction: MSLiquidAction.Kind = .close
+    var closeLabel: String?
     var busy = false
     var centered = false
     var dividedHeader = false
@@ -74,9 +75,9 @@ struct WorkspaceFormSheet<Content: View>: View {
             Text(tr(title)).font(MSTheme.font(compact ? 20 : 21, weight: .semibold))
                 .fixedSize(horizontal: false, vertical: true).accessibilityAddTraits(.isHeader)
             Spacer(minLength: 0)
-            IconButton("xmark", label: closeLabel, action: close)
+            MSLiquidAction(closeAction, title: closeLabel, action: close)
                 .accessibilityIdentifier("\(identifier).close")
-        }.padding(.trailing, -8)
+        }
     }
 }
 

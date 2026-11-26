@@ -59,7 +59,7 @@ struct LiveMeetingsView: View {
                                     didSave: { Task { await model.load() } })
             }
             .workspaceFormPresentation(isPresented: $joining) {
-                WorkspaceFormSheet(title: "Подключиться по ссылке", identifier: "invitation", closeLabel: "Отмена",
+                WorkspaceFormSheet(title: "Подключиться по ссылке", identifier: "invitation", closeAction: .cancel,
                                    busy: model.busy, close: { joining = false }) {
                     Text(tr("Вставьте ссылку, которую прислал организатор встречи.")).foregroundStyle(MSTheme.muted)
                     WorkspaceFormField(title: "Ссылка на встречу") {
@@ -117,7 +117,7 @@ struct GuestConferenceForm: View {
     @State private var name = ""
     @Environment(\.dismiss) private var dismiss
     var body: some View {
-        WorkspaceFormSheet(title: "Войти как гость", identifier: "guest", closeLabel: "Отмена",
+        WorkspaceFormSheet(title: "Войти как гость", identifier: "guest", closeAction: .cancel,
                            busy: app.guestBusy, close: { dismiss() }) {
             WorkspaceFormField(title: "HTTPS-адрес сервера") {
                 TextField(tr("HTTPS-адрес сервера"), text: $server).msURLInput().textFieldStyle(.plain).workspaceFormInput()

@@ -131,7 +131,7 @@ struct WorkspaceFolderPicker: View {
                             TextField(tr("Название папки"), text: $name).workspaceFormInput()
                                 .accessibilityIdentifier("folderAssignment.name")
                             HStack {
-                                Button(tr("Отмена")) { creating = false }.buttonStyle(MSTextButtonStyle())
+                                MSLiquidAction(.cancel) { creating = false }
                                 Button(tr("Создать")) { Task { await create() } }
                                     .buttonStyle(MSButtonStyle(primary: false))
                                     .disabled((try? FolderValidation.text(name, maximum: 50, required: true)) == nil)
@@ -152,7 +152,7 @@ struct WorkspaceFolderPicker: View {
                 .foregroundStyle(MSTheme.ink)
                 .toolbar {
                     ToolbarItem(placement: .primaryAction) {
-                        IconButton("xmark", label: "Закрыть") { dismiss() }
+                        MSLiquidAction(.close, inToolbar: true) { dismiss() }
                             .accessibilityIdentifier("folderAssignment.close")
                     }
                 }

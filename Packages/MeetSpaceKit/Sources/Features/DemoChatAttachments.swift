@@ -79,7 +79,11 @@ struct DemoChatAttachments: View {
                         Text(tr("Демонстрационная карточка вложения.")).foregroundStyle(MSTheme.muted)
                     }
                 }.padding(20).navigationTitle(file.name).msInlineTitle()
-                    .toolbar { ToolbarItem(placement: .cancellationAction) { IconButton("xmark", label: "Закрыть") { opened = nil } } }
+                    .toolbar {
+                        ToolbarItem(placement: .cancellationAction) {
+                            MSLiquidAction(.close, inToolbar: true) { opened = nil }
+                        }
+                    }
             }.presentationDetents([.medium, .large])
         }
     }

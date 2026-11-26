@@ -145,7 +145,12 @@ private struct PortraitCropView: View {
                     }.buttonStyle(MSButtonStyle())
                 }.padding(24)
             }.disabled(saving).navigationTitle(tr("Фото профиля")).msInlineTitle()
-                .toolbar { ToolbarItem(placement: .cancellationAction) { IconButton("xmark", label: "Отмена") { dismiss() }.disabled(saving) } }
+                .toolbar {
+                    ToolbarItem(placement: .cancellationAction) {
+                        MSLiquidAction(.close, inToolbar: true) { dismiss() }
+                            .accessibilityLabel(tr("Отмена")).disabled(saving)
+                    }
+                }
         }.interactiveDismissDisabled(saving)
     }
     /// Создаёт ползунок для настройки области кадрирования фотографии.
