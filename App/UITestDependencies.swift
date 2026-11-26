@@ -360,6 +360,7 @@ enum UITestDependencies {
         private let peer = "11111111-1111-4111-8111-111111111113"
         private let direct = "22222222-2222-4222-8222-222222222222"
         private let groupID = "22222222-2222-4222-8222-222222222223"
+        private let pagedChatMaterials = ProcessInfo.processInfo.arguments.contains("-chat-materials-fixture")
         private let conferenceID = "33333333-3333-4333-8333-333333333333"
         private let participantID = "44444444-4444-4444-8444-444444444444"
         private let remoteParticipantID = "44444444-4444-4444-8444-444444444445"
@@ -389,6 +390,12 @@ enum UITestDependencies {
         private var folderMembers: [String: Set<FolderMember>] = [:]
         /// Подготавливает исходные встречи, сообщения и папки для выбранного при запуске UI-сценария.
         init() {
+            if pagedChatMaterials {
+                groups[groupID] = ["id": groupID, "type": "group", "name": "Материалы проекта",
+                                   "description": "Общие материалы группы", "memberCount": 2, "myRole": "member",
+                                   "updatedAt": "2026-11-05T10:00:00Z", "preview": "",
+                                   "unreadCount": 0, "notificationsEnabled": true]
+            }
             if ProcessInfo.processInfo.arguments.contains("-meeting-actions-fixture") {
                 let code = String(repeating: "a", count: 32)
                 conference = ["id": conferenceID, "ownerId": first, "title": "Проверка действий со встречей",
@@ -430,6 +437,18 @@ enum UITestDependencies {
             return ["id": direct, "type": "direct", "peer": ["id": peer, "displayName": "Тестовый собеседник"],
                     "description": "", "updatedAt": "2026-11-05T10:00:00Z", "preview": preview,
                     "unreadCount": 0, "notificationsEnabled": directNotifications[user] ?? true]
+        }
+        /// Формирует сообщение со ссылкой для проверки подгрузки материалов.
+        /// - Parameters:
+        ///   - conversation: Идентификатор чата, которому принадлежит сообщение.
+        ///   - link: Ссылка в тексте сообщения.
+        ///   - sequence: Порядковый номер сообщения в чате.
+        private func linkedMessage(conversation: String, link: String, sequence: Int = 1) -> [String: Any] {
+            ["id": "88888888-8888-4888-8888-88888888888\(sequence)", "sequence": String(sequence),
+             "conversationId": conversation, "senderId": peer, "senderName": "Тестовый собеседник",
+             "clientRequestId": "88888888-8888-4888-8888-88888888889\(sequence)",
+             "text": link, "version": 1, "createdAt": "2026-11-05T09:00:00Z",
+             "updatedAt": "2026-11-05T09:00:00Z", "attachments": []]
         }
         /// Сериализует словарь как JSON-ответ тестового HTTP-сервера.
         /// - Parameters:
@@ -674,6 +693,30 @@ enum UITestDependencies {
             if parts.count >= 4, parts[2] == "conversations" {
                 let id = parts[3]
                 if parts.count == 4 { return try response(["status": "ok", "item": conversation(id, account: selected)]) }
+                if pagedChatMaterials, request.httpMethod == "GET", parts.count == 5 {
+                    let query = URLComponents(url: request.url!, resolvingAgainstBaseURL: false)?.queryItems ?? []
+                    let before = query.first { $0.name == "before" }?.value
+                    if parts[4] == "materials" {
+                        guard id == direct else { return NetworkResponse(status: 404) }
+                        guard before == nil || before == "older-materials" else { return NetworkResponse(status: 422) }
+                        let kind = query.first { $0.name == "kind" }?.value
+                        var items: [[String: Any]] = []
+                        if kind == "link" {
+                            let link = before == nil ? "https://example.org/contact-current" : "https://example.org/contact-material"
+                            let message = linkedMessage(conversation: direct, link: link, sequence: before == nil ? 2 : 1)
+                            items.append(["message": message, "url": link])
+                        }
+                        return try response(before == nil ? ["items": items, "nextCursor": "older-materials"] : ["items": items])
+                    }
+                    if id == groupID, parts[4] == "messages" {
+                        if before == nil {
+                            return try response(["items": [], "nextCursor": "older-messages", "unreadCount": 0])
+                        }
+                        guard before == "older-messages" else { return NetworkResponse(status: 422) }
+                        let message = linkedMessage(conversation: groupID, link: "https://example.org/group-material")
+                        return try response(["items": [message], "unreadCount": 0])
+                    }
+                }
                 if id == direct, request.httpMethod == "GET" {
                     if parts.count == 5, parts[4] == "peer-presence" {
                         return try response(["status": "success", "item": ["conversationId": direct, "peerId": peer, "online": true]])

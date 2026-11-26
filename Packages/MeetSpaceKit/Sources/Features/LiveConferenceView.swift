@@ -55,14 +55,18 @@ struct LiveConferenceView: View {
             .onChange(of: session.phase) { _, phase in
                 if phase == .ended || phase == .failed {
                     showRecording = false
+                    showInvitation = false
                     closePanel()
                 }
             }
-            .accessibilityHidden(showRecording)
-            .allowsHitTesting(!showRecording)
+            .accessibilityHidden(showRecording || showInvitation)
+            .allowsHitTesting(!showRecording && !showInvitation)
             .overlay {
                 if showRecording, let recordings {
                     ConferenceRecordingSheet(session: session, model: recordings) { showRecording = false }
+                        .environment(\.colorScheme, workspaceTheme)
+                } else if showInvitation, let invitation = session.invitationURL {
+                    ConferenceInvitationSheet(title: session.title, url: invitation) { showInvitation = false }
                         .environment(\.colorScheme, workspaceTheme)
                 }
             }
@@ -75,9 +79,6 @@ struct LiveConferenceView: View {
             }
             .sheet(isPresented: $showMore) {
                 moreOptions
-            }
-            .sheet(isPresented: $showInvitation) {
-                if let invitation = session.invitationURL { ConferenceInvitationSheet(title: session.title, url: invitation) }
             }
             .confirmationDialog(tr("Выйти из встречи?"), isPresented: $confirmLeave, titleVisibility: .visible) {
                 Button(tr("Выйти из встречи"), role: .destructive) { Task { await close() } }

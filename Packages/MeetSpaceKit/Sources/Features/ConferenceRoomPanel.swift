@@ -85,60 +85,140 @@ struct ConferenceRoomPanel<Content: View>: View {
     }
 }
 
+private enum ConferenceInvitationColors {
+    static let surface = Color(light: 0xFFFFFF, dark: 0x25202B)
+    static let card = Color(light: 0xF3EFF5, dark: 0x302936)
+    static let line = Color(light: 0xE6DFE9, dark: 0x493D50)
+    static let ink = Color(light: 0x27222D, dark: 0xF6F0F8)
+    static let muted = Color(light: 0x685D70, dark: 0xC4B8CB)
+    static let accent = Color(light: 0x693D78, dark: 0xD8B3E6)
+    static let accentSoft = Color(light: 0xEEE5F2, dark: 0x46334F)
+    static let buttonInk = Color(light: 0xFFFFFF, dark: 0x271A2D)
+}
+
 struct ConferenceInvitationSheet: View {
     let title: String
     let url: URL
     var demo = false
+    let close: () -> Void
+
+    @Environment(\.dynamicTypeSize) private var typeSize
+    @AccessibilityFocusState private var headingFocused: Bool
     @State private var copied = false
-    @Environment(\.dismiss) private var dismiss
 
     var body: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: 16) {
-                HStack {
-                    Text(tr("Поделиться встречей")).font(MSTheme.font(20, weight: .semibold, relativeTo: .title2))
-                        .accessibilityAddTraits(.isHeader)
-                    Spacer(minLength: 4)
-                    Button { dismiss() } label: { WorkspaceIcon("xmark").frame(width: 44, height: 44) }
-                        .accessibilityLabel(tr("Закрыть"))
+        GeometryReader { geometry in
+            let compact = geometry.size.width <= 600
+            let inset: CGFloat = compact ? 12 : 20
+            let width = min(680, max(0, geometry.size.width - 2 * inset))
+            let shape = RoundedRectangle(cornerRadius: 20, style: .circular)
+            ZStack {
+                Color(red: 21 / 255, green: 16 / 255, blue: 27 / 255).opacity(158 / 255)
+                    .ignoresSafeArea().onTapGesture(perform: close).accessibilityHidden(true)
+                ViewThatFits(in: .vertical) {
+                    contents(compact: compact).fixedSize(horizontal: false, vertical: true)
+                    ScrollView { contents(compact: compact) }
+                        .scrollBounceBehavior(.basedOnSize)
+                }.frame(width: width)
+                    .background(ConferenceInvitationColors.surface, in: shape)
+                    .clipShape(shape)
+                    .overlay(shape.strokeBorder(ConferenceInvitationColors.line).allowsHitTesting(false))
+                    .shadow(color: .black.opacity(0.15), radius: 26, y: 12)
+                    .padding(.vertical, inset)
+                    .accessibilityElement(children: .contain)
+                    .accessibilityIdentifier("conferenceInvitation")
+            }.frame(maxWidth: .infinity, maxHeight: .infinity)
+        }.foregroundStyle(ConferenceInvitationColors.ink)
+            .tint(ConferenceInvitationColors.accent)
+            .accessibilityAddTraits(.isModal)
+            .accessibilityAction(.escape, close)
+            .onAppear { headingFocused = true }
+    }
+
+    /// Собирает заголовок, карточку ссылки с QR-кодом и кнопку отправки приглашения.
+    /// - Parameter compact: Использовать ли отступы и одноколоночную компоновку смартфона.
+    private func contents(compact: Bool) -> some View {
+        let stacked = compact || typeSize.isAccessibilitySize
+        let layout = stacked ? AnyLayout(VStackLayout(spacing: 14)) : AnyLayout(HStackLayout(spacing: 22))
+        let card = RoundedRectangle(cornerRadius: 16, style: .circular)
+        let qrSize: CGFloat = compact ? 140 : 162
+        return VStack(alignment: .leading, spacing: compact ? 14 : 20) {
+            VStack(alignment: .leading, spacing: 10) {
+                HStack(spacing: 8) {
+                    Text(tr("Поделиться встречей"))
+                        .font(MSTheme.font(compact ? 20 : 25, weight: .semibold, relativeTo: .title2)).bold()
+                        .fixedSize(horizontal: false, vertical: true)
+                        .accessibilityAddTraits(.isHeader).accessibilityFocused($headingFocused)
+                    Spacer(minLength: 0)
+                    Button(action: close) {
+                        WorkspaceIcon("xmark", size: 20).frame(width: 44, height: 44).contentShape(Rectangle())
+                    }.buttonStyle(.plain).foregroundStyle(ConferenceInvitationColors.muted)
+                        .accessibilityLabel(tr("Закрыть")).accessibilityIdentifier("conferenceInviteClose")
+                        .padding(.trailing, -8).padding(.vertical, -7)
                 }
-                Text(title).font(MSTheme.font(14)).foregroundStyle(MSTheme.muted)
+                Text(verbatim: title).font(MSTheme.font(13)).foregroundStyle(ConferenceInvitationColors.muted)
                     .fixedSize(horizontal: false, vertical: true)
-                ViewThatFits(in: .horizontal) {
-                    HStack(alignment: .center, spacing: 22) {
-                        invitationLink.frame(idealWidth: 260)
-                        qrCode.frame(width: 150)
-                    }
-                    VStack(spacing: 14) { invitationLink; qrCode }
-                }.padding(14).frame(maxWidth: .infinity)
-                    .background(ConferenceRoomPanelColors.feed, in: RoundedRectangle(cornerRadius: 16))
-                    .overlay(RoundedRectangle(cornerRadius: 16).strokeBorder(MSTheme.line))
-                ShareLink(item: url) { Label(tr("Пригласить участников"), systemImage: "envelope") }
-                    .buttonStyle(MSButtonStyle())
-            }.padding(18).frame(maxWidth: 680).frame(maxWidth: .infinity)
-        }.background(MSTheme.surface).presentationDetents([.large])
+            }
+            layout {
+                invitationLink
+                MeetingInviteQR(url: url, size: qrSize, inset: qrSize * 0.12, line: ConferenceInvitationColors.line,
+                                muted: ConferenceInvitationColors.muted)
+                    .frame(width: stacked ? nil : qrSize)
+            }.padding(compact ? 14 : 20).frame(maxWidth: .infinity)
+                .background(ConferenceInvitationColors.card, in: card)
+                .overlay(card.strokeBorder(ConferenceInvitationColors.line).allowsHitTesting(false))
+            VStack(spacing: compact ? 14 : 18) {
+                Rectangle().fill(ConferenceInvitationColors.line).frame(height: 1)
+                ShareLink(item: url) {
+                    HStack(spacing: 8) {
+                        WorkspaceIcon("envelope", size: 20)
+                        Text(tr("Пригласить участников")).font(MSTheme.font(14, weight: .semibold))
+                            .multilineTextAlignment(.center).fixedSize(horizontal: false, vertical: true)
+                    }.padding(.horizontal, compact ? 10 : 16).padding(.vertical, 8)
+                        .frame(maxWidth: compact ? .infinity : nil, minHeight: 44)
+                        .foregroundStyle(ConferenceInvitationColors.buttonInk)
+                        .background(ConferenceInvitationColors.accent, in: RoundedRectangle(cornerRadius: 10))
+                }.buttonStyle(.plain).accessibilityIdentifier("conferenceShareInvitation")
+            }
+        }.padding(compact ? 18 : 28)
     }
 
     private var invitationLink: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            Text(tr("Ссылка на встречу")).font(MSTheme.font(15, weight: .semibold))
-            Text(tr("Поделитесь ссылкой или отсканируйте QR-код, чтобы присоединиться с другого устройства."))
-                .foregroundStyle(MSTheme.muted).fixedSize(horizontal: false, vertical: true)
-            Text(url.absoluteString).font(MSTheme.font(12)).textSelection(.enabled)
-                .frame(maxWidth: .infinity, alignment: .leading).padding(10)
-                .background(ConferenceRoomPanelColors.card, in: RoundedRectangle(cornerRadius: 10))
-            Button(action: copy) {
-                Label(tr(copied ? "Скопировано" : "Копировать"), systemImage: copied ? "checkmark" : "doc.on.doc")
-                    .font(MSTheme.font(12, weight: .semibold)).fixedSize(horizontal: false, vertical: true)
-            }.buttonStyle(MSButtonStyle(primary: false)).accessibilityIdentifier("conferenceCopyInvitation")
-            if demo {
-                Text(tr("Адрес демонстрационный.")).foregroundStyle(MSTheme.muted)
+        let hint = tr("По ссылке можно присоединиться без аккаунта.")
+        return VStack(alignment: .leading, spacing: 14) {
+            VStack(alignment: .leading, spacing: 6) {
+                Text(tr("Ссылка на встречу")).font(MSTheme.font(15, weight: .semibold))
+                    .accessibilityAddTraits(.isHeader)
+                Text(tr("Поделитесь ссылкой или отсканируйте QR-код, чтобы присоединиться с другого устройства."))
+                    .font(MSTheme.font(13)).lineSpacing(4).foregroundStyle(ConferenceInvitationColors.muted)
             }
-        }.font(MSTheme.font(12)).frame(maxWidth: .infinity, alignment: .leading)
+            copyField
+            Text(verbatim: demo ? hint + " " + tr("Адрес демонстрационный.") : hint)
+                .font(MSTheme.font(12)).lineSpacing(3).foregroundStyle(ConferenceInvitationColors.muted)
+        }.fixedSize(horizontal: false, vertical: true).frame(maxWidth: .infinity, alignment: .leading)
     }
 
-    private var qrCode: some View {
-        MeetingInviteQR(url: url, size: 132)
+    private var copyField: some View {
+        let layout = typeSize.isAccessibilitySize ? AnyLayout(VStackLayout(spacing: 4)) : AnyLayout(HStackLayout(spacing: 4))
+        let shape = RoundedRectangle(cornerRadius: 10, style: .circular)
+        return layout {
+            Text(verbatim: url.absoluteString).font(MSTheme.font(13)).lineLimit(1).textSelection(.enabled)
+                .padding(.horizontal, 8).frame(maxWidth: .infinity, alignment: .leading)
+                .accessibilityLabel(tr("Ссылка на встречу")).accessibilityValue(url.absoluteString)
+                .accessibilityIdentifier("conferenceInviteURL")
+            Button(action: copy) {
+                HStack(spacing: 6) {
+                    WorkspaceIcon(copied ? "checkmark" : "doc.on.doc", size: 16)
+                    Text(tr(copied ? "Скопировано" : "Копировать")).font(MSTheme.font(12, weight: .semibold))
+                        .fixedSize(horizontal: false, vertical: true)
+                }.padding(.horizontal, 10).padding(.vertical, 6)
+                    .frame(minHeight: 44)
+                    .foregroundStyle(ConferenceInvitationColors.accent)
+                    .background(ConferenceInvitationColors.accentSoft, in: RoundedRectangle(cornerRadius: 7))
+            }.buttonStyle(.plain).accessibilityIdentifier("conferenceCopyInvitation")
+                .layoutPriority(1)
+        }.padding(4).background(ConferenceInvitationColors.surface, in: shape)
+            .overlay(shape.strokeBorder(ConferenceInvitationColors.line).allowsHitTesting(false))
     }
 
     /// Копирует ссылку на встречу и сохраняет результат для подтверждения в интерфейсе.

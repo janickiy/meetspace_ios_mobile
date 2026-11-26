@@ -228,15 +228,26 @@ private enum ContactLink {
 }
 
 private struct ContactMaterials: View {
+    private enum Page: Hashable {
+        case materials(String?)
+        case history(String)
+    }
+
     let model: MessagingModel
     let conversation: UUID
     let kind: ChatMaterialKind
     @State private var items: [ChatMaterialPage.Item] = []
     @State private var cursor: String?
-    @State private var loading = true
-    @State private var error: String?
+    @State private var request: Page? = .materials(nil)
+    @State private var loadedPages: Set<Page> = []
+    @State private var failure: (page: Page, message: String)?
     @State private var legacy = false
-    @State private var requestID = UUID()
+    @State private var endVisible = false
+
+    private var nextPage: Page? {
+        let next = legacy ? model.historyCursor.map(Page.history) : cursor.map { Page.materials($0) }
+        return next.flatMap { loadedPages.contains($0) ? nil : $0 }
+    }
 
     var body: some View {
         let current = Dictionary(uniqueKeysWithValues: model.timeline.messages.map { ($0.id, $0) })
@@ -251,40 +262,77 @@ private struct ContactMaterials: View {
             ($0.mimeType.hasPrefix("image/") || $0.mimeType.hasPrefix("video/")) == (kind == .media)
         } : visible.compactMap(\.attachment)
         let links = legacy ? history.flatMap { ContactLink.inText($0.text) } : visible.compactMap { $0.url.flatMap(ContactLink.safe) }
-        VStack(spacing: 8) {
-            if kind == .link && !links.isEmpty {
-                ChatInfoLinks(links: uniqueContactItems(links))
-            } else if kind == .media && !files.isEmpty {
-                LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 5), count: 3), spacing: 5) {
-                    ForEach(files) { attachment($0) }
+        let empty = kind == .link ? links.isEmpty : files.isEmpty
+        let loadingHistory = legacy && model.historyLoadingMore
+        let active = model.active && model.conversation?.id == conversation
+        let pending = active && request == nil && failure == nil && !loadingHistory && (empty || endVisible) ? nextPage : nil
+        return VStack(spacing: 8) {
+            if !empty {
+                Group {
+                    if kind == .link {
+                        ChatInfoLinks(links: uniqueContactItems(links))
+                    } else if kind == .media {
+                        LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 5), count: 3), spacing: 5) {
+                            ForEach(files) { attachment($0) }
+                        }
+                    } else {
+                        VStack(spacing: 2) { ForEach(files) { attachment($0) } }
+                    }
+                }.overlay(alignment: .bottom) {
+                    Color.clear.frame(height: 1).accessibilityHidden(true)
+                        .allowsHitTesting(false)
+                        .onScrollVisibilityChange { endVisible = $0 }
                 }
-            } else if kind == .file && !files.isEmpty {
-                VStack(spacing: 2) { ForEach(files) { attachment($0) } }
             }
-            if loading { ProgressView() }
-            else if let error {
-                Text(tr(error)).font(MSTheme.font(12)).foregroundStyle(MSTheme.danger)
-                Button(tr("Повторить")) { requestID = UUID() }.frame(minHeight: 44)
-            } else if (kind == .link ? links.isEmpty : files.isEmpty) && cursor == nil && (!legacy || model.historyCursor == nil) {
+            if request != nil || pending != nil || (empty && loadingHistory) {
+                ProgressView()
+            } else if let failure {
+                Text(tr(failure.message)).font(MSTheme.font(12)).foregroundStyle(MSTheme.danger)
+                Button(tr("Повторить")) {
+                    self.failure = nil
+                    request = failure.page
+                }.frame(minHeight: 44)
+            } else if empty {
                 contactEmpty(kind)
             }
-            if !loading && error == nil && cursor != nil { Button(tr("Загрузить ещё")) { requestID = UUID() }.frame(minHeight: 44) }
-            if legacy && model.historyCursor != nil {
-                Button(tr("Более ранние сообщения")) { Task { await model.loadOlder() } }.frame(minHeight: 44).disabled(model.historyLoadingMore)
-            }
         }.font(MSTheme.font(14)).buttonStyle(.plain).foregroundStyle(MSTheme.accent)
-            .task(id: requestID) {
-                loading = true; error = nil
-                defer { if !Task.isCancelled { loading = false } }
-                do {
-                    let page = try await model.repository.materials(conversation, kind: kind, cursor: cursor)
-                    guard !Task.isCancelled, model.active, model.conversation?.id == conversation else { return }
-                    items.append(contentsOf: page.items)
-                    cursor = page.nextCursor
-                } catch APIError.httpStatus(let code) where [404, 405, 501].contains(code) {
-                    if !Task.isCancelled { legacy = true }
-                } catch { if !Task.isCancelled { self.error = userMessage(error) } }
+            .onChange(of: pending, initial: true) { _, page in
+                if let page { request = page }
             }
+            .task(id: request) { [request] in
+                if let request { await load(request) }
+            }
+    }
+
+    /// Загружает страницу материалов или историю на сервере без отдельного списка материалов.
+    /// - Parameter page: Источник и курсор страницы для загрузки.
+    private func load(_ page: Page) async {
+        defer { if !Task.isCancelled { request = nil } }
+        guard !Task.isCancelled, model.active, model.conversation?.id == conversation else { return }
+        do {
+            switch page {
+            case .materials(let position):
+                let result = try await model.repository.materials(conversation, kind: kind, cursor: position)
+                guard !Task.isCancelled, model.active, model.conversation?.id == conversation else { return }
+                items.append(contentsOf: result.items)
+                cursor = result.nextCursor.flatMap { $0.isEmpty ? nil : $0 }
+            case .history(let position):
+                guard model.historyCursor == position, !model.historyLoadingMore else { return }
+                await model.loadOlder()
+                guard !Task.isCancelled, model.active, model.conversation?.id == conversation else { return }
+                if model.historyCursor == position {
+                    failure = (page, model.error ?? userMessage(APIError.invalidResponse))
+                    return
+                }
+            }
+            loadedPages.insert(page)
+        } catch APIError.httpStatus(let code) where page == .materials(nil) && [404, 405, 501].contains(code) {
+            if !Task.isCancelled, model.active, model.conversation?.id == conversation { legacy = true }
+        } catch {
+            if !Task.isCancelled, model.active, model.conversation?.id == conversation {
+                failure = (page, userMessage(error))
+            }
+        }
     }
 
     /// Показывает вложение и состояние его загрузки в материалах чата.

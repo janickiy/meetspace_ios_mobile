@@ -122,14 +122,17 @@ struct DemoConferenceView: View {
             }.environment(\.colorScheme, theme)
         }
         .toolbar(.hidden)
-        .preferredColorScheme(showingRecord || selected != nil ? nil : .dark)
-        .accessibilityHidden(showingRecord)
-        .allowsHitTesting(!showingRecord)
+        .preferredColorScheme(showingRecord || showingInvite || selected != nil ? nil : .dark)
+        .accessibilityHidden(showingRecord || showingInvite)
+        .allowsHitTesting(!showingRecord && !showingInvite)
         .overlay {
             if showingRecord {
                 ConferenceRecordingDialog(meetingTitle: meetingTitle, state: recordingState, mode: $recordingMode,
                                           demo: true, openRecording: openSavedRecording,
                                           close: { showingRecord = false }, start: startRecording, stop: stopRecording)
+                    .environment(\.colorScheme, theme)
+            } else if showingInvite, let link {
+                ConferenceInvitationSheet(title: meetingTitle, url: link, demo: true) { showingInvite = false }
                     .environment(\.colorScheme, theme)
             }
         }
@@ -153,9 +156,6 @@ struct DemoConferenceView: View {
             Button(tr("Остаться"), role: .cancel) {}
         } message: {
             Text(tr("Остальные участники смогут продолжить разговор."))
-        }
-        .sheet(isPresented: $showingInvite) {
-            if let link { ConferenceInvitationSheet(title: meetingTitle, url: link, demo: true) }
         }
     }
 

@@ -122,16 +122,19 @@ struct MeetingLinkInvitationSheet: View {
 struct MeetingInviteQR: View {
     let url: URL
     let size: CGFloat
+    var inset: CGFloat = 10
+    var line = MSTheme.line
+    var muted = MSTheme.muted
 
     var body: some View {
         if let image = image {
             VStack(spacing: 5) {
                 Image(decorative: image, scale: 1).resizable().interpolation(.none)
-                    .scaledToFit().padding(10).frame(width: size, height: size)
+                    .scaledToFit().padding(inset).frame(width: size, height: size)
                     .background(.white, in: RoundedRectangle(cornerRadius: 14))
-                    .overlay(RoundedRectangle(cornerRadius: 14).strokeBorder(MSTheme.line)).padding(.bottom, 6)
+                    .overlay(RoundedRectangle(cornerRadius: 14).strokeBorder(line)).padding(.bottom, 6)
                 Text(tr("Подключиться с телефона")).font(MSTheme.font(12, weight: .semibold))
-                Text(tr("Наведите камеру на QR-код")).font(MSTheme.font(11)).foregroundStyle(MSTheme.muted)
+                Text(tr("Наведите камеру на QR-код")).font(MSTheme.font(11)).foregroundStyle(muted)
             }.multilineTextAlignment(.center)
         }
     }

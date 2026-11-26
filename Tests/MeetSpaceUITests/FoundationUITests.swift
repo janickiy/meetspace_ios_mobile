@@ -1951,6 +1951,74 @@ import UIKit
         XCTAssertFalse(app.buttons["conferenceCamera"].exists)
     }
 
+    /// Проверяет компоновку приглашения, копирование ссылки и закрытие окна демовстречи.
+    func testDemoConferenceInvitationAdaptsToWindow() {
+        let orientation = XCUIDevice.shared.orientation
+        XCUIDevice.shared.orientation = .portrait
+        defer { XCUIDevice.shared.orientation = orientation }
+
+        let app = launch(["-demo"])
+        openProfile(in: app)
+        selectAccountSection("appearance", in: app)
+        let light = app.buttons["appearance.light"]
+        reveal(light, in: app); light.tap()
+        let catalog = app.buttons["profileMenu.demoCatalog"]
+        revealEntireText(catalog, in: app); catalog.tap()
+        let prejoin = app.buttons["Перед встречей"]
+        reveal(prejoin, in: app); prejoin.tap()
+        let join = app.buttons["conferencePreviewJoin"]
+        reveal(join, in: app); join.tap()
+
+        let invite = app.buttons["conferenceInvite"]
+        XCTAssertTrue(invite.waitForExistence(timeout: 5)); invite.tap()
+        let url = app.descendants(matching: .any)["conferenceInviteURL"].firstMatch
+        XCTAssertTrue(url.waitForExistence(timeout: 5))
+        XCTAssertEqual(url.value as? String ?? url.label, "https://meet.example.org/i/design")
+        let demoHint = NSPredicate(format: "label CONTAINS %@", "Адрес демонстрационный.")
+        XCTAssertTrue(app.staticTexts.matching(demoHint).firstMatch.exists)
+        let copy = app.buttons["conferenceCopyInvitation"]
+        let qr = app.staticTexts["Подключиться с телефона"]
+        let close = app.buttons["conferenceInviteClose"]
+        let share = app.buttons["conferenceShareInvitation"]
+
+        let assertLayout: (CGRect) -> Void = { window in
+            XCTAssertTrue(close.isHittable)
+            XCTAssertTrue(copy.isHittable)
+            XCTAssertEqual(url.frame.midY, copy.frame.midY, accuracy: 2)
+            XCTAssertLessThanOrEqual(url.frame.maxX, copy.frame.minX + 4)
+            if window.width > 600 {
+                XCTAssertGreaterThan(qr.frame.midX, copy.frame.maxX)
+            } else {
+                XCTAssertGreaterThan(qr.frame.minY, copy.frame.maxY)
+                XCTAssertGreaterThanOrEqual(share.frame.width, copy.frame.maxX - url.frame.minX)
+            }
+            XCTAssertGreaterThan(share.frame.minY, qr.frame.minY)
+        }
+        if UIDevice.current.userInterfaceIdiom == .pad {
+            checkOrientations(app, screen: "conference-invitation") { _ in
+                let window = app.windows.firstMatch
+                var previousWindow = CGRect.null
+                var previousShare = CGRect.null
+                let settled = XCTNSPredicateExpectation(predicate: NSPredicate { _, _ in
+                    let bounds = window.frame
+                    let action = share.frame
+                    defer { previousWindow = bounds; previousShare = action }
+                    return bounds == previousWindow && action == previousShare && close.isHittable
+                }, object: nil)
+                XCTAssertEqual(XCTWaiter.wait(for: [settled], timeout: 5), .completed)
+                assertLayout(window.frame)
+            }
+        } else {
+            capture(app, name: "iphone-portrait-conference-invitation")
+            assertLayout(app.windows.firstMatch.frame)
+        }
+        copy.tap()
+        XCTAssertTrue(copy.label.contains("Скопировано"))
+        reveal(share, in: app)
+        reveal(close, in: app, towardTop: true); close.tap()
+        XCTAssertTrue(invite.isHittable)
+    }
+
     /// Проверяет пропорции видеоплиток двух участников при смене ориентации и доступного пространства.
     func testTwoParticipantConferenceTilesKeepVideoProportions() {
         let device = XCUIDevice.shared
@@ -2082,6 +2150,16 @@ import UIKit
         XCTAssertTrue(app.buttons["prejoinDevices.close"].waitForExistence(timeout: 5))
         app.buttons["prejoinDevices.close"].tap()
         joinConference(app)
+
+        let invite = app.buttons["conferenceInvite"]
+        reveal(invite, in: app); invite.tap()
+        let inviteURL = app.descendants(matching: .any)["conferenceInviteURL"].firstMatch
+        XCTAssertTrue(inviteURL.waitForExistence(timeout: 5))
+        XCTAssertTrue((inviteURL.value as? String ?? inviteURL.label).hasPrefix("https://fixture.example/i/"))
+        let demoHint = NSPredicate(format: "label CONTAINS %@", "Адрес демонстрационный.")
+        XCTAssertFalse(app.staticTexts.matching(demoHint).firstMatch.exists)
+        capture(app, name: "live-conference-invitation")
+        app.buttons["conferenceInviteClose"].tap()
 
         let gallery = app.buttons["conferenceLayoutGallery"]
         let speaker = app.buttons["conferenceLayoutSpeaker"]
@@ -2821,6 +2899,38 @@ extension FoundationUITests {
 }
 
 extension FoundationUITests {
+    /// Проверяет автоматическую подгрузку материалов и оформление карточек личного и группового чатов.
+    func testChatInfoMaterialsPaginateWithoutButtons() {
+        let app = launch(["-chat-materials-fixture"])
+        login(app)
+        let cases = [
+            ("22222222-2222-4222-8222-222222222222", "chatContactSheet", "contact-material"),
+            ("22222222-2222-4222-8222-222222222223", "chatGroupSheet", "group-material")
+        ]
+        for (conversation, sheet, path) in cases {
+            let row = app.buttons["conversation.\(conversation)"]
+            reveal(row, in: app); row.tap()
+            let menu = app.buttons["chat.menu"]
+            XCTAssertTrue(menu.waitForExistence(timeout: 8)); menu.tap()
+            app.buttons["chat.action.info"].tap()
+            let emptyMedia = app.staticTexts["В этом чате пока нет медиа."]
+            XCTAssertTrue(emptyMedia.waitForExistence(timeout: 10))
+            XCTAssertFalse(app.buttons["Загрузить ещё"].exists)
+            XCTAssertFalse(app.buttons["Более ранние сообщения"].exists)
+            capture(app, name: "\(sheet)-empty-paged-materials")
+
+            app.buttons["chatInfo.tab.link"].tap()
+            let linkPredicate = NSPredicate(format: "label CONTAINS %@", "https://example.org/\(path)")
+            let link = app.descendants(matching: .any).matching(linkPredicate).firstMatch
+            XCTAssertTrue(link.waitForExistence(timeout: 10))
+            capture(app, name: "\(sheet)-paged-link")
+            let close = app.buttons["\(sheet).close"]
+            XCTAssertTrue(close.isHittable); close.tap()
+            let back = app.buttons["chat.back"]
+            XCTAssertTrue(back.waitForExistence(timeout: 5)); back.tap()
+        }
+    }
+
     /// Проверяет изменение настроек из заголовка тестового чата и операции с историей переписки.
     func testLiveChatHeaderPreferencesAndHistory() {
         let app = launch(["-chat-header-fixture"])
