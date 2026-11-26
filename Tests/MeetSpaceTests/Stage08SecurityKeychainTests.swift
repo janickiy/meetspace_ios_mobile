@@ -5,6 +5,7 @@ import MeetSpaceCore
 import MeetSpaceStorage
 
 @MainActor final class Stage08SecurityKeychainTests: XCTestCase {
+    /// Проверяет, что после обновления учётные данные остаются привязанными к разблокированному устройству и исключены из синхронизации iCloud.
     func testCredentialsRemainDeviceOnlyAndUnsynchronizedAfterUpdate() async throws {
         let service = "com.meetspace.ios.tests.security.\(UUID().uuidString)"
         let key = CredentialKey(server: try ServerOrigin("https://keychain.fixture"), accountID: UUID())
@@ -16,6 +17,7 @@ import MeetSpaceStorage
         try assertProtection(service: service, account: key.storageKey)
     }
 
+    /// Проверяет защиту и отключение синхронизации Keychain при создании и повторной записи журнала push-регистрации.
     func testPushCleanupJournalUsesTheSameDeviceOnlyProtection() async throws {
         let service = "com.meetspace.ios.tests.push-security.\(UUID().uuidString)", account = "fixture-journal"
         let store = KeychainPushRegistrationStore(service: service, account: account)
@@ -26,6 +28,7 @@ import MeetSpaceStorage
         try assertProtection(service: service, account: account)
     }
 
+    /// Проверяет сохранность подтверждения удаления аккаунта и его защиты в Keychain при перезаписи журнала.
     func testDeletionConfirmationSurvivesJournalRewriteWithDeviceOnlyProtection() async throws {
         let service = "com.meetspace.ios.tests.deletion-security.\(UUID().uuidString)", account = "fixture-journal"
         let ledgerAccount = account + "-confirmed-deletions-v1"
@@ -49,10 +52,20 @@ import MeetSpaceStorage
         XCTAssertTrue(journal.entries.isEmpty)
     }
 
+    /// Формирует запрос Keychain для поиска тестовой записи среди синхронизируемых и локальных элементов.
+    /// - Parameters:
+    ///   - service: Имя тестового сервиса Keychain.
+    ///   - account: Имя записи внутри сервиса.
     private func query(service: String, account: String) -> [String: Any] {
         [kSecClass as String: kSecClassGenericPassword, kSecAttrService as String: service,
          kSecAttrAccount as String: account, kSecAttrSynchronizable as String: kSecAttrSynchronizableAny]
     }
+    /// Проверяет атрибуты записи Keychain на доступность только на разблокированном устройстве и отсутствие синхронизации.
+    /// - Parameters:
+    ///   - service: Имя проверяемого сервиса Keychain.
+    ///   - account: Имя записи внутри сервиса.
+    ///   - file: Файл вызывающего теста для диагностики XCTest.
+    ///   - line: Строка вызова, к которой привязать ошибку проверки.
     private func assertProtection(service: String, account: String, file: StaticString = #filePath, line: UInt = #line) throws {
         var query = query(service: service, account: account)
         query[kSecReturnAttributes as String] = true; query[kSecMatchLimit as String] = kSecMatchLimitOne
@@ -65,6 +78,10 @@ import MeetSpaceStorage
                        kSecAttrAccessibleWhenUnlockedThisDeviceOnly as String, file: file, line: line)
         XCTAssertEqual(attributes[kSecAttrSynchronizable as String] as? Bool, false, file: file, line: line)
     }
+    /// Удаляет тестовую запись из Keychain после проверки.
+    /// - Parameters:
+    ///   - service: Имя тестового сервиса Keychain.
+    ///   - account: Имя удаляемой записи внутри сервиса.
     private func removeFixture(service: String, account: String) {
         SecItemDelete(query(service: service, account: account) as CFDictionary)
     }

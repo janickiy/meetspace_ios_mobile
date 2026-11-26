@@ -3,6 +3,7 @@ import Testing
 @testable import MeetSpaceBroadcast
 
 @Suite(.serialized) struct BroadcastTests {
+    /// Проверяет границы размеров кадра и привязку сообщения протокола к сеансу трансляции.
     @Test func frameBoundsAndWireLease() throws {
         let id = UUID(), configuration = ScreenBroadcastConfiguration()
         let descriptor = BroadcastWire.Descriptor(version: 1, sessionID: id, nonce: String(repeating: "a", count: 64),
@@ -20,6 +21,7 @@ import Testing
         #expect(throws: ScreenBroadcastError.invalidFrame) { try BroadcastWire.frame(Data(bytes.prefix(51)), descriptor: descriptor) }
     }
 
+    /// Проверяет доставку кадров через локальный сокет, паузу, остановку и начало нового сеанса.
     @Test @MainActor func localSocketFramesPauseStopAndNewLease() async throws {
         let directory = URL(fileURLWithPath: "/tmp/msb-" + UUID().uuidString)
         try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: false)
@@ -51,6 +53,7 @@ import Testing
         await controller.stop()
     }
 
+    /// Проверяет единственного владельца подготовленной трансляции и отмену до запуска расширения.
     @Test @MainActor func onlyOnePreparedOwnerAndCancelBeforeExtension() async throws {
         let directory = URL(fileURLWithPath: "/tmp/msb-" + UUID().uuidString)
         try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: false)
@@ -64,6 +67,7 @@ import Testing
         await second.stop()
     }
 
+    /// Проверяет завершение расширения, когда основное приложение перестаёт подтверждать активность.
     @Test func extensionExpiresWithoutHostHeartbeat() async throws {
         let directory = URL(fileURLWithPath: "/tmp/msb-" + UUID().uuidString)
         try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: false)

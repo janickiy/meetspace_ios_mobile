@@ -42,12 +42,15 @@ import MeetSpaceCore
     private var pathMonitor: NWPathMonitor?
     private var previousPath: String?
 
+    /// Создаёт буферизованный поток событий устройств и WebRTC-соединения.
     override init() {
         let pair = AsyncStream.makeStream(of: ConferenceMediaEvent.self, bufferingPolicy: .bufferingNewest(512))
         events = pair.stream; continuation = pair.continuation
         super.init()
     }
 
+    /// Проверяет параметры, подготавливает аудиосессию и создаёт WebRTC-соединение с наблюдением за сетью.
+    /// - Parameter configuration: Настройки ICE, разрешения публикации и ограничения видеозахвата.
     func configure(_ configuration: ConferenceMediaConfiguration) async throws {
         guard !closed, peer == nil, (2...32).contains(configuration.maxPeers),
               ["all", "relay"].contains(configuration.iceTransportPolicy),
@@ -91,26 +94,44 @@ import MeetSpaceCore
         }
     }
 
+    /// Создаёт локальное предложение SDP и список объявляемых серверу публикаций.
+    /// - Parameter iceRestart: Запрашивать ли новый цикл ICE для соединения.
     func makeOffer(iceRestart: Bool) async throws -> ConferenceMediaOffer {
         guard !closed, let peer else { throw ConferenceMediaError.notConfigured }
         return try await peer.makeOffer(iceRestart: iceRestart)
     }
 
+    /// Возвращает уровни микрофонов активного соединения, а при прерывании аудио — нулевые уровни.
+    func microphoneLevels() async -> ConferenceMicrophoneLevels {
+        guard !closed, !interrupted, let peer else { return .init() }
+        return await peer.microphoneLevels()
+    }
+
+    /// Устанавливает удалённое описание соединения из ответа сервера.
+    /// - Parameter sdp: SDP-ответ на текущее локальное предложение.
     func applyAnswer(_ sdp: String) async throws {
         guard !closed, let peer else { throw ConferenceMediaError.notConfigured }
         try await peer.applyAnswer(sdp)
     }
 
+    /// Отменяет ожидающее локальное предложение, возвращая соединение в стабильное состояние.
     func rollbackLocalOffer() async throws {
         guard !closed, let peer else { throw ConferenceMediaError.notConfigured }
         try await peer.rollbackLocalOffer()
     }
 
+    /// Передаёт в медиасоединение ICE-кандидат, полученный от сервера.
+    /// - Parameter candidate: Сетевой кандидат и адресуемая секция SDP.
     func addRemoteCandidate(_ candidate: ConferenceICECandidate) async throws {
         guard !closed, let peer else { throw ConferenceMediaError.notConfigured }
         try await peer.addRemoteCandidate(candidate)
     }
 
+    /// Применяет серверные разрешения на публикацию устройств и демонстрацию экрана.
+    /// - Parameters:
+    ///   - microphone: Разрешена ли передача звука микрофона.
+    ///   - camera: Разрешена ли передача видео с камеры.
+    ///   - screen: Разрешена ли передача видео экрана.
     func setPublicationPermissions(microphone: Bool, camera: Bool, screen: Bool) async throws {
         guard !closed, let peer else { throw ConferenceMediaError.notConfigured }
         permissionsGeneration = UUID(); let operation = permissionsGeneration
@@ -134,6 +155,8 @@ import MeetSpaceCore
         catch { throw ConferenceMediaError.negotiation }
     }
 
+    /// Включает или останавливает публикацию демонстрации экрана.
+    /// - Parameter enabled: Значение true запрашивает отправку видео с экрана.
     func setScreenEnabled(_ enabled: Bool) async throws {
         guard !closed, let peer else { throw ConferenceMediaError.notConfigured }
         if enabled && screenEnabled { return }
@@ -161,6 +184,8 @@ import MeetSpaceCore
         emit(.screenCaptureState(true))
     }
 
+    /// Передаёт кадр текущей демонстрации в видеодорожку экрана.
+    /// - Parameter frame: Кадр с идентификатором сеанса, геометрией и временем показа.
     func pushScreenFrame(_ frame: ScreenBroadcastFrame) throws {
         guard !closed, screenEnabled, let peer, let screenCapturer else { throw ConferenceMediaError.screenUnavailable }
         guard !interrupted, configuration?.screenAllowed == true, configuration?.cameraAllowed == true else {
@@ -209,6 +234,8 @@ import MeetSpaceCore
                                         timeStampNs: frame.timestampNs), capturer: screenCapturer)
     }
 
+    /// Включает или останавливает публикацию локального микрофона.
+    /// - Parameter enabled: Значение true запрашивает передачу звука микрофона.
     func setMicrophoneEnabled(_ enabled: Bool) async throws {
         microphoneGeneration = UUID(); let operation = microphoneGeneration, current = generation
         guard !closed, let peer else { throw ConferenceMediaError.notConfigured }
@@ -242,6 +269,8 @@ import MeetSpaceCore
         }
     }
 
+    /// Включает или останавливает публикацию локальной камеры.
+    /// - Parameter enabled: Значение true запрашивает передачу видео с камеры.
     func setCameraEnabled(_ enabled: Bool) async throws {
         cameraGeneration = UUID(); let operation = cameraGeneration, current = generation
         guard !closed, let peer else { throw ConferenceMediaError.notConfigured }
@@ -285,6 +314,7 @@ import MeetSpaceCore
         }
     }
 
+    /// Переключает захват между фронтальной и задней камерами.
     func switchCamera() async throws {
         guard !closed, let peer else { throw ConferenceMediaError.notConfigured }
         let desired: AVCaptureDevice.Position = frontCamera ? .back : .front
@@ -301,6 +331,8 @@ import MeetSpaceCore
         if wasEnabled { try await setCameraEnabled(true) }
     }
 
+    /// Выбирает динамик устройства или возвращает системный маршрут вывода звонка.
+    /// - Parameter enabled: Значение true выбирает динамик устройства.
     func setSpeakerEnabled(_ enabled: Bool) throws {
         guard !closed, peer != nil else { throw ConferenceMediaError.notConfigured }
         let audio = RTCAudioSession.sharedInstance()
@@ -318,7 +350,7 @@ import MeetSpaceCore
         emitRoute()
     }
 
-    /// Capture never resumes implicitly after an interruption or background transition.
+    /// Приостанавливает микрофон, камеру, экран и аппаратное аудио. Для возобновления захвата требуется явное действие.
     func suspend() async {
         cameraGeneration = UUID(); microphoneGeneration = UUID()
         peer?.audioTrack.isEnabled = false; peer?.videoTrack.isEnabled = false
@@ -329,6 +361,7 @@ import MeetSpaceCore
         if let capturer { await stopCapture(capturer) }
     }
 
+    /// Дожидается полного завершения медиадвижка, включая уже начатое закрытие.
     func close() async {
         if let closing { await closing.value; return }
         closed = true; generation = UUID(); cameraGeneration = UUID(); microphoneGeneration = UUID()
@@ -337,6 +370,7 @@ import MeetSpaceCore
         await task.value
     }
 
+    /// Останавливает захват, снимает наблюдателей и освобождает дорожки, соединение и аудиосессию.
     private func finishClose() async {
         defer { AudioSessionUse.endConference(callAudioOwner) }
         NotificationCenter.default.removeObserver(self, name: DeviceAudioPreferences.levelsDidChange, object: nil)
@@ -363,10 +397,19 @@ import MeetSpaceCore
         continuation.yield(.connectionState(.closed)); continuation.finish()
     }
 
+    /// Создаёт видеопредставление, вписывая собственную демонстрацию экрана целиком.
+    /// - Parameters:
+    ///   - trackID: Идентификатор локальной или удалённой видеодорожки.
+    ///   - mirrored: Нужно ли отразить изображение по горизонтали.
     func videoView(trackID: String, mirrored: Bool) -> AnyView {
         videoView(trackID: trackID, mirrored: mirrored, fit: trackID == localScreenVideoTrackID)
     }
 
+    /// Возвращает представление видеодорожки с выбранным способом масштабирования.
+    /// - Parameters:
+    ///   - trackID: Идентификатор локальной или удалённой видеодорожки.
+    ///   - mirrored: Нужно ли отразить изображение по горизонтали.
+    ///   - fit: Значение true вписывает кадр целиком, false заполняет область с обрезкой.
     func videoView(trackID: String, mirrored: Bool, fit: Bool) -> AnyView {
         let track = trackID == localVideoTrackID ? peer?.videoTrack :
             (trackID == localScreenVideoTrackID ? peer?.screenTrack : remoteTracks[trackID])
@@ -375,6 +418,8 @@ import MeetSpaceCore
             .id(ObjectIdentifier(renderers)))
     }
 
+    /// Передаёт событие потребителю и сообщает о сбое согласования при переполнении буфера.
+    /// - Parameter event: Событие медиадвижка, предназначенное для сеанса конференции.
     private func emit(_ event: ConferenceMediaEvent) {
         guard !closed else { return }
         if case .dropped = continuation.yield(event) {
@@ -383,10 +428,12 @@ import MeetSpaceCore
         }
     }
 
+    /// Публикует текущие состояния микрофона, камеры и выбранного объектива.
     private func captureChanged() {
         emit(.captureState(microphone: microphoneEnabled, camera: cameraEnabled, frontCamera: frontCamera))
     }
 
+    /// Настраивает категорию голосового чата и при необходимости активирует аудиосессию приложения.
     private func activateAudio() throws {
         let audio = RTCAudioSession.sharedInstance()
         audio.lockForConfiguration(); defer { audio.unlockForConfiguration() }
@@ -398,17 +445,22 @@ import MeetSpaceCore
         } catch { throw ConferenceMediaError.audioSession }
     }
 
+    /// Устанавливает режим записи и воспроизведения для голосового чата с учётом выбранного динамика.
+    /// - Parameter audio: Сессия WebRTC, заблокированная вызывающим кодом на время настройки.
     private func configureAudioCategory(_ audio: RTCAudioSession) throws {
         var options: AVAudioSession.CategoryOptions = [.allowBluetooth]
         if speakerEnabled { options.insert(.defaultToSpeaker) }
         try audio.setCategory(AVAudioSession.Category.playAndRecord, mode: AVAudioSession.Mode.voiceChat, options: options)
     }
 
+    /// Разрешает аппаратное аудио с учётом текущей активации CallKit.
     private func enableAudioIfAllowed() {
         RTCAudioSession.sharedInstance().isAudioEnabled =
             configuration?.audioActivation == .callKit ? CallAudioSessionBridge.isActive : true
     }
 
+    /// Применяет сохранённые уровни динамика и микрофона к дорожкам и доступному регулятору усиления входа.
+    /// - Parameter notification: Уведомление об изменении настроек громкости или nil при прямом вызове.
     @objc private func applyVolumeLevels(_ notification: Notification? = nil) {
         guard !closed, let peer else { return }
         let preferences = DeviceAudioPreferences.load()
@@ -422,6 +474,8 @@ import MeetSpaceCore
         }
     }
 
+    /// Запускает выбранную камеру в доступном формате, наиболее близком к целевому числу пикселей.
+    /// - Parameter capturer: Захватчик камеры WebRTC для запуска.
     private func startCapture(_ capturer: RTCCameraVideoCapturer) async throws {
         guard let configuration else { throw ConferenceMediaError.notConfigured }
         let position: AVCaptureDevice.Position = frontCamera ? .front : .back
@@ -446,12 +500,18 @@ import MeetSpaceCore
         }
     }
 
+    /// Дожидается полной остановки захвата с камеры.
+    /// - Parameter capturer: Захватчик камеры WebRTC, который следует остановить.
     private func stopCapture(_ capturer: RTCCameraVideoCapturer) async {
         await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) in
             capturer.stopCapture { @Sendable in continuation.resume() }
         }
     }
 
+    /// Регистрирует входящую видеодорожку, дополняет её ранее известными идентификаторами и уведомляет интерфейс.
+    /// - Parameters:
+    ///   - track: Нативная видеодорожка получателя.
+    ///   - reference: Идентификаторы дорожки, медиа-секции и потока из согласования.
     private func receive(_ track: RTCVideoTrack, reference: ConferenceVideoTrack) {
         guard !closed else { return }
         let previous = remoteReferences[reference.id]
@@ -462,17 +522,21 @@ import MeetSpaceCore
         emit(.videoTrackAdded(next))
     }
 
+    /// Отсоединяет представления удалённой дорожки, удаляет её из реестра и публикует событие.
+    /// - Parameter id: Идентификатор удаляемой видеодорожки.
     private func removeVideo(_ id: String) {
         renderers.detach(trackID: id); remoteTracks[id] = nil; remoteReferences[id] = nil
         emit(.videoTrackRemoved(id))
     }
 
+    /// Сообщает тип текущего порта вывода звука без названия устройства.
     private func emitRoute() {
         // Report a stable port type rather than a potentially personal Bluetooth device name.
         let port = RTCAudioSession.sharedInstance().currentRoute.outputs.first?.portType.rawValue ?? ""
         emit(.audioRoute(port))
     }
 
+    /// Отслеживает смену доступности сети и используемых сетевых интерфейсов.
     private func observeNetwork() {
         let monitor = NWPathMonitor(); pathMonitor = monitor
         monitor.pathUpdateHandler = { [weak self] path in
@@ -490,6 +554,8 @@ import MeetSpaceCore
 }
 
 extension NativeConferenceMediaEngine: RTCAudioSessionDelegate {
+    /// Приостанавливает захват и сообщает о начале системного прерывания.
+    /// - Parameter session: Аудиосессия WebRTC, сообщившая о прерывании.
     nonisolated func audioSessionDidBeginInterruption(_ session: RTCAudioSession) {
         Task { @MainActor [weak self] in
             guard let self, !self.closed else { return }
@@ -497,6 +563,10 @@ extension NativeConferenceMediaEngine: RTCAudioSessionDelegate {
         }
     }
 
+    /// Снимает признак прерывания и при разрешении системы повторно активирует звук.
+    /// - Parameters:
+    ///   - session: Аудиосессия WebRTC, сообщившая о конце прерывания.
+    ///   - shouldResumeSession: Разрешила ли система восстановить работу аудиосессии.
     nonisolated func audioSessionDidEndInterruption(_ session: RTCAudioSession, shouldResumeSession: Bool) {
         Task { @MainActor [weak self] in
             guard let self, !self.closed else { return }
@@ -509,6 +579,11 @@ extension NativeConferenceMediaEngine: RTCAudioSessionDelegate {
         }
     }
 
+    /// Обновляет аудиомаршрут и останавливает публикацию микрофона при отключении прежнего устройства.
+    /// - Parameters:
+    ///   - session: Аудиосессия, изменившая маршрут.
+    ///   - reason: Системная причина смены маршрута.
+    ///   - previousRoute: Маршрут, использовавшийся до изменения.
     nonisolated func audioSessionDidChangeRoute(_ session: RTCAudioSession, reason: AVAudioSession.RouteChangeReason,
                                               previousRoute: AVAudioSessionRouteDescription) {
         let lostInput = reason == .oldDeviceUnavailable
@@ -526,6 +601,8 @@ extension NativeConferenceMediaEngine: RTCAudioSessionDelegate {
         }
     }
 
+    /// Приостанавливает захват при завершении системного аудиосервера и сообщает об ошибке.
+    /// - Parameter session: Аудиосессия, получившая системное событие.
     nonisolated func audioSessionMediaServerTerminated(_ session: RTCAudioSession) {
         Task { @MainActor [weak self] in
             guard let self, !self.closed else { return }
@@ -533,6 +610,8 @@ extension NativeConferenceMediaEngine: RTCAudioSessionDelegate {
         }
     }
 
+    /// Приостанавливает захват после сброса системного аудиосервера и сообщает об ошибке.
+    /// - Parameter session: Аудиосессия, получившая системное событие.
     nonisolated func audioSessionMediaServerReset(_ session: RTCAudioSession) {
         Task { @MainActor [weak self] in
             guard let self, !self.closed else { return }

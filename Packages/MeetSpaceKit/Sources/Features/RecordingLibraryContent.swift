@@ -163,6 +163,8 @@ struct RecordingLibraryContent: View {
             }
         }
     }
+    /// Формирует подпись фильтра по давности записей.
+    /// - Parameter period: Количество дней или ноль для всего периода.
     private func periodTitle(_ period: Int) -> String { period == 0 ? tr("Всё время") : tr("За \(period) дней") }
     private var periodPicker: some View {
         select(title: periodTitle(days), label: "Период записей", id: "recordings.period") {
@@ -179,6 +181,12 @@ struct RecordingLibraryContent: View {
             }
         }.frame(maxWidth: wide ? 180 : .infinity)
     }
+    /// Создаёт меню фильтра библиотеки записей.
+    /// - Parameters:
+    ///   - title: Текущее значение фильтра.
+    ///   - label: Название фильтра для VoiceOver.
+    ///   - id: Идентификатор элемента для автоматизации.
+    ///   - options: Содержимое меню выбора.
     private func select<Options: View>(title: String, label: String, id: String, @ViewBuilder options: () -> Options) -> some View {
         Menu {
             options()
@@ -195,6 +203,8 @@ struct RecordingLibraryContent: View {
         }.buttonStyle(.plain).menuIndicator(.hidden).accessibilityLabel(tr(label)).accessibilityValue(title).accessibilityIdentifier(id)
     }
 
+    /// Создаёт кнопку переключения вида библиотеки.
+    /// - Parameter value: Показывать карточки сеткой при выборе этой кнопки.
     private func layoutButton(grid value: Bool) -> some View {
         Button { grid = value } label: {
             WorkspaceIcon(value ? "square.grid.2x2" : "list.bullet", size: 18).frame(width: 44, height: 44)
@@ -203,6 +213,8 @@ struct RecordingLibraryContent: View {
         }.buttonStyle(.plain).accessibilityLabel(tr(value ? "Плитка" : "Список")).accessibilityAddTraits(grid == value ? .isSelected : [])
     }
 
+    /// Показывает карточки найденных записей с действиями открытия и удаления.
+    /// - Parameter results: Записи после применения фильтров.
     private func cards(_ results: [RecordingLibraryEntry]) -> some View {
         ForEach(results) { entry in
             RecordingListCard(entry: entry, wide: wide, grid: wide && grid, open: { open(entry) }, remove: { deleteTarget = entry })

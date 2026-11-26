@@ -24,6 +24,13 @@ import MeetSpaceBroadcast
     @ObservationIgnored private var epoch = UUID()
     @ObservationIgnored private var closed = false
     @ObservationIgnored private var departing: ConferenceSession?
+    /// Создаёт рабочее пространство для списка встреч и подключения к ним.
+    /// - Parameters:
+    ///   - repository: Репозиторий встреч аккаунта.
+    ///   - sockets: Фабрика сокета сигналинга.
+    ///   - makeMedia: Фабрика медиадвижка встречи.
+    ///   - makeBroadcast: Фабрика контроллера демонстрации экрана.
+    ///   - canUseMedia: Проверка доступности медиа перед подключением.
     public init(repository: ConferenceRepository, sockets: any ConferenceSocketFactory,
                 makeMedia: @escaping @MainActor @Sendable () -> any ConferenceMediaEngine,
                 makeBroadcast: @escaping @MainActor @Sendable () -> any ScreenBroadcastController = { BroadcastControllerFactory.make() },
@@ -31,6 +38,7 @@ import MeetSpaceBroadcast
         self.repository = repository; self.sockets = sockets; self.makeMedia = makeMedia; self.makeBroadcast = makeBroadcast
         self.canUseMedia = canUseMedia
     }
+    /// Загружает первую страницу встреч и обновляет состояние списка.
     public func load() async {
         guard !closed else { return }
         let current = UUID(); epoch = current; state = .loading
@@ -46,6 +54,7 @@ import MeetSpaceBroadcast
         }
     }
 
+    /// Дозагружает следующую страницу и добавляет только ещё не показанные встречи.
     public func loadMore() async {
         guard !closed, hasMore, !loadingMore, state == .content else { return }
         let current = epoch
@@ -63,6 +72,10 @@ import MeetSpaceBroadcast
             self.error = userMessage(error)
         }
     }
+    /// Создаёт встречу, запускает её и открывает сессию организатора.
+    /// - Parameters:
+    ///   - title: Название новой встречи.
+    ///   - waitingRoom: Включить ли зал ожидания.
     public func create(title: String, waitingRoom: Bool) async -> Bool {
         guard !busy, !closed, call == nil, mediaAvailable() else { return false }
         busy = true; error = nil; defer { busy = false }
@@ -77,6 +90,8 @@ import MeetSpaceBroadcast
             install(started, membership: membership); await load(); return true
         } catch { if !closed { self.error = userMessage(error) }; return false }
     }
+    /// Оформляет участие и открывает медиасессию выбранной встречи.
+    /// - Parameter conference: Встреча для подключения.
     public func join(_ conference: Conference) async {
         guard !busy, !closed, call == nil, mediaAvailable() else { return }
         busy = true; error = nil; defer { busy = false }
@@ -93,6 +108,10 @@ import MeetSpaceBroadcast
             install(current, membership: membership)
         } catch { if !closed { self.error = userMessage(error) } }
     }
+    /// Меняет членство во встрече по запросу из карточки и возвращает обновлённого участника.
+    /// - Parameters:
+    ///   - conference: Встреча, членство в которой изменяется.
+    ///   - leave: Выйти ли из встречи вместо вступления.
     func updateMembership(in conference: Conference, leave: Bool) async throws -> ConferenceParticipant {
         guard !closed, !busy, call == nil, !conference.isClosed else { throw ClientError.invalidInput }
         busy = true
@@ -106,6 +125,8 @@ import MeetSpaceBroadcast
         return member
     }
 
+    /// Проверяет приглашение и открывает сессию после подтверждения участия.
+    /// - Parameter input: Ссылка или код приглашения.
     public func joinInvitation(_ input: String) async -> Bool {
         guard !busy, !closed, call == nil, mediaAvailable() else { return false }
         busy = true; error = nil; defer { busy = false }
@@ -123,6 +144,8 @@ import MeetSpaceBroadcast
             install(conference, membership: membership); return true
         } catch { if !closed { self.error = userMessage(error) }; return false }
     }
+    /// Отменяет запланированную или завершает активную встречу организатора.
+    /// - Parameter conference: Встреча текущего организатора.
     @discardableResult
     public func finish(_ conference: Conference) async -> Bool {
         guard !busy, !closed, conference.ownerId == repository.userID,
@@ -139,12 +162,17 @@ import MeetSpaceBroadcast
             return false
         }
     }
+    /// Открывает сессию комнаты с данными встречи и текущего участника.
+    /// - Parameters:
+    ///   - conference: Встреча для открытия.
+    ///   - membership: Членство, полученное от сервера.
     private func install(_ conference: Conference, membership: ConferenceParticipant) {
         call = ConferenceSession(repository: repository, title: conference.title, participant: membership,
                                  startedAt: conference.startedAt, invitationCode: conference.inviteCode,
                                  sockets: sockets, makeMedia: makeMedia, makeBroadcast: makeBroadcast)
         call?.observeLobby()
     }
+    /// Проверяет, свободны ли медиа для встречи, и сообщает о конфликте с текущим звонком.
     private func mediaAvailable() -> Bool {
         guard canUseMedia() else {
             error = "Сначала завершите текущий звонок."
@@ -152,11 +180,13 @@ import MeetSpaceBroadcast
         }
         return true
     }
+    /// Закрывает открытую встречу и сохраняет её сессию до подтверждения выхода.
     public func dismissCall() async {
         guard let previous = call else { return }
         await previous.leave()
         if call?.id == previous.id { departing = previous; call = nil }
     }
+    /// Ожидает завершения предыдущего выхода перед открытием следующей комнаты.
     private func completeDeparture() async -> Bool {
         guard let departing else { return !closed }
         guard await departing.awaitDeparture() else {
@@ -166,6 +196,7 @@ import MeetSpaceBroadcast
         self.departing = nil
         return !closed
     }
+    /// Закрывает рабочее пространство, прекращает участие в открытой встрече и сбрасывает состояние списка.
     public func close() async {
         closed = true; epoch = UUID()
         hasMore = false; loadingMore = false; nextOffset = 0

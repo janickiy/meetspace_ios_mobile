@@ -6,9 +6,16 @@ import MeetSpaceCore
 private actor TransportStub: HTTPTransport {
     let response: HTTPResponse
     var requestedURLs: [URL] = []
+    /// Готовит HTTP-ответ для проверки определения версии сервера.
+    /// - Parameters:
+    ///   - status: Код состояния HTTP.
+    ///   - contentType: Значение Content-Type или отсутствие заголовка.
+    ///   - body: Тело ответа в кодировке UTF-8.
     init(status: Int = 200, contentType: String? = "application/json; charset=utf-8", body: String = "{\"version\":\"1.2\",\"commit\":\"abc\",\"buildTime\":\"unknown\"}") {
         response = HTTPResponse(status: status, contentType: contentType, data: Data(body.utf8))
     }
+    /// Запоминает адрес запроса версии и возвращает подготовленный ответ.
+    /// - Parameter url: Запрошенный URL.
     func get(_ url: URL) -> HTTPResponse { requestedURLs.append(url); return response }
 }
 

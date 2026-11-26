@@ -11,6 +11,8 @@ import MeetSpaceRealtime
 private final class LoopbackTransport: RequestTransport, Sendable {
     let ports: Set<Int>
     let session: URLSession
+    /// Настраивает HTTP-транспорт для набора локальных тестовых серверов.
+    /// - Parameter ports: Разрешённые порты loopback-интерфейса.
     init(ports: Set<Int>) {
         self.ports = ports
         let configuration = URLSessionConfiguration.ephemeral
@@ -18,6 +20,12 @@ private final class LoopbackTransport: RequestTransport, Sendable {
         configuration.urlCredentialStorage = nil; configuration.urlCache = nil
         session = URLSession(configuration: configuration)
     }
+    /// Выполняет запрос к разрешённому локальному серверу через тестовый транспорт.
+    /// - Parameters:
+    ///   - request: Запрос проверяемого клиента.
+    ///   - limit: Ограничение на размер ответа в байтах.
+    ///   - uploadFile: Файл для отправки, если задан.
+    ///   - progress: Обработчик прогресса из контракта транспорта.
     func send(_ request: URLRequest, limit: Int, uploadFile: URL?, progress: TransferProgress?) async throws -> NetworkResponse {
         guard let url = request.url, url.host == "127.0.0.1", ports.contains(url.port ?? 0), url.scheme == "https" else { throw FixtureFailure.scope }
         var parts = URLComponents(url: url, resolvingAgainstBaseURL: false)!
@@ -32,6 +40,7 @@ private final class LoopbackTransport: RequestTransport, Sendable {
             headers: response.allHeaderFields.reduce(into: [:]) { $0[String(describing: $1.key).lowercased()] = String(describing: $1.value) },
             data: result.0)
     }
+    /// Отменяет все задачи локальной тестовой HTTP-сессии.
     func cancelAll() async { for task in await session.allTasks { task.cancel() } }
 }
 private final class LocalSocket: NSObject, URLSessionWebSocketDelegate, RealtimeSocket, @unchecked Sendable {
@@ -43,11 +52,14 @@ private final class LocalSocket: NSObject, URLSessionWebSocketDelegate, Realtime
     private let incoming: AsyncThrowingStream<Data, Error>
     private let incomingContinuation: AsyncThrowingStream<Data, Error>.Continuation
     private var pump: Task<Void, Never>?
+    /// Готовит потоки для уведомления об открытии сокета и получения сообщений.
     override init() {
         (opened, continuation) = AsyncThrowingStream.makeStream()
         (incoming, incomingContinuation) = AsyncThrowingStream.makeStream()
         super.init()
     }
+    /// Открывает сокет локального сервера и ожидает подтверждения подключения.
+    /// - Parameter url: Адрес WebSocket локального тестового сервера.
     static func connect(_ url: URL) async throws -> LocalSocket {
         guard url.host == "127.0.0.1", url.scheme == "wss" else { throw FixtureFailure.scope }
         let socket = LocalSocket()
@@ -74,18 +86,32 @@ private final class LocalSocket: NSObject, URLSessionWebSocketDelegate, Realtime
         }
         throw FixtureFailure.response
     }
+    /// Сигнализирует тесту об успешном открытии WebSocket.
+    /// - Parameters:
+    ///   - session: Сетевая сессия.
+    ///   - webSocketTask: Открытая задача WebSocket.
+    ///   - protocol: Согласованный подпротокол, если задан.
     func urlSession(_ session: URLSession, webSocketTask: URLSessionWebSocketTask, didOpenWithProtocol protocol: String?) {
         continuation.yield(()); continuation.finish()
     }
+    /// Завершает ожидание подключения, если задача URLSession завершилась.
+    /// - Parameters:
+    ///   - session: Сетевая сессия.
+    ///   - task: Завершившаяся задача.
+    ///   - error: Причина завершения, если доступна.
     func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
         continuation.finish(throwing: error ?? FixtureFailure.response)
     }
+    /// Ожидает очередное сообщение из входящего потока тестового сокета.
     func receive() async throws -> Data {
         var iterator = incoming.makeAsyncIterator()
         guard let data = try await iterator.next() else { throw FixtureFailure.response }
         return data
     }
+    /// Останавливает чтение и закрывает WebSocket вместе с сетевой сессией.
     func close() async { pump?.cancel(); task.cancel(with: .goingAway, reason: nil); session.invalidateAndCancel(); incomingContinuation.finish() }
+    /// Ожидает сообщение, соответствующее запросу на отправку.
+    /// - Parameter requestID: Клиентский идентификатор исходного запроса.
     func message(_ requestID: UUID) async throws -> ChatMessage {
         let watchdog = Task { try await Task.sleep(for: .seconds(12)); await self.close() }
         defer { watchdog.cancel() }
@@ -99,8 +125,16 @@ private final class LocalSocket: NSObject, URLSessionWebSocketDelegate, Realtime
 private enum FixtureFailure: Error { case scope, response, configuration }
 actor TestSecrets: SecureStore {
     private var values: [CredentialKey: Data] = [:]
+    /// Читает тестовые учётные данные из словаря.
+    /// - Parameter key: Ключ записи.
     func read(_ key: CredentialKey) -> Data? { values[key] }
+    /// Записывает учётные данные в тестовый словарь.
+    /// - Parameters:
+    ///   - value: Сохраняемые байты.
+    ///   - key: Ключ записи.
     func write(_ value: Data, for key: CredentialKey) { values[key] = value }
+    /// Удаляет учётные данные из тестового словаря.
+    /// - Parameter key: Ключ удаляемой записи.
     func delete(_ key: CredentialKey) { values[key] = nil }
 }
 

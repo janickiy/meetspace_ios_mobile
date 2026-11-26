@@ -8,22 +8,35 @@ private enum SimulatedDisconnect: Error { case closed }
 private actor ControlledSocket: RealtimeSocket {
     let stream: AsyncThrowingStream<Data, Error>
     let continuation: AsyncThrowingStream<Data, Error>.Continuation
+    /// Создаёт управляемый тестом поток входящих сообщений сокета.
     init() { (stream, continuation) = AsyncThrowingStream.makeStream() }
+    /// Ожидает очередное сообщение из входящего потока тестового сокета.
     func receive() async throws -> Data {
         var iterator = stream.makeAsyncIterator()
         guard let value = try await iterator.next() else { throw SimulatedDisconnect.closed }
         return value
     }
+    /// Помещает сообщение во входящий поток тестового сокета.
+    /// - Parameter value: Байты входящего сообщения.
     func emit(_ value: Data) { continuation.yield(value) }
+    /// Завершает поток тестового сокета ошибкой разрыва соединения.
     func close() { continuation.finish(throwing: SimulatedDisconnect.closed) }
 }
 private actor ControlledSockets: RealtimeSocketFactory {
     var sockets: [ControlledSocket] = []
     var urls: [URL] = []
+    /// Создаёт управляемый сокет и запоминает адрес подключения.
+    /// - Parameter url: Адрес сервера событий.
     func connect(_ url: URL) -> any RealtimeSocket {
         urls.append(url); let socket = ControlledSocket(); sockets.append(socket); return socket
     }
+    /// Передаёт сообщение выбранному экземпляру тестового сокета.
+    /// - Parameters:
+    ///   - data: Байты входящего события.
+    ///   - index: Индекс соединения в порядке создания.
     func emit(_ data: Data, on index: Int) async { await sockets[index].emit(data) }
+    /// Имитирует разрыв конкретного соединения.
+    /// - Parameter index: Индекс соединения в порядке создания.
     func drop(_ index: Int) async { await sockets[index].close() }
 }
 private actor RealtimeObservations {
@@ -31,7 +44,10 @@ private actor RealtimeObservations {
     var events = 0
     var connected = 0
     var delays: [Double] = []
+    /// Выдаёт новый тестовый билет и учитывает число запросов на подключение.
     func ticket() -> String { tickets += 1; return "fixture-ticket-\(tickets)" }
+    /// Учитывает полученное событие или состояние подключения.
+    /// - Parameter update: Обновление канала событий пользователя.
     func receive(_ update: UserRealtimeUpdate) {
         switch update {
         case .event: events += 1
@@ -39,6 +55,8 @@ private actor RealtimeObservations {
         default: break
         }
     }
+    /// Запоминает запрошенную задержку и сокращает ожидание в тесте переподключения.
+    /// - Parameter delay: Интервал до следующей попытки.
     func pause(_ delay: Double) async throws {
         delays.append(delay); try await Task.sleep(for: .milliseconds(5))
     }

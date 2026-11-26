@@ -150,6 +150,12 @@ struct FolderOverviewCard<Accessory: View>: View {
          quantity(meetings, "встреча", "встречи", "встреч")].joined(separator: " · ")
     }
 
+    /// Подбирает русскую форму существительного и объединяет её с числом элементов.
+    /// - Parameters:
+    ///   - number: Количество элементов.
+    ///   - one: Форма для единицы.
+    ///   - few: Форма для двух–четырёх.
+    ///   - many: Форма для пяти и более.
     private func quantity(_ number: Int, _ one: String, _ few: String, _ many: String) -> String {
         let form: String = switch (number % 100, number % 10) {
         case (11...14, _): many

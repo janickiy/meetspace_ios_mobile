@@ -5,6 +5,8 @@ import MeetSpaceDesignSystem
 enum RecordingPreviewKind {
     case video, screen, audio, tracks, unknown
 
+    /// Выбирает вид обложки записи по режиму записи встречи.
+    /// - Parameter mode: Режим серверной записи, если известен.
     init(mode: RecordingMode?) {
         switch mode {
         case .composite: self = .video
@@ -94,6 +96,10 @@ struct RecordingLibraryEntry: Identifiable {
 }
 
 extension RecordingLibraryEntry {
+    /// Готовит данные серверной записи для показа в библиотеке текущего аккаунта.
+    /// - Parameters:
+    ///   - row: Запись со сведениями о встрече.
+    ///   - account: Аккаунт зрителя для определения имени и прав.
     init(row: RecordingLibraryItem, account: AccountRecord) {
         let recording = row.recording
         let conference = row.conference
@@ -113,9 +119,13 @@ extension RecordingLibraryEntry {
         }
     }
 
+    /// Добавляет к имени отметку текущего пользователя.
+    /// - Parameter name: Отображаемое имя пользователя.
     static func ownName(_ name: String) -> String { name + " (" + tr("вы") + ")" }
 
     // Stable indexes are also used by the demo screen catalog and navigation stack.
+    /// Формирует набор записей для демонстрационной библиотеки.
+    /// - Parameter ownerName: Имя владельца демоаккаунта.
     static func demoSamples(ownerName: String) -> [Self] {
         let own = ownName(ownerName)
         let calendar = Calendar(identifier: .gregorian)

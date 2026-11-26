@@ -49,6 +49,13 @@ private enum CallFixture {
     static let user = UUID(), peer = UUID(), device = UUID(), room = UUID(), member = UUID(), call = UUID(), conversation = UUID()
     static let origin = try! ServerOrigin("https://direct-call.fixture.example")
     static let person = DirectCallPeer(id: peer, displayName: "Собеседник")
+    /// Готовит модель входящего или исходящего тестового звонка.
+    /// - Parameters:
+    ///   - status: Состояние звонка.
+    ///   - version: Версия состояния.
+    ///   - incoming: Считать звонок входящим.
+    ///   - device: Устройство инициатора.
+    ///   - acceptedDevice: Устройство, принявшее звонок.
     static func value(_ status: DirectCallStatus = .ringing, version: Int64 = 1, incoming: Bool = false,
                       device: UUID = CallFixture.device, acceptedDevice: UUID = CallFixture.device) -> DirectCall {
         let start = Date().addingTimeInterval(-60), accepted = status == .accepted || status == .ended
@@ -63,13 +70,24 @@ private enum CallFixture {
     static var membership: ConferenceParticipant {
         ConferenceParticipant(id: member, conferenceId: room, userId: user, displayName: "Вы")
     }
+    /// Кодирует тестовый JSON-объект в байты для сетевого ответа.
+    /// - Parameter value: Содержимое JSON.
     static func json(_ value: Any) throws -> Data { try JSONSerialization.data(withJSONObject: value) }
+    /// Преобразует модель через кодировщик API в JSON-объект тестового ответа.
+    /// - Parameter value: Модель для сериализации.
     static func object<T: Encodable>(_ value: T) throws -> Any { try JSONSerialization.jsonObject(with: WireJSON.encoder().encode(value)) }
+    /// Кодирует событие сигналинга для тестового сокета.
+    /// - Parameters:
+    ///   - type: Тип события.
+    ///   - value: Поля полезной нагрузки.
+    ///   - reply: Идентификатор исходного запроса для события-ответа.
     static func event(_ type: String, _ value: [String: Any], reply: UUID? = nil) throws -> Data {
         var data: [String: Any] = ["version": 1, "id": UUID().uuidString, "conferenceId": room.uuidString,
             "timestamp": "2026-11-06T12:00:00Z", "type": type, "data": value]
         if let reply { data["replyTo"] = reply.uuidString }; return try json(data)
     }
+    /// Готовит репозиторий конференций с тестовым аккаунтом и транспортом.
+    /// - Parameter transport: Транспорт запросов к API встреч.
     static func conference(_ transport: CallConferenceTransport = CallConferenceTransport()) throws -> ConferenceRepository {
         let user = try WireJSON.decoder().decode(AccountUser.self, from: json(["id": Self.user.uuidString,
             "email": "fixture@example.test", "displayName": "Вы", "isAdmin": false,
@@ -80,20 +98,33 @@ private enum CallFixture {
     }
 }
 private actor CallSecrets: SecureStore {
+    /// Возвращает отсутствие учётных данных в тесте с заранее авторизованным клиентом.
+    /// - Parameter key: Ключ запрошенной записи.
     func read(_ key: CredentialKey) -> Data? { nil }
+    /// Принимает запись учётных данных без сохранения в Keychain.
+    /// - Parameters:
+    ///   - value: Байты учётных данных.
+    ///   - key: Ключ записи.
     func write(_ value: Data, for key: CredentialKey) {}
+    /// Принимает запрос удаления без обращения к Keychain.
+    /// - Parameter key: Ключ записи.
     func delete(_ key: CredentialKey) {}
 }
 private actor CallGate {
     private var continuation: CheckedContinuation<Void, Never>?
     var started = false
+    /// Приостанавливает операцию до явного разрешения теста.
     func wait() async { started = true; await withCheckedContinuation { continuation = $0 } }
+    /// Возобновляет операцию, приостановленную тестом.
     func release() { continuation?.resume(); continuation = nil }
 }
 private final class CallClock: @unchecked Sendable {
     private let lock = NSLock()
     private var value = Date()
+    /// Возвращает текущее время управляемых тестом часов.
     func now() -> Date { lock.lock(); defer { lock.unlock() }; return value }
+    /// Передвигает тестовые часы на заданный интервал.
+    /// - Parameter seconds: Смещение времени в секундах.
     func advance(_ seconds: TimeInterval) { lock.lock(); value = value.addingTimeInterval(seconds); lock.unlock() }
 }
 private actor CallService: DirectCallsServing {
@@ -109,16 +140,38 @@ private actor CallService: DirectCallsServing {
     var createReplyGate: CallGate?
     var createStatus = DirectCallStatus.ringing
     var heartbeatGate: CallGate?
+    /// Задаёт звонок, возвращаемый тестовым сервисом.
+    /// - Parameter value: Текущее состояние звонка или `nil` для его отсутствия.
     init(_ value: DirectCall? = nil) { self.value = value }
+    /// Задаёт звонок, возвращаемый тестовым сервисом.
+    /// - Parameter value: Текущее состояние звонка или `nil` для его отсутствия.
     func set(_ value: DirectCall?) { self.value = value }
+    /// Настраивает ошибку первой попытки создания звонка.
     func failCreate() { createsFail = 1 }
+    /// Включает имитацию тайм-аута отмены вызова.
     func failCancel() { cancelFails = true }
+    /// Восстанавливает успешную отмену тестовых вызовов.
     func allowCancel() { cancelFails = false }
+    /// Задерживает принятие звонка до разрешения теста.
+    /// - Parameter gate: Точка ожидания подтверждения.
     func blockAccept(_ gate: CallGate) { acceptGate = gate }
+    /// Задерживает ответ на создание звонка.
+    /// - Parameter gate: Точка ожидания ответа сервера.
     func blockCreateReply(_ gate: CallGate) { createReplyGate = gate }
+    /// Задерживает обработку запроса создания звонка.
+    /// - Parameter gate: Точка ожидания перед обработкой запроса.
     func blockCreateRequest(_ gate: CallGate) { createRequestGate = gate }
+    /// Задаёт статус, с которым сервис создаёт звонок.
+    /// - Parameter status: Статус нового звонка.
     func setCreateStatus(_ status: DirectCallStatus) { createStatus = status }
+    /// Задерживает ответ на heartbeat звонка.
+    /// - Parameter gate: Точка синхронизации запроса.
     func blockHeartbeat(_ gate: CallGate) { heartbeatGate = gate }
+    /// Имитирует создание исходящего звонка и учитывает повторные запросы.
+    /// - Parameters:
+    ///   - targetUserID: Идентификатор получателя.
+    ///   - clientRequestID: Ключ повторной отправки запроса.
+    ///   - clientID: Идентификатор устройства инициатора.
     func create(targetUserID: UUID, clientRequestID: UUID, clientID: UUID) async throws -> DirectCall {
         createIDs.append(clientRequestID)
         if createsFail > 0 { createsFail -= 1; throw APIError.timeout }
@@ -127,24 +180,47 @@ private actor CallService: DirectCallsServing {
         if let createReplyGate { await createReplyGate.wait() }
         return call
     }
+    /// Возвращает звонок, только пока он активен в тестовом сервисе.
     func active() -> DirectCall? { value?.isActive == true ? value : nil }
+    /// Возвращает сохранённый тестовый звонок или ошибку отсутствия.
+    /// - Parameter id: Идентификатор запрошенного звонка.
     func read(_ id: UUID) throws -> DirectCall { reads += 1; guard let value else { throw APIError.httpStatus(404) }; return value }
+    /// Имитирует принятие входящего звонка выбранным устройством.
+    /// - Parameters:
+    ///   - id: Идентификатор звонка.
+    ///   - clientID: Устройство, принимающее звонок.
     func accept(_ id: UUID, clientID: UUID) async -> DirectCall {
         accepts += 1
         if let acceptGate { await acceptGate.wait() }
         let call = CallFixture.value(.accepted, version: 2, incoming: true, acceptedDevice: clientID); value = call; return call
     }
+    /// Имитирует отказ от входящего звонка.
+    /// - Parameters:
+    ///   - id: Идентификатор звонка.
+    ///   - clientID: Идентификатор устройства клиента.
     func decline(_ id: UUID, clientID: UUID) -> DirectCall {
         declines += 1; let call = CallFixture.value(.declined, version: 3, incoming: true); value = call; return call
     }
+    /// Имитирует отмену исходящего звонка или заданный тайм-аут.
+    /// - Parameters:
+    ///   - id: Идентификатор звонка.
+    ///   - clientID: Идентификатор устройства клиента.
     func cancel(_ id: UUID, clientID: UUID) throws -> DirectCall {
         cancels += 1
         if cancelFails { throw APIError.timeout }
         let call = CallFixture.value(.cancelled, version: 3, device: clientID); value = call; return call
     }
+    /// Имитирует завершение звонка клиентским устройством.
+    /// - Parameters:
+    ///   - id: Идентификатор звонка.
+    ///   - clientID: Идентификатор устройства клиента.
     func end(_ id: UUID, clientID: UUID) -> DirectCall {
         ends += 1; let call = CallFixture.value(.ended, version: 3, incoming: value?.calleeUserId == userID, device: clientID, acceptedDevice: clientID); value = call; return call
     }
+    /// Учитывает heartbeat и возвращает тестовое состояние звонка.
+    /// - Parameters:
+    ///   - id: Идентификатор звонка.
+    ///   - clientID: Идентификатор устройства клиента.
     func heartbeat(_ id: UUID, clientID: UUID) async throws -> DirectCall {
         heartbeats += 1
         if let heartbeatGate { await heartbeatGate.wait() }
@@ -161,35 +237,83 @@ private actor CallService: DirectCallsServing {
     var startRequests = 0
     var startGate: CallGate?
     var lastAnswer: SystemCallAction?
+    /// Готовит тестовый источник системных событий звонков.
+    /// - Parameter available: Считать ли системные звонки доступными.
     init(available: Bool = true) { isAvailable = available; (events, continuation) = AsyncStream.makeStream() }
+    /// Регистрирует входящий вызов в имитации CallKit.
+    /// - Parameters:
+    ///   - descriptor: Описание входящего звонка.
+    ///   - completion: Обработчик результата регистрации в системе.
     func reportIncoming(_ descriptor: SystemCallDescriptor, completion: @escaping @Sendable (Result<Void, SystemCallingError>) -> Void) {
         incoming.append(descriptor.id); completion(.success(()))
     }
+    /// Имитирует запрос CallKit на исходящий звонок с настраиваемым результатом.
+    /// - Parameter descriptor: Описание исходящего звонка.
     func requestStart(_ descriptor: SystemCallDescriptor) async throws {
         startRequests += 1
         if let startGate { await startGate.wait() }
         if failStart { throw SystemCallingError.requestRejected }
         starts.append(descriptor.id); emit(.action(action(.start, id: descriptor.id)))
     }
+    /// Выдаёт системное действие ответа на входящий вызов.
+    /// - Parameter callID: Идентификатор звонка.
     func requestAnswer(callID: UUID) {
         let value = action(.answer, id: callID); lastAnswer = value; emit(.action(value))
     }
+    /// Выдаёт системное действие завершения вызова.
+    /// - Parameter callID: Идентификатор звонка.
     func requestEnd(callID: UUID) { emit(.action(action(.end, id: callID))) }
+    /// Выдаёт системное действие изменения состояния микрофона.
+    /// - Parameters:
+    ///   - muted: Требуется ли отключить звук микрофона.
+    ///   - callID: Идентификатор звонка.
     func requestMuted(_ muted: Bool, callID: UUID) { emit(.action(action(.setMuted(muted), id: callID))) }
+    /// Запоминает результат выполнения действия CallKit.
+    /// - Parameters:
+    ///   - id: Идентификатор действия.
+    ///   - succeeded: Успешно ли действие выполнено.
     func completeAction(id: UUID, succeeded: Bool) { completed.append((id, succeeded)) }
+    /// Принимает уведомление о начале подключения без обращения к CallKit.
+    /// - Parameters:
+    ///   - callID: Идентификатор звонка.
+    ///   - date: Время начала подключения.
     func reportConnecting(callID: UUID, at date: Date?) {}
+    /// Записывает идентификатор подключённого звонка для проверки.
+    /// - Parameters:
+    ///   - callID: Идентификатор звонка.
+    ///   - date: Время начала разговора.
     func reportConnected(callID: UUID, at date: Date?) { connected.append(callID) }
+    /// Запоминает завершённый звонок и причину его завершения.
+    /// - Parameters:
+    ///   - callID: Идентификатор звонка.
+    ///   - reason: Причина завершения.
+    ///   - date: Время завершения.
     func reportEnded(callID: UUID, reason: SystemCallEndReason, at date: Date?) { ended.append((callID, reason)) }
+    /// Принимает обновление описания звонка без обращения к CallKit.
+    /// - Parameter descriptor: Актуальное описание вызова.
     func updateCall(_ descriptor: SystemCallDescriptor) {}
+    /// Отмечает завершение работы тестового системного провайдера.
     func invalidate() { invalidated = true }
+    /// Формирует действие пользователя с тестовым сроком исполнения.
+    /// - Parameters:
+    ///   - kind: Тип действия.
+    ///   - id: Идентификатор звонка.
     func action(_ kind: SystemCallAction.Kind, id: UUID = CallFixture.call) -> SystemCallAction {
         SystemCallAction(id: UUID(), callID: id, kind: kind, deadline: Date().addingTimeInterval(30))
     }
+    /// Передаёт подготовленное системное событие координатору звонков.
+    /// - Parameter event: Событие для доставки.
     func emit(_ event: SystemCallEvent) { continuation.yield(event) }
 }
 private actor CallConferenceTransport: RequestTransport {
     var paths: [String] = []
     var ticketClients: [String] = []
+    /// Обрабатывает запрос к API конференции и возвращает ответ для текущего сценария.
+    /// - Parameters:
+    ///   - request: Запрос проверяемого клиента.
+    ///   - limit: Лимит ответа из контракта транспорта.
+    ///   - uploadFile: Необязательный файл для отправки.
+    ///   - progress: Обработчик прогресса из контракта транспорта.
     func send(_ request: URLRequest, limit: Int, uploadFile: URL?, progress: TransferProgress?) throws -> NetworkResponse {
         let path = request.url!.path; paths.append(path)
         let value: Any
@@ -210,11 +334,15 @@ private actor CallSocket: ConferenceSocket {
     let peer = UUID()
     var ready: UUID?
     var closes = 0
+    /// Создаёт управляемый тестом поток входящих сообщений сокета.
     init() { (stream, continuation) = AsyncThrowingStream.makeStream() }
+    /// Имитирует начальное событие состояния конференции при подключении.
     func begin() throws {
         continuation.yield(try CallFixture.event("conference.state", ["connectionId": UUID().uuidString,
             "participantId": CallFixture.member.uuidString, "status": "active", "participants": [CallFixture.object(CallFixture.membership)]]))
     }
+    /// Обрабатывает команды клиента и подготавливает ответы тестового сигналинга.
+    /// - Parameter data: Данные команды конференции.
     func send(_ data: Data) throws {
         let event = try ConferenceEnvelope.decode(data, conferenceID: CallFixture.room)
         if event.type == "media.join" {
@@ -227,17 +355,25 @@ private actor CallSocket: ConferenceSocket {
                 "sdp": "v=0\r\nm=audio 9 UDP/TLS/RTP/SAVPF 111\r\na=mid:0\r\n"], reply: event.id))
         } else if event.type == "media.ready" { ready = event.id }
     }
+    /// Подтверждает получение команды готовности тестового медиасоединения.
     func acknowledge() throws {
         continuation.yield(try CallFixture.event("ack", ["type": "media.ready"], reply: #require(ready)))
     }
+    /// Ожидает очередное сообщение из входящего потока тестового сокета.
     func receive() async throws -> Data {
         var iterator = stream.makeAsyncIterator()
         guard let value = try await iterator.next() else { throw RealtimeError.disconnected }; return value
     }
+    /// Закрывает поток сообщений и учитывает закрытие тестового соединения.
     func close() { closes += 1; continuation.finish() }
 }
 private actor CallSockets: ConferenceSocketFactory {
     var created: [CallSocket] = []
+    /// Создаёт тестовое соединение и отправляет начальное состояние конференции.
+    /// - Parameters:
+    ///   - origin: Сервер звонка.
+    ///   - conferenceID: Идентификатор конференции.
+    ///   - ticket: Билет подключения.
     func connect(origin: ServerOrigin, conferenceID: UUID, ticket: String) async throws -> any ConferenceSocket {
         let socket = CallSocket(); created.append(socket); try await socket.begin(); return socket
     }
@@ -249,17 +385,40 @@ private actor CallSockets: ConferenceSocketFactory {
     var microphone = false, camera = false, closed = false
     var cameraFailures = 0, cameraAttempts = 0
     var configuration: ConferenceMediaConfiguration?
+    /// Готовит поток событий тестового медиадвижка.
     init() { (events, continuation) = AsyncStream.makeStream() }
     var localScreenVideoTrackID: String { "fixture-screen" }
+    /// Принимает откат SDP без изменения тестового медиасоединения.
     func rollbackLocalOffer() async throws {}
+    /// Принимает команду публикации экрана в заглушке звонка.
+    /// - Parameter enabled: Запрошенное состояние демонстрации.
     func setScreenEnabled(_ enabled: Bool) async throws {}
+    /// Принимает кадр экрана в заглушке без видеокодирования.
+    /// - Parameter frame: Кадр тестовой демонстрации.
     func pushScreenFrame(_ frame: ScreenBroadcastFrame) throws {}
+    /// Запоминает конфигурацию подключения тестового медиадвижка.
+    /// - Parameter configuration: Параметры медиасоединения.
     func configure(_ configuration: ConferenceMediaConfiguration) { self.configuration = configuration }
+    /// Формирует тестовое предложение SDP для переговоров.
+    /// - Parameter iceRestart: Запрошен ли перезапуск ICE.
     func makeOffer(iceRestart: Bool) -> ConferenceMediaOffer { ConferenceMediaOffer(sdp: "v=0\r\n", publications: []) }
+    /// Имитирует установление соединения после получения ответа SDP.
+    /// - Parameter sdp: Описание медиа удалённой стороны.
     func applyAnswer(_ sdp: String) { continuation.yield(.connectionState(.connected)) }
+    /// Принимает ICE-кандидата без установки сетевого соединения.
+    /// - Parameter candidate: Кандидат удалённой стороны.
     func addRemoteCandidate(_ candidate: ConferenceICECandidate) {}
+    /// Принимает политику публикаций в заглушке звонка.
+    /// - Parameters:
+    ///   - microphone: Разрешение микрофона.
+    ///   - camera: Разрешение камеры.
+    ///   - screen: Разрешение демонстрации экрана.
     func setPublicationPermissions(microphone: Bool, camera: Bool, screen: Bool) {}
+    /// Меняет состояние тестового микрофона и сообщает о захвате.
+    /// - Parameter enabled: Запрошенное состояние микрофона.
     func setMicrophoneEnabled(_ enabled: Bool) { microphone = enabled; capture() }
+    /// Имитирует смену состояния камеры с учётом разрешения тестовой сессии.
+    /// - Parameter enabled: Запрошенное состояние камеры.
     func setCameraEnabled(_ enabled: Bool) throws {
         if enabled {
             cameraAttempts += 1
@@ -267,11 +426,21 @@ private actor CallSockets: ConferenceSocketFactory {
         }
         camera = enabled; capture()
     }
+    /// Принимает команду переключения камеры без обращения к устройству.
     func switchCamera() {}
+    /// Принимает переключение громкой связи без изменения системного аудиомаршрута.
+    /// - Parameter enabled: Желаемое состояние громкой связи.
     func setSpeakerEnabled(_ enabled: Bool) throws {}
+    /// Приостанавливает тестовые микрофон и камеру и сообщает об изменении состояния.
     func suspend() { microphone = false; camera = false; capture() }
+    /// Закрывает медиадвижок и завершает тестовый поток событий.
     func close() { closed = true; microphone = false; camera = false; continuation.finish() }
+    /// Возвращает прозрачную заглушку видеоплитки.
+    /// - Parameters:
+    ///   - trackID: Идентификатор запрошенной дорожки.
+    ///   - mirrored: Запрошено ли зеркальное отображение.
     func videoView(trackID: String, mirrored: Bool) -> AnyView { AnyView(Color.clear) }
+    /// Публикует текущие флаги тестового микрофона и камеры.
     func capture() { continuation.yield(.captureState(microphone: microphone, camera: camera, frontCamera: true)) }
 }
 @MainActor private func callEventually(_ predicate: @escaping @MainActor () async -> Bool) async throws {

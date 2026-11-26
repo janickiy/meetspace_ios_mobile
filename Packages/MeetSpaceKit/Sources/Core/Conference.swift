@@ -15,6 +15,21 @@ public struct Conference: Codable, Equatable, Sendable, Identifiable {
     public let scheduledAt: Date?
     public let plannedDurationMin: Int?
     public var isClosed: Bool { status == "finished" || status == "cancelled" }
+    /// Собирает карточку встречи с данными организатора, приглашения и расписания.
+    /// - Parameters:
+    ///   - id: Идентификатор конференции.
+    ///   - ownerId: Идентификатор организатора встречи.
+    ///   - title: Название встречи.
+    ///   - inviteCode: Код приглашения на встречу.
+    ///   - inviteUrl: Ссылка на приглашение, предоставленная сервером.
+    ///   - status: Статус, возвращённый сервером.
+    ///   - createdAt: Время создания записи.
+    ///   - updatedAt: Время последнего изменения записи.
+    ///   - startedAt: Фактическое время начала.
+    ///   - finishedAt: Фактическое время завершения встречи.
+    ///   - waitingRoomEnabled: Признак использования зала ожидания во встрече.
+    ///   - scheduledAt: Планируемые дата и время начала встречи.
+    ///   - plannedDurationMin: Планируемая длительность встречи в минутах.
     public init(id: UUID, ownerId: UUID, title: String, inviteCode: String = "", inviteUrl: String = "",
                 status: String = "created", createdAt: Date = Date(), updatedAt: Date = Date(),
                 startedAt: Date? = nil, finishedAt: Date? = nil, waitingRoomEnabled: Bool = false,
@@ -44,6 +59,8 @@ public struct ConferenceInvite: Decodable, Equatable, Sendable, Identifiable {
     public let waitingRoomEnabled: Bool
     public let scheduledAt: Date?
     enum CodingKeys: String, CodingKey { case id, title, status, waitingRoomEnabled, scheduledAt }
+    /// Декодирует публичные сведения о приглашении и состояние встречи.
+    /// - Parameter decoder: Декодер, установленный вызывающей стороной для чтения полей модели.
     public init(from decoder: Decoder) throws {
         let c = try decoder.container(keyedBy: CodingKeys.self)
         id = try c.decode(UUID.self, forKey: .id); title = try c.decode(String.self, forKey: .title)
@@ -84,7 +101,12 @@ public struct ConferenceParticipant: Codable, Equatable, Sendable, Identifiable 
     public var isRejectedOrKicked: Bool {
         ["rejected", "kicked"].contains(status) || ["rejected", "kicked"].contains(admissionState)
     }
-    /// UI visibility mirrors the server; each mutation is still authorized by the server.
+    /// Определяет по роли и состоянию участников, показывать ли действие модерации.
+    ///
+    /// Сервер проверяет полномочия повторно при выполнении команды.
+    /// - Parameters:
+    ///   - target: Участник встречи, для которого проверяется возможность модерации.
+    ///   - action: Действие модератора над участником.
     public func canModerate(_ target: Self, action: String) -> Bool {
         guard ["mute", "camera", "screen", "kick", "role"].contains(action), canParticipate,
               conferenceId == target.conferenceId, id != target.id, target.role != "owner",
@@ -92,6 +114,28 @@ public struct ConferenceParticipant: Codable, Equatable, Sendable, Identifiable 
         if role == "owner" { return true }
         return role == "co_host" && target.role == "participant" && ["mute", "screen", "kick"].contains(action)
     }
+    /// Создаёт запись участника с его ролью, состоянием медиа и решением о допуске.
+    /// - Parameters:
+    ///   - id: Идентификатор записи участника в этой конференции.
+    ///   - conferenceId: Идентификатор конференции.
+    ///   - userId: Идентификатор аккаунта участника, если он известен.
+    ///   - displayName: Имя пользователя, отображаемое другим участникам.
+    ///   - role: Роль, назначаемая участнику.
+    ///   - status: Статус, возвращённый сервером.
+    ///   - joinedAt: Время входа участника в конференцию.
+    ///   - leftAt: Время последнего выхода участника из конференции.
+    ///   - createdAt: Время создания записи.
+    ///   - updatedAt: Время последнего изменения записи.
+    ///   - microphoneEnabled: Признак включённого микрофона участника.
+    ///   - cameraEnabled: Признак включённой камеры участника.
+    ///   - screenSharing: Признак активной демонстрации экрана.
+    ///   - microphoneBlocked: Запрет на публикацию микрофона для участника.
+    ///   - cameraBlocked: Запрет на публикацию камеры для участника.
+    ///   - screenBlocked: Запрет на демонстрацию экрана участником.
+    ///   - mediaPolicyVersion: Версия ограничений на публикацию медиа.
+    ///   - admissionState: Состояние допуска из зала ожидания.
+    ///   - admissionDecidedAt: Время последнего решения о допуске участника.
+    ///   - admissionVersion: Версия решения о допуске участника.
     public init(id: UUID, conferenceId: UUID, userId: UUID?, displayName: String, role: String = "participant",
                 status: String = "joined", joinedAt: Date? = nil, leftAt: Date? = nil,
                 createdAt: Date = Date(), updatedAt: Date = Date(), microphoneEnabled: Bool = false,
@@ -113,14 +157,24 @@ public struct ConferenceMediaState: Codable, Equatable, Sendable {
     public let microphoneEnabled: Bool
     public let cameraEnabled: Bool
     public let screenSharing: Bool
+    /// Собирает обновление состояния локальных медиа для конкретного подключения.
+    /// - Parameters:
+    ///   - connectionID: Идентификатор подключения участника к конференции.
+    ///   - sequence: Порядковый номер обновления медиа для подключения.
+    ///   - microphoneEnabled: Признак включённого микрофона участника.
+    ///   - cameraEnabled: Признак включённой камеры участника.
+    ///   - screenSharing: Признак активной демонстрации экрана.
     public init(connectionID: UUID, sequence: Int64, microphoneEnabled: Bool, cameraEnabled: Bool, screenSharing: Bool = false) {
         connectionId = connectionID; self.sequence = sequence; self.microphoneEnabled = microphoneEnabled
         self.cameraEnabled = cameraEnabled; self.screenSharing = screenSharing
     }
+    /// Проверяет, что порядковый номер обновления положителен и точно представим в формате API.
     public func validate() throws {
         guard (1...9_007_199_254_740_991).contains(sequence) else { throw ClientError.invalidInput }
     }
     enum CodingKeys: String, CodingKey { case connectionId, sequence, microphoneEnabled, cameraEnabled, screenSharing }
+    /// Кодирует состояние микрофона, камеры и демонстрации для API конференции.
+    /// - Parameter encoder: Кодировщик, в который записываются поля модели.
     public func encode(to encoder: Encoder) throws {
         var c = encoder.container(keyedBy: CodingKeys.self)
         try c.encode(connectionId.uuidString.lowercased(), forKey: .connectionId)
@@ -133,6 +187,11 @@ public struct ConferenceModeration: Encodable, Equatable, Sendable {
     public let action: String
     public let blocked: Bool?
     public let role: String?
+    /// Формирует команду модерации с параметрами выбранного действия.
+    /// - Parameters:
+    ///   - action: Действие модератора над участником.
+    ///   - blocked: Новый признак блокировки выбранного источника медиа.
+    ///   - role: Роль, назначаемая участнику.
     public init(action: String, blocked: Bool? = nil, role: String? = nil) throws {
         switch action {
         case "mute", "camera", "screen": guard blocked != nil, role == nil else { throw ClientError.invalidInput }
@@ -148,6 +207,11 @@ public struct ICEServer: Codable, Equatable, Sendable {
     public let urls: [String]
     public let username: String?
     public let credential: String?
+    /// Описывает ICE-сервер и необязательные данные доступа к нему.
+    /// - Parameters:
+    ///   - urls: Адреса STUN или TURN, доступные на этом ICE-сервере.
+    ///   - username: Имя пользователя для аутентификации на TURN-сервере.
+    ///   - credential: Пароль для аутентификации на TURN-сервере.
     public init(urls: [String], username: String? = nil, credential: String? = nil) {
         self.urls = urls; self.username = username; self.credential = credential
     }
@@ -156,16 +220,25 @@ public struct ICEConfiguration: Codable, Equatable, Sendable {
     public let iceServers: [ICEServer]
     public let iceTransportPolicy: String
     public let expiresAt: Double?
+    /// Объединяет ICE-серверы, политику транспорта и срок действия конфигурации.
+    /// - Parameters:
+    ///   - iceServers: Настроенные STUN- и TURN-серверы.
+    ///   - iceTransportPolicy: Политика выбора ICE-кандидатов, all или relay.
+    ///   - expiresAt: Срок действия настроек ICE в секундах Unix или nil для бессрочной конфигурации.
     public init(iceServers: [ICEServer], iceTransportPolicy: String = "all", expiresAt: Double? = nil) {
         self.iceServers = iceServers; self.iceTransportPolicy = iceTransportPolicy; self.expiresAt = expiresAt
     }
     enum CodingKeys: String, CodingKey { case iceServers, iceTransportPolicy, expiresAt }
+    /// Декодирует конфигурацию ICE, применяя политику транспорта по умолчанию.
+    /// - Parameter decoder: Декодер, установленный вызывающей стороной для чтения полей модели.
     public init(from decoder: Decoder) throws {
         let c = try decoder.container(keyedBy: CodingKeys.self)
         iceServers = try c.decode([ICEServer].self, forKey: .iceServers)
         iceTransportPolicy = try c.decodeIfPresent(String.self, forKey: .iceTransportPolicy) ?? "all"
         expiresAt = try c.decodeIfPresent(Double.self, forKey: .expiresAt)
     }
+    /// Проверяет срок действия конфигурации, политику транспорта и адреса ICE-серверов.
+    /// - Parameter now: Момент, относительно которого проверяется дата.
     public func validated(now: Date = Date()) throws -> Self {
         guard ["all", "relay"].contains(iceTransportPolicy), iceServers.count <= 16,
               expiresAt.map({ $0.isFinite && $0 > now.timeIntervalSince1970 }) ?? true else { throw ClientError.invalidInput }
@@ -195,6 +268,13 @@ public struct GuestConferenceSession: Sendable {
     public let user: AccountUser
     public let participant: ConferenceParticipant
     public var conferenceID: UUID { participant.conferenceId }
+    /// Создаёт гостевую сессию после проверки соответствия гостя участнику конференции.
+    /// - Parameters:
+    ///   - origin: Базовый HTTPS-адрес сервера MeetSpace.
+    ///   - accessToken: Токен доступа, выданный сервером.
+    ///   - expiresAt: Момент окончания действия данных доступа.
+    ///   - user: Профиль гостя, полученный от сервера.
+    ///   - participant: Запись участника конференции.
     public init(origin: ServerOrigin, accessToken: String, expiresAt: Date, user: AccountUser, participant: ConferenceParticipant) throws {
         _ = try SessionCredentials(accessToken: accessToken, sessionCookie: nil, expiresAt: expiresAt).validated()
         guard user.guestConferenceId == participant.conferenceId, participant.userId == user.id,
@@ -219,11 +299,15 @@ public struct ConferenceMessage: Codable, Equatable, Sendable, Identifiable {
     public let deletedAt: Date?
     public let attachments: [Attachment]
     public var isDeleted: Bool { deletedAt != nil }
+    /// Проверяет право пользователя редактировать сообщение конференции.
+    /// - Parameter user: Идентификатор пользователя, для которого проверяется возможность редактирования.
     public func canEdit(as user: UUID) -> Bool { senderId == user && !isDeleted }
     enum CodingKeys: String, CodingKey {
         case id, sequence, conferenceId, senderId, senderName, clientRequestId, text, replyTo, replyPreview
         case version, createdAt, updatedAt, deletedAt, attachments
     }
+    /// Декодирует сообщение чата встречи и проверяет номер в последовательности.
+    /// - Parameter decoder: Декодер, установленный вызывающей стороной для чтения полей модели.
     public init(from decoder: Decoder) throws {
         let c = try decoder.container(keyedBy: CodingKeys.self)
         id = try c.decode(UUID.self, forKey: .id)
@@ -239,6 +323,8 @@ public struct ConferenceMessage: Codable, Equatable, Sendable, Identifiable {
         updatedAt = try c.decode(Date.self, forKey: .updatedAt); deletedAt = try c.decodeIfPresent(Date.self, forKey: .deletedAt)
         attachments = try c.decodeIfPresent([Attachment].self, forKey: .attachments) ?? []
     }
+    /// Кодирует сообщение встречи, сохраняя номер последовательности в строковом формате API.
+    /// - Parameter encoder: Кодировщик, в который записываются поля модели.
     public func encode(to encoder: Encoder) throws {
         var c = encoder.container(keyedBy: CodingKeys.self)
         try c.encode(id, forKey: .id); try c.encode(String(sequence), forKey: .sequence); try c.encodeIfPresent(conferenceId, forKey: .conferenceId)
@@ -255,6 +341,8 @@ public struct ConferenceMessagePage: Decodable, Sendable {
     public let unreadCount: Int
     public let lastReadMessageId: UUID?
     enum CodingKeys: String, CodingKey { case items, nextCursor, unreadCount, lastReadMessageId }
+    /// Декодирует страницу сообщений чата конференции и её состояние прочтения.
+    /// - Parameter decoder: Декодер, установленный вызывающей стороной для чтения полей модели.
     public init(from decoder: Decoder) throws {
         let c = try decoder.container(keyedBy: CodingKeys.self)
         items = try c.decode([ConferenceMessage].self, forKey: .items)

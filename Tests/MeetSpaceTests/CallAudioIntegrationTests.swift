@@ -4,6 +4,7 @@ import MeetSpaceMedia
 
 /// Actual iOS WebRTC binary; no fake system activation and no capture/permission request.
 @MainActor final class CallAudioIntegrationTests: XCTestCase {
+    /// Проверяет, что нативный WebRTC формирует предложение личного звонка до активации звука CallKit при выключенном захвате.
     func testDirectCallCanNegotiateBeforeCallKitActivatesAudio() async throws {
         CallAudioSessionBridge.reset()
         let engine = ConferenceMediaFactory.make()

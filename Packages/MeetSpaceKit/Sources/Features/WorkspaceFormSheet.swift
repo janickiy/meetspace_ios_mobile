@@ -67,6 +67,8 @@ struct WorkspaceFormSheet<Content: View>: View {
         #endif
     }
 
+    /// Размещает заголовок формы и кнопку закрытия в верхней панели.
+    /// - Parameter compact: Использовать компактные размеры панели.
     private func header(compact: Bool) -> some View {
         HStack(spacing: 10) {
             Text(tr(title)).font(MSTheme.font(compact ? 20 : 21, weight: .semibold))
@@ -92,17 +94,29 @@ struct WorkspaceFormField<Content: View>: View {
 }
 
 extension View {
+    /// Показывает форму рабочего пространства при включении флага.
+    /// - Parameters:
+    ///   - isPresented: Привязка, управляющая показом.
+    ///   - backgroundBlur: Радиус размытия экрана под открытой формой на iOS, в пунктах.
+    ///   - onDismiss: Обработчик закрытия формы.
+    ///   - content: Содержимое формы.
     @ViewBuilder
-    func workspaceFormPresentation<Content: View>(isPresented: Binding<Bool>, onDismiss: (() -> Void)? = nil,
+    func workspaceFormPresentation<Content: View>(isPresented: Binding<Bool>, backgroundBlur: CGFloat = 5,
+                                                  onDismiss: (() -> Void)? = nil,
                                                   @ViewBuilder content: @escaping () -> Content) -> some View {
         #if os(iOS)
-        self.blur(radius: isPresented.wrappedValue ? 5 : 0)
+        self.blur(radius: isPresented.wrappedValue ? backgroundBlur : 0)
             .fullScreenCover(isPresented: isPresented, onDismiss: onDismiss, content: content)
         #else
         self.sheet(isPresented: isPresented, onDismiss: onDismiss, content: content)
         #endif
     }
 
+    /// Показывает форму рабочего пространства для выбранного элемента.
+    /// - Parameters:
+    ///   - item: Привязка к элементу, открывающему форму.
+    ///   - onDismiss: Обработчик закрытия формы.
+    ///   - content: Содержимое для выбранного элемента.
     @ViewBuilder
     func workspaceFormPresentation<Item: Identifiable, Content: View>(item: Binding<Item?>, onDismiss: (() -> Void)? = nil,
             @ViewBuilder content: @escaping (Item) -> Content) -> some View {
@@ -114,6 +128,8 @@ extension View {
         #endif
     }
 
+    /// Оформляет поле формы рабочего пространства.
+    /// - Parameter minHeight: Минимальная высота поля в пунктах.
     func workspaceFormInput(minHeight: CGFloat = 50) -> some View {
         self.font(MSTheme.font(16))
             .padding(.horizontal, 14).padding(.vertical, 9)

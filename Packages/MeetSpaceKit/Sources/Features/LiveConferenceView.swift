@@ -88,6 +88,8 @@ struct LiveConferenceView: View {
             }
     }
 
+    /// Показывает доступные действия в заголовке подключённой конференции.
+    /// - Parameter wide: Использовать ли компоновку для широкого экрана.
     @ViewBuilder private func headerActions(wide: Bool) -> some View {
         if let recordings {
             let records = recordings.conferenceItems[session.conferenceID] ?? []
@@ -134,6 +136,8 @@ struct LiveConferenceView: View {
         ]
     }
 
+    /// Открывает боковую панель и запрашивает сообщения или список участников для выбранной вкладки.
+    /// - Parameter tab: Вкладка панели встречи.
     private func showPanel(_ tab: ConferenceRoomPanelTab) {
         sidePanel = tab
         session.chatVisible = tab == .chat
@@ -142,10 +146,13 @@ struct LiveConferenceView: View {
         }
     }
 
+    /// Открывает выбранную панель или закрывает её при повторном нажатии.
+    /// - Parameter tab: Вкладка панели встречи.
     private func togglePanel(_ tab: ConferenceRoomPanelTab) {
         if sidePanel == tab { closePanel() } else { showPanel(tab) }
     }
 
+    /// Закрывает боковую панель и снимает признак видимости чата.
     private func closePanel() {
         sidePanel = nil
         session.chatVisible = false
@@ -157,9 +164,11 @@ struct LiveConferenceView: View {
         let tones: [ConferenceRoomAttendee.Tone] = [.amber, .mint, .violet]
         return current.enumerated().map { index, person in
             let own = person.id == session.participant.id
+            let microphone = own ? session.microphone && !session.microphoneBlocked : person.microphoneEnabled && !person.microphoneBlocked
             return ConferenceRoomAttendee(id: person.id.uuidString.lowercased(), name: own ? tr("Вы") : person.displayName,
                                           initials: callInitials(person.displayName), tone: own ? .blue : tones[index % tones.count],
-                                          own: own, microphone: own ? session.microphone : person.microphoneEnabled)
+                                          own: own, microphone: microphone,
+                                          speechLevel: session.microphoneLevels[person.id] ?? 0)
         }
     }
 
@@ -167,6 +176,10 @@ struct LiveConferenceView: View {
         session.videoTracks.filter { session.isScreenTrack($0) && !$0.isLocal }
     }
 
+    /// Выбирает видеодорожку камеры участника и отображает её с учётом зеркалирования.
+    /// - Parameters:
+    ///   - attendee: Участник, чья камера отображается.
+    ///   - focused: Вписать ли видео целиком для основного плана.
     @ViewBuilder private func participantVisual(_ attendee: ConferenceRoomAttendee, focused: Bool) -> some View {
         if let media = session.media,
            let participant = (session.participants + [session.participant]).first(where: { $0.id.uuidString.lowercased() == attendee.id }),
@@ -253,6 +266,8 @@ struct LiveConferenceView: View {
         }
     }
 
+    /// Закрывает конференцию и переключает рабочее пространство на выбранную вкладку.
+    /// - Parameter tab: Вкладка рабочего пространства для возврата.
     private func returnToWorkspace(_ tab: AppTab) {
         Task {
             await close()
@@ -356,6 +371,8 @@ struct LiveConferenceView: View {
         }.background(ConferenceRoomPanelColors.feed)
             .refreshable { await session.refreshParticipants() }
     }
+    /// Формирует подпись из роли участника, статуса допуска и ограничений на передачу медиа.
+    /// - Parameter participant: Участник, для которого составляется подпись.
     private func participantSubtitle(_ participant: ConferenceParticipant) -> String {
         [tr(role(participant.role)),
          participant.isWaiting ? tr("Ожидает допуска") : nil,
@@ -365,6 +382,8 @@ struct LiveConferenceView: View {
             .compactMap { $0 }.joined(separator: " · ")
     }
 
+    /// Строит меню действий, разрешённых текущему модератору для этого участника.
+    /// - Parameter participant: Участник, к которому применяют действие.
     private func moderationMenu(for participant: ConferenceParticipant) -> some View {
         Menu {
             if session.participant.canModerate(participant, action: "mute") {
@@ -394,6 +413,8 @@ struct LiveConferenceView: View {
             .accessibilityLabel(tr("Управление участником") + ": " + participant.displayName)
             .disabled(session.busy)
     }
+    /// Возвращает отображаемое название роли участника встречи.
+    /// - Parameter value: Серверный код роли.
     private func role(_ value: String) -> String {
         switch value { case "owner": "Организатор"; case "co_host": "Соведущий"; case "guest": "Гость"; default: "Участник" }
     }

@@ -170,7 +170,9 @@ import MeetSpaceAPI
 private actor SettingsGate {
     var started = false
     private var continuation: CheckedContinuation<Void, Never>?
+    /// Приостанавливает операцию до явного разрешения теста.
     func wait() async { started = true; await withCheckedContinuation { continuation = $0 } }
+    /// Возобновляет операцию, приостановленную тестом.
     func release() { continuation?.resume(); continuation = nil }
 }
 private actor SettingsFixture: SettingsServing {
@@ -179,22 +181,36 @@ private actor SettingsFixture: SettingsServing {
     private var stored = NotificationPreferences(invitation: true, reminder: false, recording: true, email: false, push: true)
     private let updateGate: SettingsGate?
     private let failCapabilities: Bool
+    /// Готовит сервис настроек для проверки профиля и ошибок загрузки.
+    /// - Parameters:
+    ///   - account: Тестовый аккаунт.
+    ///   - updateGate: Точка синхронизации сохранения профиля.
+    ///   - failCapabilities: Возвращать ли ошибку при чтении возможностей.
     init(account: AccountRecord, updateGate: SettingsGate? = nil, failCapabilities: Bool = false) {
         self.account = account; current = account.user; self.updateGate = updateGate; self.failCapabilities = failCapabilities
     }
+    /// Возвращает текущее состояние тестового профиля.
     func profile() -> AccountUser { current }
+    /// Проверяет новое имя и обновляет тестовый профиль.
+    /// - Parameter displayName: Новое отображаемое имя.
     func updateProfile(displayName: String) async throws -> AccountUser {
         await updateGate?.wait()
         var user = Fixture.user(account.user.id); user["displayName"] = try ProfileValidation.displayName(displayName)
         current = try WireJSON.decoder().decode(AccountUser.self, from: Fixture.data(user)); return current
     }
+    /// Возвращает параметры уведомлений, сохранённые в тестовом сервисе.
     func preferences() -> NotificationPreferences { stored }
+    /// Запоминает настройки уведомлений и возвращает их как ответ сервера.
+    /// - Parameter value: Новые параметры доставки.
     func savePreferences(_ value: NotificationPreferences) -> NotificationPreferences { stored = value; return value }
+    /// Возвращает пустой список устройств для тестового аккаунта.
     func devices() -> [NotificationDevice] { [] }
+    /// Возвращает возможность записи встреч или настроенную ошибку HTTP 503.
     func capabilities() throws -> ServerCapabilities {
         if failCapabilities { throw APIError.httpStatus(503) }
         return ServerCapabilities(recordingModes: ["composite"], buildVersion: "test")
     }
+    /// Возвращает конфигурацию интеграций с отключённой доставкой push.
     func integrations() -> IntegrationCapabilities { IntegrationCapabilities(push: "noop") }
 }
 

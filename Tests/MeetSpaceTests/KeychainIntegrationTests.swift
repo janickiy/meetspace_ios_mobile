@@ -4,6 +4,7 @@ import MeetSpaceCore
 import MeetSpaceStorage
 
 @MainActor final class KeychainIntegrationTests: XCTestCase {
+    /// Проверяет чтение и обновление записи Keychain, а также повторное удаление без потери данных той же учётной записи на другом сервере.
     func testKeychainRoundTripUpdateAndScopedDeletion() async throws {
         let store = KeychainStore(service: "com.meetspace.ios.tests.\(UUID().uuidString)")
         let accountID = UUID()

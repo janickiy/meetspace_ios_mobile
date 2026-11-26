@@ -12,22 +12,43 @@ enum Fixture {
     static let conversationID = UUID(uuidString: "22222222-2222-4222-8222-222222222222")!
     static let messageID = UUID(uuidString: "33333333-3333-4333-8333-333333333333")!
     static let origin = try! ServerOrigin("https://fixture.example")
+    /// Сериализует тестовый JSON с упорядоченными ключами.
+    /// - Parameter object: Поля тестового объекта.
     static func data(_ object: [String: Any]) throws -> Data { try JSONSerialization.data(withJSONObject: object, options: [.sortedKeys]) }
+    /// Формирует JSON зарегистрированного пользователя для ответов API.
+    /// - Parameter id: Идентификатор пользователя.
     static func user(_ id: UUID = userID) -> [String: Any] {
         ["id": id.uuidString, "email": "\(id.uuidString)@example.test", "displayName": "Fixture", "isAdmin": false,
          "createdAt": "2026-10-01T10:00:00Z", "updatedAt": "2026-10-01T10:00:00.123Z"]
     }
+    /// Формирует запись аккаунта для тестового пользователя на выбранном сервере.
+    /// - Parameters:
+    ///   - id: Идентификатор пользователя.
+    ///   - server: Сервер аккаунта.
     static func account(_ id: UUID = userID, server: ServerOrigin = origin) throws -> AccountRecord {
         AccountRecord(server: server, user: try WireJSON.decoder().decode(AccountUser.self, from: data(user(id))))
     }
+    /// Готовит успешный ответ входа с сессионными данными для тестового клиента.
+    /// - Parameter id: Идентификатор вошедшего пользователя.
     static func login(_ id: UUID = userID) throws -> NetworkResponse {
         NetworkResponse(status: 200, headers: ["Content-Type": "application/json",
             "Set-Cookie": "meetrix_session=fixture-cookie; Path=/api/v1/auth; HttpOnly; Secure, meetrix_account_\(id.uuidString.lowercased())=fixture-cookie; Path=/api/v1/auth; HttpOnly; Secure"],
             data: try data(["accessToken": "fixture-renewed-token", "tokenType": "Bearer", "expiresIn": 3600, "user": user(id)]))
     }
+    /// Создаёт тестовые сессионные данные с выбранным сроком действия.
+    /// - Parameter expired: Считать сессию уже истёкшей.
     static func credentials(expired: Bool = false) -> SessionCredentials {
         SessionCredentials(accessToken: "fixture-token", sessionCookie: "fixture-cookie", expiresAt: Date().addingTimeInterval(expired ? -60 : 3600))
     }
+    /// Формирует сообщение для проверки истории, редактирования и повторной отправки.
+    /// - Parameters:
+    ///   - id: Идентификатор сообщения.
+    ///   - requestID: Клиентский идентификатор отправки.
+    ///   - version: Версия сообщения.
+    ///   - sequence: Порядковый номер в истории в формате API.
+    ///   - conversation: Идентификатор чата.
+    ///   - deleted: Признак удалённого сообщения.
+    ///   - text: Текст сообщения.
     static func message(id: UUID = messageID, requestID: UUID = UUID(), version: Int = 1, sequence: String = "9007199254740993",
                         conversation: UUID = conversationID, deleted: Bool = false, text: String = "Fixture") throws -> ChatMessage {
         var object: [String: Any] = ["id": id.uuidString, "sequence": sequence, "conversationId": conversation.uuidString,
@@ -36,10 +57,13 @@ enum Fixture {
         if deleted { object["deletedAt"] = "2026-10-01T10:01:00Z" }
         return try WireJSON.decoder().decode(ChatMessage.self, from: data(object))
     }
+    /// Кодирует тестовую личную беседу в JSON.
     static func conversation() throws -> Data {
         try data(["id": conversationID.uuidString, "type": "direct", "peer": ["id": UUID().uuidString, "displayName": "Peer"],
                   "description": "", "updatedAt": "2026-10-01T10:00:00Z", "preview": "", "unreadCount": 0, "notificationsEnabled": true])
     }
+    /// Возвращает HTTP 200 с JSON-телом для тестового запроса.
+    /// - Parameter object: Поля тела ответа.
     static func response(_ object: [String: Any]) throws -> NetworkResponse {
         NetworkResponse(status: 200, headers: ["content-type": "application/json"], data: try data(object))
     }
@@ -48,13 +72,23 @@ actor RoutedTransport: RequestTransport {
     typealias Handler = @Sendable (URLRequest, URL?) async throws -> NetworkResponse
     private let handler: Handler
     private(set) var requests: [URLRequest] = []
+    /// Подключает обработчик ответов к тестовому HTTP-транспорту.
+    /// - Parameter handler: Функция, формирующая ответ на запрос.
     init(_ handler: @escaping Handler) { self.handler = handler }
+    /// Запоминает исходящий запрос и передаёт его обработчику тестового транспорта.
+    /// - Parameters:
+    ///   - request: Отправляемый запрос.
+    ///   - limit: Лимит ответа из контракта транспорта.
+    ///   - uploadFile: Файл для загрузки из контракта транспорта.
+    ///   - progress: Обработчик прогресса передачи.
     func send(_ request: URLRequest, limit: Int, uploadFile: URL?, progress: TransferProgress?) async throws -> NetworkResponse {
         requests.append(request)
         return try await handler(request, uploadFile)
     }
 }
 private struct QuietSockets: RealtimeSocketFactory {
+    /// Имитирует незавершённое подключение сокета до отмены задачи.
+    /// - Parameter url: Адрес сервера событий.
     func connect(_ url: URL) async throws -> any RealtimeSocket {
         try await Task.sleep(for: .seconds(3600)); throw CancellationError()
     }
@@ -114,13 +148,22 @@ private actor DelayedSecrets: SecureStore {
     var data: Data?
     var writing = false
     private var gate: CheckedContinuation<Void, Never>?
+    /// Возвращает текущее содержимое тестовой записи учётных данных.
+    /// - Parameter key: Ключ запрошенных данных.
     func read(_ key: CredentialKey) -> Data? { data }
+    /// Ожидает разрешения теста и сохраняет новые учётные данные.
+    /// - Parameters:
+    ///   - value: Записываемые байты.
+    ///   - key: Ключ записи.
     func write(_ value: Data, for key: CredentialKey) async {
         writing = true
         await withCheckedContinuation { gate = $0 }
         data = value
     }
+    /// Разрешает отложенной записи учётных данных завершиться.
     func release() { gate?.resume(); gate = nil }
+    /// Очищает тестовую запись с учётными данными.
+    /// - Parameter key: Ключ удаляемых данных.
     func delete(_ key: CredentialKey) { data = nil }
 }
 

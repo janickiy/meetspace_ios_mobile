@@ -24,6 +24,10 @@ public struct AccountRecord: Codable, Equatable, Sendable, Identifiable {
     public var user: AccountUser
     public var id: String { key.storageKey }
     public var key: CredentialKey { CredentialKey(server: server, accountID: user.id) }
+    /// Связывает публичный профиль пользователя с его сервером.
+    /// - Parameters:
+    ///   - server: Базовый адрес сервера аккаунта.
+    ///   - user: Публичные данные пользователя на выбранном сервере.
     public init(server: ServerOrigin, user: AccountUser) { self.server = server; self.user = user }
 }
 
@@ -31,9 +35,15 @@ public struct AccountRecord: Codable, Equatable, Sendable, Identifiable {
 public struct AccountIndex: Codable, Equatable, Sendable {
     public var accounts: [AccountRecord]
     public var activeID: String?
+    /// Создаёт индекс сохранённых аккаунтов и указывает активный.
+    /// - Parameters:
+    ///   - accounts: Сохранённые аккаунты устройства.
+    ///   - activeID: Ключ выбранного аккаунта или nil, если ни один не выбран.
     public init(accounts: [AccountRecord] = [], activeID: String? = nil) {
         self.accounts = accounts; self.activeID = activeID
     }
+    /// Добавляет или обновляет аккаунт и делает его активным с учётом лимита на сервер.
+    /// - Parameter account: Учётная запись, которой принадлежат данные.
     public mutating func upsert(_ account: AccountRecord) throws {
         if let index = accounts.firstIndex(where: { $0.id == account.id }) { accounts[index] = account }
         else {
@@ -42,10 +52,13 @@ public struct AccountIndex: Codable, Equatable, Sendable {
         }
         activeID = account.id
     }
+    /// Удаляет аккаунт из индекса и сбрасывает выбор, если он был активен.
+    /// - Parameter id: Локальный ключ аккаунта в индексе.
     public mutating func remove(_ id: String) {
         accounts.removeAll { $0.id == id }
         if activeID == id { activeID = nil }
     }
+    /// Проверяет состав индекса, лимит аккаунтов на сервер и ссылку на активный аккаунт.
     public func validated() throws -> Self {
         guard Set(accounts.map(\.id)).count == accounts.count,
               accounts.allSatisfy({ $0.user.guestConferenceId == nil && $0.user.email.utf8.count <= 254 }),
@@ -56,7 +69,10 @@ public struct AccountIndex: Codable, Equatable, Sendable {
 }
 
 public protocol AccountIndexStore: Sendable {
+    /// Загружает индекс аккаунтов устройства.
     func load() async throws -> AccountIndex
+    /// Сохраняет состав аккаунтов и выбранный активный аккаунт.
+    /// - Parameter index: Индекс аккаунтов с текущим выбором пользователя.
     func save(_ index: AccountIndex) async throws
 }
 
@@ -65,9 +81,15 @@ public struct SessionCredentials: Codable, Sendable {
     public let accessToken: String
     public let sessionCookie: String?
     public let expiresAt: Date
+    /// Собирает данные доступа и срок действия токена одной сессии.
+    /// - Parameters:
+    ///   - accessToken: Токен доступа, выданный сервером.
+    ///   - sessionCookie: Cookie, используемая для продления сессии.
+    ///   - expiresAt: Момент окончания действия данных доступа.
     public init(accessToken: String, sessionCookie: String?, expiresAt: Date) {
         self.accessToken = accessToken; self.sessionCookie = sessionCookie; self.expiresAt = expiresAt
     }
+    /// Проверяет формат токена доступа и необязательной cookie сессии.
     public func validated() throws -> Self {
         guard !accessToken.isEmpty, accessToken.utf8.count <= 16_384,
               !accessToken.unicodeScalars.contains(where: { CharacterSet.whitespacesAndNewlines.union(.controlCharacters).contains($0) }),
@@ -79,6 +101,7 @@ public struct SessionCredentials: Codable, Sendable {
 }
 
 public enum WireJSON {
+    /// Создаёт JSON-декодер серверных дат ISO 8601 с дробными секундами и без них.
     public static func decoder() -> JSONDecoder {
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .custom { decoder in
@@ -94,6 +117,7 @@ public enum WireJSON {
         }
         return decoder
     }
+    /// Создаёт JSON-кодировщик с датами в формате ISO 8601.
     public static func encoder() -> JSONEncoder {
         let encoder = JSONEncoder()
         encoder.dateEncodingStrategy = .iso8601
@@ -102,6 +126,8 @@ public enum WireJSON {
 }
 
 public enum AccountValidation {
+    /// Проверяет адрес электронной почты и возвращает его в нижнем регистре без крайних пробелов.
+    /// - Parameter input: Введённый пользователем адрес электронной почты.
     public static func email(_ input: String) throws -> String {
         let value = input.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
         let parts = value.split(separator: "@", omittingEmptySubsequences: false)
@@ -110,6 +136,11 @@ public enum AccountValidation {
         else { throw ClientError.invalidInput }
         return value
     }
+    /// Проверяет почту, пароль и отображаемое имя перед регистрацией.
+    /// - Parameters:
+    ///   - email: Адрес электронной почты пользователя.
+    ///   - password: Пароль аккаунта.
+    ///   - name: Отображаемое имя пользователя.
     public static func registration(email: String, password: String, name: String) throws {
         _ = try self.email(email)
         let count = password.unicodeScalars.count // Backend counts Go runes, not grapheme clusters.

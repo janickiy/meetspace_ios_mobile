@@ -5,9 +5,15 @@ public struct ScreenBroadcastConfiguration: Codable, Equatable, Sendable {
     public let maxWidth: Int
     public let maxHeight: Int
     public let maxFrameRate: Int
+    /// Задаёт ограничения видеопотока для демонстрации экрана.
+    /// - Parameters:
+    ///   - maxWidth: Предельная ширина кадра в пикселях.
+    ///   - maxHeight: Предельная высота кадра в пикселях.
+    ///   - maxFrameRate: Максимальное число кадров в секунду.
     public init(maxWidth: Int = 1280, maxHeight: Int = 720, maxFrameRate: Int = 10) {
         self.maxWidth = maxWidth; self.maxHeight = maxHeight; self.maxFrameRate = maxFrameRate
     }
+    /// Проверяет допустимые размеры, площадь кадра и частоту от 1 до 10 кадров в секунду.
     @discardableResult public func validated() throws -> Self {
         guard (2...1280).contains(maxWidth), (2...1280).contains(maxHeight),
               maxWidth * maxHeight <= 1280 * 720, (1...10).contains(maxFrameRate) else {
@@ -25,10 +31,20 @@ public struct ScreenBroadcastFrame: Equatable, Sendable {
     public let rowBytes: Int
     public let timestampNs: Int64
     public let pixels: Data
+    /// Описывает BGRA-кадр, подготовленный расширением для конкретного сеанса.
+    /// - Parameters:
+    ///   - sessionID: Идентификатор сеанса захвата.
+    ///   - width: Ширина кадра в пикселях.
+    ///   - height: Высота кадра в пикселях.
+    ///   - rowBytes: Размер строки изображения в байтах.
+    ///   - timestampNs: Время показа кадра в наносекундах.
+    ///   - pixels: Последовательность строк пикселей BGRA.
     public init(sessionID: UUID, width: Int, height: Int, rowBytes: Int, timestampNs: Int64, pixels: Data) {
         self.sessionID = sessionID; self.width = width; self.height = height
         self.rowBytes = rowBytes; self.timestampNs = timestampNs; self.pixels = pixels
     }
+    /// Проверяет размеры кадра, длину строк, временную метку и объём пиксельных данных.
+    /// - Parameter configuration: Ограничения текущего сеанса захвата.
     @discardableResult public func validated(configuration: ScreenBroadcastConfiguration = .init()) throws -> Self {
         try configuration.validated()
         guard (2...1280).contains(width), (2...1280).contains(height),
@@ -58,7 +74,10 @@ public enum ScreenBroadcastEvent: Equatable, Sendable {
     var isAvailable: Bool { get }
     var extensionBundleID: String? { get }
     var sessionID: UUID? { get }
+    /// Подготавливает в приложении новый сеанс для подключения расширения ReplayKit.
+    /// - Parameter configuration: Ограничения видеокадров, которые должен применять отправитель.
     func prepare(configuration: ScreenBroadcastConfiguration) async throws
+    /// Останавливает приём кадров и освобождает канал демонстрации.
     func stop() async
 }
 

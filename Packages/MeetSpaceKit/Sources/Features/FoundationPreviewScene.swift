@@ -7,6 +7,10 @@ import MeetSpaceDesignSystem
 public struct FoundationPreviewScene: View {
     private let screen: String
     private let model: AppModel
+    /// Подготавливает демонстрационную сцену для предварительного просмотра на macOS.
+    /// - Parameters:
+    ///   - screen: Имя демонстрационного экрана.
+    ///   - state: Состояние загрузки, которое нужно отобразить.
     public init(screen: String, state: LoadState = .content) {
         self.screen = screen
         self.model = AppModel()
@@ -18,6 +22,7 @@ public struct FoundationPreviewScene: View {
         GeometryReader { geometry in
             if ["meetings", "messages", "thread", "profile"].contains(screen) {
                 let wide = geometry.size.width >= 780
+                let showsTabBar = screen != "thread" || wide
                 VStack(spacing: 0) {
                     Group {
                         switch screen {
@@ -27,13 +32,13 @@ public struct FoundationPreviewScene: View {
                         default: ProfileView(model: model)
                         }
                     }.frame(maxHeight: .infinity)
-                    WorkspaceTabBar(model: model, wide: wide)
+                    if showsTabBar { WorkspaceTabBar(model: model, wide: wide) }
                 }
                 .chatMessageMenuHost()
                 .environment(\.workspaceWidth, geometry.size.width)
                 .environment(\.workspaceUnreadNotifications, 3)
                 // Reserve the prototype's system insets in this borderless macOS host only.
-                .padding(.top, wide ? 28 : 32).padding(.bottom, wide ? 16 : 22)
+                .padding(.top, wide ? 28 : 32).padding(.bottom, wide ? 16 : (showsTabBar ? 22 : 0))
                 .background(MSTheme.surface)
             } else { OnboardingView(model: model) }
         }.font(MSTheme.font()).foregroundStyle(MSTheme.ink).tint(MSTheme.accent).buttonStyle(MSTextButtonStyle()).background(MSTheme.background)

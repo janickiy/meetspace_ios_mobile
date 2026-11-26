@@ -6,6 +6,8 @@ public struct MeetSpaceRootView: View {
     @Bindable private var model: AppModel
     @State private var restored: Bool = false
     @Environment(\.scenePhase) private var scenePhase
+    /// Открывает корневой экран с состоянием текущего приложения.
+    /// - Parameter model: Общая модель навигации, аккаунтов и рабочего пространства.
     public init(model: AppModel) { self.model = model }
 
     public var body: some View {
@@ -83,6 +85,10 @@ struct OnboardingView: View {
         }
     }
 
+    /// Размещает форму подключения в доступной области окна.
+    /// - Parameters:
+    ///   - wide: Использовать раскладку для широкого экрана.
+    ///   - size: Доступные размеры в пунктах.
     private func form(wide: Bool, size: CGSize) -> some View {
         let narrowColumns = wide && size.width <= 1000
         let inset: CGFloat = switch size.width {
@@ -148,6 +154,7 @@ struct OnboardingView: View {
             .frame(maxWidth: .infinity)
     }
 
+    /// Закрывает добавление аккаунта или возвращает пользователя на экран приветствия.
     private func closeForm() {
         if model.identity.addingAccount { model.identity.addingAccount = false }
         else { model.show(.welcome) }
@@ -202,6 +209,13 @@ private struct WelcomeView: View {
                 .workspaceFormPresentation(isPresented: $guestForm) { GuestConferenceForm(app: model, completed: { guestForm = false }) }
         }
     }
+    /// Показывает один из способов подключения на экране приветствия.
+    /// - Parameters:
+    ///   - title: Заголовок варианта.
+    ///   - subtitle: Пояснение под заголовком.
+    ///   - icon: Символ способа подключения.
+    ///   - primary: Выделить основной вариант.
+    ///   - action: Действие при выборе.
     private func connectionChoice(_ title: String, subtitle: String, icon: String, primary: Bool, action: @escaping () -> Void) -> some View {
         Button(action: action) {
             HStack(spacing: showArtwork ? 12 : 14) {
@@ -222,6 +236,10 @@ private struct WelcomeView: View {
                 .contentShape(Rectangle()).accessibilityElement(children: .combine)
         }.buttonStyle(.plain)
     }
+    /// Показывает значок и краткое название возможности приложения.
+    /// - Parameters:
+    ///   - icon: Символ возможности.
+    ///   - title: Подпись рядом со значком.
     private func feature(_ icon: String, _ title: String) -> some View {
         HStack(spacing: 5) {
             Image(systemName: icon).font(.system(size: 13)).foregroundStyle(MSTheme.muted)
@@ -325,6 +343,11 @@ private struct WelcomeArtwork: View {
                 }.padding(7).background(MSTheme.surface, in: RoundedRectangle(cornerRadius: 6)).offset(x: 12, y: -12)
             }
     }
+    /// Рисует участника в иллюстрации демонстрационного звонка.
+    /// - Parameters:
+    ///   - initials: Инициалы на плитке.
+    ///   - fill: Цвет фона плитки.
+    ///   - ink: Цвет инициалов.
     private func person(_ initials: String, fill: Color, ink: Color) -> some View {
         ZStack(alignment: .bottom) {
             fill
@@ -334,6 +357,10 @@ private struct WelcomeArtwork: View {
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
         }.clipShape(RoundedRectangle(cornerRadius: 10))
     }
+    /// Рисует элемент панели управления в иллюстрации звонка.
+    /// - Parameters:
+    ///   - icon: Имя символа.
+    ///   - danger: Использовать цвет завершения звонка.
     private func callIcon(_ icon: String, danger: Bool) -> some View {
         Image(systemName: icon).font(.system(size: 12)).foregroundStyle(danger ? MSTheme.danger : MSTheme.muted)
             .frame(width: 23, height: 23).background(danger ? MSTheme.danger.opacity(0.10) : MSTheme.surfaceSecondary, in: RoundedRectangle(cornerRadius: 7))
@@ -383,6 +410,7 @@ private struct ConnectView: View {
         }.onAppear { if address.isEmpty { address = model.connectionPrefill?.url.absoluteString ?? "" } }
     }
 
+    /// Снимает фокус с адреса и запускает проверку введённого сервера.
     private func checkAddress() {
         editingAddress = false
         guard model.probeState != .loading, !address.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return }
@@ -480,6 +508,7 @@ private struct AuthenticationView: View {
             (!registration || (confirmation == password && password.unicodeScalars.count >= 8))
     }
 
+    /// Отправляет введённые данные для входа или регистрации.
     private func submit() {
         guard canSubmit else { return }
         // Capture what was submitted before the keyboard or a screen transition can change the fields.
@@ -495,6 +524,10 @@ private struct AuthenticationView: View {
         focusedField = nil
     }
 
+    /// Объединяет поле авторизации с его видимой и доступной для VoiceOver подписью.
+    /// - Parameters:
+    ///   - label: Название поля.
+    ///   - content: Поле ввода.
     private func field<Content: View>(_ label: String, @ViewBuilder content: () -> Content) -> some View {
         VStack(alignment: .leading, spacing: 8) {
             Text(tr(label)).font(MSTheme.font(12, weight: .semibold))

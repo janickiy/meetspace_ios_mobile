@@ -11,6 +11,7 @@ import SwiftUI
 
 /// Only explicit DEBUG UI-test launches use doubles. No network or persistent test credentials.
 enum UITestDependencies {
+    /// Собирает изолированные зависимости для UI-тестов с локальным сервером, хранилищами и имитацией устройств.
     @MainActor static func make() -> AppDependencies {
         let server = Server()
         let calling = Calling(), notifications = Notifications()
@@ -32,25 +33,65 @@ enum UITestDependencies {
             pair.continuation.onTermination = { [weak self] _ in Task { @MainActor in self?.listeners[id] = nil } }
             return pair.stream
         }
+        /// Немедленно подтверждает регистрацию входящего звонка в тестовом провайдере.
+        /// - Parameters:
+        ///   - descriptor: Идентификатор, имя собеседника и тип звонка.
+        ///   - completion: Обработчик результата регистрации звонка в системе.
         func reportIncoming(_ descriptor: SystemCallDescriptor, completion: @escaping @Sendable (Result<Void, SystemCallingError>) -> Void) { completion(.success(())) }
+        /// Ставит в очередь тестовое действие запуска исходящего звонка.
+        /// - Parameter descriptor: Идентификатор, имя собеседника и тип исходящего звонка.
         func requestStart(_ descriptor: SystemCallDescriptor) { action(.start, callID: descriptor.id) }
+        /// Ставит в очередь тестовое действие ответа на входящий звонок.
+        /// - Parameter callID: Идентификатор звонка, который нужно принять.
         func requestAnswer(callID: UUID) { action(.answer, callID: callID) }
+        /// Ставит в очередь тестовое действие завершения звонка.
+        /// - Parameter callID: Идентификатор завершаемого звонка.
         func requestEnd(callID: UUID) { action(.end, callID: callID) }
+        /// Ставит в очередь тестовое действие смены состояния микрофона.
+        /// - Parameters:
+        ///   - muted: Значение true отключает микрофон.
+        ///   - callID: Идентификатор звонка, в котором меняется состояние.
         func requestMuted(_ muted: Bool, callID: UUID) { action(.setMuted(muted), callID: callID) }
+        /// Удаляет ожидающее тестовое действие и при успехе обновляет имитацию аудиосессии.
+        /// - Parameters:
+        ///   - id: Идентификатор ожидающего действия.
+        ///   - succeeded: Удалось ли приложению выполнить запрос системы.
         func completeAction(id: UUID, succeeded: Bool) {
             guard let action = pending.removeValue(forKey: id), succeeded else { return }
             if action.kind == .start || action.kind == .answer { audioActive = true; emit(.audioActivationChanged(true)) }
             if action.kind == .end { audioActive = false; emit(.audioActivationChanged(false)) }
         }
+        /// Принимает уведомление о начале соединения без изменения тестового состояния.
+        /// - Parameters:
+        ///   - callID: Идентификатор исходящего звонка.
+        ///   - date: Время начала соединения или nil для системного времени по умолчанию.
         func reportConnecting(callID: UUID, at date: Date?) {}
+        /// Принимает уведомление о подключении без изменения тестового состояния.
+        /// - Parameters:
+        ///   - callID: Идентификатор исходящего звонка.
+        ///   - date: Время подключения или nil для системного времени по умолчанию.
         func reportConnected(callID: UUID, at date: Date?) {}
+        /// Завершает имитацию аудиосессии и оповещает подписчиков.
+        /// - Parameters:
+        ///   - callID: Идентификатор завершённого звонка.
+        ///   - reason: Причина, определяющая итоговый статус системного звонка.
+        ///   - date: Время завершения или nil для системного времени по умолчанию.
         func reportEnded(callID: UUID, reason: SystemCallEndReason, at date: Date?) { audioActive = false; emit(.audioActivationChanged(false)) }
+        /// Принимает обновление описания звонка без системного интерфейса в UI-тесте.
+        /// - Parameter descriptor: Новое описание звонка с его прежним идентификатором.
         func updateCall(_ descriptor: SystemCallDescriptor) {}
+        /// Закрывает потоки всех подписчиков тестового сервиса звонков.
         func invalidate() { for listener in listeners.values { listener.finish() }; listeners.removeAll() }
+        /// Добавляет ожидающее действие со сроком 30 секунд и публикует событие.
+        /// - Parameters:
+        ///   - kind: Какое действие должен выполнить координатор.
+        ///   - callID: Идентификатор звонка в тестовом сценарии.
         private func action(_ kind: SystemCallAction.Kind, callID: UUID) {
             let action = SystemCallAction(id: UUID(), callID: callID, kind: kind, deadline: Date().addingTimeInterval(30))
             pending[action.id] = action; emit(.action(action))
         }
+        /// Доставляет событие системного звонка всем тестовым подписчикам.
+        /// - Parameter event: Событие звонка или активации аудиосессии.
         private func emit(_ event: SystemCallEvent) { for listener in listeners.values { listener.yield(event) } }
     }
     @MainActor private final class Notifications: NormalPushNotifications {
@@ -62,15 +103,26 @@ enum UITestDependencies {
             pair.continuation.onTermination = { [weak self] _ in Task { @MainActor in self?.listeners[id] = nil } }
             return pair.stream
         }
+        /// Устанавливает и публикует разрешение на уведомления в тестовой сессии.
         func requestAuthorization() -> NormalPushAuthorization { authorization = .authorized; emit(.authorization(authorization)); return authorization }
+        /// Повторно публикует сохранённый в тесте статус разрешения.
         func refreshAuthorization() { emit(.authorization(authorization)) }
+        /// Имитирует успешную регистрацию, публикуя постоянный тестовый токен.
         func register() { emit(.token(Data(repeating: 0x45, count: 32))) }
+        /// Принимает запрос отмены регистрации в тесте без обращения к APNs.
         func unregister() {}
+        /// Публикует предоставленный токен в тестовом потоке уведомлений.
+        /// - Parameter deviceToken: Последний токен, полученный непосредственно от Apple.
         func didRegister(deviceToken: Data) { emit(.token(deviceToken)) }
+        /// Публикует в тестовом потоке ошибку регистрации устройства.
         func didFailRegistration() { emit(.failure(.registrationFailed)) }
+        /// Передаёт событие каждому подписчику тестового сервиса уведомлений.
+        /// - Parameter event: Событие регистрации, разрешения или ошибки.
         private func emit(_ event: NormalPushNotificationEvent) { for listener in listeners.values { listener.yield(event) } }
     }
     private struct Probe: ServerProbing {
+        /// Возвращает тестовую версию для разрешённого сервера и ошибку отсутствия сети для других адресов.
+        /// - Parameter origin: Проверяемый адрес сервера MeetSpace.
         func check(_ origin: ServerOrigin) async throws -> ServerVersion {
             guard origin.displayName == "fixture.example" else { throw APIError.offline }
             return ServerVersion(version: "test", commit: "fixture", buildTime: "fixture")
@@ -78,22 +130,40 @@ enum UITestDependencies {
     }
     private actor Preferences: ConfigurationStore {
         private var value = AppConfiguration()
+        /// Возвращает последнюю конфигурацию из памяти тестового процесса.
         func load() -> AppConfiguration { value }
+        /// Заменяет конфигурацию в памяти тестового процесса.
+        /// - Parameter configuration: Новая конфигурация приложения.
         func save(_ configuration: AppConfiguration) { value = configuration }
     }
     private actor Secrets: SecureStore {
         private var values: [CredentialKey: Data] = [:]
+        /// Возвращает сохранённые в памяти тестовые данные учётной записи.
+        /// - Parameter key: Ключ запрашиваемой записи.
         func read(_ key: CredentialKey) -> Data? { values[key] }
+        /// Сохраняет тестовые учётные данные в словаре текущего процесса.
+        /// - Parameters:
+        ///   - value: Байты значения для сохранения.
+        ///   - key: Ключ, по которому будут доступны данные.
         func write(_ value: Data, for key: CredentialKey) { values[key] = value }
+        /// Удаляет тестовые учётные данные из памяти.
+        /// - Parameter key: Ключ удаляемой записи.
         func delete(_ key: CredentialKey) { values[key] = nil }
     }
     private struct QuietSockets: RealtimeSocketFactory {
+        /// Имитирует ожидание подключения к потоку событий и допускает отмену задачи.
+        /// - Parameter url: Адрес запрошенного соединения. Тестовая реализация не открывает сокет.
         func connect(_ url: URL) async throws -> any RealtimeSocket {
             try await Task.sleep(for: .seconds(3600)); throw CancellationError()
         }
     }
     private struct ConferenceSockets: ConferenceSocketFactory {
         let server: Server
+        /// Создаёт локальный сигнальный сокет конференции и помещает в него начальное состояние.
+        /// - Parameters:
+        ///   - origin: Адрес тестового сервера.
+        ///   - conferenceID: Идентификатор тестовой конференции.
+        ///   - ticket: Билет подключения из API. Тестовый сервер принимает локальное соединение без проверки билета.
         func connect(origin: ServerOrigin, conferenceID: UUID, ticket: String) async throws -> any ConferenceSocket {
             guard origin.displayName == "fixture.example" else { throw APIError.offline }
             let socket = MeetingSocket(conferenceID: conferenceID)
@@ -106,17 +176,28 @@ enum UITestDependencies {
         let mediaPeerID = UUID()
         let stream: AsyncThrowingStream<Data, Error>
         let continuation: AsyncThrowingStream<Data, Error>.Continuation
+        /// Создаёт очередь входящих сообщений тестового сигнального соединения.
+        /// - Parameter conferenceID: Идентификатор конференции для сообщений этого сокета.
         init(conferenceID: UUID) {
             self.conferenceID = conferenceID
             (stream, continuation) = AsyncThrowingStream.makeStream(bufferingPolicy: .bufferingOldest(128))
         }
+        /// Добавляет уже подготовленное сообщение в очередь входящих данных.
+        /// - Parameter bytes: Сериализованные байты события конференции.
         func deliver(_ bytes: Data) { continuation.yield(bytes) }
+        /// Формирует конверт события сигналинга и помещает его во входящий поток.
+        /// - Parameters:
+        ///   - type: Тип события протокола.
+        ///   - data: Поля полезной нагрузки.
+        ///   - reply: Идентификатор команды, на которую отвечает событие, если применимо.
         private func event(_ type: String, _ data: [String: Any], reply: UUID? = nil) throws {
             var envelope: [String: Any] = ["version": 1, "id": UUID().uuidString.lowercased(), "type": type,
                 "conferenceId": conferenceID.uuidString.lowercased(), "timestamp": "2026-11-05T10:00:00Z", "data": data]
             if let reply { envelope["replyTo"] = reply.uuidString.lowercased() }
             continuation.yield(try JSONSerialization.data(withJSONObject: envelope))
         }
+        /// Декодирует команду конференции и имитирует ответ медиа-сервера.
+        /// - Parameter data: Сериализованная команда от тестируемого клиента.
         func send(_ data: Data) throws {
             let command = try ConferenceEnvelope.decode(data, conferenceID: conferenceID)
             switch command.type {
@@ -139,11 +220,13 @@ enum UITestDependencies {
             default: throw ConferenceSignalError.invalidPayload
             }
         }
+        /// Ожидает следующее сообщение тестового сигнального канала.
         func receive() async throws -> Data {
             var iterator = stream.makeAsyncIterator()
             guard let bytes = try await iterator.next() else { throw CancellationError() }
             return bytes
         }
+        /// Закрывает входящий поток тестового сигнального сокета.
         func close() { continuation.finish() }
     }
     /// Explicit DEBUG fixture: lifecycle/frame delivery is simulated; no system picker is exercised.
@@ -156,7 +239,10 @@ enum UITestDependencies {
         let extensionBundleID: String? = "fixture.broadcast"
         private(set) var sessionID: UUID?
         private var task: Task<Void, Never>?
+        /// Готовит раздельные тестовые потоки событий демонстрации и последнего видеокадра.
         init() { (events, event) = AsyncStream.makeStream(); (frames, frame) = AsyncStream.makeStream(bufferingPolicy: .bufferingNewest(1)) }
+        /// Запускает имитацию демонстрации, публикуя событие старта и кадры 2 × 2 пикселя.
+        /// - Parameter configuration: Запрошенные ограничения. Сценарий использует фиксированный размер и интервал кадров.
         func prepare(configuration: ScreenBroadcastConfiguration) {
             let id = UUID(); sessionID = id
             task = Task { [weak self] in
@@ -172,6 +258,7 @@ enum UITestDependencies {
                 }
             }
         }
+        /// Отменяет генерацию тестовых кадров и освобождает идентификатор сеанса.
         func stop() { task?.cancel(); task = nil; sessionID = nil }
     }
     /// Explicit UI-test media double: never requests OS permissions or creates a native capture session.
@@ -181,34 +268,58 @@ enum UITestDependencies {
         let localVideoTrackID = "fixture-local-camera"
         private var microphone = false, camera = false, closed = false, front = true
         private var microphoneAllowed = true, cameraAllowed = true, screenAllowed = false, screen = false
+        private var louderSample = false
+        /// Создаёт буферизованный поток событий тестового медиадвижка.
         init() { (events, continuation) = AsyncStream.makeStream(bufferingPolicy: .bufferingOldest(128)) }
         var localScreenVideoTrackID: String { "fixture-screen" }
+        /// Принимает откат локального предложения без реального SDP-соединения.
         func rollbackLocalOffer() async throws {}
+        /// Проверяет тестовую политику экрана и публикует изменение захвата и запрос согласования.
+        /// - Parameter enabled: Значение true запрашивает отправку видео с экрана.
         func setScreenEnabled(_ enabled: Bool) async throws {
             guard !enabled || (screenAllowed && cameraAllowed) else { throw ConferenceMediaError.publicationBlocked }
             screen = enabled; continuation.yield(.screenCaptureState(enabled)); continuation.yield(.negotiationNeeded)
         }
+        /// Принимает кадр демонстрации без отправки в сеть.
+        /// - Parameter frame: Кадр с идентификатором сеанса, геометрией и временем показа.
         func pushScreenFrame(_ frame: ScreenBroadcastFrame) throws {}
+        /// Устанавливает разрешения тестовых устройств и публикует начальный аудиомаршрут.
+        /// - Parameter configuration: Настройки ICE, разрешения публикации и ограничения видеозахвата.
         func configure(_ configuration: ConferenceMediaConfiguration) {
             microphoneAllowed = configuration.microphoneAllowed; cameraAllowed = configuration.cameraAllowed
             continuation.yield(.audioRoute("Динамик"))
         }
+        /// Формирует тестовое предложение SDP со списком публикаций экрана.
+        /// - Parameter iceRestart: Запрос перезапуска ICE. Тест использует постоянное описание SDP.
         func makeOffer(iceRestart: Bool) throws -> ConferenceMediaOffer {
             guard !closed else { throw CancellationError() }
             return ConferenceMediaOffer(sdp: "v=0\r\nm=audio 9 UDP/TLS/RTP/SAVPF 111\r\na=mid:0\r\na=recvonly\r\n", publications: screen ? [.init(mid: "2", source: "video/screen", trackId: localScreenVideoTrackID)] : [])
         }
+        /// Отмечает тестовое соединение как подключённое при получении ответа.
+        /// - Parameter sdp: SDP-ответ тестового сервера.
         func applyAnswer(_ sdp: String) { if !closed { continuation.yield(.connectionState(.connected)) } }
+        /// Принимает ICE-кандидат в сценарии без сетевого обмена.
+        /// - Parameter candidate: Сетевой кандидат и адресуемая секция SDP.
         func addRemoteCandidate(_ candidate: MeetSpaceMedia.ConferenceICECandidate) {}
+        /// Обновляет тестовые разрешения устройств и отключает публикации, ставшие запрещёнными.
+        /// - Parameters:
+        ///   - microphone: Разрешена ли передача звука микрофона.
+        ///   - camera: Разрешена ли передача видео с камеры.
+        ///   - screen: Разрешена ли передача видео экрана.
         func setPublicationPermissions(microphone: Bool, camera: Bool, screen: Bool) throws {
             microphoneAllowed = microphone; cameraAllowed = camera; screenAllowed = screen && camera
             if !microphone { try setMicrophoneEnabled(false) }; if !camera { try setCameraEnabled(false) }
         }
+        /// Имитирует переключение микрофона с учётом политики и сценария отказа пользователя.
+        /// - Parameter enabled: Значение true запрашивает передачу звука микрофона.
         func setMicrophoneEnabled(_ enabled: Bool) throws {
             guard !closed else { throw CancellationError() }
             if enabled && ProcessInfo.processInfo.arguments.contains("-media-permission-denied") { throw ConferenceMediaError.microphonePermissionDenied }
             guard !enabled || microphoneAllowed else { throw ConferenceMediaError.publicationBlocked }
             microphone = enabled; captureChanged(); continuation.yield(.negotiationNeeded)
         }
+        /// Имитирует переключение камеры, включая добавление или удаление локальной дорожки.
+        /// - Parameter enabled: Значение true запрашивает передачу видео с камеры.
         func setCameraEnabled(_ enabled: Bool) throws {
             guard !closed else { throw CancellationError() }
             if enabled && ProcessInfo.processInfo.arguments.contains("-media-permission-denied") { throw ConferenceMediaError.cameraPermissionDenied }
@@ -218,13 +329,29 @@ enum UITestDependencies {
             else { continuation.yield(.videoTrackRemoved(localVideoTrackID)) }
             continuation.yield(.negotiationNeeded)
         }
+        /// Меняет сторону тестовой камеры и сообщает о новом состоянии захвата.
         func switchCamera() { front.toggle(); captureChanged() }
+        /// В сценарии речи чередует два уровня громкости при включённом тестовом микрофоне.
+        func microphoneLevels() async -> ConferenceMicrophoneLevels {
+            guard microphone, ProcessInfo.processInfo.arguments.contains("-conference-speaking") else { return .init() }
+            louderSample.toggle()
+            return .init(local: louderSample ? 0.72 : 0.18)
+        }
+        /// Публикует тестовое название выбранного маршрута вывода.
+        /// - Parameter enabled: Значение true выбирает динамик устройства.
         func setSpeakerEnabled(_ enabled: Bool) { continuation.yield(.audioRoute(enabled ? "Динамик" : "Телефон")) }
+        /// Отключает тестовый микрофон и камеру, затем публикует удаление видеодорожки.
         func suspend() { microphone = false; camera = false; captureChanged(); continuation.yield(.videoTrackRemoved(localVideoTrackID)) }
+        /// Закрывает поток событий тестового медиадвижка и сбрасывает состояние устройств.
         func close() { closed = true; microphone = false; camera = false; continuation.finish() }
+        /// Показывает тестовую заглушку видеодорожки с постоянной надписью.
+        /// - Parameters:
+        ///   - trackID: Идентификатор локальной или удалённой видеодорожки.
+        ///   - mirrored: Нужно ли отразить изображение по горизонтали.
         func videoView(trackID: String, mirrored: Bool) -> AnyView {
             AnyView(ZStack { Color(red: 0.16, green: 0.22, blue: 0.34); Text("Тестовое видео").foregroundStyle(.white) })
         }
+        /// Сообщает текущие тестовые состояния микрофона, камеры и объектива.
         private func captureChanged() { continuation.yield(.captureState(microphone: microphone, camera: camera, frontCamera: front)) }
     }
     private actor Server: RequestTransport {
@@ -260,6 +387,7 @@ enum UITestDependencies {
             let id: String
         }
         private var folderMembers: [String: Set<FolderMember>] = [:]
+        /// Подготавливает исходные встречи, сообщения и папки для выбранного при запуске UI-сценария.
         init() {
             if ProcessInfo.processInfo.arguments.contains("-meeting-actions-fixture") {
                 let code = String(repeating: "a", count: 32)
@@ -281,11 +409,17 @@ enum UITestDependencies {
                             "itemCount": 0, "conversationCount": 0, "conferenceCount": 0]]
             }
         }
+        /// Формирует запись пользователя с текущим тестовым именем профиля.
+        /// - Parameter id: Идентификатор тестовой учётной записи.
         private func user(_ id: String) -> [String: Any] {
             ["id": id, "email": id == second ? "second@fixture.example" : "first@fixture.example",
              "displayName": profileNames[id] ?? (id == second ? "Второй аккаунт" : "Первый аккаунт"), "isAdmin": false,
              "createdAt": "2026-11-05T10:00:00Z", "updatedAt": "2026-11-05T10:00:00Z"]
         }
+        /// Возвращает описание группы или личной переписки с актуальным предпросмотром сообщений.
+        /// - Parameters:
+        ///   - id: Идентификатор запрошенного чата.
+        ///   - account: Тестовая учётная запись, для которой учитываются очистка истории и настройки уведомлений.
         private func conversation(_ id: String, account: String? = nil) -> [String: Any] {
             if let group = groups[id] { return group }
             let user = account ?? first
@@ -297,19 +431,28 @@ enum UITestDependencies {
                     "description": "", "updatedAt": "2026-11-05T10:00:00Z", "preview": preview,
                     "unreadCount": 0, "notificationsEnabled": directNotifications[user] ?? true]
         }
+        /// Сериализует словарь как JSON-ответ тестового HTTP-сервера.
+        /// - Parameters:
+        ///   - data: Содержимое ответа.
+        ///   - status: Код состояния HTTP.
+        ///   - headers: Дополнительные HTTP-заголовки.
         private func response(_ data: [String: Any], status: Int = 200, headers: [String: String] = [:]) throws -> NetworkResponse {
             var headers = headers; headers["content-type"] = "application/json"
             return NetworkResponse(status: status, headers: headers, data: try JSONSerialization.data(withJSONObject: data))
         }
+        /// Создаёт тестовую запись участника встречи с ролью и текущими настройками медиа.
+        /// - Parameter remote: Выбирает удалённого участника вместо владельца встречи.
         private func member(remote: Bool = false) -> [String: Any] {
             ["id": remote ? remoteParticipantID : participantID, "conferenceId": conferenceID,
              "userId": remote ? peer : first, "displayName": remote ? "Тестовый участник" : "Первый аккаунт",
              "role": remote ? "participant" : "owner", "status": remote || conferenceJoined ? "joined" : "left",
              "createdAt": "2026-11-05T10:00:00Z", "updatedAt": "2026-11-05T10:00:00Z",
-             "microphoneEnabled": remote ? false : conferenceMicrophone, "cameraEnabled": remote ? false : conferenceCamera,
+             "microphoneEnabled": remote ? ProcessInfo.processInfo.arguments.contains("-conference-speaking") : conferenceMicrophone,
+             "cameraEnabled": remote ? false : conferenceCamera,
              "screenSharing": false, "microphoneBlocked": false, "cameraBlocked": false, "screenBlocked": false,
              "mediaPolicyVersion": 1, "admissionState": "admitted", "admissionVersion": 1]
         }
+        /// Возвращает состав тестовой встречи, включая дополнительного гостя при соответствующем параметре запуска.
         private func conferenceMembers() -> [[String: Any]] {
             let remote = member(remote: true)
             var members = [member(), remote]
@@ -322,11 +465,17 @@ enum UITestDependencies {
             }
             return members
         }
+        /// Создаёт запись подключённого участника комнаты личного звонка.
+        /// - Parameter remote: Выбирает собеседника вместо текущего пользователя.
         private func callMember(remote: Bool = false) -> [String: Any] {
             var result = member(remote: remote)
             result["conferenceId"] = callRoomID; result["status"] = "joined"; result["role"] = "participant"
             return result
         }
+        /// Создаёт тестовый звонок со статусом ожидания ответа и сроком действия 90 секунд.
+        /// - Parameters:
+        ///   - incoming: Определяет, какой участник выступает инициатором звонка.
+        ///   - clientID: Идентификатор клиентского экземпляра звонящего.
         private func newCall(incoming: Bool, clientID: String) -> [String: Any] {
             ["id": UUID().uuidString.lowercased(), "conversationId": direct, "callerUserId": incoming ? peer : first,
              "calleeUserId": incoming ? first : peer, "callerClientId": clientID,
@@ -335,6 +484,8 @@ enum UITestDependencies {
              "status": "ringing", "version": 1, "createdAt": ISO8601DateFormatter().string(from: Date()),
              "expiresAt": ISO8601DateFormatter().string(from: Date().addingTimeInterval(90)), "durationSec": 0]
         }
+        /// Сериализует начальное состояние участника и комнаты для тестового сигнального сокета.
+        /// - Parameter id: Идентификатор комнаты личного звонка или встречи.
         func conferenceState(_ id: UUID) throws -> Data {
             if id.uuidString.lowercased() == callRoomID, call?["status"] as? String == "accepted" {
                 var own = callMember(), remote = callMember(remote: true); own["online"] = true; remote["online"] = true
@@ -354,6 +505,12 @@ enum UITestDependencies {
                 "data": ["connectionId": UUID().uuidString.lowercased(), "participantId": participantID,
                          "status": "active", "participants": participants]])
         }
+        /// Обрабатывает запросы тестового API в памяти и возвращает ответы выбранного сценария.
+        /// - Parameters:
+        ///   - request: HTTP-запрос клиента с методом, путём и данными.
+        ///   - limit: Запрошенный лимит ответа в байтах. Тестовый транспорт его не применяет.
+        ///   - uploadFile: Адрес файла загрузки. Файловый обмен здесь имитируется.
+        ///   - progress: Обработчик прогресса передачи из интерфейса транспорта. Тестовые ответы возвращаются сразу.
         func send(_ request: URLRequest, limit: Int, uploadFile: URL?, progress: TransferProgress?) async throws -> NetworkResponse {
             guard request.url?.host == "fixture.example" else { throw APIError.offline }
             let path = request.url!.path.lowercased()
@@ -561,6 +718,11 @@ enum UITestDependencies {
             }
             return NetworkResponse(status: 404)
         }
+        /// Обрабатывает тестовые маршруты записей и других функций и возвращает nil для неизвестного маршрута.
+        /// - Parameters:
+        ///   - request: Исходный HTTP-запрос к тестовому API.
+        ///   - parts: Компоненты пути запроса.
+        ///   - body: Словарь, декодированный из JSON-тела, если оно есть.
         private func featureResponse(_ request: URLRequest, parts: [String], body: [String: Any]?) throws -> NetworkResponse? {
             let path = request.url!.path.lowercased(), method = request.httpMethod ?? "GET"
             let query = Dictionary(uniqueKeysWithValues: (URLComponents(url: request.url!, resolvingAgainstBaseURL: false)?.queryItems ?? []).map { ($0.name, $0.value ?? "") })
@@ -667,11 +829,14 @@ enum UITestDependencies {
             }
             return nil
         }
+        /// Формирует описание завершённой тестовой встречи для библиотеки записей.
         private func recordingConference() -> [String: Any] {
             ["id": UITestRecordingFixture.conferenceID, "ownerId": first, "title": "Обсуждение проекта",
              "inviteCode": "", "inviteUrl": "", "status": "finished", "createdAt": "2026-11-06T08:00:00Z",
              "updatedAt": "2026-11-06T08:02:00Z", "waitingRoomEnabled": false]
         }
+        /// Подготавливает метаданные записи и доступного файла для выбранного состояния обработки.
+        /// - Parameter id: Идентификатор сценария записи: готовое видео, аудио, обработка или ошибка.
         private func recordingFixture(_ id: String) -> [String: Any] {
             let audio = id == UITestRecordingFixture.audioID
             let ready = id == UITestRecordingFixture.recordingID || audio

@@ -35,6 +35,10 @@ struct AccountDeletionPushPause: Sendable {
     @ObservationIgnored private var tail: Task<Void, Never>?
     @ObservationIgnored private var queued = 0
 
+    /// Начинает отслеживать события регистрации устройства в APNs.
+    /// - Parameters:
+    ///   - platform: Источник событий и системных разрешений.
+    ///   - store: Хранилище журнала привязок устройства.
     public init(platform: any NormalPushNotifications, store: any PushRegistrationStore) {
         self.platform = platform; self.store = store
         eventsTask = Task { [weak self, events = platform.events] in
@@ -44,15 +48,16 @@ struct AccountDeletionPushPause: Sendable {
             }
         }
     }
+    /// Отменяет подписку на события регистрации устройства.
     deinit { eventsTask?.cancel() }
 
-    /// Stop OS delivery synchronously before unrelated awaited call/media cleanup. This does
-    /// not confirm server revocation: the owner must still await detach before closing credentials.
+    /// Сразу останавливает системную доставку перед асинхронной очисткой звонка. До закрытия учётных данных владелец должен дождаться `detach()`, чтобы завершить отзыв на сервере.
     public func suspendDelivery() { invalidate(); enabled = false }
 
-    /// Stop new callbacks and finish this client's queued writes while its credentials
-    /// are still valid. Failed cleanup remains journaled; it must not prevent the
-    /// authoritative account DELETE or be mistaken for a successful device revoke.
+    /// Приостанавливает регистрацию и завершает операции с привязками, пока учётные данные действительны. Неудавшийся отзыв остаётся в журнале, а удаление аккаунта может продолжиться.
+    /// - Parameters:
+    ///   - origin: Сервер удаляемого аккаунта.
+    ///   - userID: Идентификатор владельца аккаунта.
     func prepareAccountDeletion(origin: ServerOrigin, userID: UUID) async -> AccountDeletionPushPause? {
         guard !confirmedDeletions.contains(where: { $0.origin == origin && $0.userID == userID }) else { return nil }
         guard repository.map({ $0.origin == origin && $0.userID == userID }) ?? true else { return nil }
@@ -72,8 +77,8 @@ struct AccountDeletionPushPause: Sendable {
         return AccountDeletionPushPause(origin: origin, userID: userID, epoch: generation, enabledIntent: intent)
     }
 
-    /// Rejection or an unknown DELETE outcome does not change the user's push intent.
-    /// A new account, explicit disable, or other generation change invalidates the token.
+    /// Восстанавливает прежний выбор пользователя после отказа или неопределённого результата удаления. Снимок действует до смены аккаунта, явного отключения push или другой смены поколения.
+    /// - Parameter pause: Снимок приостановленной регистрации для этого аккаунта.
     @discardableResult func restoreAccountDeletionPause(_ pause: AccountDeletionPushPause) async -> Bool {
         guard pause.epoch == epoch, let target = repository,
               target.origin == pause.origin, target.userID == pause.userID,
@@ -90,12 +95,13 @@ struct AccountDeletionPushPause: Sendable {
         }
     }
 
-    /// Only after DELETE /auth/me success: the server atomically removed this account's
-    /// push devices known to that transaction. The caller must drain this client's writes
-    /// before DELETE; this cannot fence concurrent writes from another client or server
-    /// requests whose response was lost. Persist exact-scope proof before pruning the journal.
-    /// If every proof write fails, memory retains it for a later retry; process death before
-    /// any durable write cannot be recovered by inferring deletion from a subsequent 401.
+    /// Сохраняет подтверждение успешного DELETE /auth/me для этой пары сервера и пользователя до очистки журнала.
+    /// Сервер удаляет привязки, известные на момент транзакции. До запроса вызывающая сторона должна дождаться записей своего клиента.
+    /// Запросы с потерянным ответом и одновременные записи других клиентов могут остаться за пределами этой операции.
+    /// При ошибке сохранения подтверждение остаётся в памяти до повтора. После перезапуска ответ 401 сам по себе не подтверждает удаление.
+    /// - Parameters:
+    ///   - origin: Сервер удалённого аккаунта.
+    ///   - userID: Идентификатор удалённого пользователя.
     @discardableResult public func accountDeletionConfirmed(origin: ServerOrigin, userID: UUID) async -> Bool {
         remember(PushAccountDeletionConfirmation(origin: origin, userID: userID), pending: true)
         return await serial { [self] in
@@ -107,8 +113,10 @@ struct AccountDeletionPushPause: Sendable {
         }
     }
 
-    /// Identity checks this before restoring credentials/offline state. This deliberately
-    /// reads only the confirmation store, not an unrelated cleanup journal or network 401.
+    /// Ищет подтверждение удаления перед восстановлением учётных данных или автономной сессии. Источником служит отдельное хранилище подтверждений.
+    /// - Parameters:
+    ///   - origin: Сервер аккаунта.
+    ///   - userID: Идентификатор пользователя на этом сервере.
     public func isAccountDeletionConfirmed(origin: ServerOrigin, userID: UUID) async throws -> Bool {
         let scope = PushAccountDeletionConfirmation(origin: origin, userID: userID)
         if confirmedDeletions.contains(scope) { return true }
@@ -118,8 +126,7 @@ struct AccountDeletionPushPause: Sendable {
         return confirmedDeletions.contains(scope)
     }
 
-    /// Call on foreground entry to notice permission changes made in iOS Settings. This never
-    /// prompts or registers: revocation uses the same immediate stop and scoped cleanup path.
+    /// При возврате в приложение сверяет разрешение на уведомления с настройками iOS без показа диалога и регистрации устройства. Если разрешение отозвано, останавливает доставку и запускает очистку привязок аккаунта.
     public func refreshAuthorization() async {
         let generation = epoch
         await platform.refreshAuthorization()
@@ -129,8 +136,8 @@ struct AccountDeletionPushPause: Sendable {
         receive(.authorization(platform.authorization))
     }
 
-    /// Attach only after calling detach on the previous account while its client is still open.
-    /// The defensive cleanup here also handles callers that replace a scope directly.
+    /// Подключает сервис аккаунта и восстанавливает регистрацию по журналу. Перед переключением вызывайте `detach()`, пока клиент прежнего аккаунта открыт. Также проверяет оставшиеся привязки при прямой замене аккаунта.
+    /// - Parameter next: Сервис уведомлений подключаемого аккаунта.
     @discardableResult public func attach(repository next: any NotificationDevicesServing) async -> Bool {
         invalidate(); let generation = epoch
         return await serial { [self] in
@@ -154,8 +161,7 @@ struct AccountDeletionPushPause: Sendable {
         }
     }
 
-    /// Stops OS registration immediately, then drains in-flight registrations and scoped revokes.
-    /// False means the global journal still requires cleanup; local logout may continue.
+    /// Сразу прекращает системную регистрацию и дожидается завершения регистраций и отзывов для аккаунта. Возвращает `false`, если журнал требует дальнейшей очистки. Локальный выход может продолжиться.
     @discardableResult public func detach() async -> Bool {
         invalidate(); enabled = false
         return await serial { [self] in
@@ -170,7 +176,8 @@ struct AccountDeletionPushPause: Sendable {
         }
     }
 
-    /// Allows the application to clean a nonactive account using that account's own credentials.
+    /// Отзывает привязки указанного аккаунта с его собственными учётными данными, даже когда активен другой аккаунт.
+    /// - Parameter target: Сервис уведомлений владельца привязок.
     @discardableResult public func cleanup(repository target: any NotificationDevicesServing) async -> Bool {
         if let repository, same(repository, target) { invalidate(); enabled = false }
         return await serial { [self] in
@@ -184,6 +191,7 @@ struct AccountDeletionPushPause: Sendable {
         }
     }
 
+    /// Включает доставку после проверки и очистки прежних привязок устройства.
     public func enable() async {
         guard let repository else { error = "Войдите в аккаунт"; return }
         let generation = epoch
@@ -197,6 +205,7 @@ struct AccountDeletionPushPause: Sendable {
         }
     }
 
+    /// Выключает доставку и запрашивает отзыв серверной привязки устройства.
     public func disable() async {
         invalidate(); enabled = false
         guard let repository else { return }
@@ -213,6 +222,7 @@ struct AccountDeletionPushPause: Sendable {
         }
     }
 
+    /// Повторяет незавершённую очистку push-привязок.
     public func retryCleanup() async {
         invalidate(); enabled = false; let generation = epoch
         _ = await serial { [self] in
@@ -232,6 +242,11 @@ struct AccountDeletionPushPause: Sendable {
         }
     }
 
+    /// Проверяет поддержку push и разрешение системы перед повторной регистрацией.
+    /// - Parameters:
+    ///   - target: Сервис уведомлений аккаунта.
+    ///   - generation: Поколение регистрации, для которого действителен запрос.
+    ///   - askPermission: Разрешено ли показать системный запрос разрешения.
     private func resume(_ target: any NotificationDevicesServing, generation: UUID, askPermission: Bool) async -> Bool {
         guard generation == epoch, !deletionConfirmed(target) else { return false }
         do {
@@ -262,6 +277,8 @@ struct AccountDeletionPushPause: Sendable {
         }
     }
 
+    /// Обрабатывает получение токена APNs или ошибку регистрации текущего поколения.
+    /// - Parameter event: Событие службы уведомлений.
     private func receive(_ event: NormalPushNotificationEvent) {
         guard let mode = acceptingToken, mode.epoch == epoch, let target = repository else { return }
         switch event {
@@ -292,6 +309,11 @@ struct AccountDeletionPushPause: Sendable {
         }
     }
 
+    /// Регистрирует токен устройства на сервере и сохраняет сведения о привязке.
+    /// - Parameters:
+    ///   - token: Токен устройства, полученный от APNs.
+    ///   - target: Сервис активного аккаунта.
+    ///   - generation: Поколение операции регистрации.
     private func register(_ token: Data, target: any NotificationDevicesServing, generation: UUID) async -> Bool {
         guard generation == epoch, !deletionConfirmed(target) else { return false }
         do { try await load() } catch { failedStorage(); return false }
@@ -314,6 +336,8 @@ struct AccountDeletionPushPause: Sendable {
         } catch { blocked(); return false }
     }
 
+    /// Отзывает зарегистрированные устройства аккаунта и обновляет журнал очистки.
+    /// - Parameter target: Сервис аккаунта, которому принадлежат привязки.
     private func clean(_ target: any NotificationDevicesServing) async -> Bool {
         // A confirmed deletion is local replay work, never a reason to POST an old token
         // in order to recover its device ID. load() must durably prune it first.
@@ -346,6 +370,11 @@ struct AccountDeletionPushPause: Sendable {
         } catch { return false }
     }
 
+    /// Сохраняет подтверждение успешной регистрации устройства.
+    /// - Parameters:
+    ///   - id: Серверный идентификатор устройства.
+    ///   - fingerprint: Отпечаток зарегистрированного токена.
+    ///   - target: Сервис аккаунта, принявшего регистрацию.
     private func saveReceipt(_ id: UUID, fingerprint: String, target: any NotificationDevicesServing) async -> Bool {
         guard !deletionConfirmed(target) else {
             // Defensive handling of a caller that failed to drain before DELETE. Never
@@ -364,27 +393,50 @@ struct AccountDeletionPushPause: Sendable {
         }
     }
 
+    /// Запрашивает токен, чтобы завершить очистку регистрации с неизвестным результатом.
+    /// - Parameters:
+    ///   - target: Сервис владельца незавершённой привязки.
+    ///   - generation: Поколение операции восстановления.
     private func requestRecoveryToken(_ target: any NotificationDevicesServing, generation: UUID) async {
         await platform.refreshAuthorization()
         guard generation == epoch, allowed(platform.authorization),
               repository.map({ same($0, target) }) == true, !deletionConfirmed(target) else { return }
         acceptingToken = (generation, true); platform.register()
     }
+    /// Завершает текущее поколение регистрации и отписывает приложение от APNs.
     private func invalidate() { epoch = UUID(); acceptingToken = nil; platform.unregister() }
+    /// Определяет, разрешает ли системный статус получение уведомлений.
+    /// - Parameter value: Состояние авторизации уведомлений в системе.
     private func allowed(_ value: NormalPushAuthorization) -> Bool { [.authorized, .provisional, .ephemeral].contains(value) }
     private var hasBindings: Bool { journal.entries.contains(where: \.hasBinding) }
+    /// Проверяет, относятся ли два сервиса уведомлений к одному аккаунту.
+    /// - Parameters:
+    ///   - lhs: Первый сервис.
+    ///   - rhs: Сервис для сравнения.
     private func same(_ lhs: any NotificationDevicesServing, _ rhs: any NotificationDevicesServing) -> Bool {
         lhs.origin == rhs.origin && lhs.userID == rhs.userID
     }
+    /// Проверяет принадлежность записи журнала аккаунту по серверу и пользователю.
+    /// - Parameters:
+    ///   - value: Запись журнала привязок.
+    ///   - target: Сервис проверяемого аккаунта.
     private func matches(_ value: PushRegistrationEntry, _ target: any NotificationDevicesServing) -> Bool {
         value.origin == target.origin && value.userID == target.userID
     }
+    /// Возвращает запись журнала для аккаунта или создаёт её начальное значение.
+    /// - Parameter target: Сервис, задающий сервер и владельца записи.
     private func entry(_ target: any NotificationDevicesServing) -> PushRegistrationEntry {
         journal.entries.first(where: { matches($0, target) }) ?? PushRegistrationEntry(origin: target.origin, userID: target.userID)
     }
+    /// Проверяет, отмечен ли аккаунт удалённым в памяти модели.
+    /// - Parameter target: Сервис проверяемого аккаунта.
     private func deletionConfirmed(_ target: any NotificationDevicesServing) -> Bool {
         confirmedDeletions.contains { $0.origin == target.origin && $0.userID == target.userID }
     }
+    /// Запоминает подтверждение удаления и при необходимости ставит его в очередь на запись.
+    /// - Parameters:
+    ///   - confirmation: Подтверждённая пара сервера и пользователя.
+    ///   - pending: Требуется ли ещё записать подтверждение в хранилище.
     private func remember(_ confirmation: PushAccountDeletionConfirmation, pending: Bool = false) {
         if !confirmedDeletions.contains(confirmation) { confirmedDeletions.append(confirmation) }
         if pending && !pendingDeletionConfirmations.contains(confirmation) { pendingDeletionConfirmations.append(confirmation) }
@@ -392,6 +444,8 @@ struct AccountDeletionPushPause: Sendable {
             invalidate(); enabled = false; repository = nil
         }
     }
+    /// Сохраняет подтверждение удаления с одной повторной попыткой при ошибке записи.
+    /// - Parameter confirmation: Подтверждение для постоянного хранилища.
     private func persistConfirmation(_ confirmation: PushAccountDeletionConfirmation) async throws {
         // One immediate retry covers a transient single write failure. Later explicit
         // cleanup/attach/load calls retry again; there is no unbounded background loop.
@@ -399,6 +453,7 @@ struct AccountDeletionPushPause: Sendable {
         catch { try await store.recordDeletionConfirmation(confirmation) }
         pendingDeletionConfirmations.removeAll { $0 == confirmation }
     }
+    /// Загружает журнал привязок и применяет сохранённые подтверждения удаления аккаунтов.
     private func load() async throws {
         // Replay even when loaded is true and no account is attached. Proof is persisted
         // before reading/pruning the journal so its storage failure cannot erase DELETE200.
@@ -426,6 +481,8 @@ struct AccountDeletionPushPause: Sendable {
         }
         if next != journal { try await store.save(next.validated()); journal = next }
     }
+    /// Записывает актуальное состояние привязки устройства для одного аккаунта.
+    /// - Parameter value: Обновлённая запись журнала.
     private func save(_ value: PushRegistrationEntry) async throws {
         guard !confirmedDeletions.contains(where: { $0.origin == value.origin && $0.userID == value.userID }) else {
             throw ClientError.scopeMismatch
@@ -437,6 +494,8 @@ struct AccountDeletionPushPause: Sendable {
         else { next.entries.append(value) }
         try await store.save(next); journal = next
     }
+    /// Ставит изменение регистрации в последовательную очередь и возвращает его результат.
+    /// - Parameter operation: Асинхронная операция, выполняемая после предыдущей.
     private func serial(_ operation: @escaping @MainActor () async -> Bool) async -> Bool {
         queued += 1; busy = true
         defer { queued -= 1; busy = queued > 0 }
@@ -445,12 +504,19 @@ struct AccountDeletionPushPause: Sendable {
         tail = Task { _ = await work.value }
         return await work.value
     }
+    /// Показывает, что для новой регистрации нужно завершить отзыв старой привязки.
     private func blocked() {
         error = "Не удалось подтвердить удаление прежней push-привязки. Войдите в прежний аккаунт на том же сервере и повторите очистку"
         status = "Новая регистрация заблокирована до очистки"
     }
+    /// Сообщает об ошибке хранилища журнала регистрации.
     private func failedStorage() { error = "Не удалось сохранить журнал push-привязок. Регистрация приостановлена"; status = "Журнал недоступен" }
+    /// Выключает уведомления и сообщает об удалении аккаунта.
     private func deletedAccount() { enabled = false; error = "Этот аккаунт удалён на сервере"; status = "Уведомления выключены" }
+    /// Вычисляет SHA-256 шестнадцатеричного представления токена APNs.
+    /// - Parameter token: Байты токена устройства.
     private static func tokenDigest(_ token: Data) -> String { SHA256.hash(data: Data(hex(token).utf8)).map { String(format: "%02x", $0) }.joined() }
+    /// Представляет байты токена строчными шестнадцатеричными цифрами.
+    /// - Parameter token: Байты токена APNs.
     private static func hex(_ token: Data) -> String { token.map { String(format: "%02x", $0) }.joined() }
 }

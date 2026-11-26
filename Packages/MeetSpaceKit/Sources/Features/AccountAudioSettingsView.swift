@@ -61,6 +61,11 @@ struct AccountAudioSettingsView: View {
             rule.padding(.top, 22)
         }
     }
+    /// Собирает выбор устройства, проверку звука и регулятор громкости в одну секцию.
+    /// - Parameters:
+    ///   - kind: Динамик или звуковые сигналы.
+    ///   - title: Заголовок секции.
+    ///   - volumeLabel: Подпись регулятора.
     private func output(kind: AudioSettingsModel.Check, title: String, volumeLabel: String) -> some View {
         VStack(alignment: .leading, spacing: 0) {
             heading(title, check: kind)
@@ -97,6 +102,10 @@ struct AccountAudioSettingsView: View {
             rule.padding(.top, 22)
         }
     }
+    /// Показывает заголовок секции с индикатором уровня для выбранной проверки.
+    /// - Parameters:
+    ///   - title: Заголовок секции.
+    ///   - check: Источник, уровень которого отображает индикатор.
     private func heading(_ title: String, check: AudioSettingsModel.Check) -> some View {
         HStack(spacing: 16) {
             Text(tr(title)).font(MSTheme.font(15.1, weight: .semibold))
@@ -114,10 +123,16 @@ struct AccountAudioSettingsView: View {
                 .accessibilityValue("\(Int(audio.check == check ? audio.level * 100 : 0))%")
         }.frame(minHeight: 22.7).padding(.bottom, 16)
     }
+    /// Размещает выбор устройства и кнопку проверки в строку или столбец по доступной ширине.
+    /// - Parameters:
+    ///   - selection: Представление выбора устройства.
+    ///   - test: Кнопка проверки выбранного устройства.
     @ViewBuilder private func selectRow<Selection: View, Test: View>(@ViewBuilder selection: () -> Selection, @ViewBuilder test: () -> Test) -> some View {
         if wide && !typeSize.isAccessibilitySize { HStack(spacing: 10) { selection(); test().fixedSize(horizontal: true, vertical: false) } }
         else { VStack(spacing: 10) { selection(); test() } }
     }
+    /// Оформляет название устройства со стрелкой раскрытия списка.
+    /// - Parameter text: Название текущего устройства.
     private func selectorLabel(_ text: String) -> some View {
         HStack(spacing: 8) {
             Text(text).font(MSTheme.font(14)).fixedSize(horizontal: false, vertical: true)
@@ -126,6 +141,8 @@ struct AccountAudioSettingsView: View {
         }.padding(.leading, 17).padding(.trailing, 7).padding(.vertical, 8).frame(minHeight: 46)
             .modifier(AudioSelectorChrome()).contentShape(Rectangle())
     }
+    /// Показывает кнопку запуска и остановки проверки звука.
+    /// - Parameter kind: Канал, который должна проверять кнопка.
     private func checkButton(_ kind: AudioSettingsModel.Check) -> some View {
         let running = audio.check == kind
         return Button { Task { await audio.test(kind) } } label: {
@@ -144,6 +161,11 @@ struct AccountAudioSettingsView: View {
             .accessibilityIdentifier("audioTest.\(kind.rawValue)")
     }
 
+    /// Связывает ползунок и подпись в процентах с уровнем выбранного канала.
+    /// - Parameters:
+    ///   - title: Подпись ползунка.
+    ///   - kind: Канал, громкость которого регулируется.
+    ///   - identifier: Идентификатор элемента для тестов интерфейса и средств доступности.
     private func volume(_ title: String, kind: AudioSettingsModel.Check, identifier: String) -> some View {
         let value = audio.volume(for: kind)
         let binding = Binding(get: { Double(audio.volume(for: kind)) },
@@ -162,6 +184,8 @@ struct AccountAudioSettingsView: View {
         }.padding(.top, 20)
     }
 
+    /// Выводит пояснение под настройкой звука.
+    /// - Parameter text: Текст пояснения.
     private func hint(_ text: String) -> some View {
         Text(tr(text)).font(MSTheme.font(11.5)).lineSpacing(4)
             .fixedSize(horizontal: false, vertical: true).foregroundStyle(MSTheme.muted)
@@ -169,6 +193,11 @@ struct AccountAudioSettingsView: View {
 
     private var rule: some View { Rectangle().fill(MSTheme.line).frame(height: 1).accessibilityHidden(true) }
 
+    /// Связывает переключатель с логической настройкой аудиоустройства.
+    /// - Parameters:
+    ///   - title: Подпись переключателя.
+    ///   - identifier: Идентификатор элемента для тестов интерфейса и средств доступности.
+    ///   - key: Путь к изменяемому свойству настроек.
     private func preference(_ title: String, identifier: String, key: WritableKeyPath<DeviceAudioPreferences, Bool>) -> some View {
         let enabled = Binding(get: { audio.preferences[keyPath: key] },
                               set: { value in audio.update { $0[keyPath: key] = value } })
@@ -181,6 +210,8 @@ struct AccountAudioSettingsView: View {
 }
 
 private struct AudioSelectorChrome: ViewModifier {
+    /// Добавляет полю выбора устройства фон и скруглённую рамку.
+    /// - Parameter content: Оформляемое поле.
     func body(content: Content) -> some View {
         let shape = RoundedRectangle(cornerRadius: 11)
         content.background(MSTheme.surface, in: shape)
@@ -227,6 +258,10 @@ private struct AccountAudioRange: View {
         }
     }
 
+    /// Пересчитывает громкость по точке касания с учётом направления интерфейса.
+    /// - Parameters:
+    ///   - x: Горизонтальная координата касания в пунктах.
+    ///   - width: Ширина ползунка в пунктах.
     private func select(_ x: CGFloat, width: CGFloat) {
         guard width > thumbSize else { return }
         let distance = direction == .rightToLeft ? width - x : x
@@ -239,6 +274,8 @@ private struct AccountAudioRange: View {
 #if os(iOS)
 private struct AudioRoutePicker: UIViewRepresentable {
     var selector = false
+    /// Создаёт системную кнопку выбора маршрута воспроизведения.
+    /// - Parameter context: Контекст представления, переданный SwiftUI.
     func makeUIView(context: Context) -> AVRoutePickerView {
         let view = AVRoutePickerView()
         view.tintColor = selector ? .clear : UIColor(MSTheme.accent)
@@ -246,6 +283,10 @@ private struct AudioRoutePicker: UIViewRepresentable {
         view.prioritizesVideoDevices = false
         return view
     }
+    /// Сохраняет системный выбор маршрута при обновлении SwiftUI.
+    /// - Parameters:
+    ///   - uiView: Ранее созданная кнопка выбора маршрута.
+    ///   - context: Контекст представления, переданный SwiftUI.
     func updateUIView(_ uiView: AVRoutePickerView, context: Context) {}
 }
 #endif

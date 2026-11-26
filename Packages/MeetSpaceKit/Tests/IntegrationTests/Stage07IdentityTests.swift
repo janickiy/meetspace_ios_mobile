@@ -7,13 +7,20 @@ import MeetSpaceRealtime
 @testable import MeetSpaceFeatures
 
 private struct Stage07IdentityProbe: ServerProbing {
+    /// Имитирует недоступность сервера при запросе версии.
+    /// - Parameter origin: Сервер, указанный проверяемой моделью.
     func check(_ origin: ServerOrigin) async throws -> ServerVersion { throw APIError.offline }
 }
 private actor Stage07IdentityPreferences: ConfigurationStore {
+    /// Возвращает начальную конфигурацию приложения для тестового сценария.
     func load() -> AppConfiguration { AppConfiguration() }
+    /// Принимает изменение конфигурации без записи на диск.
+    /// - Parameter value: Конфигурация, переданная приложением.
     func save(_ value: AppConfiguration) {}
 }
 private struct Stage07IdentitySockets: RealtimeSocketFactory {
+    /// Возвращает ошибку отсутствия сети при попытке открыть канал событий.
+    /// - Parameter url: Адрес запрошенного соединения.
     func connect(_ url: URL) async throws -> any RealtimeSocket { throw APIError.offline }
 }
 private func stage07IdentityUser(name: String) throws -> AccountUser {
@@ -134,7 +141,11 @@ private func stage07IdentityUser(name: String) throws -> AccountUser {
 private actor SettingsConnectionProbeTransport: HTTPTransport {
     let available: ServerOrigin
     private(set) var urls: [URL] = []
+    /// Настраивает транспорт проверки подключения на один доступный сервер.
+    /// - Parameter available: Сервер, отвечающий на запрос версии.
     init(available: ServerOrigin) { self.available = available }
+    /// Регистрирует запрос и возвращает версию только для настроенного адреса.
+    /// - Parameter url: Адрес проверки версии.
     func get(_ url: URL) async throws -> HTTPResponse {
         urls.append(url)
         guard url == available.url.appendingPathComponent("version") else { throw APIError.offline }

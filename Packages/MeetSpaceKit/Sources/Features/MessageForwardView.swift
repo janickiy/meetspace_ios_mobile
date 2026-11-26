@@ -52,6 +52,8 @@ struct MessageForwardView: View {
                 }
         }
     }
+    /// Загружает доступных адресатов для пересылки.
+    /// - Parameter more: Добавить следующую страницу к результатам.
     private func load(more: Bool = false) async {
         epoch = UUID(); let current = epoch
         loading = true; failure = nil
@@ -75,11 +77,19 @@ struct MessageForwardView: View {
         } catch is CancellationError { }
         catch { if epoch == current { failure = userMessage(error) } }
     }
+    /// Запускает одну задачу пересылки для выбранного адресата.
+    /// - Parameters:
+    ///   - id: Идентификатор адресата.
+    ///   - isUser: Указывает, что идентификатор принадлежит пользователю.
     private func beginForward(to id: UUID, isUser: Bool = false) {
         guard !sending, !model.forwarding else { return }
         sending = true
         forwardTask = Task { await forward(to: id, isUser: isUser) }
     }
+    /// Пересылает сообщения, сохраняя идентификатор запроса для повторной попытки.
+    /// - Parameters:
+    ///   - id: Идентификатор получателя или чата.
+    ///   - isUser: Создать или найти личный чат пользователя.
     private func forward(to id: UUID, isUser: Bool) async {
         defer { sending = false; forwardTask = nil }
         failure = nil

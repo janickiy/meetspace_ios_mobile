@@ -79,6 +79,7 @@ struct ScreenShareControls: View {
             .accessibilityIdentifier("screenShareStatus")
     }
 
+    /// Запускает подготовку демонстрации экрана или останавливает текущую трансляцию.
     private func performAction() {
         let stop = needsStop
         Task {
@@ -107,6 +108,8 @@ struct ScreenShareControls: View {
 #if os(iOS)
 private struct SystemBroadcastPicker: UIViewRepresentable {
     let identifier: String
+    /// Создаёт системную кнопку ReplayKit для запуска расширения трансляции.
+    /// - Parameter context: Контекст представления SwiftUI.
     func makeUIView(context: Context) -> RPSystemBroadcastPickerView {
         let view = RPSystemBroadcastPickerView(frame: .zero)
         view.preferredExtension = identifier
@@ -115,6 +118,10 @@ private struct SystemBroadcastPicker: UIViewRepresentable {
         view.accessibilityIdentifier = "systemBroadcastPicker"
         return view
     }
+    /// Синхронизирует выбранное расширение и скрывает системную кнопку микрофона.
+    /// - Parameters:
+    ///   - uiView: Кнопка запуска трансляции ReplayKit.
+    ///   - context: Контекст обновления SwiftUI.
     func updateUIView(_ uiView: RPSystemBroadcastPickerView, context: Context) {
         uiView.preferredExtension = identifier; uiView.showsMicrophoneButton = false
     }

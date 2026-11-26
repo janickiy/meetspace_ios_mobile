@@ -3,12 +3,27 @@ import CryptoKit
 import MeetSpaceCore
 
 public protocol RecordingDownloading: Sendable {
+    /// Скачивает файл записи во временный каталог и возвращает его локальный адрес.
+    /// - Parameters:
+    ///   - url: HTTPS-адрес для скачивания файла записи.
+    ///   - file: Метаданные записи с именем, форматом и ожидаемыми характеристиками файла.
+    ///   - progress: Обработчик доли переданных данных от 0 до 1.
     func download(url: URL, file: RecordingFile, progress: TransferProgress?) async throws -> URL
+    /// Удаляет локальную копию скачанного файла записи.
+    /// - Parameter url: Локальный адрес ранее скачанного файла.
     func remove(_ url: URL) async
+    /// Завершает работу загрузчика и очищает временные файлы записей.
     func close() async
 }
 
 private final class RecordingRedirectPolicy: NSObject, URLSessionTaskDelegate, Sendable {
+    /// Запрещает переход по перенаправлению при скачивании записи.
+    /// - Parameters:
+    ///   - session: Сетевая сессия, которой принадлежит задача.
+    ///   - task: Сетевая задача, для которой получено событие.
+    ///   - response: HTTP-ответ о перенаправлении.
+    ///   - request: Запрос, предлагаемый URLSession для перехода на новый адрес.
+    ///   - completionHandler: Обработчик URLSession, которому передаётся решение о перенаправлении.
     func urlSession(_ session: URLSession, task: URLSessionTask, willPerformHTTPRedirection response: HTTPURLResponse,
                     newRequest request: URLRequest, completionHandler: @escaping @Sendable (URLRequest?) -> Void) {
         completionHandler(nil)
@@ -22,9 +37,18 @@ public actor URLSessionRecordingDownloader: RecordingDownloading {
     private let session: URLSession
     private let root: URL
     private var closed = false
+    /// Создаёт загрузчик с изолированным каталогом записей для аккаунта.
+    /// - Parameters:
+    ///   - account: Учётная запись, которой принадлежат данные.
+    ///   - baseDirectory: Родительский каталог для локального хранилища. При nil выбирается системный каталог.
     public init(account: AccountRecord, baseDirectory: URL? = nil) {
         self.init(account: account, baseDirectory: baseDirectory, configuration: .ephemeral)
     }
+    /// Создаёт загрузчик с изолированным каталогом записей для аккаунта.
+    /// - Parameters:
+    ///   - account: Учётная запись, которой принадлежат данные.
+    ///   - baseDirectory: Родительский каталог для локального хранилища. При nil выбирается системный каталог.
+    ///   - configuration: Конфигурация сетевой сессии.
     init(account: AccountRecord, baseDirectory: URL?, configuration: URLSessionConfiguration) {
         configuration.urlCache = nil; configuration.urlCredentialStorage = nil
         configuration.httpCookieStorage = nil; configuration.httpShouldSetCookies = false
@@ -37,7 +61,13 @@ public actor URLSessionRecordingDownloader: RecordingDownloading {
         // Previous process's plaintext cache is not reusable without authorization.
         try? FileManager.default.removeItem(at: root)
     }
+    /// Закрывает сетевую сессию при освобождении загрузчика.
     deinit { session.invalidateAndCancel() }
+    /// Скачивает файл записи во временный каталог и возвращает его локальный адрес.
+    /// - Parameters:
+    ///   - url: HTTPS-адрес для скачивания файла записи.
+    ///   - file: Метаданные записи с именем, форматом и ожидаемыми характеристиками файла.
+    ///   - progress: Обработчик доли переданных данных от 0 до 1.
     public func download(url: URL, file: RecordingFile, progress: TransferProgress?) async throws -> URL {
         try checkOpen()
         guard url.scheme == "https", url.host?.isEmpty == false, url.user == nil, url.password == nil, url.fragment == nil else { throw APIError.tls }
@@ -103,15 +133,19 @@ public actor URLSessionRecordingDownloader: RecordingDownloading {
             }
         } catch { throw RecordingAccessError.invalidArtifact }
     }
+    /// Удаляет локальную копию скачанного файла записи.
+    /// - Parameter url: Локальный адрес ранее скачанного файла.
     public func remove(_ url: URL) {
         guard url.standardizedFileURL.path.hasPrefix(root.standardizedFileURL.path + "/") else { return }
         try? FileManager.default.removeItem(at: url.deletingLastPathComponent())
     }
+    /// Завершает работу загрузчика и очищает временные файлы записей.
     public func close() async {
         closed = true
         let tasks = await session.allTasks; tasks.forEach { $0.cancel() }
         session.invalidateAndCancel()
         try? FileManager.default.removeItem(at: root)
     }
+    /// Проверяет, что скачивание не отменено и загрузчик ещё открыт.
     private func checkOpen() throws { try Task.checkCancellation(); if closed { throw CancellationError() } }
 }

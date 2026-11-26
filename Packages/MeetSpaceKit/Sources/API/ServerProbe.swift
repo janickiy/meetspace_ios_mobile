@@ -5,6 +5,11 @@ public struct ServerVersion: Codable, Equatable, Sendable {
     public let version: String
     public let commit: String
     public let buildTime: String
+    /// Сохраняет сведения о версии и сборке сервера.
+    /// - Parameters:
+    ///   - version: Версия, сообщённая сервером.
+    ///   - commit: Идентификатор коммита серверной сборки.
+    ///   - buildTime: Время сборки, указанное сервером.
     public init(version: String, commit: String, buildTime: String) {
         self.version = version; self.commit = commit; self.buildTime = buildTime
     }
@@ -15,6 +20,8 @@ public enum APIError: Error, Equatable, Sendable {
 }
 
 public protocol ServerProbing: Sendable {
+    /// Запрашивает публичную версию сервера и проверяет формат ответа.
+    /// - Parameter origin: Базовый HTTPS-адрес сервера MeetSpace.
     func check(_ origin: ServerOrigin) async throws -> ServerVersion
 }
 
@@ -22,19 +29,30 @@ public struct HTTPResponse: Sendable {
     public let status: Int
     public let contentType: String?
     public let data: Data
+    /// Сохраняет статус, тип содержимого и тело ответа проверки сервера.
+    /// - Parameters:
+    ///   - status: Числовой код состояния HTTP-ответа.
+    ///   - contentType: MIME-тип содержимого HTTP-сообщения.
+    ///   - data: Байты тела HTTP-ответа.
     public init(status: Int, contentType: String?, data: Data) {
         self.status = status; self.contentType = contentType; self.data = data
     }
 }
 
 public protocol HTTPTransport: Sendable {
+    /// Получает HTTP-ответ по адресу проверки сервера.
+    /// - Parameter url: Адрес запрашиваемого ресурса.
     func get(_ url: URL) async throws -> HTTPResponse
 }
 
 public struct ServerProbe: ServerProbing {
     private let transport: any HTTPTransport
+    /// Настраивает проверку версии сервера через выбранный HTTP-транспорт.
+    /// - Parameter transport: Транспорт для HTTP-запросов к серверу.
     public init(transport: any HTTPTransport = URLSessionTransport()) { self.transport = transport }
 
+    /// Запрашивает публичную версию сервера и проверяет формат ответа.
+    /// - Parameter origin: Базовый HTTPS-адрес сервера MeetSpace.
     public func check(_ origin: ServerOrigin) async throws -> ServerVersion {
         // Audited backend: GET /version; no /api/v1 prefix, no bearer or cookies.
         let response = try await transport.get(origin.url.appendingPathComponent("version"))
@@ -49,6 +67,13 @@ public struct ServerProbe: ServerProbing {
 }
 
 private final class RedirectPolicy: NSObject, URLSessionTaskDelegate, Sendable {
+    /// Запрещает автоматические перенаправления при проверке сервера.
+    /// - Parameters:
+    ///   - session: Сетевая сессия, которой принадлежит задача.
+    ///   - task: Сетевая задача, для которой получено событие.
+    ///   - response: Ответ сервера с перенаправлением.
+    ///   - request: Запрос по адресу перенаправления, предложенный URLSession.
+    ///   - completionHandler: Обработчик URLSession, которому передаётся решение о перенаправлении.
     func urlSession(_ session: URLSession, task: URLSessionTask,
                     willPerformHTTPRedirection response: HTTPURLResponse, newRequest request: URLRequest,
                     completionHandler: @escaping @Sendable (URLRequest?) -> Void) {
@@ -60,6 +85,7 @@ public final class URLSessionTransport: HTTPTransport, Sendable {
     public static let maximumResponseBytes = 131_072
     private let session: URLSession
 
+    /// Создаёт временную сетевую сессию для проверки доступности сервера.
     public init() {
         let configuration = URLSessionConfiguration.ephemeral
         configuration.urlCache = nil
@@ -72,8 +98,11 @@ public final class URLSessionTransport: HTTPTransport, Sendable {
         session = URLSession(configuration: configuration, delegate: RedirectPolicy(), delegateQueue: nil)
     }
 
+    /// Завершает сетевую сессию транспорта при его освобождении.
     deinit { session.invalidateAndCancel() }
 
+    /// Получает HTTP-ответ по адресу проверки сервера.
+    /// - Parameter url: Адрес запрашиваемого ресурса.
     public func get(_ url: URL) async throws -> HTTPResponse {
         guard url.scheme == "https" else { throw APIError.tls }
         var request = URLRequest(url: url)

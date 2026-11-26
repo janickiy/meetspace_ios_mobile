@@ -4,6 +4,7 @@ import Security
 struct InstallerBundle {
     let files: [String:Data]
     let manifest: [String:Any]
+    /// Загружает ресурсы установщика, проверяет контрольные суммы и подпись манифеста.
     init() throws {
         let names = ["runner.py","release.json","release.sig","trust-root.pem","docker.asc"]
         files = try Dictionary(uniqueKeysWithValues: names.map { ($0, try resource($0)) })
@@ -33,12 +34,18 @@ struct InstallerBundle {
             [kSecAttrKeyType:kSecAttrKeyTypeRSA,kSecAttrKeyClass:kSecAttrKeyClassPublic] as CFDictionary, nil),
               SecKeyVerifySignature(key, .rsaSignatureMessagePKCS1v15SHA256, files["release.json"]! as CFData, files["release.sig"]! as CFData, nil) else { throw InstallerFailure.response }
     }
+    /// Собирает исполняемый запрос установщика из проверенного комплекта и параметров команды.
+    /// - Parameters:
+    ///   - action: Название запрашиваемого действия.
+    ///   - request: Поля запроса выбранной команды установщика.
     func payload(_ action: String, _ request: [String:Any]) throws -> Data {
         guard ["plan","apply","status","cancel","resume"].contains(action) else { throw InstallerFailure.response }
         let data = try canonical(["bundle":files.mapValues { $0.base64EncodedString() },"action":action,"request":request])
         let python = "import base64,json\n_d=json.loads(base64.b64decode('\(data.base64EncodedString())'))\n_b={k:base64.b64decode(v) for k,v in _d['bundle'].items()}\n_g={'__name__':'meetspace_bootstrap','BOOTSTRAP_BUNDLE':_b}\nexec(compile(_b['runner.py'],'meetspace-signed-installer','exec'),_g)\n_g['entry'](_d['action'],_d['request'])\n"
         guard python.utf8.count <= 512 * 1024 else { throw InstallerFailure.response }; return Data(python.utf8)
     }
+    /// Сверяет план установки с манифестом и проверяет параметры, контрольные суммы и версию выпуска.
+    /// - Parameter data: JSON-план, полученный от удалённого установщика.
     func parsePlan(_ data: Data) throws -> InstallerPlan {
         let value = try object(data); var unhashed = value; unhashed.removeValue(forKey: "hash")
         guard let hash = value["hash"] as? String, hash == sha(try canonical(unhashed)),

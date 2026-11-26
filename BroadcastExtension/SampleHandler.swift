@@ -16,6 +16,8 @@ final class SampleHandler: RPBroadcastSampleHandler, @unchecked Sendable {
     private var lastTimestamp: Int64 = -1
     private var memoryPressure: DispatchSourceMemoryPressure?
 
+    /// Подключает расширение ReplayKit к приложению и готовит преобразователь кадров с согласованными ограничениями.
+    /// - Parameter setupInfo: Дополнительные сведения о запуске, переданные ReplayKit.
     override func broadcastStarted(withSetupInfo setupInfo: [String: NSObject]?) {
         guard let group = Bundle.main.object(forInfoDictionaryKey: BroadcastInstallation.groupInfoKey) as? String else {
             end(.unavailable); return
@@ -37,6 +39,10 @@ final class SampleHandler: RPBroadcastSampleHandler, @unchecked Sendable {
             if state.withLock({ finished }) { pressure.cancel() }
         } catch { channel.finish(reason: .hostUnavailable); end(.hostUnavailable) }
     }
+    /// Передаёт видеокадры ReplayKit приложению с учётом ориентации и предельной частоты кадров.
+    /// - Parameters:
+    ///   - sampleBuffer: Буфер с изображением, временной меткой и метаданными ориентации.
+    ///   - sampleBufferType: Тип данных ReplayKit. Для передачи выбирается видео.
     override func processSampleBuffer(_ sampleBuffer: CMSampleBuffer, with sampleBufferType: RPSampleBufferType) {
         // System and microphone audio are intentionally not transported by this extension.
         guard sampleBufferType == .video else { return }
@@ -60,20 +66,25 @@ final class SampleHandler: RPBroadcastSampleHandler, @unchecked Sendable {
             if let work { _ = try work.0.send(frame: work.1) }
         } catch { end(.invalidFrame) }
     }
+    /// Приостанавливает отправку кадров, освобождает буферы и сообщает приложению о паузе.
     override func broadcastPaused() {
         let current = state.withLock { () -> BroadcastUploadConnection? in
             paused = true; converter?.releaseBuffers(); return connection
         }
         current?.pause()
     }
+    /// Разрешает обработку новых кадров после паузы и сообщает приложению о возобновлении.
     override func broadcastResumed() {
         let current = state.withLock { () -> BroadcastUploadConnection? in
             guard !finished else { return nil }; paused = false; return connection
         }
         current?.resume()
     }
+    /// Освобождает ресурсы расширения при штатном завершении демонстрации.
     override func broadcastFinished() { cleanup(.user) }
 
+    /// Однократно останавливает канал и мониторинг памяти, освобождает буферы и возвращает признак первой остановки.
+    /// - Parameter reason: Причина остановки, передаваемая приложению.
     @discardableResult private func cleanup(_ reason: ScreenBroadcastStopReason) -> Bool {
         let result = state.withLock { () -> (Bool, BroadcastUploadConnection?) in
             guard !finished else { return (false, nil) }
@@ -84,6 +95,8 @@ final class SampleHandler: RPBroadcastSampleHandler, @unchecked Sendable {
         result.1?.finish(reason: reason)
         return result.0
     }
+    /// Завершает демонстрацию с сообщением ReplayKit после освобождения ресурсов.
+    /// - Parameter reason: Причина остановки, определяющая текст системного сообщения.
     private func end(_ reason: ScreenBroadcastStopReason) {
         guard cleanup(reason) else { return }
         let message = reason == .memoryPressure ? "Недостаточно памяти для демонстрации экрана." : "Демонстрация экрана завершена. Вернитесь в MeetSpace для нового запуска."

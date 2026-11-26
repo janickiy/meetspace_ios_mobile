@@ -4,12 +4,19 @@ import MeetSpaceCore
 public struct RecordingsRepository: Sendable {
     public let account: AccountRecord
     private let client: AuthenticatedClient
+    /// Создаёт клиент библиотеки записей текущего аккаунта.
+    /// - Parameter client: Клиент, выполняющий запросы от имени текущего аккаунта.
     public init(client: AuthenticatedClient) { self.client = client; account = client.account }
 
+    /// Получает доступные на сервере возможности записи.
     public func capabilities() async throws -> [RecordingMode] {
         let value = try decodeJSON(ServerCapabilities.self, from: await client.request("GET", path: ["capabilities"]))
         return RecordingMode.allCases.filter { value.recordingModes.contains($0.rawValue) }
     }
+    /// Загружает страницу библиотеки записей вместе со сведениями об их встречах.
+    /// - Parameters:
+    ///   - cursor: Курсор продолжения из предыдущего ответа. Для первой страницы передайте nil.
+    ///   - limit: Максимальное число записей на странице.
     public func library(cursor: String? = nil, limit: Int = 30) async throws -> RecordingLibraryPage {
         guard (1...100).contains(limit), cursor.map({ !$0.isEmpty && $0.utf8.count <= 256 && $0.utf8.allSatisfy { (48...57).contains($0) || (65...90).contains($0) || (97...122).contains($0) || $0 == 45 || $0 == 95 } }) ?? true else { throw ClientError.invalidInput }
         var query = [URLQueryItem(name: "limit", value: String(limit))]
@@ -26,6 +33,11 @@ public struct RecordingsRepository: Sendable {
         guard Set(rows.map(\.id)).count == rows.count else { throw APIError.invalidResponse }
         return RecordingLibraryPage(items: rows, nextCursor: page.nextCursor)
     }
+    /// Загружает страницу записей одной конференции.
+    /// - Parameters:
+    ///   - conferenceID: Идентификатор конференции.
+    ///   - limit: Максимальное число записей на странице.
+    ///   - offset: Число элементов, пропускаемых в начале выборки.
     public func list(conferenceID: UUID, limit: Int = 100, offset: Int = 0) async throws -> [MeetingRecording] {
         guard (1...100).contains(limit), (0...1_000_000).contains(offset) else { throw ClientError.invalidInput }
         struct Response: Decodable { let items: [RecordingCardDTO]? }
@@ -34,24 +46,47 @@ public struct RecordingsRepository: Sendable {
         guard items.count <= limit, Set(items.map(\.id)).count == items.count else { throw APIError.invalidResponse }
         return items
     }
+    /// Загружает карточку выбранной записи конференции.
+    /// - Parameters:
+    ///   - conferenceID: Идентификатор конференции.
+    ///   - recordingID: Идентификатор записи в выбранной конференции.
     public func read(conferenceID: UUID, recordingID: UUID) async throws -> MeetingRecording {
         try await card(conferenceID: conferenceID, recordingID: recordingID).recording
     }
+    /// Запускает запись встречи в указанном режиме.
+    /// - Parameters:
+    ///   - conferenceID: Идентификатор конференции.
+    ///   - mode: Запрошенный режим записи встречи.
     public func start(conferenceID: UUID, mode: RecordingMode) async throws -> MeetingRecording {
         guard try await capabilities().contains(mode) else { throw RecordingAccessError.unavailable }
         struct Body: Encodable { let mode: String }
         let value = try decodeJSON(ItemResponse<RecordingCardDTO>.self, from: await client.request("POST", path: path(conferenceID), body: WireJSON.encoder().encode(Body(mode: mode.rawValue)))).item.validated(origin: account.server, conferenceID: conferenceID).recording
         guard value.mode == mode.rawValue else { throw APIError.invalidResponse }; return value
     }
+    /// Останавливает запись встречи и возвращает её новое состояние.
+    /// - Parameters:
+    ///   - conferenceID: Идентификатор конференции.
+    ///   - recordingID: Идентификатор записи в выбранной конференции.
     public func stop(conferenceID: UUID, recordingID: UUID) async throws -> MeetingRecording {
         let value = try decodeJSON(ItemResponse<RecordingCardDTO>.self, from: await client.request("POST", path: path(conferenceID, recordingID) + ["stop"], body: Data("{}".utf8))).item.validated(origin: account.server, conferenceID: conferenceID).recording
         guard value.id == recordingID else { throw ClientError.scopeMismatch }; return value
     }
+    /// Удаляет запись из указанной конференции.
+    /// - Parameters:
+    ///   - conferenceID: Идентификатор конференции.
+    ///   - recordingID: Идентификатор записи в выбранной конференции.
     public func delete(conferenceID: UUID, recordingID: UUID) async throws {
         _ = try await client.request("DELETE", path: path(conferenceID, recordingID))
     }
-    /// Always reauthorize through the account API. Signed URLs are ephemeral capabilities and
-    /// must be fetched without account bearer/cookies, including on a different storage origin.
+    /// Скачивает файл записи и повторно проверяет доступ перед выдачей локальной копии.
+    ///
+    /// Для каждой загрузки запрашивает временную подписанную ссылку через API аккаунта. Токен и cookie аккаунта остаются в запросах к API, включая случай, когда файл хранится на другом сервере.
+    /// - Parameters:
+    ///   - conferenceID: Идентификатор конференции.
+    ///   - recordingID: Идентификатор записи в выбранной конференции.
+    ///   - fileID: Идентификатор выбранного файла записи.
+    ///   - downloader: Загрузчик, которому передаются разрешённая ссылка и метаданные файла.
+    ///   - progress: Обработчик доли переданных данных от 0 до 1.
     public func download(conferenceID: UUID, recordingID: UUID, fileID: UUID,
                          using downloader: any RecordingDownloading, progress: TransferProgress? = nil) async throws -> URL {
         let card = try await card(conferenceID: conferenceID, recordingID: recordingID)
@@ -66,10 +101,18 @@ public struct RecordingsRepository: Sendable {
             try Task.checkCancellation(); return local
         } catch { await downloader.remove(local); throw error }
     }
+    /// Запрашивает карточку записи и проверяет её принадлежность встрече.
+    /// - Parameters:
+    ///   - conferenceID: Идентификатор конференции.
+    ///   - recordingID: Идентификатор записи в выбранной конференции.
     private func card(conferenceID: UUID, recordingID: UUID) async throws -> RecordingCard {
         let result = try decodeJSON(ItemResponse<RecordingCardDTO>.self, from: await client.request("GET", path: path(conferenceID, recordingID))).item.validated(origin: account.server, conferenceID: conferenceID)
         guard result.recording.id == recordingID else { throw ClientError.scopeMismatch }; return result
     }
+    /// Строит путь API коллекции записей или одной записи.
+    /// - Parameters:
+    ///   - conferenceID: Идентификатор конференции.
+    ///   - recordingID: Идентификатор отдельной записи или nil для пути к коллекции.
     private func path(_ conferenceID: UUID, _ recordingID: UUID? = nil) -> [String] {
         ["conferences", conferenceID.uuidString.lowercased(), "recordings"] + (recordingID.map { [$0.uuidString.lowercased()] } ?? [])
     }
@@ -80,6 +123,10 @@ private struct RecordingCardDTO: Decodable {
     let id: Int64; let uuid: UUID; let conferenceId: UUID; let mode: String; let status: String
     let createdAt: Date; let startedAt: Date?; let requestedBy: UUID?; let durationSec: Int?
     let files: [RecordingFileDTO]?
+    /// Проверяет метаданные карточки и преобразует их в модель записи.
+    /// - Parameters:
+    ///   - origin: Базовый HTTPS-адрес сервера MeetSpace.
+    ///   - conferenceID: Идентификатор конференции.
     func validated(origin: ServerOrigin, conferenceID: UUID) throws -> RecordingCard {
         guard id > 0, conferenceId == conferenceID, uuid != UUID.zeroRecording, mode.utf8.count <= 64, status.utf8.count <= 64,
               durationSec.map({ $0 >= 0 }) ?? true, (files?.count ?? 0) <= 32 else { throw APIError.invalidResponse }
@@ -107,6 +154,10 @@ private struct RecordingFileDTO: Decodable {
 private extension UUID { static let zeroRecording = UUID(uuid: (0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0)) }
 
 public enum RecordingURLPolicy {
+    /// Проверяет адрес скачивания и возвращает допустимый HTTPS URL.
+    /// - Parameters:
+    ///   - raw: Строковый адрес, полученный от сервера.
+    ///   - origin: Базовый HTTPS-адрес сервера MeetSpace.
     public static func validate(_ raw: String, origin: ServerOrigin) throws -> URL {
         guard !raw.isEmpty, raw.utf8.count <= 16_384, !raw.hasPrefix("//"), !raw.contains("\\"),
               !raw.unicodeScalars.contains(where: { CharacterSet.whitespacesAndNewlines.union(.controlCharacters).contains($0) }) else { throw APIError.invalidResponse }

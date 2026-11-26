@@ -38,6 +38,8 @@ import MeetSpaceInstaller
     @ObservationIgnored private var poll: Task<Void,Never>?
     @ObservationIgnored private var epoch = UUID()
     @ObservationIgnored private var accessExpiry: Date?
+    /// Создаёт модель мастера установки с указанным или стандартным репозиторием.
+    /// - Parameter repository: Репозиторий установки, используемый для операций SSH и хранения задания.
     public init(repository: InstallerRepository? = nil) {
         if let repository { self.repository = repository; return }
         #if DEBUG
@@ -55,6 +57,8 @@ import MeetSpaceInstaller
         !busy && ticket == nil && [.fingerprint, .access, .preflight, .options, .plan].contains(step)
     }
 
+    /// Возвращает мастер на предыдущий доступный шаг и сообщает, состоялся ли переход.
+    ///
     /// Returning to an editable server or plan invalidates the previous confirmation.
     func goBack() -> Bool {
         guard hasPreviousStep else { return false }
@@ -83,10 +87,12 @@ import MeetSpaceInstaller
         return true
     }
     public var serverURL: String { "https://" + (ticket?.plan.options.domain ?? options.domain) }
+    /// Проверяет хост, порт и имя пользователя из формы и создаёт адрес SSH-подключения.
     private func endpoint() throws -> InstallerEndpoint {
         guard let number = Int(port) else { throw InstallerFailure.invalid("SSH-порт должен быть числом от 1 до 65535.") }
         return try InstallerEndpoint(host: host, port: number, user: user)
     }
+    /// Восстанавливает сохранённое задание установки и связанные с ним параметры мастера.
     public func restore() async {
         do { if let saved = try await repository.pending() {
             ticket = saved; plan = saved.plan; options = saved.plan.options; domain = options.domain
@@ -94,6 +100,8 @@ import MeetSpaceInstaller
             stale = true; step = .progress
         } } catch { self.error = "Не удалось прочитать сохранённое задание установки." }
     }
+    /// Запускает один шаг установки, управляя индикатором занятости и ошибками.
+    /// - Parameter body: Асинхронная операция текущего шага.
     private func run(_ body: @escaping @MainActor () async throws -> Void) {
         guard !busy else { return }; poll?.cancel(); busy = true; error = nil
         let current = UUID(); epoch = current
@@ -104,6 +112,7 @@ import MeetSpaceInstaller
             guard let self, epoch == current else { return }; busy = false; operation = nil
         }
     }
+    /// Получает ключ SSH-сервера и сравнивает его с сохранённым отпечатком.
     public func inspect() {
         run { [self] in
             let endpoint = try endpoint()
@@ -114,13 +123,16 @@ import MeetSpaceInstaller
             key = observed; keyChanged = changed; trustConfirmed = false; step = .fingerprint
         }
     }
+    /// Сохраняет доверие к подтверждённому пользователем ключу SSH и переходит к вводу доступа.
     public func trust() {
         guard trustConfirmed, !keyChanged, let key else { return }
         run { [self] in try await repository.trust(key, endpoint: endpoint()); try Task.checkCancellation(); step = .access }
     }
+    /// Удаляет сохранённый доверенный ключ и возвращает мастер на шаг выбора сервера.
     public func forgetTrust() {
         run { [self] in try await repository.forgetTrust(endpoint()); try Task.checkCancellation(); key = nil; keyChanged = false; step = .server }
     }
+    /// Возвращает действующие учётные данные SSH или требует повторного подтверждения доступа.
     private func access() throws -> InstallerCredentials {
         guard let credentials else { step = .access; throw InstallerFailure.invalid("Подтвердите доступ SSH заново.") }
         // Match Android: idle access/options expire; reviewed plan and recovery retain in-memory access.
@@ -130,6 +142,7 @@ import MeetSpaceInstaller
         }
         return credentials
     }
+    /// Проверяет введённые учётные данные SSH и переводит мастер к следующему шагу.
     public func authenticate() {
         run { [self] in
             let endpoint = try endpoint(); guard let key else { throw InstallerFailure.response }
@@ -147,6 +160,7 @@ import MeetSpaceInstaller
             }
         }
     }
+    /// Запрашивает план установки с выбранными параметрами сервера.
     public func requestPlan() {
         run { [self] in
             guard let key else { throw InstallerFailure.response }
@@ -161,6 +175,7 @@ import MeetSpaceInstaller
         }
     }
     public var canApply: Bool { !busy && planConfirmed && acmeConfirmed && (plan?.requiresDocker != true || dockerConfirmed) && InstallerOptions.validAdminPassword(adminPassword) && adminPassword == adminRepeat && (options.smtp == nil || !smtpPassword.isEmpty) }
+    /// Запускает подтверждённый план и сохраняет данные задания для последующего восстановления.
     public func apply() {
         guard canApply, let plan, let key else { return }
         run { [self] in
@@ -171,6 +186,8 @@ import MeetSpaceInstaller
             try Task.checkCancellation(); stale = false; step = status?.state == "completed" ? .complete : .progress
         }
     }
+    /// Отправляет управляющую команду для текущего задания и обновляет его состояние.
+    /// - Parameter action: Команда управления заданием установки.
     public func control(_ action: String) {
         guard let ticket else { return }
         run { [self] in
@@ -178,6 +195,7 @@ import MeetSpaceInstaller
             stale = false; step = status?.state == "completed" ? .complete : .progress
         }
     }
+    /// Периодически запрашивает статус активного задания, пока открыт шаг выполнения.
     public func observe() async {
         while !Task.isCancelled {
             try? await Task.sleep(for: .seconds(3))
@@ -185,6 +203,8 @@ import MeetSpaceInstaller
             if step == .progress, !busy, !stale, status?.terminal == false, credentials != nil { control("status") }
         }
     }
+    /// Запрашивает новый план и проверяет, успел ли сервер создать задание установки.
+    ///
     /// Reconcile an uncertain apply without creating a second job or erasing server data.
     public func refreshMissingPlan() {
         guard let previous = ticket else { return }
@@ -202,9 +222,14 @@ import MeetSpaceInstaller
             }
         }
     }
+    /// Возвращает мастер к подтверждению доступа для восстановления соединения.
     public func reconnect() { credentials = nil; error = nil; stale = true; step = .access }
+    /// Отменяет локальную операцию, очищает секреты и помечает состояние сохранённого задания для сверки.
     public func cancelLocalOperation() { epoch = UUID(); operation?.cancel(); operation = nil; busy = false; clearSecrets(); stale = ticket != nil }
+    /// Прекращает локальную работу мастера и опрос состояния задания.
     public func detach() { cancelLocalOperation(); poll?.cancel(); poll = nil }
+    /// Удаляет введённые пароли, приватный ключ и временные данные SSH из модели.
     private func clearSecrets() { credentials = nil; password = ""; privateKey = ""; passphrase = ""; adminPassword = ""; adminRepeat = ""; smtpPassword = ""; accessExpiry = nil }
+    /// Убирает сведения о завершённой установке из хранилища и очищает секреты.
     public func forgetCompleted() async { guard status?.state == "completed" else { return }; await repository.forget(); ticket = nil; clearSecrets() }
 }

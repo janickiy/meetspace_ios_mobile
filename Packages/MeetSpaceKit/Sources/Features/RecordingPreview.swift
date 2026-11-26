@@ -45,6 +45,8 @@ struct RecordingPreview: View {
         return LinearGradient(colors: colors, startPoint: .topLeading, endPoint: .bottomTrailing)
     }
 
+    /// Рисует миниатюры участников на обложке видеозаписи.
+    /// - Parameter unit: Базовый размер обложки в пунктах.
     private func tiles(unit: CGFloat) -> some View {
         let colors = [Color(red: 0.33, green: 0.40, blue: 0.58), Color(red: 0.44, green: 0.36, blue: 0.52),
                       Color(red: 0.20, green: 0.46, blue: 0.46), Color(red: 0.47, green: 0.37, blue: 0.39)]
@@ -69,6 +71,8 @@ struct RecordingPreview: View {
         }.padding(unit * 0.08)
     }
 
+    /// Рисует миниатюры аудиодорожек участников.
+    /// - Parameter unit: Базовый размер обложки в пунктах.
     private func tracks(unit: CGFloat) -> some View {
         VStack(spacing: unit * 0.045) {
             ForEach(0..<3) { index in

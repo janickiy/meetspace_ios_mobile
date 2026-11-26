@@ -7,6 +7,7 @@ import MeetSpaceBroadcast
 /// Hosted iOS tests load the actual M156 binary. They deliberately do not request camera/microphone
 /// access, and therefore do not replace the required physical-device capture/interoperability tests.
 @MainActor final class MediaIntegrationTests: XCTestCase {
+    /// Проверяет создание предложения и повторные циклы открытия и закрытия нативного WebRTC без захвата с устройств.
     func testNativePeerOfferAndCloseCyclesWithCaptureOff() async throws {
         for _ in 0..<4 {
             let media = ConferenceMediaFactory.make()
@@ -47,6 +48,7 @@ import MeetSpaceBroadcast
         }
     }
 
+    /// Проверяет, что запрещённые микрофон и камера не запрашивают системных разрешений и не публикуются в SDP.
     func testBlockedSourcesNeverRequestPermissionsOrAppearInOffer() async throws {
         let media = ConferenceMediaFactory.make()
         do {
@@ -72,6 +74,7 @@ import MeetSpaceBroadcast
         }
     }
 
+    /// Проверяет, что скрытие видео участников сохраняет входящий звук и возможность публиковать собственный экран.
     func testHidingParticipantVideoPreservesIncomingAudioAndOwnScreenSharing() async throws {
         let media = ConferenceMediaFactory.make()
         do {
@@ -96,6 +99,7 @@ import MeetSpaceBroadcast
         } catch { await media.close(); throw error }
     }
 
+    /// Проверяет повторную публикацию экрана после отката предложения и применение запрета на демонстрацию.
     func testScreenGenerationRollbackAndPolicyWithCaptureOff() async throws {
         let media = ConferenceMediaFactory.make()
         do {
@@ -130,6 +134,7 @@ import MeetSpaceBroadcast
         } catch { await media.close(); throw error }
     }
 
+    /// Проверяет отклонение повреждённого кадра и кадра от предыдущего сеанса демонстрации.
     func testScreenRejectsInvalidAndStaleFrameSession() async throws {
         let media = ConferenceMediaFactory.make()
         do {

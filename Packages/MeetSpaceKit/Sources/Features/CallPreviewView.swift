@@ -154,6 +154,14 @@ struct MeetingCameraPreview: View {
             }.accessibilityIdentifier("prejoinCameraPreview")
     }
 
+    /// Создаёт кнопку управления камерой или микрофоном перед входом во встречу.
+    /// - Parameters:
+    ///   - icon: Имя значка действия.
+    ///   - label: Название устройства для VoiceOver.
+    ///   - id: Идентификатор элемента для тестов интерфейса и средств доступности.
+    ///   - enabled: Включено ли устройство.
+    ///   - disabled: Заблокировано ли управление устройством.
+    ///   - action: Обработчик нажатия кнопки.
     private func button(_ icon: String, label: String, id: String, enabled: Bool, disabled: Bool, action: @escaping () -> Void) -> some View {
         Button(action: action) {
             WorkspaceIcon(icon, size: 20)
@@ -282,6 +290,8 @@ struct MeetingMicrophoneRow: View {
             }
     }
 
+    /// Показывает название выбранного устройства со стрелкой раскрытия.
+    /// - Parameter name: Имя устройства в меню выбора.
     private func selector(_ name: String) -> some View {
         HStack {
             Text(name)
@@ -292,6 +302,8 @@ struct MeetingMicrophoneRow: View {
 }
 
 struct MeetingNextLabelStyle: LabelStyle {
+    /// Размещает стрелку после текста кнопки «Присоединиться».
+    /// - Parameter configuration: Текст и значок, переданные стилю подписи.
     func makeBody(configuration: Configuration) -> some View {
         HStack(spacing: 9) {
             configuration.title.multilineTextAlignment(.center).fixedSize(horizontal: false, vertical: true)

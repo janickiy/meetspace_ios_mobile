@@ -27,11 +27,14 @@ import MeetSpaceMedia
     @ObservationIgnored private var previousSession: (AVAudioSession.Category, AVAudioSession.Mode, AVAudioSession.CategoryOptions)?
     #endif
 
+    /// Загружает сохранённые настройки звука для экрана аккаунта.
+    /// - Parameter defaults: Хранилище настроек аудиоустройства.
     init(defaults: UserDefaults = .standard) {
         self.defaults = defaults
         preferences = DeviceAudioPreferences.load(defaults: defaults)
     }
 
+    /// Обновляет список доступных входов и название активного аудиовыхода.
     func refresh() {
         #if os(iOS)
         let audio = AVAudioSession.sharedInstance()
@@ -40,6 +43,7 @@ import MeetSpaceMedia
         if outputName.isEmpty { outputName = "По умолчанию" }
         #endif
     }
+    /// Загружает настройки при открытии экрана и запускает отслеживание уровня проверочного сигнала.
     func appear() {
         preferences = DeviceAudioPreferences.load(defaults: defaults)
         refresh()
@@ -57,7 +61,10 @@ import MeetSpaceMedia
         }
         #endif
     }
+    /// Останавливает измерение уровня и проверку звука при закрытии экрана.
     func disappear() { sampling?.cancel(); sampling = nil; stop() }
+    /// Применяет изменение к актуальным настройкам звука, проверяет их и сохраняет.
+    /// - Parameter change: Замыкание, изменяющее настройки устройства.
     func update(_ change: (inout DeviceAudioPreferences) -> Void) {
         stop()
         preferences = DeviceAudioPreferences.load(defaults: defaults)
@@ -65,6 +72,8 @@ import MeetSpaceMedia
         preferences = preferences.validated()
         preferences.save(defaults: defaults)
     }
+    /// Возвращает сохранённый уровень микрофона, динамика или звуковых сигналов.
+    /// - Parameter kind: Аудиоканал, уровень которого нужно прочитать.
     func volume(for kind: Check) -> Float {
         switch kind {
         case .microphone: preferences.inputGain
@@ -73,6 +82,10 @@ import MeetSpaceMedia
         }
     }
 
+    /// Сохраняет уровень выбранного канала и применяет его к активной проверке.
+    /// - Parameters:
+    ///   - value: Новый уровень канала в диапазоне 0…1.
+    ///   - kind: Аудиоканал для изменения.
     func setVolume(_ value: Float, for kind: Check) {
         var next = DeviceAudioPreferences.load(defaults: defaults)
         switch kind {
@@ -96,6 +109,10 @@ import MeetSpaceMedia
         }
         #endif
     }
+    /// Запускает проверку выбранного аудиоканала либо останавливает уже идущую проверку этого канала.
+    /// - Parameters:
+    ///   - kind: Микрофон, динамик или звуковые сигналы.
+    ///   - respectingSilentMode: Учитывать ли беззвучный режим при воспроизведении.
     func test(_ kind: Check, respectingSilentMode: Bool = false) async {
         if check == kind { stop(); return }
         stop(); notice = nil
@@ -156,6 +173,7 @@ import MeetSpaceMedia
         stop(); notice = "Проверка звука доступна на iPhone и iPad."
         #endif
     }
+    /// Завершает проверку звука, обнуляет индикатор и освобождает аудиосессию.
     func stop() {
         generation = UUID(); timeout?.cancel(); timeout = nil
         #if os(iOS)
@@ -177,16 +195,27 @@ import MeetSpaceMedia
         #endif
         check = nil; level = 0; AudioSessionUse.endProbe(owner: audioOwner)
     }
+    /// Переводит мощность в децибелах в линейный уровень индикатора от 0 до 1.
+    /// - Parameter decibels: Средняя мощность канала в децибелах.
     static func normalizedLevel(_ decibels: Float) -> Float {
         guard decibels.isFinite else { return 0 }
         return min(1, max(0, pow(10, decibels / 20)))
     }
+    /// Вычисляет показание индикатора микрофона с учётом усиления.
+    /// - Parameters:
+    ///   - rms: Среднеквадратичная амплитуда входного сигнала.
+    ///   - inputGain: Выбранный коэффициент усиления.
+    ///   - hardwareGain: Применено ли усиление аппаратно.
     static func microphoneProbeLevel(rms: Float, inputGain: Float, hardwareGain: Bool) -> Float {
         guard rms.isFinite, inputGain > 0 else { return 0 }
         let adjusted = hardwareGain ? rms : rms * inputGain
         return min(1, max(0, adjusted * 5))
     }
     #if os(iOS)
+    /// Активирует аудиосессию для записи с микрофона или воспроизведения проверочного сигнала.
+    /// - Parameters:
+    ///   - recording: Нужна ли запись с микрофона.
+    ///   - respectingSilentMode: Учитывать ли беззвучный режим при воспроизведении.
     private func prepare(recording: Bool, respectingSilentMode: Bool = false) throws {
         let audio = AVAudioSession.sharedInstance()
         if previousSession == nil { previousSession = (audio.category, audio.mode, audio.categoryOptions) }
@@ -197,7 +226,10 @@ import MeetSpaceMedia
         try audio.setActive(true)
     }
     #endif
+    /// Генерирует секундный проверочный тон в формате WAV с частотой дискретизации 24 кГц.
+    ///
     /// Short in-memory PCM; microphone samples are never saved or transmitted.
+    /// - Parameter signals: Переключать ли тон с 440 на 660 Гц для проверки звука уведомлений.
     static func testTone(signals: Bool) -> Data {
         let sampleRate = 24000, count = sampleRate
         var pcm = Data(capacity: count * 2)

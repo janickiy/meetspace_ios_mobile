@@ -5,6 +5,13 @@ import MeetSpaceCore
 
 private enum ConferenceFixture {
     static let conference = UUID(), peer = UUID(), participant = UUID()
+    /// Формирует конверт события протокола для проверки декодирования.
+    /// - Parameters:
+    ///   - type: Тип события.
+    ///   - payload: Данные события.
+    ///   - scope: Идентификатор конференции.
+    ///   - reply: Идентификатор запроса для ответа.
+    ///   - version: Версия конверта.
     static func event(_ type: String, payload: [String: Any], scope: UUID = conference,
                       reply: UUID? = nil, version: Int = 1) throws -> Data {
         var object: [String: Any] = ["version": version, "id": UUID().uuidString.lowercased(), "type": type,
@@ -12,11 +19,17 @@ private enum ConferenceFixture {
         if let reply { object["replyTo"] = reply.uuidString.lowercased() }
         return try JSONSerialization.data(withJSONObject: object)
     }
+    /// Формирует JSON-объект участника для тестового снимка.
+    /// - Parameter scope: Идентификатор встречи участника.
     static func member(scope: UUID = conference) -> [String: Any] {
         ["id": participant.uuidString, "conferenceId": scope.uuidString, "displayName": "Fixture",
          "role": "participant", "status": "joined", "online": true, "microphoneEnabled": false,
          "cameraEnabled": false, "screenSharing": false]
     }
+    /// Формирует описание медиадорожки для тестового каталога.
+    /// - Parameters:
+    ///   - stream: Идентификатор медиапотока.
+    ///   - source: Вид публикуемого источника.
     static func track(stream: String = peer.uuidString.lowercased(), source: String = "camera") -> [String: Any] {
         ["id": UUID().uuidString, "mediaPeerId": peer.uuidString, "participantId": participant.uuidString,
          "streamId": stream, "kind": "video", "source": source]

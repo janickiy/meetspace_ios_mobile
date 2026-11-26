@@ -130,12 +130,16 @@ public enum FilePolicy {
         ".zst": "application/zstd",
         ".zstd": "application/zstd",
     ]
+    /// Проверяет длину и символы имени файла перед работой с вложением.
+    /// - Parameter name: Имя вложения с расширением без компонентов пути.
     public static func validateName(_ name: String) throws {
         guard !name.isEmpty, name.unicodeScalars.count <= 180, !name.contains(".."),
               !name.contains("/"), !name.contains("\\"),
               !name.unicodeScalars.contains(where: { $0.properties.generalCategory == .control || $0.properties.generalCategory == .format })
         else { throw ClientError.invalidFileName }
     }
+    /// Определяет разрешённый MIME-тип по расширению проверенного имени файла.
+    /// - Parameter name: Имя вложения с расширением без компонентов пути.
     public static func mimeType(for name: String) throws -> String {
         try validateName(name)
         let ext = "." + (name as NSString).pathExtension.lowercased()

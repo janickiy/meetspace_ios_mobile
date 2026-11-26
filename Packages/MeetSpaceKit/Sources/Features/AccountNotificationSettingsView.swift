@@ -21,10 +21,8 @@ struct DemoAccountNotificationForm: View {
 
 struct LiveAccountNotificationSettings: View {
     @Bindable var settings: SettingsModel
-    let push: PushRegistrationModel
     var wide = false
     @AppStorage(ForegroundNotificationSound.defaultsKey) private var sound = true
-    @State private var showDevices = false
 
     var body: some View {
         ScrollView {
@@ -41,13 +39,18 @@ struct LiveAccountNotificationSettings: View {
                 } else if settings.savedPreferences == nil && settings.preferencesError != nil {
                     Button(tr("Повторить")) { Task { await settings.load() } }.buttonStyle(MSTextButtonStyle())
                 }
-                deviceOptions
             }.modifier(AccountPanelLayout(wide: wide))
         }.background(MSTheme.background)
             .accessibilityIdentifier("accountSettingsScroll")
     }
+}
 
-    private var deviceOptions: some View {
+struct AccountNotificationDevices: View {
+    @Bindable var settings: SettingsModel
+    let push: PushRegistrationModel
+    @State private var showDevices = false
+
+    var body: some View {
         VStack(alignment: .leading, spacing: 14) {
             Divider()
             Button { showDevices.toggle() } label: {
@@ -68,6 +71,9 @@ struct LiveAccountNotificationSettings: View {
                     Button(tr("Сохранить настройки")) { Task { await settings.saveNotifications() } }
                         .buttonStyle(MSTextButtonStyle()).disabled(!settings.canSavePreferences)
                         .accessibilityIdentifier("saveNotificationDevicePreferences")
+                }
+                if let error = settings.preferencesError {
+                    Text(tr(error)).font(MSTheme.font(13)).foregroundStyle(MSTheme.danger)
                 }
                 DeviceNotificationSettings(model: push)
                 #if os(iOS)
@@ -187,11 +193,19 @@ private struct AccountNotificationForm: View {
         }
     }
 
+    /// Оформляет заголовок группы настроек уведомлений.
+    /// - Parameter title: Текст заголовка.
     private func heading(_ title: String) -> some View {
         Text(tr(title)).font(MSTheme.font(15, weight: .semibold)).accessibilityAddTraits(.isHeader)
             .padding(.bottom, wide ? 16 : 12)
     }
 
+    /// Показывает переключатель уведомлений с необязательным пояснением.
+    /// - Parameters:
+    ///   - title: Подпись переключателя.
+    ///   - detail: Дополнительное описание настройки.
+    ///   - identifier: Идентификатор элемента для тестов интерфейса и средств доступности.
+    ///   - binding: Привязка к редактируемому значению.
     private func row(_ title: String, hint detail: String? = nil, identifier: String, binding: Binding<Bool>) -> some View {
         Toggle(isOn: binding) {
             VStack(alignment: .leading, spacing: 4) {
@@ -202,6 +216,8 @@ private struct AccountNotificationForm: View {
             .accessibilityLabel(tr(title)).accessibilityIdentifier(identifier)
     }
 
+    /// Оформляет пояснение к настройке уведомлений.
+    /// - Parameter text: Текст пояснения.
     private func hint(_ text: String) -> some View {
         Text(tr(text)).font(MSTheme.font(11.5)).lineSpacing(3)
             .fixedSize(horizontal: false, vertical: true).foregroundStyle(MSTheme.muted)

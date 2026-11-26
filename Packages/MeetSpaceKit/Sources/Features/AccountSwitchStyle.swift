@@ -6,6 +6,8 @@ struct AccountSwitchStyle: ToggleStyle {
     @Environment(\.isEnabled) private var enabled
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
+    /// Оформляет строку настройки как переключатель, реагирующий на нажатие по всей строке.
+    /// - Parameter configuration: Подпись и текущее состояние переключателя SwiftUI.
     func makeBody(configuration: Configuration) -> some View {
         Button {
             withAnimation(reduceMotion ? nil : .easeInOut(duration: 0.16)) {

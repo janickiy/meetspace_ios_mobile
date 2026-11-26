@@ -30,8 +30,6 @@ struct LiveRecordingsView: View {
                 Button(tr("Загрузить ещё")) { Task { await model.load(more: true) } }
                     .buttonStyle(MSButtonStyle(primary: false)).disabled(model.loading)
             }
-            Button(tr("Обновить записи")) { Task { await model.load() } }
-                .buttonStyle(MSTextButtonStyle()).disabled(model.loading)
             RecordingListRetention(demo: false)
         }
     }

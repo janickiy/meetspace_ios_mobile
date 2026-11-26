@@ -5,6 +5,8 @@ import Foundation
     private var subscribers: [UUID: AsyncStream<SystemCallEvent>.Continuation] = [:]
     private var finished = false
 
+    /// Создаёт независимый поток событий системных звонков для подписчика.
+    /// - Parameter replay: События, которые подписчик получит сразу при подключении, в заданном порядке.
     func subscribe(replay: [SystemCallEvent] = []) -> AsyncStream<SystemCallEvent> {
         let id = UUID()
         // These low-volume system actions must never silently drop an end/reset behind UI events.
@@ -18,10 +20,13 @@ import Foundation
         return pair.stream
     }
 
+    /// Рассылает событие всем действующим подписчикам.
+    /// - Parameter event: Событие звонка или системной аудиосессии.
     func yield(_ event: SystemCallEvent) {
         for continuation in subscribers.values { continuation.yield(event) }
     }
 
+    /// Закрывает потоки всех подписчиков и завершает последующие подписки сразу.
     func finish() {
         finished = true
         let old = subscribers; subscribers.removeAll()

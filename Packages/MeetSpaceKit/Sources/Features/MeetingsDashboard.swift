@@ -104,6 +104,11 @@ struct MeetingsDashboard<Value: Identifiable>: View {
             }
     }
 
+    /// Раскладывает быстрые действия со встречами с учётом размера экрана.
+    /// - Parameters:
+    ///   - wide: Использовать широкую раскладку.
+    ///   - large: Использовать оформление для большого окна.
+    ///   - width: Доступная ширина в пунктах.
     private func quickActions(wide: Bool, large: Bool, width: CGFloat) -> some View {
         let layout = typeSize.isAccessibilitySize ? AnyLayout(VStackLayout(spacing: 10)) : AnyLayout(HStackLayout(spacing: wide ? 14 : 10))
         return VStack(spacing: 10) {
@@ -118,6 +123,14 @@ struct MeetingsDashboard<Value: Identifiable>: View {
         }
     }
 
+    /// Создаёт кнопку быстрого действия со встречей.
+    /// - Parameters:
+    ///   - title: Название действия.
+    ///   - subtitle: Пояснение к действию.
+    ///   - icon: Символ рядом с текстом.
+    ///   - primary: Выделить основную кнопку.
+    ///   - wide: Разместить элементы для широкого экрана.
+    ///   - action: Действие при нажатии.
     private func quickButton(_ title: String, _ subtitle: String, icon: String, primary: Bool, wide: Bool, action: @escaping () -> Void) -> some View {
         Button(action: action) {
             let layout = wide ? AnyLayout(HStackLayout(spacing: 14)) : AnyLayout(VStackLayout(alignment: .leading, spacing: 12))
@@ -142,6 +155,8 @@ struct MeetingsDashboard<Value: Identifiable>: View {
         }.buttonStyle(.plain)
     }
 
+    /// Показывает кнопку присоединения к встрече по ссылке.
+    /// - Parameter wide: Использовать размеры широкого экрана.
     private func joinButton(wide: Bool) -> some View {
         Button(action: actions.join) {
             HStack(spacing: wide ? 14 : 8) {
@@ -154,6 +169,8 @@ struct MeetingsDashboard<Value: Identifiable>: View {
         }.buttonStyle(.plain).accessibilityIdentifier("joinInvitation")
     }
 
+    /// Размещает ссылки на записи встреч и личные папки.
+    /// - Parameter wide: Использовать широкую раскладку.
     private func shortcuts(wide: Bool) -> some View {
         let layout = typeSize.isAccessibilitySize ? AnyLayout(VStackLayout(spacing: 8)) : AnyLayout(HStackLayout(spacing: wide ? 10 : 8))
         return layout {
@@ -162,6 +179,12 @@ struct MeetingsDashboard<Value: Identifiable>: View {
         }.frame(maxWidth: wide ? 650 : .infinity, alignment: .leading)
     }
 
+    /// Показывает кнопку перехода в связанный раздел.
+    /// - Parameters:
+    ///   - label: Название раздела.
+    ///   - icon: Символ раздела.
+    ///   - wide: Использовать размеры широкого экрана.
+    ///   - action: Переход при нажатии.
     private func shortcut(_ label: String, _ icon: String, wide: Bool, action: @escaping () -> Void) -> some View {
         Button(action: action) {
             HStack(spacing: 8) {
@@ -175,6 +198,8 @@ struct MeetingsDashboard<Value: Identifiable>: View {
         }.buttonStyle(.plain)
     }
 
+    /// Располагает название списка встреч и часовой пояс в доступной ширине.
+    /// - Parameter wide: Использовать оформление широкого экрана.
     private func sectionHeading(wide: Bool) -> some View {
         ViewThatFits(in: .horizontal) {
             HStack { heading(wide: wide); Spacer(minLength: 14); zoneText(wide: wide) }
@@ -182,15 +207,24 @@ struct MeetingsDashboard<Value: Identifiable>: View {
         }.frame(minHeight: wide ? 33 : 26)
     }
 
+    /// Показывает заголовок «Мои встречи».
+    /// - Parameter wide: Использовать крупный размер заголовка.
     private func heading(wide: Bool) -> some View {
         Text(tr("Мои встречи")).font(MSTheme.font(wide ? 22 : 17, weight: .semibold, relativeTo: .title2))
             .tracking(-0.35).fixedSize().accessibilityAddTraits(.isHeader)
     }
 
+    /// Показывает часовой пояс, в котором указано время встреч.
+    /// - Parameter wide: Использовать размер текста широкого экрана.
     private func zoneText(wide: Bool) -> some View {
         Text(MeetingDateText.zoneLabel(zone)).font(MSTheme.font(wide ? 11 : 10)).foregroundStyle(MSTheme.muted)
     }
 
+    /// Раскладывает вкладки, поиск и фильтры над списком встреч.
+    /// - Parameters:
+    ///   - wide: Использовать широкую компоновку.
+    ///   - large: Применить размеры большого окна.
+    ///   - width: Ширина области списка в пунктах.
     @ViewBuilder private func controls(wide: Bool, large: Bool, width: CGFloat) -> some View {
         if wide {
             HStack(spacing: 25) {
@@ -242,6 +276,8 @@ struct MeetingsDashboard<Value: Identifiable>: View {
             .overlay { RoundedRectangle(cornerRadius: 13).strokeBorder(MSTheme.line).allowsHitTesting(false) }
     }
 
+    /// Создаёт переключатель предстоящих, активных и завершённых встреч.
+    /// - Parameter large: Использовать оформление для большого окна.
     private func tabs(large: Bool) -> some View {
         HStack(alignment: .bottom, spacing: 0) {
             ForEach(ConferenceTimelineView.allCases, id: \.self) { value in
@@ -255,6 +291,11 @@ struct MeetingsDashboard<Value: Identifiable>: View {
         }
     }
 
+    /// Открывает форму фильтров по нажатию на компактную кнопку.
+    /// - Parameters:
+    ///   - title: Текст кнопки.
+    ///   - icon: Значок фильтра.
+    ///   - menu: Показать вариант кнопки для меню.
     private func chip(_ title: String, icon: String, menu: Bool) -> some View {
         let selected = !menu && (filter.from != nil || filter.to != nil)
         return Button(action: editFilters) {
@@ -286,6 +327,8 @@ struct MeetingsDashboard<Value: Identifiable>: View {
         }.multilineTextAlignment(.center).padding(.vertical, 28).frame(maxWidth: .infinity)
     }
 
+    /// Копирует текущие фильтры в черновик и открывает их редактор.
     private func editFilters() { draft = filter; editingFilters = true }
+    /// Очищает поисковую строку и возвращает исходные фильтры встреч.
     private func reset() { query = ""; filter = MeetingListFilter() }
 }

@@ -72,12 +72,15 @@ struct InstallerView: View {
             Button("Удалить доверие", role: .destructive) { model.forgetTrust() }
         } message: { Text("Затем потребуется заново сравнить отпечаток по независимому источнику.") }
     }
+    /// Закрывает мастер установки и прекращает локальные операции и опрос.
     private func close() {
         model.detach()
         app.installerPresented = false
         dismiss()
     }
 
+    /// Строит заголовок мастера для текущего шага и ширины экрана.
+    /// - Parameter wide: Использовать ли компоновку для широкого экрана.
     private func wizardHeader(wide: Bool) -> some View {
         VStack(alignment: .leading, spacing: 10) {
             if !wide {
@@ -332,6 +335,8 @@ struct InstallerView: View {
             note("SSH-порт: \(model.port)")
         }
     }
+    /// Показывает данные ключа SSH-сервера в карточке проверки отпечатка.
+    /// - Parameter title: Заголовок карточки.
     private func fingerprintCard(title: String) -> some View {
         sectionCard {
             sectionTitle(title)
@@ -342,15 +347,24 @@ struct InstallerView: View {
             }
         }
     }
+    /// Оформляет переданное содержимое как секцию мастера установки.
+    /// - Parameter content: Замыкание с содержимым секции.
     private func sectionCard<Content: View>(@ViewBuilder _ content: () -> Content) -> some View {
         VStack(alignment: .leading, spacing: 16, content: content)
             .frame(maxWidth: .infinity, alignment: .leading).padding(20)
             .background(MSTheme.surface, in: RoundedRectangle(cornerRadius: 18))
             .overlay { RoundedRectangle(cornerRadius: 18).strokeBorder(MSTheme.line) }
     }
+    /// Оформляет заголовок секции и отмечает его для VoiceOver.
+    /// - Parameter text: Текст заголовка.
     private func sectionTitle(_ text: String) -> some View {
         Text(text).font(MSTheme.font(18, weight: .semibold, relativeTo: .headline)).accessibilityAddTraits(.isHeader)
     }
+    /// Строит заголовок шага с его номером и описанием.
+    /// - Parameters:
+    ///   - step: Подпись номера шага.
+    ///   - title: Название шага.
+    ///   - subtitle: Пояснение к шагу.
     private func heading(_ step: String, _ title: String, _ subtitle: String) -> some View {
         VStack(alignment: .leading, spacing: 10) {
             Text(step).font(MSTheme.font(12, weight: .semibold, relativeTo: .caption))
@@ -362,17 +376,30 @@ struct InstallerView: View {
                 .padding(.vertical, subtitleLeading / 2).foregroundStyle(MSTheme.muted)
         }.fixedSize(horizontal: false, vertical: true).padding(.bottom, 4)
     }
+    /// Оформляет поясняющий текст с межстрочным интервалом для текущего размера шрифта.
+    /// - Parameter text: Текст пояснения.
     private func note(_ text: String) -> some View {
         Text(text).font(MSTheme.font(14, relativeTo: .callout)).lineSpacing(noteLeading)
             .padding(.vertical, noteLeading / 2).foregroundStyle(MSTheme.muted)
             .fixedSize(horizontal: false, vertical: true)
     }
+    /// Создаёт основную кнопку действия на шаге установки.
+    /// - Parameters:
+    ///   - title: Подпись кнопки.
+    ///   - id: Идентификатор элемента для тестов интерфейса и средств доступности.
+    ///   - perform: Обработчик нажатия.
     private func action(_ title: String, id: String, perform: @escaping () -> Void) -> some View {
         Button(title, action: perform).buttonStyle(InstallerButtonStyle(primary: true)).accessibilityIdentifier(id)
     }
+    /// Оформляет заголовок поля ввода мастера.
+    /// - Parameter title: Подпись поля.
     private func fieldTitle(_ title: String) -> some View {
         Text(title).font(MSTheme.font(14, weight: .medium))
     }
+    /// Показывает одно именованное значение из плана установки.
+    /// - Parameters:
+    ///   - label: Название параметра плана.
+    ///   - value: Отображаемое значение из плана установки, например домен или версия.
     private func planDetail(_ label: String, _ value: String) -> some View {
         VStack(alignment: .leading, spacing: 4) {
             Divider()
@@ -380,6 +407,11 @@ struct InstallerView: View {
             Text(value).textSelection(.enabled).fixedSize(horizontal: false, vertical: true)
         }
     }
+    /// Создаёт кнопку выбора способа аутентификации SSH.
+    /// - Parameters:
+    ///   - key: Использовать ли приватный ключ вместо пароля.
+    ///   - title: Подпись способа входа.
+    ///   - icon: Имя значка действия.
     private func authChoice(_ key: Bool, title: String, icon: String) -> some View {
         let selected = model.usePrivateKey == key
         return Button { model.usePrivateKey = key } label: {
@@ -390,6 +422,12 @@ struct InstallerView: View {
                 .contentShape(Rectangle())
         }.buttonStyle(.plain).accessibilityAddTraits(selected ? .isSelected : [])
     }
+    /// Создаёт кнопку выбора способа получения образов при установке.
+    /// - Parameters:
+    ///   - value: Значение режима в параметрах установки.
+    ///   - title: Название режима.
+    ///   - subtitle: Пояснение к режиму.
+    ///   - icon: Имя значка действия.
     private func installMode(_ value: String, title: String, subtitle: String, icon: String) -> some View {
         let selected = model.options.imageMode == value
         return Button { model.options.imageMode = value } label: {
@@ -410,15 +448,30 @@ struct InstallerView: View {
             .overlay { RoundedRectangle(cornerRadius: 16).strokeBorder(selected ? MSTheme.accent : MSTheme.line) }
         }.buttonStyle(.plain).accessibilityAddTraits(selected ? .isSelected : [])
     }
+    /// Привязывает флажок подтверждения к состоянию мастера.
+    /// - Parameters:
+    ///   - title: Текст подтверждения.
+    ///   - isOn: Привязка к признаку согласия.
+    ///   - id: Идентификатор элемента для тестов интерфейса и средств доступности.
     private func consent(_ title: String, _ isOn: Binding<Bool>, id: String) -> some View {
         Toggle(title, isOn: isOn).toggleStyle(InstallerCheckboxStyle()).accessibilityIdentifier(id)
     }
+    /// Оформляет подпись поля ввода установки.
+    /// - Parameter label: Текст подписи.
     private func inputLabel(_ label: String) -> some View {
         Text(label).font(MSTheme.font(14)).lineSpacing(labelLeading).padding(.vertical, labelLeading / 2)
     }
+    /// Формирует текст-подсказку для незаполненного поля.
+    /// - Parameter hint: Текст подсказки.
     private func inputPrompt(_ hint: String) -> Text {
         Text(hint).foregroundStyle(MSTheme.muted)
     }
+    /// Создаёт текстовое поле с подписью, подсказкой и привязкой к параметру установки.
+    /// - Parameters:
+    ///   - label: Название поля.
+    ///   - hint: Подсказка для пустого поля.
+    ///   - binding: Привязка к тексту в форме.
+    ///   - id: Идентификатор элемента для тестов интерфейса и средств доступности.
     private func field(_ label: String, _ hint: String, _ binding: Binding<String>, _ id: String) -> some View {
         VStack(alignment: .leading, spacing: 8) {
             inputLabel(label)
@@ -426,7 +479,16 @@ struct InstallerView: View {
                 .accessibilityLabel(label).accessibilityIdentifier(id)
         }
     }
+    /// Создаёт поле для целочисленного параметра установки.
+    /// - Parameters:
+    ///   - label: Подпись поля.
+    ///   - binding: Привязка к числовому значению.
     private func intField(_ label: String, _ binding: Binding<Int>) -> some View { field(label, "", Binding(get: { String(binding.wrappedValue) }, set: { binding.wrappedValue = Int($0) ?? 0 }), "installer." + label) }
+    /// Создаёт защищённое поле ввода для секретов установки.
+    /// - Parameters:
+    ///   - label: Подпись поля.
+    ///   - binding: Привязка к секретному значению.
+    ///   - id: Идентификатор элемента для тестов интерфейса и средств доступности.
     private func secret(_ label: String, _ binding: Binding<String>, _ id: String) -> some View {
         VStack(alignment: .leading, spacing: 8) {
             inputLabel(label)
@@ -465,6 +527,8 @@ struct InstallerView: View {
 }
 
 private struct InstallerInputStyle: ViewModifier {
+    /// Применяет общие отступы, шрифт и фон к полям мастера.
+    /// - Parameter content: Поле ввода, к которому применяется стиль.
     func body(content: Content) -> some View {
         content.textFieldStyle(.plain).font(MSTheme.font(16))
             .padding(.horizontal, 14).padding(.vertical, 12)
@@ -477,6 +541,8 @@ private struct InstallerInputStyle: ViewModifier {
 private struct InstallerButtonStyle: ButtonStyle {
     let primary: Bool
     @Environment(\.isEnabled) private var enabled
+    /// Оформляет кнопку мастера с учётом её роли и нажатия.
+    /// - Parameter configuration: Подпись кнопки и состояние нажатия.
     func makeBody(configuration: Configuration) -> some View {
         configuration.label.font(MSTheme.font(15, weight: .semibold))
             .multilineTextAlignment(.center).padding(.vertical, 12).padding(.horizontal, 20)
@@ -492,6 +558,8 @@ private struct InstallerButtonStyle: ButtonStyle {
 }
 
 private struct InstallerCheckboxStyle: ToggleStyle {
+    /// Оформляет подтверждение как флажок, переключаемый вместе с подписью.
+    /// - Parameter configuration: Подпись и состояние флажка SwiftUI.
     func makeBody(configuration: Configuration) -> some View {
         Button { configuration.isOn.toggle() } label: {
             HStack(alignment: .top, spacing: 12) {

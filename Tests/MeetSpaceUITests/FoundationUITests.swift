@@ -3,10 +3,13 @@ import Vision
 import UIKit
 
 @MainActor final class FoundationUITests: XCTestCase {
+    /// Останавливает текущий UI-тест при первом нарушенном утверждении.
     override func setUpWithError() throws {
         continueAfterFailure = false
     }
 
+    /// Запускает приложение в тестовом режиме с русской локалью и возвращает экземпляр для действий XCTest.
+    /// - Parameter arguments: Дополнительные параметры запуска, выбирающие тестовый сценарий.
     private func launch(_ arguments: [String] = []) -> XCUIApplication {
         let app = XCUIApplication()
         app.launchArguments = ["-uitesting", "-AppleLanguages", "(ru)", "-AppleLocale", "ru_RU"] + arguments
@@ -14,6 +17,10 @@ import UIKit
         return app
     }
 
+    /// Сохраняет снимок приложения во вложениях XCTest после окончания перехода между вкладками.
+    /// - Parameters:
+    ///   - app: Приложение, экран которого нужно снять.
+    ///   - name: Имя вложения в отчёте XCTest.
     private func capture(_ app: XCUIApplication, name: String) {
         // TabView's crossfade can outlive element existence on CI; do not record a transition frame.
         Thread.sleep(forTimeInterval: 0.5)
@@ -21,6 +28,7 @@ import UIKit
         attachment.name = name; attachment.lifetime = .keepAlways; add(attachment)
     }
 
+    /// Проходит этапы установщика бета-версии и проверяет валидацию полей до перехода к установке.
     func testBetaInstallerNavigationAndValidation() {
         let app = launch(["-installer-fixture"])
         capture(app, name: "beta-welcome")
@@ -142,6 +150,7 @@ import UIKit
         XCTAssertTrue(app.buttons["deployServer"].waitForExistence(timeout: 5))
     }
 
+    /// Проверяет множественный выбор сообщений, копирование через системное меню и локальное удаление после подтверждения.
     func testBetaChatSelectionAndShare() {
         let app = launch(); login(app)
         let composer = app.textFields["messageComposer"]
@@ -217,6 +226,7 @@ import UIKit
         capture(app, name: "beta-chat-after-local-removal")
     }
 
+    /// Проверяет, какие карточки встреч отображаются при переключении вкладок предстоящих, активных и завершённых встреч.
     func testWorkspaceMeetingTabs() {
         let app = launch(["-demo"])
         let first = app.buttons["meeting.1"]
@@ -234,13 +244,19 @@ import UIKit
         active.tap()
         XCTAssertTrue(app.buttons["meeting.4"].waitForExistence(timeout: 5))
         XCTAssertFalse(first.exists)
+        capture(app, name: "workspace-active-meetings")
         app.buttons["Завершённые"].tap()
         XCTAssertTrue(app.buttons["meeting.5"].waitForExistence(timeout: 5))
         app.buttons["Предстоящие"].tap()
         XCTAssertTrue(first.waitForExistence(timeout: 5))
     }
 
-    private func checkIPadOrientations(_ app: XCUIApplication, screen: String, _ check: (CGRect) -> Void) {
+    /// Выполняет геометрические проверки и сохраняет снимок окна в портретной и альбомной ориентациях.
+    /// - Parameters:
+    ///   - app: Запущенное приложение, окно которого поворачивается.
+    ///   - screen: Имя проверяемого экрана для снимков и сообщений об ошибке.
+    ///   - check: Проверки, выполняемые с фактической рамкой окна в каждой ориентации.
+    private func checkOrientations(_ app: XCUIApplication, screen: String, _ check: (CGRect) -> Void) {
         let window = app.windows.firstMatch
         for orientation: UIDeviceOrientation in [.portrait, .landscapeLeft] {
             XCUIDevice.shared.orientation = orientation
@@ -255,12 +271,14 @@ import UIKit
             // Capture the full display. An app-relative landscape screenshot on iPad
             // can crop the rotated window using its previous portrait coordinates.
             let snapshot = XCTAttachment(screenshot: XCUIScreen.main.screenshot())
-            snapshot.name = "ipad-" + (portrait ? "portrait-" : "landscape-") + screen
+            let device = UIDevice.current.userInterfaceIdiom == .pad ? "ipad" : "iphone"
+            snapshot.name = device + (portrait ? "-portrait-" : "-landscape-") + screen
             snapshot.lifetime = .keepAlways
             add(snapshot)
         }
     }
 
+    /// Проверяет доступность и расположение элементов рабочего пространства iPad после поворота.
     func testIPadWorkspaceAdaptsToRotation() throws {
         try XCTSkipUnless(UIDevice.current.userInterfaceIdiom == .pad, "Requires an iPad window")
         let device = XCUIDevice.shared
@@ -268,13 +286,13 @@ import UIKit
         defer { device.orientation = original }
         let app = launch()
 
-        checkIPadOrientations(app, screen: "welcome") { _ in
+        checkOrientations(app, screen: "welcome") { _ in
             XCTAssertTrue(app.buttons["connectServer"].isHittable)
         }
         revealDemoLink(app).tap()
 
         let newMeeting = app.buttons["createConference"]
-        checkIPadOrientations(app, screen: "meetings") { frame in
+        checkOrientations(app, screen: "meetings") { frame in
             XCTAssertTrue(newMeeting.isHittable)
             if frame.width >= 780 {
                 let schedule = app.buttons["scheduleMeeting"]
@@ -285,7 +303,7 @@ import UIKit
             }
         }
         app.buttons["meetingsRecordings"].tap()
-        checkIPadOrientations(app, screen: "recordings") { _ in
+        checkOrientations(app, screen: "recordings") { _ in
             XCTAssertTrue(app.textFields["recordings.search"].isHittable)
             XCTAssertTrue(app.buttons["recordings.live"].isHittable)
         }
@@ -294,7 +312,7 @@ import UIKit
         let firstMeeting = app.buttons["meeting.1"]
         reveal(firstMeeting, in: app)
         firstMeeting.tap()
-        checkIPadOrientations(app, screen: "prejoin") { frame in
+        checkOrientations(app, screen: "prejoin") { frame in
             let join = app.buttons["conferencePreviewJoin"]
             XCTAssertTrue(join.exists)
             if frame.width >= 840 {
@@ -308,7 +326,7 @@ import UIKit
         app.buttons["tab.messages"].tap()
         let firstChat = app.buttons["chat.0"]
         firstChat.tap()
-        checkIPadOrientations(app, screen: "messages") { frame in
+        checkOrientations(app, screen: "messages") { frame in
             let heading = app.buttons["chat.info"]
             XCTAssertTrue(heading.isHittable)
             if frame.width >= 780 {
@@ -319,7 +337,7 @@ import UIKit
 
         app.buttons["tab.profile"].tap()
         selectAccountSection("accounts", in: app)
-        checkIPadOrientations(app, screen: "accounts") { frame in
+        checkOrientations(app, screen: "accounts") { frame in
             let add = app.buttons["addAccount"]
             XCTAssertTrue(add.isHittable)
             if frame.width >= 780 {
@@ -330,6 +348,7 @@ import UIKit
         }
     }
 
+    /// Проверяет сохранение выбранного собеседника на демоэкране звонка iPad после поворота.
     func testIPadDemoCallKeepsSelectedContactOnRotation() throws {
         try XCTSkipUnless(UIDevice.current.userInterfaceIdiom == .pad, "Requires an iPad window")
         let original = XCUIDevice.shared.orientation
@@ -338,7 +357,7 @@ import UIKit
         app.buttons["tab.messages"].tap()
         app.buttons["chat.2"].tap()
         app.buttons["Личный звонок"].tap()
-        checkIPadOrientations(app, screen: "personal-call") { _ in
+        checkOrientations(app, screen: "personal-call") { _ in
             XCTAssertTrue(app.staticTexts["Максим Петров"].firstMatch.isHittable)
             XCTAssertTrue(app.buttons["demoDirectCallEnd"].isHittable)
         }
@@ -346,6 +365,7 @@ import UIKit
         XCTAssertTrue(app.buttons["chat.info"].label.contains("Максим Петров"))
     }
 
+    /// Проверяет фильтрацию демонстрационной библиотеки записей и удаление записи.
     func testRecordingLibraryDemoFiltersAndDeletion() {
         let app = launch(["-demo"])
         let library = app.buttons["Записи встреч"]
@@ -403,6 +423,7 @@ import UIKit
         XCTAssertEqual(count.label, "Найдено: 4")
     }
 
+    /// Проверяет подписи фильтров уведомлений и их переключение в рабочем пространстве.
     func testWorkspaceNotificationFiltersKeepTheirLabelsAndToggle() {
         let app = launch(["-demo"])
         let bell = app.buttons["Уведомления"]
@@ -430,6 +451,7 @@ import UIKit
         XCTAssertTrue(all.isSelected)
     }
 
+    /// Проверяет раздельные элементы выбора даты и времени при планировании встречи на телефоне.
     func testMobileScheduleShowsSeparateDateAndTimeControls() {
         let app = launch()
         login(app)
@@ -455,6 +477,7 @@ import UIKit
         XCTAssertTrue(schedule.isHittable)
     }
 
+    /// Проходит демонстрационные экраны подготовки и звонка, проверяя компоновку и доступность управления на телефоне.
     func testMobileDemoPrejoinAndConferenceLayout() {
         let app = launch(["-demo"])
         let profile = app.buttons["tab.profile"]
@@ -534,6 +557,7 @@ import UIKit
         XCTAssertEqual(app.staticTexts["recordingKind"].label, "Аудиозапись")
     }
 
+    /// Пересылает комментарий из личного чата Анны в группу и проверяет результат.
     func testForwardCommentFromAnnaToGroup() {
         let app = launch(["-demo"])
         let chats = app.buttons["tab.messages"]
@@ -563,6 +587,7 @@ import UIKit
         capture(app, name: "forwarded-comment-group")
     }
 
+    /// Проверяет, что нажатие на вложение и выбор сообщения выполняются через отдельные области касания.
     func testMessageAttachmentAndSelectionHaveIndependentTapTargets() {
         let app = launch(["-demo"])
         app.buttons["tab.messages"].tap()
@@ -591,6 +616,7 @@ import UIKit
         XCTAssertFalse(app.staticTexts["Демонстрационная карточка вложения."].exists)
     }
 
+    /// Проверяет компоновку настроек видео и изменение параметров камеры в профиле.
     func testAccountVideoSettingsLayoutAndPreferences() {
         let app = launch(); login(app)
         openProfile(in: app)
@@ -620,6 +646,7 @@ import UIKit
         XCTAssertFalse(app.staticTexts["Настройки применяются автоматически."].exists)
     }
 
+    /// Проверяет валидацию адреса сервера в настройках подключения и сохранение HTTPS-адреса при повторном открытии раздела.
     func testDemoConnectionValidatesAndKeepsAddress() {
         let app = launch(["-demo"])
         openProfile(in: app)
@@ -646,6 +673,7 @@ import UIKit
         XCTAssertFalse(save.isEnabled)
     }
 
+    /// Проверяет размещение элементов бета-экрана настроек микрофона и динамика.
     func testBetaAudioSettingsLayout() {
         let app = launch(); login(app)
         openProfile(in: app)
@@ -682,6 +710,7 @@ import UIKit
         capture(app, name: "beta-audio-speaker-signals")
     }
 
+    /// Перемещает оба ползунка громкости и проверяет сохранение их значений после повторного открытия настроек.
     func testAudioVolumeSlidersDragAndKeepTheirLevels() throws {
         let app = launch()
         login(app)
@@ -715,12 +744,19 @@ import UIKit
         capture(app, name: "audio-adjusted-levels")
     }
 
+    /// Прокручивает стартовый экран до кнопки входа в демонстрацию и возвращает её.
+    /// - Parameter app: Приложение на стартовом экране.
     private func revealDemoLink(_ app: XCUIApplication) -> XCUIElement {
         let link = app.buttons["openDemo"]
         for _ in 0..<4 where !link.isHittable { app.swipeUp() }
         return link
     }
 
+    /// Прокручивает ближайший доступный контейнер до возможности нажать указанный элемент.
+    /// - Parameters:
+    ///   - element: Элемент, который должен стать доступным для нажатия.
+    ///   - app: Приложение с прокручиваемым содержимым.
+    ///   - towardTop: Искать ли элемент в направлении начала списка.
     private func reveal(_ element: XCUIElement, in app: XCUIApplication, towardTop: Bool = false) {
         XCTAssertTrue(element.waitForExistence(timeout: 10))
         for _ in 0..<5 where !element.isHittable {
@@ -731,6 +767,10 @@ import UIKit
         XCTAssertTrue(element.isHittable)
     }
 
+    /// Открывает подраздел встреч и проверяет минимальную высоту кнопки перехода.
+    /// - Parameters:
+    ///   - identifier: Идентификатор кнопки подраздела.
+    ///   - app: Приложение с открытым рабочим пространством.
     private func openMeetingsFeature(_ identifier: String, in app: XCUIApplication) {
         let link = app.buttons[identifier]
         tapAfterLogin(app.buttons["tab.meetings"], in: app, expecting: link, unchanged: { !link.exists })
@@ -739,6 +779,10 @@ import UIKit
         link.tap()
     }
 
+    /// Возвращается к меню профиля при необходимости и открывает выбранный раздел настроек.
+    /// - Parameters:
+    ///   - section: Ключ пункта меню настроек аккаунта.
+    ///   - app: Приложение с доступным меню профиля.
     private func selectAccountSection(_ section: String, in app: XCUIApplication) {
         let back = app.buttons["profileMenu.back"]
         if back.exists { back.tap() }
@@ -747,6 +791,8 @@ import UIKit
         row.tap()
     }
 
+    /// Переходит на вкладку профиля и ожидает появления меню настроек.
+    /// - Parameter app: Приложение с доступной нижней навигацией.
     private func openProfile(in app: XCUIApplication) {
         let tab = app.buttons["tab.profile"]
         XCTAssertTrue(tab.waitForExistence(timeout: 10))
@@ -754,9 +800,12 @@ import UIKit
                       unchanged: { !app.buttons["profileMenu.profile"].exists })
     }
 
-    /// iOS 26 can present Passwords during XCTest's 60-second event-synthesis wait.
-    /// Retry only an observed, unapplied navigation/answer action after that exact sheet.
-    /// Never use this helper for send/delete/toggle or other repeatable server mutations.
+    /// Повторяет навигацию или ответ на звонок, если в iOS 26 действие перехватил системный запрос сохранения пароля. Применим лишь к переходам, которые точно ещё не выполнены.
+    /// - Parameters:
+    ///   - control: Элемент навигации или кнопка ответа. Действия изменения данных требуют отдельного сценария.
+    ///   - app: Приложение, в котором проверяется переход.
+    ///   - target: Элемент, появление которого подтверждает успех перехода.
+    ///   - unchanged: Проверка исходного состояния перед повторным нажатием.
     private func tapAfterLogin(_ control: XCUIElement, in app: XCUIApplication,
                                expecting target: XCUIElement, unchanged: () -> Bool) {
         control.tap()
@@ -772,10 +821,20 @@ import UIKit
         XCTAssertTrue(target.waitForExistence(timeout: 10), "The requested transition must complete")
     }
 
+    /// Определяет видимую область содержимого для проверки конкретного элемента.
+    /// - Parameters:
+    ///   - element: Элемент, доступность которого проверяется.
+    ///   - app: Приложение с проверяемым окном.
     private func contentViewport(for element: XCUIElement, in app: XCUIApplication) -> CGRect {
         contentViewport(identifier: element.identifier, label: element.label, elementFrame: element.frame, in: app)
     }
 
+    /// Вычисляет видимую часть окна с учётом навигации, нижних вкладок и содержащих элемент областей прокрутки.
+    /// - Parameters:
+    ///   - id: Идентификатор доступности для поиска внутри прокручиваемых контейнеров.
+    ///   - label: Текстовая подпись для поиска при пустом идентификаторе.
+    ///   - elementFrame: Известные координаты элемента для выбора подходящей колонки.
+    ///   - app: Приложение, предоставляющее окно и контейнеры.
     private func contentViewport(identifier id: String, label: String, elementFrame: CGRect?, in app: XCUIApplication) -> CGRect {
         // The foreground window can occupy the Duo's inner display while the application frame describes the outer one.
         var frame = app.windows.firstMatch.frame
@@ -798,6 +857,10 @@ import UIKit
         return frame
     }
 
+    /// Прокручивает экран и проверяет, что рамка элемента целиком попадает в видимую область содержимого.
+    /// - Parameters:
+    ///   - element: Элемент, текст которого должен быть виден полностью.
+    ///   - app: Приложение с прокручиваемым экраном.
     private func revealEntireText(_ element: XCUIElement, in app: XCUIApplication) {
         XCTAssertTrue(element.waitForExistence(timeout: 10))
         for _ in 0..<16 {
@@ -834,6 +897,7 @@ import UIKit
         let frame: CGRect?
     }
 
+    /// Выполняет аудит доступности основных экранов и собирает сведения об обнаруженных нарушениях.
     func testAccessibilityStage08CoreScreens() throws {
         let app = launch()
         var issues: [[String: String]] = []
@@ -1087,6 +1151,7 @@ import UIKit
         XCTAssertTrue(unresolved.isEmpty, "Unresolved accessibility issues: \(unresolved)")
     }
 
+    /// Проверяет, что для удаления аккаунта требуются пароль и явное подтверждение действия.
     func testStage08AccountDeletionRequiresPasswordAndConfirmation() {
         let app = launch(); login(app)
         openProfile(in: app)
@@ -1158,6 +1223,7 @@ import UIKit
         capture(app, name: "stage08-account-deletion-success")
     }
 
+    /// Проходит рабочий сценарий с увеличенным размером текста и проверяет доступность его действий.
     func testAccessibilityStage08LargeTextLiveFlow() {
         let app = launch(["-UIPreferredContentSizeCategoryName", "UICTContentSizeCategoryAccessibilityXXXL"])
         let heading = app.staticTexts["welcome.heading"]
@@ -1196,6 +1262,7 @@ import UIKit
         capture(app, name: "stage08-large-text-settings")
     }
 
+    /// Создаёт встречу в календаре, меняет её время, проверяет режимы просмотра и отменяет встречу.
     func testStage07CalendarCreateRescheduleCancelAndViews() {
         let app = launch(); login(app)
         openMeetingsFeature("meetingsCalendar", in: app)
@@ -1240,8 +1307,16 @@ import UIKit
         XCTAssertTrue(event.waitForExistence(timeout: 5)); event.tap()
         XCTAssertTrue(app.staticTexts["Отменена"].waitForExistence(timeout: 5))
         XCTAssertFalse(app.buttons["calendar.reschedule"].exists)
+        let closeMeeting = app.buttons["calendar.meeting.close"]
+        XCTAssertTrue(closeMeeting.isHittable)
+        XCTAssertGreaterThanOrEqual(closeMeeting.frame.width, 44)
+        XCTAssertGreaterThan(closeMeeting.frame.midX, app.frame.midX)
+        capture(app, name: "calendar-meeting-close")
+        closeMeeting.tap()
+        XCTAssertTrue(closeMeeting.waitForNonExistence(timeout: 5))
     }
 
+    /// Проверяет, что после удаления личной папки добавленный в неё чат остаётся доступен в списке переписок.
     func testStage07FolderRemovalPreservesChat() {
         let app = launch(); login(app)
         openMeetingsFeature("meetingsFolders", in: app)
@@ -1288,6 +1363,7 @@ import UIKit
         XCTAssertTrue(app.buttons["conversation.22222222-2222-4222-8222-222222222222"].waitForExistence(timeout: 5))
     }
 
+    /// Проверяет сохранение настроек профиля и состояние недоступной функции SSH.
     func testStage07SettingsPersistProfilePreferencesAndSSHDisabled() {
         let app = launch(); login(app)
         openProfile(in: app)
@@ -1300,10 +1376,11 @@ import UIKit
         let save = app.buttons["saveProfile"]; reveal(save, in: app); save.tap()
         XCTAssertTrue(app.staticTexts["settingsSaved"].waitForExistence(timeout: 5))
         capture(app, name: "stage07-settings-profile")
-        let refresh = app.buttons["Обновить настройки"]; reveal(refresh, in: app); refresh.tap()
+        XCTAssertFalse(app.buttons["Обновить настройки"].exists)
         XCTAssertEqual(name.value as? String, "Имя iOS")
         selectAccountSection("notifications", in: app)
         XCTAssertTrue(app.switches["notificationInvitation"].waitForExistence(timeout: 5))
+        XCTAssertFalse(app.buttons["notificationDevicesDetails"].exists)
         capture(app, name: "account-notifications")
         let sound = app.buttons["notificationTestSound"]
         let soundSwitch = app.switches["notificationSound"]
@@ -1338,11 +1415,13 @@ import UIKit
         capture(app, name: "stage07-settings-server")
     }
 
+    /// Проверяет статусы тестовых записей и запуск системного проигрывателя для доступного локального файла.
     func testStage07RecordingsStatusAndNativePlayerWithLocalFixture() {
         let app = launch(); login(app)
         openMeetingsFeature("meetingsRecordings", in: app)
         let ready = app.buttons["recording.77777777-7777-4777-8777-777777777771"]
         XCTAssertTrue(ready.waitForExistence(timeout: 10)); capture(app, name: "stage07-recordings")
+        XCTAssertFalse(app.buttons["Обновить записи"].exists)
         let processing = app.buttons["recording.77777777-7777-4777-8777-777777777772"]
         reveal(processing, in: app); processing.tap()
         XCTAssertTrue(app.staticTexts["recordingStatus"].waitForExistence(timeout: 5))
@@ -1375,6 +1454,7 @@ import UIKit
         capture(app, name: "stage07-recording-server-audio")
     }
 
+    /// Проверяет, что при отказе в доступе к записи интерфейс не открывает проигрыватель.
     func testStage07RecordingAccessDeniedNeverStartsPlayer() {
         let app = launch(["-recording-access-denied"]); login(app)
         openMeetingsFeature("meetingsRecordings", in: app)
@@ -1393,6 +1473,7 @@ import UIKit
         capture(app, name: "stage07-recording-denied")
     }
 
+    /// Открывает демонстрационную запись и проверяет её дорожки и материалы.
     func testRecordingDetailDemoTracksAndMaterials() {
         let app = launch(["-demo"])
         let library = app.buttons["meetingsRecordings"]
@@ -1417,6 +1498,7 @@ import UIKit
         XCTAssertTrue(tracks.waitForExistence(timeout: 5))
     }
 
+    /// Проверяет старт нового приложения в неавторизованном состоянии.
     func testFirstLaunchDoesNotImplyAuthentication() {
         let app = launch()
         XCTAssertTrue(app.buttons["connectServer"].waitForExistence(timeout: 10))
@@ -1438,6 +1520,7 @@ import UIKit
         XCTAssertTrue(app.buttons["connectServer"].waitForExistence(timeout: 5))
     }
 
+    /// Проверяет отклонение адреса сервера с незащищённой схемой HTTP.
     func testInvalidHTTPAddressIsRejected() {
         let app = launch()
         app.buttons["connectServer"].tap()
@@ -1448,6 +1531,7 @@ import UIKit
         XCTAssertTrue(app.otherElements["serverError"].exists || app.staticTexts["serverError"].exists)
     }
 
+    /// Проверяет переход от подтверждённого сервера к форме входа и блокировку отправки пустой формы.
     func testValidServerAdvancesToAuthenticationWithEmptySubmitDisabled() {
         let app = launch()
         app.buttons["connectServer"].tap()
@@ -1461,6 +1545,7 @@ import UIKit
         XCTAssertFalse(app.buttons["Войти"].isEnabled)
     }
 
+    /// Проверяет переход ко входу при открытой клавиатуре и доступ к профилю после повторной попытки с исправленным паролем.
     func testServerCheckWithKeyboardAndLoginRetryReachProfile() {
         XCUIDevice.shared.orientation = .portrait
         let app = launch(["-auth-retry"])
@@ -1511,6 +1596,8 @@ import UIKit
         capture(app, name: "profile-after-login-retry")
     }
 
+    /// Вводит адрес тестового сервера, проходит проверку подключения и открывает экран входа.
+    /// - Parameter app: Приложение на экране подключения к серверу.
     private func authentication(_ app: XCUIApplication) {
         XCTAssertTrue(app.buttons["connectServer"].waitForExistence(timeout: 10))
         reveal(app.buttons["connectServer"], in: app)
@@ -1531,6 +1618,10 @@ import UIKit
         XCTAssertTrue(next.waitForExistence(timeout: 5)); reveal(next, in: app); next.tap()
     }
 
+    /// Вводит данные первого тестового аккаунта и отправляет форму входа.
+    /// - Parameters:
+    ///   - app: Приложение на стартовом экране.
+    ///   - password: Пароль для успешного входа или проверки отказа.
     private func login(_ app: XCUIApplication, password: String = "fixture-password") {
         authentication(app)
         let email = app.textFields["Электронная почта"]
@@ -1553,6 +1644,8 @@ import UIKit
         finishSuccessfulLogin(app)
     }
 
+    /// Закрывает предложение сохранения пароля при его появлении и ожидает доступности рабочего пространства.
+    /// - Parameter app: Приложение после отправки формы входа.
     private func finishSuccessfulLogin(_ app: XCUIApplication) {
         let deadline = Date().addingTimeInterval(10)
         let messages = app.buttons["tab.messages"], incoming = app.buttons["directCallAnswer"]
@@ -1595,6 +1688,8 @@ import UIKit
         XCTAssertEqual(XCTWaiter.wait(for: [ready], timeout: 10), .completed, "The workspace must be actionable after login")
     }
 
+    /// Находит кнопку отказа в распознанном системном запросе сохранения пароля.
+    /// - Parameter app: Приложение, в дереве доступности которого ищется запрос.
     private func passwordDismissButton(_ app: XCUIApplication) -> XCUIElement? {
         guard app.sheets["Save Password?"].exists || app.sheets["Сохранить пароль?"].exists ||
                 app.alerts["Save Password?"].exists || app.alerts["Сохранить пароль?"].exists ||
@@ -1606,6 +1701,8 @@ import UIKit
         return nil
     }
 
+    /// Находит через Vision заголовок системного запроса и кнопку отказа, нажимает её и возвращает признак успеха.
+    /// - Parameter app: Приложение, снимок экрана которого используется для распознавания.
     private func dismissInaccessiblePasswordPrompt(_ app: XCUIApplication) -> Bool {
         // iOS 26 can omit the Passwords remote window's children from AX and
         // interruption monitors. Ground this fallback in the current screenshot;
@@ -1644,6 +1741,7 @@ import UIKit
         return true
     }
 
+    /// Проверяет видимую ошибку авторизации и сохранение пользователя на экране входа.
     func testAuthenticationErrorIsVisibleAndDoesNotOpenWorkspace() {
         let app = launch(["-auth-error"])
         login(app, password: "wrong-password")
@@ -1652,6 +1750,7 @@ import UIKit
         capture(app, name: "stage03-authentication-error")
     }
 
+    /// Проходит вход, отправку сообщения в личный чат и выход из учётной записи.
     func testAuthenticatedChatSendAndLogout() {
         let app = launch(); login(app)
         let chat = app.buttons["conversation.22222222-2222-4222-8222-222222222222"]
@@ -1686,6 +1785,10 @@ import UIKit
         }
         closeActions.tap()
         XCTAssertTrue(closeActions.waitForNonExistence(timeout: 5))
+        if UIDevice.current.userInterfaceIdiom == .phone {
+            XCTAssertFalse(app.buttons["tab.profile"].exists)
+            app.buttons["chat.back"].tap()
+        }
         XCTAssertTrue(app.buttons["tab.profile"].isHittable)
         app.buttons["tab.profile"].tap()
         XCTAssertTrue(app.buttons["profileMenu.accounts"].waitForExistence(timeout: 5))
@@ -1699,6 +1802,8 @@ import UIKit
         XCTAssertFalse(app.buttons["tab.messages"].exists)
     }
 
+    /// Открывает тестовую переписку, фокусирует поле ввода и дожидается появления клавиатуры.
+    /// - Parameter app: Приложение с доступным списком тестовых чатов.
     private func openFixtureChatForTyping(in app: XCUIApplication) -> XCUIElement {
         let chat = app.buttons["conversation.22222222-2222-4222-8222-222222222222"]
         let composer = app.textFields["messageComposer"]
@@ -1739,6 +1844,11 @@ import UIKit
         return composer
     }
 
+    /// Вводит сообщение в сфокусированное поле и ожидает совпадения его содержимого с полным текстом.
+    /// - Parameters:
+    ///   - text: Текст для ввода.
+    ///   - composer: Поле составления сообщения в чате.
+    ///   - app: Приложение с открытым тестовым чатом.
     private func typeMessage(_ text: String, into composer: XCUIElement, in app: XCUIApplication) {
         // Sending may dismiss the keyboard; focus the real field for each message.
         _ = openFixtureChatForTyping(in: app)
@@ -1750,6 +1860,7 @@ import UIKit
                        "The composer must contain the complete message before sending")
     }
 
+    /// Проверяет создание группового чата с выбранным участником.
     func testCreateGroupWithSelectedMember() {
         let app = launch(); login(app)
         let newChat = app.buttons["newChat"]
@@ -1779,6 +1890,10 @@ import UIKit
         XCTAssertTrue(app.textFields["Название группы"].waitForExistence(timeout: 5))
     }
 
+    /// Входит в тестовый аккаунт, создаёт встречу и ожидает появления кнопки подключения.
+    /// - Parameters:
+    ///   - app: Приложение на экране подключения к серверу.
+    ///   - title: Название создаваемой тестовой встречи.
     private func createConference(_ app: XCUIApplication, title: String) {
         login(app)
         let meetings = app.buttons["tab.meetings"]
@@ -1796,11 +1911,19 @@ import UIKit
         XCTAssertTrue(app.buttons["conferenceJoin"].waitForExistence(timeout: 10))
     }
 
+    /// Ожидает указанное значение доступности элемента и привязывает результат к строке вызывающего теста.
+    /// - Parameters:
+    ///   - value: Ожидаемая строка значения элемента.
+    ///   - element: Элемент с проверяемым значением.
+    ///   - file: Файл вызывающего теста для диагностики XCTest.
+    ///   - line: Строка вызова для диагностики XCTest.
     private func waitForValue(_ value: String, of element: XCUIElement, file: StaticString = #filePath, line: UInt = #line) {
         let expectation = XCTNSPredicateExpectation(predicate: NSPredicate(format: "value == %@", value), object: element)
         XCTAssertEqual(XCTWaiter.wait(for: [expectation], timeout: 10), .completed, file: file, line: line)
     }
 
+    /// Подключается к тестовой встрече и проверяет начальное состояние микрофона и камеры.
+    /// - Parameter app: Приложение на экране подготовки к встрече.
     private func joinConference(_ app: XCUIApplication) {
         let join = app.buttons["conferenceJoin"]
         revealEntireText(join, in: app)
@@ -1813,6 +1936,8 @@ import UIKit
         waitForValue("Выключен", of: app.buttons["conferenceCamera"])
     }
 
+    /// Подтверждает выход из встречи, ожидает возврата к списку и проверяет исчезновение кнопок звонка.
+    /// - Parameter app: Приложение с активной конференцией.
     private func leaveConference(_ app: XCUIApplication) {
         let leave = app.buttons["conferenceLeave"]
         XCTAssertTrue(leave.waitForExistence(timeout: 5)); leave.tap()
@@ -1826,8 +1951,127 @@ import UIKit
         XCTAssertFalse(app.buttons["conferenceCamera"].exists)
     }
 
-    /// Exercises the real SwiftUI/session flow through DEBUG REST/signaling/media doubles.
-    /// Camera frames and permissions here are deterministic fixtures, not physical-device validation.
+    /// Проверяет пропорции видеоплиток двух участников при смене ориентации и доступного пространства.
+    func testTwoParticipantConferenceTilesKeepVideoProportions() {
+        let device = XCUIDevice.shared
+        let original = device.orientation
+        device.orientation = .portrait
+        defer { device.orientation = original }
+        let app = launch()
+        createConference(app, title: "Встреча вдвоём")
+        joinConference(app)
+
+        let own = app.buttons["conferenceParticipantTile.44444444-4444-4444-8444-444444444444"]
+        let remoteID = "conferenceParticipantTile.44444444-4444-4444-8444-444444444445"
+        let remote = app.buttons[remoteID]
+        let stage = app.scrollViews.containing(.button, identifier: remoteID).firstMatch
+        let featured = app.descendants(matching: .any).matching(identifier: "conferenceFeaturedParticipant").firstMatch
+        let microphone = app.buttons["conferenceMic"]
+
+        let gallery = app.buttons["conferenceLayoutGallery"]
+        let speaker = app.buttons["conferenceLayoutSpeaker"]
+
+        func videoFrame(_ tile: XCUIElement, file: StaticString = #filePath, line: UInt = #line) -> CGRect {
+            XCTAssertTrue(tile.waitForExistence(timeout: 5), file: file, line: line)
+            let frame = tile.frame
+            XCTAssertGreaterThan(frame.height, 0, file: file, line: line)
+            XCTAssertEqual(frame.height, frame.width * 9 / 16, accuracy: 2, file: file, line: line)
+            XCTAssertGreaterThan(frame.minY, gallery.frame.maxY, file: file, line: line)
+            XCTAssertLessThan(frame.maxY, microphone.frame.minY, file: file, line: line)
+            return frame
+        }
+
+        func checkGalleryTiles() {
+            XCTAssertTrue(gallery.isSelected)
+            XCTAssertTrue(stage.waitForExistence(timeout: 5))
+            let viewport = stage.frame
+            let remoteFrame = videoFrame(remote)
+            let ownFrame = videoFrame(own)
+            XCTAssertEqual(remoteFrame.width, ownFrame.width, accuracy: 1)
+            let pair = remoteFrame.union(ownFrame)
+            XCTAssertTrue(viewport.insetBy(dx: -1, dy: -1).contains(pair))
+            XCTAssertEqual(pair.midX, viewport.midX, accuracy: 2)
+            XCTAssertEqual(pair.midY, viewport.midY, accuracy: 2)
+
+            // A portrait or narrowed stage should stack the tiles. Allow either axis near a tie.
+            // Twelve points leaves room for the gutter and screen-pixel rounding.
+            let landscapeWidth = min((viewport.width - 12) / 2, viewport.height * 16 / 9)
+            let stackedWidth = min(viewport.width, (viewport.height - 12) * 16 / 9 / 2)
+            XCTAssertGreaterThanOrEqual(remoteFrame.width + 1, max(landscapeWidth, stackedWidth))
+            if remoteFrame.maxY < ownFrame.minY {
+                XCTAssertEqual(remoteFrame.midX, ownFrame.midX, accuracy: 1)
+            } else {
+                XCTAssertEqual(remoteFrame.midY, ownFrame.midY, accuracy: 1)
+                XCTAssertLessThan(remoteFrame.maxX, ownFrame.minX)
+            }
+        }
+
+        gallery.tap()
+        checkOrientations(app, screen: "conference-two-gallery") { window in
+            checkGalleryTiles()
+            if UIDevice.current.userInterfaceIdiom == .pad, window.width > window.height, window.width >= 780 {
+                let fullWidth = stage.frame.width
+                app.buttons["conferenceParticipants"].tap()
+                let close = app.buttons["conferencePanelClose"]
+                XCTAssertTrue(close.waitForExistence(timeout: 5))
+                XCTAssertLessThan(stage.frame.width, fullWidth)
+                checkGalleryTiles()
+                let snapshot = XCTAttachment(screenshot: XCUIScreen.main.screenshot())
+                snapshot.name = "ipad-landscape-conference-two-gallery-panel"
+                snapshot.lifetime = .keepAlways
+                add(snapshot)
+                close.tap()
+                XCTAssertEqual(stage.frame.width, fullWidth, accuracy: 1)
+                checkGalleryTiles()
+            }
+        }
+
+        speaker.tap()
+        checkOrientations(app, screen: "conference-two-speaker") { _ in
+            XCTAssertTrue(speaker.isSelected)
+            let featuredFrame = videoFrame(featured)
+            let ownFrame = videoFrame(own)
+            XCTAssertGreaterThan(featuredFrame.width, ownFrame.width)
+            XCTAssertLessThan(featuredFrame.maxY, ownFrame.minY)
+            XCTAssertEqual(featuredFrame.midX, ownFrame.midX, accuracy: 2)
+        }
+        leaveConference(app)
+    }
+
+    /// Проверяет индикацию речи только у говорящего участника в сетке, на основной плитке и в миниатюре.
+    func testConferenceHighlightsOnlyTheParticipantWhoIsSpeaking() {
+        let app = launch(["-conference-speaking"])
+        createConference(app, title: "Индикация голоса")
+        joinConference(app)
+
+        let own = app.buttons["conferenceParticipantTile.44444444-4444-4444-8444-444444444444"]
+        let remote = app.buttons["conferenceParticipantTile.44444444-4444-4444-8444-444444444445"]
+        let mic = app.buttons["conferenceMic"]
+        let caption = app.descendants(matching: .any).matching(identifier: "conferenceFeaturedCaption").firstMatch
+
+        app.buttons["conferenceLayoutGallery"].tap()
+        waitForValue("Микрофон выключен", of: own)
+        waitForValue("Микрофон включён", of: remote)
+        mic.tap()
+        waitForValue("Говорит", of: own)
+        waitForValue("Микрофон включён", of: remote)
+        capture(app, name: "conference-speaking-gallery")
+
+        app.buttons["conferenceLayoutSpeaker"].tap()
+        waitForValue("Говорит", of: caption)
+        waitForValue("Микрофон включён", of: remote)
+        capture(app, name: "conference-speaking-featured")
+
+        remote.tap()
+        waitForValue("Микрофон включён", of: caption)
+        waitForValue("Говорит", of: own)
+        capture(app, name: "conference-speaking-thumbnail")
+        mic.tap()
+        waitForValue("Микрофон выключен", of: own)
+        leaveConference(app)
+    }
+
+    /// Проходит создание встречи, управление источниками, чат и выход через интерфейс SwiftUI. Ответы REST, сигналинг, разрешения и кадры камеры воспроизводят тестовые сервисы сборки DEBUG.
     func testConferenceCreateMediaControlsChatAndLeave() {
         let app = launch(["-conference-three-participants"])
         createConference(app, title: "Встреча команды")
@@ -1856,13 +2100,13 @@ import UIKit
         XCTAssertTrue(ownTile.waitForExistence(timeout: 5))
         let guestFrame = guestTile.frame, ownFrame = ownTile.frame
         XCTAssertEqual(guestFrame.width, ownFrame.width, accuracy: 1)
+        XCTAssertEqual(guestFrame.height, guestFrame.width * 9 / 16, accuracy: 2)
+        XCTAssertEqual(ownFrame.height, guestFrame.height, accuracy: 1)
         XCTAssertEqual(guestFrame.minY, ownFrame.minY, accuracy: 1)
         XCTAssertGreaterThan(ownFrame.minX, guestFrame.maxX)
         XCTAssertEqual(guestFrame.union(ownFrame).midX, featured.frame.midX, accuracy: 2)
-        if app.frame.width < 780 {
-            XCTAssertEqual(guestFrame.minX, featured.frame.minX, accuracy: 2)
-            XCTAssertEqual(ownFrame.maxX, featured.frame.maxX, accuracy: 2)
-        }
+        XCTAssertGreaterThanOrEqual(guestFrame.minX, featured.frame.minX - 2)
+        XCTAssertLessThanOrEqual(ownFrame.maxX, featured.frame.maxX + 2)
         let controls = app.buttons["conferenceMic"].frame
         XCTAssertLessThanOrEqual(app.frame.maxY - controls.maxY, 26)
         XCTAssertGreaterThanOrEqual(controls.minY, ownFrame.maxY)
@@ -1914,6 +2158,7 @@ import UIKit
         leaveConference(app)
     }
 
+    /// Проверяет предложенные сервером форматы записи и остановку записи после подтверждения.
     func testConferenceRecordingOffersServerFormatsAndStopsWithConfirmation() {
         let app = launch()
         createConference(app, title: "Дизайн-синхронизация")
@@ -1943,6 +2188,7 @@ import UIKit
         leaveConference(app)
     }
 
+    /// Проверяет возможность покинуть встречу после отказа в доступе к камере при выключенном захвате.
     func testConferenceDeniedCameraPermissionKeepsCaptureOffAndCanLeave() {
         let app = launch(["-media-permission-denied"])
         createConference(app, title: "Проверка разрешений")
@@ -1957,6 +2203,11 @@ import UIKit
         leaveConference(app)
     }
 
+    /// Прокручивает экран звонка до запрошенного элемента управления и возвращает доступную кнопку.
+    /// - Parameters:
+    ///   - app: Приложение с открытым интерфейсом звонка.
+    ///   - id: Идентификатор элемента управления.
+    ///   - towardTop: Искать ли кнопку в направлении начала страницы.
     private func callControl(_ app: XCUIApplication, _ id: String, towardTop: Bool = false) -> XCUIElement {
         let control = app.buttons[id]
         XCTAssertTrue(control.waitForExistence(timeout: 10))
@@ -1967,13 +2218,17 @@ import UIKit
         return control
     }
 
+    /// Нажимает ответ на входящий звонок и ожидает экран, соответствующий устройству, принявшему вызов.
+    /// - Parameters:
+    ///   - app: Приложение, получившее тестовый входящий звонок.
+    ///   - acceptedElsewhere: Ожидать ли сообщение об ответе на другом устройстве.
     private func answerIncomingCall(_ app: XCUIApplication, acceptedElsewhere: Bool = false) {
         let answer = callControl(app, "directCallAnswer")
         let target = acceptedElsewhere ? app.staticTexts["Звонок продолжается на другом устройстве."] : app.buttons["directCallMic"]
         tapAfterLogin(answer, in: app, expecting: target, unchanged: { answer.exists && answer.isEnabled })
     }
 
-    /// DEBUG CallKit, REST and SFU doubles exercise application state; this is not a device VoIP test.
+    /// Проверяет ответ на входящий звонок, управление, сворачивание и завершение. CallKit, REST и медиасервер заменены сервисами сборки DEBUG.
     func testDirectIncomingAnswerControlsMinimizeAndEnd() {
         let app = launch(["-call-incoming"]); login(app)
         XCTAssertTrue(app.buttons["directCallAnswer"].waitForExistence(timeout: 10))
@@ -2009,6 +2264,7 @@ import UIKit
         XCTAssertFalse(app.buttons["directCallBanner"].exists)
     }
 
+    /// Запускает, останавливает и повторно запускает демонстрацию экрана на тестовой конференции.
     func testScreenShareStartStopAndRestartInConferenceWithFixtures() {
         let app = launch()
         createConference(app, title: "Демонстрация экрана")
@@ -2033,6 +2289,7 @@ import UIKit
         leaveConference(app)
     }
 
+    /// Проверяет сохранение личного звонка и микрофона при конфликте публикации экрана.
     func testScreenConflictKeepsDirectCallAndMicrophoneWithFixtures() {
         let app = launch(["-call-incoming", "-screen-conflict"]); login(app)
         answerIncomingCall(app)
@@ -2049,6 +2306,7 @@ import UIKit
         XCTAssertTrue(app.buttons["directCallDone"].waitForExistence(timeout: 10))
     }
 
+    /// Проверяет отмену исходящего личного звонка, начатого из переписки.
     func testDirectOutgoingCancelFromConversation() {
         let app = launch(); login(app)
         let chat = app.buttons["conversation.22222222-2222-4222-8222-222222222222"]
@@ -2077,6 +2335,7 @@ import UIKit
         callControl(app, "directCallEnd").tap()
     }
 
+    /// Проверяет отсутствие управления локальным захватом, если на личный звонок ответили на другом устройстве.
     func testDirectCallAcceptedOnOtherDeviceHasNoCaptureControls() {
         let app = launch(["-call-incoming", "-call-other-device"]); login(app)
         answerIncomingCall(app, acceptedElsewhere: true)
@@ -2087,6 +2346,7 @@ import UIKit
         capture(app, name: "stage05-other-device")
     }
 
+    /// Проверяет включение и отключение обычных push-уведомлений с тестовой выдачей токена.
     func testOrdinaryPushOptInAndDisableWithFixtureToken() {
         let app = launch(); login(app)
         openProfile(in: app)
@@ -2095,7 +2355,7 @@ import UIKit
             XCTAssertFalse(app.buttons["profileMenu.back"].exists)
         }
         capture(app, name: app.frame.width >= 780 ? "account-home-tablet" : "account-home-phone")
-        selectAccountSection("notifications", in: app)
+        selectAccountSection("connection", in: app)
         let devices = app.buttons["notificationDevicesDetails"]
         revealEntireText(devices, in: app); devices.tap()
         let toggle = app.switches["pushNotificationsToggle"]
@@ -2118,6 +2378,7 @@ import UIKit
         XCTAssertEqual(XCTWaiter.wait(for: [disabled], timeout: 10), .completed)
     }
 
+    /// Проверяет повторную загрузку списка встреч из состояния отсутствия сети в демонстрационном режиме.
     func testOfflineStateCanRetryInExplicitDemo() {
         let app = launch(["-demo", "-offline"])
         XCTAssertTrue(app.staticTexts["Нет подключения"].waitForExistence(timeout: 5))
@@ -2125,6 +2386,7 @@ import UIKit
         XCTAssertTrue(app.buttons["meeting.1"].waitForExistence(timeout: 5))
     }
 
+    /// Проверяет отдельные экраны пустого списка, ошибки и загрузки при запуске демонстрации.
     func testStateScreensAreReachable() {
         for (flag, title) in [("-empty", "Здесь пока пусто"), ("-error", "Не удалось загрузить"), ("-loading", "Загружаем пространство…")] {
             let app = launch(["-demo", flag])
@@ -2133,6 +2395,7 @@ import UIKit
         }
     }
 
+    /// Проверяет доступность навигации и настроек оформления при увеличенном системном размере текста.
     func testLargeTextNavigationAndAppearance() {
         let app = launch(["-demo", "-UIPreferredContentSizeCategoryName", "UICTContentSizeCategoryAccessibilityXXXL"])
         XCTAssertTrue(app.buttons["tab.profile"].waitForExistence(timeout: 5))
@@ -2157,6 +2420,7 @@ import UIKit
 }
 
 extension FoundationUITests {
+    /// Проверяет отображение текущего рабочего пространства в карточках аккаунтов и переход между ними.
     func testAccountCardsShowAndSwitchCurrentWorkspace() {
         let app = launch(["-demo"])
         openProfile(in: app)
@@ -2181,6 +2445,7 @@ extension FoundationUITests {
         XCTAssertTrue(app.staticTexts["accounts.deleteSummary"].label.contains("alex@studio.example.org"))
     }
 
+    /// Проверяет карточку контакта и навигацию по компактным вкладкам.
     func testContactInfoCardAndCompactTabs() {
         let app = launch(["-demo"])
         let chats = app.buttons["tab.messages"]
@@ -2200,8 +2465,25 @@ extension FoundationUITests {
         XCTAssertTrue(close.waitForExistence(timeout: 5))
         XCTAssertTrue(app.staticTexts["О контакте"].exists)
         let media = app.buttons["chatInfo.tab.media"]
+        let message = app.buttons["Сообщение"]
+        let call = app.buttons["chatInfo.call"]
+        XCTAssertTrue(message.isHittable && call.isHittable)
+        XCTAssertEqual(message.frame.midY, call.frame.midY, accuracy: 1)
+        if app.frame.width < 600 {
+            XCTAssertEqual(message.frame.width, call.frame.width, accuracy: 1)
+            let tabs = media.frame.union(app.buttons["chatInfo.tab.link"].frame)
+            XCTAssertLessThanOrEqual(tabs.width + 8, 333)
+        }
         XCTAssertTrue(media.isSelected)
+        XCTAssertTrue(app.staticTexts["В этом чате пока нет медиа."].isHittable)
         capture(app, name: "contact-info-card")
+        if UIDevice.current.userInterfaceIdiom == .pad {
+            let orientation = XCUIDevice.shared.orientation
+            defer { XCUIDevice.shared.orientation = orientation }
+            checkInfoSheetOrientations(app, id: "chatContactSheet", screen: "contact-info-card") {
+                XCTAssertTrue(close.isHittable && media.isHittable)
+            }
+        }
         app.buttons["chatInfo.tab.file"].tap()
         let file = app.buttons.matching(NSPredicate(format: "label CONTAINS %@", "Обзор продукта.pdf")).firstMatch
         XCTAssertTrue(file.waitForExistence(timeout: 5))
@@ -2211,7 +2493,8 @@ extension FoundationUITests {
         XCTAssertTrue(app.buttons["chat.info"].waitForExistence(timeout: 5))
     }
 
-    func testChatThreadsKeepWorkspaceTabs() {
+    /// Проверяет видимость вкладок рабочего пространства в личных и групповых чатах с учётом типа устройства.
+    func testChatThreadsUseDeviceWorkspaceTabs() {
         let original = XCUIDevice.shared.orientation
         XCUIDevice.shared.orientation = .portrait
         defer { XCUIDevice.shared.orientation = original }
@@ -2221,6 +2504,8 @@ extension FoundationUITests {
         let profile = app.buttons["tab.profile"]
         let composer = app.textFields["messageDraft"]
         let heading = app.buttons["chat.info"]
+        let back = app.buttons["chat.back"]
+        let phone = UIDevice.current.userInterfaceIdiom == .phone
         chats.tap()
 
         for (id, name, tab, destination, screenshot) in [
@@ -2233,23 +2518,32 @@ extension FoundationUITests {
             XCTAssertTrue(heading.waitForExistence(timeout: 5))
             XCTAssertTrue(heading.label.contains(name))
             XCTAssertTrue(composer.isHittable)
-            for workspaceTab in [meetings, chats, profile] {
-                XCTAssertTrue(workspaceTab.isHittable)
-                XCTAssertLessThanOrEqual(composer.frame.maxY, workspaceTab.frame.minY)
+            if phone {
+                XCTAssertTrue([meetings, chats, profile].allSatisfy { !$0.exists })
+            } else {
+                for workspaceTab in [meetings, chats, profile] {
+                    XCTAssertTrue(workspaceTab.isHittable)
+                    XCTAssertLessThanOrEqual(composer.frame.maxY, workspaceTab.frame.minY)
+                }
+                XCTAssertTrue(chats.isSelected)
             }
-            XCTAssertTrue(chats.isSelected)
             capture(app, name: screenshot)
 
+            if phone {
+                back.tap()
+                XCTAssertTrue(chats.waitForExistence(timeout: 5))
+                XCTAssertTrue(chat.isHittable)
+            }
             tab.tap()
             XCTAssertTrue(destination.waitForExistence(timeout: 5))
             XCTAssertTrue(tab.isSelected)
             chats.tap()
-            XCTAssertTrue(heading.waitForExistence(timeout: 5))
-            XCTAssertTrue(heading.label.contains(name))
             XCTAssertTrue(chats.isSelected)
-
-            let back = app.buttons["chat.back"]
-            if back.isHittable { back.tap() }
+            if !phone {
+                XCTAssertTrue(heading.waitForExistence(timeout: 5))
+                XCTAssertTrue(heading.label.contains(name))
+                if back.isHittable { back.tap() }
+            }
         }
 
         reveal(app.buttons["chat.1"], in: app)
@@ -2278,12 +2572,18 @@ extension FoundationUITests {
         snapshot.name = "group-thread-keyboard"
         snapshot.lifetime = .keepAlways
         add(snapshot)
+        if phone {
+            XCTAssertFalse(chats.exists)
+            back.tap()
+            XCTAssertTrue(chats.waitForExistence(timeout: 5))
+        }
     }
 
+    /// Проверяет сведения о группе и действия, связанные с её участниками.
     func testGroupInfoCardAndMembership() {
         let app = launch(["-demo"])
         app.buttons["tab.messages"].tap()
-        let group = app.buttons["chat.3"]
+        let group = app.buttons["chat.1"]
         reveal(group, in: app); group.tap()
         app.buttons["chat.menu"].tap()
         app.buttons["chat.action.info"].tap()
@@ -2291,19 +2591,64 @@ extension FoundationUITests {
         let members = app.buttons["chatGroupSheet.members"]
         XCTAssertTrue(members.waitForExistence(timeout: 5))
         XCTAssertTrue(app.staticTexts["О группе"].exists)
+        let message = app.buttons["Перейти в чат"]
+        XCTAssertTrue(message.isHittable)
+        XCTAssertEqual(message.frame.midX, members.frame.midX, accuracy: 1)
         XCTAssertTrue(app.buttons["chatInfo.tab.media"].isSelected)
-        capture(app, name: "group-info-card")
+        app.buttons["chatInfo.tab.link"].tap()
+        XCTAssertTrue(app.staticTexts["В этом чате пока нет ссылок."].isHittable)
+        capture(app, name: "group-info-card-links")
+        if UIDevice.current.userInterfaceIdiom == .pad {
+            let orientation = XCUIDevice.shared.orientation
+            defer { XCUIDevice.shared.orientation = orientation }
+            checkInfoSheetOrientations(app, id: "chatGroupSheet", screen: "group-info-card-links") {
+                XCTAssertTrue(message.isHittable && members.isHittable)
+            }
+        }
         members.tap()
         XCTAssertTrue(app.staticTexts["Дмитрий Волков"].firstMatch.waitForExistence(timeout: 5))
+        capture(app, name: "group-info-card-members")
         members.tap()
         app.buttons["chatInfo.tab.file"].tap()
         let file = app.buttons.matching(NSPredicate(format: "label CONTAINS %@", "Обзор продукта.pdf")).firstMatch
         XCTAssertTrue(file.waitForExistence(timeout: 5))
-        app.buttons["Перейти в чат"].tap()
+        message.tap()
         XCTAssertTrue(app.buttons["chat.info"].waitForExistence(timeout: 5))
         XCTAssertFalse(app.buttons["chatGroupSheet.close"].exists)
     }
 
+    /// Проверяет положение карточки после завершения поворота окна планшета.
+    /// - Parameters:
+    ///   - app: Приложение с открытой карточкой.
+    ///   - id: Идентификатор карточки контакта или группы.
+    ///   - screen: Имя для снимков обеих ориентаций.
+    ///   - check: Проверка доступности действий в карточке после поворота.
+    private func checkInfoSheetOrientations(_ app: XCUIApplication, id: String, screen: String,
+                                            check: () -> Void) {
+        let window = app.windows.firstMatch
+        let sheet = app.descendants(matching: .any)[id].firstMatch
+        checkOrientations(app, screen: screen) { _ in
+            var previousWindow = CGRect.null
+            var previousSheet = CGRect.null
+            let settled = XCTNSPredicateExpectation(predicate: NSPredicate { _, _ in
+                let bounds = window.frame
+                let card = sheet.frame
+                defer { previousWindow = bounds; previousSheet = card }
+                return bounds == previousWindow && card == previousSheet
+                    && (bounds.width < 600 || abs(bounds.midY - card.midY) <= 22)
+            }, object: nil)
+            XCTAssertEqual(XCTWaiter.wait(for: [settled], timeout: 5), .completed,
+                           "window \(window.frame), sheet \(sheet.frame)")
+            check()
+        }
+    }
+
+    /// Проверяет порядок кнопок действий по вертикали и высоту каждой области нажатия не менее 44 пунктов.
+    /// - Parameters:
+    ///   - ids: Идентификаторы кнопок в ожидаемом порядке.
+    ///   - app: Приложение с открытым списком действий.
+    ///   - file: Файл теста, в котором вызвана проверка.
+    ///   - line: Строка вызова для диагностики XCTest.
     private func assertActions(_ ids: [String], in app: XCUIApplication,
                                file: StaticString = #filePath, line: UInt = #line) {
         var lastY: CGFloat = -.infinity
@@ -2316,6 +2661,7 @@ extension FoundationUITests {
         }
     }
 
+    /// Проверяет действия меню личного чата и добавление переписки в папку.
     func testPersonalChatHeaderMenuAndFolderAssignment() {
         let app = launch(["-demo"])
         app.buttons["tab.messages"].tap()
@@ -2343,6 +2689,7 @@ extension FoundationUITests {
         XCTAssertTrue(personal.isSelected)
     }
 
+    /// Проверяет меню заголовка группы и доступные в нём действия.
     func testGroupChatHeaderMenu() {
         let app = launch(["-demo"])
         app.buttons["tab.messages"].tap()
@@ -2364,6 +2711,7 @@ extension FoundationUITests {
         XCTAssertTrue(app.staticTexts["Моя карточка"].waitForExistence(timeout: 5))
     }
 
+    /// Проверяет действия с активной тестовой встречей и открытие приглашения по ссылке.
     func testLiveMeetingActionCard() {
         let app = launch(["-meeting-actions-fixture"])
         login(app)
@@ -2399,6 +2747,7 @@ extension FoundationUITests {
         XCTAssertTrue(app.buttons["conferenceJoin"].waitForExistence(timeout: 10))
     }
 
+    /// Проверяет компоновку экрана подготовки и режима выступающего на широком экране.
     func testWideMeetingPrejoinAndSpeakerStage() throws {
         let originalOrientation = XCUIDevice.shared.orientation
         XCUIDevice.shared.orientation = .portrait
@@ -2433,6 +2782,7 @@ extension FoundationUITests {
         leaveConference(app)
     }
 
+    /// Проверяет набор действий со встречей, доступных организатору и участнику.
     func testMeetingActionsMatchOrganizerAndParticipantRoles() {
         let app = launch(["-demo"])
         let active = app.buttons["Активные"]
@@ -2471,6 +2821,7 @@ extension FoundationUITests {
 }
 
 extension FoundationUITests {
+    /// Проверяет изменение настроек из заголовка тестового чата и операции с историей переписки.
     func testLiveChatHeaderPreferencesAndHistory() {
         let app = launch(["-chat-header-fixture"])
         login(app)
@@ -2496,7 +2847,13 @@ extension FoundationUITests {
         menu.tap()
         app.buttons["chat.action.folder"].tap()
         XCTAssertTrue(option.waitForExistence(timeout: 5)); XCTAssertTrue(option.isSelected)
-        app.buttons["folderAssignment.close"].tap()
+        let closeFolder = app.buttons["folderAssignment.close"]
+        XCTAssertTrue(closeFolder.isHittable)
+        XCTAssertGreaterThanOrEqual(closeFolder.frame.width, 44)
+        XCTAssertGreaterThan(closeFolder.frame.midX, app.frame.midX)
+        capture(app, name: "chat-folder-close")
+        closeFolder.tap()
+        XCTAssertTrue(closeFolder.waitForNonExistence(timeout: 5))
 
         menu.tap()
         app.buttons["chat.action.clear"].tap()

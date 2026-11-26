@@ -5,6 +5,8 @@ import MeetSpaceDesignSystem
 enum MeetingMembership {
     case joined, left, waiting, rejected, kicked, unknown, none
 
+    /// Определяет состояние участия для карточки встречи.
+    /// - Parameter participant: Данные участника или `nil`, если членства нет.
     init(_ participant: ConferenceParticipant?) {
         guard let participant else { self = .none; return }
         if [participant.status, participant.admissionState].contains("kicked") { self = .kicked }
@@ -132,16 +134,34 @@ struct MeetingActionCard<Value: Identifiable>: View {
         }
     }
 
+    /// Форматирует дату встречи с подписью и часовым поясом.
+    /// - Parameters:
+    ///   - label: Подпись перед датой.
+    ///   - date: Момент события.
     private func dateLine(_ label: String, date: Date) -> some View {
         Text(tr(label) + ": " + calendarText(date, format: "d MMM yyyy, HH:mm xxx", zone: zone))
     }
 
+    /// Создаёт кнопку действия, доступного в карточке встречи.
+    /// - Parameters:
+    ///   - title: Название действия.
+    ///   - icon: Значок действия.
+    ///   - id: Идентификатор кнопки для автоматизации.
+    ///   - primary: Выделить основное действие.
+    ///   - destructive: Оформить действие как опасное.
+    ///   - action: Обработчик нажатия.
     private func command(_ title: String, _ icon: String, _ id: String, primary: Bool = false,
                          destructive: Bool = false, action: @escaping () -> Void) -> some View {
         Button(action: action) { actionLabel(title, icon, primary: primary, destructive: destructive) }
             .buttonStyle(.plain).accessibilityIdentifier("meetingActions." + id)
     }
 
+    /// Размещает значок и текст действия в выбранном стиле.
+    /// - Parameters:
+    ///   - title: Название действия.
+    ///   - icon: Значок слева от названия.
+    ///   - primary: Использовать основной стиль.
+    ///   - destructive: Использовать цвет опасного действия.
     private func actionLabel(_ title: String, _ icon: String, primary: Bool = false, destructive: Bool = false) -> some View {
         HStack(spacing: 8) {
             WorkspaceIcon(icon, size: 20)

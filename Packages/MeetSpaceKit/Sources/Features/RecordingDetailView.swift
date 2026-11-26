@@ -99,6 +99,7 @@ struct LiveRecordingDetail: View {
         #endif
     }
 
+    /// Открывает сведения о записи, найденной в загруженной библиотеке.
     private func load() async {
         if let row = model.items.first(where: { $0.id == id }) { await model.select(row) }
     }
@@ -247,11 +248,18 @@ struct RecordingDetailContent: View {
         return ByteCountFormatter.string(fromByteCount: total, countStyle: .file)
     }
 
+    /// Форматирует заголовок раздела в карточке записи.
+    /// - Parameter title: Название раздела.
     private func sectionHeading(_ title: String) -> some View {
         Text(tr(title)).font(MSTheme.font(16, weight: .semibold))
             .padding(.bottom, 12).accessibilityAddTraits(.isHeader)
     }
 
+    /// Показывает свойство записи и его значение с учётом размера шрифта.
+    /// - Parameters:
+    ///   - title: Название свойства.
+    ///   - value: Отображаемое значение.
+    ///   - valueID: Необязательный идентификатор значения для автоматизации.
     private func detailRow(_ title: String, _ value: String, valueID: String? = nil) -> some View {
         VStack(spacing: 0) {
             Divider()
@@ -310,6 +318,8 @@ struct RecordingDetailContent: View {
         }.frame(maxWidth: .infinity, alignment: .leading).msCard(padding: 18)
     }
 
+    /// Формирует описание файла из расширения, размера и доступности.
+    /// - Parameter file: Метаданные файла записи.
     private func fileDescription(_ file: RecordingFile) -> String {
         let size = file.sizeBytes.map { ByteCountFormatter.string(fromByteCount: $0, countStyle: .file) }
         let suffix = (file.filename as NSString).pathExtension.uppercased()
@@ -317,6 +327,8 @@ struct RecordingDetailContent: View {
             .compactMap { $0 }.joined(separator: " · ")
     }
 
+    /// Показывает значок архива или обычного файла.
+    /// - Parameter archive: Является ли файл архивом.
     private func fileIcon(archive: Bool) -> some View {
         WorkspaceIcon(archive ? "archivebox" : "doc", size: 18).foregroundStyle(MSTheme.accent)
             .frame(width: 35, height: 40).background(MSTheme.accentSoft, in: RoundedRectangle(cornerRadius: 9))
@@ -334,6 +346,11 @@ private struct RecordingPlayerView: View {
     @Environment(\.scenePhase) private var phase
     @State private var player: AVPlayer
 
+    /// Создаёт проигрыватель для локального файла записи.
+    /// - Parameters:
+    ///   - url: Адрес файла для воспроизведения.
+    ///   - audioCover: Данные обложки для аудиозаписи.
+    ///   - onFailure: Обработчик ошибки воспроизведения.
     init(url: URL, audioCover: RecordingLibraryEntry?, onFailure: @escaping () -> Void) {
         self.audioCover = audioCover
         self.onFailure = onFailure
@@ -358,7 +375,13 @@ private struct RecordingPlayerView: View {
 #if os(iOS)
 private struct RecordingExportSheet: UIViewControllerRepresentable {
     let url: URL
+    /// Открывает системное меню экспорта с выбранным файлом записи.
+    /// - Parameter context: Контекст представления SwiftUI.
     func makeUIViewController(context: Context) -> UIActivityViewController { UIActivityViewController(activityItems: [url], applicationActivities: nil) }
+    /// Сохраняет выбранный при открытии файл на всё время показа меню экспорта.
+    /// - Parameters:
+    ///   - controller: Открытый контроллер экспорта.
+    ///   - context: Контекст обновления SwiftUI.
     func updateUIViewController(_ controller: UIActivityViewController, context: Context) {}
 }
 #endif

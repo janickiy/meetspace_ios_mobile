@@ -80,6 +80,8 @@ struct AccountListPanel: View {
             .foregroundStyle(MSTheme.ink)
     }
 
+    /// Показывает карточку аккаунта с доступными действиями.
+    /// - Parameter item: Аккаунт, для которого строится карточка.
     @ViewBuilder private func card(_ item: AccountListItem) -> some View {
         let current = item.id == currentID
         let shape = RoundedRectangle(cornerRadius: wide ? 18 : 15)
@@ -179,10 +181,14 @@ struct AccountSwitcherView: View {
         }
     }
 
+    /// Находит сохранённый аккаунт по идентификатору строки списка.
+    /// - Parameter item: Строка, связанная с аккаунтом.
     private func record(_ item: AccountListItem) -> AccountRecord? {
         app.identity.index.accounts.first { $0.id == item.id }
     }
 
+    /// Форматирует адрес сервера для карточки аккаунта.
+    /// - Parameter server: Сервер аккаунта или nil для адреса примера.
     private func host(_ server: ServerOrigin?) -> String {
         guard let server else { return "meet.example.org" }
         return server.displayName + (server.url.port.map { ":\($0)" } ?? "")

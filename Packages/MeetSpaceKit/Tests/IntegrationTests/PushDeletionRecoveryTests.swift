@@ -12,12 +12,20 @@ import MeetSpaceCalling
     var authorization: NormalPushAuthorization = .authorized
     var registrations = 0
     var permissionRequests = 0
+    /// Создаёт поток тестовых событий регистрации устройства в APNs.
     init() { (events, continuation) = AsyncStream.makeStream() }
+    /// Возвращает заданный тестом статус разрешения на уведомления.
     func requestAuthorization() async throws -> NormalPushAuthorization { permissionRequests += 1; return authorization }
+    /// Завершает проверку разрешения со статусом, заданным тестом.
     func refreshAuthorization() async { }
+    /// Учитывает попытку зарегистрировать устройство для push-уведомлений.
     func register() { registrations += 1 }
+    /// Принимает отмену регистрации без обращения к APNs.
     func unregister() { }
+    /// Отправляет событие успешной регистрации устройства в поток теста.
+    /// - Parameter deviceToken: Токен, который должна получить модель.
     func didRegister(deviceToken: Data) { continuation.yield(.token(deviceToken)) }
+    /// Отправляет в поток теста событие ошибки регистрации.
     func didFailRegistration() { continuation.yield(.failure(.registrationFailed)) }
 }
 
@@ -35,11 +43,16 @@ private actor DeletionRecoveryStore: PushRegistrationStore {
     private(set) var writeHeld = false
     private(set) var journalWrites = 0
     private(set) var confirmationWrites = 0
+    /// Инициализирует хранилище с заданным журналом привязок.
+    /// - Parameter journal: Исходный журнал регистрации.
     init(_ journal: PushRegistrationJournal) { self.journal = journal }
+    /// Возвращает проверенный журнал или имитирует ошибку чтения.
     func load() throws -> PushRegistrationJournal {
         if journalReadFails { throw ClientError.storage }
         return try journal.validated()
     }
+    /// Имитирует запись журнала с управляемой задержкой и ошибками.
+    /// - Parameter value: Новое состояние журнала устройства.
     func save(_ value: PushRegistrationJournal) async throws {
         journalWrites += 1
         if holdNextWrite {
@@ -50,24 +63,36 @@ private actor DeletionRecoveryStore: PushRegistrationStore {
         if journalFailures > 0 { journalFailures -= 1; throw ClientError.storage }
         journal = try value.validated()
     }
+    /// Возвращает подтверждения удаления, сохранённые отдельно от журнала привязок.
     func loadDeletionConfirmations() async throws -> [PushAccountDeletionConfirmation] {
         if confirmationReadFails { throw ClientError.storage }
         if confirmationReadFailures > 0 { confirmationReadFailures -= 1; throw ClientError.storage }
         return confirmations
     }
+    /// Регистрирует в тестовом хранилище подтверждение удаления аккаунта.
+    /// - Parameter value: Сервер и пользователь, для которых подтверждено удаление.
     func recordDeletionConfirmation(_ value: PushAccountDeletionConfirmation) async throws {
         confirmationWrites += 1
         if confirmationFailures > 0 { confirmationFailures -= 1; throw ClientError.storage }
         if !confirmations.contains(value) { confirmations.append(value) }
         _ = try PushRegistrationJournal(confirmedDeletions: confirmations).validated()
     }
+    /// Задаёт раздельные ошибки журнала и подтверждений удаления.
+    /// - Parameters:
+    ///   - journalWrites: Число отказов записи журнала.
+    ///   - confirmationWrites: Число отказов записи подтверждений.
+    ///   - journalRead: Имитировать сбой чтения журнала.
+    ///   - confirmationRead: Имитировать сбой чтения подтверждений.
     func fail(journalWrites: Int = 0, confirmationWrites: Int = 0,
               journalRead: Bool = false, confirmationRead: Bool = false) {
         journalFailures = journalWrites; confirmationFailures = confirmationWrites
         journalReadFails = journalRead; confirmationReadFails = confirmationRead
     }
+    /// Задерживает ближайшую запись журнала для проверки параллельной очистки.
     func holdNextJournalWrite() { holdNextWrite = true }
+    /// Разрешает отложенной записи журнала завершиться.
     func releaseJournalWrite() { holdNextWrite = false; writeGate?.resume(); writeGate = nil }
+    /// Настраивает однократный сбой следующего чтения подтверждений.
     func failNextConfirmationQuery() { confirmationReadFailures = 1 }
 }
 
@@ -77,10 +102,17 @@ private actor JournalOnlyDeletionRecoveryStore: PushRegistrationStore {
     private var journal: PushRegistrationJournal
     private let failedWrite: Int
     private(set) var writes = 0
+    /// Создаёт хранилище журнала с ошибкой на выбранной по счёту записи.
+    /// - Parameters:
+    ///   - journal: Исходный журнал.
+    ///   - failedWrite: Номер записи, которая должна завершиться ошибкой.
     init(_ journal: PushRegistrationJournal, failedWrite: Int) {
         self.journal = journal; self.failedWrite = failedWrite
     }
+    /// Возвращает журнал после проверки его структуры.
     func load() throws -> PushRegistrationJournal { try journal.validated() }
+    /// Сохраняет проверенный журнал или выдаёт ошибку на заданной попытке.
+    /// - Parameter value: Сохраняемый журнал привязок.
     func save(_ value: PushRegistrationJournal) throws {
         writes += 1
         if writes == failedWrite { throw ClientError.storage }
@@ -95,22 +127,36 @@ private actor DeletionRecoveryService: NotificationDevicesServing {
     private(set) var registrations = 0
     private(set) var revocations = 0
     private(set) var capabilityReads = 0
+    /// Настраивает тестовый сервис восстановления для конкретного аккаунта.
+    /// - Parameters:
+    ///   - origin: Сервер аккаунта.
+    ///   - userID: Идентификатор пользователя.
+    ///   - unauthorized: Имитировать потерю авторизации.
     init(origin: ServerOrigin = Fixture.origin, userID: UUID = Fixture.userID, unauthorized: Bool = false) {
         self.origin = origin; self.userID = userID; self.unauthorized = unauthorized
     }
+    /// Возвращает возможности доставки push или имитирует потерю авторизации.
     func capabilities() throws -> IntegrationCapabilities {
         capabilityReads += 1
         if unauthorized { throw APIError.httpStatus(401) }
         return IntegrationCapabilities(push: "http")
     }
+    /// Фиксирует ошибку теста, если очистка запрашивает список всех устройств аккаунта.
     func devices() -> [NotificationDevice] { Issue.record("Recovery must not enumerate other devices"); return [] }
+    /// Возвращает начальные параметры уведомлений для теста восстановления.
     func preferences() -> NotificationPreferences { NotificationPreferences() }
+    /// Возвращает переданные параметры как ответ тестового сервиса.
+    /// - Parameter value: Сохраняемые параметры уведомлений.
     func savePreferences(_ value: NotificationPreferences) -> NotificationPreferences { value }
+    /// Учитывает регистрацию тестового устройства и проверяет доступ аккаунта.
+    /// - Parameter token: Токен устройства для регистрации.
     func register(token: String) throws -> NotificationDevice {
         registrations += 1
         if unauthorized { throw APIError.httpStatus(401) }
         return NotificationDevice(id: UUID(), platform: "ios", provider: "http", createdAt: Date(), updatedAt: Date())
     }
+    /// Учитывает отзыв устройства и проверяет доступ аккаунта.
+    /// - Parameter deviceID: Серверный идентификатор устройства.
     func revoke(_ deviceID: UUID) throws {
         revocations += 1
         if unauthorized { throw APIError.httpStatus(401) }

@@ -14,13 +14,24 @@ public final class ScreenFrameConverter {
     private var y = OwnedImageBuffer()
     private var uv = OwnedImageBuffer()
 
+    /// Настраивает преобразование кадров экрана с ограничением выходных размеров.
+    /// - Parameters:
+    ///   - maxWidth: Предельная ширина изображения в пикселях.
+    ///   - maxHeight: Предельная высота изображения в пикселях.
     public init(maxWidth: Int = 1280, maxHeight: Int = 720) {
         maxLongEdge = min(1280, max(maxWidth, maxHeight))
         maxShortEdge = min(720, min(maxWidth, maxHeight))
     }
 
+    /// Освобождает промежуточные буферы преобразования изображения.
     public func releaseBuffers() { rgb = OwnedImageBuffer(); y = OwnedImageBuffer(); uv = OwnedImageBuffer() }
 
+    /// Масштабирует и поворачивает изображение ReplayKit, возвращая плотно упакованный кадр BGRA.
+    /// - Parameters:
+    ///   - input: Исходный пиксельный буфер ReplayKit.
+    ///   - orientation: Ориентация, указанная в метаданных видеокадра.
+    ///   - sessionID: Идентификатор сеанса, которому принадлежит кадр.
+    ///   - timestampNs: Время показа исходного кадра в наносекундах.
     public func convert(_ input: CVPixelBuffer, orientation: CGImagePropertyOrientation,
                  sessionID: UUID, timestampNs: Int64) throws -> ScreenBroadcastFrame {
         let width = CVPixelBufferGetWidth(input), height = CVPixelBufferGetHeight(input)
@@ -120,6 +131,8 @@ public final class ScreenFrameConverter {
             rowBytes: outputWidth * 4, timestampNs: timestampNs, pixels: pixels)
     }
 
+    /// Превращает код ошибки vImage в ошибку преобразования кадра.
+    /// - Parameter result: Результат операции vImage.
     private func checked(_ result: vImage_Error) throws {
         guard result == kvImageNoError else { throw ScreenFrameConversionError.conversion }
     }
@@ -128,7 +141,13 @@ public final class ScreenFrameConverter {
 private final class OwnedImageBuffer {
     var buffer = vImage_Buffer()
     private var capacity = 0
+    /// Освобождает память изображения, выделенную для промежуточного буфера.
     deinit { free(buffer.data) }
+    /// Подбирает буфер нужного размера и переиспользует выделенную память, когда она подходит.
+    /// - Parameters:
+    ///   - width: Ширина изображения в пикселях.
+    ///   - height: Высота изображения в пикселях.
+    ///   - bytesPerPixel: Число байтов, необходимых для одного пикселя строки.
     func resize(width: Int, height: Int, bytesPerPixel: Int) throws {
         if buffer.width == width, buffer.height == height, buffer.rowBytes == width * bytesPerPixel { return }
         let required = width * height * bytesPerPixel

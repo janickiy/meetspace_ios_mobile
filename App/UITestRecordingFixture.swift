@@ -21,6 +21,11 @@ enum UITestRecordingFixture {
 actor UITestRecordingDownloads: RecordingDownloading {
     private let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString, isDirectory: true)
     private var closed = false
+    /// Проверяет адрес и контрольную сумму тестовой записи и записывает её во временный файл.
+    /// - Parameters:
+    ///   - url: Адрес загрузки на тестовом хосте.
+    ///   - file: Метаданные записи с типом файла и ожидаемой контрольной суммой.
+    ///   - progress: Обработчик завершения загрузки со значением прогресса 1.
     func download(url: URL, file: RecordingFile, progress: TransferProgress?) async throws -> URL {
         guard !closed, url.host == "recording.fixture", [UITestRecordingFixture.sha256, UITestRecordingFixture.audioSHA256].contains(file.checksumSHA256 ?? "") else { throw APIError.invalidResponse }
         try FileManager.default.createDirectory(at: root, withIntermediateDirectories: true)
@@ -29,7 +34,10 @@ actor UITestRecordingDownloads: RecordingDownloading {
         try bytes.write(to: local); progress?(1)
         return local
     }
+    /// Удаляет временный файл записи из каталога этой тестовой загрузки.
+    /// - Parameter url: Локальный адрес ранее загруженной записи.
     func remove(_ url: URL) { if url.deletingLastPathComponent() == root { try? FileManager.default.removeItem(at: url) } }
+    /// Завершает работу тестового загрузчика и удаляет его временный каталог.
     func close() { closed = true; try? FileManager.default.removeItem(at: root) }
 }
 #endif

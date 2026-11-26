@@ -23,6 +23,11 @@ import MeetSpaceAPI
     @ObservationIgnored private var restored = false
     @ObservationIgnored private var restoring: Task<CalendarPreferences, Error>?
 
+    /// Создаёт модель календаря для загрузки и редактирования встреч аккаунта.
+    /// - Parameters:
+    ///   - repository: Репозиторий календарных встреч.
+    ///   - preferences: Хранилище режима отображения и часового пояса.
+    ///   - now: День, выбранный при создании календаря.
     public init(repository: CalendarRepository, preferences: any CalendarPreferencesStore = MemoryCalendarPreferencesStore(), now: Date = Date()) {
         self.repository = repository; store = preferences; selectedDay = now
     }
@@ -31,12 +36,16 @@ import MeetSpaceAPI
     public var interval: DateInterval { MeetingCalendar.interval(containing: selectedDay, mode: preferences.displayMode, in: zone) }
     public var hasMore: Bool { pages.values.contains { $0.nextCursor != nil } }
     public var dayMeetings: [Conference] { meetings.filter { calendar.isDate(MeetingCalendar.timelineDate($0), inSameDayAs: selectedDay) } }
+    /// Проверяет, может ли текущий пользователь изменить запланированную встречу.
+    /// - Parameter meeting: Встреча, для которой проверяются статус и владелец.
     public func canManage(_ meeting: Conference) -> Bool { meeting.ownerId == repository.userID && meeting.status == "scheduled" }
+    /// Восстанавливает настройки календаря и загружает встречи для выбранного периода.
     public func initialize() async {
         guard !closed else { return }
         await restorePreferences()
         await load()
     }
+    /// Однократно восстанавливает и проверяет сохранённый режим календаря и часовой пояс.
     func restorePreferences() async {
         guard !closed, !restored else { return }
         let request = restoring ?? Task { [store] in try await store.load().validated() }
@@ -49,31 +58,44 @@ import MeetSpaceAPI
         case .failure: error = "Не удалось восстановить настройки календаря."
         }
     }
+    /// Выбирает день и при смене видимого периода загружает его встречи.
+    /// - Parameter date: Дата, которую нужно выделить.
     public func selectDay(_ date: Date) async {
         guard !closed, MeetingCalendar.isValidInstant(date) else { return }
         let previous = interval; selectedDay = date
         if previous != interval { await load() }
     }
+    /// Перемещает календарь на заданное число недель или месяцев в текущем режиме.
+    /// - Parameter offset: Число периодов со знаком направления.
     public func movePeriod(_ offset: Int) async {
         guard let next = calendar.date(byAdding: preferences.displayMode == .week ? .weekOfYear : .month, value: offset, to: selectedDay) else { return }
         await selectDay(next)
     }
+    /// Меняет фильтр участия и загружает соответствующие встречи.
+    /// - Parameter value: Какие встречи показывать: все, организованные пользователем или с его участием.
     public func selectScope(_ value: ConferenceTimelineScope) async { guard !closed else { return }; scope = value; await load() }
+    /// Сохраняет режим отображения календаря и обновляет видимый период.
+    /// - Parameter mode: Показ недели или месяца.
     public func selectMode(_ mode: CalendarDisplayMode) async {
         await restorePreferences()
         guard !closed, preferences.displayMode != mode else { return }
         preferences.displayMode = mode; await savePreferences(); await load()
     }
+    /// Сохраняет часовой пояс и обновляет встречи для пересчитанного периода.
+    /// - Parameter identifier: Идентификатор часового пояса.
     public func selectTimeZone(_ identifier: String) async {
         await restorePreferences()
         guard !closed, TimeZone(identifier: identifier) != nil, preferences.timeZoneIdentifier != identifier else { return }
         // Keep the selected instant: changing presentation timezone must not move a meeting.
         preferences.timeZoneIdentifier = identifier; await savePreferences(); await load()
     }
+    /// Сохраняет предпочтения календаря и отражает ошибку записи в состоянии экрана.
     private func savePreferences() async {
         do { try await store.save(preferences) }
         catch { if !closed { self.error = "Не удалось сохранить настройки календаря." } }
     }
+    /// Загружает встречи за видимый период с учётом текущих фильтров.
+    /// - Parameter more: Загрузить следующую страницу вместо начала списка.
     public func load(more: Bool = false) async {
         guard !closed, !more || !loading else { return }
         let generation = UUID(); epoch = generation
@@ -119,6 +141,12 @@ import MeetSpaceAPI
         }
         state = pages.isEmpty && !feedErrors.isEmpty ? .failed : meetings.isEmpty ? .empty : .content
     }
+    /// Создаёт запланированную встречу и обновляет календарь после подтверждения.
+    /// - Parameters:
+    ///   - title: Название встречи.
+    ///   - at: Дата и время начала.
+    ///   - duration: Длительность в минутах, если указана.
+    ///   - waitingRoom: Включить ли зал ожидания.
     public func create(title: String, at: Date, duration: Int?, waitingRoom: Bool) async -> Bool {
         guard !busy, !closed, !creationUncertain else { return false }
         busy = true; error = nil; defer { busy = false }
@@ -138,7 +166,13 @@ import MeetSpaceAPI
             return false
         }
     }
+    /// Разрешает повторное создание после проверки пользователем исхода предыдущего запроса.
     public func acknowledgeCreationCheck() { creationUncertain = false; error = nil }
+    /// Обновляет расписание встречи и перечитывает календарь после успешного переноса.
+    /// - Parameters:
+    ///   - meeting: Встреча, которую переносит организатор.
+    ///   - at: Новые дата и время начала.
+    ///   - duration: Новая длительность в минутах, если указана.
     public func reschedule(_ meeting: Conference, at: Date, duration: Int?) async -> Bool {
         guard !busy, !closed, canManage(meeting) else { return false }
         busy = true; error = nil; defer { busy = false }
@@ -147,12 +181,15 @@ import MeetSpaceAPI
             guard !closed else { return false }; selectedDay = at; await load(); return true
         } catch { if !closed { self.error = userMessage(error) }; return false }
     }
+    /// Отменяет запланированную встречу и обновляет календарь.
+    /// - Parameter meeting: Встреча, которую отменяет организатор.
     public func cancel(_ meeting: Conference) async {
         guard !busy, !closed, canManage(meeting) else { return }
         busy = true; error = nil; defer { busy = false }
         do { _ = try await repository.cancel(meeting.id); guard !closed else { return }; await load() }
         catch { if !closed { self.error = userMessage(error) } }
     }
+    /// Закрывает календарь, очищает данные аккаунта и исключает применение устаревших ответов.
     public func close() {
         restoring?.cancel(); restoring = nil
         closed = true; epoch = UUID(); pages = [:]; meetings = []; feedErrors = []; errorsByView = [:]; error = nil

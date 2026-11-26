@@ -4,6 +4,7 @@ import UIKit
 import MeetSpaceDesignSystem
 
 @MainActor final class TypographyAccessibilityTests: XCTestCase {
+    /// Измеряет высоту текста Inter внутри UIKit и проверяет её рост при увеличении системного размера, включая категории доступности.
     func testBundledFontsScaleInActualUIKitHostingAtAllDynamicTypeSizes() throws {
         let bodySizes: [CGFloat] = [9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21,
             22, 23, 24, 25, 26, 27, 28, 32, 34, 37, 46]

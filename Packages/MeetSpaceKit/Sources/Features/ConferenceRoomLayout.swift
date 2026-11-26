@@ -62,6 +62,8 @@ struct ConferenceRoomLayout<Header: View, Notice: View, Video: View, Panel: View
         }.background(ConferenceRoomColors.background.ignoresSafeArea())
     }
 
+    /// Показывает заголовок встречи, её статус и кнопки управления.
+    /// - Parameter wide: Использовать ли компоновку для широкого экрана.
     private func heading(wide: Bool) -> some View {
         HStack(spacing: wide ? 12 : 7) {
             Button(action: back) {
@@ -85,6 +87,8 @@ struct ConferenceRoomLayout<Header: View, Notice: View, Video: View, Panel: View
             .overlay(alignment: .bottom) { Rectangle().fill(ConferenceRoomColors.line).frame(height: 1) }
     }
 
+    /// Размещает панель управления звонком, включая прокрутку при увеличенном размере текста.
+    /// - Parameter wide: Использовать ли компоновку для широкого экрана.
     private func toolbar(wide: Bool) -> some View {
         Group {
             if typeSize.isAccessibilitySize {
@@ -98,6 +102,8 @@ struct ConferenceRoomLayout<Header: View, Notice: View, Video: View, Panel: View
             .overlay(alignment: .top) { Rectangle().fill(ConferenceRoomColors.line).frame(height: 1) }
     }
 
+    /// Строит кнопки управления встречей и выделяет активные действия.
+    /// - Parameter wide: Использовать ли компоновку для широкого экрана.
     private func controls(wide: Bool) -> some View {
         HStack(spacing: wide ? 6 : 7) {
             ForEach(actions) { control in
@@ -181,7 +187,13 @@ struct ConferenceRoomAttendee: Identifiable, Equatable {
     let tone: Tone
     var own = false
     var microphone = false
-    var speaking = false
+    var speechLevel: Double = 0
+
+    var speaking: Bool { microphone && speechLevel > 0 }
+    var microphoneStatus: String {
+        if speaking { return tr("Говорит") }
+        return tr(microphone ? "Микрофон включён" : "Микрофон выключен")
+    }
 
     enum Tone {
         case blue, amber, mint, violet
@@ -223,6 +235,7 @@ struct ConferenceRoomStage<Visual: View, ScreenShare: View>: View {
     @State private var selectedLayout: Layout?
     @State private var pinnedID: String?
     @State private var railPage: Int? = 0
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     private enum Layout { case gallery, speaker }
     private var attendees: [ConferenceRoomAttendee] { showSelf ? roster : roster.filter { !$0.own } }
@@ -232,7 +245,7 @@ struct ConferenceRoomStage<Visual: View, ScreenShare: View>: View {
         pinned ?? attendees.first(where: \.speaking) ?? attendees.first { !$0.own } ?? attendees.first
     }
     private var ordered: [ConferenceRoomAttendee] {
-        attendees.filter(\.speaking) + attendees.filter { !$0.speaking && !$0.own } + attendees.filter { !$0.speaking && $0.own }
+        attendees.filter { !$0.own } + attendees.filter(\.own)
     }
     private var countLabel: String {
         let count = roster.count, tens = count % 100, ones = count % 10
@@ -247,7 +260,8 @@ struct ConferenceRoomStage<Visual: View, ScreenShare: View>: View {
         VStack(spacing: 8) {
             viewBar.frame(maxWidth: wide ? nil : 540)
             GeometryReader { geometry in
-                let width = min(geometry.size.width, wide ? geometry.size.width : 540)
+                let pairedGallery = mode == .gallery && attendees.count == 2
+                let width = wide || pairedGallery ? geometry.size.width : min(geometry.size.width, 540)
                 ScrollView {
                     VStack(spacing: stageGap) {
                         if remoteScreen { screenShare() }
@@ -256,6 +270,8 @@ struct ConferenceRoomStage<Visual: View, ScreenShare: View>: View {
                             let sizes = speakerSizes(width: width, height: geometry.size.height, others: others.count)
                             speakerTile(featured, size: sizes.featured)
                             speakerRail(others, width: sizes.featured.width, tileHeight: sizes.railHeight)
+                        } else if pairedGallery {
+                            galleryPair(in: geometry.size)
                         } else {
                             gallery(width: width, height: geometry.size.height)
                         }
@@ -297,6 +313,12 @@ struct ConferenceRoomStage<Visual: View, ScreenShare: View>: View {
             .overlay(RoundedRectangle(cornerRadius: 13).strokeBorder(ConferenceRoomColors.line))
     }
 
+    /// Создаёт кнопку переключения раскладки видео и сбрасывает страницу миниатюр при смене режима.
+    /// - Parameters:
+    ///   - option: Режим, включаемый кнопкой.
+    ///   - label: Название режима.
+    ///   - icon: Имя значка действия.
+    ///   - id: Идентификатор элемента для тестов интерфейса и средств доступности.
     private func layoutButton(_ option: Layout, label: String, icon: String, id: String) -> some View {
         Button {
             if selectedLayout != option { railPage = 0 }
@@ -319,23 +341,34 @@ struct ConferenceRoomStage<Visual: View, ScreenShare: View>: View {
     }
 
     private let railPageSize = 3
+    private let videoAspectRatio: CGFloat = 16.0 / 9.0
     private var railGap: CGFloat { wide ? 10 : 7 }
     private var stageGap: CGFloat { wide ? 10 : 8 }
 
+    /// Рассчитывает размеры основной плитки и ленты участников с учётом доступного места.
+    /// - Parameters:
+    ///   - width: Ширина области видео в пунктах.
+    ///   - height: Высота области видео в пунктах.
+    ///   - others: Число участников помимо основного.
     private func speakerSizes(width: CGFloat, height: CGFloat, others: Int) -> (featured: CGSize, railHeight: CGFloat) {
         let pagerHeight: CGFloat = others > railPageSize ? 22 + stageGap : 0
         let available = max(0, height - pagerHeight - (others > 0 ? stageGap : 0))
         let columns = CGFloat(min(railPageSize, max(2, others)))
         let columnWidth = max(0, (width - (columns - 1) * railGap) / columns)
-        let railHeight: CGFloat = others == 0 ? 0 : min(wide ? columnWidth * 9 / 16 : columnWidth,
+        let railHeight: CGFloat = others == 0 ? 0 : min(columnWidth / videoAspectRatio,
                                                          max(56, available * (wide ? 0.24 : 0.32)))
-        let featuredHeight = min(width * (wide ? 9 / 16 : 0.8), max(80, available - railHeight))
-        let featuredWidth = min(width, featuredHeight * 16 / 9)
+        let featuredHeight = min(width / videoAspectRatio, max(80, available - railHeight))
+        let featuredWidth = min(width, featuredHeight * videoAspectRatio)
         return (CGSize(width: featuredWidth, height: featuredHeight), railHeight)
     }
 
+    /// Показывает крупную плитку выбранного участника со статусом речи и закрепления.
+    /// - Parameters:
+    ///   - attendee: Участник на основной плитке.
+    ///   - size: Размер основной плитки в пунктах.
     private func speakerTile(_ attendee: ConferenceRoomAttendee, size: CGSize) -> some View {
-        ZStack {
+        let shape = RoundedRectangle(cornerRadius: wide ? 13 : 15)
+        return ZStack {
             backdrop(attendee)
             avatar(attendee, size: min(wide ? 100 : 62, max(wide ? 60 : 42, size.width * 0.14)), featured: true)
             visual(attendee, true)
@@ -344,10 +377,13 @@ struct ConferenceRoomStage<Visual: View, ScreenShare: View>: View {
             .overlay(alignment: .bottomLeading) {
                 HStack(spacing: 7) {
                     Text(attendee.name).lineLimit(1)
-                    WorkspaceIcon(attendee.microphone ? "mic" : "mic.slash", size: 15)
+                    microphoneIndicator(for: attendee, size: 15)
                 }.font(MSTheme.font(11)).padding(.horizontal, 8).padding(.vertical, 5)
                     .background(ConferenceRoomColors.background.opacity(0.92), in: RoundedRectangle(cornerRadius: 8))
                     .padding(8)
+                    .accessibilityElement(children: .combine)
+                    .accessibilityValue(attendee.microphoneStatus)
+                    .accessibilityIdentifier("conferenceFeaturedCaption")
             }
             .overlay(alignment: .topLeading) {
                 if pinned != nil {
@@ -369,15 +405,21 @@ struct ConferenceRoomStage<Visual: View, ScreenShare: View>: View {
                         visual(own, true).allowsHitTesting(false)
                     }.frame(width: wide ? 96 : 69, height: wide ? 64 : 46)
                         .clipShape(RoundedRectangle(cornerRadius: 8))
+                        .overlay { tileBorder(for: own, shape: RoundedRectangle(cornerRadius: 8)) }
                         .padding(8).accessibilityIdentifier("conferenceLocalVideo")
                 }
             }
-            .clipShape(RoundedRectangle(cornerRadius: wide ? 13 : 15))
-            .overlay(RoundedRectangle(cornerRadius: wide ? 13 : 15).strokeBorder(ConferenceRoomColors.line))
+            .clipShape(shape)
+            .overlay { tileBorder(for: attendee, shape: shape) }
             .accessibilityElement(children: .contain)
             .accessibilityIdentifier("conferenceFeaturedParticipant")
     }
 
+    /// Оформляет метку речи или кнопку открепления на основной плитке.
+    /// - Parameters:
+    ///   - title: Подпись метки.
+    ///   - icon: Имя значка действия.
+    ///   - speaking: Выделить ли метку цветом говорящего.
     private func badge(_ title: String, icon: String, speaking: Bool) -> some View {
         HStack(spacing: 6) {
             WorkspaceIcon(icon, size: 14)
@@ -391,11 +433,16 @@ struct ConferenceRoomStage<Visual: View, ScreenShare: View>: View {
             .padding(10)
     }
 
+    /// Строит перелистываемую ленту миниатюр под основной плиткой.
+    /// - Parameters:
+    ///   - people: Участники для миниатюр в порядке показа.
+    ///   - width: Доступная ширина ленты в пунктах.
+    ///   - tileHeight: Расчётная высота одной миниатюры в пунктах.
     @ViewBuilder private func speakerRail(_ people: [ConferenceRoomAttendee], width: CGFloat, tileHeight: CGFloat) -> some View {
         if !people.isEmpty {
             let columns = min(railPageSize, max(2, people.count))
             let gaps = CGFloat(columns - 1) * railGap
-            let railWidth = wide ? min(width, CGFloat(columns) * tileHeight * 16 / 9 + gaps) : width
+            let railWidth = min(width, CGFloat(columns) * tileHeight * videoAspectRatio + gaps)
             let tileWidth = max(0, (railWidth - gaps) / CGFloat(columns))
             let pages = stride(from: 0, to: people.count, by: railPageSize).map { start in
                 Array(people[start..<min(start + railPageSize, people.count)])
@@ -405,7 +452,7 @@ struct ConferenceRoomStage<Visual: View, ScreenShare: View>: View {
                     ForEach(Array(pages.enumerated()), id: \.offset) { index, page in
                         HStack(spacing: railGap) {
                             ForEach(page) { person in
-                                tile(person, width: tileWidth, height: tileHeight, gallery: false)
+                                tile(person, width: tileWidth, height: tileWidth / videoAspectRatio, gallery: false)
                             }
                         }.frame(width: railWidth).id(index)
                     }
@@ -430,15 +477,34 @@ struct ConferenceRoomStage<Visual: View, ScreenShare: View>: View {
         }
     }
 
+    /// Располагает две плитки в ряд или столбец так, чтобы они занимали максимальную площадь с пропорциями 16:9.
+    /// - Parameter size: Размер доступной области видео.
+    private func galleryPair(in size: CGSize) -> some View {
+        let gap: CGFloat = wide ? 10 : 7
+        let stackedWidth = min(size.width, max(0, size.height - gap) / 2 * videoAspectRatio)
+        let sideBySideWidth = min(max(0, size.width - gap) / 2, size.height * videoAspectRatio)
+        let stacked = stackedWidth >= sideBySideWidth
+        let layout = stacked ? AnyLayout(VStackLayout(spacing: gap)) : AnyLayout(HStackLayout(spacing: gap))
+        let tileWidth = max(stackedWidth, sideBySideWidth)
+        return layout {
+            ForEach(ordered) { attendee in
+                tile(attendee, width: tileWidth, height: tileWidth / videoAspectRatio, gallery: true)
+            }
+        }
+    }
+
+    /// Размещает участников по строкам и рассчитывает размеры плиток галереи.
+    /// - Parameters:
+    ///   - width: Доступная ширина галереи в пунктах.
+    ///   - height: Доступная высота галереи в пунктах.
     private func gallery(width: CGFloat, height: CGFloat) -> some View {
-        let columns = attendees.count == 1 ? 1 : (wide && width >= 960 && attendees.count != 2 && attendees.count != 4 ? 3 : 2)
+        let columns = attendees.count == 1 ? 1 : (wide && width >= 960 && attendees.count != 4 ? 3 : 2)
         let gap: CGFloat = wide ? 10 : 7
         let rows = max(1, min(columns == 3 ? 2 : 3, (attendees.count + columns - 1) / columns))
-        let fittingWidth = max(90, (height - CGFloat(rows - 1) * gap) * 16 / (9 * CGFloat(rows)))
-        let proposedWidth = (width - CGFloat(columns - 1) * gap) / CGFloat(columns)
+        let fittingWidth = max(90, (height - CGFloat(rows - 1) * gap) * videoAspectRatio / CGFloat(rows))
+        let proposedWidth = max(0, (width - CGFloat(columns - 1) * gap) / CGFloat(columns))
         let tileWidth = wide ? min(proposedWidth, fittingWidth) : proposedWidth
-        let rowHeight = (height - CGFloat(rows - 1) * gap) / CGFloat(rows)
-        let tileHeight = wide ? tileWidth * 9 / 16 : min(tileWidth, max(tileWidth * 9 / 16, rowHeight))
+        let tileHeight = tileWidth / videoAspectRatio
         return VStack(spacing: gap) {
             ForEach(Array(stride(from: 0, to: ordered.count, by: columns)), id: \.self) { offset in
                 HStack(spacing: gap) {
@@ -450,6 +516,12 @@ struct ConferenceRoomStage<Visual: View, ScreenShare: View>: View {
         }
     }
 
+    /// Создаёт плитку участника с индикатором речи и переходом к закреплённому крупному плану.
+    /// - Parameters:
+    ///   - attendee: Участник на плитке.
+    ///   - width: Ширина плитки в пунктах.
+    ///   - height: Высота плитки в пунктах.
+    ///   - gallery: Отображается ли плитка в основной сетке.
     private func tile(_ attendee: ConferenceRoomAttendee, width: CGFloat, height: CGFloat, gallery: Bool) -> some View {
         let corner: CGFloat = wide && gallery ? 15 : 12
         let shape = RoundedRectangle(cornerRadius: corner)
@@ -469,24 +541,60 @@ struct ConferenceRoomStage<Visual: View, ScreenShare: View>: View {
                     HStack(spacing: 4) {
                         Text(attendee.name).lineLimit(1)
                         if !wide || !gallery { Spacer(minLength: 0) }
-                        WorkspaceIcon(attendee.speaking ? "waveform" : attendee.microphone ? "mic" : "mic.slash", size: 12)
-                            .foregroundStyle(attendee.speaking ? ConferenceRoomColors.speaking : ConferenceRoomColors.muted)
+                        microphoneIndicator(for: attendee, size: 13)
                     }.font(MSTheme.font(wide && gallery ? 12 : 10)).padding(.horizontal, 7).padding(.vertical, 5)
                         .background(ConferenceRoomColors.background.opacity(0.88), in: RoundedRectangle(cornerRadius: wide && gallery ? 8 : 0))
                         .padding(wide && gallery ? 9 : 0)
                 }
-                .clipShape(shape).overlay(shape.strokeBorder(attendee.speaking ? ConferenceRoomColors.speaking : ConferenceRoomColors.line))
+                .clipShape(shape).overlay { tileBorder(for: attendee, shape: shape) }
                 .contentShape(Rectangle())
         }.buttonStyle(.plain).accessibilityLabel("\(tr("Показать крупно")): \(attendee.name)")
-            .accessibilityValue(tr(attendee.microphone ? "Микрофон включён" : "Микрофон выключен"))
+            .accessibilityValue(attendee.microphoneStatus)
             .accessibilityIdentifier("conferenceParticipantTile.\(attendee.id)")
     }
 
+    /// Выделяет плитку на всё время реплики, чтобы говорящего было видно и поверх видео.
+    /// - Parameters:
+    ///   - attendee: Участник, которому принадлежит плитка.
+    ///   - shape: Контур плитки с учётом её скругления.
+    private func tileBorder(for attendee: ConferenceRoomAttendee, shape: RoundedRectangle) -> some View {
+        shape.strokeBorder(attendee.speaking ? ConferenceRoomColors.speaking : ConferenceRoomColors.line,
+                           lineWidth: attendee.speaking ? 2 : 1)
+            .allowsHitTesting(false)
+            .accessibilityHidden(true)
+    }
+
+    /// Меняет яркость микрофона вслед за громкостью речи участника.
+    /// - Parameters:
+    ///   - attendee: Участник с текущим состоянием микрофона и уровнем речи от 0 до 1.
+    ///   - size: Размер значка в пунктах.
+    private func microphoneIndicator(for attendee: ConferenceRoomAttendee, size: CGFloat) -> some View {
+        let active = attendee.speaking
+        let level = active ? (reduceMotion ? 1 : attendee.speechLevel) : 0
+        let green = ConferenceRoomColors.speaking
+        return WorkspaceIcon(attendee.microphone ? "mic" : "mic.slash", size: size)
+            .foregroundStyle(active ? green.opacity(0.65 + 0.35 * level) : ConferenceRoomColors.muted)
+            .background {
+                Circle().fill(green.opacity(0.32 * level))
+                    .frame(width: size * 1.5, height: size * 1.5)
+            }
+            .shadow(color: green.opacity(0.70 * level), radius: 2 * level)
+            .animation(reduceMotion || !attendee.microphone ? nil : .linear(duration: 0.12), value: level)
+            .accessibilityHidden(true)
+    }
+
+    /// Строит фон плитки в цветовой палитре участника.
+    /// - Parameter attendee: Участник, чей цвет используется.
     private func backdrop(_ attendee: ConferenceRoomAttendee) -> some View {
         RadialGradient(colors: [attendee.tone.backdrop, ConferenceRoomColors.surface], center: .center,
                        startRadius: 0, endRadius: 180)
     }
 
+    /// Показывает инициалы участника на круглом аватаре.
+    /// - Parameters:
+    ///   - attendee: Участник, чьи инициалы показываются.
+    ///   - size: Диаметр аватара в пунктах.
+    ///   - featured: Использовать ли оформление основной плитки.
     private func avatar(_ attendee: ConferenceRoomAttendee, size: CGFloat, featured: Bool = false) -> some View {
         Text(attendee.initials).font(MSTheme.font(size * 0.33, weight: .semibold))
             .foregroundStyle(featured ? ConferenceRoomColors.text : attendee.tone.avatarText)

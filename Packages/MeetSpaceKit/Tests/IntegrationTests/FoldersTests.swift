@@ -6,10 +6,14 @@ import MeetSpaceFeatures
 
 private enum FolderFixture {
     static let id = UUID(uuidString: "F1111111-1111-4111-8111-111111111111")!
+    /// Формирует JSON для тестовой личной папки.
+    /// - Parameter id: Идентификатор папки.
     static func object(_ id: UUID = id) -> [String: Any] {
         ["id": id.uuidString, "name": "Проект", "position": 0, "itemCount": 1, "conversationCount": 1,
          "conferenceCount": 0, "createdAt": "2026-11-06T10:00:00Z", "updatedAt": "2026-11-06T10:00:00Z"]
     }
+    /// Создаёт репозиторий папок с транспортом тестового аккаунта.
+    /// - Parameter transport: Обработчик запросов к API папок.
     static func repository(_ transport: any RequestTransport) throws -> FoldersRepository {
         FoldersRepository(client: AuthenticatedClient(account: try Fixture.account(), credentials: Fixture.credentials(), secureStore: TestSecrets(), transport: transport))
     }
@@ -69,7 +73,9 @@ private enum FolderFixture {
 private actor FolderGate {
     var continuation: CheckedContinuation<Void, Never>?
     var waiting = false
+    /// Приостанавливает операцию до явного разрешения теста.
     func wait() async { waiting = true; await withCheckedContinuation { continuation = $0 } }
+    /// Возобновляет операцию, приостановленную тестом.
     func release() { continuation?.resume(); continuation = nil }
 }
 @Test @MainActor func foldersDiscardResponsesAfterAccountClosed() async throws {

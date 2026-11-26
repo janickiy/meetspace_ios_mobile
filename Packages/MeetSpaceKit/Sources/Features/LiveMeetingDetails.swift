@@ -49,6 +49,7 @@ struct LiveMeetingDetails: View {
         }
     }
 
+    /// Уточняет на сервере, участвует ли пользователь во встрече, и обновляет её карточку.
     private func loadMembership() async {
         loadingMembership = true
         transitionError = nil
@@ -63,6 +64,7 @@ struct LiveMeetingDetails: View {
         }
     }
 
+    /// Меняет участие текущего пользователя в открытой встрече и обновляет карточку.
     private func toggleMembership() async {
         guard !loadingMembership, !workspace.busy else { return }
         do {
@@ -71,6 +73,8 @@ struct LiveMeetingDetails: View {
         } catch { membershipError = userMessage(error) }
     }
 
+    /// Показывает материалы выбранной встречи и доступные действия с записями.
+    /// - Parameter model: Модель со списком записей встречи и их состоянием.
     private func materials(_ model: RecordingsModel) -> some View {
         VStack(alignment: .leading, spacing: 10) {
             if model.controlling { ProgressView() }
@@ -104,6 +108,8 @@ struct LiveMeetingDetails: View {
             .task(id: item.id) { await loadMaterials(model) }
     }
 
+    /// Загружает материалы выбранной встречи и сбрасывает предыдущую ошибку.
+    /// - Parameter model: Модель, в которую загружаются записи встречи.
     private func loadMaterials(_ model: RecordingsModel) async {
         model.error = nil
         await model.loadConference(item.id)

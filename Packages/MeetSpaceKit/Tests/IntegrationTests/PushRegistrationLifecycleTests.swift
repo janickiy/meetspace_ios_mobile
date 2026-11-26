@@ -14,12 +14,20 @@ import MeetSpaceCalling
     var authorizationRequests = 0
     var registrations = 0
     var unregistrations = 0
+    /// Создаёт поток тестовых событий регистрации устройства в APNs.
     init() { (events, continuation) = AsyncStream.makeStream() }
+    /// Возвращает заданный тестом статус разрешения на уведомления.
     func requestAuthorization() async throws -> NormalPushAuthorization { authorizationRequests += 1; return authorization }
+    /// Завершает проверку разрешения со статусом, заданным тестом.
     func refreshAuthorization() async { }
+    /// Учитывает попытку зарегистрировать устройство для push-уведомлений.
     func register() { registrations += 1 }
+    /// Учитывает отмену подписки приложения на APNs.
     func unregister() { unregistrations += 1 }
+    /// Отправляет событие успешной регистрации устройства в поток теста.
+    /// - Parameter deviceToken: Токен, который должна получить модель.
     func didRegister(deviceToken: Data) { continuation.yield(.token(deviceToken)) }
+    /// Отправляет в поток теста событие ошибки регистрации.
     func didFailRegistration() { continuation.yield(.failure(.registrationFailed)) }
 }
 
@@ -36,13 +44,25 @@ private actor PushServiceFixture: NotificationDevicesServing {
     var failRevocation = false
     var holdRegistration = false
     var gate: CheckedContinuation<Void, Never>?
+    /// Настраивает имитацию серверных привязок push к аккаунту.
+    /// - Parameters:
+    ///   - store: Журнал для сверки регистрации.
+    ///   - origin: Сервер аккаунта.
+    ///   - userID: Идентификатор владельца.
     init(store: any PushRegistrationStore, origin: ServerOrigin = Fixture.origin, userID: UUID = Fixture.userID) {
         self.store = store; self.origin = origin; self.userID = userID
     }
+    /// Возвращает настроенный способ доставки push.
     func capabilities() -> IntegrationCapabilities { IntegrationCapabilities(push: capability) }
+    /// Фиксирует ошибку теста, если очистка запрашивает список всех устройств аккаунта.
     func devices() -> [NotificationDevice] { Issue.record("Manager must not enumerate account devices for cleanup"); return [] }
+    /// Возвращает параметры уведомлений, сохранённые в тестовом сервисе.
     func preferences() -> NotificationPreferences { savedPreferences }
+    /// Запоминает настройки уведомлений и возвращает их как ответ сервера.
+    /// - Parameter preferences: Новые параметры доставки.
     func savePreferences(_ preferences: NotificationPreferences) -> NotificationPreferences { savedPreferences = preferences; return preferences }
+    /// Имитирует регистрацию устройства, проверяя состояние журнала и учитывая задержки.
+    /// - Parameter token: Регистрируемый токен.
     func register(token: String) async throws -> NotificationDevice {
         let value = try await store.load()
         let entry = value.entries.first { $0.origin == origin && $0.userID == userID }
@@ -54,14 +74,24 @@ private actor PushServiceFixture: NotificationDevicesServing {
         let id = UUID(uuidString: registerCount == 1 ? "AB111111-1111-4111-8111-111111111111" : "BC222222-2222-4222-8222-222222222222")!
         return NotificationDevice(id: id, platform: "ios", provider: "http", createdAt: Date(), updatedAt: Date())
     }
+    /// Имитирует отзыв устройства с возможностью проверки ошибок и истории вызовов.
+    /// - Parameter deviceID: Серверный идентификатор устройства.
     func revoke(_ deviceID: UUID) throws {
         calls.append("revoke")
         if failRevocation { throw APIError.offline }
         revoked.append(deviceID)
     }
+    /// Меняет режим поддержки push в последующих ответах.
+    /// - Parameter value: Имя возможности, объявляемое тестовым сервером.
     func setCapability(_ value: String) { capability = value }
+    /// Задерживает обработку следующей регистрации push.
     func hold() { holdRegistration = true }
+    /// Разрешает отложенной регистрации устройства завершиться.
     func release() { holdRegistration = false; gate?.resume(); gate = nil }
+    /// Настраивает сетевые ошибки регистрации и отзыва независимо друг от друга.
+    /// - Parameters:
+    ///   - register: Выдавать ошибку регистрации.
+    ///   - revoke: Выдавать ошибку отзыва.
     func fail(register: Bool = false, revoke: Bool = false) { failRegistration = register; failRevocation = revoke }
 }
 
@@ -230,8 +260,13 @@ private actor FailingPushStore: PushRegistrationStore {
     var value = PushRegistrationJournal()
     var writes = 0
     let failure: Int
+    /// Создаёт хранилище push с ошибкой на указанной попытке записи.
+    /// - Parameter failure: Порядковый номер неудачной записи.
     init(failure: Int) { self.failure = failure }
+    /// Возвращает сохранённый тестом журнал привязок.
     func load() -> PushRegistrationJournal { value }
+    /// Сохраняет проверенный журнал или выдаёт ошибку на заданной попытке.
+    /// - Parameter journal: Сохраняемый журнал привязок.
     func save(_ journal: PushRegistrationJournal) throws {
         writes += 1
         if writes == failure { throw ClientError.storage }

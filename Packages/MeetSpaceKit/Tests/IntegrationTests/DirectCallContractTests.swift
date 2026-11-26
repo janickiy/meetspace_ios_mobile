@@ -10,6 +10,11 @@ private enum CallFixture {
     static let calleeClient = UUID(uuidString: "DE444444-4444-4444-8444-444444444444")!
     static let room = UUID(uuidString: "EF555555-5555-4555-8555-555555555555")!
     static let zero = UUID(uuidString: "00000000-0000-0000-0000-000000000000")!
+    /// Формирует JSON личного вызова для контрактных тестов.
+    /// - Parameters:
+    ///   - status: Состояние вызова.
+    ///   - version: Версия данных вызова.
+    ///   - caller: Идентификатор вызывающего пользователя.
     static func object(status: DirectCallStatus = .ringing, version: Int64 = 1, caller: UUID = Fixture.userID) -> [String: Any] {
         let accepted = status == .accepted || status == .ended
         return ["id": id.uuidString.lowercased(), "conversationId": Fixture.conversationID.uuidString.lowercased(),
@@ -23,9 +28,13 @@ private enum CallFixture {
                 "caller": ["id": caller.uuidString.lowercased(), "displayName": "Caller"],
                 "callee": ["id": peer.uuidString.lowercased(), "displayName": "Callee"], "durationSec": 0]
     }
+    /// Декодирует тестовый личный вызов с выбранным статусом.
+    /// - Parameter status: Состояние вызова.
     static func call(status: DirectCallStatus = .ringing) throws -> DirectCall {
         try WireJSON.decoder().decode(DirectCall.self, from: Fixture.data(object(status: status)))
     }
+    /// Создаёт репозиторий личных звонков для контрактного теста.
+    /// - Parameter transport: Обработчик сетевых запросов.
     static func repository(_ transport: any RequestTransport) throws -> DirectCallsRepository {
         DirectCallsRepository(client: AuthenticatedClient(account: try Fixture.account(), credentials: Fixture.credentials(), secureStore: TestSecrets(), transport: transport))
     }

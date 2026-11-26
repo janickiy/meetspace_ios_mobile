@@ -5,9 +5,18 @@ public struct CalendarRepository: Sendable {
     public let userID: UUID
     private let client: AuthenticatedClient
     private let conferences: ConferenceRepository
+    /// Создаёт календарь встреч авторизованного пользователя.
+    /// - Parameter client: Клиент, выполняющий запросы от имени текущего аккаунта.
     public init(client: AuthenticatedClient) {
         self.client = client; userID = client.account.user.id; conferences = ConferenceRepository(client: client)
     }
+    /// Загружает страницу встреч за период, исключая встречи на его верхней границе.
+    /// - Parameters:
+    ///   - view: Категория встреч по времени и состоянию.
+    ///   - scope: Фильтр по участию — все встречи, организованные пользователем или с его участием.
+    ///   - interval: Период с включённым началом и исключённой верхней границей.
+    ///   - cursor: Курсор продолжения из предыдущего ответа. Для первой страницы передайте nil.
+    ///   - limit: Максимальное число записей на странице.
     public func timeline(view: ConferenceTimelineView, scope: ConferenceTimelineScope = .all,
                          interval: DateInterval, cursor: String? = nil, limit: Int = 100) async throws -> ConferenceTimelinePage {
         guard MeetingCalendar.isValidInstant(interval.start), MeetingCalendar.isValidInstant(interval.end), interval.duration > 0,
@@ -24,12 +33,23 @@ public struct CalendarRepository: Sendable {
         // The backend's upper bound is inclusive. UI periods are explicitly half-open.
         return ConferenceTimelinePage(items: page.items.filter { MeetingCalendar.includes(MeetingCalendar.timelineDate($0), interval: interval) }, nextCursor: page.nextCursor)
     }
+    /// Планирует встречу на выбранное время и проверяет возвращённое расписание.
+    /// - Parameters:
+    ///   - title: Название встречи.
+    ///   - at: Планируемое время начала встречи.
+    ///   - duration: Плановая длительность встречи в минутах, если она задана.
+    ///   - waitingRoom: Признак использования зала ожидания во встрече.
     public func create(title: String, at: Date, duration: Int?, waitingRoom: Bool) async throws -> Conference {
         try MeetingCalendar.validateSchedule(at: at, duration: duration)
         let result = try await conferences.create(title: title, waitingRoomEnabled: waitingRoom, scheduledAt: at, plannedDurationMin: duration)
         guard Self.validMeeting(result), result.status == "scheduled", result.scheduledAt != nil else { throw APIError.invalidResponse }
         return result
     }
+    /// Меняет время и длительность запланированной встречи организатора.
+    /// - Parameters:
+    ///   - id: Идентификатор запланированной встречи.
+    ///   - at: Планируемое время начала встречи.
+    ///   - duration: Плановая длительность встречи в минутах, если она задана.
     public func reschedule(_ id: UUID, at: Date, duration: Int?) async throws -> Conference {
         try MeetingCalendar.validateSchedule(at: at, duration: duration)
         struct Body: Encodable { let scheduledAt: Date; let plannedDurationMin: Int? }
@@ -39,11 +59,15 @@ public struct CalendarRepository: Sendable {
         guard Self.validMeeting(result), result.scheduledAt != nil else { throw APIError.invalidResponse }
         return result
     }
+    /// Отменяет запланированную встречу и проверяет её новый статус.
+    /// - Parameter id: Идентификатор запланированной встречи.
     public func cancel(_ id: UUID) async throws -> Conference {
         let result = try await conferences.transition(id, action: "cancel")
         guard result.ownerId == userID, result.status == "cancelled", Self.validMeeting(result) else { throw ClientError.scopeMismatch }
         return result
     }
+    /// Проверяет название встречи, временные отметки и согласованность расписания.
+    /// - Parameter meeting: Встреча, данные которой используются для операции.
     private static func validMeeting(_ meeting: Conference) -> Bool {
         [meeting.createdAt, meeting.updatedAt, meeting.scheduledAt, meeting.finishedAt, meeting.startedAt].compactMap { $0 }.allSatisfy(MeetingCalendar.isValidInstant)
             && (meeting.plannedDurationMin.map({ (1...1440).contains($0) && meeting.scheduledAt != nil }) ?? true)

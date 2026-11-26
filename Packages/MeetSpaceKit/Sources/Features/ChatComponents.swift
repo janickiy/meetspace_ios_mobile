@@ -5,6 +5,14 @@ import UIKit
 #endif
 
 enum ChatLayout {
+    @MainActor static var hidesWorkspaceTabsInThread: Bool {
+        #if os(iOS)
+        UIDevice.current.userInterfaceIdiom == .phone
+        #else
+        false
+        #endif
+    }
+
     @MainActor static var keepsSelectionInline: Bool {
         #if os(iOS)
         UIDevice.current.userInterfaceIdiom == .pad
@@ -83,6 +91,8 @@ struct ChatHeaderIcon: View {
 
 struct ChatSendButtonStyle: ButtonStyle {
     @Environment(\.isEnabled) private var enabled
+    /// Оформляет кнопку отправки сообщения и передаёт визуально состояние нажатия.
+    /// - Parameter configuration: Содержимое кнопки и признак нажатия.
     func makeBody(configuration: Configuration) -> some View {
         configuration.label.foregroundStyle(.white).frame(width: 48, height: 48)
             .background(MSTheme.brandAccent, in: RoundedRectangle(cornerRadius: 12))

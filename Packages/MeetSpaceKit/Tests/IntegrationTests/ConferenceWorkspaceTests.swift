@@ -10,25 +10,39 @@ import MeetSpaceMedia
 private actor ConferenceWorkspaceGate {
     private(set) var started = false
     private var continuation: CheckedContinuation<Void, Never>?
+    /// Приостанавливает операцию до явного разрешения теста.
     func wait() async {
         started = true
         await withCheckedContinuation { continuation = $0 }
     }
+    /// Возобновляет операцию, приостановленную тестом.
     func release() { continuation?.resume(); continuation = nil }
 }
 private struct ConferenceWorkspaceProbe: ServerProbing {
+    /// Имитирует недоступность сервера при запросе версии.
+    /// - Parameter origin: Сервер, указанный проверяемой моделью.
     func check(_ origin: ServerOrigin) async throws -> ServerVersion { throw APIError.offline }
 }
 private actor ConferenceWorkspacePreferences: ConfigurationStore {
+    /// Возвращает начальную конфигурацию приложения для тестового сценария.
     func load() -> AppConfiguration { AppConfiguration() }
+    /// Принимает изменение конфигурации без записи на диск.
+    /// - Parameter value: Конфигурация, переданная приложением.
     func save(_ value: AppConfiguration) {}
 }
 private struct ConferenceWorkspaceSockets: ConferenceSocketFactory {
+    /// Имитирует невозможность подключиться к сигналингу встречи.
+    /// - Parameters:
+    ///   - origin: Сервер подключения.
+    ///   - conferenceID: Идентификатор встречи.
+    ///   - ticket: Билет подключения.
     func connect(origin: ServerOrigin, conferenceID: UUID, ticket: String) async throws -> any ConferenceSocket {
         throw APIError.offline
     }
 }
 private struct ConferenceWorkspaceUserSockets: RealtimeSocketFactory {
+    /// Возвращает ошибку отсутствия сети при попытке открыть канал событий.
+    /// - Parameter url: Адрес запрошенного соединения.
     func connect(_ url: URL) async throws -> any RealtimeSocket { throw APIError.offline }
 }
 private actor ConferenceWorkspaceBackend: RequestTransport {
@@ -41,27 +55,57 @@ private actor ConferenceWorkspaceBackend: RequestTransport {
     var readGate: ConferenceWorkspaceGate?
     var guestGate: ConferenceWorkspaceGate?
     var failLeave = false
+    /// Задаёт начальное состояние встречи на тестовом сервере.
+    /// - Parameter status: Статус, возвращаемый клиенту.
     init(status: String = "active") { self.status = status }
+    /// Настраивает задержку ответа на выход из встречи.
+    /// - Parameter gate: Точка синхронизации для обработчика выхода.
     func blockLeave(_ gate: ConferenceWorkspaceGate?) { leaveGate = gate }
+    /// Задерживает присоединение к встрече до разрешения теста.
+    /// - Parameter gate: Точка синхронизации запроса.
     func blockJoin(_ gate: ConferenceWorkspaceGate) { joinGate = gate }
+    /// Задерживает чтение сведений о встрече.
+    /// - Parameter gate: Точка синхронизации запроса.
     func blockRead(_ gate: ConferenceWorkspaceGate) { readGate = gate }
+    /// Задерживает запрос гостевой сессии.
+    /// - Parameter gate: Точка синхронизации запроса.
     func blockGuest(_ gate: ConferenceWorkspaceGate) { guestGate = gate }
+    /// Настраивает отказ сервера при запросе выхода из встречи.
     func rejectLeave() { failLeave = true }
+    /// Возвращает текущее описание тестовой конференции.
     func conference() -> Conference { Conference(id: room, ownerId: Fixture.userID, title: "Fixture", status: status) }
+    /// Создаёт запись гостя или участника для ответа о членстве.
+    /// - Parameters:
+    ///   - guest: Создать гостевого участника.
+    ///   - status: Состояние участия.
     func member(guest: Bool = false, status: String = "joined") -> ConferenceParticipant {
         ConferenceParticipant(id: guest ? guestPerson : person, conferenceId: room,
             userId: guest ? guestUser : Fixture.userID, displayName: "Fixture",
             role: guest ? "participant" : "owner", status: status)
     }
+    /// Преобразует модель через кодировщик API в JSON-объект тестового ответа.
+    /// - Parameter value: Модель для сериализации.
     private func object<T: Encodable>(_ value: T) throws -> Any {
         try JSONSerialization.jsonObject(with: WireJSON.encoder().encode(value))
     }
+    /// Оборачивает модель в поле item успешного тестового ответа.
+    /// - Parameter value: Объект ответа.
     private func item<T: Encodable>(_ value: T) throws -> NetworkResponse {
         try Fixture.response(["item": object(value)])
     }
+    /// Считает запросы с нужным HTTP-методом и окончанием пути.
+    /// - Parameters:
+    ///   - suffix: Ожидаемый суффикс пути.
+    ///   - method: HTTP-метод.
     func count(_ suffix: String, method: String = "POST") -> Int {
         requests.filter { $0.hasPrefix(method + " ") && $0.hasSuffix(suffix) }.count
     }
+    /// Обрабатывает запрос к API конференции и возвращает ответ для текущего сценария.
+    /// - Parameters:
+    ///   - request: Запрос проверяемого клиента.
+    ///   - limit: Лимит ответа из контракта транспорта.
+    ///   - uploadFile: Необязательный файл для отправки.
+    ///   - progress: Обработчик прогресса из контракта транспорта.
     func send(_ request: URLRequest, limit: Int, uploadFile: URL?, progress: TransferProgress?) async throws -> NetworkResponse {
         let path = request.url!.path, method = request.httpMethod ?? "GET"
         requests.append(method + " " + path)

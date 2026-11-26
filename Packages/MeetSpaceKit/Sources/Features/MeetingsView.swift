@@ -16,6 +16,18 @@ enum DemoData {
         let owner: String
         var cancelled: Bool
 
+        /// Собирает встречу для демонстрационного расписания.
+        /// - Parameters:
+        ///   - id: Идентификатор в демоданных.
+        ///   - title: Название встречи.
+        ///   - day: День демонстрационного месяца или `nil` для встречи без даты.
+        ///   - hour: Час начала.
+        ///   - minute: Минута начала.
+        ///   - duration: Продолжительность в минутах, если указана.
+        ///   - count: Число участников.
+        ///   - status: Раздел расписания.
+        ///   - owner: Имя организатора.
+        ///   - cancelled: Отмечена ли встреча как отменённая.
         init(_ id: Int, _ title: String, day: Int? = nil, hour: Int = 0, minute: Int = 0,
              duration: Int? = nil, count: Int, status: ConferenceTimelineView = .upcoming,
              owner: String = "Вы", cancelled: Bool = false) {
@@ -55,11 +67,15 @@ enum DemoData {
     var meetings = DemoData.meetings
     var members: [Int: MeetingMembership] = [9: .left]
 
+    /// Переводит собственную предстоящую демовстречу в активные.
+    /// - Parameter id: Идентификатор встречи.
     func start(_ id: Int) {
         guard let index = meetings.firstIndex(where: { $0.id == id && $0.owner == "Вы" && $0.status == .upcoming }) else { return }
         meetings[index].status = .active
     }
 
+    /// Отменяет предстоящую или завершает активную встречу в демоданных.
+    /// - Parameter id: Идентификатор собственной встречи.
     func finish(_ id: Int) {
         guard let index = meetings.firstIndex(where: { $0.id == id && $0.owner == "Вы" && $0.status != .past }) else { return }
         meetings[index].cancelled = meetings[index].status == .upcoming

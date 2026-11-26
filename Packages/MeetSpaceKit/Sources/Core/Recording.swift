@@ -24,6 +24,16 @@ public struct RecordingFile: Equatable, Sendable, Identifiable {
     public let durationSec: Int?
     public let available: Bool
     public var playable: Bool { available && ["final_mp4", "final_audio"].contains(type) }
+    /// Описывает файл записи, его формат, доступность и контрольную сумму.
+    /// - Parameters:
+    ///   - id: Идентификатор отдельного файла записи.
+    ///   - type: Тип файла в записи, например итоговое видео или аудиодорожки.
+    ///   - filename: Имя файла с расширением.
+    ///   - mimeType: MIME-тип файла.
+    ///   - sizeBytes: Размер файла в байтах.
+    ///   - checksumSHA256: Ожидаемая контрольная сумма SHA-256 содержимого файла.
+    ///   - durationSec: Длительность в секундах.
+    ///   - available: Признак доступности файла для скачивания.
     public init(id: UUID, type: String, filename: String, mimeType: String, sizeBytes: Int64? = nil,
                 checksumSHA256: String? = nil, durationSec: Int? = nil, available: Bool = true) {
         self.id = id; self.type = type; self.filename = filename; self.mimeType = mimeType
@@ -59,6 +69,17 @@ public struct MeetingRecording: Equatable, Sendable, Identifiable {
         default: "Неизвестный статус записи"
         }
     }
+    /// Собирает карточку записи встречи с режимом, статусом и списком файлов.
+    /// - Parameters:
+    ///   - id: Идентификатор записи встречи.
+    ///   - conferenceID: Идентификатор конференции.
+    ///   - mode: Серверное обозначение режима записи.
+    ///   - status: Статус, возвращённый сервером.
+    ///   - createdAt: Время создания записи.
+    ///   - startedAt: Фактическое время начала.
+    ///   - requestedBy: Идентификатор пользователя, запустившего запись.
+    ///   - durationSec: Длительность в секундах.
+    ///   - files: Доступные файлы этой записи и их метаданные.
     public init(id: UUID, conferenceID: UUID, mode: String, status: String, createdAt: Date,
                 startedAt: Date? = nil, requestedBy: UUID? = nil, durationSec: Int? = nil, files: [RecordingFile] = []) {
         self.id = id; self.conferenceID = conferenceID; self.mode = mode; self.status = status
@@ -71,11 +92,19 @@ public struct RecordingLibraryItem: Equatable, Sendable, Identifiable {
     public let conference: Conference
     public let recording: MeetingRecording
     public var id: UUID { recording.id }
+    /// Связывает запись с карточкой встречи для показа в библиотеке.
+    /// - Parameters:
+    ///   - conference: Встреча, которой принадлежит запись.
+    ///   - recording: Карточка записи встречи.
     public init(conference: Conference, recording: MeetingRecording) { self.conference = conference; self.recording = recording }
 }
 public struct RecordingLibraryPage: Sendable {
     public let items: [RecordingLibraryItem]
     public let nextCursor: String?
+    /// Собирает страницу библиотеки записей с курсором продолжения.
+    /// - Parameters:
+    ///   - items: Элементы библиотеки записей текущей страницы.
+    ///   - nextCursor: Курсор следующей страницы, если выдача продолжается.
     public init(items: [RecordingLibraryItem], nextCursor: String?) { self.items = items; self.nextCursor = nextCursor }
 }
 
@@ -84,15 +113,30 @@ public enum RecordingAccessError: Error, Equatable, Sendable {
 }
 
 public enum RecordingPermissions {
+    /// Проверяет, позволяет ли состояние записи и роль пользователя удалить её из библиотеки.
+    /// - Parameters:
+    ///   - row: Элемент библиотеки с записью и данными её встречи.
+    ///   - accountID: Идентификатор пользователя текущего аккаунта.
     public static func canDelete(_ row: RecordingLibraryItem, accountID: UUID) -> Bool {
         row.recording.conferenceID == row.conference.id &&
             ["ready", "partial_ready", "failed", "cancelled"].contains(row.recording.status) &&
             (row.conference.ownerId == accountID || row.recording.requestedBy == accountID)
     }
 
+    /// Определяет, может ли текущий участник начать запись активной встречи.
+    /// - Parameters:
+    ///   - conference: Встреча, которой принадлежит запись.
+    ///   - participant: Запись участника конференции.
+    ///   - accountID: Идентификатор пользователя текущего аккаунта.
     public static func canStart(conference: Conference, participant: ConferenceParticipant, accountID: UUID) -> Bool {
         conference.status == "active" && participant.conferenceId == conference.id && participant.userId == accountID && participant.canParticipate && participant.role != "guest"
     }
+    /// Определяет, может ли текущий участник остановить выбранную запись этой встречи.
+    /// - Parameters:
+    ///   - recording: Карточка записи встречи.
+    ///   - conference: Встреча, которой принадлежит запись.
+    ///   - participant: Запись участника конференции.
+    ///   - accountID: Идентификатор пользователя текущего аккаунта.
     public static func canStop(_ recording: MeetingRecording, conference: Conference, participant: ConferenceParticipant, accountID: UUID) -> Bool {
         participant.conferenceId == conference.id && recording.conferenceID == conference.id && participant.userId == accountID && participant.canReadHistory && participant.role != "guest" && recording.stoppable &&
             ((conference.ownerId == accountID && participant.role == "owner") || recording.requestedBy == accountID)

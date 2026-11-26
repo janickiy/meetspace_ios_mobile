@@ -1,6 +1,7 @@
 import Foundation
 
 @MainActor public enum BroadcastControllerFactory {
+    /// Создаёт контроллер демонстрации с параметрами App Group и расширения из настроек приложения.
     public static func make() -> any ScreenBroadcastController {
         let info = Bundle.main.infoDictionary ?? [:]
         let group = info[BroadcastInstallation.groupInfoKey] as? String ?? ""
@@ -32,7 +33,10 @@ import Foundation
     private var stopping: Task<Void, Never>?
     private static var owner: UUID?
 
-    /// Explicit directory injection is for host transport tests. Production resolves the signed app group.
+    /// Создаёт потоки событий и кадров для связи с расширением ReplayKit.
+    /// - Parameters:
+    ///   - directory: Контейнер подписанной App Group или каталог тестового транспорта.
+    ///   - extensionBundleID: Bundle ID расширения, которое нужно выбрать в системном интерфейсе.
     public init(directory: URL?, extensionBundleID: String?) {
         self.directory = directory; self.extensionBundleID = extensionBundleID
         let lifecycle = AsyncStream<ScreenBroadcastEvent>.makeStream(bufferingPolicy: .bufferingNewest(16))
@@ -40,6 +44,7 @@ import Foundation
         let video = AsyncStream<ScreenBroadcastFrame>.makeStream(bufferingPolicy: .bufferingNewest(1))
         frames = video.stream; frameContinuation = video.continuation
     }
+    /// Останавливает проверку связи, закрывает потоки и освобождает канал сеанса.
     deinit {
         heartbeat?.cancel(); channel?.shutdown()
         eventContinuation.finish(); frameContinuation.finish()
@@ -49,6 +54,8 @@ import Foundation
             if AppGroupScreenBroadcastController.owner == id { AppGroupScreenBroadcastController.owner = nil }
         }
     }
+    /// Резервирует сеанс, запускает приём кадров и периодическую проверку связи.
+    /// - Parameter configuration: Допустимые размеры и частота кадров расширения.
     public func prepare(configuration: ScreenBroadcastConfiguration = .init()) async throws {
         try configuration.validated()
         guard isAvailable, let directory else { throw ScreenBroadcastError.unavailable }
@@ -79,6 +86,7 @@ import Foundation
             throw error
         }
     }
+    /// Дожидается остановки канала и освобождает текущий сеанс демонстрации.
     public func stop() async {
         if let stopping { await stopping.value; return }
         guard let id = sessionID else { return }
@@ -91,6 +99,10 @@ import Foundation
         stopping = task; await task.value; stopping = nil
         eventContinuation.yield(.stopped(id, .user))
     }
+    /// Принимает событие своего сеанса и освобождает ресурсы при его завершении.
+    /// - Parameters:
+    ///   - event: Событие жизненного цикла канала.
+    ///   - lease: Идентификатор сеанса, создавшего обработчик.
     private func receive(_ event: ScreenBroadcastEvent, lease: UUID) {
         guard sessionID == lease else { return }
         eventContinuation.yield(event)

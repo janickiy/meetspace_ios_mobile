@@ -7,28 +7,52 @@ private enum ConferenceFixture {
     static let room = UUID(uuidString: "A1111111-1111-4111-8111-111111111111")!
     static let participantID = UUID(uuidString: "B2222222-2222-4222-8222-222222222222")!
     static let code = String(repeating: "a", count: 32)
+    /// Формирует участника для проверки ответов API встречи.
+    /// - Parameters:
+    ///   - role: Роль во встрече.
+    ///   - status: Состояние участия.
+    ///   - admission: Решение о допуске.
+    ///   - id: Идентификатор участника.
+    ///   - room: Идентификатор встречи.
+    ///   - user: Идентификатор пользователя.
     static func participant(role: String = "participant", status: String = "joined", admission: String = "admitted",
                             id: UUID = participantID, room: UUID = room, user: UUID = Fixture.userID) -> ConferenceParticipant {
         ConferenceParticipant(id: id, conferenceId: room, userId: user, displayName: "Fixture", role: role, status: status, admissionState: admission)
     }
+    /// Преобразует модель через кодировщик API в JSON-объект тестового ответа.
+    /// - Parameter value: Модель для сериализации.
     static func object<T: Encodable>(_ value: T) throws -> [String: Any] {
         try JSONSerialization.jsonObject(with: WireJSON.encoder().encode(value)) as! [String: Any]
     }
+    /// Формирует ответ сервера с гостевым пользователем указанной встречи.
+    /// - Parameters:
+    ///   - room: Идентификатор встречи.
+    ///   - userID: Идентификатор гостевого пользователя.
     static func guestResponse(room: UUID = room, userID: UUID = Fixture.userID) throws -> NetworkResponse {
         var user = Fixture.user(userID); user["guestConferenceId"] = room.uuidString
         return try Fixture.response(["status": "success", "accessToken": "fixture-guest-bearer", "tokenType": "Bearer", "expiresIn": 10800,
             "user": user, "item": object(participant(room: room, user: userID))])
     }
+    /// Создаёт тестовую гостевую сессию с ограниченным сроком действия.
+    /// - Parameters:
+    ///   - origin: Сервер сессии.
+    ///   - expiresAt: Время окончания действия гостевых данных.
     static func guest(origin: ServerOrigin = Fixture.origin, expiresAt: Date = Date().addingTimeInterval(3600)) throws -> GuestConferenceSession {
         var raw = Fixture.user(); raw["guestConferenceId"] = room.uuidString
         let user = try WireJSON.decoder().decode(AccountUser.self, from: Fixture.data(raw))
         return try GuestConferenceSession(origin: origin, accessToken: "fixture-guest-bearer", expiresAt: expiresAt, user: user, participant: participant())
     }
+    /// Формирует тестовое сообщение чата конференции с заданным значением последовательности.
+    /// - Parameters:
+    ///   - room: Идентификатор встречи.
+    ///   - sequence: Значение поля sequence в проверяемом JSON.
     static func message(room: UUID = room, sequence: Any = "9007199254740993") -> [String: Any] {
         ["id": Fixture.messageID.uuidString, "sequence": sequence, "conferenceId": room.uuidString,
          "senderId": Fixture.userID.uuidString, "senderName": "Fixture", "clientRequestId": Fixture.messageID.uuidString,
          "text": "hello", "version": 1, "createdAt": "2026-11-01T10:00:00Z", "updatedAt": "2026-11-01T10:00:00Z", "attachments": NSNull()]
     }
+    /// Готовит репозиторий конференций с тестовым аккаунтом и транспортом.
+    /// - Parameter transport: Транспорт запросов к API встреч.
     static func repository(_ transport: any RequestTransport) throws -> ConferenceRepository {
         ConferenceRepository(client: AuthenticatedClient(account: try Fixture.account(), credentials: Fixture.credentials(), secureStore: TestSecrets(), transport: transport))
     }

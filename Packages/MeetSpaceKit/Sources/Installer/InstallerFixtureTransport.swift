@@ -5,10 +5,19 @@ import Foundation
 public actor InstallerFixtureTransport: InstallerTransport {
     private var job: String?
     private var plan: [String:Any] = [:]
+    /// Создаёт транспорт с локальной имитацией установки для тестов.
     public init() {}
+    /// Возвращает фиксированный ключ тестового SSH-хоста.
+    /// - Parameter endpoint: Адрес, порт и имя пользователя SSH-сервера.
     public func inspect(_ endpoint: InstallerEndpoint) async throws -> InstallerHostKey {
         try InstallerHostKey(openSSH: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILPNQ7HnSGlQJ4uTYrYbvyr5w0zOvE6rFNQXUuI8IJZx")
     }
+    /// Имитирует проверку сервера и команды установки, сохраняя тестовое состояние задания.
+    /// - Parameters:
+    ///   - endpoint: Адрес, порт и имя пользователя SSH-сервера.
+    ///   - credentials: Данные доступа к SSH-серверу.
+    ///   - key: Публичный ключ SSH-сервера, которому доверяет пользователь.
+    ///   - input: Программа и входные данные, передаваемые установщику через SSH.
     public func execute(_ endpoint: InstallerEndpoint, credentials: InstallerCredentials, key: InstallerHostKey, input: Data) async throws -> Data {
         try Task.checkCancellation()
         let text = String(decoding: input, as: UTF8.self)

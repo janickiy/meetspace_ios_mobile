@@ -14,8 +14,17 @@ final class BoundedUpload: NSObject, URLSessionDataDelegate, @unchecked Sendable
     private var buffer = Data()
     private var finished = false
 
+    /// Настраивает предел размера успешного ответа и обработчик прогресса отправки.
+    /// - Parameters:
+    ///   - limit: Предельный размер успешного ответа в байтах.
+    ///   - progress: Обработчик доли переданных данных от 0 до 1.
     init(limit: Int, progress: TransferProgress?) { self.limit = limit; self.progress = progress }
 
+    /// Отправляет файл и возвращает накопленное тело ответа вместе с его заголовками.
+    /// - Parameters:
+    ///   - request: Исходный HTTP-запрос для передачи.
+    ///   - file: Локальный адрес подготовленного файла для отправки.
+    ///   - configuration: Конфигурация сетевой сессии.
     func run(request: URLRequest, file: URL, configuration: URLSessionConfiguration) async throws -> (Data, URLResponse) {
         try await withTaskCancellationHandler {
             try Task.checkCancellation()
@@ -33,8 +42,15 @@ final class BoundedUpload: NSObject, URLSessionDataDelegate, @unchecked Sendable
         } onCancel: { self.cancel() }
     }
 
+    /// Отменяет отправку и завершает ожидающую задачу с ошибкой отмены.
     func cancel() { finish(.failure(CancellationError())) }
 
+    /// Проверяет статус и объявленный размер ответа перед чтением тела.
+    /// - Parameters:
+    ///   - session: Сетевая сессия, которой принадлежит задача.
+    ///   - dataTask: Задача передачи данных, получившая ответ сервера.
+    ///   - response: Ответ сервера, из которого извлекаются запрошенные данные.
+    ///   - completionHandler: Обработчик, которому передаётся разрешение или запрет на чтение ответа.
     func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive response: URLResponse,
                     completionHandler: @escaping @Sendable (URLSession.ResponseDisposition) -> Void) {
         guard let http = response as? HTTPURLResponse else {
@@ -56,6 +72,11 @@ final class BoundedUpload: NSObject, URLSessionDataDelegate, @unchecked Sendable
         completionHandler(accept ? .allow : .cancel)
     }
 
+    /// Добавляет очередную порцию ответа в буфер, завершая отправку при превышении лимита.
+    /// - Parameters:
+    ///   - session: Сетевая сессия, которой принадлежит задача.
+    ///   - dataTask: Задача передачи данных, получившая ответ сервера.
+    ///   - data: Очередная часть тела ответа сервера.
     func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive data: Data) {
         let oversized = lock.withLock {
             guard !finished else { return false }
@@ -65,6 +86,11 @@ final class BoundedUpload: NSObject, URLSessionDataDelegate, @unchecked Sendable
         if oversized { finish(.failure(APIError.responseTooLarge)) }
     }
 
+    /// Завершает отправку с накопленным ответом или ошибкой URLSession.
+    /// - Parameters:
+    ///   - session: Сетевая сессия, которой принадлежит задача.
+    ///   - task: Сетевая задача, для которой получено событие.
+    ///   - error: Ошибка сетевой задачи, если она завершилась неуспешно.
     func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: (any Error)?) {
         let result: Result<(Data, URLResponse), any Error> = lock.withLock {
             if let error { return .failure(error) }
@@ -74,12 +100,26 @@ final class BoundedUpload: NSObject, URLSessionDataDelegate, @unchecked Sendable
         finish(result)
     }
 
+    /// Отклоняет перенаправление и завершает отправку с ошибкой.
+    /// - Parameters:
+    ///   - session: Сетевая сессия, которой принадлежит задача.
+    ///   - task: Сетевая задача, для которой получено событие.
+    ///   - response: HTTP-ответ с указанием перенаправления.
+    ///   - request: Новый запрос, предложенный URLSession для перенаправления.
+    ///   - completionHandler: Обработчик URLSession, которому передаётся решение о перенаправлении.
     func urlSession(_ session: URLSession, task: URLSessionTask, willPerformHTTPRedirection response: HTTPURLResponse,
                     newRequest request: URLRequest, completionHandler: @escaping @Sendable (URLRequest?) -> Void) {
         completionHandler(nil)
         finish(.failure(APIError.redirect))
     }
 
+    /// Передаёт обработчику долю отправленных байтов, когда полный размер известен.
+    /// - Parameters:
+    ///   - session: Сетевая сессия, которой принадлежит задача.
+    ///   - task: Сетевая задача, для которой получено событие.
+    ///   - bytesSent: Число байтов, отправленных с предыдущего уведомления о прогрессе.
+    ///   - totalBytesSent: Суммарное число уже отправленных байтов.
+    ///   - totalBytesExpectedToSend: Ожидаемый полный размер тела запроса в байтах.
     func urlSession(_ session: URLSession, task: URLSessionTask, didSendBodyData bytesSent: Int64,
                     totalBytesSent: Int64, totalBytesExpectedToSend: Int64) {
         if totalBytesExpectedToSend > 0, !lock.withLock({ finished }) {
@@ -87,6 +127,8 @@ final class BoundedUpload: NSObject, URLSessionDataDelegate, @unchecked Sendable
         }
     }
 
+    /// Освобождает сетевые ресурсы и однократно передаёт результат ожидающей задаче.
+    /// - Parameter result: Полученный ответ с телом или ошибка передачи.
     private func finish(_ result: Result<(Data, URLResponse), any Error>) {
         let pending = lock.withLock { () -> (CheckedContinuation<(Data, URLResponse), any Error>?, URLSession?) in
             guard !finished else { return (nil, nil) }
@@ -105,8 +147,13 @@ final class BoundedUpload: NSObject, URLSessionDataDelegate, @unchecked Sendable
 final class BoundedUploadRegistry: @unchecked Sendable {
     private let lock = NSLock()
     private var uploads: [ObjectIdentifier: BoundedUpload] = [:]
+    /// Регистрирует активную отправку для последующей отмены вместе с аккаунтом.
+    /// - Parameter upload: Активная отправка, которая учитывается в реестре.
     func insert(_ upload: BoundedUpload) { lock.withLock { uploads[ObjectIdentifier(upload)] = upload } }
+    /// Снимает завершённую отправку с учёта.
+    /// - Parameter upload: Активная отправка, которая учитывается в реестре.
     func remove(_ upload: BoundedUpload) { lock.withLock { _ = uploads.removeValue(forKey: ObjectIdentifier(upload)) } }
+    /// Отменяет все отправки, зарегистрированные на момент вызова.
     func cancelAll() {
         let active = lock.withLock { Array(uploads.values) }
         for upload in active { upload.cancel() }

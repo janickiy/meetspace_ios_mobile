@@ -26,6 +26,8 @@ public struct UserEvent: Sendable {
         let state: ReadState?
         let call: DirectCall?
     }
+    /// Декодирует пользовательское событие и проверяет заголовок и размер сообщения.
+    /// - Parameter bytes: Байты входящего сообщения.
     public static func decode(_ bytes: Data) throws -> UserEvent? {
         guard bytes.count <= 1_048_576 else { throw RealtimeError.invalidEvent }
         // Decode the header before data: unsupported event payloads are not protocol failures.
@@ -59,7 +61,11 @@ public struct EventDeduplicator: Sendable {
     private var identifiers: Set<UUID> = []
     private var order: [UUID] = []
     private let capacity: Int
+    /// Создаёт ограниченный кеш идентификаторов уже полученных событий.
+    /// - Parameter capacity: Максимальное число последних идентификаторов событий для дедупликации.
     public init(capacity: Int = 512) { self.capacity = max(1, capacity) }
+    /// Принимает новый идентификатор и возвращает false для недавно встречавшегося события.
+    /// - Parameter id: Идентификатор полученного события.
     public mutating func accept(_ id: UUID) -> Bool {
         guard identifiers.insert(id).inserted else { return false }
         order.append(id)
@@ -68,6 +74,10 @@ public struct EventDeduplicator: Sendable {
     }
 }
 public enum ReconnectPolicy {
+    /// Рассчитывает задержку перед повторным подключением с учётом номера попытки и разброса.
+    /// - Parameters:
+    ///   - attempt: Номер попытки переподключения, начиная с нуля.
+    ///   - jitter: Множитель разброса задержки между попытками подключения.
     public static func delay(attempt: Int, jitter: Double = Double.random(in: 0.8...1.2)) -> Double {
         min(30, pow(2, Double(min(5, max(0, attempt)))) * min(1.2, max(0.8, jitter)))
     }
@@ -77,30 +87,58 @@ public enum UserRealtimeUpdate: Sendable {
 }
 
 public protocol RealtimeSocket: Sendable {
+    /// Получает следующее WebSocket-сообщение и возвращает его байты.
     func receive() async throws -> Data
+    /// Закрывает сокет пользовательских событий.
     func close() async
 }
 public protocol RealtimeSocketFactory: Sendable {
+    /// Подключается к указанному адресу пользовательских событий по защищённому WebSocket.
+    /// - Parameter url: Защищённый WebSocket-адрес потока пользовательских событий.
     func connect(_ url: URL) async throws -> any RealtimeSocket
 }
 
 private final class SocketDelegate: NSObject, URLSessionWebSocketDelegate, Sendable {
     let opened: AsyncThrowingStream<Void, Error>
     private let continuation: AsyncThrowingStream<Void, Error>.Continuation
+    /// Создаёт поток для уведомления об открытии WebSocket-соединения.
     override init() {
         (opened, continuation) = AsyncThrowingStream.makeStream(bufferingPolicy: .bufferingNewest(1))
         super.init()
     }
+    /// Уведомляет ожидающую задачу об открытии пользовательского WebSocket.
+    /// - Parameters:
+    ///   - session: Сетевая сессия, которой принадлежит задача.
+    ///   - webSocketTask: WebSocket-задача, для которой получено событие.
+    ///   - protocol: Имя подпротокола, согласованного с сервером.
     func urlSession(_ session: URLSession, webSocketTask: URLSessionWebSocketTask, didOpenWithProtocol protocol: String?) {
         continuation.yield(()); continuation.finish()
     }
+    /// Завершает ожидание соединения при закрытии сокета сервером.
+    /// - Parameters:
+    ///   - session: Сетевая сессия, которой принадлежит задача.
+    ///   - webSocketTask: WebSocket-задача, для которой получено событие.
+    ///   - closeCode: Код закрытия WebSocket, полученный от сетевой сессии.
+    ///   - reason: Необязательное тело сообщения о причине закрытия WebSocket.
     func urlSession(_ session: URLSession, webSocketTask: URLSessionWebSocketTask,
                     didCloseWith closeCode: URLSessionWebSocketTask.CloseCode, reason: Data?) {
         continuation.finish(throwing: RealtimeError.disconnected)
     }
+    /// Передаёт ошибку завершения сетевой задачи ожидающему коду.
+    /// - Parameters:
+    ///   - session: Сетевая сессия, которой принадлежит задача.
+    ///   - task: Сетевая задача, для которой получено событие.
+    ///   - error: Ошибка сетевой задачи, если она завершилась неуспешно.
     func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
         continuation.finish(throwing: error ?? RealtimeError.disconnected)
     }
+    /// Отклоняет перенаправление при открытии потока пользовательских событий.
+    /// - Parameters:
+    ///   - session: Сетевая сессия, которой принадлежит задача.
+    ///   - task: Сетевая задача, для которой получено событие.
+    ///   - response: Ответ сервера с перенаправлением.
+    ///   - request: Запрос, предложенный URLSession при перенаправлении.
+    ///   - completionHandler: Обработчик URLSession, которому передаётся решение о перенаправлении.
     func urlSession(_ session: URLSession, task: URLSessionTask,
                     willPerformHTTPRedirection response: HTTPURLResponse, newRequest request: URLRequest,
                     completionHandler: @escaping @Sendable (URLRequest?) -> Void) { completionHandler(nil) }
@@ -108,8 +146,14 @@ private final class SocketDelegate: NSObject, URLSessionWebSocketDelegate, Senda
 private final class SessionSocket: RealtimeSocket, Sendable {
     let task: URLSessionWebSocketTask
     let session: URLSession
+    /// Связывает пользовательский сокет с задачей и её сетевой сессией.
+    /// - Parameters:
+    ///   - task: Сетевая задача, для которой получено событие.
+    ///   - session: Сетевая сессия, которой принадлежит задача.
     init(task: URLSessionWebSocketTask, session: URLSession) { self.task = task; self.session = session }
+    /// Закрывает сокет и сетевую сессию при освобождении соединения.
     deinit { task.cancel(with: .goingAway, reason: nil); session.invalidateAndCancel() }
+    /// Получает следующее WebSocket-сообщение и возвращает его байты.
     func receive() async throws -> Data {
         let value = try await task.receive()
         switch value {
@@ -118,10 +162,14 @@ private final class SessionSocket: RealtimeSocket, Sendable {
         @unknown default: throw RealtimeError.invalidEvent
         }
     }
+    /// Закрывает сокет пользовательских событий.
     func close() async { task.cancel(with: .goingAway, reason: nil); session.invalidateAndCancel() }
 }
 public struct URLSessionSocketFactory: RealtimeSocketFactory {
+    /// Создаёт фабрику защищённых соединений для пользовательских событий.
     public init() {}
+    /// Подключается к указанному адресу пользовательских событий по защищённому WebSocket.
+    /// - Parameter url: Защищённый WebSocket-адрес потока пользовательских событий.
     public func connect(_ url: URL) async throws -> any RealtimeSocket {
         guard url.scheme == "wss", url.user == nil, url.password == nil else { throw APIError.tls }
         let configuration = URLSessionConfiguration.ephemeral
@@ -157,17 +205,25 @@ public actor UserRealtime {
     private var generation = UUID()
     private var finished = false
 
+    /// Настраивает получение билетов и переподключение к потоку событий пользователя.
+    /// - Parameters:
+    ///   - origin: Базовый HTTPS-адрес сервера MeetSpace.
+    ///   - ticket: Функция получения нового билета доступа к потоку событий.
+    ///   - sockets: Фабрика соединений с пользовательским потоком событий.
+    ///   - sleep: Функция ожидания перед следующей попыткой, принимает задержку в секундах.
     public init(origin: ServerOrigin, ticket: @escaping @Sendable () async throws -> String,
                 sockets: any RealtimeSocketFactory = URLSessionSocketFactory(),
                 sleep: @escaping @Sendable (Double) async throws -> Void = { try await Task.sleep(for: .seconds($0)) }) {
         self.origin = origin; self.ticket = ticket; self.sockets = sockets; self.sleep = sleep
         (updates, continuation) = AsyncStream.makeStream(bufferingPolicy: .bufferingNewest(256))
     }
+    /// Запускает чтение потока событий, если цикл ещё не выполняется.
     public func start() {
         guard loop == nil, !finished else { return }
         let epoch = generation
         loop = Task { await run(epoch) }
     }
+    /// Останавливает цикл переподключения и закрывает его активный сокет.
     public func stop() async {
         generation = UUID()
         let stoppedGeneration = generation
@@ -177,7 +233,10 @@ public actor UserRealtime {
         await previous?.value
         if generation == stoppedGeneration && loop == nil { continuation.yield(.state(.disconnected)) }
     }
+    /// Останавливает соединение и окончательно завершает поток обновлений.
     public func finish() async { finished = true; await stop(); continuation.finish() }
+    /// Читает события текущего подключения и при необходимости восстанавливает связь.
+    /// - Parameter epoch: Идентификатор поколения соединения, которому принадлежит цикл чтения.
     private func run(_ epoch: UUID) async {
         var attempt = 0
         var deduplication = EventDeduplicator()

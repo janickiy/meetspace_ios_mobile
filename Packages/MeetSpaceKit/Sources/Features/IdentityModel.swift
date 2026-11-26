@@ -26,12 +26,15 @@ import MeetSpaceCalling
     @ObservationIgnored private var sessionEvents: Task<Void, Never>?
     @ObservationIgnored private var epoch = UUID()
 
+    /// Подготавливает службы авторизации, звонков и уведомлений для сессии аккаунта.
+    /// - Parameter dependencies: Сервисы и хранилища приложения.
     init(dependencies: AppDependencies) {
         self.dependencies = dependencies
         systemCalling = dependencies.calling()
         notifications = PushRegistrationModel(platform: dependencies.notifications(), store: dependencies.pushStore)
     }
 
+    /// Читает сохранённый список аккаунтов и восстанавливает рабочее пространство активного пользователя.
     public func restore() async {
         guard !busy else { return }
         busy = true; defer { busy = false }
@@ -42,6 +45,13 @@ import MeetSpaceCalling
         } catch { self.error = userMessage(error) }
     }
 
+    /// Регистрирует пользователя и сообщает, подтвердил ли сервер регистрацию.
+    /// - Parameters:
+    ///   - server: Проверенный адрес сервера регистрации.
+    ///   - email: Почта нового пользователя.
+    ///   - password: Пароль нового аккаунта.
+    ///   - confirmation: Повторный ввод пароля для проверки.
+    ///   - name: Отображаемое имя пользователя.
     public func register(server: ServerOrigin?, email: String, password: String, confirmation: String, name: String) async -> Bool {
         guard !busy else { return false }
         busy = true; error = nil; information = nil; defer { busy = false }
@@ -54,6 +64,11 @@ import MeetSpaceCalling
         } catch { self.error = userMessage(error); return false }
     }
 
+    /// Авторизует пользователя на сервере и открывает рабочее пространство аккаунта.
+    /// - Parameters:
+    ///   - server: Проверенный адрес сервера входа.
+    ///   - email: Почта пользователя.
+    ///   - password: Пароль для входа.
     public func login(server: ServerOrigin?, email: String, password: String) async {
         guard !busy else { return }
         busy = true; error = nil; information = nil; defer { busy = false }
@@ -82,6 +97,8 @@ import MeetSpaceCalling
         } catch { self.error = userMessage(error) }
     }
 
+    /// Переключает рабочее пространство на сохранённый аккаунт.
+    /// - Parameter account: Аккаунт из локального списка.
     public func switchAccount(_ account: AccountRecord) async {
         guard !busy, index.accounts.contains(where: { $0.id == account.id }) else { return }
         busy = true; error = nil; defer { busy = false }
@@ -89,6 +106,8 @@ import MeetSpaceCalling
         catch { self.error = userMessage(error) }
     }
 
+    /// Завершает сессию выбранного аккаунта и обновляет локальный список.
+    /// - Parameter account: Аккаунт, из которого выполняется выход.
     public func logout(_ account: AccountRecord) async {
         guard !busy else { return }
         busy = true; error = nil; information = nil; defer { busy = false }
@@ -121,6 +140,10 @@ import MeetSpaceCalling
         } catch { self.error = userMessage(error) }
     }
 
+    /// Удаляет активный аккаунт после подтверждения паролем и очищает связанные локальные данные.
+    /// - Parameters:
+    ///   - account: Текущий аккаунт для удаления.
+    ///   - password: Пароль для подтверждения операции.
     public func deleteAccount(_ account: AccountRecord, password: String) async -> Bool {
         guard !busy, messaging?.account.id == account.id, let client = messaging?.client else { return false }
         guard calls?.isActive != true, calls?.busy != true, calls?.pendingPeer == nil,
@@ -169,6 +192,10 @@ import MeetSpaceCalling
         return true
     }
 
+    /// Восстанавливает сессию сохранённого аккаунта и открывает его рабочее пространство.
+    /// - Parameters:
+    ///   - account: Запись аккаунта для восстановления.
+    ///   - allowOffline: Допускается ли открытие сессии по сохранённым данным при отсутствии сети.
     private func activateStored(_ account: AccountRecord, allowOffline: Bool) async throws {
         // A persisted DELETE confirmation takes precedence over leftover credentials/index
         // entries after a failed local write. Never restore that workspace in offline mode.
@@ -204,11 +231,17 @@ import MeetSpaceCalling
         }
     }
 
+    /// Создаёт API-клиент, привязанный к серверу и учётным данным одного аккаунта.
+    /// - Parameters:
+    ///   - account: Аккаунт, которому принадлежат запросы.
+    ///   - credentials: Учётные данные для авторизации запросов.
     private func client(_ account: AccountRecord, credentials: SessionCredentials) -> AuthenticatedClient {
         AuthenticatedClient(account: account, credentials: credentials, secureStore: dependencies.credentials,
                             transport: dependencies.transport())
     }
 
+    /// Подключает модели рабочего пространства к авторизованному клиенту.
+    /// - Parameter client: Клиент открываемого аккаунта.
     private func install(_ client: AuthenticatedClient) async {
         epoch = UUID(); let current = epoch
         sessionEvents?.cancel()
@@ -273,6 +306,7 @@ import MeetSpaceCalling
         }
         workspace.start()
     }
+    /// Закрывает модели текущего аккаунта и освобождает их ресурсы.
     private func closeFeatures() async {
         calendar?.close(); calendar = nil
         folders?.close(); folders = nil

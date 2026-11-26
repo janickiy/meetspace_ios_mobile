@@ -7,6 +7,7 @@ struct MeetSpaceApp: App {
     @UIApplicationDelegateAdaptor(MeetSpaceAppDelegate.self) private var appDelegate
     @State private var model: AppModel
 
+    /// Создаёт модель приложения с рабочими сервисами или с состоянием, заданным параметрами запуска UI-теста.
     init() {
         #if DEBUG
         if ProcessInfo.processInfo.arguments.contains("-uitesting") {

@@ -66,6 +66,8 @@ struct AccountConnectionPage: View {
                     }.buttonStyle(MSTextButtonStyle()).font(MSTheme.font(12)).padding(.top, 12)
                 } else if let settings = app.identity.settings {
                     serverDetails(settings).padding(.top, 12)
+                    AccountNotificationDevices(settings: settings, push: app.identity.notifications)
+                        .padding(.top, 12)
                 }
             }.modifier(AccountPanelLayout(wide: wide))
         }.background(MSTheme.background).foregroundStyle(MSTheme.ink)
@@ -115,6 +117,8 @@ struct AccountConnectionPage: View {
         }
     }
 
+    /// Показывает сведения о подключённом сервере и его возможностях.
+    /// - Parameter model: Модель с данными подключения и результатами проверки сервера.
     private func serverDetails(_ model: SettingsModel) -> some View {
         VStack(alignment: .leading, spacing: 14) {
             Button {
@@ -156,6 +160,10 @@ struct AccountConnectionPage: View {
         }.font(MSTheme.font(12))
     }
 
+    /// Выводит название серверной функции и понятное пользователю состояние.
+    /// - Parameters:
+    ///   - title: Название функции.
+    ///   - value: Значение состояния из ответа сервера.
     private func capabilityRow(_ title: String, value: String) -> some View {
         let label = switch value {
         case "noop": "Не настроен"

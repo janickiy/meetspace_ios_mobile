@@ -75,6 +75,10 @@ struct ProfileField<Content: View>: View {
 }
 
 extension View {
+    /// Оформляет поле профиля с учётом высоты и режима чтения.
+    /// - Parameters:
+    ///   - multiline: Выделить место для нескольких строк.
+    ///   - readOnly: Использовать оформление поля только для чтения.
     func profileInput(multiline: Bool = false, readOnly: Bool = false) -> some View {
         self.font(MSTheme.font(14)).padding(.horizontal, 14).padding(.vertical, 12)
             .frame(maxWidth: .infinity, minHeight: multiline ? 94 : 50, alignment: multiline ? .topLeading : .leading)
@@ -142,9 +146,18 @@ struct SettingsDetailView: View {
         }
     }
 
+    /// Показывает сводку настройки в карточке.
+    /// - Parameters:
+    ///   - title: Название настройки.
+    ///   - icon: Символ рядом с названием.
+    ///   - value: Текущее значение.
     private func settingPreview(_ title: String, _ icon: String, _ value: String) -> some View {
         HStack { Label(tr(title), systemImage: icon); Spacer(); Text(tr(value)).font(MSTheme.font(12)).foregroundStyle(MSTheme.muted) }.msCard()
     }
+    /// Создаёт кнопку выбора темы и отмечает активную тему.
+    /// - Parameters:
+    ///   - value: Тема, применяемая при нажатии.
+    ///   - title: Название варианта.
     private func appearanceOption(_ value: Appearance, title: String) -> some View {
         let selected = model.configuration.appearance == value
         return Button { model.setAppearance(value) } label: {
@@ -168,6 +181,8 @@ struct SettingsDetailView: View {
             .accessibilityAddTraits(selected ? .isSelected : [])
     }
 
+    /// Рисует миниатюру интерфейса для выбора оформления.
+    /// - Parameter dark: Использовать тёмную палитру.
     private func themePreview(dark: Bool) -> some View {
         let outline = previewColor(dark ? 0x494151 : 0xe8e5ee)
         return HStack(spacing: 8) {
@@ -185,6 +200,8 @@ struct SettingsDetailView: View {
             .overlay(RoundedRectangle(cornerRadius: 9).strokeBorder(outline))
     }
 
+    /// Преобразует 24-битный код цвета в цвет миниатюры темы.
+    /// - Parameter rgb: Компоненты в порядке RGB.
     private func previewColor(_ rgb: UInt32) -> Color {
         Color(red: Double((rgb >> 16) & 255) / 255, green: Double((rgb >> 8) & 255) / 255,
               blue: Double(rgb & 255) / 255)

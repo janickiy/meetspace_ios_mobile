@@ -78,6 +78,10 @@ struct AccountHome<Detail: View>: View {
             .accessibilityElement(children: .contain).accessibilityIdentifier("screen.profile")
     }
 
+    /// Показывает содержимое выбранного раздела настроек.
+    /// - Parameters:
+    ///   - wide: Использовать ли компоновку для широкого экрана.
+    ///   - inset: Горизонтальный отступ кнопки возврата.
     @ViewBuilder private func detailPanel(wide: Bool, inset: CGFloat) -> some View {
         if selection == .accounts {
             ScrollView {
@@ -96,6 +100,8 @@ struct AccountHome<Detail: View>: View {
         }
     }
 
+    /// Создаёт кнопку возврата к списку настроек.
+    /// - Parameter inset: Горизонтальный отступ кнопки.
     private func back(inset: CGFloat) -> some View {
         Button { selection = nil } label: {
             HStack(spacing: 8) {
@@ -108,6 +114,10 @@ struct AccountHome<Detail: View>: View {
             .padding(.horizontal, inset).padding(.top, 18).padding(.bottom, 4)
     }
 
+    /// Строит меню настроек с данными аккаунта и кнопками разделов.
+    /// - Parameters:
+    ///   - wide: Использовать ли компоновку для широкого экрана.
+    ///   - inset: Горизонтальный отступ содержимого меню.
     private func menu(wide: Bool, inset: CGFloat) -> some View {
         GeometryReader { geometry in
             ScrollView {
@@ -137,6 +147,8 @@ struct AccountHome<Detail: View>: View {
             .background(MSTheme.surface)
     }
 
+    /// Показывает активный аккаунт и открывает список аккаунтов по нажатию.
+    /// - Parameter wide: Использовать ли компоновку для широкого экрана.
     private func identity(wide: Bool) -> some View {
         Button { selection = .accounts } label: {
             HStack(spacing: wide ? 10 : 14) {
@@ -155,6 +167,10 @@ struct AccountHome<Detail: View>: View {
             .padding(.bottom, wide ? 30 : 26)
     }
 
+    /// Создаёт строку перехода к разделу с выделением текущего выбора.
+    /// - Parameters:
+    ///   - section: Раздел настроек, который открывает строка.
+    ///   - wide: Использовать ли компоновку для широкого экрана.
     private func sectionRow(_ section: ProfileSection, wide: Bool) -> some View {
         let label = section.label
         let selected = wide && (selection ?? .profile) == section
@@ -192,6 +208,8 @@ struct AccountHome<Detail: View>: View {
             .accessibilityAddTraits(selected ? .isSelected : [])
     }
 
+    /// Показывает внизу меню параметры подключения, выход из аккаунта и версию приложения.
+    /// - Parameter wide: Использовать ли компоновку для широкого экрана.
     private func footer(wide: Bool) -> some View {
         VStack(spacing: 0) {
             connection(wide: wide)
@@ -213,6 +231,8 @@ struct AccountHome<Detail: View>: View {
         }
     }
 
+    /// Показывает кнопку перехода в настройки подключения.
+    /// - Parameter wide: Использовать ли компоновку для широкого экрана.
     private func connection(wide: Bool) -> some View {
         let selected = wide && selection == .connection
         return Button { selection = .connection } label: {
@@ -244,6 +264,8 @@ struct AccountPanelLayout: ViewModifier {
     var compactBottom: CGFloat = 18
     @Environment(\.workspaceWidth) private var width
 
+    /// Ограничивает ширину панели настроек и задаёт отступы для текущего экрана.
+    /// - Parameter content: Содержимое панели.
     func body(content: Content) -> some View {
         content
             .frame(maxWidth: .infinity, alignment: .leading)

@@ -8,6 +8,7 @@ import ImageIO
 import UniformTypeIdentifiers
 
 @main @MainActor struct AppIconRenderer {
+    /// Сохраняет фирменный знак на белом фоне как непрозрачную иконку приложения 1024 × 1024 по пути из аргументов запуска.
     static func main() throws {
         guard CommandLine.arguments.count == 2 else {
             throw NSError(domain: "AppIconRenderer", code: 1,

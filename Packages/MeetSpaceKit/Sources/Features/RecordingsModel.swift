@@ -28,6 +28,10 @@ import MeetSpaceAPI
     private var generation = UUID()
     private var closed = false
 
+    /// Подключает библиотеку и загрузчик записей к текущему аккаунту.
+    /// - Parameters:
+    ///   - client: Авторизованный клиент библиотеки.
+    ///   - downloads: Загрузчик файлов или `nil` для штатного загрузчика.
     public init(client: AuthenticatedClient, downloads: (any RecordingDownloading)? = nil) {
         account = client.account; repository = RecordingsRepository(client: client)
         self.downloads = downloads ?? URLSessionRecordingDownloader(account: client.account)
@@ -41,10 +45,13 @@ import MeetSpaceAPI
         guard let selected else { return false }
         return RecordingPermissions.canDelete(selected, accountID: account.user.id)
     }
+    /// Удаляет выбранную запись, если у пользователя есть право на удаление.
     public func deleteSelected() async {
         guard let selected else { return }
         await delete(selected)
     }
+    /// Удаляет доступную пользователю запись и обновляет состояние библиотеки.
+    /// - Parameter row: Элемент библиотеки для удаления.
     public func delete(_ row: RecordingLibraryItem) async {
         guard !closed, !loading, !downloading,
               let current = selected?.id == row.id ? selected : items.first(where: { $0.id == row.id }),
@@ -59,6 +66,8 @@ import MeetSpaceAPI
             if selected?.id == current.id { selected = nil; await clearLocalFiles() }
         } catch { if valid(epoch) { self.error = Self.message(error) } }
     }
+    /// Загружает страницу библиотеки записей.
+    /// - Parameter more: Продолжить с сохранённого курсора.
     public func load(more: Bool = false) async {
         guard !closed, !loading, !more || nextCursor != nil else { return }
         let epoch = generation; loading = true; error = nil
@@ -71,6 +80,8 @@ import MeetSpaceAPI
             nextCursor = result.nextCursor
         } catch { if valid(epoch) { self.error = Self.message(error) } }
     }
+    /// Загружает актуальные сведения и права для выбранной записи.
+    /// - Parameter row: Элемент, открываемый в карточке записи.
     public func select(_ row: RecordingLibraryItem) async {
         guard !closed, !loading, !downloading else { return }
         let requestID = UUID(); selectionID = requestID
@@ -87,8 +98,10 @@ import MeetSpaceAPI
             selected = RecordingLibraryItem(conference: row.conference, recording: recording)
         } catch { if valid(epoch), selectionID == requestID { self.error = Self.message(error) } }
     }
+    /// Закрывает карточку записи и дожидается освобождения её файлов.
     public func back() async { await releaseSelection().value }
 
+    /// Снимает выделение и возвращает задачу очистки загрузки и временных файлов.
     @discardableResult func releaseSelection() -> Task<Void, Never> {
         // Detach the old operation and its files before suspension. The user can select
         // another recording while a cancelled transfer drains; never clear that new state.
@@ -103,6 +116,10 @@ import MeetSpaceAPI
             for url in urls { await downloads.remove(url) }
         }
     }
+    /// Загружает файл после проверки доступа и готовит его к просмотру или экспорту.
+    /// - Parameters:
+    ///   - fileID: Идентификатор файла выбранной записи.
+    ///   - play: Открыть проигрыватель для загруженного файла.
     public func download(fileID: UUID, play: Bool) async {
         guard !closed, !loading, !downloading, let row = selected, row.recording.ready,
               let file = row.recording.files.first(where: { $0.id == fileID }), file.available,
@@ -125,19 +142,25 @@ import MeetSpaceAPI
         } catch is CancellationError { }
         catch { if valid(epoch), transferID == operationID { self.error = Self.message(error) } }
     }
+    /// Отменяет активную загрузку и удаляет её временный результат.
     public func cancelDownload() async {
         let pending = transfer; transferID = UUID(); transfer = nil; pending?.cancel(); downloading = false
         if let pending, let url = try? await pending.value { await downloads.remove(url) }
     }
+    /// Закрывает экспорт и удаляет временную копию файла.
     public func dismissExport() async {
         if let exportURL { self.exportURL = nil; await downloads.remove(exportURL) }
     }
+    /// Освобождает файл после ошибки воспроизведения текущей записи.
+    /// - Parameter url: Адрес файла, при воспроизведении которого возникла ошибка.
     public func playbackFailed(url: URL? = nil) {
         guard let failedURL = playbackURL, url == nil || url == failedURL else { return }
         playbackURL = nil
         Task { await downloads.remove(failedURL) }
         error = "Этот файл не удалось воспроизвести. Можно скачать его и открыть в другом приложении."
     }
+    /// Загружает записи и доступные режимы записи для встречи.
+    /// - Parameter id: Идентификатор встречи.
     public func loadConference(_ id: UUID) async {
         guard !closed, !controlling else { return }
         let epoch = generation; controlling = true
@@ -155,15 +178,29 @@ import MeetSpaceAPI
             self.error = Self.message(error)
         }
     }
+    /// Запускает серверную запись встречи в разрешённом режиме.
+    /// - Parameters:
+    ///   - conference: Встреча для записи.
+    ///   - participant: Участник, от имени которого запускается запись.
+    ///   - mode: Желаемый формат записи.
     public func start(conference: Conference, participant: ConferenceParticipant, mode: RecordingMode) async {
         guard RecordingPermissions.canStart(conference: conference, participant: participant, accountID: account.user.id),
               modes.contains(mode), let records = conferenceItems[conference.id], !records.contains(where: \.active) else { return }
         await mutate(conference.id) { [repository] in _ = try await repository.start(conferenceID: conference.id, mode: mode) }
     }
+    /// Останавливает запись, проверив полномочия участника.
+    /// - Parameters:
+    ///   - recording: Активная запись.
+    ///   - conference: Встреча, которой принадлежит запись.
+    ///   - participant: Участник, запросивший остановку.
     public func stop(_ recording: MeetingRecording, conference: Conference, participant: ConferenceParticipant) async {
         guard RecordingPermissions.canStop(recording, conference: conference, participant: participant, accountID: account.user.id) else { return }
         await mutate(conference.id) { [repository] in _ = try await repository.stop(conferenceID: conference.id, recordingID: recording.id) }
     }
+    /// Выполняет команду управления записью и обновляет данные встречи.
+    /// - Parameters:
+    ///   - id: Идентификатор встречи.
+    ///   - action: Серверная команда запуска или остановки записи.
     private func mutate(_ id: UUID, action: @escaping @Sendable () async throws -> Void) async {
         guard !closed, !controlling else { return }; controlling = true; error = nil; let epoch = generation
         defer { if epoch == generation { controlling = false } }
@@ -179,16 +216,22 @@ import MeetSpaceAPI
             if valid(epoch) { conferenceItems[id] = records }
         }
     }
+    /// Закрывает библиотеку, отменяет загрузку и очищает данные текущего аккаунта.
     public func close() async {
         guard !closed else { return }; closed = true; generation = UUID()
         playbackURL = nil; exportURL = nil; selected = nil; items = []; conferenceItems = [:]; modes = []; nextCursor = nil
         await cancelDownload(); await downloads.close(); loading = false; controlling = false; error = nil
     }
+    /// Удаляет временные файлы, выделенные для проигрывателя и экспорта.
     private func clearLocalFiles() async {
         let urls = [playbackURL, exportURL].compactMap { $0 }; playbackURL = nil; exportURL = nil
         for url in urls { await downloads.remove(url) }
     }
+    /// Проверяет, можно ли применить результат операции к текущему состоянию библиотеки.
+    /// - Parameter epoch: Поколение модели при запуске операции.
     private func valid(_ epoch: UUID) -> Bool { !closed && generation == epoch && !Task.isCancelled }
+    /// Подбирает пояснение к ошибке доступа, загрузки или управления записью.
+    /// - Parameter error: Полученная ошибка.
     private static func message(_ error: any Error) -> String {
         switch error {
         case APIError.httpStatus(401), APIError.httpStatus(403), RecordingAccessError.noPermission: "Нет доступа к этой записи. Права могли измениться."

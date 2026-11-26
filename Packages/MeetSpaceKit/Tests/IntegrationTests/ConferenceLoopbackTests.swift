@@ -7,14 +7,29 @@ import MeetSpaceAPI
 private final class ConferenceLoopbackHTTP: NSObject, RequestTransport, URLSessionTaskDelegate, @unchecked Sendable {
     private let port: Int
     private var session: URLSession!
+    /// Открывает временную HTTP-сессию для обращения к локальному тестовому серверу.
+    /// - Parameter port: Разрешённый порт на loopback-интерфейсе.
     init(port: Int) {
         self.port = port; super.init()
         let config = URLSessionConfiguration.ephemeral
         config.httpCookieStorage = nil; config.httpShouldSetCookies = false; config.urlCredentialStorage = nil; config.urlCache = nil
         session = URLSession(configuration: config, delegate: self, delegateQueue: nil)
     }
+    /// Отклоняет HTTP-перенаправления в локальном тестовом транспорте.
+    /// - Parameters:
+    ///   - session: Сессия, получившая перенаправление.
+    ///   - task: Задача исходного запроса.
+    ///   - response: Ответ сервера с перенаправлением.
+    ///   - request: Предложенный запрос по новому адресу.
+    ///   - completionHandler: Получает `nil` для отказа от перехода.
     func urlSession(_ session: URLSession, task: URLSessionTask, willPerformHTTPRedirection response: HTTPURLResponse,
                     newRequest request: URLRequest, completionHandler: @escaping @Sendable (URLRequest?) -> Void) { completionHandler(nil) }
+    /// Выполняет запрос к разрешённому локальному серверу через тестовый транспорт.
+    /// - Parameters:
+    ///   - request: Запрос проверяемого клиента.
+    ///   - limit: Ограничение на размер ответа в байтах.
+    ///   - uploadFile: Файл для отправки, если задан.
+    ///   - progress: Обработчик прогресса из контракта транспорта.
     func send(_ request: URLRequest, limit: Int, uploadFile: URL?, progress: TransferProgress?) async throws -> NetworkResponse {
         guard let url = request.url, url.host == "127.0.0.1", url.scheme == "https", url.port == port, uploadFile == nil else { throw ClientError.scopeMismatch }
         var parts = URLComponents(url: url, resolvingAgainstBaseURL: false)!; parts.scheme = "http"
@@ -25,6 +40,7 @@ private final class ConferenceLoopbackHTTP: NSObject, RequestTransport, URLSessi
             $0[String(describing: $1.key).lowercased()] = String(describing: $1.value)
         }, data: data)
     }
+    /// Отменяет все задачи локальной тестовой HTTP-сессии.
     func cancelAll() async { for task in await session.allTasks { task.cancel() } }
 }
 

@@ -24,10 +24,16 @@ struct AccountVideoPreferences: Codable, Equatable {
     var selfVideo = true
     var hideVideo = false
 
+    /// Формирует ключ локального хранения настроек видео для аккаунта или деморежима.
+    /// - Parameter account: Ключ аккаунта или nil для деморежима.
     private static func storageKey(_ account: CredentialKey?) -> String {
         "meetspace.video.v1." + (account?.storageKey ?? "demo")
     }
 
+    /// Читает настройки камеры из хранилища и возвращает стандартные значения при отсутствии пригодной записи.
+    /// - Parameters:
+    ///   - account: Ключ аккаунта или nil для деморежима.
+    ///   - defaults: Хранилище настроек видео.
     static func load(for account: CredentialKey?, defaults: UserDefaults = .standard) -> Self {
         guard let data = defaults.data(forKey: storageKey(account)),
               let value = try? JSONDecoder().decode(Self.self, from: data) else {
@@ -37,6 +43,10 @@ struct AccountVideoPreferences: Codable, Equatable {
         return value
     }
 
+    /// Записывает текущие настройки камеры для выбранного аккаунта.
+    /// - Parameters:
+    ///   - account: Ключ аккаунта или nil для деморежима.
+    ///   - defaults: Хранилище настроек видео.
     func save(for account: CredentialKey?, defaults: UserDefaults = .standard) {
         if let data = try? JSONEncoder().encode(self) {
             defaults.set(data, forKey: Self.storageKey(account))
@@ -53,6 +63,10 @@ struct AccountVideoSettingsView: View {
     @Environment(\.dynamicTypeSize) private var typeSize
     @Environment(\.workspaceWidth) private var width
 
+    /// Загружает настройки аккаунта для отображения на экране видео.
+    /// - Parameters:
+    ///   - account: Ключ аккаунта или nil для деморежима.
+    ///   - wide: Использовать ли компоновку для широкого экрана.
     init(account: CredentialKey?, wide: Bool) {
         self.account = account
         self.wide = wide
@@ -146,6 +160,12 @@ struct AccountVideoSettingsView: View {
         }.toggleStyle(AccountSwitchStyle())
     }
 
+    /// Создаёт переключатель выбранной настройки видео.
+    /// - Parameters:
+    ///   - title: Подпись настройки.
+    ///   - hint: Пояснение под подписью.
+    ///   - key: Путь к логическому свойству настроек.
+    ///   - id: Идентификатор элемента для тестов интерфейса и средств доступности.
     private func option(_ title: String, hint: String? = nil, setting key: WritableKeyPath<AccountVideoPreferences, Bool>, id: String) -> some View {
         Toggle(isOn: setting(key)) {
             VStack(alignment: .leading, spacing: 6) {
@@ -157,6 +177,8 @@ struct AccountVideoSettingsView: View {
         }.accessibilityIdentifier(id)
     }
 
+    /// Создаёт привязку, сохраняющую изменённую настройку видео.
+    /// - Parameter key: Путь к свойству, которое редактирует элемент управления.
     private func setting<T>(_ key: WritableKeyPath<AccountVideoPreferences, T>) -> Binding<T> {
         Binding {
             preferences[keyPath: key]

@@ -181,6 +181,8 @@ struct LiveCalendarView: View {
         }.frame(minWidth: dayMinimumWidth * 7 + 18).padding(10)
             .background(MSTheme.surface, in: RoundedRectangle(cornerRadius: 20))
     }
+    /// Создаёт кнопку дня с отметками текущего выбора и запланированных встреч.
+    /// - Parameter day: Дата ячейки календаря.
     private func dayButton(_ day: Date) -> some View {
         let selected = model.calendar.isDate(day, inSameDayAs: model.selectedDay)
         let hasEvent = model.meetings.contains { model.calendar.isDate(MeetingCalendar.timelineDate($0), inSameDayAs: day) }
@@ -205,6 +207,8 @@ struct LiveCalendarView: View {
         Text(tr(model.hasMore ? "На загруженных страницах встреч нет." : "Нет встреч в выбранном периоде."))
             .font(MSTheme.font(13)).foregroundStyle(MSTheme.muted)
     }
+    /// Показывает карточку встречи и открывает сведения о ней по нажатию.
+    /// - Parameter meeting: Встреча для отображения.
     private func eventCard(_ meeting: Conference) -> some View {
         Button { selected = meeting } label: {
             HStack(spacing: 12) {
@@ -380,6 +384,8 @@ struct ScheduleMeetingForm: View {
         }.accessibilityValue(String(duration)).accessibilityIdentifier("schedule.duration")
     }
 
+    /// Форматирует длительность встречи для выбора в форме.
+    /// - Parameter value: Число минут.
     private func durationLabel(_ value: Int) -> String {
         switch value {
         case 30: tr("30 минут")
@@ -390,6 +396,11 @@ struct ScheduleMeetingForm: View {
         }
     }
 
+    /// Создаёт подписанный переключатель параметра встречи с пояснением.
+    /// - Parameters:
+    ///   - title: Название параметра.
+    ///   - detail: Поясняющий текст.
+    ///   - isOn: Привязка к состоянию параметра.
     private func formSwitch(_ title: String, detail: String, isOn: Binding<Bool>) -> some View {
         Toggle(isOn: isOn) {
             VStack(alignment: .leading, spacing: 5) {
@@ -399,6 +410,7 @@ struct ScheduleMeetingForm: View {
         }.toggleStyle(.switch).frame(minHeight: 44)
     }
 
+    /// Заполняет поля формы исходными данными встречи или значениями для создания.
     private func initialize() {
         guard !initialized else { return }
         initialized = true
@@ -413,6 +425,7 @@ struct ScheduleMeetingForm: View {
         }
     }
 
+    /// Передаёт в календарь запрос создания или переноса с параметрами формы.
     private func submit() {
         guard canSubmit else { return }
         titleFocused = false
@@ -454,7 +467,12 @@ private struct CalendarMeetingDetail: View {
                     Button(tr("Отменить встречу"), role: .destructive) { cancelling = true }.accessibilityIdentifier("calendar.cancel")
                 }
             }.navigationTitle(tr("Встреча")).msInlineTitle().disabled(model.busy)
-                .toolbar { ToolbarItem(placement: .cancellationAction) { Button(tr("Закрыть")) { dismiss() } } }
+                .toolbar {
+                    ToolbarItem(placement: .primaryAction) {
+                        IconButton("xmark", label: "Закрыть") { dismiss() }
+                            .accessibilityIdentifier("calendar.meeting.close")
+                    }
+                }
                 .workspaceFormPresentation(isPresented: $editing, onDismiss: {
                     if rescheduled { dismiss() }
                 }) { ScheduleMeetingForm(model: model, meeting: meeting, didSave: { rescheduled = true }) }

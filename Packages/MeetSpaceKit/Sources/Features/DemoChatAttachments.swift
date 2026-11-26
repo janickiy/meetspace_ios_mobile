@@ -32,6 +32,8 @@ struct DemoChatAttachments: View {
         }
     }
 
+    /// Проверяет, доступно ли хотя бы одно демонстрационное фото среди вложений.
+    /// - Parameter files: Имена файлов вложений.
     static func containsPhoto(_ files: [String]) -> Bool {
         files.contains { File(name: $0).url != nil }
     }
@@ -82,6 +84,8 @@ struct DemoChatAttachments: View {
         }
     }
 
+    /// Показывает миниатюру фотографии и открывает её по нажатию.
+    /// - Parameter file: Файл демонстрационной фотографии.
     private func photo(_ file: File) -> some View {
         Button { opened = file } label: {
             GeometryReader { geometry in

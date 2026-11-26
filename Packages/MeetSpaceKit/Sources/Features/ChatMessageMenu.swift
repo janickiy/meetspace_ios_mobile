@@ -25,6 +25,8 @@ private struct ChatMenuItem: Identifiable {
     @ObservationIgnored private var afterDismiss: (() -> Void)?
     #endif
 
+    /// Закрывает меню сообщения и выполняет выбранное действие после закрытия.
+    /// - Parameter action: Операция, выбранная пользователем.
     func choose(_ action: @escaping () -> Void) {
         guard item != nil else { return }
         #if os(iOS)
@@ -37,6 +39,7 @@ private struct ChatMenuItem: Identifiable {
     }
 
     #if os(iOS)
+    /// Завершает закрытие меню и однократно вызывает отложенное действие.
     func finishDismissal() {
         let action = afterDismiss
         afterDismiss = nil
@@ -44,6 +47,8 @@ private struct ChatMenuItem: Identifiable {
     }
     #endif
 
+    /// Открывает системное меню отправки текста на поддерживаемой платформе.
+    /// - Parameter text: Текст сообщения для отправки.
     func share(_ text: String) {
         #if os(iOS)
         sharing = MessageShareRequest(payload: .text(text))
@@ -86,6 +91,8 @@ struct MessageMenuTrigger<Actions: View>: ViewModifier {
     @Environment(\.chatMenu) private var presentation
     @State private var anchor = ChatMenuAnchor()
 
+    /// Добавляет жест открытия меню и сохраняет координаты сообщения.
+    /// - Parameter content: Строка сообщения, к которой привязано меню.
     func body(content: Content) -> some View {
         if enabled {
             content
@@ -103,6 +110,7 @@ struct MessageMenuTrigger<Actions: View>: ViewModifier {
         } else { content }
     }
 
+    /// Заполняет меню данными выбранного сообщения и его доступными действиями.
     private func open() {
         presentation?.item = ChatMenuItem(id: identifier, anchor: anchor.bounds, own: own, author: author, summary: summary,
                                           attachments: attachments, reaction: reaction, react: react,
@@ -114,6 +122,8 @@ struct MessageMenuTrigger<Actions: View>: ViewModifier {
 /// Present the panel in its own native controller, and open any next sheet only after it dismisses.
 private struct ChatMessageMenuHost: ViewModifier {
     @State private var presentation = ChatMenuPresentation()
+    /// Представляет меню выбранного сообщения и координирует последующие системные окна.
+    /// - Parameter content: Экран чата, поверх которого открывается меню.
     func body(content: Content) -> some View {
         content
             .blur(radius: presentation.item == nil ? 0 : 3)
@@ -142,6 +152,7 @@ private struct ChatMessageMenuHost: ViewModifier {
 }
 
 extension View {
+    /// Подключает к экрану чата общее меню действий над сообщениями.
     func chatMessageMenuHost() -> some View { modifier(ChatMessageMenuHost()) }
 }
 
@@ -259,6 +270,12 @@ struct ChatMessageCommand: View {
     let role: ButtonRole?
     let action: () -> Void
     @Environment(\.chatMenu) private var presentation
+    /// Создаёт пункт меню сообщения со значком и обработчиком.
+    /// - Parameters:
+    ///   - title: Название пункта.
+    ///   - systemImage: Имя системного значка.
+    ///   - role: Роль кнопки, например для удаления.
+    ///   - action: Обработчик нажатия кнопки.
     init(_ title: String, systemImage: String, role: ButtonRole? = nil, action: @escaping () -> Void) {
         self.title = title; symbol = systemImage; self.role = role; self.action = action
     }

@@ -6,6 +6,7 @@ import MeetSpaceCore
 import MeetSpaceDesignSystem
 
 @main @MainActor struct PreviewRenderer {
+    /// Сохраняет PNG-снимки тестовых экранов для заданных размеров, тем и настроек шрифта.
     static func main() throws {
         _ = NSApplication.shared
         let output = URL(fileURLWithPath: CommandLine.arguments.dropFirst().first ?? "/tmp/meetspace-previews", isDirectory: true)
@@ -51,6 +52,7 @@ import MeetSpaceDesignSystem
 }
 #else
 @main struct PreviewRenderer {
+    /// Завершает запуск с сообщением о том, что генератор снимков требует macOS.
     static func main() { fatalError("FoundationPreviewRenderer is a macOS verification tool") }
 }
 #endif

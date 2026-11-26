@@ -65,6 +65,10 @@ struct MeetingInvitationRecipients: View {
         }.task(id: input) { await search(input) }
     }
 
+    /// Показывает имя и контактные данные получателя приглашения.
+    /// - Parameters:
+    ///   - person: Получатель из результатов поиска или списка выбранных.
+    ///   - icon: Значок действия в строке.
     private func recipientRow(_ person: InvitationRecipient, icon: String) -> some View {
         HStack {
             VStack(alignment: .leading, spacing: 3) {
@@ -77,6 +81,8 @@ struct MeetingInvitationRecipients: View {
             .background(MSTheme.surfaceSecondary, in: RoundedRectangle(cornerRadius: 10))
     }
 
+    /// Ищет получателей приглашения после короткой паузы во вводе.
+    /// - Parameter text: Введённое имя или адрес.
     private func search(_ text: String) async {
         guard (2...100).contains(text.unicodeScalars.count) else { searched = ""; results = []; searchError = nil; return }
         do {
@@ -100,6 +106,7 @@ struct MeetingInvitationRecipients: View {
         }
     }
 
+    /// Отправляет приглашения выбранным получателям и обновляет состояние формы.
     private func send() async {
         guard !sending, !selected.isEmpty else { return }
         sending = true

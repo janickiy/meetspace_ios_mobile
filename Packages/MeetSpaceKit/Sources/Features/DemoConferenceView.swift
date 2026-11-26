@@ -12,6 +12,8 @@ struct DemoConferenceView: View {
     private let videoPreferences: AccountVideoPreferences
     @Environment(\.dismiss) private var dismiss
     @Environment(\.colorScheme) private var theme
+    @Environment(\.scenePhase) private var scenePhase
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var microphone = true
     @State private var camera = false
     @State private var selected: ConferenceRoomPanelTab?
@@ -55,6 +57,8 @@ struct DemoConferenceView: View {
         let time: String
     }
 
+    /// Подготавливает комнату демовстречи на основе данных входа и предпочтений участника.
+    /// - Parameter model: Модель приложения с параметрами демонстрационной встречи.
     init(model: AppModel) {
         self.model = model
         let entry = model.demoConferenceEntry
@@ -67,9 +71,11 @@ struct DemoConferenceView: View {
         _camera = State(initialValue: entry?.camera ?? !preferences.cameraOff)
     }
 
-    private var attendees: [ConferenceRoomAttendee] {
-        return [
-            ConferenceRoomAttendee(id: "dmitry", name: "Дмитрий Волков", initials: "ДВ", tone: .blue, microphone: true, speaking: true),
+    /// Формирует список демонстрационных участников для видеосцены.
+    /// - Parameter speechLevel: Нормализованный уровень голоса демонстрационного выступающего.
+    private func attendees(speechLevel: Double = 0) -> [ConferenceRoomAttendee] {
+        [
+            ConferenceRoomAttendee(id: "dmitry", name: "Дмитрий Волков", initials: "ДВ", tone: .blue, microphone: true, speechLevel: speechLevel),
             ConferenceRoomAttendee(id: "anna", name: "Анна Кузнецова", initials: "АК", tone: .amber),
             ConferenceRoomAttendee(id: "maria", name: "Мария Полякова", initials: "МП", tone: .mint),
             ConferenceRoomAttendee(id: "maxim", name: "Максим Петров", initials: "МП", tone: .violet),
@@ -100,21 +106,13 @@ struct DemoConferenceView: View {
         } notice: {
             EmptyView()
         } video: { wide in
-            ConferenceRoomStage(roster: attendees, showSelf: videoPreferences.selfVideo, ownCamera: camera,
-                                wide: wide, remoteScreen: false) { person, focused in
-                if !videoPreferences.hideVideo, person.id == "dmitry", let image = Self.previewFrame {
-                    Color.clear.overlay {
-                        Image(decorative: image, scale: 1).resizable()
-                            .aspectRatio(contentMode: focused || wide ? .fit : .fill)
-                    }.clipped()
-                } else if person.own, let photo = model.demoProfile.photo {
-                    ProfileAvatar(name: displayName, size: focused ? 58 : 38, photo: photo)
-                }
-            } screenShare: {
-                EmptyView()
+            let pauseMeter = reduceMotion || scenePhase != .active || reconnecting || showingRecord || showingInvite || showingLeave
+            TimelineView(.animation(minimumInterval: 0.2, paused: pauseMeter)) { context in
+                let level = pauseMeter ? 0.55 : 0.55 + 0.35 * sin(context.date.timeIntervalSinceReferenceDate * 4)
+                videoStage(wide: wide, speechLevel: reconnecting ? 0 : level)
             }
         } panel: {
-            ConferenceRoomPanel(selected: selected ?? .chat, participantCount: attendees.count,
+            ConferenceRoomPanel(selected: selected ?? .chat, participantCount: attendees().count,
                                 select: { selected = $0 }, close: { selected = nil }) {
                 if selected == .participants {
                     participantList
@@ -161,6 +159,26 @@ struct DemoConferenceView: View {
         }
     }
 
+    /// Строит видеосцену демовстречи с участниками и индикатором говорящего.
+    /// - Parameters:
+    ///   - wide: Использовать ли компоновку для широкого экрана.
+    ///   - speechLevel: Нормализованный уровень демонстрационного голоса.
+    private func videoStage(wide: Bool, speechLevel: Double) -> some View {
+        ConferenceRoomStage(roster: attendees(speechLevel: speechLevel), showSelf: videoPreferences.selfVideo, ownCamera: camera,
+                            wide: wide, remoteScreen: false) { person, focused in
+            if !videoPreferences.hideVideo, person.id == "dmitry", let image = Self.previewFrame {
+                Color.clear.overlay {
+                    Image(decorative: image, scale: 1).resizable()
+                        .aspectRatio(contentMode: focused || wide ? .fit : .fill)
+                }.clipped()
+            } else if person.own, let photo = model.demoProfile.photo {
+                ProfileAvatar(name: displayName, size: focused ? 58 : 38, photo: photo)
+            }
+        } screenShare: {
+            EmptyView()
+        }
+    }
+
     private var recordingState: ConferenceRecordingDialogState {
         if guest { return .unavailable("Гости не могут запускать запись. Попросите участника встречи с аккаунтом начать запись.") }
         if recordingPhase == .idle || recordingPhase == .ready {
@@ -170,6 +188,8 @@ struct DemoConferenceView: View {
                        mode: recordingMode, canStop: recordingPhase == .recording)
     }
 
+    /// Начинает имитацию записи встречи для текущего формата.
+    /// - Parameter mode: Выбранный формат записи.
     private func startRecording(_ mode: RecordingMode) {
         guard !guest, recordingPhase == .idle || recordingPhase == .ready else { return }
         savedRecording = nil
@@ -179,12 +199,14 @@ struct DemoConferenceView: View {
         recordingPhase = .starting
     }
 
+    /// Завершает текущую демонстрационную запись и добавляет её в библиотеку.
+    /// - Parameter id: Идентификатор записи, которую запросили остановить.
     private func stopRecording(_ id: UUID) {
         guard !guest, recordingPhase == .recording, id == recordingID, let recordingStartedAt else { return }
         recordingPhase = .processing
         savedRecording = model.addDemoMeetingRecording(title: meetingTitle, mode: recordingMode,
                                                        duration: Date().timeIntervalSince(recordingStartedAt),
-                                                       participantCount: attendees.count, meetingID: demoMeetingID)
+                                                       participantCount: attendees().count, meetingID: demoMeetingID)
     }
 
     private var openSavedRecording: (() -> Void)? {
@@ -219,7 +241,7 @@ struct DemoConferenceView: View {
         ScrollView {
             LazyVStack(spacing: 0) {
                 let organizer = DemoData.meetings.first(where: { tr($0.title) == meetingTitle })?.owner ?? "Вы"
-                ForEach(attendees) { person in
+                ForEach(attendees()) { person in
                     HStack(spacing: 8) {
                         let isOrganizer = person.name == tr(organizer)
                         let role = person.own && guest ? "Гость" : isOrganizer ? "Организатор" : "Участник"
@@ -255,6 +277,7 @@ struct DemoConferenceView: View {
         }
     }
 
+    /// Добавляет непустой черновик в сообщения демонстрационного чата.
     private func send() {
         let message = draft.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !message.isEmpty else { return }

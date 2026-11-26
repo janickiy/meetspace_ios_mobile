@@ -12,19 +12,32 @@ private enum RecordingFixture {
     static var path: String { "/api/v1/conferences/\(conference.uuidString.lowercased())/recordings" }
     static let bytes = Data(repeating: 42, count: 131_072)
     static var hash: String { SHA256.hash(data: bytes).map { String(format: "%02x", $0) }.joined() }
+    /// Формирует карточку записи встречи для тестового ответа.
+    /// - Parameters:
+    ///   - conference: Идентификатор встречи.
+    ///   - status: Состояние записи.
+    ///   - url: Ссылка на файл записи.
     static func card(conference: UUID = conference, status: String = "ready", url: String = "https://storage.fixture/media") -> [String: Any] {
         ["id": 42, "uuid": recording.uuidString, "conferenceId": conference.uuidString, "mode": "composite", "status": status,
          "createdAt": "2026-11-06T10:00:00.000Z", "requestedBy": Fixture.userID.uuidString,
          "files": [["uuid": file.uuidString, "recordId": 42, "fileType": "final_mp4", "fileName": "meeting.mp4", "mimeType": "video/mp4",
                     "sizeBytes": bytes.count, "checksumSha256": hash, "url": url]]]
     }
+    /// Создаёт активную встречу, которой принадлежит тестовая запись.
     static func meeting() -> Conference { Conference(id: conference, ownerId: Fixture.userID, title: "Встреча", status: "active") }
+    /// Формирует строку библиотеки с данными тестовой встречи и её записи.
     static func row() throws -> [String: Any] {
         ["conference": try JSONSerialization.jsonObject(with: WireJSON.encoder().encode(meeting())), "recording": card()]
     }
+    /// Создаёт авторизованный клиент для запросов библиотеки записей.
+    /// - Parameter transport: Транспорт API.
     static func client(_ transport: any RequestTransport) throws -> AuthenticatedClient {
         AuthenticatedClient(account: try Fixture.account(), credentials: Fixture.credentials(), secureStore: TestSecrets(), transport: transport)
     }
+    /// Готовит метаданные файла для проверки загрузки и целостности.
+    /// - Parameters:
+    ///   - hash: Ожидаемая контрольная сумма.
+    ///   - size: Ожидаемый размер в байтах.
     static func metadata(hash: String? = hash, size: Int64 = Int64(bytes.count)) -> RecordingFile {
         RecordingFile(id: file, type: "final_mp4", filename: "meeting.mp4", mimeType: "video/mp4", sizeBytes: size, checksumSHA256: hash)
     }
@@ -78,13 +91,22 @@ private enum RecordingFixture {
 private final class RecordingRequests: @unchecked Sendable {
     private let lock = NSLock()
     private var started: Set<String> = []
+    /// Регистрирует начало скачивания по адресу для проверки порядка запросов.
+    /// - Parameter url: Адрес загружаемого файла.
     func mark(_ url: URL) { lock.withLock { _ = started.insert(url.absoluteString) } }
+    /// Проверяет, началась ли загрузка по указанному адресу.
+    /// - Parameter url: Адрес файла.
     func contains(_ url: URL) -> Bool { lock.withLock { started.contains(url.absoluteString) } }
 }
 private final class RecordingProtocol: URLProtocol, @unchecked Sendable {
     static let requests = RecordingRequests()
+    /// Определяет, относится ли запрос к домену тестового протокола.
+    /// - Parameter request: Входящий сетевой запрос.
     override class func canInit(with request: URLRequest) -> Bool { request.url?.host == "storage.fixture" }
+    /// Возвращает запрос в исходном виде для обработки тестовым URLProtocol.
+    /// - Parameter request: Запрос тестовой сессии.
     override class func canonicalRequest(for request: URLRequest) -> URLRequest { request }
+    /// Проверяет отсутствие учётных данных в запросе хранилища и выдаёт тестовый файл.
     override func startLoading() {
         #expect(request.value(forHTTPHeaderField: "Authorization") == nil)
         #expect(request.value(forHTTPHeaderField: "Cookie") == nil)
@@ -97,6 +119,7 @@ private final class RecordingProtocol: URLProtocol, @unchecked Sendable {
         client?.urlProtocol(self, didLoad: RecordingFixture.bytes)
         client?.urlProtocolDidFinishLoading(self)
     }
+    /// Завершает обработку команды остановки для тестового URLProtocol без фоновой передачи.
     override func stopLoading() {}
 }
 private func downloader(base: URL) throws -> URLSessionRecordingDownloader {
@@ -183,9 +206,19 @@ private actor RevokeAfterDownload: RecordingDownloading {
     let url: URL
     private(set) var started = false
     private(set) var removed = false
+    /// Задаёт локальный файл, доступ к которому тест отзовёт после загрузки.
+    /// - Parameter url: Локальный URL тестового файла.
     init(url: URL) { self.url = url }
+    /// Имитирует завершившуюся загрузку перед повторной проверкой доступа.
+    /// - Parameters:
+    ///   - url: Адрес источника.
+    ///   - file: Метаданные файла.
+    ///   - progress: Обработчик обновления прогресса.
     func download(url: URL, file: RecordingFile, progress: TransferProgress?) async throws -> URL { started = true; return self.url }
+    /// Фиксирует удаление файла при утрате доступа.
+    /// - Parameter url: Адрес локальной копии.
     func remove(_ url: URL) { removed = true }
+    /// Фиксирует очистку загрузчика при закрытии.
     func close() { removed = true }
 }
 @Test func recordingRechecksAuthorizationAfterDownloadAndDoesNotLeakRevokedFile() async throws {
@@ -226,6 +259,11 @@ private actor DelayedRecordingCancellation: RecordingDownloading {
     private var startedWaiters: [CheckedContinuation<Void, Never>] = []
     private var cancelledWaiters: [CheckedContinuation<Void, Never>] = []
     private var held: CheckedContinuation<Void, Never>?
+    /// Удерживает первый запрос до отмены и возвращает отдельный файл для следующей загрузки.
+    /// - Parameters:
+    ///   - url: Адрес источника.
+    ///   - file: Метаданные файла.
+    ///   - progress: Обработчик прогресса.
     func download(url: URL, file: RecordingFile, progress: TransferProgress?) async throws -> URL {
         requests += 1
         guard requests == 1 else { return newURL }
@@ -239,24 +277,32 @@ private actor DelayedRecordingCancellation: RecordingDownloading {
         }
         return oldURL
     }
+    /// Дожидается начала первого скачивания.
     func waitForFirstRequest() async {
         if requests > 0 { return }
         await withCheckedContinuation { startedWaiters.append($0) }
     }
+    /// Дожидается, когда загрузчик получит отмену первого запроса.
     func waitForCancellation() async {
         if cancelled { return }
         await withCheckedContinuation { cancelledWaiters.append($0) }
     }
+    /// Фиксирует отмену и возобновляет ожидающие её задачи.
     private func markCancelled() {
         cancelled = true
         for waiter in cancelledWaiters { waiter.resume() }; cancelledWaiters = []
     }
+    /// Приостанавливает завершение старой загрузки до разрешения теста.
     private func waitForRelease() async {
         if released { return }
         await withCheckedContinuation { held = $0 }
     }
+    /// Разрешает завершение первого запроса загрузчика.
     func releaseFirst() { released = true; held?.resume(); held = nil }
+    /// Запоминает адрес удаляемого файла для проверки очистки.
+    /// - Parameter url: Локальный URL файла.
     func remove(_ url: URL) { removed.append(url) }
+    /// Снимает блокировку первого запроса при закрытии загрузчика.
     func close() { releaseFirst() }
 }
 
@@ -296,6 +342,8 @@ private actor DelayedRecordingCancellation: RecordingDownloading {
 @Test @MainActor func recordingDetailDropsPlaybackOnRevokedRefreshAndCanRetry() async throws {
     actor Access {
         private(set) var allowed = true
+        /// Меняет результат последующей проверки доступа к файлу.
+        /// - Parameter value: Разрешить ли доступ.
         func setAllowed(_ value: Bool) { allowed = value }
     }
     let access = Access()

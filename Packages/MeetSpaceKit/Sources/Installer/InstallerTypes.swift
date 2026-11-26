@@ -17,6 +17,11 @@ public struct InstallerEndpoint: Codable, Sendable, Equatable {
     public let host: String
     public let port: Int
     public let user: String
+    /// Проверяет адрес SSH-хоста, порт и имя пользователя для подключения.
+    /// - Parameters:
+    ///   - host: Имя или IP-адрес SSH-сервера.
+    ///   - port: Порт подключения по SSH.
+    ///   - user: Имя пользователя SSH для подключения к серверу.
     public init(host: String, port: Int = 22, user: String = "root") throws {
         let host = host.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
         guard !host.isEmpty, host.count <= 253, host.range(of: "^[a-z0-9][a-z0-9.:-]*$", options: .regularExpression) != nil,
@@ -30,6 +35,8 @@ public struct InstallerEndpoint: Codable, Sendable, Equatable {
 public struct InstallerHostKey: Codable, Sendable, Equatable {
     public let openSSH: String
     public let fingerprint: String
+    /// Извлекает публичный ключ OpenSSH и вычисляет его отпечаток SHA-256.
+    /// - Parameter openSSH: Публичный ключ сервера в текстовом формате OpenSSH.
     public init(openSSH: String) throws {
         let parts = openSSH.split(separator: " ")
         guard parts.count >= 2, let raw = Data(base64Encoded: String(parts[1])), raw.count <= 16384 else { throw InstallerFailure.response }
@@ -42,9 +49,15 @@ public enum InstallerCredentials: Sendable {
     case privateKey(String, passphrase: String)
 }
 public struct InstallerOptions: Codable, Sendable, Equatable {
-    public struct Admin: Codable, Sendable, Equatable { public var username = "admin"; public var httpsPort = 8081; public init() {} }
+    public struct Admin: Codable, Sendable, Equatable {
+        public var username = "admin"; public var httpsPort = 8081;
+
+        /// Задаёт имя администратора и порт панели управления по умолчанию.
+        public init() {}
+    }
     public struct SMTP: Codable, Sendable, Equatable {
         public var host = ""; public var port = 587; public var from = ""; public var username = ""; public var tlsMode = "starttls"
+        /// Задаёт начальные параметры SMTP с использованием STARTTLS.
         public init() {}
     }
     public var domain = ""
@@ -54,7 +67,9 @@ public struct InstallerOptions: Codable, Sendable, Equatable {
     public var imageRelease: String? = nil
     public var admin = Admin()
     public var smtp: SMTP? = nil
+    /// Создаёт настройки новой установки со значениями по умолчанию.
     public init() {}
+    /// Проверяет параметры развёртывания и нормализует домен и режим поставки.
     public func validated() throws -> InstallerOptions {
         var result = self
         let input = domain.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -85,6 +100,8 @@ public struct InstallerOptions: Codable, Sendable, Equatable {
         }
         return result
     }
+    /// Проверяет, подходит ли пароль администратора для передачи установщику.
+    /// - Parameter password: Пароль создаваемого администратора MeetSpace.
     public static func validAdminPassword(_ password: String) -> Bool {
         (8...128).contains(password.unicodeScalars.count) && password.utf8.count <= 512 && !password.contains(where: { $0 == "\0" || $0 == "\r" || $0 == "\n" })
     }
@@ -107,6 +124,12 @@ public struct InstallerTicket: Codable, Sendable, Equatable {
     public let key: InstallerHostKey
     public let plan: InstallerPlan
     public let jobID: String
+    /// Связывает проверенный план с SSH-сервером, его ключом и идентификатором задания.
+    /// - Parameters:
+    ///   - endpoint: Адрес, порт и имя пользователя SSH-сервера.
+    ///   - key: Публичный ключ SSH-сервера, которому доверяет пользователь.
+    ///   - plan: Проверенный план установки.
+    ///   - jobID: Идентификатор задания, используемый при восстановлении установки.
     public init(endpoint: InstallerEndpoint, key: InstallerHostKey, plan: InstallerPlan, jobID: String = UUID().uuidString.lowercased()) {
         self.endpoint = endpoint; self.key = key; self.plan = plan; self.jobID = jobID
     }
@@ -121,7 +144,15 @@ public struct InstallerStatus: Sendable, Equatable {
     public var terminal: Bool { ["completed", "cancelled", "failed", "needs_recovery"].contains(state) }
 }
 public protocol InstallerTransport: Sendable {
+    /// Получает публичный SSH-ключ узла для последующей сверки.
+    /// - Parameter endpoint: Адрес, порт и имя пользователя SSH-сервера.
     func inspect(_ endpoint: InstallerEndpoint) async throws -> InstallerHostKey
+    /// Выполняет программу установки через SSH с проверкой ключа сервера.
+    /// - Parameters:
+    ///   - endpoint: Адрес, порт и имя пользователя SSH-сервера.
+    ///   - credentials: Данные доступа к SSH-серверу.
+    ///   - key: Публичный ключ SSH-сервера, которому доверяет пользователь.
+    ///   - input: Программа и входные данные, передаваемые установщику через SSH.
     func execute(_ endpoint: InstallerEndpoint, credentials: InstallerCredentials, key: InstallerHostKey, input: Data) async throws -> Data
 }
 public let installerPhases = ["docker", "source", "images", "configuration", "dependencies", "backup", "migrations", "https", "services", "readiness"]

@@ -16,19 +16,34 @@ enum BroadcastWire {
     }
     struct Hello: Codable { let sessionID: UUID; let nonce: String }
 
+    /// Кодирует заголовок пакета с сигнатурой протокола, типом и длиной данных.
+    /// - Parameters:
+    ///   - kind: Тип передаваемого сообщения.
+    ///   - count: Число байтов полезной нагрузки.
     static func header(kind: Kind, count: Int) -> Data {
         var data = Data([0x4D, 0x53, 0x42, 0x31])
         append(kind.rawValue, to: &data); append(UInt32(count), to: &data)
         return data
     }
+    /// Дописывает целое число в сетевом порядке байтов.
+    /// - Parameters:
+    ///   - value: Число для кодирования.
+    ///   - data: Буфер, к которому добавляется число.
     static func append<T: FixedWidthInteger>(_ value: T, to data: inout Data) {
         var big = value.bigEndian
         withUnsafeBytes(of: &big) { data.append(contentsOf: $0) }
     }
+    /// Читает целое число заданной разрядности в сетевом порядке байтов.
+    /// - Parameters:
+    ///   - type: Целочисленный тип результата.
+    ///   - data: Байты принятого пакета.
+    ///   - offset: Начальная позиция числа в байтах.
     static func integer<T: FixedWidthInteger>(_ type: T.Type, _ data: Data, at offset: Int) throws -> T {
         guard offset >= 0, data.count >= offset + MemoryLayout<T>.size else { throw ScreenBroadcastError.invalidFrame }
         return data.withUnsafeBytes { T(bigEndian: $0.loadUnaligned(fromByteOffset: offset, as: T.self)) }
     }
+    /// Сериализует проверенный кадр вместе с идентификатором сеанса, размерами и временем.
+    /// - Parameter frame: Кадр демонстрации в формате BGRA.
     static func frameData(_ frame: ScreenBroadcastFrame) throws -> Data {
         try frame.validated()
         var data = Data(frame.sessionID.uuidString.lowercased().utf8)
@@ -36,6 +51,10 @@ enum BroadcastWire {
         append(UInt64(frame.timestampNs), to: &data); data.append(frame.pixels)
         return data
     }
+    /// Декодирует кадр и проверяет его принадлежность ожидаемому сеансу и соответствие ограничениям.
+    /// - Parameters:
+    ///   - data: Полезная нагрузка пакета с кадром.
+    ///   - descriptor: Описание ожидаемого сеанса и допустимых размеров.
     static func frame(_ data: Data, descriptor: Descriptor) throws -> ScreenBroadcastFrame {
         guard data.count >= 52 else { throw ScreenBroadcastError.invalidFrame }
         guard let string = String(data: data.prefix(36), encoding: .utf8),
@@ -48,6 +67,8 @@ enum BroadcastWire {
         return try ScreenBroadcastFrame(sessionID: id, width: width, height: height, rowBytes: width * 4,
             timestampNs: Int64(stamp), pixels: data.subdata(in: 52..<data.count)).validated(configuration: descriptor.configuration)
     }
+    /// Формирует адрес UNIX-сокета в общем каталоге и проверяет длину пути.
+    /// - Parameter directory: Каталог для сокета демонстрации.
     static func address(_ directory: URL) throws -> sockaddr_un {
         let path = directory.appendingPathComponent(socketName).path
         var address = sockaddr_un()
@@ -62,10 +83,14 @@ enum BroadcastWire {
         }
         return address
     }
+    /// Возвращает доступный процессу контейнер App Group по её идентификатору.
+    /// - Parameter identifier: Идентификатор группы приложений с префиксом group.
     static func groupDirectory(_ identifier: String) -> URL? {
         guard identifier.hasPrefix("group."), identifier.utf8.count <= 200 else { return nil }
         return FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: identifier)
     }
+    /// Читает описание сеанса из общего каталога, проверяет версию, срок действия и параметры видео.
+    /// - Parameter directory: Каталог с описанием запущенного сеанса.
     static func descriptor(at directory: URL) throws -> Descriptor {
         let url = directory.appendingPathComponent(descriptorName)
         let attributes = try FileManager.default.attributesOfItem(atPath: url.path)
@@ -86,6 +111,8 @@ final class BroadcastSocket: @unchecked Sendable {
     private let state = NSLock()
     private let writer = NSLock()
     private var stopped = false
+    /// Принимает во владение дескриптор сокета и настраивает неблокирующий обмен.
+    /// - Parameter fd: Открытый файловый дескриптор UNIX-сокета.
     init(fd: Int32) throws {
         guard fd >= 0 else { throw ScreenBroadcastError.connectionLost }
         var yes: Int32 = 1
@@ -96,11 +123,17 @@ final class BroadcastSocket: @unchecked Sendable {
         }
         self.fd = fd
     }
+    /// Закрывает файловый дескриптор после освобождения последней ссылки на сокет.
     deinit { Darwin.close(fd) }
     var isStopped: Bool { state.withLock { stopped } }
+    /// Прерывает операции сокета в обоих направлениях и пробуждает ожидающие задачи.
     func shutdown() {
         state.withLock { if !stopped { stopped = true; _ = Darwin.shutdown(fd, SHUT_RDWR) } }
     }
+    /// Ожидает указанных событий сокета до монотонного срока или ошибки.
+    /// - Parameters:
+    ///   - events: Маска ожидаемых событий poll.
+    ///   - deadline: Предельное время в наносекундах монотонных часов.
     func wait(_ events: Int16, until deadline: UInt64) throws {
         while !isStopped {
             guard DispatchTime.now().uptimeNanoseconds < deadline else { throw ScreenBroadcastError.timedOut }
@@ -116,6 +149,10 @@ final class BroadcastSocket: @unchecked Sendable {
         }
         throw ScreenBroadcastError.connectionLost
     }
+    /// Читает заданное число байтов до истечения срока.
+    /// - Parameters:
+    ///   - count: Требуемый размер данных в байтах.
+    ///   - deadline: Предельное время чтения по монотонным часам в наносекундах.
     func read(_ count: Int, until deadline: UInt64) throws -> Data {
         guard count >= 0, count <= BroadcastWire.maximumFrameBytes + 52 else { throw ScreenBroadcastError.invalidFrame }
         var data = Data(count: count)
@@ -131,6 +168,8 @@ final class BroadcastSocket: @unchecked Sendable {
         }
         return data
     }
+    /// Проверяет заголовок пакета и возвращает его тип и полезную нагрузку.
+    /// - Parameter timeout: Время ожидания целого пакета в секундах.
     func readPacket(timeout: Double) throws -> (BroadcastWire.Kind, Data) {
         let deadline = DispatchTime.now().uptimeNanoseconds + UInt64(timeout * 1_000_000_000)
         let header = try read(12, until: deadline)
@@ -142,7 +181,11 @@ final class BroadcastSocket: @unchecked Sendable {
         guard count <= (kind == .frame ? BroadcastWire.maximumFrameBytes + 52 : 2048) else { throw ScreenBroadcastError.invalidFrame }
         return (kind, try read(count, until: deadline))
     }
-    /// A full packet is serialized. A partial packet timeout is fatal, never retried as a new frame.
+    /// Последовательно записывает целый пакет. Тайм-аут после частичной записи завершает передачу с ошибкой.
+    /// - Parameters:
+    ///   - kind: Тип сообщения.
+    ///   - payload: Данные после заголовка пакета.
+    ///   - dropIfBusy: Разрешает вернуть false без записи, если отправитель уже занят.
     func send(_ kind: BroadcastWire.Kind, payload: Data = Data(), dropIfBusy: Bool = false) throws -> Bool {
         if dropIfBusy { guard writer.try() else { return false } } else { writer.lock() }
         defer { writer.unlock() }

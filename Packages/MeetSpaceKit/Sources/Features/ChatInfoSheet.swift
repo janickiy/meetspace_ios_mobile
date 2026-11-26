@@ -23,7 +23,7 @@ struct ChatInfoSheet<Details: View, Materials: View>: View {
     var body: some View {
         GeometryReader { geometry in
             let compact = geometry.size.width <= 600
-            let bottomSheet = geometry.size.width < 780
+            let bottomSheet = geometry.size.width < 600
             let inset: CGFloat = bottomSheet ? 14 : 20
             let available = max(0, geometry.size.height - 2 * inset - headerHeight)
             ZStack {
@@ -50,7 +50,7 @@ struct ChatInfoSheet<Details: View, Materials: View>: View {
                             VStack(spacing: 10) {
                                 ChatAvatar(name: name, initials: initials, size: compact ? 60 : 72).clipShape(Circle())
                                 VStack(spacing: 4) {
-                                    Text(name).font(MSTheme.font(compact ? 21 : 24, weight: .semibold))
+                                    Text(name).font(MSTheme.font(compact ? 21 : 24, weight: .semibold)).bold()
                                         .tracking(compact ? -0.525 : -0.6).accessibilityAddTraits(.isHeader)
                                     Text(status).font(MSTheme.font(13)).foregroundStyle(MSTheme.muted)
                                         .padding(.vertical, 1)
@@ -60,8 +60,7 @@ struct ChatInfoSheet<Details: View, Materials: View>: View {
                             actionRow(compact: compact)
                             details()
                             VStack(spacing: 12) {
-                                tabs.frame(maxWidth: compact ? .infinity : 332)
-                                    .background(MSTheme.surfaceSecondary, in: RoundedRectangle(cornerRadius: 24))
+                                tabs
                                 materials(kind)
                             }
                         }.padding(.horizontal, compact ? 16 : 24).padding(.bottom, compact ? 18 : 24)
@@ -72,8 +71,8 @@ struct ChatInfoSheet<Details: View, Materials: View>: View {
                 }
                 .frame(maxWidth: 560)
                 .background(MSTheme.surface)
-                .clipShape(RoundedRectangle(cornerRadius: bottomSheet ? 23 : 24))
-                .shadow(color: .black.opacity(0.13), radius: 20, y: 10)
+                .clipShape(RoundedRectangle(cornerRadius: bottomSheet ? 23 : 24, style: .circular))
+                .shadow(color: .black.opacity(0.13), radius: 40, y: 20)
                 .accessibilityElement(children: .contain)
                 .accessibilityIdentifier(identifier)
                 .padding(inset)
@@ -90,12 +89,14 @@ struct ChatInfoSheet<Details: View, Materials: View>: View {
         #endif
     }
 
+    /// Размещает кнопки действий с контактом или группой с учётом размера текста.
+    /// - Parameter compact: Использовать ли компоновку для узкого экрана.
     private func actionRow(compact: Bool) -> some View {
         let layout = typeSize.isAccessibilitySize ? AnyLayout(VStackLayout(spacing: 8)) : AnyLayout(HStackLayout(spacing: 8))
         let stretch = (compact || typeSize.isAccessibilitySize) && (edit != nil || call != nil)
         return layout {
             Button { dismiss() } label: {
-                actionLabel(group ? "Перейти в чат" : "Сообщение", icon: "message", stretch: stretch)
+                actionLabel(group ? "Перейти в чат" : "Сообщение", icon: "bubble.left", stretch: stretch)
             }
             if let edit {
                 Button(action: edit) { actionLabel("Редактировать группу", icon: "pencil", stretch: stretch) }
@@ -116,6 +117,11 @@ struct ChatInfoSheet<Details: View, Materials: View>: View {
         }.buttonStyle(.plain)
     }
 
+    /// Создаёт подпись кнопки действия со значком.
+    /// - Parameters:
+    ///   - text: Подпись действия.
+    ///   - icon: Имя значка действия.
+    ///   - stretch: Растянуть ли подпись по доступной ширине.
     private func actionLabel(_ text: String, icon: String, stretch: Bool) -> some View {
         HStack(spacing: 7) {
             WorkspaceIcon(icon, size: 17)
@@ -136,7 +142,7 @@ struct ChatInfoSheet<Details: View, Materials: View>: View {
                         .foregroundStyle(item == kind ? MSTheme.brandAccent : MSTheme.muted)
                         .background {
                             if item == kind {
-                                RoundedRectangle(cornerRadius: 20).fill(MSTheme.surface)
+                                Capsule().fill(MSTheme.surface)
                                     .shadow(color: .black.opacity(0.08), radius: 2, y: 1)
                             }
                         }
@@ -144,6 +150,8 @@ struct ChatInfoSheet<Details: View, Materials: View>: View {
                     .accessibilityIdentifier("chatInfo.tab.\(item.rawValue)")
             }
         }.padding(4)
+            .frame(maxWidth: typeSize.isAccessibilitySize ? .infinity : 332)
+            .background(MSTheme.surfaceSecondary, in: Capsule())
     }
 }
 
@@ -189,12 +197,13 @@ struct ChatInfoMembers<Members: View>: View {
                     Text(tr("Участники")).font(MSTheme.font(13, weight: .semibold))
                     Spacer()
                     if let count { Text(String(count)).font(MSTheme.font(12, weight: .semibold)).foregroundStyle(MSTheme.muted) }
-                    Image(systemName: expanded ? "chevron.up" : "chevron.down").font(.system(size: 13)).foregroundStyle(MSTheme.muted)
+                    WorkspaceIcon("chevron.down", size: 20)
+                        .rotationEffect(.degrees(expanded ? 180 : 0)).foregroundStyle(MSTheme.muted)
                 }.frame(minHeight: 44).contentShape(Rectangle())
             }.buttonStyle(.plain).accessibilityIdentifier("chatGroupSheet.members")
             if expanded {
-                VStack(alignment: .leading, spacing: 8) { members() }
-                    .frame(maxWidth: .infinity, alignment: .leading).padding(.bottom, 12)
+                VStack(alignment: .leading, spacing: 0) { members() }
+                    .frame(maxWidth: .infinity, alignment: .leading).padding(.bottom, 8)
             }
         }.padding(.horizontal, width <= 600 ? 15 : 20).background(MSTheme.background, in: RoundedRectangle(cornerRadius: 16))
     }
@@ -210,6 +219,6 @@ struct ChatInfoMember: View {
                 Text(name).font(MSTheme.font(13, weight: .semibold))
                 if let role { Text(tr(role)).font(MSTheme.font(11)).foregroundStyle(MSTheme.muted) }
             }
-        }
+        }.padding(.vertical, 8)
     }
 }

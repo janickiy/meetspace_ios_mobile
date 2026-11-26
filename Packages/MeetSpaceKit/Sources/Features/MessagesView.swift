@@ -38,7 +38,9 @@ struct MessagesView: View {
             let width = geometry.size.width
             let wide = WorkspaceLayout.usesColumns(width: width, sizeClass: sizeClass, typeSize: typeSize, hasHinge: hasHinge)
             let selectedID = model.demoChats.visibleContacts.first(where: { $0.id == selected })?.id
-            let detailID = selectedID ?? (wide && model.messagesPath.isEmpty ? model.demoChats.visibleContacts.first?.id : nil)
+            let hidesTabs = ChatLayout.hidesWorkspaceTabsInThread
+            let opensFirstChat = wide && !hidesTabs && model.messagesPath.isEmpty
+            let detailID = selectedID ?? (opensFirstChat ? model.demoChats.visibleContacts.first?.id : nil)
             let detailOnly = !wide && selectedID != nil
             let gutter = wide ? WorkspaceLayout.chatGutter(width) : 0
             let sidebar = WorkspaceLayout.chatSidebarWidth(width)
@@ -89,11 +91,11 @@ struct MessagesView: View {
                     if wide { Divider() }
                     if let id = detailID {
                         ThreadView(model: model, personIndex: id, embedded: true,
-                                   embeddedBack: wide ? nil : { selected = nil }, openRecipient: { selected = $0 },
-                                   removed: { selected = nil })
+                                   embeddedBack: wide && !hidesTabs ? nil : { selected = nil }, openRecipient: { selected = $0 },
+                                   removed: { selected = nil }, showsNewChat: wide)
                             .id(id).frame(maxWidth: .infinity)
                             .environment(\.chatPaneWidth, wide ? width - sidebar - 2 * gutter - 1 : width)
-                            .onAppear { if selected == nil && wide { selected = id } }
+                            .onAppear { if selected == nil { selected = id } }
                     } else if wide {
                         ContentUnavailableView(tr("Выберите чат"), systemImage: "bubble.left.and.bubble.right")
                     }
@@ -101,7 +103,7 @@ struct MessagesView: View {
                 .clipShape(UnevenRoundedRectangle(topLeadingRadius: width >= 780 ? 24 : 0,
                                                   topTrailingRadius: width >= 780 ? 24 : 0))
                 .padding(.horizontal, gutter)
-            }
+            }.preference(key: InlineChatOpen.self, value: hidesTabs && detailID != nil)
         }.background(MSTheme.background).toolbar(.hidden)
     }
 
@@ -125,6 +127,7 @@ struct ThreadView: View {
     var embeddedBack: (() -> Void)?
     var openRecipient: ((Int) -> Void)?
     var removed: (() -> Void)?
+    var showsNewChat = false
     @Environment(\.dismiss) private var dismiss
     @Environment(\.workspaceWidth) private var width
     @State private var draft = ""
@@ -196,7 +199,7 @@ struct ThreadView: View {
                         .accessibilityLabel(tr("Поделиться")).disabled(selected.isEmpty).accessibilityIdentifier("message.shareSelected")
                 }
             } else {
-                if embedded && embeddedBack == nil {
+                if showsNewChat {
                     ChatNewButton { model.notice = "Новые чаты станут доступны после входа." }
                         .frame(maxWidth: .infinity, alignment: .trailing).padding(.horizontal, 24).padding(.vertical, 10)
                 }
@@ -229,7 +232,7 @@ struct ThreadView: View {
                 }
                 Button(tr("Отмена"), role: .cancel) {}
             }
-            .workspaceFormPresentation(isPresented: $info, onDismiss: {
+            .workspaceFormPresentation(isPresented: $info, backgroundBlur: 0, onDismiss: {
                 if callAfterInfo {
                     callAfterInfo = false
                     model.navigate(.contactCall(personIndex))
@@ -242,6 +245,8 @@ struct ThreadView: View {
             }
     }
 
+    /// Обрабатывает выбор команды в меню демонстрационного чата.
+    /// - Parameter action: Команда из заголовка чата.
     private func chooseHeaderAction(_ action: ChatHeaderAction) {
         switch action {
         case .info: info = true
@@ -254,6 +259,8 @@ struct ThreadView: View {
         }
     }
 
+    /// Применяет подтверждённое действие к демонстрационной истории или группе.
+    /// - Parameter action: Команда, подтверждённая пользователем.
     private func confirmHeaderAction(_ action: ChatHeaderAction) {
         switch action {
         case .clear:
@@ -269,6 +276,8 @@ struct ThreadView: View {
         }
     }
 
+    /// Создаёт строку сообщения с действиями, вложениями и состоянием выбора.
+    /// - Parameter message: Сообщение демонстрационной переписки.
     private func bubble(_ message: DemoChatStore.Message) -> some View {
         ChatMessageRow(own: message.own, author: message.author, time: message.time,
                        selecting: selecting, selected: selected.contains(message.id), actionable: !message.deleted,
@@ -348,6 +357,7 @@ struct ThreadView: View {
             .overlay(alignment: .top) { Rectangle().fill(MSTheme.line).frame(height: 1) }
     }
 
+    /// Применяет черновик ответа или правки в демонстрационном чате.
     private func submitDraft() {
         guard let context = composerContext else { showDemoNotice(); return }
         switch context {
@@ -361,23 +371,30 @@ struct ThreadView: View {
         composerFocused = false
     }
 
+    /// Выходит из режима ответа или редактирования и восстанавливает прежний черновик.
     private func clearComposerContext() {
         if let draftBeforeEdit { draft = draftBeforeEdit }
         draftBeforeEdit = nil
         composerContext = nil
     }
 
+    /// Показывает пояснение об отправке сообщений в демонстрационном режиме.
     private func showDemoNotice() {
         model.notice = "Сообщения в демо не отправляются. История здесь — пример из макетов."
     }
 
+    /// Включает выбор сообщений и при необходимости отмечает первое.
+    /// - Parameter id: Идентификатор первого выбранного сообщения.
     private func select(_ id: UUID?) {
         clearComposerContext()
         composerFocused = false
         query = ""; searching = false; selected = id.map { [$0] } ?? []; selecting = true
     }
+    /// Завершает выбор сообщений и очищает отметки.
     private func endSelection() { selecting = false; selected.removeAll() }
 
+    /// Показывает доступные демочаты для пересылки сообщения.
+    /// - Parameter message: Сообщение для пересылки.
     private func recipientPicker(_ message: DemoChatStore.Message) -> some View {
         NavigationStack {
             ScrollView {

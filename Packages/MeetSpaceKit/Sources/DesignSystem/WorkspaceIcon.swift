@@ -6,6 +6,10 @@ public struct WorkspaceIcon: View {
     private let name: String
     private let size: CGFloat
 
+    /// Выбирает иконку рабочего пространства и задаёт её размер.
+    /// - Parameters:
+    ///   - systemName: Имя символа, для которого выбирается контур.
+    ///   - size: Размер иконки в пунктах.
     public init(_ systemName: String, size: CGFloat = 20) {
         self.name = systemName
         self.size = size

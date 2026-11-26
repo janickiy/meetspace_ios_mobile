@@ -40,7 +40,7 @@ struct DestinationView: View {
             case .notificationSettings:
                 if model.isDemo { SettingsDetailView(model: model, route: route) }
                 else if let settings = model.identity.settings {
-                    LiveAccountNotificationSettings(settings: settings, push: model.identity.notifications)
+                    LiveAccountNotificationSettings(settings: settings)
                         .task { if !settings.loaded { await settings.load() } }
                 }
             case .connection: AccountConnectionPage(app: model, wide: false)
@@ -196,6 +196,8 @@ private struct CalendarScreen: View {
         }.background(MSTheme.background)
     }
 
+    /// Строит календарь демонстрационных встреч в планшетной компоновке.
+    /// - Parameter width: Доступная ширина области календаря в пунктах.
     private func tabletCalendar(width: CGFloat) -> some View {
         VStack(alignment: .leading, spacing: 24) {
             HStack {
@@ -250,6 +252,8 @@ private struct CalendarScreen: View {
         }.padding(.horizontal, width >= 780 ? 48 : 24).padding(.vertical, 24)
     }
 
+    /// Сдвигает выбранную дату демонстрационного календаря на заданное число недель.
+    /// - Parameter offset: Число недель со знаком направления.
     private func moveWeek(_ offset: Int) {
         if let day = calendar.date(byAdding: .weekOfYear, value: offset, to: date) { date = day }
     }

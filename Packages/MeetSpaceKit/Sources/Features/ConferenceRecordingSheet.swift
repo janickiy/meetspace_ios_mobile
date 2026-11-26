@@ -36,6 +36,13 @@ enum ConferenceRecordingDialogState {
         }
     }
 
+    /// Готовит состояние диалога записи и пояснение для текущего этапа обработки.
+    /// - Parameters:
+    ///   - id: Идентификатор записи.
+    ///   - status: Серверный код состояния.
+    ///   - title: Название состояния для пользователя.
+    ///   - mode: Формат записи, если известен.
+    ///   - canStop: Доступна ли остановка записи.
     static func active(id: UUID, status: String, title: String, mode: RecordingMode?, canStop: Bool) -> Self {
         let detail: String
         switch status {
@@ -88,6 +95,10 @@ struct ConferenceRecordingDialog: View {
             .onAppear { headingFocused = true }
     }
 
+    /// Показывает состояние записи встречи, выбор формата и доступные действия.
+    /// - Parameters:
+    ///   - stacked: Разместить ли варианты форматов в один столбец.
+    ///   - width: Доступная ширина диалога в пунктах.
     private func contents(stacked: Bool, width: CGFloat) -> some View {
         let compact = width < 406
         return VStack(alignment: .leading, spacing: compact ? 14 : 18) {
@@ -167,6 +178,12 @@ struct ConferenceRecordingDialog: View {
             .padding(.horizontal, compact ? 18 : 24).padding(.top, compact ? 12 : 16).padding(.bottom, compact ? 20 : 24)
     }
 
+    /// Размещает поддерживаемые форматы записи в сетке и выделяет выбранный.
+    /// - Parameters:
+    ///   - modes: Доступные форматы в порядке отображения.
+    ///   - selection: Текущий формат.
+    ///   - stacked: Разместить ли форматы в один столбец.
+    ///   - compact: Использовать ли компактные размеры и отступы.
     private func formatGrid(_ modes: [RecordingMode], selection: RecordingMode, stacked: Bool, compact: Bool) -> some View {
         let count = stacked ? 1 : 2
         return Grid(horizontalSpacing: 8, verticalSpacing: 8) {
@@ -183,6 +200,11 @@ struct ConferenceRecordingDialog: View {
         }
     }
 
+    /// Предлагает выбрать формат записи и показывает текущее выделение.
+    /// - Parameters:
+    ///   - format: Формат, который выбирает кнопка.
+    ///   - selected: Выбран ли этот формат.
+    ///   - compact: Использовать ли компактные размеры и отступы.
     private func formatButton(_ format: RecordingMode, selected: Bool, compact: Bool) -> some View {
         Button { mode = format } label: {
             HStack(spacing: compact ? 5 : 9) {
@@ -206,6 +228,13 @@ struct ConferenceRecordingDialog: View {
             .accessibilityIdentifier("conferenceRecordingMode.\(format.rawValue)")
     }
 
+    /// Создаёт кнопку действия с записью и применяет стиль для опасной операции.
+    /// - Parameters:
+    ///   - title: Подпись кнопки.
+    ///   - icon: Имя значка действия.
+    ///   - id: Идентификатор элемента для тестов интерфейса и средств доступности.
+    ///   - destructive: Требуется ли предупреждающее оформление.
+    ///   - action: Обработчик нажатия кнопки.
     private func actionButton(_ title: String, icon: String, id: String, destructive: Bool = false,
                               action: @escaping () -> Void) -> some View {
         Button(action: action) {
@@ -262,6 +291,7 @@ struct ConferenceRecordingSheet: View {
         .task(id: session.phase) { await load() }
     }
 
+    /// Загружает сведения о подключённой встрече для диалога управления записью.
     private func load() async {
         conference = nil
         error = nil

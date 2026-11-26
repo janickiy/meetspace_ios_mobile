@@ -8,6 +8,8 @@ import MeetSpaceRealtime
 private final class CallsLoopbackHTTP: NSObject, RequestTransport, URLSessionTaskDelegate, @unchecked Sendable {
     let port: Int
     private var session: URLSession!
+    /// Открывает временную HTTP-сессию для обращения к локальному тестовому серверу.
+    /// - Parameter port: Разрешённый порт на loopback-интерфейсе.
     init(port: Int) {
         self.port = port; super.init()
         let configuration = URLSessionConfiguration.ephemeral
@@ -15,8 +17,21 @@ private final class CallsLoopbackHTTP: NSObject, RequestTransport, URLSessionTas
         configuration.urlCredentialStorage = nil; configuration.urlCache = nil
         session = URLSession(configuration: configuration, delegate: self, delegateQueue: nil)
     }
+    /// Отклоняет HTTP-перенаправления в локальном тестовом транспорте.
+    /// - Parameters:
+    ///   - session: Сессия, получившая перенаправление.
+    ///   - task: Задача исходного запроса.
+    ///   - response: Ответ сервера с перенаправлением.
+    ///   - request: Предложенный запрос по новому адресу.
+    ///   - completionHandler: Получает `nil` для отказа от перехода.
     func urlSession(_ session: URLSession, task: URLSessionTask, willPerformHTTPRedirection response: HTTPURLResponse,
                     newRequest request: URLRequest, completionHandler: @escaping @Sendable (URLRequest?) -> Void) { completionHandler(nil) }
+    /// Выполняет запрос к разрешённому локальному серверу через тестовый транспорт.
+    /// - Parameters:
+    ///   - request: Запрос проверяемого клиента.
+    ///   - limit: Ограничение на размер ответа в байтах.
+    ///   - uploadFile: Файл для отправки, если задан.
+    ///   - progress: Обработчик прогресса из контракта транспорта.
     func send(_ request: URLRequest, limit: Int, uploadFile: URL?, progress: TransferProgress?) async throws -> NetworkResponse {
         guard let url = request.url, url.host == "127.0.0.1", url.scheme == "https", url.port == port, uploadFile == nil else { throw ClientError.scopeMismatch }
         var parts = URLComponents(url: url, resolvingAgainstBaseURL: false)!; parts.scheme = "http"
@@ -27,12 +42,17 @@ private final class CallsLoopbackHTTP: NSObject, RequestTransport, URLSessionTas
             $0[String(describing: $1.key).lowercased()] = String(describing: $1.value)
         }, data: data)
     }
+    /// Отменяет все задачи локальной тестовой HTTP-сессии.
     func cancelAll() async { for task in await session.allTasks { task.cancel() } }
 }
 
 private final class CallsLoopbackSocket: @unchecked Sendable {
     private let session: URLSession
     private let socket: URLSessionWebSocketTask
+    /// Создаёт WebSocket для изолированного локального сервера звонков.
+    /// - Parameters:
+    ///   - url: Адрес тестового сокета.
+    ///   - port: Разрешённый порт локального сервера.
     init(url: URL, port: Int) throws {
         guard url.scheme == "wss", url.host == "127.0.0.1", url.port == port else { throw ClientError.scopeMismatch }
         var parts = URLComponents(url: url, resolvingAgainstBaseURL: false)!; parts.scheme = "ws"
@@ -41,8 +61,12 @@ private final class CallsLoopbackSocket: @unchecked Sendable {
         session = URLSession(configuration: configuration)
         socket = session.webSocketTask(with: parts.url!, protocols: ["go-recorder.v1"]); socket.resume()
     }
+    /// Закрывает тестовый WebSocket и освобождает его URL-сессию.
     func close() { socket.cancel(with: .goingAway, reason: nil); session.invalidateAndCancel() }
+    /// Отправляет UTF-8 сообщение через локальный WebSocket.
+    /// - Parameter bytes: Байты сообщения.
     func send(_ bytes: Data) async throws { try await socket.send(.string(String(decoding: bytes, as: UTF8.self))) }
+    /// Читает следующий текстовый или двоичный пакет как данные.
     func next() async throws -> Data {
         switch try await socket.receive() {
         case .data(let value): return value
@@ -50,6 +74,10 @@ private final class CallsLoopbackSocket: @unchecked Sendable {
         @unknown default: throw APIError.invalidResponse
         }
     }
+    /// Ожидает событие нужного звонка с заданным статусом и ограничивает время ожидания.
+    /// - Parameters:
+    ///   - id: Идентификатор звонка.
+    ///   - status: Ожидаемое состояние.
     func call(_ id: UUID, status: DirectCallStatus) async throws -> DirectCall {
         let timeout = Task { try await Task.sleep(for: .seconds(10)); self.close() }
         defer { timeout.cancel() }
@@ -58,6 +86,10 @@ private final class CallsLoopbackSocket: @unchecked Sendable {
         }
         throw APIError.invalidResponse
     }
+    /// Ожидает событие заданного типа в указанной конференции.
+    /// - Parameters:
+    ///   - id: Идентификатор встречи.
+    ///   - type: Ожидаемый тип события.
     func room(_ id: UUID, type: String) async throws -> ConferenceEnvelope {
         let timeout = Task { try await Task.sleep(for: .seconds(10)); self.close() }
         defer { timeout.cancel() }
@@ -68,6 +100,7 @@ private final class CallsLoopbackSocket: @unchecked Sendable {
         }
         throw APIError.invalidResponse
     }
+    /// Проверяет, что сервер закрывает соединение после прекращения членства в комнате.
     func requireServerMembershipClose() async throws {
         let timeout = Task { try await Task.sleep(for: .seconds(10)); self.close() }
         defer { timeout.cancel() }

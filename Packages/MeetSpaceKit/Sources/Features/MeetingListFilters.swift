@@ -3,6 +3,8 @@ import MeetSpaceCore
 import MeetSpaceDesignSystem
 
 enum MeetingDateText {
+    /// Формирует название часового пояса и смещение от UTC.
+    /// - Parameter zone: Пояс, используемый при показе встреч.
     static func zoneLabel(_ zone: TimeZone) -> String {
         let city = zone.localizedName(for: .generic, locale: Locale(identifier: "ru_RU"))
         let location = zone.identifier == "Europe/Moscow" ? tr("Москва") : city ?? zone.identifier
@@ -48,6 +50,11 @@ struct MeetingListFilter: Equatable {
     var count: Int { (scope == .all ? 0 : 1) + (from == nil && to == nil ? 0 : 1) }
     var scopeTitle: String { scope.meetingsTitle }
 
+    /// Проверяет, проходит ли встреча фильтры по дате и роли пользователя.
+    /// - Parameters:
+    ///   - date: Дата встречи, если она назначена.
+    ///   - mine: Является ли пользователь организатором.
+    ///   - calendar: Календарь для сравнения по дням.
     func matches(date: Date?, mine: Bool, calendar: Calendar) -> Bool {
         if scope == .owned && !mine || scope == .participating && mine { return false }
         if let from, date.map({ calendar.compare($0, to: from, toGranularity: .day) != .orderedAscending }) != true { return false }
@@ -85,6 +92,10 @@ struct MeetingFilterFields: View {
         .environment(\.timeZone, zone)
     }
 
+    /// Размещает элемент фильтра под его заголовком.
+    /// - Parameters:
+    ///   - title: Название фильтра.
+    ///   - content: Элемент выбора значения.
     private func field<Content: View>(_ title: String, @ViewBuilder content: () -> Content) -> some View {
         VStack(alignment: .leading, spacing: 7) {
             Text(tr(title)).font(MSTheme.font(11, weight: .semibold))
@@ -92,6 +103,11 @@ struct MeetingFilterFields: View {
         }.frame(maxWidth: .infinity, alignment: .leading)
     }
 
+    /// Показывает выбор необязательной даты в фильтре встреч.
+    /// - Parameters:
+    ///   - title: Подпись границы периода.
+    ///   - selection: Выбранный день или `nil` для открытой границы.
+    ///   - range: Допустимые даты.
     private func dayField(_ title: String, selection: Binding<Date?>, range: ClosedRange<Date>) -> some View {
         field(title) {
             OptionalMeetingDay(selection: selection, range: range, zone: zone, title: title) {
@@ -100,6 +116,10 @@ struct MeetingFilterFields: View {
         }
     }
 
+    /// Оформляет значение фильтра вместе со значком.
+    /// - Parameters:
+    ///   - title: Отображаемое значение.
+    ///   - icon: Значок справа.
     private func control(_ title: String, _ icon: String) -> some View {
         HStack(spacing: 6) {
             Text(verbatim: tr(title)).multilineTextAlignment(.leading)

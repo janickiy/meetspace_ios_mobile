@@ -9,6 +9,7 @@ private struct RecordingPlaybackMetadata: Sendable {
 }
 
 @MainActor final class RecordingPlaybackTests: XCTestCase {
+    /// Проверяет в AVPlayer воспроизведение тестовой серверной AAC-записи и продвижение времени после старта.
     func testActualServerAACArtifactAdvancesNativePlayerTime() async throws {
         let url = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString + ".m4a")
         try UITestRecordingFixture.audioData.write(to: url)
@@ -30,6 +31,8 @@ private struct RecordingPlaybackMetadata: Sendable {
 
     // SDK 18.5's AVAssetTrack is not Sendable. Keep assets/tracks on the generic
     // executor and return values only; the actual player stays on MainActor.
+    /// Читает доступность воспроизведения, длительность и число аудиодорожек файла средствами AVFoundation.
+    /// - Parameter url: Локальный адрес проверяемой записи.
     private nonisolated static func inspect(_ url: URL) async throws -> RecordingPlaybackMetadata {
         let asset = AVURLAsset(url: url)
         let playable = try await asset.load(.isPlayable)

@@ -15,8 +15,14 @@ import MeetSpaceDesignSystem
         Folder(name: "Личное", items: [.chat(2)])
     ]
 
+    /// Создаёт папку с проверкой имени в демонстрационном хранилище.
+    /// - Parameter name: Имя новой папки.
     func create(_ name: String) throws { try save(name, renaming: nil) }
 
+    /// Создаёт или переименовывает демонстрационную папку после проверки имени.
+    /// - Parameters:
+    ///   - name: Желаемое имя папки.
+    ///   - id: Идентификатор переименовываемой папки или `nil` для создания.
     func save(_ name: String, renaming id: UUID?) throws {
         let name = try FolderValidation.text(name, maximum: 50, required: true)
         guard !folders.contains(where: { $0.id != id && $0.name.localizedCaseInsensitiveCompare(name) == .orderedSame })
@@ -30,8 +36,15 @@ import MeetSpaceDesignSystem
         }
     }
 
+    /// Удаляет демонстрационную папку из списка.
+    /// - Parameter id: Идентификатор папки.
     func deleteFolder(_ id: UUID) { folders.removeAll { $0.id == id } }
 
+    /// Обновляет принадлежность элемента одной демонстрационной папке.
+    /// - Parameters:
+    ///   - item: Чат или встреча.
+    ///   - folder: Идентификатор папки.
+    ///   - included: Добавить элемент при `true`, убрать при `false`.
     func set(_ item: Item, in folder: UUID, included: Bool) {
         guard let index = folders.firstIndex(where: { $0.id == folder }) else { return }
         if included {
@@ -41,6 +54,8 @@ import MeetSpaceDesignSystem
         }
     }
 
+    /// Убирает элемент из всех демонстрационных папок.
+    /// - Parameter item: Чат или встреча, ссылки на которые нужно убрать.
     func remove(_ item: Item) {
         for index in folders.indices { folders[index].items.removeAll { $0 == item } }
     }
@@ -67,10 +82,21 @@ struct WorkspaceFolderPicker: View {
     @State private var name = ""
     @Environment(\.dismiss) private var dismiss
 
+    /// Открывает выбор папок для элемента рабочего аккаунта.
+    /// - Parameters:
+    ///   - model: Модель серверных папок.
+    ///   - kind: Тип добавляемого элемента.
+    ///   - id: Идентификатор чата или встречи.
+    ///   - title: Заголовок окна выбора.
     init(model: FoldersModel, kind: FolderItemKind, id: UUID, title: String) {
         self.source = .live(model, kind, id)
         self.title = title
     }
+    /// Открывает выбор папок для элемента демонстрационного пространства.
+    /// - Parameters:
+    ///   - demo: Локальное хранилище папок.
+    ///   - item: Демонстрационный чат или встреча.
+    ///   - title: Заголовок окна выбора.
     init(demo: DemoFolderStore, item: DemoFolderStore.Item, title: String) {
         self.source = .demo(demo, item)
         self.title = title
@@ -125,13 +151,15 @@ struct WorkspaceFolderPicker: View {
             }.navigationTitle(tr("Добавить в папку")).msInlineTitle()
                 .foregroundStyle(MSTheme.ink)
                 .toolbar {
-                    ToolbarItem(placement: .cancellationAction) {
-                        Button(tr("Закрыть")) { dismiss() }.accessibilityIdentifier("folderAssignment.close")
+                    ToolbarItem(placement: .primaryAction) {
+                        IconButton("xmark", label: "Закрыть") { dismiss() }
+                            .accessibilityIdentifier("folderAssignment.close")
                     }
                 }
         }.disabled(busy).interactiveDismissDisabled(busy).task { await load() }
     }
 
+    /// Обновляет список папок и отметки о принадлежности текущего элемента.
     private func refreshChoices() async throws {
         switch source {
         case let .live(model, kind, id):
@@ -145,6 +173,7 @@ struct WorkspaceFolderPicker: View {
         loaded = true
     }
 
+    /// Загружает список папок для первого показа и обрабатывает ошибки.
     private func load() async {
         guard !busy else { return }
         busy = true; error = nil
@@ -153,6 +182,7 @@ struct WorkspaceFolderPicker: View {
         catch { self.error = tr(userMessage(error)) }
     }
 
+    /// Создаёт папку из введённого имени и обновляет варианты выбора.
     private func create() async {
         guard !busy else { return }
         busy = true; error = nil
@@ -169,6 +199,7 @@ struct WorkspaceFolderPicker: View {
         } catch { self.error = tr(userMessage(error)) }
     }
 
+    /// Сохраняет изменения отметок принадлежности элемента выбранным папкам.
     private func save() async {
         guard !busy else { return }
         busy = true; error = nil

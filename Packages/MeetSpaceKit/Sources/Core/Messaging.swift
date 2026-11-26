@@ -97,12 +97,16 @@ public struct ChatMessage: Codable, Equatable, Sendable, Identifiable {
         return ([text] + attachments.map(\.filename)).filter { !$0.isEmpty }.joined(separator: "\n")
     }
     public var isDeleted: Bool { deletedAt != nil }
+    /// Определяет, может ли пользователь редактировать данное сообщение чата.
+    /// - Parameter user: Идентификатор пользователя, для которого проверяются права на сообщение.
     public func canEdit(as user: UUID) -> Bool { senderId == user && isActionable && forwardedFrom == nil }
 
     enum CodingKeys: String, CodingKey {
         case id, sequence, conversationId, senderId, senderName, clientRequestId, text, replyTo, replyPreview
         case version, createdAt, updatedAt, deletedAt, attachments, call, pinned, forwardedFrom
     }
+    /// Декодирует сообщение, включая его версию, автора и данные вложений.
+    /// - Parameter decoder: Декодер, установленный вызывающей стороной для чтения полей модели.
     public init(from decoder: Decoder) throws {
         let c = try decoder.container(keyedBy: CodingKeys.self)
         id = try c.decode(UUID.self, forKey: .id)
@@ -127,6 +131,8 @@ public struct ChatMessage: Codable, Equatable, Sendable, Identifiable {
         pinned = try c.decodeIfPresent(Bool.self, forKey: .pinned) ?? false
         forwardedFrom = try c.decodeIfPresent(ForwardedMessageOrigin.self, forKey: .forwardedFrom)
     }
+    /// Кодирует сообщение в формате API переписки.
+    /// - Parameter encoder: Кодировщик, в который записываются поля модели.
     public func encode(to encoder: Encoder) throws {
         var c = encoder.container(keyedBy: CodingKeys.self)
         try c.encode(id, forKey: .id); try c.encode(String(sequence), forKey: .sequence)
@@ -157,6 +163,12 @@ public struct MessageDraft: Codable, Equatable, Sendable, Identifiable {
     public let text: String
     public let replyTo: UUID?
     public let attachmentIds: [UUID]
+    /// Подготавливает исходящее сообщение, проверяя текст, список вложений и наличие содержимого.
+    /// - Parameters:
+    ///   - id: Идентификатор клиентского запроса для повторной отправки того же сообщения.
+    ///   - text: Текст сообщения.
+    ///   - replyTo: Идентификатор сообщения, на которое отвечает пользователь.
+    ///   - attachmentIds: Идентификаторы вложений в порядке прикрепления.
     public init(id: UUID = UUID(), text: String, replyTo: UUID? = nil, attachmentIds: [UUID] = []) throws {
         let normalized = text.trimmingCharacters(in: .whitespacesAndNewlines)
         guard normalized.unicodeScalars.count <= 4000, !normalized.contains("\0"),
@@ -169,13 +181,20 @@ public struct MessageDraft: Codable, Equatable, Sendable, Identifiable {
 /// REST, mutation responses and WS share this merge rule. A stale page cannot resurrect a tombstone.
 public struct MessageTimeline: Sendable {
     private var byID: [UUID: ChatMessage] = [:]
+    /// Создаёт пустую локальную историю сообщений.
     public init() {}
     public var messages: [ChatMessage] {
         byID.values.sorted { $0.sequence == $1.sequence ? $0.id.uuidString < $1.id.uuidString : $0.sequence < $1.sequence }
     }
+    /// Убирает выбранные сообщения из локальной истории.
+    /// - Parameter ids: Идентификаторы выбранных сообщений.
     public mutating func remove(_ ids: Set<UUID>) {
         for id in ids { byID.removeValue(forKey: id) }
     }
+    /// Объединяет сообщения одного чата, оставляя для каждого идентификатора самую новую версию.
+    /// - Parameters:
+    ///   - incoming: Входящие версии сообщений для объединения с историей.
+    ///   - conversation: Идентификатор чата.
     public mutating func merge(_ incoming: [ChatMessage], conversation: UUID) {
         for message in incoming where message.conversationId == conversation {
             if let old = byID[message.id], old.version >= message.version { continue }

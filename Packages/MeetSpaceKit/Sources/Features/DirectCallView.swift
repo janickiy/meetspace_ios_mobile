@@ -23,6 +23,10 @@ struct DirectCallView: View {
         .interactiveDismissDisabled()
     }
 
+    /// Показывает удалённое видео или аватар собеседника с локальным предпросмотром.
+    /// - Parameters:
+    ///   - compact: Использовать ли компактные размеры и отступы.
+    ///   - short: Ограничена ли доступная высота экрана.
     private func stage(compact: Bool, short: Bool) -> some View {
         let session = call.mediaSession
         let remote = session.flatMap(remoteTrack)
@@ -54,11 +58,15 @@ struct DirectCallView: View {
         }
     }
 
+    /// Выбирает входящую видеодорожку собеседника с приоритетом демонстрации экрана.
+    /// - Parameter session: Медиасессия личного звонка.
     private func remoteTrack(in session: ConferenceSession) -> ConferenceVideoTrack? {
         session.videoTracks.first(where: { !$0.isLocal && session.isScreenTrack($0) }) ??
             session.videoTracks.first(where: { !$0.isLocal })
     }
 
+    /// Формирует нижнюю область звонка с сообщением об ошибке и доступными действиями.
+    /// - Parameter compact: Использовать ли компактные размеры и отступы.
     private func footer(compact: Bool) -> some View {
         VStack(spacing: 12) {
             if let error = call.error ?? call.mediaSession?.error {
@@ -97,6 +105,8 @@ struct DirectCallView: View {
         }
     }
 
+    /// Собирает кнопки микрофона, камеры и других действий активного звонка.
+    /// - Parameter compact: Использовать ли компактные размеры и отступы.
     private func callControls(compact: Bool) -> some View {
         PersonalCallControlGroup(compact: compact) {
             PersonalCallControl("Микрофон", icon: microphone ? "mic" : "mic.slash", id: "directCallMic", compact: compact,
@@ -158,6 +168,10 @@ struct DirectCallView: View {
         }
     }
 
+    /// Создаёт кнопку завершения личного звонка.
+    /// - Parameters:
+    ///   - label: Подпись кнопки для текущего состояния звонка.
+    ///   - compact: Использовать ли компактные размеры и отступы.
     private func endControl(_ label: String, compact: Bool) -> some View {
         PersonalCallControl(label, icon: "phone.down", id: "directCallEnd", compact: compact, tint: PersonalCallColors.end) {
             Task { await call.end() }
@@ -231,6 +245,8 @@ struct PersonalCallScreen<Stage: View, Footer: View>: View {
         .preferredColorScheme(.dark)
     }
 
+    /// Строит заголовок звонка с навигацией и данными собеседника.
+    /// - Parameter compact: Использовать ли компактные размеры и отступы.
     private func header(compact: Bool) -> some View {
         HStack(spacing: compact ? 5 : 10) {
             Button(action: close) {
@@ -397,6 +413,16 @@ struct PersonalCallControl: View {
     let action: () -> Void
     @Environment(\.isEnabled) private var isEnabled
 
+    /// Создаёт элемент панели управления личным звонком.
+    /// - Parameters:
+    ///   - label: Название действия для интерфейса доступности.
+    ///   - icon: Имя значка действия.
+    ///   - id: Идентификатор элемента для тестов интерфейса и средств доступности.
+    ///   - compact: Использовать ли компактные размеры и отступы.
+    ///   - active: Выделено ли текущее действие.
+    ///   - tint: Цвет кнопки, если нужен особый акцент.
+    ///   - displayLabel: Текст на экране, если отличается от названия действия.
+    ///   - action: Обработчик нажатия кнопки.
     init(_ label: String, icon: String, id: String, compact: Bool, active: Bool = false, tint: Color? = nil,
          displayLabel: String? = nil, action: @escaping () -> Void) {
         self.label = label; self.icon = icon; self.id = id; self.compact = compact; self.active = active
@@ -433,6 +459,8 @@ private struct DirectCallPresentation: ViewModifier {
             return !call.minimized && (call.isActive || call.currentCall != nil)
         }, set: { if !$0 { model.identity.calls?.minimize() } })
     }
+    /// Размещает активный звонок поверх рабочего пространства и показывает свёрнутую панель.
+    /// - Parameter content: Содержимое рабочего пространства под интерфейсом звонка.
     func body(content: Content) -> some View {
         // Give the navigation container its own reduced frame. Changing only its safe-area
         // inset while dismissing the call cover clips page headers on compact iOS layouts.
@@ -457,5 +485,7 @@ private struct DirectCallPresentation: ViewModifier {
     }
 }
 extension View {
+    /// Подключает интерфейс личных звонков к экрану приложения.
+    /// - Parameter model: Модель приложения с координатором личных звонков.
     func directCallPresentation(model: AppModel) -> some View { modifier(DirectCallPresentation(model: model)) }
 }

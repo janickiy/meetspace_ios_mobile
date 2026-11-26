@@ -5,11 +5,17 @@ import MeetSpaceAPI
 
 private enum PushFixture {
     static let id = UUID(uuidString: "AB999999-9999-4999-8999-999999999999")!
+    /// Формирует объект устройства для проверки формата уведомлений.
+    /// - Parameter platform: Платформа в ответе сервера.
     static func device(platform: String = "ios") -> [String: Any] {
         // RegisterDevice returns its original value, so Go zero dates are legitimate here.
         ["id": id.uuidString.lowercased(), "platform": platform, "provider": "http",
          "createdAt": "0001-01-01T00:00:00Z", "updatedAt": "0001-01-01T00:00:00Z"]
     }
+    /// Создаёт репозиторий устройств уведомлений для выбранного тестового аккаунта.
+    /// - Parameters:
+    ///   - transport: Транспорт запросов.
+    ///   - account: Аккаунт, чьи устройства проверяются.
     static func repository(_ transport: any RequestTransport, account: AccountRecord? = nil) throws -> NotificationDeviceRepository {
         NotificationDeviceRepository(client: AuthenticatedClient(account: try account ?? Fixture.account(), credentials: Fixture.credentials(), secureStore: TestSecrets(), transport: transport))
     }

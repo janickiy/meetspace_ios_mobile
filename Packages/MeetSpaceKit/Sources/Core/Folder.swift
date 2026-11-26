@@ -23,6 +23,8 @@ public struct PersonalFolderItem: Decodable, Equatable, Sendable, Identifiable {
     public var id: String { kind.rawValue + ":" + itemID.uuidString }
     public var title: String { conversation?.title ?? conference!.title }
     enum CodingKeys: String, CodingKey { case type, item, inFolder }
+    /// Декодирует элемент папки как чат или конференцию по указанному типу.
+    /// - Parameter decoder: Декодер, установленный вызывающей стороной для чтения полей модели.
     public init(from decoder: Decoder) throws {
         let c = try decoder.container(keyedBy: CodingKeys.self)
         kind = try c.decode(FolderItemKind.self, forKey: .type)
@@ -40,6 +42,11 @@ public struct PersonalFolderPage: Decodable, Sendable {
     public let nextCursor: String?
 }
 public enum FolderValidation {
+    /// Нормализует текст поля папки в NFC и проверяет обязательность, длину и символы.
+    /// - Parameters:
+    ///   - input: Текст имени папки или запроса поиска до нормализации.
+    ///   - maximum: Максимальная длина текста в скалярных значениях Unicode.
+    ///   - required: При true текст после нормализации должен содержать хотя бы один символ.
     public static func text(_ input: String, maximum: Int, required: Bool) throws -> String {
         let text = input.trimmingCharacters(in: .whitespacesAndNewlines).precomposedStringWithCanonicalMapping
         guard text.unicodeScalars.count <= maximum, !required || !text.isEmpty,

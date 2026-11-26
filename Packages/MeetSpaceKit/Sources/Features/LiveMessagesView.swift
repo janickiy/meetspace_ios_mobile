@@ -35,7 +35,9 @@ struct LiveMessagesView: View {
         GeometryReader { proxy in
             let width = proxy.size.width
             let wide = WorkspaceLayout.usesColumns(width: width, sizeClass: sizeClass, typeSize: typeSize, hasHinge: hasHinge)
-            let detailID = selected ?? (wide && app.messagesPath.isEmpty ? model.conversations.first?.id : nil)
+            let hidesTabs = ChatLayout.hidesWorkspaceTabsInThread
+            let opensFirstChat = wide && !hidesTabs && app.messagesPath.isEmpty
+            let detailID = selected ?? (opensFirstChat ? model.conversations.first?.id : nil)
             let detailOnly = !wide && selected != nil
             let gutter = wide ? WorkspaceLayout.chatGutter(width) : 0
             let sidebar = WorkspaceLayout.chatSidebarWidth(width)
@@ -54,11 +56,11 @@ struct LiveMessagesView: View {
                     if wide { Divider() }
                     if let id = detailID {
                         LiveThreadView(model: model, app: app, id: id, calls: app.identity.calls, embedded: true,
-                                       embeddedBack: wide ? nil : { selected = nil }, openRecipient: { selected = $0 },
+                                       embeddedBack: wide && !hidesTabs ? nil : { selected = nil }, openRecipient: { selected = $0 },
                                        newChat: wide ? { creating = true } : nil, removed: { selected = nil })
                             .id(id).frame(maxWidth: .infinity)
                             .environment(\.chatPaneWidth, wide ? width - sidebar - 2 * gutter - 1 : width)
-                            .onAppear { if selected == nil && wide { selected = id } }
+                            .onAppear { if selected == nil { selected = id } }
                     } else if wide {
                         VStack {
                             ContentUnavailableView(tr("Выберите чат"), systemImage: "bubble.left.and.bubble.right")
@@ -70,6 +72,7 @@ struct LiveMessagesView: View {
                                                   topTrailingRadius: width >= 780 ? 24 : 0))
                 .padding(.horizontal, gutter)
             }.background(MSTheme.background)
+                .preference(key: InlineChatOpen.self, value: hidesTabs && detailID != nil)
                 .workspaceFormPresentation(isPresented: $creating, onDismiss: {
                     if let createdConversation { select(createdConversation, wide: wide) }
                     createdConversation = nil
@@ -82,6 +85,8 @@ struct LiveMessagesView: View {
         }
     }
 
+    /// Создаёт прокручиваемую колонку списка чатов для текущей ширины экрана.
+    /// - Parameter wide: Использовать ли компоновку для широкого экрана.
     @ViewBuilder private func conversationColumn(wide: Bool) -> some View {
         ScrollView {
             VStack(spacing: 0) {
@@ -106,6 +111,8 @@ struct LiveMessagesView: View {
         }
     }
 
+    /// Показывает строки доступных диалогов с приглашением и состоянием выбора.
+    /// - Parameter wide: Использовать ли компоновку для широкого экрана.
     private func conversationRows(wide: Bool) -> some View {
         LazyVStack(spacing: 0) {
             ChatInviteCard(url: model.account.server.url)
@@ -130,6 +137,8 @@ struct LiveMessagesView: View {
             }
         }.padding(.horizontal, 16).padding(.bottom, wide ? 20 : compactListBottomSpace)
     }
+    /// Форматирует дату последней активности чата с учётом её близости к текущему дню.
+    /// - Parameter date: Дата активности в списке чатов.
     private func listTime(_ date: Date) -> String {
         let calendar = Calendar.current
         if calendar.isDateInToday(date) { return date.formatted(date: .omitted, time: .shortened) }
@@ -140,6 +149,10 @@ struct LiveMessagesView: View {
         return date.formatted(date: .numeric, time: .omitted)
     }
 
+    /// Открывает переписку в соседней колонке или в стеке навигации.
+    /// - Parameters:
+    ///   - id: Идентификатор выбранного диалога.
+    ///   - wide: Использовать ли компоновку для широкого экрана.
     private func select(_ id: UUID, wide: Bool) {
         if wide || hasHinge || ChatLayout.keepsSelectionInline || selected != nil { selected = id }
         else { app.navigate(.conversation(id)) }
@@ -200,6 +213,8 @@ struct LiveThreadView: View {
             }.disabled(headerActionBusy || model.conversation?.id != id)
         }
     }
+    /// Обрабатывает выбор пункта меню чата и при необходимости запрашивает подтверждение.
+    /// - Parameter action: Выбранное действие заголовка.
     private func chooseHeaderAction(_ action: ChatHeaderAction) {
         guard let item = model.conversation, item.id == id else { return }
         switch action {
@@ -213,6 +228,8 @@ struct LiveThreadView: View {
         case .clear, .hide, .leave: pendingChatAction = action
         }
     }
+    /// Выполняет действие над текущим чатом и синхронизирует результат с интерфейсом.
+    /// - Parameter action: Подтверждённое действие заголовка.
     private func applyHeaderAction(_ action: ChatHeaderAction) {
         guard !headerActionBusy else { return }
         headerActionBusy = true
@@ -240,11 +257,14 @@ struct LiveThreadView: View {
             catch { if model.active, model.conversation?.id == id { model.error = userMessage(error) } }
         }
     }
+    /// Открывает сведения о собеседнике или группе для текущего диалога.
     private func showDetails() {
         guard let item = model.conversation, item.id == id, item.isGroup || item.peer != nil else { return }
         composerFocused = false
         chatInfo = true
     }
+    /// Переводит переписку в режим выбора сообщений и закрывает клавиатуру.
+    /// - Parameter message: Сообщение, сразу включаемое в выбор, если задано.
     private func beginSelection(_ message: ChatMessage? = nil) {
         // Resign the native input before replacing it with the selection toolbar.
         // Removing a focused text field can leave its keyboard inset on the iPad split view.
@@ -364,7 +384,7 @@ struct LiveThreadView: View {
                 }
             }
             .sheet(isPresented: $groupDetails) { GroupDetailsView(model: model, id: id) }
-            .workspaceFormPresentation(isPresented: $chatInfo, onDismiss: {
+            .workspaceFormPresentation(isPresented: $chatInfo, backgroundBlur: 0, onDismiss: {
                 let next = afterInfo
                 afterInfo = nil
                 guard model.active, model.conversation?.id == id else { return }
@@ -471,6 +491,8 @@ struct LiveThreadView: View {
         }.padding(.horizontal, width >= 780 ? 24 : 10).padding(.vertical, width >= 780 ? 12 : 10).background(MSTheme.surface)
             .overlay(alignment: .top) { Rectangle().fill(MSTheme.line).frame(height: 1) }
     }
+    /// Создаёт строку сообщения с подписью, вложениями и доступными действиями.
+    /// - Parameter message: Сообщение текущей переписки.
     private func bubble(_ message: ChatMessage) -> some View {
         let own = message.senderId == model.account.user.id
         return ChatMessageRow(own: own, author: message.senderName, time: message.createdAt.formatted(date: .omitted, time: .shortened),
@@ -514,6 +536,8 @@ struct LiveThreadView: View {
                 }
         }
     }
+    /// Отображает вложение и запускает его загрузку по нажатию.
+    /// - Parameter attachment: Описание файла, полученное с сообщением.
     private func attachmentRow(_ attachment: Attachment) -> some View {
         VStack(alignment: .leading, spacing: 6) {
             Button { model.download(attachment) } label: {
@@ -555,6 +579,8 @@ struct MessageShareRequest: Identifiable {
 struct MessageActivitySheet: UIViewControllerRepresentable {
     let request: MessageShareRequest
     let didFinish: @MainActor () -> Void
+    /// Создаёт системное меню для отправки выбранных материалов и связывает обработчик закрытия.
+    /// - Parameter context: Контекст представления, переданный SwiftUI.
     func makeUIViewController(context: Context) -> UIActivityViewController {
         let controller = UIActivityViewController(activityItems: request.activityItems, applicationActivities: nil)
         let completion = didFinish
@@ -563,6 +589,10 @@ struct MessageActivitySheet: UIViewControllerRepresentable {
         }
         return controller
     }
+    /// Сохраняет содержимое уже открытого системного меню отправки при обновлении SwiftUI.
+    /// - Parameters:
+    ///   - controller: Контроллер открытого меню отправки.
+    ///   - context: Контекст представления, переданный SwiftUI.
     func updateUIViewController(_ controller: UIActivityViewController, context: Context) {}
 }
 #endif

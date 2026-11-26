@@ -13,6 +13,12 @@ public struct SignedInAccount: Sendable {
 }
 
 public enum SessionCookie {
+    /// Извлекает cookie сессии из заголовка Set-Cookie и проверяет её принадлежность серверу и аккаунту.
+    /// - Parameters:
+    ///   - headers: Поля заголовков HTTP-ответа.
+    ///   - origin: Базовый HTTPS-адрес сервера MeetSpace.
+    ///   - userID: Идентификатор пользователя на выбранном сервере.
+    ///   - fallback: Ранее сохранённая cookie на случай, если сервер не прислал новую.
     public static func extract(headers: [String: String], origin: ServerOrigin, userID: UUID, fallback: String?) throws -> String? {
         guard let raw = headers["set-cookie"] else { return fallback }
         let cookies = HTTPCookie.cookies(withResponseHeaderFields: ["Set-Cookie": raw], for: origin.url)
@@ -24,10 +30,16 @@ public enum SessionCookie {
               valid(cookie.value) else { throw APIError.invalidResponse }
         return cookie.value
     }
+    /// Проверяет длину и допустимые символы значения cookie сессии.
+    /// - Parameter value: Значение cookie сессии без имени и атрибутов.
     public static func valid(_ value: String) -> Bool {
         !value.isEmpty && value.utf8.count <= 4096 &&
         value.utf8.allSatisfy { (48...57).contains($0) || (65...90).contains($0) || (97...122).contains($0) || $0 == 45 || $0 == 95 }
     }
+    /// Собирает заголовок Cookie для общей сессии и, при наличии идентификатора, для аккаунта.
+    /// - Parameters:
+    ///   - value: Значение cookie сессии без имени и атрибутов.
+    ///   - userID: Идентификатор пользователя на выбранном сервере.
     static func header(_ value: String, userID: UUID?) throws -> String {
         guard valid(value) else { throw ClientError.missingSession }
         if let userID {
@@ -40,9 +52,18 @@ public enum SessionCookie {
 public struct AuthenticationGateway: Sendable {
     public let origin: ServerOrigin
     private let transport: any RequestTransport
+    /// Создаёт шлюз регистрации и входа для выбранного сервера.
+    /// - Parameters:
+    ///   - origin: Базовый HTTPS-адрес сервера MeetSpace.
+    ///   - transport: Транспорт для HTTP-запросов к серверу.
     public init(origin: ServerOrigin, transport: any RequestTransport = URLSessionRequestTransport()) {
         self.origin = origin; self.transport = transport
     }
+    /// Регистрирует пользователя и возвращает его профиль.
+    /// - Parameters:
+    ///   - email: Адрес электронной почты пользователя.
+    ///   - password: Пароль аккаунта.
+    ///   - name: Отображаемое имя пользователя.
     public func register(email: String, password: String, name: String) async throws -> AccountUser {
         try AccountValidation.registration(email: email, password: password, name: name)
         struct Body: Encodable { let email: String; let password: String; let displayName: String? }
@@ -51,6 +72,11 @@ public struct AuthenticationGateway: Sendable {
         let response = try await send("register", body: WireJSON.encoder().encode(body))
         return try decodeJSON(UserResponse.self, from: response).user
     }
+    /// Проверяет учётные данные на сервере и возвращает аккаунт с новой сессией.
+    /// - Parameters:
+    ///   - email: Адрес электронной почты пользователя.
+    ///   - password: Пароль аккаунта.
+    ///   - previousCookie: Значение cookie предыдущей сессии, если оно известно.
     public func login(email: String, password: String, previousCookie: String? = nil) async throws -> SignedInAccount {
         struct Body: Encodable { let email: String; let password: String }
         guard !password.isEmpty, password.unicodeScalars.count <= 128 else { throw ClientError.invalidInput }
@@ -58,17 +84,32 @@ public struct AuthenticationGateway: Sendable {
         let response = try await send("login", body: WireJSON.encoder().encode(body), cookie: previousCookie)
         return try signedIn(response, expectedID: nil, previousCookie: nil)
     }
+    /// Обменивает cookie сессии на обновлённые данные доступа того же пользователя.
+    /// - Parameters:
+    ///   - userID: Идентификатор пользователя на выбранном сервере.
+    ///   - cookie: Значение cookie для авторизации сессии.
     public func refresh(userID: UUID, cookie: String) async throws -> SignedInAccount {
         struct Body: Encodable { let userId: String }
         let response = try await send("refresh", body: WireJSON.encoder().encode(Body(userId: userID.uuidString.lowercased())), cookie: cookie, userID: userID)
         return try signedIn(response, expectedID: userID, previousCookie: cookie)
     }
+    /// Запрашивает завершение сессии аккаунта на сервере.
+    /// - Parameters:
+    ///   - userID: Идентификатор пользователя на выбранном сервере.
+    ///   - credentials: Токен доступа и cookie сессии текущего аккаунта.
     public func logout(userID: UUID, credentials: SessionCredentials) async throws {
         struct Body: Encodable { let userId: String }
         let response = try await send("logout", body: WireJSON.encoder().encode(Body(userId: userID.uuidString.lowercased())),
                                       cookie: credentials.sessionCookie, userID: userID, bearer: credentials.accessToken)
         try requireSuccess(response)
     }
+    /// Отправляет POST-запрос к операции аутентификации с указанными данными сессии.
+    /// - Parameters:
+    ///   - action: Подпуть API аутентификации, например login или refresh.
+    ///   - body: Данные, отправляемые в теле запроса.
+    ///   - cookie: Значение cookie для авторизации сессии.
+    ///   - userID: Идентификатор пользователя на выбранном сервере.
+    ///   - bearer: Токен для заголовка Authorization, если требуется авторизация.
     private func send(_ action: String, body: Data, cookie: String? = nil, userID: UUID? = nil, bearer: String? = nil) async throws -> NetworkResponse {
         var request = URLRequest(url: try EndpointURL.make(origin, path: ["auth", action]))
         request.httpMethod = "POST"; request.httpBody = body
@@ -78,6 +119,11 @@ public struct AuthenticationGateway: Sendable {
         if let bearer { request.setValue("Bearer \(bearer)", forHTTPHeaderField: "Authorization") }
         return try await transport.send(request, limit: 131_072, uploadFile: nil, progress: nil)
     }
+    /// Проверяет ответ о входе и собирает аккаунт, токен доступа и cookie сессии.
+    /// - Parameters:
+    ///   - response: Ответ сервера, из которого извлекаются запрошенные данные.
+    ///   - expectedID: Идентификатор аккаунта, с которым сверяется ответ при обновлении сессии.
+    ///   - previousCookie: Значение cookie предыдущей сессии, если оно известно.
     private func signedIn(_ response: NetworkResponse, expectedID: UUID?, previousCookie: String?) throws -> SignedInAccount {
         let value = try decodeJSON(LoginResponse.self, from: response)
         guard value.tokenType.lowercased() == "bearer", value.expiresIn > 0,
@@ -111,18 +157,27 @@ public actor AuthenticatedClient {
     private var closed = false
     private var expired = false
 
+    /// Привязывает авторизованный HTTP-клиент к одному аккаунту и его хранилищу сессии.
+    /// - Parameters:
+    ///   - account: Учётная запись, которой принадлежат данные.
+    ///   - credentials: Токен доступа и cookie сессии текущего аккаунта.
+    ///   - secureStore: Защищённое хранилище данных сессии аккаунта.
+    ///   - transport: Транспорт для HTTP-запросов к серверу.
     public init(account: AccountRecord, credentials: SessionCredentials, secureStore: any SecureStore,
                 transport: any RequestTransport = URLSessionRequestTransport()) {
         self.account = account; self.credentials = credentials; self.secureStore = secureStore; self.transport = transport
         (events, continuation) = AsyncStream.makeStream(bufferingPolicy: .bufferingNewest(1))
     }
+    /// Загружает профиль текущего пользователя и проверяет его идентификатор.
     public func currentUser() async throws -> AccountUser {
         let user = try decodeJSON(UserResponse.self, from: await request("GET", path: ["auth", "me"])).user
         guard user.id == account.user.id else { expire(); throw ClientError.accountMismatch }
         return user
     }
-    /// DELETE has no idempotency key. Reauthenticate before sending, never retry this mutation
-    /// automatically, and do not interpret its password rejection as expiry of a valid session.
+    /// Удаляет аккаунт по паролю и проверяет подтверждение сервера.
+    ///
+    /// Перед отправкой обновляет токен, если срок его действия подходит к концу. Запрос DELETE не имеет ключа идемпотентности и отправляется один раз. Отклонение пароля сохраняет действующую сессию.
+    /// - Parameter password: Пароль аккаунта.
     public func deleteAccount(password: String) async throws {
         guard !password.isEmpty, password.unicodeScalars.count <= 128 else { throw ClientError.invalidInput }
         try ensureOpen()
@@ -152,6 +207,16 @@ public actor AuthenticatedClient {
         default: throw AccountDeletionError.unconfirmed
         }
     }
+    /// Отправляет авторизованный запрос и при первом ответе 401 повторяет его с обновлённым токеном.
+    /// - Parameters:
+    ///   - method: Метод HTTP-запроса.
+    ///   - path: Сегменты пути относительно корня API.
+    ///   - query: Параметры строки запроса к API.
+    ///   - body: Данные, отправляемые в теле запроса.
+    ///   - uploadFile: Локальный файл для передачи в качестве тела запроса.
+    ///   - contentType: MIME-тип содержимого HTTP-сообщения.
+    ///   - limit: Верхняя граница размера успешного HTTP-ответа в байтах.
+    ///   - progress: Обработчик доли переданных данных от 0 до 1.
     public func request(_ method: String, path: [String], query: [URLQueryItem] = [], body: Data? = nil,
                         uploadFile: URL? = nil, contentType: String = "application/json",
                         limit: Int = 2_097_152, progress: TransferProgress? = nil) async throws -> NetworkResponse {
@@ -178,6 +243,7 @@ public actor AuthenticatedClient {
         try requireSuccess(response)
         return response
     }
+    /// Обновляет данные сессии и сохраняет их, объединяя параллельные запросы обновления.
     public func refresh() async throws {
         try ensureOpen()
         if let refreshTask {
@@ -205,7 +271,10 @@ public actor AuthenticatedClient {
             expire(); throw ClientError.accountMismatch
         }
     }
-    /// Drain refresh persistence before deleting a credential; cancellation cannot resurrect it later.
+    /// Останавливает запросы клиента и возвращает признак подтверждённого выхода на сервере.
+    ///
+    /// Дожидается завершения записи обновлённых данных сессии перед их удалением, чтобы отменённый запрос не восстановил их в хранилище.
+    /// - Parameter logout: При true запрашивает выход на сервере и удаляет локальные данные сессии.
     public func close(logout: Bool = false) async throws -> Bool {
         guard !closed else { return false }
         closed = true
@@ -224,11 +293,13 @@ public actor AuthenticatedClient {
         try await secureStore.delete(account.key)
         return revoked
     }
+    /// Проверяет, что задача и сессия клиента ещё активны.
     private func ensureOpen() throws {
         try Task.checkCancellation()
         if closed { throw CancellationError() }
         if expired { throw ClientError.sessionExpired }
     }
+    /// Отмечает истечение сессии и однократно уведомляет подписчиков.
     private func expire() {
         guard !expired else { return }
         expired = true; continuation.yield(.expired)

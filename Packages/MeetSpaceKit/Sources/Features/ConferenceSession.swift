@@ -20,6 +20,12 @@ public struct DirectConferenceContext: Sendable {
     public let clientID: UUID
     public let usesSystemAudio: Bool
     public let authorize: @Sendable () async throws -> Void
+    /// Создаёт контекст авторизации медиасессии личного звонка.
+    /// - Parameters:
+    ///   - callID: Идентификатор личного звонка.
+    ///   - clientID: Идентификатор клиентского устройства звонка.
+    ///   - usesSystemAudio: Управляет ли системная служба звонков аудиосессией.
+    ///   - authorize: Проверка права текущего клиента подключиться к медиасессии.
     public init(callID: UUID, clientID: UUID, usesSystemAudio: Bool,
                 authorize: @escaping @Sendable () async throws -> Void) {
         self.callID = callID; self.clientID = clientID; self.usesSystemAudio = usesSystemAudio
@@ -35,19 +41,27 @@ public struct DirectConferenceContext: Sendable {
     public let startedAt: Date?
     public let invitationURL: URL?
     public let repository: ConferenceRepository
-    public private(set) var phase: ConferencePhase { didSet { if oldValue != phase { onPhaseChanged?(phase) } } }
+    public private(set) var phase: ConferencePhase {
+        didSet {
+            if oldValue != phase { updateMicrophoneMetering(); onPhaseChanged?(phase) }
+        }
+    }
     @ObservationIgnored public var onPhaseChanged: (@MainActor (ConferencePhase) -> Void)?
     public let directContext: DirectConferenceContext?
     public var isDirectCall: Bool { directContext != nil }
     public private(set) var participant: ConferenceParticipant
-    public private(set) var participants: [ConferenceParticipant] = []
+    public private(set) var participants: [ConferenceParticipant] = [] { didSet { syncMicrophoneOwners() } }
     public private(set) var messages: [ConferenceMessage] = []
     public private(set) var microphone = false
+    /// Нормализованные уровни речи (0…1) по идентификатору участника. В тишине ключ отсутствует.
+    public private(set) var microphoneLevels: [UUID: Double] = [:]
     public private(set) var camera = false
     public private(set) var frontCamera = true
     public private(set) var speaker = true
     public private(set) var audioRoute = ""
-    public private(set) var microphoneBlocked = false
+    public private(set) var microphoneBlocked = false {
+        didSet { if microphoneBlocked, microphoneLevels[participant.id] != nil { microphoneLevels.removeValue(forKey: participant.id) } }
+    }
     public private(set) var cameraBlocked = false
     public private(set) var screenBlocked = false
     public private(set) var screenShareState: ConferenceScreenShareState = .idle
@@ -62,7 +76,7 @@ public struct DirectConferenceContext: Sendable {
     public var hasScreenBroadcast: Bool { [.awaitingSystem, .starting, .active, .paused, .stopping].contains(screenShareState) }
     public private(set) var media: (any ConferenceMediaEngine)?
     public private(set) var videoTracks: [ConferenceVideoTrack] = []
-    public private(set) var tracks: [ConferenceSignalTrack] = []
+    public private(set) var tracks: [ConferenceSignalTrack] = [] { didSet { syncMicrophoneOwners() } }
     public private(set) var lastReaction: String?
     public private(set) var busy = false
     public private(set) var departureUncertain = false
@@ -96,6 +110,9 @@ public struct DirectConferenceContext: Sendable {
     @ObservationIgnored private var receiveTask: Task<Void, Never>?
     @ObservationIgnored private var eventTask: Task<Void, Never>?
     @ObservationIgnored private var deviceTask: Task<Void, Never>?
+    @ObservationIgnored private var meterTimer: Task<Void, Never>?
+    @ObservationIgnored private var meterRequest: Task<Void, Never>?
+    @ObservationIgnored private var audioInterrupted = false
     @ObservationIgnored private var initialDevicesTask: Task<Void, Never>?
     @ObservationIgnored private var deadlineTask: Task<Void, Never>?
     @ObservationIgnored private var connectionDeadlineTask: Task<Void, Never>?
@@ -124,7 +141,9 @@ public struct DirectConferenceContext: Sendable {
     @ObservationIgnored private var rtcConnected = false
     @ObservationIgnored private var gatheringComplete = false
     @ObservationIgnored private var rawVideoTracks: [ConferenceVideoTrack] = []
-    @ObservationIgnored private var answerTracks: [String: AnswerTrack] = [:]
+    @ObservationIgnored private var answerTracks: [String: AnswerTrack] = [:] { didSet { syncMicrophoneOwners() } }
+    private struct MicrophoneOwner: Equatable { let participantID: UUID; let trackID: UUID }
+    @ObservationIgnored private var microphoneOwners: [String: MicrophoneOwner] = [:]
     @ObservationIgnored private var videoParticipants: [String: UUID] = [:]
     @ObservationIgnored private var screenVideoIDs: Set<String> = []
     @ObservationIgnored private var localICE: [MeetSpaceMedia.ConferenceICECandidate] = []
@@ -141,6 +160,18 @@ public struct DirectConferenceContext: Sendable {
     @ObservationIgnored private var messageRefreshPending = false
     @ObservationIgnored private var messageEpoch = UUID()
 
+    /// Подготавливает сессию участия во встрече и восстанавливает предпочтения камеры и микрофона.
+    /// - Parameters:
+    ///   - repository: Репозиторий конференций текущего аккаунта.
+    ///   - title: Название встречи.
+    ///   - participant: Данные собственного участника и его права.
+    ///   - directContext: Контекст личного звонка, если встреча используется для него.
+    ///   - startedAt: Время фактического начала встречи, если известно.
+    ///   - invitationCode: Код приглашения для построения ссылки на встречу.
+    ///   - sockets: Фабрика сокета сигналинга конференции.
+    ///   - makeMedia: Фабрика медиадвижка для попытки подключения.
+    ///   - makeBroadcast: Фабрика контроллера демонстрации экрана.
+    ///   - sleep: Асинхронная задержка в секундах для таймеров сессии.
     public init(repository: ConferenceRepository, title: String, participant: ConferenceParticipant,
                 directContext: DirectConferenceContext? = nil,
                 startedAt: Date? = nil,
@@ -165,16 +196,23 @@ public struct DirectConferenceContext: Sendable {
         microphoneBlocked = participant.microphoneBlocked; cameraBlocked = participant.cameraBlocked; screenBlocked = participant.screenBlocked
     }
 
+    /// Сохраняет выбор камеры на экране подготовки ко встрече.
+    /// - Parameter choice: Предпочтительная камера устройства.
     func choosePrejoinCamera(_ choice: AccountCameraChoice) {
         guard phase == .prejoin, !cameraBlocked else { return }
         videoPreferences.camera = choice
     }
 
+    /// Определяет владельца видеодорожки среди участников встречи.
+    /// - Parameter video: Локальная или входящая видеодорожка.
     public func participantID(for video: ConferenceVideoTrack) -> UUID? {
         video.isLocal ? participant.id : videoParticipants[video.id]
     }
+    /// Проверяет, передаёт ли видеодорожка демонстрацию экрана.
+    /// - Parameter video: Видеодорожка для проверки.
     public func isScreenTrack(_ video: ConferenceVideoTrack) -> Bool { screenVideoIDs.contains(video.id) }
 
+    /// Наблюдает за допуском из зала ожидания, пока сессия активна на экране.
     public func observeLobby() {
         guard phase == .waiting, lobbyTask == nil, !closed, foreground else { return }
         let epoch = generation
@@ -201,12 +239,14 @@ public struct DirectConferenceContext: Sendable {
         }
     }
 
+    /// Начинает подключение или повторный вход после приостановки сессии.
     public func start() {
         guard !closed, (foreground || isDirectCall), recoveryTask == nil, [.prejoin, .suspended, .failed].contains(phase) else { return }
         reconnectCount = 0; error = nil; phase = .connecting
         launchAttempt()
     }
 
+    /// Запускает очередную попытку подключения после освобождения ресурсов предыдущей.
     private func launchAttempt() {
         let epoch = generation, cleanup = cleanupTask
         attemptTask = Task { [weak self] in
@@ -301,6 +341,10 @@ public struct DirectConferenceContext: Sendable {
     private struct Reaction: Decodable { let participantId: UUID; let emoji: String }
     private struct MemberChange: Decodable { let participant: ConferenceParticipant }
 
+    /// Обрабатывает входящее событие сигналинга для текущей попытки подключения.
+    /// - Parameters:
+    ///   - event: Сообщение сокета конференции.
+    ///   - epoch: Идентификатор попытки подключения, для которой начата операция.
     private func handle(_ event: ConferenceEnvelope, epoch: UUID) async throws {
         try ensure(epoch)
         switch event.type {
@@ -486,6 +530,8 @@ public struct DirectConferenceContext: Sendable {
         }
     }
 
+    /// Создаёт медиапредложение и передаёт его вместе с накопленными ICE-кандидатами.
+    /// - Parameter epoch: Идентификатор попытки подключения, для которой начата операция.
     private func negotiate(_ epoch: UUID) async throws {
         try ensure(epoch)
         guard needsOffer, !offerBusy, let peerID, let media else { return }
@@ -509,6 +555,10 @@ public struct DirectConferenceContext: Sendable {
         armDeadline(seconds: 20, epoch: epoch)
     }
 
+    /// Обрабатывает изменения соединения, устройств захвата и аудиомаршрута от медиадвижка.
+    /// - Parameters:
+    ///   - update: Событие медиадвижка.
+    ///   - epoch: Идентификатор попытки подключения, для которой начата операция.
     private func handleDevice(_ update: ConferenceMediaEvent, epoch: UUID) async {
         guard isCurrent(epoch) else { return }
         do {
@@ -542,6 +592,7 @@ public struct DirectConferenceContext: Sendable {
             case .videoTrackRemoved(let id): rawVideoTracks.removeAll { $0.id == id }; syncVideos()
             case .captureState(let mic, let cam, let front):
                 microphone = mic; camera = cam; frontCamera = front
+                if !mic, microphoneLevels[participant.id] != nil { microphoneLevels.removeValue(forKey: participant.id) }
                 publishPresence(epoch)
             case .screenCaptureState(let enabled):
                 screenSenderEnabled = enabled
@@ -549,6 +600,8 @@ public struct DirectConferenceContext: Sendable {
             case .audioRoute(let route): audioRoute = route
             case .networkPathChanged: recover(RealtimeError.disconnected)
             case .interrupted(let began):
+                audioInterrupted = began
+                updateMicrophoneMetering()
                 if began {
                     await stopScreenShare()
                     wantsMicrophone = false; wantsCamera = false; error = "Медиа остановлено из-за аудиопрерывания."
@@ -561,6 +614,8 @@ public struct DirectConferenceContext: Sendable {
         } catch { if isCurrent(epoch) { recover(error) } }
     }
 
+    /// Отмечает подключение после готовности и медиасоединения, и сигналинга.
+    /// - Parameter epoch: Идентификатор попытки подключения, для которой начата операция.
     private func markConnected(_ epoch: UUID) {
         guard isCurrent(epoch), rtcConnected, readyAcknowledged else { return }
         phase = .connected
@@ -568,6 +623,84 @@ public struct DirectConferenceContext: Sendable {
         publishPresence(epoch)
     }
 
+    /// Связывает входящие микрофоны с участниками по согласованному SDP и каталогу медиа сервера.
+    private func syncMicrophoneOwners() {
+        let ownID = participant.id
+        let eligible = Set(participants.lazy.filter { $0.canParticipate && $0.microphoneEnabled && !$0.microphoneBlocked }.map(\.id))
+        let microphones = Dictionary(uniqueKeysWithValues: tracks.lazy.filter {
+            $0.source == "microphone" && $0.participantId != ownID && eligible.contains($0.participantId)
+        }.map { ($0.id, $0) })
+        let owners: [String: MicrophoneOwner] = answerTracks.compactMapValues { binding in
+            guard binding.kind == "audio", let track = microphones[binding.trackID], track.streamId == binding.streamID else { return nil }
+            return MicrophoneOwner(participantID: track.participantId, trackID: track.id)
+        }
+        for (mid, old) in microphoneOwners where owners[mid] != old && microphoneLevels[old.participantID] != nil {
+            microphoneLevels.removeValue(forKey: old.participantID)
+        }
+        microphoneOwners = owners
+    }
+
+    /// Считывает уровни отдельно от сигналинга, пока окно подключённой конференции активно.
+    private func updateMicrophoneMetering() {
+        guard phase == .connected, foreground, !audioInterrupted, !isDirectCall, let media else {
+            stopMicrophoneMetering()
+            return
+        }
+        guard meterTimer == nil else { return }
+        meterTimer = Task { [weak self] in
+            var requestedAt = ContinuousClock.now
+            while !Task.isCancelled, let self {
+                if meterRequest == nil, (microphone && !microphoneBlocked) || !microphoneOwners.isEmpty {
+                    let owners = microphoneOwners, start = ContinuousClock.now
+                    requestedAt = start
+                    meterRequest = Task { [weak self] in
+                        let sample = await media.microphoneLevels()
+                        guard !Task.isCancelled, let self else { return }
+                        meterRequest = nil
+                        if start.duration(to: .now) < .milliseconds(450) {
+                            applyMicrophoneLevels(sample, owners: owners)
+                        } else if !microphoneLevels.isEmpty {
+                            microphoneLevels = [:]
+                        }
+                    }
+                } else if requestedAt.duration(to: .now) >= .milliseconds(450), !microphoneLevels.isEmpty {
+                    microphoneLevels = [:]
+                }
+                do { try await Task.sleep(for: .milliseconds(150)) } catch { return }
+            }
+        }
+    }
+
+    /// Останавливает опрос микрофонов и гасит текущие индикаторы речи.
+    private func stopMicrophoneMetering() {
+        meterTimer?.cancel(); meterTimer = nil
+        meterRequest?.cancel(); meterRequest = nil
+        if !microphoneLevels.isEmpty { microphoneLevels = [:] }
+    }
+
+    /// Превращает измеренную амплитуду в яркость индикатора и сглаживает короткие паузы речи.
+    /// - Parameters:
+    ///   - sample: Уровни локального источника и входящих аудиодорожек за один интервал.
+    ///   - owners: Владельцы входящих дорожек на момент начала измерения.
+    private func applyMicrophoneLevels(_ sample: ConferenceMicrophoneLevels, owners: [String: MicrophoneOwner]) {
+        var levels: [UUID: Double] = [:]
+        func update(_ id: UUID, rms: Double) {
+            guard rms.isFinite, (0...1).contains(rms) else { return }
+            let old = microphoneLevels[id] ?? 0
+            let threshold = old > 0 ? 0.012 : 0.015
+            let brightness = rms >= threshold ? min(1, (20 * log10(rms) + 42) / 40) : 0
+            let value = max(brightness, old * 0.25)
+            if value >= 0.05 { levels[id] = max(levels[id] ?? 0, value) }
+        }
+        if microphone, !microphoneBlocked { update(participant.id, rms: sample.local) }
+        for (mid, rms) in sample.remoteByMID {
+            if let owner = owners[mid], microphoneOwners[mid] == owner { update(owner.participantID, rms: rms) }
+        }
+        if levels != microphoneLevels { microphoneLevels = levels }
+    }
+
+    /// Применяет новую версию политики комнаты и останавливает запрещённые источники медиа.
+    /// - Parameter policy: Политика и номер её версии из сигналинга.
     private func applyPolicy(_ policy: ConferenceSignalPolicy) async throws {
         guard policy.version > policyVersion else { return }
         policyVersion = policy.version
@@ -581,6 +714,8 @@ public struct DirectConferenceContext: Sendable {
                                                    screen: broadcastID != nil && !screenBlocked && !cameraBlocked)
         try ensure(epoch)
     }
+    /// Применяет обновлённые ограничения медиа из карточки собственного участника.
+    /// - Parameter participant: Собственный участник с серверной версией медиаполитики.
     private func applyParticipantPolicy(_ participant: ConferenceParticipant) async {
         guard participant.mediaPolicyVersion > policyVersion else { return }
         policyVersion = participant.mediaPolicyVersion
@@ -594,6 +729,8 @@ public struct DirectConferenceContext: Sendable {
         catch { if isCurrent(epoch) { recover(error) } }
     }
 
+    /// Публикует состояние локальных медиа с очередным номером обновления.
+    /// - Parameter epoch: Идентификатор попытки подключения, для которой начата операция.
     private func publishPresence(_ epoch: UUID) {
         guard let connectionID, sequence < 9_007_199_254_740_991 else { return }
         sequence += 1
@@ -611,6 +748,7 @@ public struct DirectConferenceContext: Sendable {
         }
     }
 
+    /// Подготавливает демонстрацию экрана и подписывается на события и кадры расширения.
     public func prepareScreenShare() async {
         guard canStartScreenShare, media != nil else { return }
         screenShareError = nil
@@ -658,6 +796,11 @@ public struct DirectConferenceContext: Sendable {
         }
     }
 
+    /// Обрабатывает начало, остановку или сбой текущей трансляции экрана.
+    /// - Parameters:
+    ///   - event: Событие контроллера демонстрации.
+    ///   - epoch: Идентификатор попытки подключения, для которой начата операция.
+    ///   - token: Идентификатор поколения трансляции.
     private func handleScreenEvent(_ event: ScreenBroadcastEvent, epoch: UUID, token: UUID) async {
         let id: UUID
         switch event {
@@ -694,6 +837,10 @@ public struct DirectConferenceContext: Sendable {
             await stopScreenShare()
         }
     }
+    /// Передаёт кадр активной демонстрации в медиадвижок после проверки сессии и разрешений.
+    /// - Parameters:
+    ///   - frame: Кадр и идентификатор сессии захвата.
+    ///   - epoch: Идентификатор попытки подключения, для которой начата операция.
     private func handleScreenFrame(_ frame: ScreenBroadcastFrame, epoch: UUID) async {
         guard frame.sessionID == broadcastID, screenSenderEnabled, [.starting, .active].contains(screenShareState),
               !screenBlocked, !cameraBlocked, phase == .connected, frame.timestampNs > screenLastTimestamp,
@@ -708,6 +855,7 @@ public struct DirectConferenceContext: Sendable {
             await stopScreenShare()
         }
     }
+    /// Останавливает демонстрацию экрана и согласует прекращение публикации с сервером.
     public func stopScreenShare() async {
         if let screenStopTask { await screenStopTask.value; return }
         guard broadcast != nil || screenSenderEnabled || screenServerEnabled || screenOfferEnabled ||
@@ -734,12 +882,14 @@ public struct DirectConferenceContext: Sendable {
         screenStopTask = task; await task.value
         if generation == epoch { screenStopTask = nil; updateScreenState() }
     }
+    /// Завершает наблюдение за трансляцией и сбрасывает её локальные идентификаторы.
     private func invalidateScreenBroadcast() {
         screenEpoch = UUID(); broadcastID = nil; broadcast = nil; screenPickerExtensionBundleID = nil
         screenEventsTask?.cancel(); screenFramesTask?.cancel(); screenPrepareDeadline?.cancel()
         screenEventsTask = nil; screenFramesTask = nil; screenPrepareDeadline = nil
         screenHasFrame = false; screenLastTimestamp = -1
     }
+    /// Определяет состояние демонстрации по готовности отправителя, подтверждению сервера и поступлению кадров.
     private func updateScreenState() {
         if [.starting, .active].contains(screenShareState), broadcastID != nil,
            screenSenderEnabled, screenServerEnabled, screenHasFrame {
@@ -754,13 +904,17 @@ public struct DirectConferenceContext: Sendable {
         }
     }
 
+    /// Переключает микрофон подключённого участника с учётом ограничений встречи.
     public func toggleMicrophone() async {
         guard !busy, foreground, !microphoneBlocked, phase == .connected, let media else { return }
         busy = true; let epoch = generation; defer { if isCurrent(epoch) { busy = false } }
         do { try await media.setMicrophoneEnabled(!microphone) }
         catch { if isCurrent(epoch) { self.error = mediaMessage(error) } }
     }
+    /// Передаёт медиадвижку требуемое состояние микрофона личного звонка.
+    ///
     /// CallKit mute actions are explicit values and may arrive while the app is backgrounded.
+    /// - Parameter enabled: Должен ли микрофон передавать звук.
     public func setDirectMicrophone(_ enabled: Bool) async throws {
         guard isDirectCall, !closed, !microphoneBlocked else { throw ConferenceMediaError.publicationBlocked }
         wantsMicrophone = enabled
@@ -768,6 +922,8 @@ public struct DirectConferenceContext: Sendable {
         let epoch = generation
         try await media.setMicrophoneEnabled(enabled); try ensure(epoch)
     }
+    /// Устанавливает состояние камеры личного звонка с учётом доступности захвата.
+    /// - Parameter enabled: Должна ли камера передавать видео.
     public func setDirectCamera(_ enabled: Bool) async throws {
         guard isDirectCall, !closed, !cameraBlocked, (!enabled || foreground) else { throw ConferenceMediaError.publicationBlocked }
         wantsCamera = enabled
@@ -775,26 +931,32 @@ public struct DirectConferenceContext: Sendable {
         let epoch = generation
         try await media.setCameraEnabled(enabled); try ensure(epoch)
     }
+    /// Переключает передачу видео с камеры во встрече.
     public func toggleCamera() async {
         guard !busy, foreground, !cameraBlocked, phase == .connected, let media else { return }
         busy = true; let epoch = generation; defer { if isCurrent(epoch) { busy = false } }
         do { try await media.setCameraEnabled(!camera) }
         catch { if isCurrent(epoch) { self.error = mediaMessage(error) } }
     }
+    /// Меняет активную камеру во время видеозахвата.
     public func switchCamera() async {
         guard !busy, foreground, camera, phase == .connected, let media else { return }
         busy = true; let epoch = generation; defer { if isCurrent(epoch) { busy = false } }
         do { try await media.switchCamera() } catch { if isCurrent(epoch) { self.error = mediaMessage(error) } }
     }
+    /// Переключает вывод звука конференции через громкую связь.
     public func toggleSpeaker() {
         guard foreground, phase == .connected else { return }
         do { try media?.setSpeakerEnabled(!speaker); speaker.toggle() } catch { self.error = mediaMessage(error) }
     }
+    /// Отправляет реакцию участника в подключённую конференцию.
+    /// - Parameter emoji: Эмодзи реакции.
     public func react(_ emoji: String) async {
         guard !isDirectCall, !closed, foreground, phase == .connected else { return }
         let epoch = generation
         do { try await repository.reaction(conferenceID, emoji: emoji) } catch { if isCurrent(epoch) { self.error = userMessage(error) } }
     }
+    /// Загружает список участников и обновляет собственные права во встрече.
     public func refreshParticipants() async {
         guard !isDirectCall else { return }
         let epoch = generation
@@ -808,12 +970,22 @@ public struct DirectConferenceContext: Sendable {
             }
         } catch { if isCurrent(epoch) { self.error = userMessage(error) } }
     }
+    /// Отправляет решение о допуске участника из зала ожидания.
+    /// - Parameters:
+    ///   - target: Участник, ожидающий решения.
+    ///   - decision: Решение о допуске для передачи серверу.
     public func admit(_ target: ConferenceParticipant, decision: String) async {
         guard !isDirectCall, !closed, !busy, participant.canAdmit, target.conferenceId == conferenceID else { return }
         busy = true; let epoch = generation; defer { if isCurrent(epoch) { busy = false } }
         do { _ = try await repository.admission(conferenceID, participant: target.id, decision: decision); try ensure(epoch); await refreshParticipants() }
         catch { if isCurrent(epoch) { self.error = userMessage(error) } }
     }
+    /// Выполняет разрешённое действие модерации над выбранным участником.
+    /// - Parameters:
+    ///   - target: Участник, к которому относится действие.
+    ///   - action: Серверное название действия модерации.
+    ///   - blocked: Устанавливаемый запрет, если он требуется.
+    ///   - role: Новая роль при изменении роли.
     public func moderate(_ target: ConferenceParticipant, action: String, blocked: Bool? = nil, role: String? = nil) async {
         guard !isDirectCall, !closed, !busy, participant.canModerate(target, action: action) else { return }
         busy = true; let epoch = generation; defer { if isCurrent(epoch) { busy = false } }
@@ -824,6 +996,7 @@ public struct DirectConferenceContext: Sendable {
             await refreshParticipants()
         } catch { if isCurrent(epoch) { self.error = userMessage(error) } }
     }
+    /// Обновляет сообщения чата и объединяет повторные запросы во время загрузки.
     public func refreshChat() async {
         guard !closed, !isDirectCall else { return }
         if messageLoading { messageRefreshPending = true; return }
@@ -844,6 +1017,7 @@ public struct DirectConferenceContext: Sendable {
         } catch { if !closed, messageEpoch == epoch { self.error = userMessage(error) } }
         } while messageRefreshPending && !closed && messageEpoch == epoch && !Task.isCancelled
     }
+    /// Отправляет черновик сообщения в чат и обновляет переписку после подтверждения.
     public func sendMessage() async {
         guard !busy, !closed, !isDirectCall else { return }
         busy = true; let epoch = generation; defer { if isCurrent(epoch) { busy = false } }
@@ -856,9 +1030,12 @@ public struct DirectConferenceContext: Sendable {
         } catch { if !closed { self.error = userMessage(error) } }
     }
 
+    /// Согласует медиа и наблюдение за встречей с переходом приложения между фоном и передним планом.
+    /// - Parameter active: Находится ли приложение на переднем плане.
     public func setForeground(_ active: Bool) async {
         guard foreground != active else { return }
         foreground = active
+        updateMicrophoneMetering()
         guard !closed else { return }
         if isDirectCall {
             if !active {
@@ -884,6 +1061,8 @@ public struct DirectConferenceContext: Sendable {
         else if active, phase == .waiting { observeLobby() }
     }
 
+    /// Определяет, допускает ли ошибка автоматическое переподключение.
+    /// - Parameter failure: Ошибка текущей попытки подключения.
     private static func isRetryable(_ failure: any Error) -> Bool {
         switch failure {
         case is CancellationError, ClientError.sessionExpired, ClientError.accountMismatch, ClientError.scopeMismatch: false
@@ -896,12 +1075,15 @@ public struct DirectConferenceContext: Sendable {
         default: true
         }
     }
+    /// Запускает повторное подключение по запросу пользователя.
     func reconnect() {
         guard phase == .connected else { return }
         reconnectCount = 0
         recover(RealtimeError.disconnected)
     }
 
+    /// Останавливает неудавшуюся попытку и планирует повтор, если ошибка допускает восстановление.
+    /// - Parameter failure: Причина сбоя соединения.
     private func recover(_ failure: any Error) {
         guard !closed, (foreground || isDirectCall || hasScreenBroadcast), recoveryTask == nil, !(failure is CancellationError) else { return }
         if let connectedAt, Date().timeIntervalSince(connectedAt) > 30 { reconnectCount = 0 }
@@ -926,6 +1108,10 @@ public struct DirectConferenceContext: Sendable {
         }
     }
 
+    /// Устанавливает тайм-аут ожидания следующего этапа сигналинга.
+    /// - Parameters:
+    ///   - seconds: Длительность ожидания в секундах.
+    ///   - epoch: Идентификатор попытки подключения, для которой начата операция.
     private func armDeadline(seconds: Double, epoch: UUID) {
         deadlineTask?.cancel()
         deadlineTask = Task { [weak self] in
@@ -935,6 +1121,10 @@ public struct DirectConferenceContext: Sendable {
             self.recover(APIError.timeout)
         }
     }
+    /// Устанавливает предельный срок установления или восстановления медиасоединения.
+    /// - Parameters:
+    ///   - seconds: Длительность ожидания в секундах.
+    ///   - epoch: Идентификатор попытки подключения, для которой начата операция.
     private func armConnectionDeadline(seconds: Double, epoch: UUID) {
         connectionDeadlineTask?.cancel()
         connectionDeadlineTask = Task { [weak self] in
@@ -943,15 +1133,26 @@ public struct DirectConferenceContext: Sendable {
             if isCurrent(epoch), !rtcConnected { recover(APIError.timeout) }
         }
     }
+    /// Кодирует и отправляет команду сигналинга через сокет конференции.
+    /// - Parameters:
+    ///   - type: Имя команды сигналинга.
+    ///   - data: Полезная нагрузка команды.
+    ///   - request: Идентификатор для сопоставления команды с ответом.
     private func send<T: Encodable>(_ type: String, data: T, request: UUID = UUID()) async throws {
         let epoch = generation; try ensure(epoch)
         guard let socket else { throw RealtimeError.disconnected }
         try await socket.send(ConferenceEnvelope.command(type: type, conferenceID: conferenceID, data: data, id: request))
         try ensure(epoch)
     }
+    /// Проверяет, разрешено ли продолжать асинхронную работу для этой попытки.
+    /// - Parameter epoch: Идентификатор попытки подключения, для которой начата операция.
     private func isCurrent(_ epoch: UUID) -> Bool { !closed && epoch == generation && !Task.isCancelled }
+    /// Прерывает устаревшую попытку подключения ошибкой отмены.
+    /// - Parameter epoch: Идентификатор попытки подключения, для которой начата операция.
     private func ensure(_ epoch: UUID) throws { if !isCurrent(epoch) { throw CancellationError() } }
 
+    /// Отсоединяет сокет, медиадвижок и трансляцию экрана и возвращает задачу завершения их работы.
+    ///
     /// Reset state before awaiting resource disposal so an old cleanup cannot erase a newer attempt.
     private func detachAttempt() -> Task<Void, Never> {
         let previousBroadcast = broadcast, previousScreenStop = screenStopTask
@@ -959,6 +1160,7 @@ public struct DirectConferenceContext: Sendable {
         screenShareState = .idle; screenSenderEnabled = false; screenServerEnabled = false; screenOfferEnabled = false
         screenStopTask = nil
         generation = UUID()
+        stopMicrophoneMetering(); audioInterrupted = false
         attemptTask?.cancel(); receiveTask?.cancel(); eventTask?.cancel(); deviceTask?.cancel()
         initialDevicesTask?.cancel(); deadlineTask?.cancel(); connectionDeadlineTask?.cancel(); expiryTask?.cancel(); presenceTask?.cancel()
         attemptTask = nil; receiveTask = nil; eventTask = nil; deviceTask = nil; initialDevicesTask = nil
@@ -983,7 +1185,9 @@ public struct DirectConferenceContext: Sendable {
         cleanupTask = task
         return task
     }
-    private struct AnswerTrack { let trackID: UUID; let streamID: String }
+    private struct AnswerTrack { let trackID: UUID; let streamID: String; let kind: String }
+    /// Извлекает из SDP-ответа соответствия между MID, потоками и входящими аудио- и видеодорожками.
+    /// - Parameter sdp: Текст согласованного SDP-ответа.
     private static func answerBindings(_ sdp: String) throws -> [String: AnswerTrack] {
         guard sdp.utf8.count <= 131_072 else { throw RealtimeError.invalidEvent }
         let lines = sdp.components(separatedBy: .newlines).filter { !$0.isEmpty }
@@ -991,7 +1195,7 @@ public struct DirectConferenceContext: Sendable {
         var result: [String: AnswerTrack] = [:], seenMIDs: Set<String> = []
         var section: [String] = []
         func parse(_ lines: [String]) throws {
-            guard let first = lines.first, first.hasPrefix("m=video ") else { return }
+            guard let first = lines.first, first.hasPrefix("m=video ") || first.hasPrefix("m=audio ") else { return }
             let parts = first.split(separator: " ")
             guard parts.count >= 3, parts[1] != "0", !lines.contains("a=recvonly"), !lines.contains("a=inactive") else { return }
             let mids = lines.filter { $0.hasPrefix("a=mid:") }.map { String($0.dropFirst(6)) }
@@ -1008,7 +1212,7 @@ public struct DirectConferenceContext: Sendable {
             guard let value = unique.first else { return }
             let association = value.split(separator: " ")
             guard association.count == 2, let track = UUID(uuidString: String(association[1])) else { return }
-            result[mids[0]] = AnswerTrack(trackID: track, streamID: String(association[0]))
+            result[mids[0]] = AnswerTrack(trackID: track, streamID: String(association[0]), kind: first.hasPrefix("m=audio ") ? "audio" : "video")
         }
         for line in lines {
             if line.hasPrefix("m=") { try parse(section); section = [line] } else { section.append(line) }
@@ -1016,6 +1220,7 @@ public struct DirectConferenceContext: Sendable {
         try parse(section)
         return result
     }
+    /// Сопоставляет видеодорожки с участниками и обновляет список доступного видео и демонстраций.
     private func syncVideos() {
         videoParticipants = [:]; screenVideoIDs = []
         videoTracks = rawVideoTracks.filter { video in
@@ -1026,7 +1231,7 @@ public struct DirectConferenceContext: Sendable {
                 }
                 return true
             }
-            guard !videoPreferences.hideVideo, let mid = video.mid, let binding = answerTracks[mid],
+            guard !videoPreferences.hideVideo, let mid = video.mid, let binding = answerTracks[mid], binding.kind == "video",
                   let track = tracks.first(where: { $0.id == binding.trackID && $0.streamId == binding.streamID && $0.kind == "video" }) else { return false }
             videoParticipants[video.id] = track.participantId
             if track.source == "video/screen" { screenVideoIDs.insert(video.id) }
@@ -1034,6 +1239,7 @@ public struct DirectConferenceContext: Sendable {
         }
     }
 
+    /// Останавливает медиа и наблюдателей, закрывает сессию и инициирует выход участника.
     public func leave() async {
         guard !closed else { return }
         closed = true; phase = .ended; recoveryTask?.cancel(); recoveryTask = nil; lobbyTask?.cancel(); lobbyTask = nil
@@ -1063,12 +1269,16 @@ public struct DirectConferenceContext: Sendable {
         }
     }
 
+    /// Инициирует выход и при необходимости ждёт его подтверждения сервером.
+    ///
     /// False blocks reuse of the workspace: an unacknowledged leave may still affect a later join.
     public func awaitDeparture() async -> Bool {
         await leave()
         if let departureResult { return departureResult }
         return await withCheckedContinuation { departureWaiters.append($0) }
     }
+    /// Сохраняет результат выхода и передаёт его всем ожидающим задачам.
+    /// - Parameter confirmed: Подтверждён ли выход.
     private func completeDeparture(_ confirmed: Bool) {
         guard departureResult == nil else { return }
         departureResult = confirmed; departureUncertain = !confirmed

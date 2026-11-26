@@ -29,6 +29,11 @@ import MeetSpaceAPI
     @ObservationIgnored private var epoch = UUID()
     @ObservationIgnored private var closed = false
 
+    /// Готовит модель настроек и черновик профиля текущего аккаунта.
+    /// - Parameters:
+    ///   - repository: Сервис чтения и сохранения настроек.
+    ///   - initialProfile: Профиль для первоначального отображения.
+    ///   - onProfileSaved: Обработчик обновлённых данных профиля.
     public init(repository: any SettingsServing, initialProfile: AccountUser? = nil,
                 onProfileSaved: @escaping @MainActor @Sendable (AccountUser) async throws -> Void = { _ in }) {
         self.repository = repository; self.account = repository.account
@@ -47,6 +52,7 @@ import MeetSpaceAPI
     }
     public var canSavePreferences: Bool { !busy && !closed && savedPreferences != nil && preferences != savedPreferences }
 
+    /// Загружает профиль, настройки уведомлений и сведения о возможностях сервера.
     public func load() async {
         guard !closed, !busy else { return }
         busy = true; information = nil; let current = epoch
@@ -77,6 +83,7 @@ import MeetSpaceAPI
         } catch { guard current == epoch else { return }; capabilities = nil; integrations = nil; capabilitiesError = userMessage(error) }
         loaded = true
     }
+    /// Сохраняет изменения профиля и передаёт обновлённого пользователя владельцу модели.
     public func saveProfile() async {
         guard canSaveProfile else { return }
         busy = true; information = nil; profileError = nil; let current = epoch
@@ -92,6 +99,7 @@ import MeetSpaceAPI
             information = "Профиль сохранён"
         } catch { guard current == epoch else { return }; profileError = userMessage(error) }
     }
+    /// Загружает фотографию для актуальной версии аватара.
     public func loadPhoto() async {
         guard !closed, let repository = repository as? any ProfilePhotoServing else { return }
         guard let version = profile.avatarVersion else {
@@ -112,6 +120,8 @@ import MeetSpaceAPI
         if let image { photo = image; photoVersion = version }
     }
 
+    /// Сохраняет или удаляет фотографию профиля и обновляет её локальную версию.
+    /// - Parameter data: Данные новой фотографии или `nil` для удаления.
     public func savePhoto(_ data: Data?) async -> Bool {
         guard !closed, !busy, let repository = repository as? any ProfilePhotoServing else { return false }
         busy = true; profileError = nil; information = nil; let current = epoch
@@ -129,6 +139,7 @@ import MeetSpaceAPI
         }
     }
 
+    /// Сохраняет выбранные параметры уведомлений текущего аккаунта.
     public func saveNotifications() async {
         guard canSavePreferences else { return }
         busy = true; information = nil; preferencesError = nil; let current = epoch
@@ -139,6 +150,7 @@ import MeetSpaceAPI
             preferences = value; savedPreferences = value; information = "Настройки уведомлений сохранены"
         } catch { guard current == epoch else { return }; preferencesError = userMessage(error) }
     }
+    /// Отменяет загрузку фотографии и очищает состояние настроек при закрытии.
     public func close() {
         closed = true; epoch = UUID(); busy = false; loaded = false; devices = []
         loadingPhoto?.task.cancel(); loadingPhoto = nil; photo = nil; photoVersion = nil

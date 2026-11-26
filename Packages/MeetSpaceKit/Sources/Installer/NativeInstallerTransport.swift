@@ -8,6 +8,10 @@ import Crypto
 
 private struct ObservedHost: Error { let key: InstallerHostKey }
 private final class InspectHost: NIOSSHClientServerAuthenticationDelegate, Sendable {
+    /// Передаёт полученный ключ SSH-хоста для проверки отпечатка и завершает проверочное подключение.
+    /// - Parameters:
+    ///   - hostKey: Публичный ключ, предъявленный SSH-сервером.
+    ///   - validationCompletePromise: Объект NIO для завершения проверки предъявленного ключа узла.
     func validateHostKey(hostKey: NIOSSHPublicKey, validationCompletePromise: EventLoopPromise<Void>) {
         do { validationCompletePromise.fail(ObservedHost(key: try InstallerHostKey(openSSH: String(openSSHPublicKey: hostKey)))) }
         catch { validationCompletePromise.fail(InstallerFailure.response) }
@@ -15,7 +19,10 @@ private final class InspectHost: NIOSSHClientServerAuthenticationDelegate, Senda
 }
 /// Each operation owns a fresh connection. Inspection fails host authentication before USERAUTH.
 public struct NativeInstallerTransport: InstallerTransport {
+    /// Создаёт SSH-транспорт для выполнения команд установщика.
     public init() {}
+    /// Открывает проверочное SSH-соединение, чтобы прочитать публичный ключ сервера.
+    /// - Parameter endpoint: Адрес, порт и имя пользователя SSH-сервера.
     public func inspect(_ endpoint: InstallerEndpoint) async throws -> InstallerHostKey {
         try Task.checkCancellation()
         let lifetime = ConnectionLifetime()
@@ -31,6 +38,12 @@ public struct NativeInstallerTransport: InstallerTransport {
         } catch let observed as ObservedHost { return observed.key }
         catch { if Task.isCancelled { throw CancellationError() }; throw InstallerFailure.network }
     }
+    /// Выполняет программу на удалённом узле через SSH и возвращает стандартный вывод.
+    /// - Parameters:
+    ///   - endpoint: Адрес, порт и имя пользователя SSH-сервера.
+    ///   - credentials: Данные доступа к SSH-серверу.
+    ///   - key: Публичный ключ SSH-сервера, которому доверяет пользователь.
+    ///   - input: Программа и входные данные, передаваемые установщику через SSH.
     public func execute(_ endpoint: InstallerEndpoint, credentials: InstallerCredentials, key: InstallerHostKey, input: Data) async throws -> Data {
         try Task.checkCancellation()
         guard input.count <= 512 * 1024 else { throw InstallerFailure.response }
@@ -107,6 +120,7 @@ public struct NativeInstallerTransport: InstallerTransport {
 // its connect(on:) overload currently uses sync pipeline operations off the event loop.
 private final class ConnectionLifetime: Sendable {
     let group = MultiThreadedEventLoopGroup(numberOfThreads: 1)
+    /// Останавливает выделенную группу событий NIO, закрывая каналы этого SSH-подключения.
     func close() { group.shutdownGracefully(queue: .global()) { _ in } }
 }
 private func connect(_ settings: SSHClientSettings, lifetime: ConnectionLifetime) async throws -> SSHClient {

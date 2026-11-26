@@ -3,7 +3,7 @@ import SwiftUI
 import Testing
 import MeetSpaceCore
 import MeetSpaceAPI
-import MeetSpaceMedia
+@testable import MeetSpaceMedia
 import MeetSpaceBroadcast
 import MeetSpaceRealtime
 @testable import MeetSpaceFeatures
@@ -48,12 +48,22 @@ import MeetSpaceRealtime
 private actor SessionPermissionGate {
     private var continuation: CheckedContinuation<Void, Never>?
     var started = false
+    /// Приостанавливает операцию до явного разрешения теста.
     func wait() async { started = true; await withCheckedContinuation { continuation = $0 } }
+    /// Возобновляет операцию, приостановленную тестом.
     func release() { continuation?.resume(); continuation = nil }
 }
 private actor SessionSecrets: SecureStore {
+    /// Возвращает отсутствие учётных данных в тесте с заранее авторизованным клиентом.
+    /// - Parameter key: Ключ запрошенной записи.
     func read(_ key: CredentialKey) -> Data? { nil }
+    /// Принимает запись учётных данных без сохранения в Keychain.
+    /// - Parameters:
+    ///   - value: Байты учётных данных.
+    ///   - key: Ключ записи.
     func write(_ value: Data, for key: CredentialKey) {}
+    /// Принимает запрос удаления без обращения к Keychain.
+    /// - Parameter key: Ключ записи.
     func delete(_ key: CredentialKey) {}
 }
 private enum SessionFixture {
@@ -62,13 +72,24 @@ private enum SessionFixture {
     static var member: ConferenceParticipant {
         ConferenceParticipant(id: person, conferenceId: room, userId: user, displayName: "Fixture")
     }
+    /// Преобразует модель через кодировщик API в JSON-объект тестового ответа.
+    /// - Parameter value: Модель для сериализации.
     static func object<T: Encodable>(_ value: T) throws -> Any {
         try JSONSerialization.jsonObject(with: WireJSON.encoder().encode(value))
     }
+    /// Кодирует тестовый JSON-объект в байты для сетевого ответа.
+    /// - Parameter value: Содержимое JSON.
     static func bytes(_ value: [String: Any]) throws -> Data { try JSONSerialization.data(withJSONObject: value) }
+    /// Возвращает HTTP 200 с JSON-телом для тестового запроса.
+    /// - Parameter value: Поля тела ответа.
     static func response(_ value: [String: Any]) throws -> NetworkResponse {
         NetworkResponse(status: 200, headers: ["content-type": "application/json"], data: try bytes(value))
     }
+    /// Кодирует событие сигналинга для тестового сокета.
+    /// - Parameters:
+    ///   - type: Тип события.
+    ///   - data: Поля полезной нагрузки.
+    ///   - reply: Идентификатор исходного запроса для события-ответа.
     static func event(_ type: String, _ data: [String: Any], reply: UUID? = nil) throws -> Data {
         var value: [String: Any] = ["version": 1, "id": UUID().uuidString, "type": type,
             "conferenceId": room.uuidString, "timestamp": "2026-11-05T12:00:00Z", "data": data]
@@ -78,11 +99,19 @@ private enum SessionFixture {
     static var policy: [String: Any] {
         ["version": 1, "microphoneBlocked": false, "cameraBlocked": false, "screenBlocked": false, "kicked": false]
     }
-    static func roster() throws -> Data {
-        var member = try #require(object(self.member) as? [String: Any]); member["online"] = true
+    /// Формирует снимок состава конференции с основным и дополнительными участниками.
+    /// - Parameter additionalMembers: Участники, добавляемые к основному.
+    static func roster(with additionalMembers: [ConferenceParticipant] = []) throws -> Data {
+        let members = try ([member] + additionalMembers).map { participant in
+            var payload = try #require(object(participant) as? [String: Any])
+            payload["online"] = true
+            return payload
+        }
         return try event("conference.state", ["connectionId": connection.uuidString,
-            "participantId": person.uuidString, "status": "active", "participants": [member]])
+            "participantId": person.uuidString, "status": "active", "participants": members])
     }
+    /// Готовит репозиторий конференций с тестовым аккаунтом и транспортом.
+    /// - Parameter transport: Транспорт запросов к API встреч.
     static func repository(transport: SessionTransport = SessionTransport()) throws -> ConferenceRepository {
         let user = try WireJSON.decoder().decode(AccountUser.self, from: bytes([
             "id": Self.user.uuidString, "email": "fixture@example.test", "displayName": "Fixture", "isAdmin": false,
@@ -104,11 +133,29 @@ private actor SessionTransport: RequestTransport {
     var conferenceStatus = "active"
     var failure: (String, Int)?
     var ice = ICEConfiguration(iceServers: [ICEServer(urls: ["stun:fixture.example:3478"])])
+    /// Настраивает задержку ответа на выход из встречи.
+    /// - Parameter gate: Точка синхронизации для обработчика выхода.
     func blockLeave(_ gate: SessionPermissionGate) { leaveGate = gate }
+    /// Заменяет участника в последующих ответах тестового сервера.
+    /// - Parameter value: Актуальные данные участника.
     func setMember(_ value: ConferenceParticipant) { member = value }
+    /// Задаёт состояние встречи в ответах сервера.
+    /// - Parameter value: Серверное состояние конференции.
     func setConferenceStatus(_ value: String) { conferenceStatus = value }
+    /// Настраивает ошибку для выбранного пути API.
+    /// - Parameters:
+    ///   - path: Путь запроса.
+    ///   - status: Код ошибки HTTP.
     func fail(_ path: String, status: Int) { failure = (path, status) }
+    /// Подменяет конфигурацию ICE для следующего ответа.
+    /// - Parameter value: Конфигурация для подключения тестового клиента.
     func setICE(_ value: ICEConfiguration) { ice = value }
+    /// Обрабатывает запрос к API конференции и возвращает ответ для текущего сценария.
+    /// - Parameters:
+    ///   - request: Запрос проверяемого клиента.
+    ///   - limit: Лимит ответа из контракта транспорта.
+    ///   - uploadFile: Необязательный файл для отправки.
+    ///   - progress: Обработчик прогресса из контракта транспорта.
     func send(_ request: URLRequest, limit: Int, uploadFile: URL?, progress: TransferProgress?) async throws -> NetworkResponse {
         let path = request.url!.path
         if path.hasSuffix("/participants/me") { selfReads += 1 }
@@ -138,23 +185,41 @@ private actor SessionSocket: ConferenceSocket {
     let continuation: AsyncThrowingStream<Data, Error>.Continuation
     var sent: [ConferenceEnvelope] = []
     var closes = 0
+    /// Создаёт управляемый тестом поток входящих сообщений сокета.
     init() { (stream, continuation) = AsyncThrowingStream.makeStream() }
+    /// Декодирует и сохраняет исходящую команду конференции для последующей проверки.
+    /// - Parameter data: Байты команды сигналинга.
     func send(_ data: Data) throws { sent.append(try ConferenceEnvelope.decode(data, conferenceID: SessionFixture.room)) }
+    /// Ожидает очередное сообщение из входящего потока тестового сокета.
     func receive() async throws -> Data {
         var iterator = stream.makeAsyncIterator()
         guard let result = try await iterator.next() else { throw ConferenceSignalError.disconnected(retryable: true) }
         return result
     }
+    /// Закрывает поток сообщений и учитывает закрытие тестового соединения.
     func close() { closes += 1; continuation.finish() }
+    /// Помещает сообщение во входящий поток тестового сокета.
+    /// - Parameter data: Байты входящего сообщения.
     func emit(_ data: Data) { continuation.yield(data) }
+    /// Возвращает последнюю отправленную команду заданного типа.
+    /// - Parameter type: Тип команды сигналинга.
     func last(_ type: String) -> ConferenceEnvelope? { sent.last { $0.type == type } }
+    /// Подсчитывает отправленные команды одного типа.
+    /// - Parameter type: Тип команды сигналинга.
     func count(_ type: String) -> Int { sent.filter { $0.type == type }.count }
 }
 private actor SessionSockets: ConferenceSocketFactory {
     var sockets: [SessionSocket] = []
     var calls = 0
     let fail: Bool?
+    /// Настраивает фабрику сокетов на успешное или неуспешное подключение.
+    /// - Parameter fail: Признак возможности повтора ошибки подключения или `nil` для успеха.
     init(fail: Bool? = nil) { self.fail = fail }
+    /// Создаёт и учитывает сокет конференции или выбрасывает настроенную ошибку.
+    /// - Parameters:
+    ///   - origin: Сервер встречи.
+    ///   - conferenceID: Идентификатор встречи.
+    ///   - ticket: Билет подключения.
     func connect(origin: ServerOrigin, conferenceID: UUID, ticket: String) throws -> any ConferenceSocket {
         calls += 1
         if let fail { throw ConferenceSignalError.disconnected(retryable: fail) }
@@ -171,30 +236,52 @@ private actor SessionSockets: ConferenceSocketFactory {
     var screen = false, rollbacks = 0, screenFrames = 0
     var closeCount = 0, offers = 0
     var microphoneGate: SessionPermissionGate?
+    var sampledLevels = ConferenceMicrophoneLevels()
+    /// Готовит поток событий тестового медиадвижка.
     init() { (events, continuation) = AsyncStream.makeStream() }
     var localScreenVideoTrackID: String { "fixture-screen" }
+    /// Учитывает откат локального предложения SDP.
     func rollbackLocalOffer() async throws { rollbacks += 1 }
+    /// Имитирует изменение публикации экрана с проверкой разрешений.
+    /// - Parameter enabled: Запрошенное состояние публикации.
     func setScreenEnabled(_ enabled: Bool) async throws {
         guard !enabled || (screenAllowed && cameraAllowed) else { throw ConferenceMediaError.publicationBlocked }
         screen = enabled; continuation.yield(.screenCaptureState(enabled))
         continuation.yield(.negotiationNeeded)
     }
+    /// Учитывает кадр демонстрации, переданный тестовому движку.
+    /// - Parameter frame: Полученный кадр.
     func pushScreenFrame(_ frame: ScreenBroadcastFrame) throws { screenFrames += 1 }
+    /// Запоминает конфигурацию подключения тестового медиадвижка.
+    /// - Parameter configuration: Параметры медиасоединения.
     func configure(_ configuration: ConferenceMediaConfiguration) {
         self.configuration = configuration
         microphoneAllowed = configuration.microphoneAllowed; cameraAllowed = configuration.cameraAllowed
     }
+    /// Формирует тестовое предложение SDP для переговоров.
+    /// - Parameter iceRestart: Запрошен ли перезапуск ICE.
     func makeOffer(iceRestart: Bool) throws -> ConferenceMediaOffer {
         guard !closed else { throw CancellationError() }; offers += 1
         return ConferenceMediaOffer(sdp: "v=0\r\nm=audio 9 UDP/TLS/RTP/SAVPF 111\r\na=mid:0\r\na=recvonly\r\n", publications: screen ? [.init(mid: "2", source: "video/screen", trackId: localScreenVideoTrackID)] : [])
     }
+    /// Принимает ответ SDP, пока тестовое соединение открыто.
+    /// - Parameter sdp: Описание медиа от удалённой стороны.
     func applyAnswer(_ sdp: String) throws { if closed { throw CancellationError() } }
+    /// Принимает ICE-кандидата без установки сетевого соединения.
+    /// - Parameter candidate: Кандидат удалённой стороны.
     func addRemoteCandidate(_ candidate: MeetSpaceMedia.ConferenceICECandidate) {}
+    /// Применяет к тестовой сессии права на публикацию источников.
+    /// - Parameters:
+    ///   - microphone: Разрешение микрофона.
+    ///   - camera: Разрешение камеры.
+    ///   - screen: Разрешение демонстрации экрана.
     func setPublicationPermissions(microphone: Bool, camera: Bool, screen: Bool) {
         microphoneAllowed = microphone; cameraAllowed = camera; screenAllowed = screen && camera
         if !microphone { self.microphone = false }; if !camera { self.camera = false }
         capture()
     }
+    /// Меняет состояние тестового микрофона и сообщает о захвате.
+    /// - Parameter enabled: Запрошенное состояние микрофона.
     func setMicrophoneEnabled(_ enabled: Bool) async throws {
         if enabled, let microphoneGate { await microphoneGate.wait() }
         try Task.checkCancellation()
@@ -202,16 +289,32 @@ private actor SessionSockets: ConferenceSocketFactory {
         guard !enabled || microphoneAllowed else { throw ConferenceMediaError.publicationBlocked }
         microphone = enabled; capture(); continuation.yield(.negotiationNeeded)
     }
+    /// Имитирует смену состояния камеры с учётом разрешения тестовой сессии.
+    /// - Parameter enabled: Запрошенное состояние камеры.
     func setCameraEnabled(_ enabled: Bool) throws {
         guard !closed, !enabled || cameraAllowed else { throw ConferenceMediaError.publicationBlocked }
         camera = enabled; capture(); continuation.yield(.negotiationNeeded)
     }
+    /// Принимает команду переключения камеры без обращения к устройству.
     func switchCamera() {}
+    /// Возвращает подготовленные уровни звука участников конференции.
+    func microphoneLevels() async -> ConferenceMicrophoneLevels { sampledLevels }
+    /// Принимает переключение громкой связи без изменения системного аудиомаршрута.
+    /// - Parameter enabled: Желаемое состояние громкой связи.
     func setSpeakerEnabled(_ enabled: Bool) {}
+    /// Приостанавливает тестовые микрофон и камеру и сообщает об изменении состояния.
     func suspend() { microphone = false; camera = false; capture() }
+    /// Закрывает медиадвижок и завершает тестовый поток событий.
     func close() { closed = true; microphone = false; camera = false; closeCount += 1; continuation.finish() }
+    /// Возвращает прозрачную заглушку видеоплитки.
+    /// - Parameters:
+    ///   - trackID: Идентификатор запрошенной дорожки.
+    ///   - mirrored: Запрошено ли зеркальное отображение.
     func videoView(trackID: String, mirrored: Bool) -> AnyView { AnyView(Color.clear) }
+    /// Передаёт событие медиадвижка в тестируемую сессию.
+    /// - Parameter value: Медиасобытие для доставки.
     func emit(_ value: ConferenceMediaEvent) { continuation.yield(value) }
+    /// Публикует текущие флаги тестового микрофона и камеры.
     private func capture() { continuation.yield(.captureState(microphone: microphone, camera: camera, frontCamera: true)) }
 }
 @MainActor private func sessionEventually(_ predicate: @escaping @MainActor () async -> Bool) async throws {
@@ -284,12 +387,20 @@ private actor SessionSockets: ConferenceSocketFactory {
     let extensionBundleID: String? = "fixture.broadcast"
     var sessionID: UUID?
     var stops = 0
+    /// Готовит отдельные потоки кадров и событий демонстрации.
     init() {
         (events, event) = AsyncStream.makeStream()
         (frames, frame) = AsyncStream.makeStream()
     }
+    /// Выдаёт идентификатор новому тестовому сеансу трансляции.
+    /// - Parameter configuration: Параметры подготовки трансляции.
     func prepare(configuration: ScreenBroadcastConfiguration) { sessionID = UUID() }
+    /// Завершает тестовый сеанс трансляции и учитывает остановку.
     func stop() { stops += 1; sessionID = nil }
+    /// Отправляет синтетический кадр в тестовый поток.
+    /// - Parameters:
+    ///   - id: Идентификатор сеанса трансляции.
+    ///   - timestamp: Временная метка кадра в наносекундах.
     func sendFrame(_ id: UUID, timestamp: Int64 = 1) {
         frame.yield(ScreenBroadcastFrame(sessionID: id, width: 2, height: 2, rowBytes: 8,
             timestampNs: timestamp, pixels: Data(repeating: 0, count: 16)))
@@ -491,6 +602,70 @@ private actor SessionSockets: ConferenceSocketFactory {
     await socket.emit(try SessionFixture.event("media.tracks", ["mediaPeerId": SessionFixture.peer.uuidString, "revision": 2, "tracks": []]))
     try await sessionEventually { session.videoTracks.isEmpty }
     await session.leave()
+}
+
+@Test func conferenceAudioSampleUsesIntervalEnergyAndRejectsStaleLevels() {
+    let previous = ConferenceAudioSample(level: 0.9, energy: 1, duration: 10, packets: 20)
+    let current = ConferenceAudioSample(level: 0.9, energy: 1.25, duration: 11, packets: 21)
+    #expect(current.rms(since: previous) == 0.5)
+    let silent = ConferenceAudioSample(level: 0.9, energy: 1.25, duration: 12, packets: 22)
+    #expect(silent.rms(since: current) == 0)
+    let stale = ConferenceAudioSample(level: 0.9, energy: 1.5, duration: 12, packets: 21)
+    #expect(stale.rms(since: current) == 0)
+    let instantaneous = ConferenceAudioSample(level: 0.25, energy: nil, duration: nil, packets: nil)
+    #expect(instantaneous.rms(since: nil) == 0.25)
+}
+
+@Test @MainActor func conferenceMetersOnlySpeakingMicrophoneTracksAndClearsSilence() async throws {
+    let sockets = SessionSockets(), engine = SessionEngine()
+    let remote = ConferenceParticipant(id: UUID(), conferenceId: SessionFixture.room, userId: UUID(),
+                                       displayName: "Remote", microphoneEnabled: true)
+    let peer = UUID().uuidString.lowercased()
+    let voice = UUID().uuidString.lowercased(), screen = UUID().uuidString.lowercased()
+    let catalog: [[String: Any]] = [
+        ["id": voice, "streamId": peer, "mediaPeerId": peer, "participantId": remote.id.uuidString,
+         "kind": "audio", "source": "microphone"],
+        ["id": screen, "streamId": peer + "-screen", "mediaPeerId": peer, "participantId": remote.id.uuidString,
+         "kind": "audio", "source": "audio/screen"]
+    ]
+    let session = ConferenceSession(repository: try SessionFixture.repository(), title: "Fixture",
+                                    participant: SessionFixture.member, sockets: sockets, makeMedia: { engine })
+    let socket = try await joinSession(session, sockets: sockets, catalog: catalog)
+    await socket.emit(try SessionFixture.roster(with: [remote]))
+    engine.emit(.connectionState(.connected))
+    let sdp = "v=0\r\nm=audio 9 UDP/TLS/RTP/SAVPF 111\r\na=mid:1\r\na=sendonly\r\na=msid:\(peer) \(voice)\r\n"
+        + "m=audio 9 UDP/TLS/RTP/SAVPF 111\r\na=mid:2\r\na=sendonly\r\na=msid:\(peer)-screen \(screen)\r\n"
+    let ready = try await answerSession(socket, sdp: sdp)
+    await socket.emit(try SessionFixture.event("ack", ["type": "media.ready"], reply: ready.id))
+    try await sessionEventually { session.phase == .connected }
+
+    engine.sampledLevels = .init(local: 0.5, remoteByMID: ["1": 0.04, "2": 1, "unknown": 1])
+    try await sessionEventually { session.microphoneLevels[remote.id] != nil }
+    let quietVoice = try #require(session.microphoneLevels[remote.id])
+    #expect(session.microphoneLevels[SessionFixture.person] == nil)
+    engine.sampledLevels = .init(local: 0.5, remoteByMID: ["1": 0.3, "2": 1, "unknown": 1])
+    try await sessionEventually { (session.microphoneLevels[remote.id] ?? 0) > quietVoice }
+
+    engine.emit(.captureState(microphone: true, camera: false, frontCamera: true))
+    try await sessionEventually {
+        session.microphoneLevels[SessionFixture.person] != nil && session.microphoneLevels[remote.id] != nil
+    }
+    // The remote microphone still sends audio packets, but now carries only room noise.
+    engine.sampledLevels = .init(local: 0.5, remoteByMID: ["1": 0.001, "2": 1, "unknown": 1])
+    try await sessionEventually {
+        session.microphoneLevels[SessionFixture.person] != nil && session.microphoneLevels[remote.id] == nil
+    }
+    engine.emit(.captureState(microphone: false, camera: false, frontCamera: true))
+    engine.sampledLevels = .init(local: 0.5, remoteByMID: ["1": 0.3])
+    try await sessionEventually {
+        session.microphoneLevels[SessionFixture.person] == nil && session.microphoneLevels[remote.id] != nil
+    }
+
+    await socket.emit(try SessionFixture.event("media.tracks", ["mediaPeerId": SessionFixture.peer.uuidString,
+        "revision": 2, "tracks": []]))
+    try await sessionEventually { session.tracks.isEmpty && session.microphoneLevels.isEmpty }
+    await session.leave()
+    #expect(session.microphoneLevels.isEmpty)
 }
 
 @Test @MainActor func conferenceSessionLeaveReleasesCaptureBeforeUnresponsiveServer() async throws {

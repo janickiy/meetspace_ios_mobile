@@ -71,25 +71,42 @@ import MeetSpaceCalling
 }
 
 private struct DeletionProbe: ServerProbing {
+    /// Имитирует недоступность сервера при запросе версии.
+    /// - Parameter origin: Сервер, указанный проверяемой моделью.
     func check(_ origin: ServerOrigin) async throws -> ServerVersion { throw APIError.offline }
 }
 private actor DeletionPreferences: ConfigurationStore {
+    /// Возвращает начальную конфигурацию приложения для тестового сценария.
     func load() -> AppConfiguration { AppConfiguration() }
+    /// Принимает изменение конфигурации без записи на диск.
+    /// - Parameter value: Конфигурация, переданная приложением.
     func save(_ value: AppConfiguration) {}
 }
 private struct DeletionSockets: RealtimeSocketFactory {
+    /// Возвращает ошибку отсутствия сети при попытке открыть канал событий.
+    /// - Parameter url: Адрес запрошенного соединения.
     func connect(_ url: URL) async throws -> any RealtimeSocket { throw APIError.offline }
 }
 private actor DeletionDownloads: RecordingDownloading {
     var closes = 0
+    /// Имитирует ошибку сети при скачивании записи.
+    /// - Parameters:
+    ///   - url: Адрес файла.
+    ///   - file: Метаданные запрошенной записи.
+    ///   - progress: Обработчик хода загрузки из контракта загрузчика.
     func download(url: URL, file: RecordingFile, progress: TransferProgress?) throws -> URL { throw APIError.offline }
+    /// Принимает команду очистки файла в сценарии без локальных загрузок.
+    /// - Parameter url: Адрес файла, переданный для удаления.
     func remove(_ url: URL) {}
+    /// Учитывает закрытия загрузчика для проверки очистки аккаунта.
     func close() { closes += 1 }
 }
 private actor DeletionGate {
     var waiting = false
     private var continuation: CheckedContinuation<Void, Never>?
+    /// Приостанавливает операцию до явного разрешения теста.
     func wait() async { waiting = true; await withCheckedContinuation { continuation = $0 } }
+    /// Возобновляет операцию, приостановленную тестом.
     func release() { continuation?.resume(); continuation = nil }
 }
 
@@ -200,17 +217,29 @@ private actor DeletionGate {
     var authorization: NormalPushAuthorization = .authorized
     var prompts = 0
     var registrations = 0
+    /// Создаёт поток тестовых событий регистрации устройства в APNs.
     init() { (events, continuation) = AsyncStream.makeStream() }
+    /// Возвращает заданный тестом статус разрешения на уведомления.
     func requestAuthorization() async throws -> NormalPushAuthorization { prompts += 1; return authorization }
+    /// Завершает проверку разрешения со статусом, заданным тестом.
     func refreshAuthorization() async { }
+    /// Учитывает попытку зарегистрировать устройство для push-уведомлений.
     func register() { registrations += 1 }
+    /// Принимает отмену регистрации без обращения к APNs.
     func unregister() { }
+    /// Отправляет событие успешной регистрации устройства в поток теста.
+    /// - Parameter deviceToken: Токен, который должна получить модель.
     func didRegister(deviceToken: Data) { continuation.yield(.token(deviceToken)) }
+    /// Отправляет в поток теста событие ошибки регистрации.
     func didFailRegistration() { continuation.yield(.failure(.registrationFailed)) }
+    /// Генерирует 32-байтовый токен и имитирует его получение от APNs.
+    /// - Parameter byte: Байт для заполнения токена.
     func token(_ byte: UInt8) { didRegister(deviceToken: Data(repeating: byte, count: 32)) }
 }
 private actor DeletionPushOrder {
     var events: [String] = []
+    /// Записывает событие для проверки порядка операций при удалении аккаунта.
+    /// - Parameter event: Название завершённого этапа.
     func append(_ event: String) { events.append(event) }
 }
 @MainActor private func waitForDeletionPush(_ predicate: @escaping @MainActor () async -> Bool) async throws {
@@ -345,12 +374,20 @@ private actor IdentityDeletionRecoveryStore: PushRegistrationStore {
     var journal: PushRegistrationJournal
     var confirmations: [PushAccountDeletionConfirmation] = []
     var failedPrunes = 0
+    /// Инициализирует хранилище с заданным журналом привязок.
+    /// - Parameter journal: Исходный журнал регистрации.
     init(_ journal: PushRegistrationJournal) { self.journal = journal }
+    /// Возвращает сохранённый тестом журнал привязок.
     func load() -> PushRegistrationJournal { journal }
+    /// Возвращает подтверждения удаления, сохранённые отдельно от журнала привязок.
     func loadDeletionConfirmations() async throws -> [PushAccountDeletionConfirmation] { confirmations }
+    /// Регистрирует в тестовом хранилище подтверждение удаления аккаунта.
+    /// - Parameter value: Сервер и пользователь, для которых подтверждено удаление.
     func recordDeletionConfirmation(_ value: PushAccountDeletionConfirmation) async throws {
         if !confirmations.contains(value) { confirmations.append(value) }
     }
+    /// Имитирует сбой первой очистки журнала после подтверждённого удаления.
+    /// - Parameter value: Журнал, который пытается сохранить клиент.
     func save(_ value: PushRegistrationJournal) throws {
         if !confirmations.isEmpty, !journal.entries.isEmpty, value.entries.isEmpty, failedPrunes == 0 {
             failedPrunes += 1; throw ClientError.storage

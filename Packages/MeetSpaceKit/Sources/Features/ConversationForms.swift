@@ -79,6 +79,8 @@ struct NewConversationView: View {
         }
     }
 
+    /// Открывает личный диалог с контактом или создаёт группу из выбранных участников.
+    /// - Parameter peer: Собеседник для личного диалога или nil для создания группы.
     private func create(_ peer: Peer?) {
         guard !busy else { return }
         busy = true; error = nil
@@ -296,6 +298,7 @@ struct GroupDetailsView: View {
                 }
         }.tint(MSTheme.accent).font(MSTheme.font())
     }
+    /// Загружает актуальные сведения о группе и обновляет поля формы.
     private func reload() async {
         do {
             let item = try await model.repository.conversation(id)
@@ -307,6 +310,8 @@ struct GroupDetailsView: View {
         } catch is CancellationError { }
         catch { self.error = userMessage(error) }
     }
+    /// Выполняет изменение группы, блокируя повторный запрос и показывая ошибки.
+    /// - Parameter body: Асинхронная операция над группой.
     private func perform(_ body: @escaping @MainActor () async throws -> Void) {
         guard !busy else { return }; busy = true; error = nil
         operation = Task {
@@ -319,6 +324,8 @@ struct GroupDetailsView: View {
             catch { self.error = userMessage(error) }
         }
     }
+    /// Возвращает название роли участника группы для интерфейса.
+    /// - Parameter role: Серверный код роли.
     private func roleName(_ role: String) -> String {
         switch role { case "owner": "Владелец"; case "admin": "Администратор"; default: "Участник" }
     }

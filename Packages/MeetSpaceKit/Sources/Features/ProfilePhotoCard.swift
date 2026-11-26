@@ -17,6 +17,12 @@ import MeetSpaceDesignSystem
     var savedNotifications = NotificationPreferences()
     var notificationSound = true
 
+    /// Создаёт профиль для демонстрационного аккаунта.
+    /// - Parameters:
+    ///   - id: Ключ аккаунта в демоданных.
+    ///   - name: Отображаемое имя.
+    ///   - email: Адрес электронной почты.
+    ///   - server: Сервер аккаунта, если задан.
     init(id: String, name: String, email: String, server: ServerOrigin?) {
         self.id = id; self.name = name; self.email = email; self.server = server
     }
@@ -142,12 +148,18 @@ private struct PortraitCropView: View {
                 .toolbar { ToolbarItem(placement: .cancellationAction) { IconButton("xmark", label: "Отмена") { dismiss() }.disabled(saving) } }
         }.interactiveDismissDisabled(saving)
     }
+    /// Создаёт ползунок для настройки области кадрирования фотографии.
+    /// - Parameters:
+    ///   - label: Название настройки.
+    ///   - value: Изменяемый параметр кадрирования.
+    ///   - range: Допустимый диапазон.
     private func slider(_ label: String, _ value: Binding<Double>, _ range: ClosedRange<Double>) -> some View {
         VStack(alignment: .leading, spacing: 2) {
             Text(tr(label)).font(MSTheme.font(13, weight: .semibold))
             Slider(value: value, in: range) { Text(tr(label)) }
         }
     }
+    /// Кодирует квадратный фрагмент фотографии для сохранения в профиле.
     private func encodedCrop() -> Data? {
         guard let crop else { return nil }
         let side = min(crop.width, 512)

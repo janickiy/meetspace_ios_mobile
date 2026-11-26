@@ -3,8 +3,13 @@ import Testing
 @testable import MeetSpaceAPI
 
 private final class BoundaryProtocol: URLProtocol, @unchecked Sendable {
+    /// Определяет, относится ли запрос к домену тестового протокола.
+    /// - Parameter request: Входящий сетевой запрос.
     override class func canInit(with request: URLRequest) -> Bool { request.url?.host == "transport.fixture" }
+    /// Возвращает запрос в исходном виде для обработки тестовым URLProtocol.
+    /// - Parameter request: Запрос тестовой сессии.
     override class func canonicalRequest(for request: URLRequest) -> URLRequest { request }
+    /// Имитирует ответ сервера, перенаправление или ожидание для выбранного тестового пути.
     override func startLoading() {
         let url = request.url!
         if url.path == "/wait" { return }
@@ -16,6 +21,7 @@ private final class BoundaryProtocol: URLProtocol, @unchecked Sendable {
         client?.urlProtocol(self, didLoad: status == 401 ? Data(repeating: 65, count: 50) : body)
         client?.urlProtocolDidFinishLoading(self)
     }
+    /// Завершает обработку команды остановки для тестового URLProtocol без фоновой передачи.
     override func stopLoading() {}
 }
 private func boundaryTransport() -> URLSessionRequestTransport {
@@ -47,6 +53,8 @@ private func boundaryTransport() -> URLSessionRequestTransport {
 private final class ProgressValues: @unchecked Sendable {
     private let lock = NSLock()
     private var values: [Double] = []
+    /// Сохраняет очередное значение прогресса передачи для последующей проверки.
+    /// - Parameter value: Доля переданных данных.
     func append(_ value: Double) { lock.withLock { values.append(value) } }
     var snapshot: [Double] { lock.withLock { values } }
 }

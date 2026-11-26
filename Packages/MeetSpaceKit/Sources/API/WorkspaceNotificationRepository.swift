@@ -22,8 +22,12 @@ public struct WorkspaceNotificationPage: Decodable, Sendable {
 
 public struct WorkspaceNotificationRepository: Sendable {
     private let client: AuthenticatedClient
+    /// Создаёт репозиторий уведомлений рабочего пространства текущего аккаунта.
+    /// - Parameter client: Клиент, выполняющий запросы от имени текущего аккаунта.
     public init(client: AuthenticatedClient) { self.client = client }
 
+    /// Загружает страницу уведомлений пользователя.
+    /// - Parameter cursor: Курсор продолжения из предыдущего ответа. Для первой страницы передайте nil.
     public func list(cursor: String? = nil) async throws -> WorkspaceNotificationPage {
         let query = cursor.map { [URLQueryItem(name: "cursor", value: $0)] } ?? []
         let page = try decodeJSON(WorkspaceNotificationPage.self, from: await client.request("GET", path: ["notifications"], query: query))
@@ -32,6 +36,8 @@ public struct WorkspaceNotificationRepository: Sendable {
         return page
     }
 
+    /// Отмечает выбранное уведомление прочитанным.
+    /// - Parameter id: Идентификатор уведомления рабочего пространства.
     public func markRead(_ id: UUID) async throws {
         let item = try decodeJSON(ItemResponse<WorkspaceNotification>.self, from: await client.request("POST",
             path: ["notifications", id.uuidString.lowercased(), "read"], body: Data("{}".utf8))).item

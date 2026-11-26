@@ -7,6 +7,13 @@ public struct IntegrationCapabilities: Codable, Equatable, Sendable {
     public let calendar: String
     public let calendarOAuthConfigured: Bool
     public let mockConnectAllowed: Bool
+    /// Описывает доступные на сервере каналы интеграции и возможности календаря.
+    /// - Parameters:
+    ///   - email: Серверный провайдер доставки по электронной почте.
+    ///   - push: Серверный провайдер push-уведомлений.
+    ///   - calendar: Название доступного серверного календарного провайдера.
+    ///   - calendarOAuthConfigured: Признак настроенной серверной OAuth-интеграции календаря.
+    ///   - mockConnectAllowed: Признак доступности тестового подключения к интеграции.
     public init(email: String = "noop", push: String, calendar: String = "noop",
                 calendarOAuthConfigured: Bool = false, mockConnectAllowed: Bool = false) {
         self.email = email; self.push = push; self.calendar = calendar
@@ -26,6 +33,13 @@ public struct NotificationPreferences: Codable, Equatable, Sendable {
     public var recording: Bool
     public var email: Bool
     public var push: Bool
+    /// Задаёт выбранные события уведомлений и каналы доставки.
+    /// - Parameters:
+    ///   - invitation: Признак включённых уведомлений о приглашениях.
+    ///   - reminder: Признак включённых напоминаний о встречах.
+    ///   - recording: Признак включённых уведомлений о записях.
+    ///   - email: Признак доставки уведомлений по электронной почте.
+    ///   - push: Признак доставки событий через push-уведомления.
     public init(invitation: Bool = true, reminder: Bool = true, recording: Bool = true, email: Bool = false, push: Bool = false) {
         self.invitation = invitation; self.reminder = reminder; self.recording = recording; self.email = email; self.push = push
     }
@@ -41,6 +55,15 @@ public struct NotificationDevice: Codable, Equatable, Sendable, Identifiable {
     public let revokedAt: Date?
     public let disabledAt: Date?
     public var isActive: Bool { revokedAt == nil && disabledAt == nil }
+    /// Описывает регистрацию устройства, поставщика доставки и даты изменения регистрации.
+    /// - Parameters:
+    ///   - id: Идентификатор регистрации устройства на сервере.
+    ///   - platform: Платформа зарегистрированного устройства.
+    ///   - provider: Поставщик доставки уведомлений.
+    ///   - createdAt: Время создания записи.
+    ///   - updatedAt: Время последнего изменения записи.
+    ///   - revokedAt: Время отзыва регистрации устройства.
+    ///   - disabledAt: Время отключения устройства поставщиком уведомлений, если оно известно.
     public init(id: UUID, platform: String, provider: String, createdAt: Date, updatedAt: Date,
                 revokedAt: Date? = nil, disabledAt: Date? = nil) {
         self.id = id; self.platform = platform; self.provider = provider
@@ -54,6 +77,11 @@ public struct PushDeviceBinding: Codable, Equatable, Sendable {
     public let origin: ServerOrigin
     public let userID: UUID
     public let deviceID: UUID
+    /// Связывает зарегистрированное push-устройство с пользователем и сервером.
+    /// - Parameters:
+    ///   - origin: Базовый HTTPS-адрес сервера MeetSpace.
+    ///   - userID: Идентификатор пользователя на выбранном сервере.
+    ///   - deviceID: Идентификатор зарегистрированного устройства на сервере.
     public init(origin: ServerOrigin, userID: UUID, deviceID: UUID) {
         self.origin = origin; self.userID = userID; self.deviceID = deviceID
     }

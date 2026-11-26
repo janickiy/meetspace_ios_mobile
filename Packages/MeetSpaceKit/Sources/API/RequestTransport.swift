@@ -5,6 +5,11 @@ public struct NetworkResponse: Sendable {
     public let status: Int
     public let headers: [String: String]
     public let data: Data
+    /// Объединяет HTTP-статус, заголовки и полученное тело ответа.
+    /// - Parameters:
+    ///   - status: Числовой код состояния HTTP-ответа.
+    ///   - headers: Поля заголовков HTTP-ответа.
+    ///   - data: Байты тела HTTP-ответа.
     public init(status: Int, headers: [String: String] = [:], data: Data = Data()) {
         self.status = status; self.headers = headers.reduce(into: [:]) { $0[$1.key.lowercased()] = $1.value }; self.data = data
     }
@@ -12,19 +17,43 @@ public struct NetworkResponse: Sendable {
 public typealias TransferProgress = @Sendable (Double) -> Void
 
 public protocol RequestTransport: Sendable {
+    /// Выполняет HTTP-запрос с ограничением объёма ответа и поддержкой загрузки файла.
+    /// - Parameters:
+    ///   - request: Исходный HTTP-запрос для передачи.
+    ///   - limit: Максимальный размер успешного ответа в байтах.
+    ///   - uploadFile: Локальный файл для передачи в качестве тела запроса.
+    ///   - progress: Обработчик доли переданных данных от 0 до 1.
     func send(_ request: URLRequest, limit: Int, uploadFile: URL?, progress: TransferProgress?) async throws -> NetworkResponse
+    /// Отменяет активные запросы транспорта.
     func cancelAll() async
 }
 public extension RequestTransport {
+    /// Предоставляет реализацию отмены для транспорта без учёта активных запросов.
     func cancelAll() async {}
 }
 
 private final class TransferDelegate: NSObject, URLSessionTaskDelegate, Sendable {
     let progress: TransferProgress?
+    /// Настраивает передачу прогресса из событий URLSession.
+    /// - Parameter progress: Обработчик доли переданных данных от 0 до 1.
     init(progress: TransferProgress?) { self.progress = progress }
+    /// Запрещает переход по HTTP-перенаправлению.
+    /// - Parameters:
+    ///   - session: Сетевая сессия, которой принадлежит задача.
+    ///   - task: Сетевая задача, для которой получено событие.
+    ///   - response: Ответ сервера с перенаправлением.
+    ///   - request: Новый запрос, предложенный URLSession при перенаправлении.
+    ///   - completionHandler: Обработчик URLSession, которому передаётся решение о перенаправлении.
     func urlSession(_ session: URLSession, task: URLSessionTask,
                     willPerformHTTPRedirection response: HTTPURLResponse, newRequest request: URLRequest,
                     completionHandler: @escaping @Sendable (URLRequest?) -> Void) { completionHandler(nil) }
+    /// Передаёт обработчику долю отправленного тела запроса.
+    /// - Parameters:
+    ///   - session: Сетевая сессия, которой принадлежит задача.
+    ///   - task: Сетевая задача, для которой получено событие.
+    ///   - bytesSent: Число байтов, отправленных с предыдущего уведомления о прогрессе.
+    ///   - totalBytesSent: Суммарное число уже отправленных байтов.
+    ///   - totalBytesExpectedToSend: Ожидаемый полный размер тела запроса в байтах.
     func urlSession(_ session: URLSession, task: URLSessionTask, didSendBodyData bytesSent: Int64,
                     totalBytesSent: Int64, totalBytesExpectedToSend: Int64) {
         if totalBytesExpectedToSend > 0 {
@@ -37,8 +66,11 @@ private final class TransferDelegate: NSObject, URLSessionTaskDelegate, Sendable
 public final class URLSessionRequestTransport: RequestTransport, Sendable {
     private let session: URLSession
     private let uploads = BoundedUploadRegistry()
+    /// Создаёт HTTP-транспорт с временной конфигурацией URLSession.
     public convenience init() { self.init(configuration: .ephemeral) }
     // Internal injection for deterministic URLProtocol tests; shipped composition uses ephemeral sessions.
+    /// Создаёт HTTP-транспорт с заданной конфигурацией сессии.
+    /// - Parameter configuration: Конфигурация сетевой сессии.
     init(configuration: URLSessionConfiguration) {
         configuration.urlCache = nil; configuration.urlCredentialStorage = nil
         configuration.httpCookieStorage = nil; configuration.httpShouldSetCookies = false
@@ -46,12 +78,20 @@ public final class URLSessionRequestTransport: RequestTransport, Sendable {
         configuration.timeoutIntervalForRequest = 30; configuration.timeoutIntervalForResource = 90
         session = URLSession(configuration: configuration, delegate: TransferDelegate(progress: nil), delegateQueue: nil)
     }
+    /// Останавливает сетевую сессию при освобождении транспорта.
     deinit { session.invalidateAndCancel(); uploads.cancelAll() }
+    /// Отменяет активные запросы транспорта.
     public func cancelAll() async {
         let tasks = await session.allTasks
         tasks.forEach { $0.cancel() }
         uploads.cancelAll()
     }
+    /// Выполняет HTTP-запрос с ограничением объёма ответа и поддержкой загрузки файла.
+    /// - Parameters:
+    ///   - request: Исходный HTTP-запрос для передачи.
+    ///   - limit: Максимальный размер успешного ответа в байтах.
+    ///   - uploadFile: Локальный файл для передачи в качестве тела запроса.
+    ///   - progress: Обработчик доли переданных данных от 0 до 1.
     public func send(_ request: URLRequest, limit: Int = 2_097_152, uploadFile: URL? = nil,
                      progress: TransferProgress? = nil) async throws -> NetworkResponse {
         guard request.url?.scheme == "https", request.url?.user == nil, request.url?.password == nil else { throw APIError.tls }
@@ -107,6 +147,11 @@ public final class URLSessionRequestTransport: RequestTransport, Sendable {
 }
 
 public enum EndpointURL {
+    /// Формирует адрес API из адреса сервера, сегментов пути и параметров запроса.
+    /// - Parameters:
+    ///   - origin: Базовый HTTPS-адрес сервера MeetSpace.
+    ///   - path: Сегменты пути относительно корня API.
+    ///   - query: Параметры строки запроса к API.
     public static func make(_ origin: ServerOrigin, path: [String], query: [URLQueryItem] = []) throws -> URL {
         guard path.allSatisfy({ !$0.isEmpty && $0 != "." && $0 != ".." && !$0.contains(where: { "/\\%?#".contains($0) }) })
         else { throw ClientError.invalidInput }

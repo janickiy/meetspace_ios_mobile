@@ -8,19 +8,26 @@ private actor StressRealtimeSocket: RealtimeSocket {
     let stream: AsyncThrowingStream<Data, Error>
     let continuation: AsyncThrowingStream<Data, Error>.Continuation
     var closed = false
+    /// Создаёт управляемый тестом поток входящих сообщений сокета.
     init() { (stream, continuation) = AsyncThrowingStream.makeStream() }
+    /// Ожидает очередное сообщение из входящего потока тестового сокета.
     func receive() async throws -> Data {
         var iterator = stream.makeAsyncIterator()
         guard let value = try await iterator.next() else { throw RealtimeError.disconnected }
         return value
     }
+    /// Помещает сообщение во входящий поток тестового сокета.
+    /// - Parameter data: Байты входящего сообщения.
     func emit(_ data: Data) { continuation.yield(data) }
+    /// Помечает тестовый сокет закрытым и завершает поток событий.
     func close() { closed = true; continuation.finish() }
 }
 private actor StressRealtimeSockets: RealtimeSocketFactory {
     var sockets: [StressRealtimeSocket] = []
     var tickets: Set<String> = []
     var overlap = false
+    /// Создаёт очередной сокет и отмечает пересечение с прежним подключением.
+    /// - Parameter url: Адрес соединения с билетом подключения.
     func connect(_ url: URL) async -> any RealtimeSocket {
         if let last = sockets.last, await !last.closed { overlap = true }
         let ticket = URLComponents(url: url, resolvingAgainstBaseURL: false)?.queryItems?.first { $0.name == "ticket" }?.value ?? ""
@@ -30,6 +37,8 @@ private actor StressRealtimeSockets: RealtimeSocketFactory {
 }
 private actor StressRealtimeCounter {
     var connected = 0, events = 0
+    /// Учитывает полученное событие или состояние подключения.
+    /// - Parameter update: Обновление канала событий пользователя.
     func record(_ update: UserRealtimeUpdate) {
         switch update { case .state(.connected): connected += 1; case .event: events += 1; default: break }
     }

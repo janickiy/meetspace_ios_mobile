@@ -48,7 +48,7 @@ struct MeetingListCard<Value: Identifiable>: View {
                             if wide { HStack(spacing: 12) { role; attendees } }
                             VStack(alignment: .leading, spacing: 6) { role; attendees }
                         }
-                    }.padding(.top, wide ? 0 : 4).frame(maxWidth: .infinity, minHeight: 44, alignment: .leading).contentShape(Rectangle())
+                    }.frame(maxWidth: .infinity, minHeight: 44, alignment: .leading).contentShape(Rectangle())
                 }.buttonStyle(.plain).accessibilityIdentifier(identifier)
                 if !wide && item.status == .past { materialsButton }
             }.padding(.trailing, !wide && !typeSize.isAccessibilitySize ? 20 : 0)
@@ -56,9 +56,9 @@ struct MeetingListCard<Value: Identifiable>: View {
                 if item.status == .past { materialsButton }
                 detailsButton
             }
-        }.padding(.horizontal, wide ? 21 : 13).padding(.vertical, 16)
+        }.padding(.horizontal, wide ? 21 : 12).padding(.vertical, wide ? 16 : 14)
             .frame(maxWidth: .infinity, alignment: .leading)
-            .frame(minHeight: wide ? 105 : 122, alignment: wide ? .center : .topLeading)
+            .frame(minHeight: wide ? 105 : nil)
             .background(MSTheme.surface, in: RoundedRectangle(cornerRadius: 14))
             .overlay { RoundedRectangle(cornerRadius: 14).strokeBorder(item.status == .active ? MSTheme.accent : MSTheme.line) }
             .overlay(alignment: .topTrailing) { if !wide { detailsButton } }

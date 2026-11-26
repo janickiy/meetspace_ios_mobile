@@ -75,6 +75,18 @@ import MeetSpaceCalling
     @ObservationIgnored private var actions: [UUID: SystemCallAction] = [:]
     @ObservationIgnored private var completedActions: Set<UUID> = []
 
+    /// Создаёт координатор личных звонков аккаунта и запускает обработку системных событий и периодическую сверку.
+    /// - Parameters:
+    ///   - repository: Сервис создания, приёма и завершения личных звонков.
+    ///   - conferenceRepository: Репозиторий для медиасессии звонка.
+    ///   - system: Служба системных вызовов и действий CallKit.
+    ///   - sockets: Фабрика сокетов сигналинга.
+    ///   - makeMedia: Фабрика медиадвижка.
+    ///   - makeBroadcast: Фабрика контроллера трансляции экрана.
+    ///   - canUseMedia: Проверка, что медиа свободны для звонка.
+    ///   - clientID: Идентификатор экземпляра клиента для владения медиасессией.
+    ///   - sleep: Асинхронная задержка в секундах для опроса и тайм-аутов.
+    ///   - now: Источник текущего времени для длительности звонка и сроков ожидания.
     public init(repository: any DirectCallsServing, conferenceRepository: ConferenceRepository,
                 system: any SystemCalling, sockets: any ConferenceSocketFactory = URLSessionConferenceSocketFactory(),
                 makeMedia: @escaping @MainActor @Sendable () -> any ConferenceMediaEngine = { ConferenceMediaFactory.make() },
@@ -100,6 +112,10 @@ import MeetSpaceCalling
         }
     }
 
+    /// Начинает исходящий личный звонок выбранному собеседнику.
+    /// - Parameters:
+    ///   - peer: Получатель звонка.
+    ///   - isVideo: Запрашивать ли видеозвонок.
     public func startOutgoing(peer: DirectCallPeer, isVideo: Bool = false) async {
         guard !closed, !busy, peer.id != repository.userID else { return }
         if currentCall?.isActive == true {
@@ -138,6 +154,7 @@ import MeetSpaceCalling
         }
     }
 
+    /// Принимает входящий звонок через системную службу или напрямую через API.
     public func answer() async {
         guard !closed, !busy, isIncoming, let call = currentCall else { return }
         guard canUseMedia() else { error = "Сначала выйдите из текущей встречи."; return }
@@ -148,6 +165,7 @@ import MeetSpaceCalling
         } else { await accept(call.id, action: nil) }
     }
 
+    /// Останавливает создание исходящего звонка либо завершает текущий вызов.
     public func end() async {
         guard !closed else { return }
         if let pendingPeer, let createRequestID,
@@ -175,6 +193,8 @@ import MeetSpaceCalling
         } else { await terminate(reportReason: .remoteEnded) }
     }
 
+    /// Меняет состояние микрофона активного звонка и согласует его с системным интерфейсом.
+    /// - Parameter muted: Нужно ли отключить микрофон.
     public func setMuted(_ muted: Bool) async {
         guard !closed, !ending, ownsMedia, currentCall?.status == .accepted, let call = currentCall else { return }
         if system.isAvailable, reported.contains(call.id) {
@@ -182,6 +202,7 @@ import MeetSpaceCalling
             catch { self.error = "Не удалось изменить микрофон системного звонка." }
         } else { await applyMute(muted, action: nil) }
     }
+    /// Переключает камеру активного личного звонка.
     public func toggleCamera() async {
         guard !closed, !busy, !ending, foreground, ownsMedia, currentCall?.status == .accepted, let session = mediaSession else { return }
         guard !system.isAvailable || systemAudioActive else { error = "Ожидаем активацию системного звонка."; return }
@@ -195,14 +216,20 @@ import MeetSpaceCalling
             if let call = currentCall { system.updateCall(descriptor(call)) }
         } catch { self.error = mediaMessage(error) }
     }
+    /// Сворачивает полноэкранный интерфейс звонка.
     public func minimize() { minimized = true }
+    /// Возвращает звонок на экран и сверяет его состояние с сервером.
     public func resume() { minimized = false; Task { [weak self] in await self?.reconcile() } }
 
+    /// При получении WebSocket-события сверяет состояние звонка с API.
+    ///
     /// Even a validated WS DTO is only a hint; media authorization always comes from REST.
+    /// - Parameter call: Данные звонка из события рабочего пространства.
     public func receive(_ call: DirectCall) async {
         guard !closed, call.peer(for: repository.userID) != nil else { return }
         await reconcile()
     }
+    /// Запрашивает у сервера актуальный звонок и объединяет пересекающиеся запросы обновления.
     public func reconcile() async {
         guard !closed else { return }
         if let refreshTask { refreshAgain = true; await refreshTask.value; return }
@@ -229,6 +256,8 @@ import MeetSpaceCalling
         await refreshTask?.value
     }
 
+    /// Передаёт медиасессии состояние приложения и при возврате на экран сверяется с сервером.
+    /// - Parameter active: Находится ли приложение на переднем плане.
     public func setForeground(_ active: Bool) async {
         guard !closed else { return }
         foreground = active
@@ -237,6 +266,8 @@ import MeetSpaceCalling
         if active { await reconcile() }
     }
 
+    /// Проверяет принадлежность и версию звонка перед применением серверного обновления.
+    /// - Parameter incoming: Актуальная модель звонка из API.
     private func apply(_ incoming: DirectCall) async {
         guard !closed, repository.origin == conferenceRepository.origin,
               repository.userID == conferenceRepository.userID else { return }
@@ -259,6 +290,11 @@ import MeetSpaceCalling
         if applicationEpoch == application { applicationTask = nil }
     }
 
+    /// Согласует интерфейс, системный вызов и медиасессию с подтверждённым состоянием звонка.
+    /// - Parameters:
+    ///   - incoming: Подтверждённый сервером звонок.
+    ///   - current: Поколение координатора на момент запроса.
+    ///   - application: Идентификатор применения этой версии звонка.
     private func applyState(_ incoming: DirectCall, current: UUID, application: UUID) async {
         guard valid(current), applicationEpoch == application else { return }
         let previous = currentCall
@@ -365,6 +401,10 @@ import MeetSpaceCalling
         session.start()
     }
 
+    /// Принимает вызов на сервере и проверяет право этого клиента на медиа.
+    /// - Parameters:
+    ///   - id: Идентификатор входящего звонка.
+    ///   - action: Команда системного интерфейса, ожидающая результата, если есть.
     private func accept(_ id: UUID, action: SystemCallAction?) async {
         guard !closed, !busy, isIncoming, currentCall?.id == id, canUseMedia() else {
             if let action { finish(action, succeeded: false) }; error = "Не удалось принять звонок: медиа занято или вызов уже завершён."; return
@@ -390,6 +430,8 @@ import MeetSpaceCalling
         }
     }
 
+    /// Отключает медиа и отправляет серверу отклонение, отмену или завершение в зависимости от стадии звонка.
+    /// - Parameter reportReason: Причина завершения для системной службы звонков.
     private func terminate(reportReason: SystemCallEndReason) async {
         guard !closed, let call = currentCall, call.isActive else { return }
         let current = epoch
@@ -415,6 +457,10 @@ import MeetSpaceCalling
         }
     }
 
+    /// Применяет состояние микрофона к медиасессии и сообщает результат системной службе.
+    /// - Parameters:
+    ///   - muted: Должен ли микрофон быть выключен.
+    ///   - action: Системная команда отключения звука, если есть.
     private func applyMute(_ muted: Bool, action: SystemCallAction?) async {
         guard !closed, !ending, ownsMedia, currentCall?.status == .accepted else {
             if let action { finish(action, succeeded: false) }; return
@@ -431,6 +477,8 @@ import MeetSpaceCalling
         }
     }
 
+    /// Обрабатывает запросы и изменения состояния системной службы звонков.
+    /// - Parameter event: Событие системного интерфейса звонков.
     private func receiveSystem(_ event: SystemCallEvent) async {
         switch event {
         case .action(let action):
@@ -475,6 +523,8 @@ import MeetSpaceCalling
             }
         }
     }
+    /// Завершает просроченную системную команду и обрабатывает её влияние на вызов.
+    /// - Parameter action: Системная команда с истёкшим сроком ожидания.
     private func actionTimedOut(_ action: SystemCallAction) async {
         guard currentCall?.id == action.callID, actions[action.id] != nil else { return }
         actionTasks[action.id]?.cancel(); finish(action, succeeded: false)
@@ -490,6 +540,10 @@ import MeetSpaceCalling
         case .setMuted: break
         }
     }
+    /// Однократно сообщает системной службе результат команды и снимает её таймер.
+    /// - Parameters:
+    ///   - action: Выполненная системная команда.
+    ///   - succeeded: Успешно ли выполнена команда.
     private func finish(_ action: SystemCallAction, succeeded: Bool) {
         guard completedActions.insert(action.id).inserted else { return }
         actions.removeValue(forKey: action.id)
@@ -497,9 +551,14 @@ import MeetSpaceCalling
         actionTasks.removeValue(forKey: action.id)
         system.completeAction(id: action.id, succeeded: succeeded)
     }
+    /// Снимает ожидающую команду ответа и сообщает системе о неудаче.
     private func failPendingAnswer() {
         if let action = pendingAnswer { finish(action, succeeded: false); pendingAnswer = nil }
     }
+    /// Сообщает системе о подключении медиа либо завершает звонок при отказе медиасессии.
+    /// - Parameters:
+    ///   - phase: Новая фаза медиасессии.
+    ///   - callID: Идентификатор связанного звонка.
     private func mediaChanged(_ phase: ConferencePhase, callID: UUID) async {
         guard !closed, !ending, currentCall?.id == callID else { return }
         if phase == .connected {
@@ -511,6 +570,7 @@ import MeetSpaceCalling
         }
     }
 
+    /// Обновляет длительность звонка, отправляет heartbeat и при необходимости сверяет состояние с сервером.
     func tick() async {
         guard !closed else { return }
         if let call = currentCall, let accepted = call.acceptedAt {
@@ -543,6 +603,7 @@ import MeetSpaceCalling
             Task { [weak self] in await self?.reconcile() }
         }
     }
+    /// Останавливает heartbeat и освобождает текущую медиасессию.
     private func stopMedia() async {
         heartbeatTask?.cancel(); heartbeatTask = nil; heartbeatCallID = nil
         let previous = mediaSession; mediaSession = nil; previous?.onPhaseChanged = nil
@@ -551,19 +612,31 @@ import MeetSpaceCalling
         mediaCleanup = operation
         await operation.value
     }
+    /// Формирует описание вызова для показа системному интерфейсу.
+    /// - Parameter call: Звонок с идентификатором и данными собеседника.
     private func descriptor(_ call: DirectCall) -> SystemCallDescriptor {
         SystemCallDescriptor(id: call.id, displayName: call.peer(for: repository.userID)?.displayName ?? "Личный звонок", isVideo: cameraWanted)
     }
+    /// Проверяет, относится ли звонок к отменённой попытке создания.
+    /// - Parameter call: Звонок, полученный от сервера.
     private func cancelsPendingCreation(_ call: DirectCall) -> Bool {
         cancelledCreationCallID == call.id ||
         (cancelledCreationRequestID != nil && cancelledCreationRequestID == createRequestID &&
          pendingPeer?.id == call.calleeUserId && call.callerUserId == repository.userID &&
          call.callerClientId == clientID.uuidString.lowercased())
     }
+    /// Однократно сообщает системе о завершении ранее зарегистрированного вызова.
+    /// - Parameters:
+    ///   - call: Завершённый звонок.
+    ///   - reason: Причина завершения для системного интерфейса.
     private func reportEnd(_ call: DirectCall, reason: SystemCallEndReason) {
         if reported.remove(call.id) != nil { system.reportEnded(callID: call.id, reason: reason, at: now()) }
     }
+    /// Проверяет, принадлежит ли ожидающий результат текущему поколению координатора.
+    /// - Parameter current: Идентификатор поколения на момент запуска операции.
     private func valid(_ current: UUID) -> Bool { !closed && epoch == current }
+    /// Определяет, могла ли серверная операция завершиться несмотря на полученную ошибку.
+    /// - Parameter error: Ошибка запроса или его отмены.
     private static func uncertainResult(_ error: any Error) -> Bool {
         switch error {
         case APIError.offline, APIError.timeout, APIError.invalidResponse, is CancellationError: true
@@ -571,12 +644,15 @@ import MeetSpaceCalling
         default: false
         }
     }
+    /// Отменяет или завершает оставшийся активным звонок, если его медиа принадлежат этому клиенту.
+    /// - Parameter call: Звонок, подтверждённый сервером после отмены локальной операции.
     private func compensate(_ call: DirectCall) async {
         guard call.isActive, call.ownsMedia(userID: repository.userID, clientID: clientID) else { return }
         if call.status == .ringing { _ = try? await repository.cancel(call.id, clientID: clientID) }
         else { _ = try? await repository.end(call.id, clientID: clientID) }
     }
 
+    /// Закрывает координатор, снимает наблюдение и освобождает системные и сетевые ресурсы звонка.
     public func close() async {
         guard !closed else { return }
         closed = true; epoch = UUID(); ending = true
@@ -606,6 +682,9 @@ import MeetSpaceCalling
 
 @MainActor private final class CallCloseCompletion {
     private var continuation: CheckedContinuation<Void, Never>?
+    /// Сохраняет продолжение, ожидающее закрытия звонка.
+    /// - Parameter continuation: Продолжение задачи, которая ожидает освобождения ресурсов.
     init(_ continuation: CheckedContinuation<Void, Never>) { self.continuation = continuation }
+    /// Однократно возобновляет задачу, ожидающую закрытия звонка.
     func finish() { continuation?.resume(); continuation = nil }
 }

@@ -10,6 +10,8 @@ public enum ConferenceSignalError: Error, Equatable, Sendable {
 public indirect enum JSONValue: Codable, Equatable, Sendable {
     case object([String: JSONValue]), array([JSONValue]), string(String), integer(Int64), number(Double), bool(Bool), null
 
+    /// Декодирует значение JSON сигнального протокола с ограничением глубины вложенности.
+    /// - Parameter decoder: Декодер, установленный вызывающей стороной для чтения полей модели.
     public init(from decoder: any Decoder) throws {
         guard decoder.codingPath.count <= 64 else { throw ConferenceSignalError.invalidPayload }
         let value = try decoder.singleValueContainer()
@@ -22,6 +24,8 @@ public indirect enum JSONValue: Codable, Equatable, Sendable {
         else if let item = try? value.decode([JSONValue].self) { self = .array(item) }
         else { throw ConferenceSignalError.invalidPayload }
     }
+    /// Записывает значение JSON в соответствующем ему формате.
+    /// - Parameter encoder: Кодировщик, в который записываются поля модели.
     public func encode(to encoder: any Encoder) throws {
         var value = encoder.singleValueContainer()
         switch self {
@@ -37,6 +41,7 @@ public indirect enum JSONValue: Codable, Equatable, Sendable {
 }
 
 public protocol ConferenceSignalPayload: Decodable, Sendable {
+    /// Проверяет допустимость данных сигнального события до его обработки.
     func validate() throws
 }
 
@@ -49,6 +54,8 @@ public struct ConferenceEnvelope: Sendable {
     public let data: JSONValue
 
     public var payloadData: Data { get throws { try WireJSON.encoder().encode(data) } }
+    /// Декодирует содержимое конверта и проверяет его тип и принадлежность конференции.
+    /// - Parameter type: Тип содержимого, ожидаемый при декодировании.
     public func payload<T: Decodable>(_ type: T.Type) throws -> T {
         do {
             let value = try WireJSON.decoder().decode(type, from: payloadData)
@@ -60,8 +67,14 @@ public struct ConferenceEnvelope: Sendable {
             return value
         } catch { throw ConferenceSignalError.invalidPayload }
     }
+    /// Возвращает типизированное содержимое конверта после проверки.
+    /// - Parameter type: Тип содержимого, ожидаемый при декодировании.
     public func decodePayload<T: Decodable>(_ type: T.Type) throws -> T { try payload(type) }
 
+    /// Декодирует входящее сообщение и сверяет заголовок с ожидаемой конференцией.
+    /// - Parameters:
+    ///   - bytes: Байты входящего сообщения.
+    ///   - conferenceID: Идентификатор конференции.
     public static func decode(_ bytes: Data, conferenceID: UUID) throws -> ConferenceEnvelope {
         struct Wire: Decodable {
             let version: Int, id: UUID, type: String, conferenceId: UUID, timestamp: Date, replyTo: UUID?, data: JSONValue
@@ -80,7 +93,15 @@ public struct ConferenceEnvelope: Sendable {
         } catch { throw ConferenceSignalError.invalidEnvelope }
     }
 
-    /// Payload UUID strings must use the server's lowercase spelling; the header does so here.
+    /// Кодирует сигнальную команду конференции в JSON и записывает UUID заголовка в нижнем регистре.
+    ///
+    /// Строковые UUID в теле команды вызывающий код также передаёт в нижнем регистре по правилам сервера.
+    /// - Parameters:
+    ///   - type: Тип сигнальной команды, ожидаемый сервером.
+    ///   - conferenceID: Идентификатор конференции.
+    ///   - data: Объект полезной нагрузки команды, кодируемый в JSON.
+    ///   - id: Уникальный идентификатор отправляемой сигнальной команды.
+    ///   - timestamp: Время создания команды.
     public static func command<T: Encodable>(type: String, conferenceID: UUID, data: T,
                                              id: UUID = UUID(), timestamp: Date = Date()) throws -> Data {
         guard validType(type), validIdentifier(conferenceID), validIdentifier(id),
@@ -121,6 +142,8 @@ public struct ConferenceSignalParticipant: Decodable, Equatable, Sendable, Ident
         case id, conferenceId, userId, displayName, role, status, online, microphoneEnabled, cameraEnabled, screenSharing
         case microphoneBlocked, cameraBlocked, screenBlocked, admissionState, connections, connectionIds
     }
+    /// Декодирует состояние участника сигнального канала и его подключений.
+    /// - Parameter decoder: Декодер, установленный вызывающей стороной для чтения полей модели.
     public init(from decoder: any Decoder) throws {
         let c = try decoder.container(keyedBy: CodingKeys.self)
         id = try c.decode(UUID.self, forKey: .id); conferenceId = try c.decode(UUID.self, forKey: .conferenceId)
@@ -139,6 +162,7 @@ public struct ConferenceSignalParticipant: Decodable, Equatable, Sendable, Ident
         connectionIds = try c.decodeIfPresent([UUID].self, forKey: .connectionIds) ?? []
         try validate()
     }
+    /// Проверяет идентификаторы участника, роль, состояние и число подключений.
     public func validate() throws {
         try require(validIdentifier(id) && validIdentifier(conferenceId) && (userId.map(validIdentifier) ?? true))
         try require(displayName.unicodeScalars.count <= 256 && !role.isEmpty && role.utf8.count <= 64 && !status.isEmpty && status.utf8.count <= 64)
@@ -149,6 +173,7 @@ public struct ConferenceSignalState: ConferenceSignalPayload {
     public let connectionId: UUID, participantId: UUID
     public let status: String
     public let participants: [ConferenceSignalParticipant]
+    /// Проверяет состояние встречи, уникальность участников и корректность каждой записи.
     public func validate() throws {
         try require(validIdentifier(connectionId) && validIdentifier(participantId) && !status.isEmpty && status.utf8.count <= 64)
         try require(participants.count <= 500 && Set(participants.map(\.id)).count == participants.count)
@@ -157,16 +182,19 @@ public struct ConferenceSignalState: ConferenceSignalPayload {
 }
 public struct ConferenceSignalParticipantMedia: ConferenceSignalPayload {
     public let participant: ConferenceSignalParticipant
+    /// Проверяет данные участника в событии обновления медиа.
     public func validate() throws { try participant.validate() }
 }
 public struct ConferenceSignalPolicy: Codable, Equatable, ConferenceSignalPayload {
     public let version: Int64
     public let microphoneBlocked: Bool, cameraBlocked: Bool, screenBlocked: Bool, kicked: Bool
+    /// Проверяет версию полученных ограничений на публикацию медиа.
     public func validate() throws { try require(version >= 0) }
 }
 public struct ConferenceSignalTrack: Codable, Equatable, Identifiable, ConferenceSignalPayload {
     public let id: UUID, mediaPeerId: UUID, participantId: UUID
     public let streamId: String, kind: String, source: String
+    /// Проверяет соответствие источника, типа и идентификаторов опубликованной дорожки.
     public func validate() throws {
         try require(validIdentifier(id) && validIdentifier(mediaPeerId) && validIdentifier(participantId))
         try require(["microphone", "camera", "video/screen", "audio/screen"].contains(source))
@@ -176,6 +204,7 @@ public struct ConferenceSignalTrack: Codable, Equatable, Identifiable, Conferenc
 }
 public struct ConferenceSignalVideoCapture: Codable, Equatable, ConferenceSignalPayload {
     public let maxWidth: Int, maxHeight: Int, maxFrameRate: Int
+    /// Проверяет границы разрешения кадра и частоты кадров камеры.
     public func validate() throws {
         try require((1...7680).contains(maxWidth) && (1...4320).contains(maxHeight) && (1...120).contains(maxFrameRate))
     }
@@ -188,6 +217,7 @@ public struct ConferenceSignalJoined: ConferenceSignalPayload {
     public let policy: ConferenceSignalPolicy?
     /// The assigned worker can advertise a different TURN pool from the REST discovery endpoint.
     public let iceServers: [ICEServer]?
+    /// Проверяет идентификатор медиасоединения, его лимиты, дорожки, ICE и политику публикации.
     public func validate() throws {
         try require(validIdentifier(mediaPeerId) && (1...32).contains(maxPeers))
         try validateTracks(tracks); try videoCapture.validate(); try policy?.validate()
@@ -197,6 +227,7 @@ public struct ConferenceSignalJoined: ConferenceSignalPayload {
 public struct ConferenceSignalAnswer: ConferenceSignalPayload {
     public let mediaPeerId: UUID, negotiationId: UUID
     public let sdp: String
+    /// Проверяет идентификаторы согласования и размер полученного ответа SDP.
     public func validate() throws {
         try require(validIdentifier(mediaPeerId) && validIdentifier(negotiationId) && !sdp.isEmpty && sdp.utf8.count <= 131_072)
     }
@@ -206,9 +237,16 @@ public struct ConferenceSignalCandidate: Codable, Equatable, Sendable {
     public let sdpMid: String?
     public let sdpMLineIndex: Int32?
     public let usernameFragment: String?
+    /// Описывает ICE-кандидат с привязкой к секции медиапотока.
+    /// - Parameters:
+    ///   - candidate: Строка ICE-кандидата из WebRTC.
+    ///   - sdpMid: Идентификатор медиасекции в описании SDP.
+    ///   - sdpMLineIndex: Индекс медиасекции в описании SDP.
+    ///   - usernameFragment: Фрагмент имени ICE-пользователя для данного поколения кандидатов.
     public init(candidate: String, sdpMid: String? = nil, sdpMLineIndex: Int32? = nil, usernameFragment: String? = nil) {
         self.candidate = candidate; self.sdpMid = sdpMid; self.sdpMLineIndex = sdpMLineIndex; self.usernameFragment = usernameFragment
     }
+    /// Проверяет формат и допустимый размер ICE-кандидата и его полей.
     public func validate() throws {
         try require(candidate.utf8.count <= 4096 && !candidate.unicodeScalars.contains(where: CharacterSet.controlCharacters.contains))
         try require(sdpMid.map { !$0.isEmpty && $0.utf8.count <= 16 } ?? true)
@@ -220,53 +258,69 @@ public struct ConferenceSignalCandidate: Codable, Equatable, Sendable {
 public struct ConferenceSignalICE: Codable, ConferenceSignalPayload {
     public let mediaPeerId: UUID
     public let candidate: ConferenceSignalCandidate?
+    /// Создаёт событие ICE, включая сигнал об окончании сбора кандидатов.
+    /// - Parameters:
+    ///   - mediaPeerId: Идентификатор медиасоединения участника.
+    ///   - candidate: ICE-кандидат или nil, чтобы отметить конец списка.
     public init(mediaPeerId: UUID, candidate: ConferenceSignalCandidate?) { self.mediaPeerId = mediaPeerId; self.candidate = candidate }
     enum CodingKeys: String, CodingKey { case mediaPeerId, candidate }
+    /// Декодирует событие ICE с обязательным полем кандидата, допускающим null.
+    /// - Parameter decoder: Декодер, установленный вызывающей стороной для чтения полей модели.
     public init(from decoder: any Decoder) throws {
         let c = try decoder.container(keyedBy: CodingKeys.self)
         mediaPeerId = try c.decode(UUID.self, forKey: .mediaPeerId)
         guard c.contains(.candidate) else { throw ConferenceSignalError.invalidPayload }
         candidate = try c.decodeIfPresent(ConferenceSignalCandidate.self, forKey: .candidate)
     }
+    /// Кодирует ICE-кандидат или явное завершение списка кандидатов.
+    /// - Parameter encoder: Кодировщик, в который записываются поля модели.
     public func encode(to encoder: any Encoder) throws {
         var c = encoder.container(keyedBy: CodingKeys.self)
         try c.encode(mediaPeerId.uuidString.lowercased(), forKey: .mediaPeerId)
         if let candidate { try c.encode(candidate, forKey: .candidate) } else { try c.encodeNil(forKey: .candidate) }
     }
+    /// Проверяет идентификатор медиасоединения и данные кандидата, если он передан.
     public func validate() throws { try require(validIdentifier(mediaPeerId)); try candidate?.validate() }
 }
 public struct ConferenceSignalRenegotiate: ConferenceSignalPayload {
     public let mediaPeerId: UUID
     public let revision: Int64
+    /// Проверяет медиасоединение и ревизию запрошенного пересогласования.
     public func validate() throws { try require(validIdentifier(mediaPeerId) && revision >= 0) }
 }
 public struct ConferenceSignalTracks: ConferenceSignalPayload {
     public let mediaPeerId: UUID
     public let revision: Int64
     public let tracks: [ConferenceSignalTrack]
+    /// Проверяет ревизию каталога и список опубликованных дорожек.
     public func validate() throws { try require(validIdentifier(mediaPeerId) && revision >= 0); try validateTracks(tracks) }
 }
 public struct ConferenceSignalPolicyUpdate: ConferenceSignalPayload {
     public let mediaPeerId: UUID
     public let policy: ConferenceSignalPolicy
+    /// Проверяет медиасоединение и обновлённую политику публикации.
     public func validate() throws { try require(validIdentifier(mediaPeerId)); try policy.validate() }
 }
 public struct ConferenceSignalMediaState: ConferenceSignalPayload {
     public let mediaPeerId: UUID
     public let state: String
+    /// Проверяет медиасоединение и строку его текущего состояния.
     public func validate() throws { try require(validIdentifier(mediaPeerId) && !state.isEmpty && state.utf8.count <= 64) }
 }
 public struct ConferenceSignalAck: ConferenceSignalPayload {
     public let type: String
+    /// Проверяет тип подтверждаемой сигнальной команды.
     public func validate() throws { try require(validType(type)) }
 }
 public struct ConferenceSignalErrorPayload: ConferenceSignalPayload {
     public let code: String
+    /// Проверяет формат кода ошибки сигнального протокола.
     public func validate() throws { try require(validType(code)) }
 }
 public struct ConferenceSignalMediaErrorPayload: ConferenceSignalPayload {
     public let mediaPeerId: UUID
     public let code: String
+    /// Проверяет код ошибки и идентификатор медиасоединения, в котором она возникла.
     public func validate() throws { try require(validIdentifier(mediaPeerId) && validType(code)) }
 }
 private func validateTracks(_ tracks: [ConferenceSignalTrack]) throws {
@@ -282,50 +336,80 @@ public struct NegotiationGate: Sendable {
     }
     public private(set) var pending: Pending?
     private var wanted: Int64 = 0, local: Int64 = 0, answered: Int64 = -1, answeredLocal: Int64 = -1
+    /// Создаёт начальное состояние согласования без незавершённых транзакций.
     public init() {}
+    /// Запоминает наибольшую запрошенную сервером ревизию согласования.
+    /// - Parameter revision: Номер ревизии каталога медиа на сервере.
     public mutating func remote(revision: Int64) throws { try require(revision >= 0); wanted = max(wanted, revision) }
+    /// Увеличивает локальную ревизию после изменения набора медиа.
     public mutating func changed() throws { try require(local < Int64.max); local += 1 }
+    /// Начинает транзакцию согласования, если есть изменения и свободен её слот.
+    /// - Parameter id: Идентификатор транзакции согласования.
     public mutating func begin(id: UUID = UUID()) -> Pending? {
         guard pending == nil, wanted > answered || local > answeredLocal, validIdentifier(id) else { return nil }
         pending = Pending(id: id, revision: wanted, localRevision: local)
         return pending
     }
+    /// Связывает отправленное предложение SDP с текущей транзакцией.
+    /// - Parameter requestID: Уникальный идентификатор отправленного запроса.
     public mutating func sentOffer(requestID: UUID) throws {
         try require(validIdentifier(requestID) && pending != nil && pending?.requestID == nil)
         pending?.requestID = requestID
     }
+    /// Запоминает запрос готовности после отправки предложения SDP.
+    /// - Parameter requestID: Уникальный идентификатор отправленного запроса.
     public mutating func sentReady(requestID: UUID) throws {
         try require(validIdentifier(requestID) && pending?.requestID != nil && pending?.readyID == nil)
         pending?.readyID = requestID
     }
+    /// Завершает транзакцию по подтверждению соответствующего запроса готовности.
+    /// - Parameter requestID: Уникальный идентификатор отправленного запроса.
     public mutating func acknowledge(requestID: UUID) -> Bool {
         guard let transaction = pending, transaction.readyID == requestID else { return false }
         answered = transaction.revision; answeredLocal = transaction.localRevision; pending = nil
         return true
     }
+    /// Сбрасывает незавершённую транзакцию и запрашивает новое согласование.
     public mutating func rollback() throws { pending = nil; try changed() }
 }
 
 public protocol ConferenceSocket: Sendable {
+    /// Отправляет сообщение сигнального протокола в сокет конференции.
+    /// - Parameter data: Данные исходящего JSON-сообщения.
     func send(_ data: Data) async throws
+    /// Возвращает байты следующего входящего сообщения конференции.
     func receive() async throws -> Data
+    /// Закрывает сигнальное соединение конференции.
     func close() async
 }
 public protocol ConferenceSocketFactory: Sendable {
+    /// Открывает сигнальное WebSocket-соединение с билетом указанной конференции.
+    /// - Parameters:
+    ///   - origin: Базовый HTTPS-адрес сервера MeetSpace.
+    ///   - conferenceID: Идентификатор конференции.
+    ///   - ticket: Билет доступа к потоку событий, выданный сервером.
     func connect(origin: ServerOrigin, conferenceID: UUID, ticket: String) async throws -> any ConferenceSocket
 }
 
 enum ConferenceSocketFraming {
     static let inboundLimit = 1_048_576, outboundLimit = 65_536
+    /// Проверяет размер и JSON-формат исходящей команды и превращает её в текст.
+    /// - Parameter bytes: JSON-объект исходящей команды в кодировке UTF-8.
     static func outgoing(_ bytes: Data) throws -> String {
         guard bytes.count <= outboundLimit, let text = String(data: bytes, encoding: .utf8),
               (try? JSONSerialization.jsonObject(with: bytes)) is [String: Any] else { throw ConferenceSignalError.invalidEnvelope }
         return text
     }
+    /// Принимает текстовый кадр и возвращает его байты после проверки размера.
+    /// - Parameter message: Полученный текстовый или двоичный кадр URLSession.
     static func incoming(_ message: URLSessionWebSocketTask.Message) throws -> Data {
         guard case .string(let text) = message, text.utf8.count <= inboundLimit else { throw ConferenceSignalError.invalidEnvelope }
         return Data(text.utf8)
     }
+    /// Преобразует ошибку сокета в ошибку сигнального канала с признаком возможности повтора.
+    /// - Parameters:
+    ///   - error: Ошибка сетевой задачи, если она завершилась неуспешно.
+    ///   - task: Сетевая задача, для которой получено событие.
     static func failure(_ error: Error, task: URLSessionWebSocketTask) -> Error {
         if error is CancellationError { return CancellationError() }
         if task.closeCode == .policyViolation {
@@ -343,10 +427,16 @@ enum ConferenceSocketFraming {
 final class ConferenceSocketDelegate: NSObject, URLSessionWebSocketDelegate, Sendable {
     let opened: AsyncThrowingStream<Void, Error>
     private let continuation: AsyncThrowingStream<Void, Error>.Continuation
+    /// Создаёт поток для ожидания результата согласования WebSocket-подпротокола.
     override init() {
         (opened, continuation) = AsyncThrowingStream.makeStream(bufferingPolicy: .bufferingNewest(1))
         super.init()
     }
+    /// Проверяет выбранный сервером подпротокол и сообщает результат открытия.
+    /// - Parameters:
+    ///   - session: Сетевая сессия, которой принадлежит задача.
+    ///   - webSocketTask: WebSocket-задача, для которой получено событие.
+    ///   - protocol: Имя подпротокола, согласованного с сервером.
     func urlSession(_ session: URLSession, webSocketTask: URLSessionWebSocketTask, didOpenWithProtocol protocol: String?) {
         guard `protocol` == "go-recorder.v1" else {
             continuation.finish(throwing: ConferenceSignalError.unsupportedProtocol)
@@ -354,15 +444,33 @@ final class ConferenceSocketDelegate: NSObject, URLSessionWebSocketDelegate, Sen
         }
         continuation.yield(()); continuation.finish()
     }
+    /// Передаёт закрытие сокета в поток ожидания подключения.
+    /// - Parameters:
+    ///   - session: Сетевая сессия, которой принадлежит задача.
+    ///   - webSocketTask: WebSocket-задача, для которой получено событие.
+    ///   - closeCode: Код закрытия WebSocket, полученный от сетевой сессии.
+    ///   - reason: Необязательное тело сообщения о причине закрытия WebSocket.
     func urlSession(_ session: URLSession, webSocketTask: URLSessionWebSocketTask,
                     didCloseWith closeCode: URLSessionWebSocketTask.CloseCode, reason: Data?) {
         continuation.finish(throwing: ConferenceSocketFraming.failure(ConferenceSignalError.disconnected(retryable: true), task: webSocketTask))
     }
+    /// Завершает ожидание подключения с учётом ошибки сетевой задачи.
+    /// - Parameters:
+    ///   - session: Сетевая сессия, которой принадлежит задача.
+    ///   - task: Сетевая задача, для которой получено событие.
+    ///   - error: Ошибка сетевой задачи, если она завершилась неуспешно.
     func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
         if let socket = task as? URLSessionWebSocketTask {
             continuation.finish(throwing: ConferenceSocketFraming.failure(error ?? ConferenceSignalError.disconnected(retryable: true), task: socket))
         } else { continuation.finish(throwing: ConferenceSignalError.disconnected(retryable: true)) }
     }
+    /// Запрещает HTTP-перенаправление при подключении к сигнальному каналу.
+    /// - Parameters:
+    ///   - session: Сетевая сессия, которой принадлежит задача.
+    ///   - task: Сетевая задача, для которой получено событие.
+    ///   - response: HTTP-ответ при попытке перенаправления сокета.
+    ///   - request: Потенциальный запрос по адресу перенаправления.
+    ///   - completionHandler: Обработчик URLSession, которому передаётся решение о перенаправлении.
     func urlSession(_ session: URLSession, task: URLSessionTask, willPerformHTTPRedirection response: HTTPURLResponse,
                     newRequest request: URLRequest, completionHandler: @escaping @Sendable (URLRequest?) -> Void) { completionHandler(nil) }
 }
@@ -370,8 +478,15 @@ private actor ConferenceSessionSocket: ConferenceSocket {
     private let task: URLSessionWebSocketTask
     private let session: URLSession
     private var closed = false, receiving = false
+    /// Привязывает сигнальный сокет к его задаче и сетевой сессии.
+    /// - Parameters:
+    ///   - task: Сетевая задача, для которой получено событие.
+    ///   - session: Сетевая сессия, которой принадлежит задача.
     init(task: URLSessionWebSocketTask, session: URLSession) { self.task = task; self.session = session }
+    /// Закрывает сигнальный сокет и сессию при освобождении соединения.
     deinit { task.cancel(with: .goingAway, reason: nil); session.invalidateAndCancel() }
+    /// Отправляет сообщение сигнального протокола в сокет конференции.
+    /// - Parameter data: Данные исходящего JSON-сообщения.
     func send(_ data: Data) async throws {
         try Task.checkCancellation()
         guard !closed else { throw ConferenceSignalError.disconnected(retryable: false) }
@@ -384,6 +499,7 @@ private actor ConferenceSessionSocket: ConferenceSocket {
         }
         catch { if Task.isCancelled { throw CancellationError() }; throw ConferenceSocketFraming.failure(error, task: task) }
     }
+    /// Возвращает байты следующего входящего сообщения конференции.
     func receive() async throws -> Data {
         try Task.checkCancellation()
         guard !closed, !receiving else { throw ConferenceSignalError.disconnected(retryable: false) }
@@ -401,10 +517,17 @@ private actor ConferenceSessionSocket: ConferenceSocket {
             throw ConferenceSocketFraming.failure(error, task: task)
         }
     }
+    /// Закрывает сигнальное соединение конференции.
     func close() async { closed = true; task.cancel(with: .goingAway, reason: nil); session.invalidateAndCancel() }
 }
 public struct URLSessionConferenceSocketFactory: ConferenceSocketFactory {
+    /// Создаёт фабрику сетевых соединений конференции на основе URLSession.
     public init() {}
+    /// Проверяет билет и формирует запрос на открытие сигнального WebSocket.
+    /// - Parameters:
+    ///   - origin: Базовый HTTPS-адрес сервера MeetSpace.
+    ///   - conferenceID: Идентификатор конференции.
+    ///   - ticket: Билет доступа к потоку событий, выданный сервером.
     public static func request(origin: ServerOrigin, conferenceID: UUID, ticket: String) throws -> URLRequest {
         guard validIdentifier(conferenceID), ticket.utf8.count == 43,
               ticket.unicodeScalars.allSatisfy({ CharacterSet(charactersIn: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_-").contains($0) }) else {
@@ -417,6 +540,11 @@ public struct URLSessionConferenceSocketFactory: ConferenceSocketFactory {
         request.setValue("go-recorder.v1", forHTTPHeaderField: "Sec-WebSocket-Protocol")
         return request
     }
+    /// Открывает сигнальное WebSocket-соединение с билетом указанной конференции.
+    /// - Parameters:
+    ///   - origin: Базовый HTTPS-адрес сервера MeetSpace.
+    ///   - conferenceID: Идентификатор конференции.
+    ///   - ticket: Билет доступа к потоку событий, выданный сервером.
     public func connect(origin: ServerOrigin, conferenceID: UUID, ticket: String) async throws -> any ConferenceSocket {
         try Task.checkCancellation()
         let request = try Self.request(origin: origin, conferenceID: conferenceID, ticket: ticket)

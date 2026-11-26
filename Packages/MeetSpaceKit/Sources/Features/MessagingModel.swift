@@ -83,6 +83,13 @@ public struct DownloadState: Identifiable {
     @ObservationIgnored private var visible = false
     @ObservationIgnored private let notificationAudio = AudioSettingsModel()
 
+    /// Настраивает историю, обмен сообщениями и работу с вложениями одного аккаунта.
+    /// - Parameters:
+    ///   - client: Авторизованный клиент аккаунта.
+    ///   - downloads: Транспорт для скачивания вложений.
+    ///   - sockets: Фабрика соединений для событий в реальном времени.
+    ///   - files: Локальное хранилище вложений аккаунта.
+    ///   - hiddenMessages: Хранилище сообщений, скрытых на этом устройстве.
     public init(client: AuthenticatedClient, downloads: any RequestTransport = URLSessionRequestTransport(),
                 sockets: any RealtimeSocketFactory = URLSessionSocketFactory(), files: AccountFileStore? = nil,
                 hiddenMessages: any HiddenChatMessagesStore = DeviceHiddenChatMessagesStore.shared) {
@@ -93,6 +100,7 @@ public struct DownloadState: Identifiable {
         self.files = files ?? AccountFileStore(account: client.account)
     }
 
+    /// Запускает получение событий переписки для активного аккаунта.
     public func start() {
         guard active, realtimeTask == nil else { return }
         realtimeTask = Task { [weak self, realtime] in
@@ -118,6 +126,8 @@ public struct DownloadState: Identifiable {
         scheduleListRefresh()
     }
 
+    /// Согласует получение событий и звуковые уведомления с видимостью приложения.
+    /// - Parameter value: Приложение находится на переднем плане.
     public func setForeground(_ value: Bool) async {
         foreground = value
         if !value { notificationAudio.stop() }
@@ -125,12 +135,15 @@ public struct DownloadState: Identifiable {
         if value { await realtime.start(); scheduleListRefresh(); markVisibleRead() }
         else { readTask?.cancel(); if !callActive { await realtime.stop() } }
     }
+    /// Учитывает активный звонок при выборе режима соединения с сервером событий.
+    /// - Parameter value: Пользователь участвует в звонке.
     public func setCallActive(_ value: Bool) async {
         callActive = value
         guard active else { return }
         if value || foreground { await realtime.start() }
         else { await realtime.stop() }
     }
+    /// Останавливает обработку событий и освобождает ресурсы переписки при закрытии аккаунта.
     public func close() async {
         guard active else { return }
         notificationAudio.stop()
@@ -147,6 +160,8 @@ public struct DownloadState: Identifiable {
         do { try await files.clear() } catch { self.error = userMessage(error) }
     }
 
+    /// Загружает список бесед текущего аккаунта.
+    /// - Parameter more: Добавить следующую страницу вместо обновления первой.
     public func refreshConversations(more: Bool = false) async {
         guard active else { return }
         if more && listCursor == nil { return }
@@ -174,6 +189,8 @@ public struct DownloadState: Identifiable {
         }
     }
 
+    /// Открывает переписку и загружает её историю.
+    /// - Parameter id: Идентификатор беседы.
     public func open(_ id: UUID) async {
         guard active else { return }
         selectionEpoch = UUID(); let epoch = selectionEpoch
@@ -187,11 +204,15 @@ public struct DownloadState: Identifiable {
         visible = true
         await reloadHistory(id)
     }
+    /// Снимает признак видимой переписки и отменяет отложенную отметку о прочтении.
+    /// - Parameter id: Идентификатор закрываемой беседы.
     public func hide(_ id: UUID) {
         guard conversation?.id == id else { return }
         visible = false; readTask?.cancel()
     }
 
+    /// Заново запрашивает сведения о беседе и первую страницу её истории.
+    /// - Parameter id: Идентификатор беседы.
     public func reloadHistory(_ id: UUID) async {
         guard active else { return }
         historyEpoch = UUID(); let epoch = historyEpoch
@@ -221,6 +242,7 @@ public struct DownloadState: Identifiable {
             self.error = userMessage(error)
         }
     }
+    /// Загружает более ранние сообщения по курсору открытой переписки.
     public func loadOlder() async {
         guard active, let id = conversation?.id, let cursor = historyCursor, !historyLoadingMore else { return }
         let epoch = historyEpoch; historyLoadingMore = true
@@ -233,6 +255,10 @@ public struct DownloadState: Identifiable {
         } catch is CancellationError { }
         catch { if active, historyEpoch == epoch { self.error = userMessage(error) } }
     }
+    /// Ищет сообщения в текущей беседе и обновляет список результатов.
+    /// - Parameters:
+    ///   - query: Текст запроса.
+    ///   - more: Продолжить с курсора предыдущей страницы.
     public func searchMessages(_ query: String, more: Bool = false) async {
         guard active, let id = conversation?.id else { return }
         searchEpoch = UUID(); let epoch = searchEpoch
@@ -257,6 +283,7 @@ public struct DownloadState: Identifiable {
         uploads.allSatisfy { $0.attachment != nil } &&
         (!text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || !uploads.isEmpty || editing?.attachments.isEmpty == false)
     }
+    /// Отправляет черновик сообщения или сохраняет правку существующего.
     public func send() {
         guard canSend, let id = conversation?.id else { return }
         do {
@@ -282,6 +309,8 @@ public struct DownloadState: Identifiable {
             retry(draft.id)
         } catch { self.error = userMessage(error) }
     }
+    /// Повторяет отправку сообщения из очереди с исходным идентификатором.
+    /// - Parameter id: Идентификатор черновика в очереди.
     public func retry(_ id: UUID) {
         guard active, tasks[id] == nil, let item = pending.first(where: { $0.id == id }) else { return }
         if let position = pending.firstIndex(where: { $0.id == id }) { pending[position].failed = false }
@@ -299,6 +328,8 @@ public struct DownloadState: Identifiable {
             }
         }
     }
+    /// Удаляет своё сообщение и обновляет историю и поиск.
+    /// - Parameter message: Сообщение из открытой беседы.
     public func delete(_ message: ChatMessage) async {
         guard active, message.senderId == account.user.id, message.isActionable,
               let id = conversation?.id, message.conversationId == id, !hiddenMessageIDs.contains(message.id) else { return }
@@ -311,6 +342,8 @@ public struct DownloadState: Identifiable {
 
     public var selectableMessages: [ChatMessage] { timeline.messages.filter { $0.isActionable && !hiddenMessageIDs.contains($0.id) } }
     public var selectedMessages: [ChatMessage] { selectableMessages.filter { selectedMessageIDs.contains($0.id) } }
+    /// Включает режим группового выбора в переписке.
+    /// - Parameter message: Первое сообщение для выделения или `nil` для пустого выбора.
     public func beginMessageSelection(_ message: ChatMessage? = nil) {
         guard active, !hidingMessages else { return }
         selectingMessages = true
@@ -322,17 +355,21 @@ public struct DownloadState: Identifiable {
             selectedMessageIDs.insert(message.id)
         }
     }
+    /// Переключает выделение одного сообщения в текущей переписке.
+    /// - Parameter id: Идентификатор сообщения.
     public func toggleMessageSelection(_ id: UUID) {
         guard active, selectingMessages, !hidingMessages, selectableMessages.contains(where: { $0.id == id }) else { return }
         if !selectedMessageIDs.insert(id).inserted { selectedMessageIDs.remove(id) }
     }
+    /// Выделяет все доступные сообщения в истории или снимает выделение со всех.
     public func toggleAllMessages() {
         guard active, selectingMessages, !hidingMessages else { return }
         let ids = Set(selectableMessages.map(\.id))
         selectedMessageIDs = selectedMessageIDs == ids ? [] : ids
     }
+    /// Закрывает режим выбора и сбрасывает список выделенных сообщений.
     public func cancelMessageSelection() { selectingMessages = false; selectedMessageIDs = [] }
-    /// As on Android, bulk removal is local and never calls server DELETE.
+    /// Скрывает выбранные сообщения только на этом устройстве, как в Android-версии. История на сервере сохраняется.
     @discardableResult public func hideSelectedMessages() async -> Bool {
         guard active, !hidingMessages, let id = conversation?.id, !selectedMessageIDs.isEmpty,
               selectedMessages.count == selectedMessageIDs.count else { return false }
@@ -355,11 +392,15 @@ public struct DownloadState: Identifiable {
             return false
         }
     }
+    /// Возвращает текст для предварительного просмотра беседы с учётом скрытых сообщений.
+    /// - Parameter item: Беседа в списке чатов.
     public func conversationPreview(_ item: Conversation) -> String {
         guard let last = item.lastMessageID, hiddenMessageIDs.contains(last) else { return item.preview }
         guard item.id == conversation?.id, let previous = timeline.messages.last else { return "" }
         return previous.isDeleted ? "Сообщение удалено" : previous.shareText
     }
+    /// Закрепляет или открепляет сообщение открытой беседы.
+    /// - Parameter message: Сообщение, у которого меняется закрепление.
     public func pin(_ message: ChatMessage) async {
         guard active, message.isActionable, let id = conversation?.id, message.conversationId == id,
               !hiddenMessageIDs.contains(message.id) else { return }
@@ -369,15 +410,29 @@ public struct DownloadState: Identifiable {
             await reloadHistory(id)
         } catch { if active { self.error = userMessage(error) } }
     }
-    /// Idempotency key belongs to the recipient in the forwarding sheet and survives retries.
+    /// Пересылает сообщения в выбранную беседу. Форма использует один ключ запроса для всех повторных попыток с этим получателем.
+    /// - Parameters:
+    ///   - messages: Сообщения из исходной беседы.
+    ///   - destination: Идентификатор чата-получателя.
+    ///   - requestID: Ключ повтора одной и той же пересылки.
     @discardableResult public func forward(_ messages: [ChatMessage], to destination: UUID, requestID: UUID) async throws -> UUID {
         try await performForward(messages, requestID: requestID) { destination }
     }
+    /// Пересылает сообщения в личный чат с указанным пользователем.
+    /// - Parameters:
+    ///   - messages: Сообщения из исходной беседы.
+    ///   - userID: Идентификатор получателя.
+    ///   - requestID: Ключ повтора одной и той же пересылки.
     @discardableResult public func forward(_ messages: [ChatMessage], toUser userID: UUID, requestID: UUID) async throws -> UUID {
         try await performForward(messages, requestID: requestID) {
             try await self.repository.direct(userID: userID).id
         }
     }
+    /// Проверяет сообщения, определяет чат-получатель и выполняет пересылку.
+    /// - Parameters:
+    ///   - messages: Выбранные сообщения.
+    ///   - requestID: Идентификатор операции для повторной отправки.
+    ///   - destination: Асинхронно возвращает идентификатор целевой беседы.
     private func performForward(_ messages: [ChatMessage], requestID: UUID,
                                 destination: () async throws -> UUID) async throws -> UUID {
         try Task.checkCancellation()
@@ -402,6 +457,7 @@ public struct DownloadState: Identifiable {
         if conversation?.id == target { await reloadHistory(target) }
         return target
     }
+    /// Загружает локальный набор скрытых сообщений активного аккаунта.
     private func loadHiddenMessages() async throws {
         guard !hiddenLoaded else { return }
         do {
@@ -411,9 +467,12 @@ public struct DownloadState: Identifiable {
         } catch is CancellationError { throw CancellationError() }
         catch { throw ClientError.storage }
     }
+    /// Убирает из выделения сообщения, которые уже нельзя выбрать.
     private func pruneMessageSelection() {
         selectedMessageIDs.formIntersection(Set(selectableMessages.map(\.id)))
     }
+    /// Применяет новые версии сообщений к результатам поиска и убирает скрытые.
+    /// - Parameter incoming: Изменения сообщений из истории или событий сервера.
     private func updateSearch(_ incoming: [ChatMessage]) {
         let updates = Dictionary(incoming.map { ($0.id, $0) }, uniquingKeysWith: { _, new in new })
         searchResults = searchResults.compactMap { old in
@@ -423,6 +482,8 @@ public struct DownloadState: Identifiable {
         }
     }
 
+    /// Копирует вложения в хранилище аккаунта и ставит их на отправку.
+    /// - Parameter urls: Локальные адреса выбранных файлов.
     public func importFiles(_ urls: [URL]) async {
         guard active, let id = conversation?.id, editing == nil else { return }
         guard urls.count + uploads.count <= FilePolicy.maximumAttachments else { error = "Можно приложить не больше 5 файлов."; return }
@@ -437,6 +498,8 @@ public struct DownloadState: Identifiable {
             } catch { if active { self.error = userMessage(error) } }
         }
     }
+    /// Запускает загрузку подготовленного вложения и обновляет её прогресс.
+    /// - Parameter id: Идентификатор локальной копии файла.
     public func retryUpload(_ id: UUID) {
         guard active, tasks[id] == nil, let index = uploads.firstIndex(where: { $0.id == id }) else { return }
         let upload = uploads[index]; uploads[index].error = nil; uploads[index].progress = 0
@@ -455,11 +518,15 @@ public struct DownloadState: Identifiable {
             }
         }
     }
+    /// Отменяет отправку вложения и удаляет подготовленную копию.
+    /// - Parameter id: Идентификатор вложения в очереди.
     public func cancelUpload(_ id: UUID) async {
         tasks[id]?.cancel(); await tasks[id]?.value; tasks[id] = nil
         if let upload = uploads.first(where: { $0.id == id }) { await files.remove(upload.file.url) }
         uploads.removeAll { $0.id == id }
     }
+    /// Скачивает вложение текущей беседы во временное хранилище аккаунта.
+    /// - Parameter attachment: Метаданные вложения из сообщения.
     public func download(_ attachment: Attachment) {
         guard active, let conversation = conversation?.id, tasks[attachment.id] == nil else { return }
         let id = attachment.id
@@ -481,21 +548,30 @@ public struct DownloadState: Identifiable {
             } catch { if model.active { model.downloads[id]?.error = userMessage(error) } }
         }
     }
+    /// Отменяет задачу скачивания вложения.
+    /// - Parameter id: Идентификатор вложения.
     public func cancelDownload(_ id: UUID) { tasks[id]?.cancel() }
 
-    /// Used by group and new-chat forms; they own their cancellation and display their own errors.
+    /// Добавляет беседу из формы создания группы или чата и обновляет список. Отменой запроса и показом ошибок управляет форма.
+    /// - Parameter item: Беседа, полученная от сервера.
     public func acceptConversation(_ item: Conversation) async {
         guard active else { return }
         if !conversations.contains(where: { $0.id == item.id }) { conversations.insert(item, at: 0) }
         listState = .content
         await refreshConversations()
     }
+    /// Обновляет сведения о беседе в открытом чате и списке.
+    /// - Parameter item: Актуальная версия беседы.
     func updateCachedConversation(_ item: Conversation) {
         guard active else { return }
         if conversation?.id == item.id { conversation = item }
         if let index = conversations.firstIndex(where: { $0.id == item.id }) { conversations[index] = item }
     }
 
+    /// Применяет команду заголовка к личному или групповому чату.
+    /// - Parameters:
+    ///   - action: Выбранная команда.
+    ///   - id: Идентификатор открытой беседы.
     func applyHeaderAction(_ action: ChatHeaderAction, to id: UUID) async throws {
         guard active, let item = conversation, item.id == id else { throw CancellationError() }
         switch action {
@@ -525,6 +601,8 @@ public struct DownloadState: Identifiable {
         }
     }
 
+    /// Убирает беседу из списка, закрывает её историю и очищает связанные черновики.
+    /// - Parameter id: Идентификатор удалённой или скрытой беседы.
     public func removedConversation(_ id: UUID) async {
         conversations.removeAll { $0.id == id }
         if conversation?.id == id {
@@ -536,6 +614,8 @@ public struct DownloadState: Identifiable {
         scheduleListRefresh()
     }
 
+    /// Применяет событие аккаунта к сообщениям и списку бесед.
+    /// - Parameter event: Событие канала пользователя.
     private func receive(_ event: UserEvent) {
         guard active else { return }
         if event.type == "conversation.member.removed", event.userID == account.user.id, let id = event.conversationID {
@@ -560,6 +640,10 @@ public struct DownloadState: Identifiable {
         }
         scheduleListRefresh()
     }
+    /// Объединяет сообщения с историей указанной беседы.
+    /// - Parameters:
+    ///   - messages: Полученные версии сообщений.
+    ///   - id: Идентификатор беседы.
     private func merge(_ messages: [ChatMessage], in id: UUID) {
         timeline.merge(messages.filter { !hiddenMessageIDs.contains($0.id) }, conversation: id)
         updateSearch(messages)
@@ -568,6 +652,7 @@ public struct DownloadState: Identifiable {
         pending.removeAll { $0.conversation == id && acknowledged.contains($0.id) }
         if !timeline.messages.isEmpty { historyState = .content }
     }
+    /// Планирует отправку отметки о прочтении для видимой переписки.
     private func markVisibleRead() {
         guard active, visible, foreground, let id = conversation?.id, let last = timeline.messages.last else { return }
         readTask?.cancel()
@@ -580,6 +665,7 @@ public struct DownloadState: Identifiable {
             } catch { /* Read receipts retry on visibility/resnapshot; message delivery stays usable. */ }
         }
     }
+    /// Планирует отложенное обновление списка бесед.
     private func scheduleListRefresh() {
         listTask?.cancel()
         listTask = Task { [weak self] in
@@ -587,6 +673,7 @@ public struct DownloadState: Identifiable {
             await self?.refreshConversations()
         }
     }
+    /// Сбрасывает черновик, контекст редактирования и подготовленные вложения.
     private func clearComposer() async {
         let previous = uploads
         text = ""; reply = nil; editing = nil; uploads = []
@@ -596,10 +683,18 @@ public struct DownloadState: Identifiable {
             await files.remove(upload.file.url)
         }
     }
+    /// Записывает прогресс отправки для вложения, которое ещё находится в очереди.
+    /// - Parameters:
+    ///   - id: Идентификатор вложения.
+    ///   - progress: Доля отправленных данных.
     private func uploadProgress(_ id: UUID, _ progress: Double) {
         guard active, let position = uploads.firstIndex(where: { $0.id == id }), uploads[position].attachment == nil else { return }
         uploads[position].progress = progress
     }
+    /// Регистрирует асинхронную задачу и снимает её с учёта при завершении.
+    /// - Parameters:
+    ///   - id: Ключ задачи в очереди.
+    ///   - operation: Работа с активной моделью переписки.
     private func run(_ id: UUID, operation: @escaping @MainActor (MessagingModel) async -> Void) {
         guard active, tasks[id] == nil else { return }
         tasks[id] = Task { [weak self] in
@@ -608,5 +703,7 @@ public struct DownloadState: Identifiable {
             self.tasks[id] = nil
         }
     }
+    /// Возвращает непустой курсор для следующей страницы.
+    /// - Parameter value: Курсор из ответа сервера.
     private func nonempty(_ value: String?) -> String? { value.flatMap { $0.isEmpty ? nil : $0 } }
 }

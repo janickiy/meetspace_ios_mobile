@@ -21,6 +21,7 @@ enum MeetingLinkInvitation {
         }
     }
 
+    /// Получает актуальную ссылку на встречу или возвращает сохранённую демонстрационную ссылку.
     func refreshURL() async throws -> URL? {
         guard case let .live(meeting, repository) = self else { return cachedURL }
         return ConferenceInviteGateway.shareURL(for: try await repository.read(meeting.id), origin: repository.origin)
@@ -102,6 +103,7 @@ struct MeetingLinkInvitationSheet: View {
         }
     }
 
+    /// Обновляет ссылку в открытом окне приглашения и показывает результат запроса.
     private func refresh() async {
         guard !loading else { return }
         loading = true

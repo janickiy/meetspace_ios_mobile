@@ -6,16 +6,29 @@ private final class SecurityUploadEvents: @unchecked Sendable {
     private let lock = NSLock()
     private var started: Set<String> = []
     private var stopped: Set<String> = []
+    /// Отмечает начало отправки файла по пути тестового сервера.
+    /// - Parameter path: Путь запроса.
     func start(_ path: String) { lock.withLock { _ = started.insert(path) } }
+    /// Отмечает остановку передачи по пути тестового сервера.
+    /// - Parameter path: Путь запроса.
     func stop(_ path: String) { lock.withLock { _ = stopped.insert(path) } }
+    /// Проверяет, начиналась ли передача по указанному пути.
+    /// - Parameter path: Путь запроса.
     func hasStarted(_ path: String) -> Bool { lock.withLock { started.contains(path) } }
+    /// Проверяет, остановилась ли передача по указанному пути.
+    /// - Parameter path: Путь запроса.
     func hasStopped(_ path: String) -> Bool { lock.withLock { stopped.contains(path) } }
 }
 
 private final class SecurityUploadProtocol: URLProtocol, @unchecked Sendable {
     static let events = SecurityUploadEvents()
+    /// Определяет, относится ли запрос к домену тестового протокола.
+    /// - Parameter request: Входящий сетевой запрос.
     override class func canInit(with request: URLRequest) -> Bool { request.url?.host == "security-upload.fixture" }
+    /// Возвращает запрос в исходном виде для обработки тестовым URLProtocol.
+    /// - Parameter request: Запрос тестовой сессии.
     override class func canonicalRequest(for request: URLRequest) -> URLRequest { request }
+    /// Имитирует сетевой ответ или отложенную загрузку согласно пути запроса.
     override func startLoading() {
         let url = request.url!, path = url.path
         Self.events.start(path)
@@ -38,6 +51,7 @@ private final class SecurityUploadProtocol: URLProtocol, @unchecked Sendable {
         client?.urlProtocol(self, didLoad: Data(repeating: 65, count: kind == "unauthorized" ? 50 : 16))
         client?.urlProtocolDidFinishLoading(self)
     }
+    /// Фиксирует, что тестовый транспорт получил отмену загрузки.
     override func stopLoading() { Self.events.stop(request.url!.path) }
 }
 

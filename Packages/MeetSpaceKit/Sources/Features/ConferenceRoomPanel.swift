@@ -20,6 +20,10 @@ enum ConferenceRoomPanelColors {
 }
 
 private extension Color {
+    /// Создаёт цвет панели с отдельными значениями для светлой и тёмной темы.
+    /// - Parameters:
+    ///   - light: Цвет RGB для светлой темы в формате 0xRRGGBB.
+    ///   - dark: Цвет RGB для тёмной темы в формате 0xRRGGBB.
     init(light: UInt32, dark: UInt32) {
         #if os(iOS)
         self = Color(uiColor: UIColor { traits in
@@ -137,6 +141,7 @@ struct ConferenceInvitationSheet: View {
         MeetingInviteQR(url: url, size: 132)
     }
 
+    /// Копирует ссылку на встречу и сохраняет результат для подтверждения в интерфейсе.
     private func copy() {
         copied = copyMeetingLink(url)
     }

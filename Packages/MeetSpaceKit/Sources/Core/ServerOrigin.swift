@@ -8,6 +8,8 @@ public struct ServerOrigin: Hashable, Codable, Sendable {
         case invalidURL, httpsRequired, originRequired
     }
 
+    /// Проверяет введённый HTTPS-адрес сервера и нормализует имя узла и порт.
+    /// - Parameter input: Введённый HTTPS-адрес сервера с необязательным портом.
     public init(_ input: String) throws {
         let value = input.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !value.isEmpty,
@@ -28,10 +30,14 @@ public struct ServerOrigin: Hashable, Codable, Sendable {
         url = normalized
     }
 
+    /// Восстанавливает адрес сервера из строки, повторно проверяя его допустимость.
+    /// - Parameter decoder: Декодер, установленный вызывающей стороной для чтения полей модели.
     public init(from decoder: any Decoder) throws {
         try self.init(decoder.singleValueContainer().decode(String.self))
     }
 
+    /// Записывает нормализованный адрес сервера как строковое значение.
+    /// - Parameter encoder: Кодировщик, в который записываются поля модели.
     public func encode(to encoder: any Encoder) throws {
         var container = encoder.singleValueContainer()
         try container.encode(url.absoluteString)

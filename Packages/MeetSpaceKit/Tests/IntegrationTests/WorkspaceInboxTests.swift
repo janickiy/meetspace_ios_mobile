@@ -10,8 +10,12 @@ private actor InboxPagesFixture {
     private var failSecondOnce = true
     private var cycle: Bool
 
+    /// Готовит страницы уведомлений с обычной или циклической пагинацией.
+    /// - Parameter cycle: Повторять ли курсор для проверки защиты от цикла.
     init(cycle: Bool = false) { self.cycle = cycle }
 
+    /// Возвращает страницу входящих уведомлений или ответ на изменение отметки о прочтении.
+    /// - Parameter request: Запрос тестируемого клиента.
     func respond(_ request: URLRequest) throws -> NetworkResponse {
         guard let url = request.url else { throw APIError.invalidResponse }
         if request.httpMethod == "GET" {
@@ -31,6 +35,8 @@ private actor InboxPagesFixture {
         return try Fixture.response(["item": item(id)])
     }
 
+    /// Формирует тестовое уведомление о готовности записи.
+    /// - Parameter id: Идентификатор уведомления.
     private func item(_ id: UUID) -> [String: Any] {
         var result: [String: Any] = ["id": id.uuidString, "userId": Fixture.userID.uuidString,
                                      "type": "recording.ready", "payload": [:], "createdAt": "2026-11-22T10:00:00Z"]

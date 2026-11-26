@@ -19,7 +19,7 @@ struct LiveProfileView: View {
                     case .audio: AccountSettingsContent(model: settings, section: .audio, wide: wide) { EmptyView() }
                     case .video: SettingsDetailView(model: app, route: .videoSettings, wide: wide).id(account.key)
                     case .notifications:
-                        LiveAccountNotificationSettings(settings: settings, push: app.identity.notifications, wide: wide)
+                        LiveAccountNotificationSettings(settings: settings, wide: wide)
                     case .appearance: SettingsDetailView(model: app, route: .appearance, wide: wide)
                     case .connection:
                         AccountConnectionPage(app: app, wide: wide, openLicenses: { licenses = true })

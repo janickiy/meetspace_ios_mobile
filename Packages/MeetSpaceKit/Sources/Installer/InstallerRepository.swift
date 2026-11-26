@@ -7,20 +7,33 @@ public actor InstallerRepository {
     private let defaults: UserDefaults
     private let storageKey = "meetspace.installer.public-ticket.v1"
     private let pinsKey = "meetspace.installer.host-pins.v1"
+    /// Создаёт клиент установки с SSH-транспортом и хранилищем доверия и заданий.
+    /// - Parameters:
+    ///   - transport: Транспорт для проверки SSH-ключа и выполнения программы на сервере.
+    ///   - defaults: Хранилище локальных настроек устройства.
     public init(transport: any InstallerTransport = NativeInstallerTransport(), defaults: UserDefaults = .standard) {
         self.transport = transport; self.defaults = defaults
     }
+    /// Получает ключ SSH-сервера и проверяет его по ранее сохранённому ключу.
+    /// - Parameter endpoint: Адрес, порт и имя пользователя SSH-сервера.
     public func inspect(_ endpoint: InstallerEndpoint) async throws -> (InstallerHostKey, Bool) {
         let actual = try await transport.inspect(endpoint)
         let saved = defaults.dictionary(forKey: pinsKey)?[endpoint.pinID] as? String
         return (actual, saved != nil && saved != actual.openSSH)
     }
+    /// Запоминает подтверждённый ключ SSH для указанного хоста и порта.
+    /// - Parameters:
+    ///   - key: Публичный ключ SSH-сервера, которому доверяет пользователь.
+    ///   - endpoint: Адрес, порт и имя пользователя SSH-сервера.
     public func trust(_ key: InstallerHostKey, endpoint: InstallerEndpoint) {
         var pins = defaults.dictionary(forKey: pinsKey) ?? [:]; pins[endpoint.pinID] = key.openSSH; defaults.set(pins, forKey: pinsKey)
     }
+    /// Удаляет сохранённое доверие к SSH-серверу.
+    /// - Parameter endpoint: Адрес, порт и имя пользователя SSH-сервера.
     public func forgetTrust(_ endpoint: InstallerEndpoint) {
         var pins = defaults.dictionary(forKey: pinsKey) ?? [:]; pins.removeValue(forKey: endpoint.pinID); defaults.set(pins, forKey: pinsKey)
     }
+    /// Восстанавливает сохранённое задание и проверяет целостность его плана.
     public func pending() throws -> InstallerTicket? {
         guard let data = defaults.data(forKey: storageKey) else { return nil }
         guard data.count <= 300 * 1024 else { throw InstallerFailure.response }
@@ -29,12 +42,27 @@ public actor InstallerRepository {
         guard value.plan == verified, UUID(uuidString: value.jobID) != nil else { throw InstallerFailure.response }
         return value
     }
+    /// Сохраняет данные задания для восстановления наблюдения за установкой.
+    /// - Parameter ticket: Сохранённые данные подключения, плана и идентификатора задания.
     public func remember(_ ticket: InstallerTicket) throws { defaults.set(try JSONEncoder().encode(ticket), forKey: storageKey) }
+    /// Удаляет локальные данные последнего задания установки.
     public func forget() { defaults.removeObject(forKey: storageKey) }
+    /// Передаёт программу SSH-транспорту после сверки ключа сервера.
+    /// - Parameters:
+    ///   - endpoint: Адрес, порт и имя пользователя SSH-сервера.
+    ///   - credentials: Данные доступа к SSH-серверу.
+    ///   - key: Публичный ключ SSH-сервера, которому доверяет пользователь.
+    ///   - input: Программа и входные данные, передаваемые установщику через SSH.
     private func execute(_ endpoint: InstallerEndpoint, credentials: InstallerCredentials, key: InstallerHostKey, input: Data) async throws -> Data {
         guard defaults.dictionary(forKey: pinsKey)?[endpoint.pinID] as? String == key.openSSH else { throw InstallerFailure.hostChanged }
         return try await transport.execute(endpoint, credentials: credentials, key: key, input: input)
     }
+    /// Выполняет предварительные проверки сервера и разбирает полученные результаты.
+    /// - Parameters:
+    ///   - endpoint: Адрес, порт и имя пользователя SSH-сервера.
+    ///   - credentials: Данные доступа к SSH-серверу.
+    ///   - key: Публичный ключ SSH-сервера, которому доверяет пользователь.
+    ///   - domain: Доменное имя развёртываемого сервера MeetSpace.
     public func preflight(_ endpoint: InstallerEndpoint, credentials: InstallerCredentials, key: InstallerHostKey, domain: String) async throws -> [String:String] {
         let script = try resource("preflight.sh")
         let args = try canonical(["domain":domain,"host":endpoint.host])
@@ -50,6 +78,12 @@ public actor InstallerRepository {
         guard values["complete"] == "1", values["protocol"] == "1" else { throw InstallerFailure.response }
         return values
     }
+    /// Запрашивает план установки и проверяет его соответствие выбранным параметрам.
+    /// - Parameters:
+    ///   - endpoint: Адрес, порт и имя пользователя SSH-сервера.
+    ///   - credentials: Данные доступа к SSH-серверу.
+    ///   - key: Публичный ключ SSH-сервера, которому доверяет пользователь.
+    ///   - options: Выбранные параметры развёртывания сервера.
     public func plan(_ endpoint: InstallerEndpoint, credentials: InstallerCredentials, key: InstallerHostKey, options: InstallerOptions) async throws -> InstallerPlan {
         let requested = try options.validated()
         let body = try JSONSerialization.jsonObject(with: JSONEncoder().encode(requested))
@@ -58,6 +92,14 @@ public actor InstallerRepository {
         guard plan.options == requested else { throw InstallerFailure.response }
         return plan
     }
+    /// Запускает подтверждённый план и сохраняет данные для восстановления задания.
+    /// - Parameters:
+    ///   - ticket: Сохранённые данные подключения, плана и идентификатора задания.
+    ///   - credentials: Данные доступа к SSH-серверу.
+    ///   - docker: Подтверждение установки компонентов Docker при необходимости.
+    ///   - acme: Согласие с условиями выдачи сертификата ACME.
+    ///   - adminPassword: Пароль для создаваемой учётной записи администратора.
+    ///   - smtpPassword: Пароль SMTP-сервера, если настроена отправка почты.
     public func apply(_ ticket: InstallerTicket, credentials: InstallerCredentials, docker: Bool, acme: Bool, adminPassword: String, smtpPassword: String?) async throws -> InstallerStatus {
         guard ticket.plan.expiresAt > Date() else { throw InstallerFailure.expired }
         guard acme, !ticket.plan.requiresDocker || docker, InstallerOptions.validAdminPassword(adminPassword) else { throw InstallerFailure.invalid("Подтвердите план и проверьте пароль администратора.") }
@@ -70,12 +112,24 @@ public actor InstallerRepository {
         try remember(ticket)
         return try parseStatus(await request("apply", endpoint: ticket.endpoint, credentials: credentials, key: ticket.key, body: body), ticket: ticket)
     }
+    /// Запрашивает статус, отмену или продолжение сохранённого задания установки.
+    /// - Parameters:
+    ///   - action: Команда status, cancel или resume для текущего задания.
+    ///   - ticket: Сохранённые данные подключения, плана и идентификатора задания.
+    ///   - credentials: Данные доступа к SSH-серверу.
     public func control(_ action: String, ticket: InstallerTicket, credentials: InstallerCredentials) async throws -> InstallerStatus {
         guard ["status","cancel","resume"].contains(action) else { throw InstallerFailure.response }
         var body: [String:Any] = ["jobId":ticket.jobID,"planHash":ticket.planHash]
         if action == "resume" { body["confirmedPlanHash"] = ticket.planHash }
         return try parseStatus(await request(action, endpoint: ticket.endpoint, credentials: credentials, key: ticket.key, body: body), ticket: ticket)
     }
+    /// Упаковывает команду установщика, исполняет её и проверяет ответ протокола MSI1.
+    /// - Parameters:
+    ///   - action: Название запрашиваемого действия.
+    ///   - endpoint: Адрес, порт и имя пользователя SSH-сервера.
+    ///   - credentials: Данные доступа к SSH-серверу.
+    ///   - key: Публичный ключ SSH-сервера, которому доверяет пользователь.
+    ///   - body: Словарь полей для команды протокола MSI1.
     private func request(_ action: String, endpoint: InstallerEndpoint, credentials: InstallerCredentials, key: InstallerHostKey, body: [String:Any]) async throws -> [String:Any] {
         let payload = try InstallerBundle().payload(action, body)
         let output = try await execute(endpoint, credentials: credentials, key: key, input: payload)

@@ -81,11 +81,15 @@ struct LiveMeetingsView: View {
             }
 
     }
+    /// Закрывает сведения о встрече и откладывает переход до закрытия окна.
+    /// - Parameter action: Действие, которое нужно выполнить после закрытия.
     private func endDetails(then action: @escaping () -> Void) {
         afterDetails = action
         selected = nil
     }
 
+    /// Преобразует серверную встречу в данные карточки списка.
+    /// - Parameter meeting: Встреча с датой, статусом и данными организатора.
     private func listItem(_ meeting: Conference) -> MeetingListItem<Conference> {
         let status: ConferenceTimelineView = meeting.isClosed ? .past : meeting.status == "active" ? .active : .upcoming
         let date = meeting.scheduledAt ?? meeting.startedAt ?? meeting.finishedAt

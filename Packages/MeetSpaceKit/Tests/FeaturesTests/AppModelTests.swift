@@ -6,21 +6,40 @@ import MeetSpaceAPI
 
 private actor MemoryConfiguration: ConfigurationStore {
     var value = AppConfiguration()
+    /// Возвращает конфигурацию, сохранённую в памяти теста.
     func load() -> AppConfiguration { value }
+    /// Сохраняет конфигурацию в памяти до следующего чтения.
+    /// - Parameter value: Новая конфигурация приложения.
     func save(_ value: AppConfiguration) { self.value = value }
 }
 private actor MemorySecrets: SecureStore {
     var values: [CredentialKey: Data] = [:]
+    /// Читает тестовые учётные данные из словаря.
+    /// - Parameter key: Ключ записи.
     func read(_ key: CredentialKey) -> Data? { values[key] }
+    /// Записывает учётные данные в тестовый словарь.
+    /// - Parameters:
+    ///   - value: Сохраняемые байты.
+    ///   - key: Ключ записи.
     func write(_ value: Data, for key: CredentialKey) { values[key] = value }
+    /// Удаляет учётные данные из тестового словаря.
+    /// - Parameter key: Ключ удаляемой записи.
     func delete(_ key: CredentialKey) { values[key] = nil }
 }
 private actor ControlledProbe: ServerProbing {
     var continuations: [String: CheckedContinuation<ServerVersion, any Error>] = [:]
+    /// Приостанавливает проверку версии до явного ответа теста.
+    /// - Parameter origin: Проверяемый сервер.
     func check(_ origin: ServerOrigin) async throws -> ServerVersion {
         try await withCheckedThrowingContinuation { continuations[origin.displayName] = $0 }
     }
+    /// Проверяет, ожидает ли запрос к серверу завершения.
+    /// - Parameter host: Имя сервера, использованное при проверке.
     func pending(_ host: String) -> Bool { continuations[host] != nil }
+    /// Завершает отложенную проверку адреса заданным результатом.
+    /// - Parameters:
+    ///   - host: Имя ожидающего сервера.
+    ///   - result: Версия сервера или ошибка проверки.
     func finish(_ host: String, result: Result<ServerVersion, any Error>) {
         continuations.removeValue(forKey: host)?.resume(with: result)
     }
@@ -153,10 +172,14 @@ private struct Timeout: Error {}
 private actor DelayedConfiguration: ConfigurationStore {
     private var continuation: CheckedContinuation<Void, Never>?
     var pending: Bool { continuation != nil }
+    /// Возвращает начальную конфигурацию приложения для тестового сценария.
     func load() -> AppConfiguration { AppConfiguration() }
+    /// Приостанавливает сохранение до явного разрешения теста.
+    /// - Parameter configuration: Конфигурация, которую пытается сохранить приложение.
     func save(_ configuration: AppConfiguration) async {
         await withCheckedContinuation { continuation = $0 }
     }
+    /// Завершает ожидающую операцию сохранения конфигурации.
     func finish() { continuation?.resume(); continuation = nil }
 }
 

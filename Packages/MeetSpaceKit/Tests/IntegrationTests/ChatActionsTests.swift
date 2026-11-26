@@ -7,6 +7,8 @@ import MeetSpaceRealtime
 @testable import MeetSpaceFeatures
 
 private struct ChatActionSockets: RealtimeSocketFactory {
+    /// Возвращает ошибку отсутствия сети при попытке открыть канал событий.
+    /// - Parameter url: Адрес запрошенного соединения.
     func connect(_ url: URL) async throws -> any RealtimeSocket { throw APIError.offline }
 }
 private func chatResponse(_ messages: [ChatMessage]) throws -> NetworkResponse {
@@ -48,8 +50,16 @@ private func chatClient(_ transport: RoutedTransport) throws -> AuthenticatedCli
 
 private actor BrokenHiddenMessages: HiddenChatMessagesStore {
     let failRead: Bool
+    /// Создаёт хранилище скрытых сообщений с настраиваемой ошибкой чтения.
+    /// - Parameter failRead: Имитировать сбой чтения истории скрытых сообщений.
     init(failRead: Bool = false) { self.failRead = failRead }
+    /// Возвращает пустой список скрытых сообщений или заданную ошибку хранилища.
+    /// - Parameter scope: Ключ аккаунта, запросившего список.
     func load(scope: String) throws -> Set<UUID> { if failRead { throw ClientError.storage }; return [] }
+    /// Имитирует ошибку сохранения локального скрытия сообщений.
+    /// - Parameters:
+    ///   - ids: Идентификаторы выбранных сообщений.
+    ///   - scope: Ключ аккаунта.
     func hide(_ ids: Set<UUID>, scope: String) throws -> Set<UUID> { throw ClientError.storage }
 }
 @Test @MainActor func betaChatFailedLocalRemovalKeepsSelectionAndHistory() async throws {
@@ -159,7 +169,9 @@ private actor BrokenHiddenMessages: HiddenChatMessagesStore {
 private actor DirectRecipientGate {
     private(set) var entered = false
     private var continuation: CheckedContinuation<Void, Never>?
+    /// Приостанавливает операцию до явного разрешения теста.
     func wait() async { entered = true; await withCheckedContinuation { continuation = $0 } }
+    /// Возобновляет операцию, приостановленную тестом.
     func release() { continuation?.resume(); continuation = nil }
 }
 @Test @MainActor func betaChatCancelledRecipientResolutionNeverForwardsAndBlocksSecondSelection() async throws {

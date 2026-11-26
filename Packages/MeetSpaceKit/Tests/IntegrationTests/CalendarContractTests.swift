@@ -9,12 +9,22 @@ private enum CalendarFixture {
     static let second = UUID(uuidString: "A2222222-2222-4222-8222-222222222222")!
     static let at = ISO8601DateFormatter().date(from: "2099-02-10T10:00:00Z")!
     static var period: DateInterval { MeetingCalendar.interval(containing: at, mode: .month, in: TimeZone(secondsFromGMT: 0)!) }
+    /// Создаёт встречу для проверки календарного API.
+    /// - Parameters:
+    ///   - id: Идентификатор встречи.
+    ///   - at: Время по расписанию.
+    ///   - status: Серверное состояние встречи.
+    ///   - owner: Идентификатор организатора.
     static func meeting(_ id: UUID = first, at: Date = at, status: String = "scheduled", owner: UUID = Fixture.userID) -> Conference {
         Conference(id: id, ownerId: owner, title: "Запланированная встреча", status: status, createdAt: at.addingTimeInterval(-3600), updatedAt: at, scheduledAt: at, plannedDurationMin: 30)
     }
+    /// Преобразует модель через кодировщик API в JSON-объект тестового ответа.
+    /// - Parameter value: Модель для сериализации.
     static func object(_ value: Conference) throws -> [String: Any] {
         try JSONSerialization.jsonObject(with: WireJSON.encoder().encode(value)) as! [String: Any]
     }
+    /// Создаёт репозиторий календаря с транспортом теста.
+    /// - Parameter transport: Обработчик запросов календаря.
     static func repository(_ transport: any RequestTransport) throws -> CalendarRepository {
         CalendarRepository(client: AuthenticatedClient(account: try Fixture.account(), credentials: Fixture.credentials(), secureStore: TestSecrets(), transport: transport))
     }
@@ -77,7 +87,9 @@ private enum CalendarFixture {
 private actor CalendarGate {
     private(set) var waiting = 0
     private var continuations: [CheckedContinuation<Void, Never>] = []
+    /// Приостанавливает операцию календаря и учитывает ожидающие задачи.
     func hold() async { waiting += 1; await withCheckedContinuation { continuations.append($0) } }
+    /// Возобновляет все ожидающие операции календаря.
     func release() { for c in continuations { c.resume() }; continuations = [] }
 }
 

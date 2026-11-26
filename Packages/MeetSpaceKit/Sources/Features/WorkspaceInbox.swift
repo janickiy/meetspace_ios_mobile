@@ -40,6 +40,10 @@ import MeetSpaceDesignSystem
     private var seenCursors: Set<String> = []
     private var demoLoaded = false
 
+    /// Подготавливает список уведомлений аккаунта или демонстрационную ленту.
+    /// - Parameters:
+    ///   - client: Авторизованный клиент рабочего пространства.
+    ///   - demo: Использовать демонстрационные уведомления.
     func refresh(using client: AuthenticatedClient?, demo: Bool) async {
         if demo {
             guard !demoLoaded else { return }
@@ -57,6 +61,8 @@ import MeetSpaceDesignSystem
         }
     }
 
+    /// Загружает первую или следующую страницу уведомлений.
+    /// - Parameter append: Добавить уведомления к существующему списку.
     func load(more append: Bool) async {
         guard let repository, !busy, !append || cursor != nil else { return }
         busy = true
@@ -67,12 +73,17 @@ import MeetSpaceDesignSystem
         } catch { if !Task.isCancelled { self.error = userMessage(error) } }
     }
 
+    /// Догружает страницы до появления непрочитанного уведомления или конца списка.
     func loadUntilUnread() async {
         while more, unread > 0, !busy, error == nil, !Task.isCancelled, events.allSatisfy(\.isRead) {
             await load(more: true)
         }
     }
 
+    /// Запрашивает одну страницу событий и обновляет курсор и счётчик непрочитанных.
+    /// - Parameters:
+    ///   - repository: Сервис уведомлений аккаунта.
+    ///   - current: Курсор предыдущей страницы или `nil` для первой.
     private func fetchPage(_ repository: WorkspaceNotificationRepository, after current: String?) async throws {
         let page = try await repository.list(cursor: current)
         try Task.checkCancellation()
@@ -90,6 +101,8 @@ import MeetSpaceDesignSystem
         unread = page.unreadCount
     }
 
+    /// Отмечает одно уведомление прочитанным и сообщает об успехе.
+    /// - Parameter event: Уведомление, выбранное пользователем.
     func read(_ event: Event) async -> Bool {
         guard !busy else { return false }
         guard !event.isRead else { return true }
@@ -102,6 +115,7 @@ import MeetSpaceDesignSystem
         } catch { if !Task.isCancelled { self.error = userMessage(error) }; return false }
     }
 
+    /// Отмечает все доступные уведомления прочитанными.
     func readAll() async {
         guard !busy, unread > 0 else { return }
         busy = true
@@ -122,6 +136,8 @@ import MeetSpaceDesignSystem
         } catch { if !Task.isCancelled { self.error = userMessage(error) } }
     }
 
+    /// Обновляет отметку о прочтении события на сервере и в локальной ленте.
+    /// - Parameter id: Идентификатор уведомления.
     private func markRead(_ id: UUID) async throws {
         if let repository { try await repository.markRead(id) }
         else if !demoLoaded { throw ClientError.invalidInput }
@@ -134,6 +150,10 @@ import MeetSpaceDesignSystem
 
 struct InboxBellAnchor: PreferenceKey {
     static var defaultValue: Anchor<CGRect>? { nil }
+    /// Выбирает доступную привязку к положению кнопки уведомлений.
+    /// - Parameters:
+    ///   - value: Накопленная привязка к кнопке.
+    ///   - nextValue: Привязка, поступившая от дочернего представления.
     static func reduce(value: inout Anchor<CGRect>?, nextValue: () -> Anchor<CGRect>?) {
         value = nextValue() ?? value
     }
@@ -260,6 +280,8 @@ struct WorkspaceInboxView: View {
             .padding(3).background(MSTheme.surfaceSecondary, in: RoundedRectangle(cornerRadius: 12))
     }
 
+    /// Создаёт переключатель всех или только непрочитанных уведомлений.
+    /// - Parameter unread: Показывать только непрочитанные события.
     private func filter(_ unread: Bool) -> some View {
         Button {
             onlyUnread = unread
@@ -294,6 +316,8 @@ struct WorkspaceInboxView: View {
         }.multilineTextAlignment(.center).frame(maxWidth: .infinity, minHeight: 235).padding(.horizontal, 16)
     }
 
+    /// Показывает строку уведомления с переходом к связанному объекту.
+    /// - Parameter event: Событие ленты.
     private func eventButton(_ event: WorkspaceInbox.Event) -> some View {
         Button {
             Task {
@@ -320,6 +344,8 @@ struct WorkspaceInboxView: View {
         }.buttonStyle(.plain).disabled(inbox.busy).accessibilityValue(tr(event.isRead ? "Прочитано" : "Не прочитано"))
     }
 
+    /// Закрывает ленту уведомлений и открывает связанный экран.
+    /// - Parameter route: Маршрут, указанный в уведомлении.
     private func navigate(_ route: AppRoute) {
         app.showingWorkspaceNotifications = false
         app.navigate(route)

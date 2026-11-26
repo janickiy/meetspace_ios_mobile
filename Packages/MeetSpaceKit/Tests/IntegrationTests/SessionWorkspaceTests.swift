@@ -7,13 +7,20 @@ import MeetSpaceRealtime
 @testable import MeetSpaceFeatures
 
 private struct WorkspaceProbe: ServerProbing {
+    /// Имитирует недоступность сервера при запросе версии.
+    /// - Parameter origin: Сервер, указанный проверяемой моделью.
     func check(_ origin: ServerOrigin) async throws -> ServerVersion { throw APIError.offline }
 }
 private actor WorkspacePreferences: ConfigurationStore {
+    /// Возвращает начальную конфигурацию приложения для тестового сценария.
     func load() -> AppConfiguration { AppConfiguration() }
+    /// Принимает изменение конфигурации без записи на диск.
+    /// - Parameter value: Конфигурация, переданная приложением.
     func save(_ value: AppConfiguration) {}
 }
 private struct WorkspaceSockets: RealtimeSocketFactory {
+    /// Возвращает ошибку отсутствия сети при попытке открыть канал событий.
+    /// - Parameter url: Адрес запрошенного соединения.
     func connect(_ url: URL) async throws -> any RealtimeSocket { throw APIError.offline }
 }
 private func conversationResponse(_ id: UUID) throws -> NetworkResponse {
@@ -28,7 +35,9 @@ private func pageResponse(_ messages: [ChatMessage] = []) throws -> NetworkRespo
 private actor Gate {
     var started = false
     private var continuation: CheckedContinuation<Void, Never>?
+    /// Приостанавливает операцию до явного разрешения теста.
     func wait() async { started = true; await withCheckedContinuation { continuation = $0 } }
+    /// Возобновляет операцию, приостановленную тестом.
     func release() { continuation?.resume(); continuation = nil }
 }
 private func waitFor(_ condition: @escaping @Sendable () async -> Bool) async throws {
@@ -128,6 +137,8 @@ private func waitFor(_ condition: @escaping @Sendable () async -> Bool) async th
 
 private actor SendAttempts {
     var identifiers: [UUID] = []
+    /// Имитирует неудачу первой отправки и учитывает идентификатор черновика при повторе.
+    /// - Parameter request: Запрос отправки сообщения.
     func accept(_ request: URLRequest) throws -> NetworkResponse {
         let draft = try WireJSON.decoder().decode(MessageDraft.self, from: request.httpBody!)
         identifiers.append(draft.id)

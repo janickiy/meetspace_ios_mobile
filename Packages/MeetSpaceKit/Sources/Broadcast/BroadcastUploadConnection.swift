@@ -13,11 +13,17 @@ public final class BroadcastUploadConnection: @unchecked Sendable {
     private var lastFrameTimestamp: Int64 = -1
     public var sessionID: UUID? { lock.withLock { descriptor?.sessionID } }
 
+    /// Ищет общий контейнер, в котором приложение публикует параметры сеанса.
+    /// - Parameter appGroupIdentifier: Идентификатор App Group, доступной приложению и расширению.
     public init(appGroupIdentifier: String) { directory = BroadcastWire.groupDirectory(appGroupIdentifier) }
-    /// For deterministic IPC tests; production always resolves the signed group container.
+    /// Создаёт соединение с явно заданным каталогом для тестов транспорта.
+    /// - Parameter directory: Каталог, в котором тест разместил сокет и описание сеанса.
     public init(directory: URL) { self.directory = directory }
+    /// Прерывает операции сокета при освобождении соединения.
     deinit { socket?.shutdown() }
 
+    /// Подключается к приложению, подтверждает сеанс и возвращает согласованные ограничения видео.
+    /// - Parameter onStop: Обработчик причины вынужденной остановки канала.
     public func start(onStop: @escaping @Sendable (ScreenBroadcastStopReason) -> Void) throws -> ScreenBroadcastConfiguration {
         let allowed = lock.withLock { () -> Bool in
             guard !starting, !finished, socket == nil else { return false }
@@ -52,7 +58,8 @@ public final class BroadcastUploadConnection: @unchecked Sendable {
         }
     }
 
-    /// False means the frame was deliberately dropped (FPS/backpressure). No frame is queued here.
+    /// Отправляет кадр без очереди. Возвращает false при превышении частоты кадров или занятом канале.
+    /// - Parameter frame: BGRA-кадр текущего сеанса с возрастающей временной меткой.
     @discardableResult public func send(frame: ScreenBroadcastFrame) throws -> Bool {
         let state = try lock.withLock { () throws -> (BroadcastSocket, BroadcastWire.Descriptor)? in
             guard !finished, let socket, let descriptor, frame.sessionID == descriptor.sessionID else { throw ScreenBroadcastError.staleSession }
@@ -67,17 +74,25 @@ public final class BroadcastUploadConnection: @unchecked Sendable {
         do { return try state.0.send(.frame, payload: BroadcastWire.frameData(frame), dropIfBusy: true) }
         catch { terminate(.connectionLost, notify: true); throw error }
     }
+    /// Уведомляет принимающее приложение о паузе захвата.
     public func pause() { control(.paused) }
+    /// Уведомляет принимающее приложение о возобновлении захвата.
     public func resume() { control(.resumed) }
+    /// Передаёт причину завершения приложению и закрывает сокет.
+    /// - Parameter reason: Причина окончания демонстрации.
     public func finish(reason: ScreenBroadcastStopReason = .user) {
         let connection = lock.withLock { socket }
         _ = try? connection?.send(.stopped, payload: Data(reason.rawValue.utf8))
         terminate(reason, notify: false)
     }
+    /// Отправляет управляющий пакет и завершает соединение при ошибке записи.
+    /// - Parameter kind: Вид управляющего сообщения для приложения.
     private func control(_ kind: BroadcastWire.Kind) {
         guard let connection = lock.withLock({ finished ? nil : socket }) else { return }
         do { _ = try connection.send(kind) } catch { terminate(.connectionLost, notify: true) }
     }
+    /// Читает запросы проверки связи и подтверждает их до закрытия или тайм-аута.
+    /// - Parameter connection: Соединение, установленное при запуске демонстрации.
     private func readControls(_ connection: BroadcastSocket) {
         do {
             while !lock.withLock({ finished }) {
@@ -90,6 +105,10 @@ public final class BroadcastUploadConnection: @unchecked Sendable {
             terminate((error as? ScreenBroadcastError) == .timedOut ? .timedOut : .hostUnavailable, notify: true)
         }
     }
+    /// Однократно закрывает сеанс и при необходимости уведомляет обработчик остановки.
+    /// - Parameters:
+    ///   - reason: Причина завершения соединения.
+    ///   - notify: Нужно ли вызвать обработчик, переданный при запуске.
     private func terminate(_ reason: ScreenBroadcastStopReason, notify: Bool) {
         let result = lock.withLock { () -> (BroadcastSocket?, (@Sendable (ScreenBroadcastStopReason) -> Void)?) in
             guard !finished else { return (nil, nil) }

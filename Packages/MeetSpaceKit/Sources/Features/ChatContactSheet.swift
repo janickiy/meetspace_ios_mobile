@@ -177,6 +177,7 @@ struct ChatInfoFileRow: View {
             }
             Spacer(minLength: 0)
             WorkspaceIcon(trailing, size: 17).foregroundStyle(MSTheme.brandAccent)
+                .frame(minWidth: 44, minHeight: 44)
         }.padding(.horizontal, 6).frame(maxWidth: .infinity, minHeight: 52, alignment: .leading)
             .contentShape(Rectangle())
     }
@@ -184,7 +185,7 @@ struct ChatInfoFileRow: View {
 
 extension ChatMaterialKind {
     var title: String { switch self { case .media: "Медиа"; case .file: "Файлы"; case .link: "Ссылки" } }
-    var symbol: String { switch self { case .media: "photo"; case .file: "doc"; case .link: "link" } }
+    var symbol: String { switch self { case .media: "photo"; case .file: "doc.text"; case .link: "link" } }
     var empty: String {
         switch self {
         case .media: "В этом чате пока нет медиа."
@@ -198,8 +199,8 @@ extension ChatMaterialKind {
     VStack(spacing: 8) {
         WorkspaceIcon(kind.symbol, size: 22).frame(width: 42, height: 42)
             .background(MSTheme.background, in: Circle()).accessibilityHidden(true)
-        Text(tr(kind.empty)).font(MSTheme.font(13))
-    }.foregroundStyle(MSTheme.muted).frame(maxWidth: .infinity, minHeight: 100)
+        Text(tr(kind.empty)).font(MSTheme.font(13)).multilineTextAlignment(.center)
+    }.padding(14).foregroundStyle(MSTheme.muted).frame(maxWidth: .infinity, minHeight: 100)
 }
 
 private func uniqueContactItems<T: Hashable>(_ items: [T]) -> [T] {
@@ -208,11 +209,15 @@ private func uniqueContactItems<T: Hashable>(_ items: [T]) -> [T] {
 }
 
 private enum ContactLink {
+    /// Проверяет ссылку и возвращает допустимый HTTP- или HTTPS-адрес без встроенных учётных данных.
+    /// - Parameter text: Текст для проверки в качестве адреса.
     static func safe(_ text: String) -> URL? {
         guard let url = URL(string: text), let scheme = url.scheme?.lowercased(), ["http", "https"].contains(scheme),
               url.host?.isEmpty == false, url.user == nil, url.password == nil else { return nil }
         return url
     }
+    /// Находит в тексте допустимые веб-ссылки.
+    /// - Parameter text: Текст сообщения для поиска ссылок.
     static func inText(_ text: String) -> [URL] {
         guard let detector = try? NSDataDetector(types: NSTextCheckingResult.CheckingType.link.rawValue) else { return [] }
         return detector.matches(in: text, range: NSRange(text.startIndex..., in: text)).compactMap { match in
@@ -247,14 +252,14 @@ private struct ContactMaterials: View {
         } : visible.compactMap(\.attachment)
         let links = legacy ? history.flatMap { ContactLink.inText($0.text) } : visible.compactMap { $0.url.flatMap(ContactLink.safe) }
         VStack(spacing: 8) {
-            if kind == .link {
+            if kind == .link && !links.isEmpty {
                 ChatInfoLinks(links: uniqueContactItems(links))
-            } else if kind == .media {
+            } else if kind == .media && !files.isEmpty {
                 LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 5), count: 3), spacing: 5) {
                     ForEach(files) { attachment($0) }
                 }
-            } else {
-                ForEach(files) { attachment($0) }
+            } else if kind == .file && !files.isEmpty {
+                VStack(spacing: 2) { ForEach(files) { attachment($0) } }
             }
             if loading { ProgressView() }
             else if let error {
@@ -282,6 +287,8 @@ private struct ContactMaterials: View {
             }
     }
 
+    /// Показывает вложение и состояние его загрузки в материалах чата.
+    /// - Parameter file: Вложение, доступное для загрузки.
     private func attachment(_ file: Attachment) -> some View {
         let download = model.downloads[file.id]
         return VStack(spacing: 4) {
@@ -299,6 +306,10 @@ private struct ContactMaterials: View {
         }
     }
 
+    /// Строит подпись или превью вложения в выбранном разделе материалов.
+    /// - Parameters:
+    ///   - file: Вложение для отображения.
+    ///   - url: Локальный адрес загруженного файла, если он доступен.
     @ViewBuilder private func fileLabel(_ file: Attachment, url: URL?) -> some View {
         if kind == .media {
             RoundedRectangle(cornerRadius: 9).fill(MSTheme.surfaceSecondary)
@@ -315,6 +326,8 @@ private struct ContactMaterials: View {
         }
     }
 
+    /// Оформляет тип и имя медиафайла в миниатюре.
+    /// - Parameter file: Вложение с MIME-типом и именем.
     private func mediaLabel(_ file: Attachment) -> some View {
         VStack(spacing: 5) {
             WorkspaceIcon(file.mimeType.hasPrefix("video/") ? "video" : "photo", size: 18)

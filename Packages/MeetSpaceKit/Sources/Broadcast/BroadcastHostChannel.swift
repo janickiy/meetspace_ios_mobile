@@ -15,6 +15,13 @@ final class BroadcastHostChannel: @unchecked Sendable {
     private var completed = false
     private var waiters: [CheckedContinuation<Void, Never>] = []
 
+    /// Создаёт канал приложения и описание сеанса для подключения расширения.
+    /// - Parameters:
+    ///   - directory: Общий каталог приложения и расширения для сокета и описания сеанса.
+    ///   - configuration: Ограничения размеров и частоты кадров.
+    ///   - sessionID: Идентификатор этой демонстрации.
+    ///   - event: Получатель событий жизненного цикла демонстрации.
+    ///   - frame: Получатель проверенных видеокадров.
     init(directory: URL, configuration: ScreenBroadcastConfiguration, sessionID: UUID,
          event: @escaping @Sendable (ScreenBroadcastEvent) -> Void,
          frame: @escaping @Sendable (ScreenBroadcastFrame) -> Void) {
@@ -23,15 +30,18 @@ final class BroadcastHostChannel: @unchecked Sendable {
             nonce: (UUID().uuidString + UUID().uuidString).replacingOccurrences(of: "-", with: "").lowercased(),
             expiresAt: Date().addingTimeInterval(90), configuration: configuration)
     }
+    /// Запускает обработку соединения в отдельной очереди и ожидает готовности сокета.
     func start() async throws {
         try await withCheckedThrowingContinuation { continuation in
             queue.async { self.run(ready: continuation) }
         }
     }
+    /// Отправляет расширению сигнал проверки связи, если канал записи свободен.
     func heartbeat() {
         guard let socket = lock.withLock({ cancelled ? nil : client }) else { return }
         do { _ = try socket.send(.heartbeat, dropIfBusy: true) } catch { socket.shutdown() }
     }
+    /// Закрывает сокеты и ожидает завершения обработчика соединения.
     func stop() async {
         shutdown()
         await withCheckedContinuation { continuation in
@@ -41,6 +51,7 @@ final class BroadcastHostChannel: @unchecked Sendable {
             if done { continuation.resume() }
         }
     }
+    /// Прерывает ожидание соединения и текущие операции чтения и записи.
     func shutdown() {
         let sockets = lock.withLock { () -> (BroadcastSocket?, BroadcastSocket?) in
             cancelled = true; return (listener, client)
@@ -50,6 +61,8 @@ final class BroadcastHostChannel: @unchecked Sendable {
     }
     private var isCancelled: Bool { lock.withLock { cancelled } }
 
+    /// Подготавливает сокет, проверяет идентификатор и одноразовый ключ расширения, затем принимает его кадры и события.
+    /// - Parameter ready: Продолжение, сообщающее о готовности сокета или об ошибке запуска.
     private func run(ready: CheckedContinuation<Void, any Error>) {
         var readySent = false
         var lockFD: Int32 = -1

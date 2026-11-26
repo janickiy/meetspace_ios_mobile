@@ -13,7 +13,24 @@ struct AccountSettingsContent<Controls: View>: View {
     @ViewBuilder var controls: () -> Controls
     @FocusState private var profileNameFocused: Bool
     @State private var nativeProfileNameFocused = false
-    var body: some View {
+
+    @ViewBuilder var body: some View {
+        if section == .profile {
+            content.refreshable { await refreshProfile() }
+        } else {
+            content
+        }
+    }
+
+    /// Загружает актуальный профиль, если в форме нет несохранённых изменений.
+    private func refreshProfile() async {
+        guard model.displayName == (model.profile.displayName ?? ""),
+              model.bio == (model.profile.bio ?? ""),
+              model.savedPreferences.map({ $0 == model.preferences }) ?? true else { return }
+        await model.load()
+    }
+
+    private var content: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 20) {
                 switch section {
@@ -25,12 +42,6 @@ struct AccountSettingsContent<Controls: View>: View {
                     if let information = model.information {
                         Text(tr(information)).font(MSTheme.font(13)).foregroundStyle(MSTheme.muted).accessibilityIdentifier("settingsSaved")
                     }
-                    Button(tr("Обновить настройки")) {
-                        profileNameFocused = false
-                        nativeProfileNameFocused = false
-                        Task { await model.load() }
-                    }
-                        .buttonStyle(MSButtonStyle(primary: false)).disabled(model.busy)
                 }
                 controls()
             }.modifier(AccountPanelLayout(wide: wide))
@@ -83,6 +94,8 @@ struct AccountSettingsContent<Controls: View>: View {
             }.font(MSTheme.font(12)).foregroundStyle(MSTheme.muted)
         }
     }
+    /// Оформляет ошибку проверки или сохранения профиля.
+    /// - Parameter value: Сообщение для пользователя.
     private func errorMessage(_ value: String) -> some View { Text(tr(value)).font(MSTheme.font(13)).foregroundStyle(MSTheme.danger) }
 }
 

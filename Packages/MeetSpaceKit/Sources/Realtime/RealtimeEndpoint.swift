@@ -6,6 +6,11 @@ public enum RealtimeEndpoint {
     public enum Scope: Sendable { case user, conference(UUID) }
     public enum EndpointError: Error { case emptyTicket }
 
+    /// Строит защищённый WebSocket-адрес для потока событий пользователя или конференции.
+    /// - Parameters:
+    ///   - origin: Базовый HTTPS-адрес сервера MeetSpace.
+    ///   - scope: Поток событий пользователя или указанной конференции.
+    ///   - ticket: Билет доступа к потоку событий, выданный сервером.
     public static func url(origin: ServerOrigin, scope: Scope, ticket: String) throws -> URL {
         guard !ticket.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { throw EndpointError.emptyTicket }
         var parts = URLComponents(url: origin.url, resolvingAgainstBaseURL: false)!
@@ -22,6 +27,7 @@ public enum RealtimeEndpoint {
 public enum RealtimeState: Equatable, Sendable { case disconnected, connecting, connected, reconnecting }
 
 public protocol RealtimeConnection: Sendable {
+    /// Разрывает текущее соединение с сервером событий.
     func disconnect() async
     var states: AsyncStream<RealtimeState> { get async }
 }

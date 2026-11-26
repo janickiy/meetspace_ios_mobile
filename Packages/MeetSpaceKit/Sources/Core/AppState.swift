@@ -22,6 +22,10 @@ public enum Appearance: String, Codable, CaseIterable, Sendable { case system, l
 public struct AppConfiguration: Codable, Equatable, Sendable {
     public var server: ServerOrigin?
     public var appearance: Appearance
+    /// Задаёт выбранный сервер и оформление приложения.
+    /// - Parameters:
+    ///   - server: Базовый адрес сервера аккаунта.
+    ///   - appearance: Выбранная тема оформления.
     public init(server: ServerOrigin? = nil, appearance: Appearance = .system) {
         self.server = server
         self.appearance = appearance
@@ -29,7 +33,10 @@ public struct AppConfiguration: Codable, Equatable, Sendable {
 }
 
 public protocol ConfigurationStore: Sendable {
+    /// Загружает сохранённую конфигурацию приложения.
     func load() async throws -> AppConfiguration
+    /// Сохраняет выбранный сервер и оформление приложения.
+    /// - Parameter configuration: Настройки сервера и оформления приложения.
     func save(_ configuration: AppConfiguration) async throws
 }
 
@@ -37,6 +44,10 @@ public protocol ConfigurationStore: Sendable {
 public struct CredentialKey: Hashable, Sendable {
     public let server: ServerOrigin
     public let accountID: UUID
+    /// Формирует ключ учётных данных для сочетания сервера и аккаунта.
+    /// - Parameters:
+    ///   - server: Базовый адрес сервера аккаунта.
+    ///   - accountID: Идентификатор пользователя текущего аккаунта.
     public init(server: ServerOrigin, accountID: UUID) {
         self.server = server
         self.accountID = accountID
@@ -45,7 +56,15 @@ public struct CredentialKey: Hashable, Sendable {
 }
 
 public protocol SecureStore: Sendable {
+    /// Читает защищённые данные аккаунта или возвращает nil при их отсутствии.
+    /// - Parameter key: Ключ хранилища, объединяющий адрес сервера и идентификатор аккаунта.
     func read(_ key: CredentialKey) async throws -> Data?
+    /// Сохраняет защищённые данные по ключу аккаунта.
+    /// - Parameters:
+    ///   - value: Данные сессии для защищённого хранения.
+    ///   - key: Ключ хранилища, объединяющий адрес сервера и идентификатор аккаунта.
     func write(_ value: Data, for key: CredentialKey) async throws
+    /// Удаляет защищённые данные выбранного аккаунта.
+    /// - Parameter key: Ключ хранилища, объединяющий адрес сервера и идентификатор аккаунта.
     func delete(_ key: CredentialKey) async throws
 }

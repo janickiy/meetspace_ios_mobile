@@ -13,6 +13,8 @@ import Foundation
     private var disabling = false
     private(set) var isEnabled = false
 
+    /// Готовит адаптер PushKit и поток ошибок. Регистрация начинается после включения сервиса.
+    /// - Parameter calling: Сервис системных звонков для обработки входящих уведомлений.
     init(calling: any SystemCalling) {
         self.calling = calling
         let pair = AsyncStream.makeStream(of: VoIPPushError.self, bufferingPolicy: .bufferingNewest(16))
@@ -21,6 +23,8 @@ import Foundation
         // Intentionally no PKPushRegistry or desiredPushTypes until verified deployment injection.
     }
 
+    /// Включает получение VoIP-уведомлений по проверенному серверному контракту.
+    /// - Parameter validatedDeployment: Реализация разбора уведомлений и регистрации токена для этого сервера.
     func enable(validatedDeployment: any ValidatedVoIPPushDeployment) throws {
         guard !isEnabled, !disabling, calling.isAvailable,
               !validatedDeployment.contractIdentifier.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
@@ -34,6 +38,7 @@ import Foundation
         registry.desiredPushTypes = [.voIP]
     }
 
+    /// Отменяет регистрацию PushKit, ожидает завершения записи токена и отзывает его на сервере.
     func disable() async {
         guard !disabling else { return }
         disabling = true; defer { disabling = false }
@@ -46,6 +51,8 @@ import Foundation
         await deployment?.invalidateVoIPToken()
     }
 
+    /// Последовательно регистрирует обновления токена, исключая запись устаревшей версии после новой.
+    /// - Parameter token: Токен, выданный текущей регистрацией PushKit.
     private func register(_ token: Data) {
         guard isEnabled, let deployment, !token.isEmpty else { return }
         let previous = tokenTask; previous?.cancel(); let operation = generation
@@ -64,11 +71,20 @@ import Foundation
 }
 
 extension NativeVoIPPushNotifications: PKPushRegistryDelegate {
+    /// Передаёт обновлённый VoIP-токен на регистрацию.
+    /// - Parameters:
+    ///   - registry: Экземпляр реестра, выдавшего токен.
+    ///   - pushCredentials: Данные PushKit, содержащие токен устройства.
+    ///   - type: Вид уведомлений, к которому относится токен.
     nonisolated func pushRegistry(_ registry: PKPushRegistry, didUpdate pushCredentials: PKPushCredentials, for type: PKPushType) {
         guard type == .voIP else { return }
         let token = pushCredentials.token
         MainActor.assumeIsolated { if self.registry === registry { register(token) } }
     }
+    /// Отменяет ожидающую регистрацию и отзывает недействительный токен на сервере.
+    /// - Parameters:
+    ///   - registry: Реестр, сообщивший об отзыве токена.
+    ///   - type: Вид уведомлений, для которого отозван токен.
     nonisolated func pushRegistry(_ registry: PKPushRegistry, didInvalidatePushTokenFor type: PKPushType) {
         guard type == .voIP else { return }
         MainActor.assumeIsolated {
@@ -77,6 +93,12 @@ extension NativeVoIPPushNotifications: PKPushRegistryDelegate {
             tokenTask = Task { await registration?.value; await deployment.invalidateVoIPToken() }
         }
     }
+    /// Передаёт входящее VoIP-уведомление проверенному обработчику и завершает вызов PushKit.
+    /// - Parameters:
+    ///   - registry: Реестр, доставивший уведомление.
+    ///   - payload: Данные входящего звонка от PushKit.
+    ///   - type: Тип полученного уведомления.
+    ///   - completion: Обработчик PushKit, вызываемый по завершении регистрации звонка.
     nonisolated func pushRegistry(_ registry: PKPushRegistry, didReceiveIncomingPushWith payload: PKPushPayload,
                                  for type: PKPushType, completion: @escaping () -> Void) {
         let completion = PushCompletion(completion)

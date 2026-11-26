@@ -6,6 +6,8 @@ enum ChatHeaderAction: String, Identifiable {
 
     var id: Self { self }
 
+    /// Возвращает заголовок действия в меню чата.
+    /// - Parameter muted: Отключены ли уведомления у чата.
     func title(muted: Bool = false) -> String {
         switch self {
         case .info: "Информация"
@@ -20,6 +22,8 @@ enum ChatHeaderAction: String, Identifiable {
         }
     }
 
+    /// Возвращает имя значка для действия в меню чата.
+    /// - Parameter muted: Отключены ли уведомления у чата.
     func symbol(muted: Bool) -> String {
         switch self {
         case .info: "info.circle"
@@ -46,6 +50,10 @@ enum ChatHeaderAction: String, Identifiable {
 
 private struct ChatActionAnchor: PreferenceKey {
     static var defaultValue: Anchor<CGRect>? { nil }
+    /// Сохраняет последнее доступное положение кнопки, к которой привязано меню.
+    /// - Parameters:
+    ///   - value: Накопленная привязка к границам кнопки.
+    ///   - nextValue: Привязка следующего дочернего представления.
     static func reduce(value: inout Anchor<CGRect>?, nextValue: () -> Anchor<CGRect>?) {
         if let anchor = nextValue() { value = anchor }
     }
@@ -74,6 +82,13 @@ struct ChatActionTrigger: View {
 }
 
 extension View {
+    /// Показывает меню у кнопки заголовка с действиями, доступными для этого чата.
+    /// - Parameters:
+    ///   - open: Привязка к видимости меню.
+    ///   - group: Открыта ли группа.
+    ///   - editable: Разрешено ли редактирование группы.
+    ///   - muted: Отключены ли уведомления чата.
+    ///   - perform: Обработчик выбранного пункта.
     func chatHeaderMenu(open: Binding<Bool>, group: Bool, editable: Bool = false, muted: Bool,
                         perform: @escaping (ChatHeaderAction) -> Void) -> some View {
         accessibilityHidden(open.wrappedValue)
@@ -106,6 +121,10 @@ extension View {
             }
     }
 
+    /// Запрашивает подтверждение действия с чатом перед его выполнением.
+    /// - Parameters:
+    ///   - pending: Действие, ожидающее подтверждения.
+    ///   - perform: Обработчик подтверждённого действия.
     func confirmChatAction(_ pending: Binding<ChatHeaderAction?>,
                            perform: @escaping (ChatHeaderAction) -> Void) -> some View {
         sheet(item: pending) { action in
@@ -198,6 +217,10 @@ struct ChatOwnCard: View {
             }
         }.background(MSTheme.surface).presentationDetents([.medium, .large])
     }
+    /// Показывает подписанное поле со сведениями о чате.
+    /// - Parameters:
+    ///   - key: Название поля.
+    ///   - value: Отображаемое значение поля.
     private func field(_ key: String, _ value: String) -> some View {
         VStack(alignment: .leading, spacing: 3) {
             Text(tr(key)).font(MSTheme.font(12)).foregroundStyle(MSTheme.muted)

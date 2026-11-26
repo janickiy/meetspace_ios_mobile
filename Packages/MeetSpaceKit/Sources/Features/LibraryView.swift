@@ -86,6 +86,8 @@ struct LibraryView: View {
         }
     }
 
+    /// Открывает редактор имени папки для создания или переименования.
+    /// - Parameter folder: Папка для переименования или nil для новой папки.
     private func editFolder(_ folder: DemoFolderStore.Folder?) {
         renamedFolder = folder?.id
         name = folder?.name ?? ""
@@ -103,6 +105,7 @@ struct LibraryView: View {
         }
     }
 
+    /// Открывает все записи в стеке навигации текущей вкладки.
     private func allRecordings() {
         let path: ReferenceWritableKeyPath<AppModel, [AppRoute]> = switch model.tab {
         case .meetings: \.meetingsPath

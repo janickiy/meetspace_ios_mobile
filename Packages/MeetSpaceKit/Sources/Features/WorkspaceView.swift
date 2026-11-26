@@ -9,6 +9,7 @@ struct WorkspaceView: View {
     @Bindable var model: AppModel
     @State private var inbox = WorkspaceInbox()
     @State private var hasHinge = false
+    @State private var inlineChatOpen = false
     @State private var containerBottomInset: CGFloat = 0
     @Environment(\.dynamicTypeSize) private var typeSize
     @Environment(\.horizontalSizeClass) private var sizeClass
@@ -16,7 +17,8 @@ struct WorkspaceView: View {
     var body: some View {
         GeometryReader { geometry in
             let wide = WorkspaceLayout.usesColumns(width: geometry.size.width, sizeClass: sizeClass, typeSize: typeSize, hasHinge: hasHinge)
-            let showsTabBar = model.activeConference == nil && !showingCall
+            let hidesTabsForChat = ChatLayout.hidesWorkspaceTabsInThread && showingThread
+            let showsTabBar = model.activeConference == nil && !showingCall && !hidesTabsForChat
             let keyboardVisible = geometry.safeAreaInsets.bottom > containerBottomInset
             VStack(spacing: 0) {
                 tabs
@@ -34,6 +36,7 @@ struct WorkspaceView: View {
             }
             .environment(\.workspaceWidth, geometry.size.width)
             .environment(\.workspaceUnreadNotifications, inbox.unread)
+            .onPreferenceChange(InlineChatOpen.self) { inlineChatOpen = $0 }
         }
         .background(MSTheme.background)
         .background {
@@ -65,6 +68,14 @@ struct WorkspaceView: View {
         }
     }
 
+    private var showingThread: Bool {
+        switch activeRoute {
+        case .thread, .conversation: true
+        case nil: model.tab == .messages && inlineChatOpen
+        default: false
+        }
+    }
+
     private var tabs: some View {
         TabView(selection: $model.tab) {
             stack(tab: .meetings, path: $model.meetingsPath) {
@@ -88,6 +99,11 @@ struct WorkspaceView: View {
         }
     }
 
+    /// Создаёт стек навигации для выбранной вкладки рабочего пространства.
+    /// - Parameters:
+    ///   - tab: Вкладка, которой принадлежит стек.
+    ///   - path: Привязка к истории переходов.
+    ///   - content: Корневое представление вкладки.
     private func stack<Content: View>(tab: AppTab, path: Binding<[AppRoute]>, @ViewBuilder content: () -> Content) -> some View {
         NavigationStack(path: path) {
             content().msHideRootBar().navigationDestination(for: AppRoute.self) { route in DestinationView(model: model, route: route) }
@@ -95,7 +111,18 @@ struct WorkspaceView: View {
     }
 }
 
+struct InlineChatOpen: PreferenceKey {
+    static let defaultValue = false
+    /// Определяет, открыт ли встроенный чат в одном из дочерних представлений.
+    /// - Parameters:
+    ///   - value: Накопленный признак открытого чата.
+    ///   - nextValue: Признак от очередного представления.
+    static func reduce(value: inout Bool, nextValue: () -> Bool) { value = value || nextValue() }
+}
+
 private extension View {
+    /// Отслеживает наличие шарнира в текущей конфигурации окна.
+    /// - Parameter hasHinge: Привязка для результата наблюдения.
     @ViewBuilder func observeWorkspaceHinge(_ hasHinge: Binding<Bool>) -> some View {
         #if os(iOS) && compiler(>=6.4.1)
         if #available(iOS 27.1, *) {
@@ -108,11 +135,21 @@ private extension View {
 }
 
 enum WorkspaceLayout {
+    /// Выбирает двухколоночный режим по ширине окна, конфигурации экрана и размеру текста.
+    /// - Parameters:
+    ///   - width: Ширина окна в пунктах.
+    ///   - sizeClass: Горизонтальный класс размера.
+    ///   - typeSize: Размер шрифта Dynamic Type.
+    ///   - hasHinge: Есть ли у видимой области шарнир.
     static func usesColumns(width: CGFloat, sizeClass: UserInterfaceSizeClass?, typeSize: DynamicTypeSize, hasHinge: Bool = false) -> Bool {
         !typeSize.isAccessibilitySize && (width >= 780 || (hasHinge && sizeClass == .regular && width >= 620))
     }
 
+    /// Вычисляет ширину бокового списка чатов.
+    /// - Parameter width: Ширина рабочего пространства в пунктах.
     static func chatSidebarWidth(_ width: CGFloat) -> CGFloat { width >= 780 ? 340 : width * 0.38 }
+    /// Выбирает промежуток между колонками переписки.
+    /// - Parameter width: Ширина рабочего пространства в пунктах.
     static func chatGutter(_ width: CGFloat) -> CGFloat { width >= 780 ? 24 : 10 }
 }
 
@@ -147,6 +184,11 @@ struct WorkspaceTabBar: View {
         .accessibilityIdentifier("workspaceTabBar")
     }
 
+    /// Создаёт кнопку переключения вкладки и показывает её активное состояние.
+    /// - Parameters:
+    ///   - tab: Целевая вкладка.
+    ///   - title: Подпись кнопки.
+    ///   - icon: Значок вкладки.
     private func tabButton(_ tab: AppTab, title: String, icon: String) -> some View {
         let selected = (activeTab ?? model.tab) == tab
         let layout = typeSize.isAccessibilitySize ? AnyLayout(HStackLayout(spacing: 4)) : AnyLayout(VStackLayout(spacing: tablet ? 5 : 3))
@@ -186,6 +228,8 @@ struct WorkspaceTabBar: View {
             .accessibilityAddTraits(selected ? .isSelected : [])
     }
 
+    /// Рисует цветную точку состояния на вкладке.
+    /// - Parameter color: Цвет индикатора.
     private func tabDot(_ color: Color) -> some View {
         Circle().fill(color).frame(width: 9, height: 9)
             .overlay { Circle().strokeBorder(MSTheme.surface, lineWidth: 1.5) }.accessibilityHidden(true)
@@ -193,6 +237,7 @@ struct WorkspaceTabBar: View {
 }
 
 extension View {
+    /// Скрывает системную навигационную панель для корневого экрана.
     @ViewBuilder func msHideRootBar() -> some View {
         #if os(iOS)
         self.toolbar(.hidden, for: .navigationBar)
@@ -201,6 +246,7 @@ extension View {
         #endif
     }
 
+    /// Скрывает системную панель вкладок при показе собственной навигации.
     @ViewBuilder fileprivate func msHideSystemTabBar() -> some View {
         #if os(iOS)
         self.toolbar(.hidden, for: .tabBar)
@@ -225,6 +271,12 @@ struct StateContent<Content: View>: View {
         case .failed: status("exclamationmark.circle", "Не удалось загрузить", "Попробуйте ещё раз.", retry: true)
         }
     }
+    /// Показывает состояние экрана и при необходимости кнопку повторной попытки.
+    /// - Parameters:
+    ///   - icon: Значок состояния.
+    ///   - title: Заголовок сообщения.
+    ///   - detail: Пояснение для пользователя.
+    ///   - showRetry: Показывать кнопку повторной попытки.
     private func status(_ icon: String, _ title: String, _ detail: String, retry showRetry: Bool) -> some View {
         VStack(spacing: 16) {
             Image(systemName: icon).font(.system(size: 34)).foregroundStyle(MSTheme.accent).accessibilityHidden(true)
@@ -276,6 +328,11 @@ struct WorkspaceHeaderButton: View {
     let action: () -> Void
     @Environment(\.workspaceWidth) private var width
 
+    /// Создаёт доступную кнопку панели рабочего пространства.
+    /// - Parameters:
+    ///   - symbol: Символ кнопки.
+    ///   - label: Подпись для VoiceOver.
+    ///   - action: Действие при нажатии.
     init(_ symbol: String, label: String, action: @escaping () -> Void) {
         self.symbol = symbol
         self.label = label
@@ -349,6 +406,8 @@ struct AccessibleTextField: UIViewRepresentable {
     var returnKey: UIReturnKeyType = .search
     var onSubmit: () -> Void = {}
 
+    /// Создаёт текстовое поле UIKit и подключает координатор ввода.
+    /// - Parameter context: Контекст SwiftUI с координатором поля.
     func makeUIView(context: Context) -> MinimumHeightTextField {
         let field = MinimumHeightTextField()
         field.delegate = context.coordinator
@@ -358,6 +417,10 @@ struct AccessibleTextField: UIViewRepresentable {
         field.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
         return field
     }
+    /// Синхронизирует значение, доступность и фокус текстового поля с состоянием SwiftUI.
+    /// - Parameters:
+    ///   - field: Поле, встроенное в представление.
+    ///   - context: Контекст SwiftUI с текущим координатором.
     func updateUIView(_ field: MinimumHeightTextField, context: Context) {
         context.coordinator.owner = self
         if field.text != text { field.text = text }
@@ -367,20 +430,36 @@ struct AccessibleTextField: UIViewRepresentable {
         field.textColor = UIColor(MSTheme.ink); field.returnKeyType = returnKey
         if let focused, !focused.wrappedValue, field.isFirstResponder { field.resignFirstResponder() }
     }
+    /// Вычисляет размер поля с учётом предложенной ширины и собственной высоты UIKit.
+    /// - Parameters:
+    ///   - proposal: Предложенный SwiftUI размер.
+    ///   - uiView: Поле с собственной высотой и шириной.
+    ///   - context: Контекст измерения SwiftUI.
     func sizeThatFits(_ proposal: ProposedViewSize, uiView: MinimumHeightTextField, context: Context) -> CGSize? {
         CGSize(width: proposal.width ?? max(44, uiView.intrinsicContentSize.width), height: uiView.intrinsicContentSize.height)
     }
+    /// Создаёт координатор для передачи событий UIKit в привязки поля.
     func makeCoordinator() -> Coordinator { Coordinator(self) }
     @MainActor final class Coordinator: NSObject, UITextFieldDelegate {
         var owner: AccessibleTextField
+        /// Связывает делегат UIKit с представлением поля.
+        /// - Parameter owner: Поле SwiftUI, принимающее изменения.
         init(_ owner: AccessibleTextField) { self.owner = owner }
+        /// Записывает введённый текст в привязку SwiftUI.
+        /// - Parameter field: Поле, значение которого изменилось.
         @objc func edited(_ field: UITextField) { owner.text = field.text ?? "" }
+        /// Отмечает получение фокуса в привязке SwiftUI.
+        /// - Parameter textField: Поле, в котором началось редактирование.
         func textFieldDidBeginEditing(_ textField: UITextField) {
             if let focused = owner.focused, !focused.wrappedValue { focused.wrappedValue = true }
         }
+        /// Обновляет привязку фокуса после завершения редактирования.
+        /// - Parameter textField: Поле, завершившее редактирование.
         func textFieldDidEndEditing(_ textField: UITextField) {
             if let focused = owner.focused, focused.wrappedValue { focused.wrappedValue = false }
         }
+        /// Выполняет отправку по Return и закрывает клавиатуру.
+        /// - Parameter textField: Поле, получившее нажатие Return.
         func textFieldShouldReturn(_ textField: UITextField) -> Bool {
             owner.onSubmit(); textField.resignFirstResponder(); return true
         }
@@ -397,6 +476,8 @@ final class MinimumHeightTextField: UITextField {
 
 struct FeatureNotice: View {
     let message: String
+    /// Создаёт пояснение о доступности функции на текущем экране.
+    /// - Parameter message: Текст сообщения для пользователя.
     init(_ message: String = "Это просмотр интерфейса. Операция с сервером пока недоступна.") { self.message = message }
     var body: some View {
         Label(tr(message), systemImage: "info.circle").font(MSTheme.font(12)).foregroundStyle(MSTheme.muted)

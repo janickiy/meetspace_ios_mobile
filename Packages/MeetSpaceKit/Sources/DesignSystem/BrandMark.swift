@@ -2,6 +2,7 @@ import SwiftUI
 
 /// Paths transcribed from mobile_maket/assets/brand-mark.svg (viewBox 0 0 220 230).
 public struct BrandMark: View {
+    /// Создаёт векторный фирменный знак MeetSpace.
     public init() {}
     public var body: some View {
         GeometryReader { geometry in
@@ -19,6 +20,11 @@ public struct BrandMark: View {
                 .scaleEffect(scale, anchor: .topLeading)
         }.aspectRatio(220 / 230, contentMode: .fit).accessibilityHidden(true)
     }
+    /// Строит линейный градиент для заливки части логотипа.
+    /// - Parameters:
+    ///   - stops: Цвета RGB и относительные позиции цветовых переходов.
+    ///   - start: Начальная точка градиента в координатах фигуры.
+    ///   - end: Конечная точка градиента в координатах фигуры.
     private func gradient(_ stops: [(UInt, CGFloat)], start: UnitPoint, end: UnitPoint) -> LinearGradient {
         LinearGradient(stops: stops.map { hex, position in
             .init(color: Color(red: Double((hex >> 16) & 255) / 255, green: Double((hex >> 8) & 255) / 255,
@@ -30,6 +36,8 @@ public struct BrandMark: View {
 private struct BrandShape: Shape {
     enum Part { case back, front, left, play }
     let part: Part
+    /// Возвращает замкнутый контур выбранной части знака в координатах исходного макета.
+    /// - Parameter rect: Область фигуры SwiftUI. Масштаб к доступному размеру применяет родительский вид.
     func path(in rect: CGRect) -> Path {
         var p = Path()
         func move(_ x: CGFloat, _ y: CGFloat) { p.move(to: CGPoint(x: x, y: y)) }
