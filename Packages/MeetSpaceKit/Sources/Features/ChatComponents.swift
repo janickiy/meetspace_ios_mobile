@@ -484,7 +484,11 @@ struct ChatThreadHeading<Actions: View>: View {
     var body: some View {
         VStack(spacing: 3) {
             HStack(spacing: 6) {
-                if let back { Button(action: back) { ChatHeaderIcon(name: "arrow.left") }.buttonStyle(.plain).accessibilityLabel(tr("Назад к чатам")).accessibilityIdentifier("chat.back") }
+                if let back {
+                    MSLiquidAction(.back, action: back)
+                        .accessibilityLabel(tr("Назад к чатам"))
+                        .accessibilityIdentifier("chat.back")
+                }
                 Button(action: info) {
                     HStack(spacing: width >= 780 ? 8 : 6) {
                         ChatAvatar(name: name, initials: initials, size: width >= 780 ? 42 : 32, group: group)

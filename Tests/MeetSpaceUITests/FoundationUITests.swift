@@ -527,7 +527,20 @@ import UIKit
             XCTAssertTrue(app.frame.insetBy(dx: -1, dy: -1).contains(control.frame))
         }
         XCTAssertFalse(app.buttons["schedule.submit"].isEnabled)
+        let planned = app.switches["schedule.planned"]
+        let waitingRoom = app.switches["schedule.waitingRoom"]
+        XCTAssertEqual(planned.value as? String, "1")
+        reveal(waitingRoom, in: app)
+        XCTAssertEqual(waitingRoom.value as? String, "0")
         capture(app, name: "workspace-schedule-form")
+        waitingRoom.tap()
+        XCTAssertEqual(waitingRoom.value as? String, "1")
+        reveal(planned, in: app, towardTop: true)
+        planned.tap()
+        XCTAssertTrue(app.descendants(matching: .any)["schedule.date"].firstMatch.waitForNonExistence(timeout: 5))
+        planned.tap()
+        XCTAssertTrue(app.descendants(matching: .any)["schedule.date"].firstMatch.waitForExistence(timeout: 5))
+        reveal(close, in: app, towardTop: true)
         close.tap()
         XCTAssertTrue(schedule.isHittable)
     }
@@ -1371,7 +1384,7 @@ import UIKit
         XCTAssertTrue(closeMeeting.waitForNonExistence(timeout: 5))
     }
 
-    /// Проверяет, что после удаления личной папки добавленный в неё чат остаётся доступен в списке переписок.
+    /// Добавляет чат в папку из меню чата и проверяет, что удаление папки сохраняет переписку.
     func testStage07FolderRemovalPreservesChat() {
         let app = launch(); login(app)
         openMeetingsFeature("meetingsFolders", in: app)
@@ -1402,11 +1415,31 @@ import UIKit
         save.tap()
         let folder = app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH %@", "folder.")).firstMatch
         XCTAssertTrue(folder.waitForExistence(timeout: 5)); capture(app, name: "stage07-folders")
-        folder.tap(); app.buttons["folderCandidates"].tap()
-        let item = app.buttons["folderItem.22222222-2222-4222-8222-222222222222"]
-        XCTAssertTrue(item.waitForExistence(timeout: 5)); item.tap()
-        app.buttons["folderCandidates"].tap()
-        XCTAssertTrue(app.staticTexts["Тестовый собеседник"].waitForExistence(timeout: 5))
+        let folderID = String(folder.identifier.dropFirst("folder.".count))
+        folder.tap()
+        XCTAssertTrue(app.staticTexts["Здесь пока пусто"].waitForExistence(timeout: 5))
+        XCTAssertFalse(app.buttons["Добавить в папку"].exists)
+        app.navigationBars.buttons.firstMatch.tap()
+
+        let chatID = "22222222-2222-4222-8222-222222222222"
+        let chat = app.buttons["conversation.\(chatID)"]
+        app.buttons["tab.messages"].tap()
+        XCTAssertTrue(chat.waitForExistence(timeout: 5)); chat.tap()
+        app.buttons["chat.menu"].tap()
+        app.buttons["chat.action.folder"].tap()
+        let option = app.buttons["folderAssignment.option.\(folderID.uppercased())"]
+        XCTAssertTrue(option.waitForExistence(timeout: 5))
+        XCTAssertFalse(option.isSelected); option.tap()
+        app.buttons["folderAssignment.save"].tap()
+        XCTAssertTrue(option.waitForNonExistence(timeout: 5))
+        if !app.buttons["tab.meetings"].exists { app.buttons["chat.back"].tap() }
+
+        app.buttons["tab.meetings"].tap()
+        XCTAssertTrue(folder.waitForExistence(timeout: 5)); folder.tap()
+        let item = app.buttons["folderItem.\(chatID)"]
+        XCTAssertTrue(item.waitForExistence(timeout: 5))
+        XCTAssertEqual(item.label, "Убрать из папки")
+        XCTAssertFalse(app.buttons["Добавить в папку"].exists)
         capture(app, name: "stage07-folder-contents")
         app.navigationBars.buttons.firstMatch.tap()
         let menu = app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH %@", "folderMenu.")).firstMatch
@@ -1415,7 +1448,7 @@ import UIKit
         XCTAssertTrue(confirmation.waitForExistence(timeout: 5)); confirmation.tap()
         XCTAssertTrue(app.staticTexts["Папок пока нет"].waitForExistence(timeout: 5))
         app.buttons["tab.messages"].tap()
-        XCTAssertTrue(app.buttons["conversation.22222222-2222-4222-8222-222222222222"].waitForExistence(timeout: 5))
+        XCTAssertTrue(chat.waitForExistence(timeout: 5))
     }
 
     /// Проверяет сохранение настроек профиля и состояние недоступной функции SSH.
@@ -1534,6 +1567,10 @@ import UIKit
         let library = app.buttons["meetingsRecordings"]
         reveal(library, in: app)
         library.tap()
+        let back = app.buttons["recordings.back"]
+        XCTAssertTrue(back.waitForExistence(timeout: 5))
+        XCTAssertGreaterThanOrEqual(back.frame.height, 44)
+        capture(app, name: "recordings-library-back")
         let tracks = app.buttons["recording.4"]
         reveal(tracks, in: app)
         tracks.tap()
@@ -1543,13 +1580,15 @@ import UIKit
         XCTAssertEqual(app.staticTexts["recordingKind"].label, "Дорожки участников")
         XCTAssertTrue(app.staticTexts["Отдельная дорожка каждого участника"].isHittable)
         XCTAssertFalse(app.buttons["playRecording"].exists)
+        XCTAssertGreaterThanOrEqual(back.frame.height, 44)
+        XCTAssertGreaterThanOrEqual(app.buttons["Все записи"].frame.height, 44)
         capture(app, name: "recording-detail-tracks")
         let summary = app.buttons["recording.shareDetails"]
         reveal(summary, in: app)
         XCTAssertTrue(app.staticTexts["Архив дорожек"].isHittable)
         XCTAssertFalse(app.buttons["downloadRecording"].exists)
         capture(app, name: "recording-detail-materials")
-        app.buttons["recordings.back"].tap()
+        back.tap()
         XCTAssertTrue(tracks.waitForExistence(timeout: 5))
     }
 

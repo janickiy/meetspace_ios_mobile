@@ -40,7 +40,9 @@ public struct MSLiquidAction: View {
                 if inToolbar {
                     Button(action: action) { label }
                 } else {
-                    Button(action: action) { label }
+                    Button(action: action) {
+                        label.frame(minWidth: showsText ? nil : 24, minHeight: 24)
+                    }
                         .buttonStyle(.glass)
                         .buttonBorderShape(showsText ? .capsule : .circle)
                         .controlSize(.large)

@@ -287,6 +287,7 @@ struct ScheduleMeetingForm: View {
                 }
                 if workspace != nil && model != nil {
                     formSwitch("Запланировать встречу", detail: "Выберите дату и время заранее", isOn: $planned)
+                        .accessibilityIdentifier("schedule.planned")
                 }
             }
             if planned {
@@ -296,7 +297,8 @@ struct ScheduleMeetingForm: View {
                         VStack(alignment: .leading, spacing: 12) { dateField; timeField }
                     }
                     if meeting != nil {
-                        Toggle(tr("Указать длительность"), isOn: $hasDuration).toggleStyle(.switch)
+                        Toggle(tr("Указать длительность"), isOn: $hasDuration)
+                            .toggleStyle(AccountSwitchStyle())
                         if hasDuration { durationStepper }
                     } else {
                         durationPicker
@@ -313,6 +315,7 @@ struct ScheduleMeetingForm: View {
             }
             if meeting == nil {
                 formSwitch("Зал ожидания", detail: "Участники с действующей ссылкой входят без ожидания", isOn: $waitingRoom)
+                    .accessibilityIdentifier("schedule.waitingRoom")
                 Text(tr("Пригласите коллег по ссылке после создания. Встречу запускает организатор."))
                     .font(MSTheme.font(11)).foregroundStyle(MSTheme.muted)
             }
@@ -407,7 +410,9 @@ struct ScheduleMeetingForm: View {
                 Text(tr(title)).font(MSTheme.font(13, weight: .semibold))
                 Text(tr(detail)).font(MSTheme.font(11)).foregroundStyle(MSTheme.muted)
             }.fixedSize(horizontal: false, vertical: true)
-        }.toggleStyle(.switch).frame(minHeight: 44)
+        }.toggleStyle(AccountSwitchStyle())
+            .accessibilityLabel(tr(title))
+            .accessibilityHint(tr(detail))
     }
 
     /// Заполняет поля формы исходными данными встречи или значениями для создания.

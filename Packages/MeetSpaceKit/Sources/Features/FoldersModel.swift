@@ -12,7 +12,6 @@ import MeetSpaceAPI
     public private(set) var busy = false
     public private(set) var loadingItems = false
     public private(set) var nextCursor: String?
-    public private(set) var candidates = false
     public var filter: FolderFilter = .all
     public var search = ""
     public var error: String?
@@ -51,15 +50,10 @@ import MeetSpaceAPI
     /// - Parameter folder: Папка для просмотра.
     public func open(_ folder: PersonalFolder) async {
         guard !busy, !closed else { return }
-        selected = folder; filter = .all; search = ""; candidates = false
+        selected = folder; filter = .all; search = ""
         await loadItems()
     }
-    /// Переключает просмотр содержимого папки и элементов для добавления.
-    /// - Parameter value: Показывать ли кандидатов для добавления.
-    public func setCandidates(_ value: Bool) async {
-        guard !busy, !closed else { return }; candidates = value; await loadItems()
-    }
-    /// Загружает страницу содержимого или кандидатов с текущим фильтром и поиском.
+    /// Загружает страницу содержимого выбранной папки с текущим фильтром и поиском.
     /// - Parameter more: Запрашивать ли следующую страницу по сохранённому курсору.
     public func loadItems(more: Bool = false) async {
         guard !closed, let selected, !more || (!loadingItems && nextCursor != nil) else { return }
@@ -68,7 +62,7 @@ import MeetSpaceAPI
         if !more { items = []; nextCursor = nil; itemsState = .loading }
         loadingItems = true; error = nil
         do {
-            let page = try await repository.items(selected.id, candidates: candidates, filter: filter, search: search, before: cursor)
+            let page = try await repository.items(selected.id, filter: filter, search: search, before: cursor)
             guard !closed, request == pageEpoch, self.selected?.id == selected.id else { return }
             let known = Set(items.map(\.id)); items += page.items.filter { !known.contains($0.id) }
             nextCursor = page.nextCursor.flatMap { $0.isEmpty || $0 == cursor ? nil : $0 }
@@ -110,12 +104,11 @@ import MeetSpaceAPI
         let ids = folders.sorted { $0.name.localizedStandardCompare($1.name) == .orderedAscending }.map(\.id)
         _ = await mutate { _ = try await self.repository.order(ids) }
     }
-    /// Добавляет или убирает ссылку на элемент в выбранной папке.
-    /// - Parameter item: Строка содержимого папки или кандидат для добавления.
-    public func toggle(_ item: PersonalFolderItem) async {
+    /// Убирает ссылку на элемент из выбранной папки и обновляет её содержимое.
+    /// - Parameter item: Строка содержимого папки.
+    func remove(_ item: PersonalFolderItem) async {
         guard let selected else { return }
-        let included = candidates ? !item.inFolder : false
-        if await mutate({ _ = try await self.repository.setItem(selected.id, kind: item.kind, id: item.itemID, included: included) }) {
+        if await mutate({ _ = try await self.repository.setItem(selected.id, kind: item.kind, id: item.itemID, included: false) }) {
             await loadItems()
         }
     }

@@ -123,10 +123,7 @@ struct RecordingDetailContent: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 17) {
-            Button(action: onAllRecordings) {
-                HStack(spacing: 7) { WorkspaceIcon("arrow.left", size: 16); Text(tr("Все записи")) }
-                    .font(MSTheme.font(12)).frame(minHeight: 44)
-            }.buttonStyle(.plain).foregroundStyle(MSTheme.accent)
+            MSLiquidAction(.back, title: "Все записи", action: onAllRecordings)
             VStack(alignment: .leading, spacing: 8) {
                 Text(tr(entry.kind.title)).font(MSTheme.font(10, weight: .semibold)).tracking(1.1)
                     .foregroundStyle(MSTheme.accent).accessibilityIdentifier("recordingKind")

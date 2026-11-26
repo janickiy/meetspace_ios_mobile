@@ -7,7 +7,7 @@ struct RecordingsPageHeader: View {
 
     var body: some View {
         PageHeader(title: title) {
-            WorkspaceHeaderButton("arrow.left", label: "Назад", action: onBack)
+            MSLiquidAction(.back, action: onBack)
                 .accessibilityIdentifier("recordings.back")
         }
     }

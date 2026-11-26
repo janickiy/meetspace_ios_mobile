@@ -108,14 +108,15 @@ struct OnboardingView: View {
                             if model.onboarding == .welcome {
                                 Text("iOS").font(MSTheme.font(8, weight: .semibold)).tracking(1.9).foregroundStyle(MSTheme.muted)
                             } else {
-                                IconButton("xmark", label: "На главную", action: closeForm).disabled(model.identity.busy)
+                                MSLiquidAction(.close, action: closeForm)
+                                    .accessibilityLabel(tr("На главную"))
+                                    .disabled(model.identity.busy)
                             }
                         }.padding(.bottom, 12)
                     } else {
                         if model.onboarding != .welcome {
-                            Button(action: closeForm) {
-                                Label(tr("На главную"), systemImage: "arrow.left").frame(minHeight: 44)
-                            }.disabled(model.identity.busy)
+                            MSLiquidAction(.back, title: "На главную", action: closeForm)
+                                .disabled(model.identity.busy)
                         }
                         Spacer(minLength: 0)
                     }
@@ -406,7 +407,7 @@ private struct ConnectView: View {
                     .disabled(model.probeState == .loading || address.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
                     .accessibilityIdentifier("checkServer")
             }
-            if showsBack { Button(tr("Назад")) { model.show(.welcome) }.frame(minHeight: 44) }
+            if showsBack { MSLiquidAction(.back, title: "Назад") { model.show(.welcome) } }
         }.onAppear { if address.isEmpty { address = model.connectionPrefill?.url.absoluteString ?? "" } }
     }
 

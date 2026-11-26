@@ -103,13 +103,7 @@ struct AccountHome<Detail: View>: View {
     /// Создаёт кнопку возврата к списку настроек.
     /// - Parameter inset: Горизонтальный отступ кнопки.
     private func back(inset: CGFloat) -> some View {
-        Button { selection = nil } label: {
-            HStack(spacing: 8) {
-                WorkspaceIcon("arrow.left", size: 19)
-                Text(tr("Все настройки")).fixedSize(horizontal: false, vertical: true)
-            }.font(MSTheme.font(13)).frame(minHeight: 44).contentShape(Rectangle())
-        }.buttonStyle(.plain).foregroundStyle(MSTheme.accent)
-            .accessibilityLabel(tr("Все настройки"))
+        MSLiquidAction(.back, title: "Все настройки") { selection = nil }
             .accessibilityIdentifier("profileMenu.back")
             .padding(.horizontal, inset).padding(.top, 18).padding(.bottom, 4)
     }

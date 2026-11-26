@@ -174,8 +174,6 @@ private struct FolderContentsView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 16) {
-                Button(tr(model.candidates ? "Готово" : "Добавить в папку")) { Task { await model.setCandidates(!model.candidates) } }
-                    .buttonStyle(MSButtonStyle(primary: !model.candidates)).accessibilityIdentifier("folderCandidates")
                 Picker(tr("Тип содержимого"), selection: $model.filter) {
                     Text(tr("Все")).tag(FolderFilter.all)
                     Text(tr("Чаты")).tag(FolderFilter.conversation)
@@ -202,13 +200,12 @@ private struct FolderContentsView: View {
                                     .font(MSTheme.font(11)).foregroundStyle(MSTheme.muted)
                             }.frame(maxWidth: .infinity, minHeight: 44, alignment: .leading)
                                 .contentShape(Rectangle()).accessibilityElement(children: .combine)
-                        }.buttonStyle(.plain).disabled(item.conference?.isClosed == true || model.candidates)
+                        }.buttonStyle(.plain).disabled(item.conference?.isClosed == true)
                         Button {
-                            Task { await model.toggle(item) }
+                            Task { await model.remove(item) }
                         } label: {
-                            Image(systemName: model.candidates ? (item.inFolder ? "checkmark.circle.fill" : "plus.circle") : "minus.circle")
-                                .frame(width: 44, height: 44)
-                        }.accessibilityLabel(tr(model.candidates && !item.inFolder ? "Добавить в папку" : "Убрать из папки"))
+                            Image(systemName: "minus.circle").frame(width: 44, height: 44)
+                        }.accessibilityLabel(tr("Убрать из папки"))
                             .accessibilityValue(item.title)
                             .accessibilityIdentifier("folderItem.\(item.itemID.uuidString.lowercased())")
                     }.msCard(padding: 12)

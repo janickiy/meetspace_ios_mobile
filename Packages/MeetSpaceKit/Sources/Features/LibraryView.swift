@@ -21,7 +21,7 @@ struct LibraryView: View {
                     RecordingDetailContent(entry: entry, onAllRecordings: allRecordings)
                 } else {
                     ContentUnavailableView(tr("Запись недоступна"), systemImage: "film")
-                    Button(tr("Все записи"), action: allRecordings).buttonStyle(MSTextButtonStyle())
+                    MSLiquidAction(.back, title: "Все записи", action: allRecordings)
                 }
             }
         case .recordings:
