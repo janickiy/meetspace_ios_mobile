@@ -1954,7 +1954,7 @@ import UIKit
                        "The composer must contain the complete message before sending")
     }
 
-    /// Проверяет создание группового чата с выбранным участником.
+    /// Проверяет минимальную длину поиска и создание группового чата с найденным участником.
     func testCreateGroupWithSelectedMember() {
         let app = launch(); login(app)
         let newChat = app.buttons["newChat"]
@@ -1964,10 +1964,20 @@ import UIKit
         let close = app.buttons["newConversation.close"]
         XCTAssertTrue(close.isHittable)
         XCTAssertGreaterThanOrEqual(close.frame.width, 44)
+        let hint = app.staticTexts["Введите минимум 2 символа."]
+        let error = app.staticTexts["Сервер отклонил данные. Проверьте поля."]
+        XCTAssertTrue(hint.waitForExistence(timeout: 5))
+        XCTAssertFalse(error.waitForExistence(timeout: 1))
         capture(app, name: "workspace-phone-new-conversation")
         group.tap()
         let name = app.textFields["newConversation.groupName"]
         XCTAssertTrue(name.waitForExistence(timeout: 5)); name.tap(); name.typeText("Команда iOS")
+        let search = app.textFields["userSearch"]
+        reveal(search, in: app); search.tap(); search.typeText("Т")
+        XCTAssertEqual(search.value as? String, "Т")
+        XCTAssertTrue(hint.exists)
+        XCTAssertFalse(error.waitForExistence(timeout: 1))
+        search.typeText("е\n")
         let peer = app.buttons["peer.11111111-1111-4111-8111-111111111113"]
         reveal(peer, in: app); peer.tap()
         let create = app.buttons["createConversation"]
@@ -1982,6 +1992,19 @@ import UIKit
         capture(app, name: "stage03-group-members")
         app.buttons["Редактировать группу"].tap()
         XCTAssertTrue(app.textFields["Название группы"].waitForExistence(timeout: 5))
+    }
+
+    /// Открывает личный чат с пользователем, найденным через окно новой беседы.
+    func testSearchAndOpenDirectConversation() {
+        let app = launch(); login(app)
+        let newChat = app.buttons["newChat"]
+        XCTAssertTrue(newChat.waitForExistence(timeout: 10)); newChat.tap()
+        let search = app.textFields["userSearch"]
+        reveal(search, in: app); search.tap(); search.typeText("Те\n")
+        let peer = app.buttons["peer.11111111-1111-4111-8111-111111111113"]
+        reveal(peer, in: app); peer.tap()
+        XCTAssertTrue(app.buttons["newConversation.close"].waitForNonExistence(timeout: 5))
+        XCTAssertTrue(app.textFields["messageComposer"].waitForExistence(timeout: 10))
     }
 
     /// Входит в тестовый аккаунт, создаёт встречу и ожидает появления кнопки подключения.

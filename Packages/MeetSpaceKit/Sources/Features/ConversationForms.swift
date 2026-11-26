@@ -111,23 +111,37 @@ private struct WorkspacePeopleList<Row: View>: View {
     @ViewBuilder let row: (Peer) -> Row
     @State private var query = ""
     @State private var peers: [Peer] = []
-    @State private var loading = true
+    @State private var loading = false
     @State private var error: String?
 
-    private var choices: [Peer] {
+    private var search: String {
+        let scalars = query.trimmingCharacters(in: .whitespacesAndNewlines).unicodeScalars
+        let limited = scalars.lazy.filter { $0.value != 0 }.prefix(100)
+        return String(String.UnicodeScalarView(limited)).trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+
+    private func choices(including matches: [Peer]) -> [Peer] {
         var seen = excluded
         seen.insert(model.account.user.id)
-        return (peers + retained).filter { seen.insert($0.id).inserted }
+        return (matches + retained).filter { seen.insert($0.id).inserted }
     }
 
     var body: some View {
-        let available = choices
+        let search = search
+        let canSearch = search.unicodeScalars.count >= 2
+        let available = choices(including: canSearch && !loading && error == nil ? peers : [])
         VStack(alignment: .leading, spacing: 12) {
             SearchBox(text: $query, placeholder: "Поиск пользователей", identifier: "userSearch")
-            if let error { Text(tr(error)).foregroundStyle(MSTheme.danger) }
-            else if loading { ProgressView().frame(maxWidth: .infinity, minHeight: 48) }
-            else if available.isEmpty { Text(tr("Пользователи не найдены")).foregroundStyle(MSTheme.muted) }
-            else {
+            if !canSearch {
+                Text(tr("Введите минимум 2 символа.")).foregroundStyle(MSTheme.muted)
+            } else if let error {
+                Text(tr(error)).foregroundStyle(MSTheme.danger)
+            } else if loading {
+                ProgressView().frame(maxWidth: .infinity, minHeight: 48)
+            } else if available.isEmpty {
+                Text(tr("Пользователи не найдены")).foregroundStyle(MSTheme.muted)
+            }
+            if !available.isEmpty {
                 VStack(spacing: 0) {
                     ForEach(available) { peer in
                         row(peer)
@@ -136,11 +150,14 @@ private struct WorkspacePeopleList<Row: View>: View {
                 }
             }
         }
-        .task(id: query) {
-            loading = true; error = nil
+        .task(id: canSearch ? search : nil) {
+            peers = []
+            error = nil
+            loading = canSearch
+            guard canSearch else { return }
             do {
                 try await Task.sleep(for: .milliseconds(300))
-                let result = try await model.repository.users(search: String(query.prefix(100)))
+                let result = try await model.repository.users(search: search)
                 try Task.checkCancellation()
                 peers = result
                 loading = false

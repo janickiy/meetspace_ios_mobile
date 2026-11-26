@@ -565,6 +565,11 @@ enum UITestDependencies {
                 return try response(["ticket": String(repeating: "x", count: 43), "expiresAt": "2099-01-01T00:00:00Z"], status: 201)
             }
             if path.hasSuffix("/users") {
+                let search = URLComponents(url: request.url!, resolvingAgainstBaseURL: false)?.queryItems?
+                    .first(where: { $0.name == "search" })?.value?.trimmingCharacters(in: .whitespacesAndNewlines)
+                guard let search, (2...100).contains(search.unicodeScalars.count), !search.contains("\0") else {
+                    return NetworkResponse(status: 422)
+                }
                 return try response(["status": "ok", "items": [["id": peer, "displayName": "Тестовый собеседник"]]])
             }
             if path == "/api/v1/integrations/capabilities" {
